@@ -1,0 +1,95 @@
+<module>
+    <inherits name='com.google.gwt.user.User'/>
+
+    <!--<define-property name="selectorCapability" values="native,xpath,js"/>-->
+      <!-- enable for native getClassByName shortcut acceleration -->
+    <define-property name="selectorCapability"
+                     values="native,js"/>
+    <property-provider name="selectorCapability">
+        <![CDATA[
+   // useful for benchmarking tests when you want to force non-accelerated queries
+   //if(window.location.href.indexOf("_selector_force_js") != -1) return "js"; 
+   if(document.querySelectorAll && /native/.test(document.querySelectorAll.toString())) {
+      return "native";
+   }
+   return "js"
+     ]]>
+    </property-provider>
+
+    <generate-with class="gquery.rebind.SelectorGeneratorJS">
+        <when-type-assignable class="gquery.client.Selectors"/>
+        <any>
+           <when-property-is name="user.agent" value="gecko"/>
+            <when-property-is name="user.agent" value="ie6"/>
+        </any>
+
+    </generate-with>
+
+    <generate-with class="gquery.rebind.SelectorGeneratorXPath">
+        <when-type-assignable class="gquery.client.Selectors"/>
+        <any>
+            <when-property-is name="user.agent" value="gecko1_8"/>
+            <when-property-is name="user.agent" value="opera"/>
+            <all>
+                <when-property-is name="selectorCapability" value="js"/>
+                <when-property-is name="user.agent" value="safari"/>
+            </all>
+        </any>
+    </generate-with>
+
+    <generate-with class="gquery.rebind.gebcn.SelectorGeneratorNativeGEBCN">
+        <when-type-assignable class="gquery.client.Selectors"/>
+        <all>
+          <when-property-is name="selectorCapability" value="native"/>
+          <when-property-is name="user.agent" value="safari"/>
+        </all>
+    </generate-with>
+
+    <!--versions which handle native getElementsByClassName -->
+    <!--<generate-with class="gquery.rebind.gebcn.SelectorGeneratorJSGEBCN">-->
+    <!--<when-type-assignable class="gquery.client.Selectors"/>-->
+    <!--<when-property-is name="selectorCapability" value="js_gebcn"/>-->
+    <!--</generate-with>-->
+
+    <!--<generate-with class="gquery.rebind.gebcn.SelectorGeneratorXPathGEBCN">-->
+    <!--<when-type-assignable class="gquery.client.Selectors"/>-->
+    <!--<when-property-is name="selectorCapability" value="xpath_gebcn"/>-->
+    <!--</generate-with>-->
+
+    <!--<generate-with class="gquery.rebind.gebcn.SelectorGeneratorNativeGEBCN">-->
+    <!--<when-type-assignable class="gquery.client.Selectors"/>-->
+    <!--<when-property-is name="selectorCapability" value="native_gebcn"/>-->
+    <!--</generate-with>-->
+
+    <replace-with class="gquery.client.impl.SelectorEngineJS">
+        <when-type-assignable class="gquery.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="user.agent" value="gecko"/>
+    </replace-with>
+
+    <replace-with class="gquery.client.impl.SelectorEngineJSIE">
+        <when-type-assignable class="gquery.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="user.agent" value="ie6"/>
+    </replace-with>
+
+    <replace-with class="gquery.client.impl.SelectorEngineXPath">
+        <when-type-assignable class="gquery.client.impl.SelectorEngineImpl"/>
+        <any>
+            <when-property-is name="user.agent" value="gecko1_8"/>
+            <when-property-is name="user.agent" value="opera"/>
+            <all>
+                <when-property-is name="selectorCapability" value="js"/>
+                <when-property-is name="user.agent" value="safari"/>
+            </all>
+        </any>
+    </replace-with>
+
+    <replace-with class="gquery.client.impl.SelectorEngineNative">
+        <when-type-assignable class="gquery.client.impl.SelectorEngineImpl"/>
+        <all>
+            <when-property-is name="user.agent" value="safari"/>
+            <when-property-is name="selectorCapability" value="native"/>
+        </all>
+    </replace-with>
+
+    <!--<set-property name="selectorCapability" value="js"/>-->
+</module>
