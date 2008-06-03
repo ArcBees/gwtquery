@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gwtquery</groupId>
+    <artifactId>gwtquery-project</artifactId>
+    <version>0.2-SNAPSHOT</version>
+  </parent>
+
+  <name>GwtQuery Samples</name>
+  <artifactId>gwtquery-samples</artifactId>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>gwtquery</artifactId>
+      <version>${version}</version>
+      <type>jar</type>
+    </dependency>
+
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.totsp.gwt</groupId>
+        <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
+        <configuration>
+          <gwtVersion>${gwtversion}</gwtVersion>
+          <logLevel>INFO</logLevel>
+          <runTarget>
+            gwtquery.samples.GQueryDemo/index.html
+          </runTarget>
+          <compileTargets>
+            <compileTarget>
+              gwtquery.samples.GQueryDemo
+            </compileTarget>
+            <compileTarget>
+              gwtquery.samples.GQueryBench
+            </compileTarget>
+            <compileTarget>
+              gwtquery.samples.GQuerySample
+            </compileTarget>
+          </compileTargets>
+          <style>OBF</style>
+        </configuration>
+        <executions>
+          <execution>
+            <id>setupgwt</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>setup</goal>
+              <goal>extractGwt</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compilegwt</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

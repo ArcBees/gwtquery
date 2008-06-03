@@ -1,0 +1,153 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>gwtquery</groupId>
+  <artifactId>gwtquery-project</artifactId>
+  <packaging>pom</packaging>
+  <version>0.2-SNAPSHOT</version>
+  <name>GwtQuery Project</name>
+  <url>http://gwtquery.com</url>
+  <description>GwtQuery is a jQuery clone written in GWT.</description>
+  <issueManagement>
+    <system>Google Code</system>
+    <url>http://code.google.com/p/gwtquery/issues/list</url>
+  </issueManagement>
+
+  <developers>
+    <developer>
+      <id>ray</id>
+      <name>Ray Cromwell</name>
+      <email>ray@timefire.com</email>
+      <roles>
+        <role>Project Manager</role>
+        <role>Architect</role>
+      </roles>
+      <organization>Timepedia.org</organization>
+      <timezone>-8</timezone>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/trunk</developerConnection>
+    <url>http://code.google.com/p/gwtquery/source/browse/trunk</url>
+  </scm>
+
+  <modules>
+    <module>gwtquery-core</module>
+    <module>samples</module> 
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>
+            https://gwtquery.googlecode.com/svn/tags
+          </tagBase>
+           <preparationGoals>clean install</preparationGoals>        
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>changelog-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>gwt-maven</id>
+      <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <repositories>
+    <repository>
+      <id>gwt-maven</id>
+      <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
+    </repository>
+    <repository>
+      <id>timepedia</id>
+      <url>http://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
+    </repository>
+  </repositories>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <jdk>1</jdk>
+      </activation>
+
+      <properties>
+        <gwtversion>1.5.0</gwtversion>
+        <!--		<maven.test.skip>true</maven.test.skip> -->
+      </properties>
+    </profile>
+
+
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <name>linux</name>
+        </os>
+      </activation>
+      <properties>
+        <gwtplatform>linux</gwtplatform>
+      </properties>
+    </profile>
+
+      <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <gwtplatform>windows</gwtplatform>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <name>mac os x</name>
+        </os>
+      </activation>
+      <properties>
+        <gwtplatform>mac</gwtplatform>
+        <!--                <google.webtoolkit.extrajvmargs>-XstartOnFirstThread</google.webtoolkit.extrajvmargs> -->
+        <google.webtoolkit.extrajvmargs>-Xmx512m -XstartOnFirstThread</google.webtoolkit.extrajvmargs>
+      </properties>
+    </profile>
+
+  </profiles>
+</project>

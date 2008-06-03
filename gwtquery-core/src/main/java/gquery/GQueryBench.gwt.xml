@@ -1,5 +1,0 @@
-<module>
-    <inherits name='gquery.GQuery'/>
-    <entry-point class='gquery.client.GQueryBenchModule'/>
-</module>
-    
