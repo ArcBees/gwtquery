@@ -1,5 +1,7 @@
 <module>
     <inherits name='gwtquery.GwtQuery'/>
     <entry-point class='gwtquery.samples.client.GwtQueryDemoModule'/>
+ 
+    
 </module>
     

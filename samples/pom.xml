@@ -25,7 +25,7 @@
         <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
         <configuration>
           <gwtVersion>${gwtversion}</gwtVersion>
-          <logLevel>SPAM</logLevel>
+          <logLevel>INFO</logLevel>
           <runTarget>
             gwtquery.samples.GwtQueryDemo/index.html
           </runTarget>

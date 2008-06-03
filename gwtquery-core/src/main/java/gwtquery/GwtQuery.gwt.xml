@@ -91,5 +91,4 @@
         </all>
     </replace-with>
 
-    <!--<set-property name="selectorCapability" value="js"/>-->
-</module>
+  </module>
