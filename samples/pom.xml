@@ -25,19 +25,19 @@
         <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
         <configuration>
           <gwtVersion>${gwtversion}</gwtVersion>
-          <logLevel>INFO</logLevel>
+          <logLevel>SPAM</logLevel>
           <runTarget>
-            gwtquery.samples.GQueryDemo/index.html
+            gwtquery.samples.GwtQueryDemo/index.html
           </runTarget>
           <compileTargets>
             <compileTarget>
-              gwtquery.samples.GQueryDemo
+              gwtquery.samples.GwtQueryDemo
             </compileTarget>
             <compileTarget>
-              gwtquery.samples.GQueryBench
+              gwtquery.samples.GwtQueryBench
             </compileTarget>
             <compileTarget>
-              gwtquery.samples.GQuerySample
+              gwtquery.samples.GwtQuerySample
             </compileTarget>
           </compileTargets>
           <style>OBF</style>

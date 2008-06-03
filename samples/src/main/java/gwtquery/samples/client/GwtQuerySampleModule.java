@@ -1,9 +1,10 @@
-package gwtquery.client;
+package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
+import gwtquery.client.*;
 
 /**
  * Copyright 2007 Timepedia.org
@@ -20,7 +21,7 @@ import com.google.gwt.user.client.Window;
  * @author Ray Cromwell <ray@timepedia.log>
  */
 public class GwtQuerySampleModule implements EntryPoint {
-    interface Sample extends Selectors {
+    public interface Sample extends Selectors {
       @Selector(".note")
       GQuery allNotes();
     }

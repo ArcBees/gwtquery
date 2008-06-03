@@ -60,7 +60,10 @@ public abstract class SelectorGeneratorBase extends Generator {
         "DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length) + "];");
     int i = 0;
     for (JMethod m : methods) {
-      String selector = m.getAnnotation(Selector.class).value();
+      Selector selectorAnnotation = m.getAnnotation(Selector.class);
+      if(selectorAnnotation == null) continue;
+      String selector = selectorAnnotation.value();
+
       sw.println("dg[" + i + "]=new DeferredGQuery() {");
       sw.indent();
       sw.println(
@@ -83,7 +86,10 @@ public abstract class SelectorGeneratorBase extends Generator {
 
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
       throws UnableToCompleteException {
-    String selector = method.getAnnotation(Selector.class).value();
+      Selector selectorAnnotation = method.getAnnotation(Selector.class);
+    if(selectorAnnotation == null) return;
+
+    String selector = selectorAnnotation.value();
     JParameter[] params = method.getParameters();
 
     sw.indent();

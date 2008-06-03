@@ -1,4 +1,4 @@
-package gwtquery.client;
+package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -6,8 +6,9 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.IncrementalCommand;
+import gwtquery.client.*;
 import static gwtquery.client.GQuery.$;
-
+   
 public class GwtQueryBenchModule implements EntryPoint {
 
     private StringBuffer log = new StringBuffer();

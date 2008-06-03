@@ -2,7 +2,7 @@ package gwtquery.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.animation.Animation;
+import com.google.gwt.animation.client.Animation;
 
 public class Effects extends GQuery {
 

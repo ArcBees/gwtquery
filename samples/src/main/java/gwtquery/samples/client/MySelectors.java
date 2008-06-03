@@ -1,7 +1,8 @@
-package gwtquery.client;
+package gwtquery.samples.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import gwtquery.client.*;
 
 /**
 */

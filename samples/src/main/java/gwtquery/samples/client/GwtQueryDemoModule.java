@@ -1,4 +1,4 @@
-package gwtquery.client;
+package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -10,13 +10,14 @@ import com.google.gwt.user.client.Event;
 
 import static gwtquery.client.GQuery.$;
 import static gwtquery.client.Effects.Effects;
+import gwtquery.client.*;
 
 /**
  * 
  */
 public class GwtQueryDemoModule implements EntryPoint {
     // Compile-time Selectors!
-    interface Slide extends Selectors {
+    public interface Slide extends Selectors {
         // find all LI elements in DIV.slide elements
         @Selector("div.slide li")
         NodeList<Element> allSlideBullets();
