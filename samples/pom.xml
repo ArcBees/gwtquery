@@ -3,7 +3,7 @@
   <parent>
     <groupId>gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
   </parent>
 
   <name>GwtQuery Samples</name>
