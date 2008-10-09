@@ -37,6 +37,14 @@
     <module>samples</module> 
   </modules>
 
+   <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+            <id>timepedia-deploy</id>
+            <url>svn:https://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -58,6 +66,13 @@
         </configuration>
       </plugin>
     </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.jvnet.wagon-svn</groupId>
+        <artifactId>wagon-svn</artifactId>
+        <version>1.8</version>
+      </extension>
+    </extensions>
   </build>
   <reporting>
     <plugins>
@@ -94,6 +109,11 @@
     <repository>
       <id>timepedia</id>
       <url>http://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
+    </repository>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
     </repository>
   </repositories>
 
