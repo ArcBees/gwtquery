@@ -19,7 +19,7 @@
     <generate-with class="gwtquery.rebind.SelectorGeneratorJS">
         <when-type-assignable class="gwtquery.client.Selectors"/>
         <any>
-           <when-property-is name="user.agent" value="gecko"/>
+            <when-property-is name="user.agent" value="gecko"/>
             <when-property-is name="user.agent" value="ie6"/>
         </any>
 
@@ -40,8 +40,8 @@
     <generate-with class="gwtquery.rebind.gebcn.SelectorGeneratorNativeGEBCN">
         <when-type-assignable class="gwtquery.client.Selectors"/>
         <all>
-          <when-property-is name="selectorCapability" value="native"/>
-          <when-property-is name="user.agent" value="safari"/>
+            <when-property-is name="selectorCapability" value="native"/>
+            <when-property-is name="user.agent" value="safari"/>
         </all>
     </generate-with>
 
@@ -60,6 +60,17 @@
     <!--<when-type-assignable class="gwtquery.client.Selectors"/>-->
     <!--<when-property-is name="selectorCapability" value="native_gebcn"/>-->
     <!--</generate-with>-->
+
+
+    <replace-with class="gwtquery.client.impl.DocumentStyleImpl">
+        <when-type-assignable class="gwtquery.client.impl.DocumentStyleImpl"/>
+    </replace-with>
+
+    <replace-with class="gwtquery.client.impl.DocumentStyleImplIE">
+        <when-type-assignable class="gwtquery.client.impl.DocumentStyleImpl"/>
+        <when-property-is name="user.agent" value="ie6"/>
+    </replace-with>
+
 
     <replace-with class="gwtquery.client.impl.SelectorEngineJS">
         <when-type-assignable class="gwtquery.client.impl.SelectorEngineImpl"/>
@@ -91,4 +102,4 @@
         </all>
     </replace-with>
 
-  </module>
+</module>

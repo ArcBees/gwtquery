@@ -8,6 +8,10 @@ import com.google.gwt.user.client.Event;
  */
 public abstract class Function {
 
+  public String f(Element e,  int i) {
+    return "";  
+  }
+  
   public void f(Element e) {
   }
 

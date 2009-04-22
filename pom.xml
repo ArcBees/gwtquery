@@ -3,7 +3,7 @@
   <groupId>gwtquery</groupId>
   <artifactId>gwtquery-project</artifactId>
   <packaging>pom</packaging>
-  <version>0.31-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <name>GwtQuery Project</name>
   <url>http://gwtquery.com</url>
   <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -125,7 +125,7 @@
       </activation>
 
       <properties>
-        <gwtversion>1.5.2</gwtversion>
+        <gwtversion>1.6.4</gwtversion>
         <!--		<maven.test.skip>true</maven.test.skip> -->
       </properties>
     </profile>
