@@ -2,7 +2,8 @@ package gwtquery.samples.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import gwtquery.client.*;
+import com.google.gwt.query.client.Selector;
+import com.google.gwt.query.client.Selectors;
 
 /**
 */

@@ -7,10 +7,13 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Selector;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.Selectors;
 
-import static gwtquery.client.GQuery.$;
-import static gwtquery.client.Effects.Effects;
-import gwtquery.client.*;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.Effects.Effects;
 
 /**
  * 

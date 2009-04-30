@@ -2,6 +2,7 @@ package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
 import gwtquery.client.*;
@@ -21,12 +22,32 @@ import gwtquery.client.*;
  * @author Ray Cromwell <ray@timepedia.log>
  */
 public class GwtQuerySampleModule implements EntryPoint {
-    public interface Sample extends Selectors {
-      @Selector(".note")
-      GQuery allNotes();
-    }
+//    public interface Sample extends Selectors {
+//      @Selector(".note")
+//      GQuery allNotes();
+//    }
     public void onModuleLoad() {
-       Sample s = GWT.create(Sample.class);
-       s.allNotes().html("This was a note");
+      Window.alert(Builder.newInstance().setFoo("Hello").setBar("World").setBaz("!").toString());
     }
+  
+  static final class Builder extends JavaScriptObject {
+    protected Builder() {}
+    public static Builder newInstance() {
+      return createObject().cast();
+    }
+    
+    public native Builder setFoo(String x) /*-{
+      return x=this.foo=x, this;
+    }-*/;
+    
+    public native Builder setBar(String x) /*-{
+      this.bar = x;
+      return this;
+    }-*/;
+    
+     public native Builder setBaz(String x) /*-{
+      this.baz = x;
+      return this;
+    }-*/;
+  }
 }

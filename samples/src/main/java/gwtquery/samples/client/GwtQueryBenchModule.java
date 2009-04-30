@@ -6,8 +6,9 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.IncrementalCommand;
-import gwtquery.client.*;
-import static gwtquery.client.GQuery.$;
+import com.google.gwt.query.client.DeferredGQuery;
+import com.google.gwt.query.client.SelectorEngine;
+import static com.google.gwt.query.client.GQuery.$;
    
 public class GwtQueryBenchModule implements EntryPoint {
 
