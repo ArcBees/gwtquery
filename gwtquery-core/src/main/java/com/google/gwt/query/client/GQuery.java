@@ -1,3 +1,18 @@
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.GWT;
@@ -28,10 +43,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Gwt Query is a GWT clone of the popular jQuery library.
  */
 public class GQuery {
 
+  /**
+   * A POJO used to store the top/left CSS positioning values of an element.
+   */
   public static class Offset {
 
     public int top;
@@ -200,7 +218,6 @@ public class GQuery {
   }
 
   public static <T extends GQuery> T $(T gq) {
-
     return gq;
   }
 
@@ -242,8 +259,8 @@ public class GQuery {
       Class<T> plugin) {
     try {
       if (plugins != null) {
-        T gquery = (T) plugins.get(plugin)
-            .init(new GQuery(select(selector, context)));
+        T gquery = (T) plugins.get(plugin).
+            init(new GQuery(select(selector, context)));
         return gquery;
       }
       throw new RuntimeException("No plugin for class " + plugin);
@@ -266,7 +283,7 @@ public class GQuery {
   }
 
   /**
-   * Wrap a JSON object
+   * Wrap a JSON object.
    */
   public static Properties $$(String properties) {
     return Properties.create(properties);
@@ -297,7 +314,7 @@ public class GQuery {
   }
 
   /**
-   * Copied from UIObject *
+   * Copied from UIObject.
    */
   protected static void setStyleName(Element elem, String style, boolean add) {
 
@@ -389,7 +406,7 @@ public class GQuery {
 
   protected NodeList<Element> elements = null;
 
-  private String selector;
+  private String currentSelector;
 
   private GQuery previousObject;
 
@@ -844,7 +861,7 @@ public class GQuery {
    * Remove all child nodes from the set of matched elements.
    */
   public GQuery empty() {
-    //TODO: add memory leak cleanup, remove event handlers, and 
+    // TODO: add memory leak cleanup, remove event handlers, and 
     // data caches
     for (Element e : elements()) {
       while (e.getFirstChild() != null) {
@@ -928,7 +945,7 @@ public class GQuery {
         result.addNode(e);
       }
     }
-    return pushStack(result, "filter", selector);
+    return pushStack(result, "filter", currentSelector);
   }
 
   /**
@@ -1014,7 +1031,7 @@ public class GQuery {
    * Return the selector representing the current set of matched elements.
    */
   public String getSelector() {
-    return selector;
+    return currentSelector;
   }
 
   /**
@@ -1064,13 +1081,13 @@ public class GQuery {
    * Get the current computed, pixel, height of the first matched element.
    */
   public int height() {
-    return DOM
-        .getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
+    return DOM.
+        getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
             "offsetHeight");
   }
 
   /**
-   * Make invisible all matched elements
+   * Make invisible all matched elements.
    */
   public GQuery hide() {
     return $(as(Effects).hide());
@@ -1085,8 +1102,8 @@ public class GQuery {
    * function fires.
    */
   public GQuery hover(Function fover, Function fout) {
-    return bind(Event.ONMOUSEOVER, null, fover)
-        .bind(Event.ONMOUSEOUT, null, fout);
+    return bind(Event.ONMOUSEOVER, null, fover).
+        bind(Event.ONMOUSEOUT, null, fout);
   }
 
   /**
@@ -1107,7 +1124,7 @@ public class GQuery {
   }
 
   /**
-   * Find the index of the specified Element
+   * Find the index of the specified Element.
    */
   public int index(Element element) {
     for (int i = 0; i < elements.getLength(); i++) {
@@ -1389,11 +1406,11 @@ public class GQuery {
    * relative or absolute). This method only works with visible elements.
    */
   public GQuery offsetParent() {
-    Element offParent = SelectorEngine
-        .or(elements.getItem(0).getOffsetParent(), Document.get().getBody());
+    Element offParent = SelectorEngine.
+        or(elements.getItem(0).getOffsetParent(), Document.get().getBody());
     while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
-        && !"html".equalsIgnoreCase(offParent.getTagName()) && "static"
-        .equals(curCSS(offParent, "position"))) {
+        && !"html".equalsIgnoreCase(offParent.getTagName()) && "static".
+        equals(curCSS(offParent, "position"))) {
       offParent = offParent.getOffsetParent();
     }
     return new GQuery(offParent);
@@ -1617,7 +1634,7 @@ public class GQuery {
    */
   public GQuery remove() {
     for (Element e : elements()) {
-      //TODO: cleanup event bindings
+      // TODO: cleanup event bindings
       removeData(e, null);
       if (e.getParentNode() != null) {
         e.getParentNode().removeChild(e);
@@ -1794,7 +1811,7 @@ public class GQuery {
   }
 
   public void setSelector(String selector) {
-    this.selector = selector;
+    this.currentSelector = selector;
   }
 
   /**
@@ -1856,8 +1873,8 @@ public class GQuery {
    * Return the text contained in the first matched element.
    */
   public String text() {
-    String result="";
-    for(Element e : elements()) {
+    String result = "";
+    for (Element e : elements()) {
       result += e.getInnerText();
     }
     return result;
@@ -1914,14 +1931,14 @@ public class GQuery {
   }
 
   /**
-   * Produces a string representation of the matched elements
+   * Produces a string representation of the matched elements.
    */
   public String toString() {
     return toString(false);
   }
 
   /**
-   * Produces a string representation of the matched elements
+   * Produces a string representation of the matched elements.
    */
   public String toString(boolean pretty) {
     String r = "";
@@ -1939,7 +1956,7 @@ public class GQuery {
   }
 
   /**
-   * Removes all events that match the eventbits
+   * Removes all events that match the eventbits.
    */
   public GQuery unbind(int eventbits) {
     return as(Events).unbind(eventbits);
@@ -2001,8 +2018,8 @@ public class GQuery {
       } else if ("input".equalsIgnoreCase(name)) {
         InputElement ie = InputElement.as(e);
         String type = ie.getType();
-        if ("radio".equalsIgnoreCase((type)) || "checkbox"
-            .equalsIgnoreCase(type)) {
+        if ("radio".equalsIgnoreCase((type)) || "checkbox".
+            equalsIgnoreCase(type)) {
           if ("checkbox".equalsIgnoreCase(type)) {
             for (String val : values) {
               if (ie.getValue().equals(val)) {
@@ -2103,8 +2120,8 @@ public class GQuery {
    * Get the current computed, pixel, width of the first matched element.
    */
   public int width() {
-    return DOM
-        .getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
+    return DOM.
+        getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
             "offsetWidth");
   }
 
@@ -2305,14 +2322,14 @@ public class GQuery {
       preWrap = "<table><tbody></tbody><colgroup>";
       postWrap = "</colgroup></table>";
     }
-    //TODO: fix IE link tag serialization
+    // TODO: fix IE link tag serialization
     Element div = Document.get().createDivElement();
     div.setInnerHTML(preWrap + elem + postWrap);
     Node n = div;
     while (wrapPos-- != 0) {
       n = n.getLastChild();
     }
-    //TODO: add fixes for IE TBODY issue
+    // TODO: add fixes for IE TBODY issue
     return n.getChildNodes().cast();
   }
 
@@ -2336,9 +2353,10 @@ public class GQuery {
 
   private void dequeue(Element elem, String type) {
     Queue<Function> q = queue(elem, type, null);
-    Function f = q.dequeue();
 
     if (q != null) {
+      Function f = q.dequeue();
+
       if (SelectorEngine.eq(type, "__FX")) {
         f = q.peek(0);
       }
@@ -2356,8 +2374,10 @@ public class GQuery {
     for (Element e : elements()) {
       for (int i = 0; i < nodes.getLength(); i++) {
         Node n = nodes.getItem(i);
-        if(size() > 1) n=n.cloneNode(true);
-        
+        if (size() > 1) {
+          n = n.cloneNode(true);
+        }
+
         switch (func) {
           case FUNC_PREPEND:
             e.insertBefore(n, e.getFirstChild());
@@ -2415,7 +2435,6 @@ public class GQuery {
         return Integer.parseInt(v);
       }
     } catch (NumberFormatException e) {
-
     }
     return 0;
   }
@@ -2461,7 +2480,6 @@ public class GQuery {
   private void replacequeue(Element elem, String type, Queue data) {
     if (elem != null) {
       type = type + "queue";
-      Object q = (Queue) data(elem, type, null);
       data(elem, type, data);
     }
   }

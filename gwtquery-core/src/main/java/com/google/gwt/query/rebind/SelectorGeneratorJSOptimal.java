@@ -1,22 +1,47 @@
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.rebind;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.query.client.Selector;
 
 import java.util.regex.Pattern;
 
-import com.google.gwt.query.client.Selector;
 
 /**
  *
  */
 public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 
-  protected static Pattern nonSpace = Pattern.compile("\\S/");
+  static class RuleMatcher {
 
-  private static final String trimReStr = "^\\s+|\\s+$";
+    public Pattern re;
+
+    public String fnTemplate;
+
+    RuleMatcher(String pat, String fnT) {
+      this.re = Pattern.compile(pat);
+      this.fnTemplate = fnT;
+    }
+  }
+
+  protected static Pattern nonSpace = Pattern.compile("\\S/");
 
   protected static Pattern trimRe = Pattern.compile(trimReStr);
 
@@ -32,25 +57,28 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 
   protected static Pattern nthRe2 = Pattern.compile("\\D");
 
-  protected static RuleMatcher[] matchers = new RuleMatcher[]{new RuleMatcher(
-      "^\\.([a-zA-Z_0-9-]+)", "n = byClassName(n, null, \"{0}\");"),
+  protected static RuleMatcher[] matchers = new RuleMatcher[]{
+      new RuleMatcher("^\\.([a-zA-Z_0-9-]+)",
+          "n = byClassName(n, null, \"{0}\");"),
       new RuleMatcher("^\\:([a-zA-Z_0-9-]+)(?:\\(((?:[^ >]*|.*?))\\))?",
           "n = byPseudo(n, \"{0}\", \"{1}\");"), new RuleMatcher(
-      "^(?:([\\[\\{])(?:@)?([a-zA-Z_0-9-]+)\\s?(?:(=|.=)\\s?['\"]?(.*?)[\"']?)?[\\]\\}])",
-      "n = byAttribute(n, \"{1}\", \"{3}\", \"{2}\", \"{0}\");"),
+          "^(?:([\\[\\{])(?:@)?([a-zA-Z_0-9-]+)\\s?(?:(=|.=)\\s?['\"]?(.*?)[\"']?)?[\\]\\}])",
+          "n = byAttribute(n, \"{1}\", \"{3}\", \"{2}\", \"{0}\");"),
       new RuleMatcher("^#([a-zA-Z_0-9-]+)", "n = byId(n, null, \"{0}\");")};
 
-  protected String getImplSuffix() {
-    return "JS"+super.getImplSuffix();
-  }
+  private static final String trimReStr = "^\\s+|\\s+$";
 
   protected void generateMethodBody(SourceWriter sw, JMethod method,
-      TreeLogger treeLogger, boolean hasContext) throws UnableToCompleteException {
+      TreeLogger treeLogger, boolean hasContext)
+      throws UnableToCompleteException {
 
     String selector = method.getAnnotation(Selector.class).value();
-    if(!hasContext) sw.println("Node root = Document.get();");
-    
-    sw.println("return "+wrap(method, "new SelectorEngine().select(\""+selector+"\", root)")+";");
+    if (!hasContext) {
+      sw.println("Node root = Document.get();");
+    }
+
+    sw.println("return " + wrap(method,
+        "new SelectorEngine().select(\"" + selector + "\", root)") + ";");
 //    sw.println("JSArray n = JSArray.create();");
 //    if(!hasContext) { 
 //      sw.println("Node root = Document.get();");
@@ -159,16 +187,7 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 //    sw.println("return "+wrap(method, "nodup(n)")+";");
   }
 
- 
-  static class RuleMatcher {
-
-    public Pattern re;
-
-    public String fnTemplate;
-
-    RuleMatcher(String pat, String fnT) {
-      this.re = Pattern.compile(pat);
-      this.fnTemplate = fnT;
-    }
+  protected String getImplSuffix() {
+    return "JS" + super.getImplSuffix();
   }
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.rebind;
 
 import com.google.gwt.core.ext.Generator;
@@ -19,16 +34,16 @@ import java.io.PrintWriter;
  */
 public abstract class SelectorGeneratorBase extends Generator {
 
-  private TreeLogger treeLogger;
+  protected JClassType nodeType = null;
 
-  protected JClassType NODE_TYPE = null;
+  private TreeLogger treeLogger;
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
       throws UnableToCompleteException {
     this.treeLogger = treeLogger;
     TypeOracle oracle = generatorContext.getTypeOracle();
-    NODE_TYPE = oracle.findType("com.google.gwt.dom.client.Node");
+    nodeType = oracle.findType("com.google.gwt.dom.client.Node");
 
     JClassType selectorType = oracle.findType(requestedClass);
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext,
@@ -46,60 +61,25 @@ public abstract class SelectorGeneratorBase extends Generator {
         + selectorType.getSimpleSourceName() + getImplSuffix();
   }
 
-  protected String getImplSuffix() {
-    return "Impl";
-  }
-
-  // used by benchmark harness
-  private void genGetAllMethod(SourceWriter sw, JMethod[] methods,
-      TreeLogger treeLogger) {
-    sw.println("public DeferredGQuery[] getAllSelectors() {");
-    sw.indent();
-    sw.println(
-        "DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length) + "];");
-    int i = 0;
-    for (JMethod m : methods) {
-      Selector selectorAnnotation = m.getAnnotation(Selector.class);
-      if(selectorAnnotation == null) continue;
-      String selector = selectorAnnotation.value();
-
-      sw.println("dg[" + i + "]=new DeferredGQuery() {");
-      sw.indent();
-      sw.println(
-          "public String getSelector() { return \"" + selector + "\"; }");
-      sw.println("public GQuery eval(Node ctx) { return " + wrapJS(m, m.getName()
-          + (m.getParameters().length == 0 ? "()" : "(ctx)")+"") + " ;}");
-      sw.println("public NodeList<Element> array(Node ctx) { return "+("NodeList".equals(m.getReturnType().getSimpleSourceName()) ?
-        (m.getName()
-          + (m.getParameters().length == 0 ? "(); " : "(ctx); ")) : 
-          "eval"+(m.getParameters().length == 0 ? "(null).get(); " : "(ctx).get(); "))+"}");
-      
-      i++;
-      sw.outdent();
-      sw.println("};");
-    }
-    sw.println("return dg;");
-    sw.outdent();
-    sw.println("}");
-  }
-
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
       throws UnableToCompleteException {
-      Selector selectorAnnotation = method.getAnnotation(Selector.class);
-    if(selectorAnnotation == null) return;
+    Selector selectorAnnotation = method.getAnnotation(Selector.class);
+    if (selectorAnnotation == null) {
+      return;
+    }
 
-    String selector = selectorAnnotation.value();
     JParameter[] params = method.getParameters();
 
     sw.indent();
-    String retType = method.getReturnType().getParameterizedQualifiedSourceName();
-    sw.print("public final "+retType+" "+method.getName());
+    String retType = method.getReturnType()
+        .getParameterizedQualifiedSourceName();
+    sw.print("public final " + retType + " " + method.getName());
     boolean hasContext = false;
     if (params.length == 0) {
       sw.print("()");
     } else if (params.length == 1) {
       JClassType type = params[0].getType().isClassOrInterface();
-      if (type != null && type.isAssignableTo(NODE_TYPE)) {
+      if (type != null && type.isAssignableTo(nodeType)) {
         sw.print("(Node root)");
         hasContext = true;
       }
@@ -110,19 +90,21 @@ public abstract class SelectorGeneratorBase extends Generator {
 
     // short circuit #foo
     if (sel != null && sel.value().matches("^#\\w+$")) {
-      sw.println("return "+wrap(method, "JSArray.create(((Document)" + (hasContext ? "root" : "(Node)Document.get()")
-          + ").getElementById(\"" + sel.value().substring(1) + "\"))")+";");
-    }
-    // short circuit FOO
-    else if (sel != null && sel.value().matches("^\\w+$")) {
-      sw.println("return "+wrap(method, "JSArray.create(((Element)"+(hasContext ? "root" : "(Node)Document.get()")
-          + ").getElementsByTagName(\"" + sel.value() + "\"))")+";");
-    } // short circuit .foo for browsers with native getElementsByClassName 
-    else if (sel != null && sel.value().matches("^\\.\\w+$")
+      sw.println("return " + wrap(method, "JSArray.create(((Document)"
+          + (hasContext ? "root" : "(Node)Document.get()")
+          + ").getElementById(\"" + sel.value().substring(1) + "\"))") + ";");
+    } else if (sel != null && sel.value().matches("^\\w+$")) {
+      // short circuit FOO
+      sw.println("return " + wrap(method, "JSArray.create(((Element)"
+          + (hasContext ? "root" : "(Node)Document.get()")
+          + ").getElementsByTagName(\"" + sel.value() + "\"))") + ";");
+    } else if (sel != null && sel.value().matches("^\\.\\w+$")
         && hasGetElementsByClassName()) {
-      sw.println("return "+wrap(method, "JSArray.create(getElementsByClassName(\""
-          + sel.value().substring(1) + "\", " + (hasContext ? "root" : "(Node)Document.get()")
-          + "))")+";");
+      // short circuit .foo for browsers with native getElementsByClassName 
+      sw.println("return " + wrap(method,
+          "JSArray.create(getElementsByClassName(\"" + sel.value().substring(1)
+              + "\", " + (hasContext ? "root" : "(Node)Document.get()") + "))")
+          + ";");
     } else {
       generateMethodBody(sw, method, logger, hasContext);
     }
@@ -131,17 +113,16 @@ public abstract class SelectorGeneratorBase extends Generator {
     sw.outdent();
   }
 
-  protected boolean hasGetElementsByClassName() {
-    return false;
-  }
-
   protected void debug(String s) {
 //    System.err.println(s);
     treeLogger.log(TreeLogger.DEBUG, s, null);
   }
 
-  protected boolean notNull(String s) {
-    return s != null && !"".equals(s);
+  protected abstract void generateMethodBody(SourceWriter sw, JMethod method,
+      TreeLogger logger, boolean hasContext) throws UnableToCompleteException;
+
+  protected String getImplSuffix() {
+    return "Impl";
   }
 
   protected SourceWriter getSourceWriter(TreeLogger logger,
@@ -166,26 +147,64 @@ public abstract class SelectorGeneratorBase extends Generator {
     return composerFactory.createSourceWriter(context, printWriter);
   }
 
+  protected boolean hasGetElementsByClassName() {
+    return false;
+  }
+
+  protected boolean notNull(String s) {
+    return s != null && !"".equals(s);
+  }
+
   protected String wrap(JMethod method, String expr) {
-    if("NodeList".equals(method.getReturnType().getSimpleSourceName())) {
+    if ("NodeList".equals(method.getReturnType().getSimpleSourceName())) {
       return expr;
+    } else {
+      return "new GQuery(" + expr + ")";
     }
-    else {
-      return "new GQuery("+expr+")";
-    }
-    
   }
-  
+
   protected String wrapJS(JMethod method, String expr) {
-    if("GQuery".equals(method.getReturnType().getSimpleSourceName())) {
+    if ("GQuery".equals(method.getReturnType().getSimpleSourceName())) {
       return expr;
+    } else {
+      return "new GQuery(" + expr + ")";
     }
-    else {
-      return "new GQuery("+expr+")";
-    }
-    
   }
-  
-  protected abstract void generateMethodBody(SourceWriter sw, JMethod method,
-      TreeLogger logger, boolean hasContext) throws UnableToCompleteException;
+
+  // used by benchmark harness
+  private void genGetAllMethod(SourceWriter sw, JMethod[] methods,
+      TreeLogger treeLogger) {
+    sw.println("public DeferredGQuery[] getAllSelectors() {");
+    sw.indent();
+    sw.println(
+        "DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length) + "];");
+    int i = 0;
+    for (JMethod m : methods) {
+      Selector selectorAnnotation = m.getAnnotation(Selector.class);
+      if (selectorAnnotation == null) {
+        continue;
+      }
+      String selector = selectorAnnotation.value();
+
+      sw.println("dg[" + i + "]=new DeferredGQuery() {");
+      sw.indent();
+      sw.println(
+          "public String getSelector() { return \"" + selector + "\"; }");
+      sw.println("public GQuery eval(Node ctx) { return " + wrapJS(m,
+          m.getName() + (m.getParameters().length == 0 ? "()" : "(ctx)") + "")
+          + " ;}");
+      sw.println("public NodeList<Element> array(Node ctx) { return "
+          + ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? (
+          m.getName() + (m.getParameters().length == 0 ? "(); " : "(ctx); "))
+          : "eval" + (m.getParameters().length == 0 ? "(null).get(); "
+              : "(ctx).get(); ")) + "}");
+
+      i++;
+      sw.outdent();
+      sw.println("};");
+    }
+    sw.println("return dg;");
+    sw.outdent();
+    sw.println("}");
+  }
 }

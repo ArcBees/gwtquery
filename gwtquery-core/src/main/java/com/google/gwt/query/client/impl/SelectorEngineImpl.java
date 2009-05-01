@@ -1,3 +1,18 @@
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
@@ -12,7 +27,56 @@ import com.google.gwt.query.client.SelectorEngine;
  */
 public abstract class SelectorEngineImpl {
 
-  public abstract NodeList<Element> select(String selector, Node ctx);
+  /**
+   * Internal class.
+   */
+  protected static class Sequence {
+
+    public int start;
+
+    public int max;
+
+    public int add;
+
+    public int modVal;
+  }
+
+  /**
+   * Internal class.
+   */
+  protected static class SplitRule {
+
+    public String tag;
+
+    public String id;
+
+    public String allClasses;
+
+    public String allAttr;
+
+    public String allPseudos;
+
+    public String tagRelation;
+
+    public SplitRule(String tag, String id, String allClasses, String allAttr,
+        String allPseudos) {
+      this.tag = tag;
+      this.id = id;
+      this.allClasses = allClasses;
+      this.allAttr = allAttr;
+      this.allPseudos = allPseudos;
+    }
+
+    public SplitRule(String tag, String id, String allClasses, String allAttr,
+        String allPseudos, String tagRelation) {
+      this.tag = tag;
+      this.id = id;
+      this.allClasses = allClasses;
+      this.allAttr = allAttr;
+      this.allPseudos = allPseudos;
+      this.tagRelation = tagRelation;
+    }
+  }
 
   protected static Sequence getSequence(String expression) {
     int start = 0, add = 2, max = -1, modVal = -1;
@@ -59,48 +123,11 @@ public abstract class SelectorEngineImpl {
     return s;
   }
 
-  public static class Sequence {
-
-    public int start;
-
-    public int max;
-
-    public int add;
-
-    public int modVal;
-  }
-
-  public static class SplitRule {
-
-    public String tag;
-
-    public String id;
-
-    public String allClasses;
-
-    public String allAttr;
-
-    public String allPseudos;
-
-    public String tagRelation;
-
-    public SplitRule(String tag, String id, String allClasses, String allAttr,
-        String allPseudos) {
-      this.tag = tag;
-      this.id = id;
-      this.allClasses = allClasses;
-      this.allAttr = allAttr;
-      this.allPseudos = allPseudos;
-    }
-
-    public SplitRule(String tag, String id, String allClasses, String allAttr,
-        String allPseudos, String tagRelation) {
-      this.tag = tag;
-      this.id = id;
-      this.allClasses = allClasses;
-      this.allAttr = allAttr;
-      this.allPseudos = allPseudos;
-      this.tagRelation = tagRelation;
-    }
-  }
+  /**
+   * Parse and execute a given selector expression given a context.
+   * @param selector the CSS selector expression
+   * @param ctx the DOM node to use as a context
+   * @return a list of matched nodes
+   */
+  public abstract NodeList<Element> select(String selector, Node ctx);
 }

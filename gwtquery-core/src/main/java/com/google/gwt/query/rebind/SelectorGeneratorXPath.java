@@ -1,3 +1,18 @@
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.rebind;
 
 import com.google.gwt.core.ext.TreeLogger;
@@ -16,13 +31,16 @@ import java.util.regex.Pattern;
  */
 public class SelectorGeneratorXPath extends SelectorGeneratorBase {
 
-  private static Pattern cssSelectorRegExp = Pattern.compile(
-      "^(\\w+)?(#[a-zA-Z_0-9\u00C0-\uFFFF\\-\\_]+|(\\*))?((\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+)?\\]+)*)?(((:\\w+[a-zA-Z_0-9\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+|((\\w*\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[a-zA-Z_0-9\\-]*))\\))?)*)?(>|\\+|~)?");
+  static class Sequence {
 
-  private static Pattern selectorSplitRegExp = Pattern
-      .compile("(?:\\[[^\\[]*\\]|\\(.*\\)|[^\\s\\+>~\\[\\(])+|[\\+>~]");
+    public int start;
 
-  private String prefix = "";
+    public int max;
+
+    public int add;
+
+    public int modVal;
+  }
 
   static class SplitRule {
 
@@ -39,9 +57,13 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
     public String tagRelation;
   }
 
-  protected String getImplSuffix() {
-    return "XPath" + super.getImplSuffix();
-  }
+  private static Pattern cssSelectorRegExp = Pattern.compile(
+      "^(\\w+)?(#[a-zA-Z_0-9\u00C0-\uFFFF\\-\\_]+|(\\*))?((\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+)?\\]+)*)?(((:\\w+[a-zA-Z_0-9\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+|((\\w*\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[a-zA-Z_0-9\\-]*))\\))?)*)?(>|\\+|~)?");
+
+  private static Pattern selectorSplitRegExp = Pattern
+      .compile("(?:\\[[^\\[]*\\]|\\(.*\\)|[^\\s\\+>~\\[\\(])+|[\\+>~]");
+
+  private String prefix = "";
 
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)
@@ -151,15 +173,102 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
         + ";");
   }
 
-  static class Sequence {
+  protected String getImplSuffix() {
+    return "XPath" + super.getImplSuffix();
+  }
 
-    public int start;
+  private String attrToXPath(String notSelector, String pattern) {
+    Pattern p = Pattern.compile(pattern);
+    Matcher m = p.matcher(notSelector);
+    m.reset();
+    boolean result = m.find();
+    if (result) {
+      StringBuffer sb = new StringBuffer();
+      do {
+        String replacement;
+        String p1 = m.group(1);
+        String p2 = m.group(2);
+        String p3 = m.group(3);
+        if ("^".equals(p2)) {
+          replacement = "starts-with(@" + p1 + ", '" + p3 + "')";
+        } else if ("$".equals(p2)) {
+          replacement = "substring(@" + p1 + ", (string-length(@" + p1 + ") - "
+              + (p3.length() - 1) + "), " + p3.length() + ") = '" + p3 + "'";
+        } else if ("*".equals(p2)) {
+          replacement = "contains(concat(' ', @" + p1 + ", ' '), '" + p3 + "')";
+        } else if ("|".equals(p2)) {
+          replacement = "(@" + p1 + "='" + p3 + "' or starts-with(@" + p1
+              + ", '" + p3 + "-'))";
+        } else if ("~".equals(p2)) {
+          replacement = "contains(concat(' ', @" + p1 + ", ' '), ' " + p3
+              + " ')";
+        } else {
+          replacement = "@" + p1 + (notNull(p3) ? "='" + p3 + "'" : "");
+        }
+        debug("p1=" + p1 + " p2=" + p2 + " p3=" + p3 + " replacement is "
+            + replacement);
+        m.appendReplacement(sb, replacement.replace("$", "\\$"));
+        result = m.find();
+      } while (result);
+      m.appendTail(sb);
+      return sb.toString();
+    }
+    return notSelector;
+  }
 
-    public int max;
+  private int getInt(String s, int i) {
+    try {
+      if (s.startsWith("+")) {
+        s = s.substring(1);
+      }
+      return Integer.parseInt(s);
+    } catch (Exception e) {
+      debug("error parsing Integer " + s);
+      return i;
+    }
+  }
 
-    public int add;
-
-    public int modVal;
+  private Sequence getSequence(String expression) {
+    int start = 0, add = 2, max = -1, modVal = -1;
+    Pattern expressionRegExp = Pattern.compile(
+        "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n([\\+\\-]\\d+)?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
+    Matcher pseudoValue = expressionRegExp.matcher(expression);
+    if (!pseudoValue.matches()) {
+      return null;
+    } else {
+      if (notNull(pseudoValue.group(2))) {   // odd or even
+        start = ("odd".equals(pseudoValue.group(2))) ? 1 : 2;
+        modVal = (start == 1) ? 1 : 0;
+      } else if (notNull(pseudoValue.group(3))) {      // single digit
+        start = Integer.parseInt(pseudoValue.group(3), 10);
+        add = 0;
+        max = start;
+      } else if (notNull(pseudoValue.group(4))) {      // an+b
+        add = notNull(pseudoValue.group(6)) ? getInt(pseudoValue.group(6), 1)
+            : 1;
+        start = notNull(pseudoValue.group(7)) ? getInt(pseudoValue.group(7), 0)
+            : 0;
+        while (start < 1) {
+          start += add;
+        }
+        modVal = (start > add) ? (start - add) % add
+            : ((start == add) ? 0 : start);
+      } else if (notNull(pseudoValue.group(8))) {      // -an+b
+        add = notNull(pseudoValue.group(10)) ? Integer
+            .parseInt(pseudoValue.group(10), 10) : 1;
+        start = max = Integer.parseInt(pseudoValue.group(10), 10);
+        while (start > add) {
+          start -= add;
+        }
+        modVal = (max > add) ? (max - add) % add : ((max == add) ? 0 : max);
+      }
+    }
+    Sequence s = new Sequence();
+    s.start = start;
+    s.add = add;
+    s.max = max;
+    s.modVal = modVal;
+    return s;
   }
 
   private String pseudoToXPath(String tag, String pseudoClass,
@@ -221,99 +330,5 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
       xpath = "@" + pseudoClass + "='" + pseudoValue + "'";
     }
     return xpath;
-  }
-
-  private String attrToXPath(String notSelector, String pattern) {
-    Pattern p = Pattern.compile(pattern);
-    Matcher m = p.matcher(notSelector);
-    m.reset();
-    boolean result = m.find();
-    if (result) {
-      StringBuffer sb = new StringBuffer();
-      do {
-        String replacement;
-        String p1 = m.group(1);
-        String p2 = m.group(2);
-        String p3 = m.group(3);
-        if ("^".equals(p2)) {
-          replacement = "starts-with(@" + p1 + ", '" + p3 + "')";
-        } else if ("$".equals(p2)) {
-          replacement = "substring(@" + p1 + ", (string-length(@" + p1 + ") - "
-              + (p3.length() - 1) + "), " + p3.length() + ") = '" + p3 + "'";
-        } else if ("*".equals(p2)) {
-          replacement = "contains(concat(' ', @" + p1 + ", ' '), '" + p3 + "')";
-        } else if ("|".equals(p2)) {
-          replacement = "(@" + p1 + "='" + p3 + "' or starts-with(@" + p1
-              + ", '" + p3 + "-'))";
-        } else if ("~".equals(p2)) {
-          replacement = "contains(concat(' ', @" + p1 + ", ' '), ' " + p3
-              + " ')";
-        } else {
-          replacement = "@" + p1 + (notNull(p3) ? "='" + p3 + "'" : "");
-        }
-        debug("p1=" + p1 + " p2=" + p2 + " p3=" + p3 + " replacement is "
-            + replacement);
-        m.appendReplacement(sb, replacement.replace("$", "\\$"));
-        result = m.find();
-      } while (result);
-      m.appendTail(sb);
-      return sb.toString();
-    }
-    return notSelector;
-  }
-
-  private Sequence getSequence(String expression) {
-    int start = 0, add = 2, max = -1, modVal = -1;
-    Pattern expressionRegExp = Pattern.compile(
-        "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n([\\+\\-]\\d+)?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
-    Matcher pseudoValue = expressionRegExp.matcher(expression);
-    if (!pseudoValue.matches()) {
-      return null;
-    } else {
-      if (notNull(pseudoValue.group(2))) {   // odd or even
-        start = ("odd".equals(pseudoValue.group(2))) ? 1 : 2;
-        modVal = (start == 1) ? 1 : 0;
-      } else if (notNull(pseudoValue.group(3))) {      // single digit
-        start = Integer.parseInt(pseudoValue.group(3), 10);
-        add = 0;
-        max = start;
-      } else if (notNull(pseudoValue.group(4))) {      // an+b
-        add = notNull(pseudoValue.group(6)) ? getInt(pseudoValue.group(6), 1)
-            : 1;
-        start = notNull(pseudoValue.group(7)) ? getInt(pseudoValue.group(7), 0)
-            : 0;
-        while (start < 1) {
-          start += add;
-        }
-        modVal = (start > add) ? (start - add) % add
-            : ((start == add) ? 0 : start);
-      } else if (notNull(pseudoValue.group(8))) {      // -an+b
-        add = notNull(pseudoValue.group(10)) ? Integer
-            .parseInt(pseudoValue.group(10), 10) : 1;
-        start = max = Integer.parseInt(pseudoValue.group(10), 10);
-        while (start > add) {
-          start -= add;
-        }
-        modVal = (max > add) ? (max - add) % add : ((max == add) ? 0 : max);
-      }
-    }
-    Sequence s = new Sequence();
-    s.start = start;
-    s.add = add;
-    s.max = max;
-    s.modVal = modVal;
-    return s;
-  }
-
-  private int getInt(String s, int i) {
-    try {
-      if (s.startsWith("+")) {
-        s = s.substring(1);
-      }
-      return Integer.parseInt(s);
-    } catch (Exception e) {
-      debug("error parsing Integer " + s);
-      return i;
-    }
   }
 }
