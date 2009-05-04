@@ -48,6 +48,7 @@ import java.util.Map;
 public class GQuery {
 
   /**
+   * 
    * A POJO used to store the top/left CSS positioning values of an element.
    */
   public static class Offset {
