@@ -234,7 +234,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
         if(!allAttr) return "";
         return allAttr.replace(/(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?/g, 
             function(a,b,c,d) {
-              return @gwtquery.client.impl.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
+              return @com.google.gwt.query.client.impl.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
             });
             
     }-*/;

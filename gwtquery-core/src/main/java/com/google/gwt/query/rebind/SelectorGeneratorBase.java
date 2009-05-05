@@ -136,7 +136,7 @@ public abstract class SelectorGeneratorBase extends Generator {
         = new ClassSourceFileComposerFactory(packageName, className);
     composerFactory.setSuperclass("com.google.gwt.query.client.SelectorEngine");
     composerFactory.addImport("com.google.gwt.core.client.GWT");
-    composerFactory.addImport("gwtquery.client.*");
+    composerFactory.addImport("com.google.gwt.query.client.*");
 //    composerFactory.addImport("com.google.gwt.query.client.JSArray");
 
     composerFactory.addImport("com.google.gwt.dom.client.*");

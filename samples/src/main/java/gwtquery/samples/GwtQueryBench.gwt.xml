@@ -1,5 +1,5 @@
 <module>
-    <inherits name='gwtquery.GwtQuery'/>
+    <inherits name='com.google.gwt.query.Query'/>
     <entry-point class='gwtquery.samples.client.GwtQueryBenchModule'/>
 </module>
     

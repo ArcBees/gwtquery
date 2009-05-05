@@ -18,8 +18,8 @@ package com.google.gwt.query.rebind;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.query.client.Selector;
+import com.google.gwt.user.rebind.SourceWriter;
 
 import java.util.regex.Pattern;
 
@@ -42,6 +42,8 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
   }
 
   protected static Pattern nonSpace = Pattern.compile("\\S/");
+
+  private static final String trimReStr = "^\\s+|\\s+$";
 
   protected static Pattern trimRe = Pattern.compile(trimReStr);
 
@@ -66,7 +68,6 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
           "n = byAttribute(n, \"{1}\", \"{3}\", \"{2}\", \"{0}\");"),
       new RuleMatcher("^#([a-zA-Z_0-9-]+)", "n = byId(n, null, \"{0}\");")};
 
-  private static final String trimReStr = "^\\s+|\\s+$";
 
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)

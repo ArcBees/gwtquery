@@ -45,10 +45,9 @@ import java.util.Map;
 /**
  * Gwt Query is a GWT clone of the popular jQuery library.
  */
-public class GQuery {
+public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
-   * 
    * A POJO used to store the top/left CSS positioning values of an element.
    */
   public static class Offset {
@@ -86,9 +85,7 @@ public class GQuery {
 
     public native JavaScriptObject get(int id) /*-{
       return this[id];
-    }-*/; /*-{
-      delete this[name];
-    }-*/
+    }-*/;
 
     public DataCache getCache(int id) {
       return get(id).cast();
@@ -205,6 +202,13 @@ public class GQuery {
 
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
+
+  /**
+   * Create an empty GQuery object.
+   */
+  public static GQuery $() {
+    return new GQuery(JSArray.create());
+  }
 
   /**
    * This function accepts a string containing a CSS selector which is then used
@@ -741,6 +745,22 @@ public class GQuery {
   }
 
   /**
+   * Set a single style property to a value, on all matched elements using
+   * type-safe overhead-free enumerations.
+   *
+   * @param property a CSS property type
+   * @param value a legal value from the type T
+   * @param <T> inferred from the CSS property type
+   * @return
+   */
+//  public <T> GQuery css(CssProperty<T> property, T value) {
+//    for(Element e : elements()) {
+//      property.set(e.getStyle(), value);
+//    }
+//    return this;
+
+  //  }
+  /**
    * Return a style property on the first matched element.
    */
   public String css(String name) {
@@ -873,6 +893,10 @@ public class GQuery {
     return this;
   }
 
+  public LazyGQuery lazy() {
+    return GWT.create(GQuery.class);
+  }
+
   /**
    * Revert the most recent 'destructive' operation, changing the set of matched
    * elements to its previous state (right before the destructive operation).
@@ -921,7 +945,7 @@ public class GQuery {
    * Fade out all matched elements by adjusting their opacity.
    */
   public GQuery fadeOut(int millisecs) {
-    return $(as(Effects).fadeOut(millisecs));
+    return as(Effects).fadeOut(millisecs);
   }
 
   /**
@@ -2219,10 +2243,11 @@ public class GQuery {
     }
     for (Element e : wrap.elements()) {
       Node n = e;
-      while (n.getFirstChild() != null) {
+      while (n.getFirstChild() != null
+          && n.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
         n = n.getFirstChild();
-        $((Element) n).append(this);
       }
+      $((Element) n).append(this);
     }
     return this;
   }

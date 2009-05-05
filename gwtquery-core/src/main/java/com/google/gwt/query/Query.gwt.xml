@@ -16,6 +16,10 @@
      ]]>
     </property-provider>
 
+    <generate-with class="com.google.gwt.query.rebind.LazyGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.Lazy"/>
+    </generate-with>
+
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorJS">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <any>

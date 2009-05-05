@@ -562,17 +562,18 @@ public class GwtQueryCoreTest extends GWTTestCase {
   }
 
   public void testWrapMethod() {
-    String content = "<p>Test Paragraph.</p><div id=\"content\">Content</div>";
+    String content = "<p>Test Paragraph.</p>";
+    String wrapper = "<div id=\"content\">Content</div>";
 
     String expected = "<div id=\"content\">Content<p>Test Paragraph.</p></div>";
     $(e).html(content);
 
-    $("p", e).wrap($("div", e).get(0));
+    $("p", e).wrap(wrapper);
     assertEquals(expected, $(e).html());
 
+    $(e).html(content+wrapper);
     expected
         = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
-    $(e).html(content);
     $("*", e).wrap("<b></b>");
     assertEquals(expected, $(e).html());
   }
