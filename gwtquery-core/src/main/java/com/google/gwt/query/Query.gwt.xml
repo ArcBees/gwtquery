@@ -82,4 +82,6 @@
         </all>
     </replace-with>
 
+    <entry-point class='com.google.gwt.query.client.css.CSS'/>
+    
 </module>

@@ -33,6 +33,13 @@ import com.google.gwt.dom.client.TextAreaElement;
 import static com.google.gwt.query.client.Effects.Effects;
 import static com.google.gwt.query.client.Events.Events;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.css.BackgroundColor;
+import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.css.CssProperty;
+import com.google.gwt.query.client.css.TakesLength;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.TakesPercentage;
+import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -192,6 +199,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   public static boolean fxOff = false;
 
+  public static Class<GQuery> GQUERY = GQuery.class;
+
   private static Map<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
   private static Element windowData = null;
@@ -323,6 +332,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
     return styleImpl.getCurrentStyle(elem, name);
+  }
+
+  /**
+   * Return a lazy version of the GQuery interface. Lazy function calls are
+   * simply queued up and not executed immediately.
+   */
+  public static LazyGQuery lazy() {
+    return GQuery.$().createLazy();
   }
 
   public static void registerPlugin(Class<? extends GQuery> plugin,
@@ -555,7 +572,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Convert to Plugin interface provided by Class literal.
    */
   public <T extends GQuery> T as(Class<T> plugin) {
-    if (plugins != null) {
+    // GQuery is not a plugin for itself
+    if (plugin == GQUERY) {
+      return (T) $(this);
+    } else if (plugins != null) {
       return (T) plugins.get(plugin).init(this);
     }
     throw new RuntimeException("No plugin registered for class " + plugin);
@@ -762,22 +782,39 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(unique(result));
   }
 
-  /**
-   * Set a single style property to a value, on all matched elements using
-   * type-safe overhead-free enumerations.
-   *
-   * @param property a CSS property type
-   * @param value a legal value from the type T
-   * @param <T> inferred from the CSS property type
-   * @return
-   */
-//  public <T> GQuery css(CssProperty<T> property, T value) {
-//    for(Element e : elements()) {
-//      property.set(e.getStyle(), value);
-//    }
-//    return this;
+  public LazyGQuery createLazy() {
+    return GWT.create(GQuery.class);
+  }
 
-  //  }
+  /**
+   * Set CSS property on every matched element using type-safe enumerations.
+   */
+  public <S, T extends CssProperty<S>> GQuery css(T cssProperty, S value) {
+    for (Element e : elements()) {
+      cssProperty.set(e.getStyle(), value);
+    }
+    return this;
+  }
+
+  /**
+   * Set CSS property on every matched element using type-safe enumerations.
+   */
+  public GQuery css(TakesLength cssProperty, Length value) {
+    for (Element e : elements()) {
+      cssProperty.setLength(e.getStyle(), value);
+    }
+    return this;
+  }
+
+  /**
+   * Set CSS property on every matched element using type-safe enumerations.
+   */
+  public GQuery css(TakesPercentage cssProperty, Percentage value) {
+    for (Element e : elements()) {
+      cssProperty.setPercentage(e.getStyle(), value);
+    }
+    return this;
+  }
 
   /**
    * Return a style property on the first matched element.
@@ -1287,10 +1324,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery keyup(Function f) {
     return bind(Event.ONKEYUP, null, f);
-  }
-
-  public LazyGQuery lazy() {
-    return GWT.create(GQuery.class);
   }
 
   /**
@@ -1868,6 +1901,30 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery select() {
     return trigger(Document.get().createHtmlEvent("select", false, false),
         null);
+  }
+
+  /**
+   * Set CSS property on the first element.
+   */
+  public <S, T extends CssProperty<S>> GQuery setCss(T cssProperty, S value) {
+    cssProperty.set(elements.getItem(0).getStyle(), value);
+    return this;
+  }
+
+  /**
+   * Set CSS property on first matched element using type-safe enumerations.
+   */
+  public GQuery setCss(TakesLength cssProperty, Length value) {
+    cssProperty.setLength(elements.getItem(0).getStyle(), value);
+    return this;
+  }
+
+  /**
+   * Set CSS property on first matched element using type-safe enumerations.
+   */
+  public GQuery setCss(TakesPercentage cssProperty, Percentage value) {
+    cssProperty.setPercentage(elements.getItem(0).getStyle(), value);
+    return this;
   }
 
   public void setPreviousObject(GQuery previousObject) {

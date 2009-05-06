@@ -376,6 +376,11 @@ public class Effects extends GQuery {
 
   public Effects animate(final Properties properties, final Speed speed,
       final Easing easing, final Function complete) {
+    return animate(properties, speed.getDuration(), easing, complete);
+  }
+
+  public Effects animate(final Properties properties, final int speed,
+      final Easing easing, final Function complete) {
     if (!"false".equals(properties.get("queue"))) {
       queue(new Function() {
         final SpeedOpts optall = new SpeedOpts(speed, easing, complete);
@@ -466,12 +471,31 @@ public class Effects extends GQuery {
   }
 
   /**
+   * Fade in all matched elements by adjusting their opacity. Only the opacity
+   * is adjusted for this animation, meaning that all of the matched elements
+   * should already have some form of height and width associated with them.
+   */
+  public Effects fadeIn(int speed) {
+    return fadeIn(speed, null);
+  }
+
+  /**
    * Fade in all matched elements by adjusting their opacity and firing an
    * optional callback after completion. Only the opacity is adjusted for this
    * animation, meaning that all of the matched elements should already have
    * some form of height and width associated with them.
    */
   public Effects fadeIn(Speed speed, Function callback) {
+    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+  }
+
+  /**
+   * Fade in all matched elements by adjusting their opacity and firing an
+   * optional callback after completion. Only the opacity is adjusted for this
+   * animation, meaning that all of the matched elements should already have
+   * some form of height and width associated with them.
+   */
+  public Effects fadeIn(int speed, Function callback) {
     return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
   }
 
@@ -496,6 +520,16 @@ public class Effects extends GQuery {
   }
 
   /**
+   * Fade out all matched elements by adjusting their opacity to 0, then
+   * setting display to "none". Only the opacity is adjusted for this
+   * animation, meaning that all of the matched elements should already have
+   * some form of height and width associated with them.
+   */
+  public Effects fadeOut(int speed) {
+    return fadeOut(speed, null);
+  }
+
+  /**
    * Fade out all matched elements by adjusting their opacity to 0, then setting
    * display to "none" and firing an optional callback after completion. Only
    * the opacity is adjusted for this animation, meaning that all of the matched
@@ -503,6 +537,17 @@ public class Effects extends GQuery {
    * them.
    */
   public Effects fadeOut(Speed speed, Function callback) {
+    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+  }
+
+  /**
+   * Fade out all matched elements by adjusting their opacity to 0, then setting
+   * display to "none" and firing an optional callback after completion. Only
+   * the opacity is adjusted for this animation, meaning that all of the matched
+   * elements should already have some form of height and width associated with
+   * them.
+   */
+  public Effects fadeOut(int speed, Function callback) {
     return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
   }
 

@@ -18,17 +18,12 @@ package com.google.gwt.query.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.Event;
 
 /**
  * A facade class of forwarding functions which allow end users to refer to the
  * GQuery class as '$' if they desire.
  */
 public class $ {
-
-  public static LazyGQuery lazy() {
-    return GQuery.$().lazy();
-  }
   
   public static GQuery $(String selectorOrHtml) {
     return GQuery.$(selectorOrHtml);
@@ -88,6 +83,15 @@ public class $ {
    */
   public static Properties $$(String properties) {
     return GQuery.$$(properties);
+  }
+
+  /**
+   * Return a lazy version of the GQuery interface. Lazy function calls are
+   * simply queued up and not executed immediately.
+   * @return
+   */
+  public static LazyGQuery lazy() {
+    return GQuery.lazy();
   }
 
   /**

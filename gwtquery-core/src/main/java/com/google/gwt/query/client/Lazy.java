@@ -7,12 +7,12 @@ package com.google.gwt.query.client;
  * Methods in the generated class do not execute but instead queue up a
  * deferred execution of the method.
  */
-public interface Lazy<S, T extends LazyBase<S>> {
+public interface Lazy<S, T extends LazyBase> {
 
   /**
    * Create a lazy instance of the current class. Most implementing classes
    * will automate this by simply invoking GWT.create().
    * @return
    */
-   T lazy();
+   T createLazy();
 }

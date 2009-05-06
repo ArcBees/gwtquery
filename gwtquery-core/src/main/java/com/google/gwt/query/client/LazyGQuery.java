@@ -8,7 +8,7 @@ import com.google.gwt.dom.client.Element;
  * Created by IntelliJ IDEA. User: ray Date: May 2, 2009 Time: 10:48:07 PM To
  * change this template use File | Settings | File Templates.
  */
-public interface LazyGQuery extends LazyBase<GQuery>  {
+public interface LazyGQuery<T> extends LazyBase<T>  {
 
   /**
    * Add elements to the set of matched elements if they are not included yet.

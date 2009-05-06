@@ -81,7 +81,7 @@ public class LazyGenerator extends Generator {
             genClass, treeLogger);
       }
       sw.outdent();
-      generateDoneMethod(sw, nonLazyType.getQualifiedSourceName(), treeLogger);
+      generateDoneMethod(sw, nonLazyType, treeLogger);
       sw.commit(treeLogger);
     }
 
@@ -147,7 +147,12 @@ public class LazyGenerator extends Generator {
       sw.print("arg" + i + (i < argNum - 1 ? "," : ""));
     }
 
-    sw.println(");");
+    sw.print(")");
+    // special case, as() needs to invoke createLazy()
+    if("as".equals(method.getName())) {
+      sw.print(".createLazy()");
+    }
+    sw.println(";");
     sw.outdent();
     sw.println("}");
     sw.outdent();
@@ -185,7 +190,7 @@ public class LazyGenerator extends Generator {
   }
 
   // used by benchmark harness
-  private void generateDoneMethod(SourceWriter sw, String nonLazyType,
+  private void generateDoneMethod(SourceWriter sw, JClassType nonLazyType,
       TreeLogger treeLogger) {
     sw.indent();
     sw.println("public Function done() {");
@@ -194,7 +199,12 @@ public class LazyGenerator extends Generator {
 
     sw.println("public void f(Element e) {");
     sw.indent();
-    sw.println("ctx = GQuery.$(e).as(" + nonLazyType + ".class);");
+    String classID = nonLazyType.getSimpleSourceName();
+    if("GQuery".equals(classID)) {
+      classID="GQUERY";
+    }
+    
+    sw.println("ctx = GQuery.$(e).as(" + nonLazyType.getQualifiedSourceName() + "."+classID+");");
     sw.println("for (int i = 0; i < closures.length(); i++) {");
     sw.indent();
     sw.println("closures.get(i).invoke();");
