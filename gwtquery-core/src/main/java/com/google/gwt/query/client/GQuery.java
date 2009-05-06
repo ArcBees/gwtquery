@@ -122,11 +122,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }-*/;
 
     public native void put(String id, Object obj) /*-{
-      return this[id]=obj;
+      this[id]=obj;
     }-*/;
 
     public native void put(int id, Object obj) /*-{
-      return this[id]=obj;
+      this[id]=obj;
     }-*/;
   }
 
@@ -307,8 +307,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public static native String camelize(String s)/*-{
-     return s.toLowerCase().replace(/-([a-z])/ig, function(a, c){return c.toUpperCase()} );
+     return s.replace(/\-(\w)/g, function(all, letter){
+				return letter.toUpperCase();
+			});
    }-*/;
+
+  public static String curCSS(Element elem, String name, boolean force) {
+    Style s = elem.getStyle();
+    ensureStyleImpl();
+    if (!force) {
+      name = styleImpl.getPropertyName(name);
+
+      if (SelectorEngine.truth(s.getProperty(name))) {
+        return s.getProperty(name);
+      }
+    }
+    return styleImpl.getCurrentStyle(elem, name);
+  }
 
   public static void registerPlugin(Class<? extends GQuery> plugin,
       Plugin<? extends GQuery> pluginFactory) {
@@ -374,21 +389,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static String curCSS(Element elem, String name) {
-    return curCSS(elem, name, false);
+  protected static void setStyleProperty(String prop, String val, Element e) {
+    String property = camelize(prop);
+    e.getStyle().setProperty(property, val);
+    if ("opacity".equals(property)) {
+      e.getStyle().setProperty("zoom", "1");
+      e.getStyle().setProperty("filter",
+          "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
+    }
   }
 
-  public static String curCSS(Element elem, String name, boolean force) {
-    Style s = elem.getStyle();
-    ensureStyleImpl();
-    if (!force) {
-      name = styleImpl.getPropertyName(name);
-
-      if (SelectorEngine.truth(s.getProperty(name))) {
-        return s.getProperty(name);
-      }
-    }
-    return styleImpl.getCurrentStyle(elem, name);
+  private static String curCSS(Element elem, String name) {
+    return curCSS(elem, name, false);
   }
 
   private static void ensureStyleImpl() {
@@ -794,13 +806,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery css(String prop, String val) {
     for (Element e : elements()) {
-      String property = camelize(prop);
-      e.getStyle().setProperty(property, val);
-      if ("opacity".equals(property)) {
-        e.getStyle().setProperty("zoom", "1");
-        e.getStyle().setProperty("filter",
-            "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
-      }
+      setStyleProperty(prop, val, e);
     }
     return this;
   }
@@ -898,10 +904,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     return this;
-  }
-
-  public LazyGQuery lazy() {
-    return GWT.create(GQuery.class);
   }
 
   /**
@@ -1287,6 +1289,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return bind(Event.ONKEYUP, null, f);
   }
 
+  public LazyGQuery lazy() {
+    return GWT.create(GQuery.class);
+  }
+
   /**
    * Returns the number of elements currently matched. The size function will
    * return the same value.
@@ -1428,8 +1434,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return ret;
   }
 
+  /**
+   * Get the current offset of the first matched element, in pixels, relative to
+   * the document. The returned object contains two Float properties, top and
+   * left. Browsers usually round these values to the nearest integer pixel for
+   * actual positioning. The method works only with visible elements.
+   */
   public Offset offset() {
-    return new Offset(get(0).getOffsetLeft(), get(0).getOffsetTop());
+    if (length() == 0) {
+      return new Offset(0, 0);
+    }
+    int boxtop = getClientBoundingRectTop(get(0));
+    int boxleft = getClientBoundingRectLeft(get(0));
+    Element docElem = Document.get().getDocumentElement();
+    Element body = Document.get().getBody();
+    int clientTop = docElem.getPropertyInt("clientTop");
+    if (clientTop == 0) {
+      clientTop = body.getPropertyInt("clientTop");
+    }
+    int clientLeft = docElem.getPropertyInt("clientLeft");
+    if (clientLeft == 0) {
+      clientLeft = body.getPropertyInt("clientLeft");
+    }
+    int wleft = Window.getScrollLeft();
+    int wtop = Window.getScrollTop();
+    int top = boxtop + (wtop == 0 ? body.getScrollTop() : wtop) - clientTop;
+    int left = boxleft + (wleft == 0 ? body.getScrollLeft() : wleft)
+        - clientLeft;
+    return new Offset(top, left);
   }
 
   /**
@@ -2434,6 +2466,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return key;
   }
 
+  private native int getClientBoundingRectLeft(Element element) /*-{
+    return element.getClientBoundingRect().left;
+  }-*/;
+
+  private native int getClientBoundingRectTop(Element element) /*-{
+    return element.getClientBoundingRect().top;
+  }-*/;
+
   private native Document getContentDocument(Node n) /*-{
     return n.contentDocument || n.contentWindow.document;
   }-*/;
@@ -2483,7 +2523,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (data != null) {
         qq.enqueue(data);
       }
-      if (SelectorEngine.eq(type, "__FX") && qq.length() == 1) {
+      if (SelectorEngine.eq(type, "__FXqueue") && qq.length() == 1) {
         data.f(elem);
       }
       return qq;
