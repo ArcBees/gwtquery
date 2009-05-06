@@ -62,7 +62,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static final class DataCache extends JavaScriptObject {
+  static final class DataCache extends JavaScriptObject {
 
     protected DataCache() {
     }
@@ -375,12 +375,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static String curCSS(Element elem, String name) {
+    return curCSS(elem, name, false);
+  }
+
+  public static String curCSS(Element elem, String name, boolean force) {
     Style s = elem.getStyle();
     ensureStyleImpl();
-    name = styleImpl.getPropertyName(name);
+    if (!force) {
+      name = styleImpl.getPropertyName(name);
 
-    if (SelectorEngine.truth(s.getProperty(name))) {
-      return s.getProperty(name);
+      if (SelectorEngine.truth(s.getProperty(name))) {
+        return s.getProperty(name);
+      }
     }
     return styleImpl.getCurrentStyle(elem, name);
   }
@@ -760,6 +766,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 //    return this;
 
   //  }
+
   /**
    * Return a style property on the first matched element.
    */

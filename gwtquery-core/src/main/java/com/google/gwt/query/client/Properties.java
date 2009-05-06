@@ -63,4 +63,15 @@ public class Properties extends JavaScriptObject {
     }
     return keys;
   }-*/;
+
+  public native Properties cloneProps() /*-{
+    var props = {};
+    for(p in this) {
+      props[p] =  this[p];
+    }
+  }-*/;
+
+  public native void set(String key, String val) /*-{
+    this[key]=val;
+  }-*/;
 }
