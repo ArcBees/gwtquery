@@ -32,14 +32,12 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.TextAreaElement;
 import static com.google.gwt.query.client.Effects.Effects;
 import static com.google.gwt.query.client.Events.Events;
-import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.css.BackgroundColor;
-import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.CssProperty;
-import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.css.Percentage;
+import com.google.gwt.query.client.css.TakesLength;
+import com.google.gwt.query.client.css.TakesPercentage;
+import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -290,11 +288,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(elements);
   }
 
+  /**
+   * Wrap a GQuery around an existing element.
+   */
   public static GQuery $(Element element) {
     JSArray a = JSArray.create();
     a.addNode(element);
     return new GQuery(a);
   }
+
+  /**
+   * Wrap a GQuery around an event's target element.
+   */
+  public static GQuery $(Event event) {
+    return $(event.getCurrentTarget());
+  }
+
 
   /**
    * Wrap a JSON object.
@@ -2470,7 +2479,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (name != null && value != null) {
       d.put(name, value);
     }
-    return name != null ? value : id;
+    return name != null ? d.get(name) : id;
   }
 
   private void dequeue(Element elem, String type) {
@@ -2581,7 +2590,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         qq.enqueue(data);
       }
       if (SelectorEngine.eq(type, "__FXqueue") && qq.length() == 1) {
-        data.f(elem);
+        if(data != null) {
+          data.f(elem);
+        }
       }
       return qq;
     }

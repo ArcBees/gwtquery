@@ -1,17 +1,13 @@
 package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.query.client.$;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Effects;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.css.CSS;
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.query.client.css.CSS.*;
-import static com.google.gwt.query.client.css.Length.*;
-import static com.google.gwt.query.client.css.Percentage.*;
-import static com.google.gwt.query.client.css.RGBColor.*;
+import com.google.gwt.user.client.Event;
 
 /**
  * Copyright 2007 Timepedia.org Licensed under the Apache License, Version 2.0
@@ -34,27 +30,30 @@ public class GwtQuerySampleModule implements EntryPoint {
 
   public void onModuleLoad() {
     GQuery q = $(".note");
-    q.setCss(CSS.BACKGROUND_COLOR, CSS.RED);
-    q.setCss(TEXT_ALIGN, LEFT);
-    q.setCss(VERTICAL_ALIGN, px(10));
 
-    $("div > div").hover(lazy().
-        css("color", "red").
-        done(), lazy().
+    $("div > div").
         css("color", "blue").
-        done());
+        hover(
+            lazy().
+              css("color", "red").
+            done(),
+            lazy().
+              css("color", "blue").
+            done());
+    $("div.outer > div").css("position", "relative").dblclick(new Function() {
+      public boolean f(Event e) {
+        $("div.outer > div").as(Effects.Effects).
+            animate($$("left: '+=100'"), 400, Effects.Easing.LINEAR, null).
+            animate($$("top: '+=100'"), 400, Effects.Easing.LINEAR, null).
+            animate($$("left: '-=100'"), 400, Effects.Easing.LINEAR, null).
+            animate($$("top: '-=100'"), 400, Effects.Easing.LINEAR, null);
 
-//    $(".note").dblclick(
-//        lazy().as(Effects.Effects).
-//            fadeOut().
-//        done());
-//     $("div.outer").dblclick(new Function() {
-//       @Override
-//       public boolean f(Event e, Object data) {
-//         $(e.getCurrentTarget()).as(Effects.Effects).slideUp();
-//         return true;
-//       }
-//     });
-//    $("div").wrapAll("<table border=2><tr><td></td></tr></table>");
+        return true;
+      }
+    });
+    $(".note").click(lazy().fadeOut().done());
+    $(".note").append(" Hello");
+
+
   }
 }

@@ -130,6 +130,7 @@ class EventsListener implements EventListener {
       if (listener.hasEventType(etype)) {
         if (!listener.fire(event)) {
           event.cancelBubble(true);
+          event.stopPropagation();
           event.preventDefault();
         }
       }

@@ -15,9 +15,9 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.core.client.Duration;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -114,8 +114,12 @@ public class Effects extends GQuery {
         return elem.getPropertyDouble(prop);
       }
       double r = parseDouble(GQuery.curCSS(elem, prop, force));
-      return !Double.isNaN(r) && r > -10000 ? r
+      r = !Double.isNaN(r) && r > -10000 ? r
           : parseDouble(GQuery.curCSS(elem, prop, false));
+      if (Double.isNaN(r)) {
+        r = 0;
+      }
+      return r;
     }
 
     public void hide() {
@@ -520,10 +524,10 @@ public class Effects extends GQuery {
   }
 
   /**
-   * Fade out all matched elements by adjusting their opacity to 0, then
-   * setting display to "none". Only the opacity is adjusted for this
-   * animation, meaning that all of the matched elements should already have
-   * some form of height and width associated with them.
+   * Fade out all matched elements by adjusting their opacity to 0, then setting
+   * display to "none". Only the opacity is adjusted for this animation, meaning
+   * that all of the matched elements should already have some form of height
+   * and width associated with them.
    */
   public Effects fadeOut(int speed) {
     return fadeOut(speed, null);

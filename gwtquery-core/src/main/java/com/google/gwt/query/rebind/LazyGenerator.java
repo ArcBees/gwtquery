@@ -221,7 +221,7 @@ public class LazyGenerator extends Generator {
     sw.outdent();
     sw.println("}");
     sw.outdent();
-    sw.println("return true;");
+    sw.println("return false;");
     sw.println("}");
     sw.outdent();
     sw.println("};");
