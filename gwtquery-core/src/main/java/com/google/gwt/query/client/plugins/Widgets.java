@@ -1,13 +1,16 @@
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Plugin;
+import com.google.gwt.query.client.JSArray;
 
 /**
  * Experimental Gwt Query plugin for integrating Gwt Widgets.
  */
-public class Widgets extends GQuery  {
+public class Widgets extends GQuery {
   /**
    * Used to register the plugin.
    */
