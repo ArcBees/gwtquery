@@ -1,23 +1,20 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style;
 
 /**
  * This property describes how inline content of a block is aligned.
  */
 public class TextAlign implements CssProperty<TextAlign.TAlignValue> {
 
-  public TextAlign() {
+  public static void init() {
+    CSS.TEXT_ALIGN = new TextAlign();
     CSS.LEFT = TAlignValue.create("left");
     CSS.RIGHT = TAlignValue.create("right");
     CSS.CENTER = TAlignValue.create("center");
     CSS.JUSTIFY = TAlignValue.create("justify");
-  }
-
-  public static void init() {
-    CSS.TEXT_ALIGN = new TextAlign();
   }
 
   public void set(Style s, TAlignValue value) {

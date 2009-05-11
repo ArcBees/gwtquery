@@ -31,6 +31,11 @@ public class SelectorGeneratorNative extends SelectorGeneratorBase {
     return "Native" + super.getImplSuffix();
   }
 
+  @Override
+  protected boolean hasGetElementsByClassName() {
+    return true;
+  }
+
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)
       throws UnableToCompleteException {

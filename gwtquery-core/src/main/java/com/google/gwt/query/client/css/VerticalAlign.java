@@ -1,9 +1,8 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT;
-
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style;
 import static com.google.gwt.query.client.css.VerticalAlign.VAlignValue.create;
 
 /**
@@ -14,7 +13,8 @@ public class VerticalAlign
     implements CssProperty<VerticalAlign.VAlignValue>, TakesPercentage,
     TakesLength {
 
-  public VerticalAlign() {
+  public static void init() {
+    CSS.VERTICAL_ALIGN = new VerticalAlign();
     CSS.TOP = create("top");
     CSS.BOTTOM = create("bottom");
     CSS.BASELINE = create("baseline");
@@ -23,10 +23,6 @@ public class VerticalAlign
     CSS.TEXT_TOP = create("text-top");
     CSS.MIDDLE = create("middle");
     CSS.TEXT_BOTTOM = create("text-bottom");
-  }
-
-  public static void init() {
-    CSS.VERTICAL_ALIGN = new VerticalAlign();
   }
 
   public void set(Style s, VAlignValue value) {

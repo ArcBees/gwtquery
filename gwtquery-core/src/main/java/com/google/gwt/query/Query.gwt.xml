@@ -26,7 +26,6 @@
             <when-property-is name="user.agent" value="gecko"/>
             <when-property-is name="user.agent" value="ie6"/>
         </any>
-
     </generate-with>
 
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorXPath">
@@ -39,6 +38,14 @@
                 <when-property-is name="user.agent" value="safari"/>
             </all>
         </any>
+    </generate-with>
+
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
+        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
+        <all>
+          <when-property-is name="selectorCapability" value="native"/>
+          <when-property-is name="user.agent" value="safari"/>
+        </all>
     </generate-with>
 
   

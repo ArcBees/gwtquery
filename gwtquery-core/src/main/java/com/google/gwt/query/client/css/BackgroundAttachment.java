@@ -1,8 +1,8 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style;
 
 /**
  * This property affects the vertical positioning inside a line box of the boxes
@@ -11,13 +11,10 @@ import com.google.gwt.core.client.GWT;
 public class BackgroundAttachment
     implements CssProperty<BackgroundAttachment.AttachValue> {
 
-  public BackgroundAttachment() {
-    CSS.FIXED = AttachValue.create("fixed");
-    CSS.SCROLL = AttachValue.create("scroll");
-  }
-
   public static void init() {
     CSS.BACKGROUND_ATTACHMENT = new BackgroundAttachment();
+    CSS.FIXED = AttachValue.create("fixed");
+    CSS.SCROLL = AttachValue.create("scroll");
   }
 
   public void set(Style s, AttachValue value) {

@@ -19,9 +19,6 @@ import com.google.gwt.core.client.GWT;
  */
 public class Width implements TakesLength, TakesPercentage {
 
-  public Width() {
-  }
-
   public static void init() {
     CSS.WIDTH = new Width();
   }

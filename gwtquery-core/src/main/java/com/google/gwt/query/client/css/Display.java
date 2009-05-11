@@ -1,8 +1,8 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style;
 
 /**
  * This property specifies the mechanism by which elements are rendered.
@@ -41,9 +41,6 @@ public class Display implements CssProperty<Display.DisplayValue> {
 
   public static void init() {
     CSS.DISPLAY = new Display();
-  }
-
-  public Display() {
     CSS.BLOCK = DisplayValue.create("block");
     CSS.INLINE = DisplayValue.create("inline");
     CSS.INLINE_BLOCK = DisplayValue.create("inline-block");

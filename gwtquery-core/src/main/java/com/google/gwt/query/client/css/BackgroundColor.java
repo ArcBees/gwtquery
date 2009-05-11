@@ -11,9 +11,6 @@ import com.google.gwt.core.client.GWT;
 public class BackgroundColor
     implements CssProperty<RGBColor> {
 
-  public BackgroundColor() {
-  }
-
   public static void init() {
     CSS.BACKGROUND_COLOR = new BackgroundColor();
   }

@@ -1,8 +1,8 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style;
 
 /**
  * This property specifies whether a box should float to the left, right, or not
@@ -11,14 +11,11 @@ import com.google.gwt.core.client.GWT;
  */
 public class Float implements CssProperty<Float.FloatValue> {
 
-  public Float() {
+  public static void init() {
+    CSS.FLOAT = new Float();
     CSS.FLOAT_LEFT = FloatValue.create("left");
     CSS.FLOAT_RIGHT = FloatValue.create("right");
     CSS.FLOAT_NONE = FloatValue.create("none");
-  }
-
-  public static void init() {
-    CSS.FLOAT = new Float();
   }
 
   public void set(Style s, FloatValue value) {
