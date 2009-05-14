@@ -67,7 +67,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  static final class DataCache extends JavaScriptObject {
+  protected static final class DataCache extends JavaScriptObject {
 
     protected DataCache() {
     }
@@ -84,6 +84,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return !!this[id];
     }-*/;
 
+    public native Object getObject(String id) /*-{
+          return this[id];
+        }-*/;
+    
     public native JavaScriptObject get(String id) /*-{
       return this[id];
     }-*/;
@@ -878,10 +882,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Stores the value in the named spot with desired return type.
    */
-  public void data(String name, String value) {
+  public Object data(String name, Object value) {
     for (Element e : elements()) {
       data(e, name, value);
     }
+    return this;
   }
 
   /**
@@ -2470,6 +2475,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache = JavaScriptObject.createObject().cast();
     }
     item = item == window() ? windowData : item;
+    if(item == null) return value;
     int id = item.hashCode();
     if (name != null && !dataCache.exists(id)) {
       dataCache.put(id, DataCache.createObject().cast());
@@ -2479,7 +2485,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (name != null && value != null) {
       d.put(name, value);
     }
-    return name != null ? d.get(name) : id;
+    return name != null ? d.getObject(name) : id;
   }
 
   private void dequeue(Element elem, String type) {

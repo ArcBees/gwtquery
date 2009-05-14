@@ -4,6 +4,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.query.client.Effects;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.Ratings;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.lazy;
@@ -43,6 +44,6 @@ public class GwtQuerySampleModule implements EntryPoint {
     $(".note").click(lazy().fadeOut().done());
     $(".note").append(" Hello");
 
-
+    $("input").as(Ratings.Ratings).rating();
   }
 }
