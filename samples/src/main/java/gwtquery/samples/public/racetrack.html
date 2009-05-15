@@ -2,7 +2,8 @@
 <head>
     <title>Benchmark Racetrack</title>
     <script type="text/javascript">
-        var horses = {};//        var intervals = {};
+        var horses = {};
+
         window.parent.moveHorse = function(id, amt) {
             var elt = document.getElementById(id + "horse");
             var pos = horses[id];
@@ -11,21 +12,15 @@
             }
             horses[id] = pos + amt;
             elt.style.left = '' + horses[id] + 'px';
+        }
 
-            //            var start = new Date().getTime();
-            //            if(intervals[id]) {
-            //                clearInterval(intervals[id]);
-            //            }
-            //            intervals[id]=setInterval(function() {
-            //                end = new Date().getTime();
-            //                if(end-start > 300) {
-            //                    elt.style.left = '' + horses[id] + 'px';
-            //                    clearInterval(intervals[id]);
-            //                } else {
-            //                  elt.style.left = '' + pos + amt * (end-start)/300 + 'px';
-            //                }
-            //            }, 20);
-
+        window.parent.flagWinner = function(id) {
+            var img = document.createElement("img");
+            img.src = "animated-flag.gif";
+            var elt = document.getElementById(id + "horse");
+            elt.appendChild(img);
+            img.style.position = 'fixed';
+            img.style.left = horses[id];
         }
     </script>
     <style type="text/css">
@@ -42,12 +37,15 @@
             font-weight: bold;
             font-size: 150%;
             color: white;
+            /*left: -70px;*/
+            /*top: -30px;*/
+            /*position: relative;*/
         }
     </style>
 </head>
 <body style="overflow: hidden">
 <div id="racefield"
-     style="width:790px; background-image: url(grass-texture.jpg)">
+     style="width:790px; background-image: url(grass-texture-small.jpg); background-repeat: repeat;">
     <div id="gwthorse" class="horse">
         <img src="horse.png"><span>GWT</span><br>
     </div>

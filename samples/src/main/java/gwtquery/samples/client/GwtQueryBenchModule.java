@@ -4,11 +4,14 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.DeferredGQuery;
 import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.IncrementalCommand;
+import com.google.gwt.user.client.ui.HTML;
 
 public class GwtQueryBenchModule implements EntryPoint {
 
@@ -30,10 +33,18 @@ public class GwtQueryBenchModule implements EntryPoint {
     final MySelectors m = GWT.create(MySelectors.class);
 
     final DeferredGQuery dg[] = m.getAllSelectors();
-    initResultsTable(dg, "Compiled GQuery", GCOMPILED, "jQuery"
+    HTML h = HTML.wrap(Document.get().getElementById("startrace"));
+    initResultsTable(dg, "GQuery", GCOMPILED, "jQuery"
         /*"DOMAssistant 2.7" */, JQUERY, "Dojo", DOJO, "Prototype", PROTOTYPE);
-    runBenchmarks(dg, new GQueryCompiledBenchmark(), new JQueryBenchmark(),
-        new DojoBenchmark(), new PrototypeBenchmark());
+
+    h.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent clickEvent) {
+
+        runBenchmarks(dg, new GQueryCompiledBenchmark(), new JQueryBenchmark(),
+            new DojoBenchmark(), new PrototypeBenchmark());
+      }
+    });
+
   }
 
   public interface Benchmark {
@@ -97,7 +108,11 @@ public class GwtQueryBenchModule implements EntryPoint {
                   (((int) (totalTimes[i] * 100)) / 100.0) + " ms");
               setResultClass(benchmark[i].getId(), dg.length,
                   totalTimes[i] <= min ? "win" : "lose");
+              if (totalTimes[i] <= min) {
+                flagWinner(benchmark[i].getId());
+              }
             }
+
             return false;
           }
         }
@@ -127,6 +142,10 @@ public class GwtQueryBenchModule implements EntryPoint {
       }
     });
   }
+
+  private native void flagWinner(String id) /*-{
+    $wnd.flagWinner(id);
+  }-*/;
 
   private native void moveHorse(String id, double totalMovement) /*-{
     $wnd.moveHorse(id, totalMovement);

@@ -14,6 +14,16 @@
     <!--})-->
     <!--</script>-->
     <style>
+        * {
+         font-family: "Lucida Grande",Helvetica,Arial,sans-serif;
+         color: white;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        
         .win {
             background-color: green;
             color: white
@@ -33,18 +43,18 @@
             background-color: black;
             color: white
         }
-
-    </style>
+        
+       </style>
 </head>
 <body>
-<h2 style="font-family: Verdana; text-decoration: underline">GWTSpeed - GWTQuery
-    benchmarks</h2>
+<h2 style="width: 790px; color: white; border-bottom: 1px solid gray">GWTSpeed - GWT Query
+    benchmarks<div id="startrace" style="float: right; color: red">Start Race</div></h2>
 <iframe id="racetrack" src="racetrack.html" width="800" height="310" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 <iframe id="jquerybench" src="jquerybench.html" style="display: none"></iframe>
 <iframe id="dojobench" src="dojobench.html" style="display: none"></iframe>
 <iframe id="prototypebench" src="prototypebench.html" style="display: none"></iframe>
 
-<code style="display: block; height: 200px; width:780px; overflow-y:scroll">
+<code style="display: block; height: 200px; width:790px; overflow-y:scroll; overflow-x: hidden">
 <table id="resultstable" border="1" style="width: 780px; border-collapse: collapse">
 
 </table>

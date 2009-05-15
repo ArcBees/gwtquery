@@ -34,6 +34,19 @@ public class Properties extends JavaScriptObject {
 
   protected Properties() {
   }
+  
+  public final Properties $$(String key, String value) {
+    set(key, value);
+    return this;
+  }
+
+  public final native Properties cloneProps() /*-{
+    var props = {};
+    for(p in this) {
+      props[p] =  this[p];
+    }
+    return props;
+  }-*/;
 
   public final native String get(String name) /*-{
     return this[name];
@@ -62,14 +75,6 @@ public class Properties extends JavaScriptObject {
       keys.push("" + key); 
     }
     return keys;
-  }-*/;
-
-  public final native Properties cloneProps() /*-{
-    var props = {};
-    for(p in this) {
-      props[p] =  this[p];
-    }
-    return props;
   }-*/;
 
   public final native void set(String key, String val) /*-{
