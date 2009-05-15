@@ -87,7 +87,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     public native Object getObject(String id) /*-{
           return this[id];
         }-*/;
-    
+
     public native JavaScriptObject get(String id) /*-{
       return this[id];
     }-*/;
@@ -308,7 +308,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(event.getCurrentTarget());
   }
 
-
   /**
    * Wrap a JSON object.
    */
@@ -446,7 +445,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static GQuery innerHtml(String html) {
     Element div = DOM.createDiv();
     div.setInnerHTML(html);
-    return new GQuery((NodeList<Element>) (NodeList<?>) div.getChildNodes());
+    return new GQuery(
+        copyNodeList((NodeList<Element>) (NodeList<?>) div.getChildNodes()));
   }
 
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
@@ -454,7 +454,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }-*/;
 
   private static NodeList select(String selector, Node context) {
-    return new SelectorEngine().select(selector, context);
+    NodeList n = new SelectorEngine().select(selector, context);
+    JSArray res = copyNodeList(n);
+    return res;
+  }
+
+  private static JSArray copyNodeList(NodeList n) {
+    JSArray res = JSArray.create();
+    for (int i = 0; i < n.getLength(); i++) {
+      res.addNode(n.getItem(i));
+    }
+    return res;
   }
 
   protected NodeList<Element> elements = null;
@@ -1051,7 +1061,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         }
       }
     }
-    return $(unique(array));
+    return pushStack(unique(array), "filter", filters[0]);
   }
 
   /**
@@ -1071,7 +1081,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         }
       }
     }
-    return $(unique(array));
+    return pushStack(unique(array), "find", filters[0]);
   }
 
   /**
@@ -1412,7 +1422,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         result.addNode(next);
       }
     }
-    return new GQuery(unique(result));
+    return pushStack(unique(result), "next", getSelector());
   }
 
   /**
@@ -1429,7 +1439,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         result.addNode(next);
       }
     }
-    return new GQuery(unique(result)).filter(selectors);
+    return pushStack(result, "next", selectors[0]).filter(selectors);
   }
 
   /**
@@ -1440,7 +1450,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       allNextSiblingElements(e.getNextSiblingElement(), result, null);
     }
-    return new GQuery(unique(result));
+    return pushStack(unique(result), "nextAll", getSelector());
   }
 
   /**
@@ -1693,7 +1703,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       allPreviousSiblingElements(getPreviousSiblingElement(e), result);
     }
-    return new GQuery(unique(result));
+    return pushStack(unique(result),"prevAll", getSelector());
   }
 
   /**
@@ -2475,7 +2485,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache = JavaScriptObject.createObject().cast();
     }
     item = item == window() ? windowData : item;
-    if(item == null) return value;
+    if (item == null) {
+      return value;
+    }
     int id = item.hashCode();
     if (name != null && !dataCache.exists(id)) {
       dataCache.put(id, DataCache.createObject().cast());
@@ -2562,10 +2574,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private JSArray merge(NodeList<Element> first, NodeList<Element> second) {
-    JSArray res = JSArray.create();
-    for (int i = 0; i < first.getLength(); i++) {
-      res.addNode(first.getItem(i));
-    }
+    JSArray res = copyNodeList(first);
     for (int i = 0; i < second.getLength(); i++) {
       res.addNode(second.getItem(i));
     }
@@ -2596,7 +2605,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         qq.enqueue(data);
       }
       if (SelectorEngine.eq(type, "__FXqueue") && qq.length() == 1) {
-        if(data != null) {
+        if (data != null) {
           data.f(elem);
         }
       }

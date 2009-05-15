@@ -79,7 +79,7 @@ public class Ratings extends GQuery {
         rater.addClass("rating-to-be-drawn");
 
         // Accept readOnly setting from 'disabled' property
-        if (input.attr("disabled") != null) {
+        if (SelectorEngine.truth(input.attr("disabled"))) {
           control.setReadOnly(true);
         }
 

@@ -1,54 +1,14 @@
 <html>
 <head>
-    <title>GQuery</title>
-    <!--<script type="text/javascript" src="jquery-1.2.3.js"></script>-->
-    <!--<script type="text/javascript" src="ext-base.js"></script>-->
-    <!--<script type="text/javascript" src="ext-all.js"></script>-->
-    <script type="text/javascript" src="DOMAssistantComplete-2.7.js"></script>
-    <script language="javascript"
-            src="gwtquery.samples.GwtQueryBench.nocache.js"></script>
-    <!--<script language="javascript" src="http://dev.jquery.com/~john/speed/js/jquery.js"></script>-->
-    <!--<script type="text/javascript">-->
-    <!--$(document).ready(function() {-->
-    <!--alert("div ~ div size ="+$("div ~ div").size());-->
-    <!--})-->
-    <!--</script>-->
-    <style>
-        .win {
-            background-color: green;
-            color: white
+    <title>JQuery</title>
+    <script language="javascript" src="jquery-1.3.1.js"></script>
+    <script type="text/javascript">
+        window.parent.jquerybenchmark = function(sel) {
+            return $(sel).length;
         }
-
-        .tie {
-            background-color: orange;
-            color: white
-        }
-
-        .lose {
-            background-color: red;
-            color: white
-        }
-
-        .broke {
-            background-color: black;
-            color: white
-        }
-
-    </style>
+    </script>
 </head>
 <body>
-<h2 style="font-family: Verdana; text-decoration: underline">GWTSpeed - GWTQuery
-    benchmarks</h2>
-<iframe id="racetrack" src="racetrack.html" width="800" height="310" frameborder="0" marginheight="0" marginwidth="0"></iframe>
-<iframe id="jquerybench" src="jquerybench.html" style="display: none"></iframe>
-<iframe id="dojobench" src="dojobench.html" style="display: none"></iframe>
-<iframe id="prototypebench" src="prototypebench.html" style="display: none"></iframe>
-
-<code style="display: block; height: 200px; width:780px; overflow-y:scroll">
-<table id="resultstable" border="1" style="width: 780px; border-collapse: collapse; height: 200px">
-
-</table>
-</code>
 <div style="display: none">
 <div style="display: none" class="head">
     <p><a href="http://www.w3.org/"><img height=48 alt=W3C
@@ -3207,7 +3167,6 @@ specification.</p>-->
         compiler compiler</cite>", Technical Report, Murray Hill, 1975
 
 </dl>
-
 </div>
 </body>
 </html>
