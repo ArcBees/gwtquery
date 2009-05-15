@@ -6,9 +6,9 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.DeferredGQuery;
 import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.IncrementalCommand;
-import com.google.gwt.user.client.DOM;
 
 public class GwtQueryBenchModule implements EntryPoint {
 
@@ -77,7 +77,7 @@ public class GwtQueryBenchModule implements EntryPoint {
           for (int i = 0; i < benchmark.length; i++) {
             if (i != winner) {
               moveHorse(benchmark[i].getId(),
-                  (int) (totalMovement * (double)(winTime
+                  (int) (totalMovement * (double) (winTime
                       / (double) runTimes[i])));
               setResultClass(benchmark[i].getId(), selectorNumber, "lose");
             }
@@ -148,6 +148,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     Element td = Document.get().getElementById(type + i);
     td.setInnerHTML(
         "" + (((int) (v * 100)) / 100.0) + " ms, found " + i1 + " nodes");
+    DOM.scrollIntoView((com.google.gwt.user.client.Element) td);
   }
 
   private void initResultsTable(DeferredGQuery[] dg, String... options) {
@@ -155,6 +156,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     Document doc = Document.get();
     Element table = doc.getElementById("resultstable");
     Element thead = doc.createTHeadElement();
+//    thead.getStyle().setProperty("position", "relative");
     table.appendChild(thead);
     Element selectorHeader = doc.createTHElement();
     Element theadtr = doc.createTRElement();
@@ -163,6 +165,8 @@ public class GwtQueryBenchModule implements EntryPoint {
     thead.appendChild(theadtr);
 
     Element tbody = doc.createTBodyElement();
+//    tbody.getStyle().setProperty("overflow", "scroll");
+//    tbody.getStyle().setProperty("height", "200px");
     table.appendChild(tbody);
 
     for (int i = 0; i < options.length; i += 2) {
