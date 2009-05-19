@@ -23,7 +23,7 @@ public class GwtQueryBenchModule implements EntryPoint {
 
   private static final String JQUERY = "jquery";
 
-  private static final String GDYNAMIC = "gwtdynamic";
+  private static final String GDYNAMIC = "gwt";
 
   private static final String DOJO = "dojo";
 
@@ -40,7 +40,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     h.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent clickEvent) {
 
-        runBenchmarks(dg, new GQueryCompiledBenchmark(), new JQueryBenchmark(),
+        runBenchmarks(dg, new GQueryDynamicBenchmark(), new JQueryBenchmark(),
             new DojoBenchmark(), new PrototypeBenchmark());
       }
     });

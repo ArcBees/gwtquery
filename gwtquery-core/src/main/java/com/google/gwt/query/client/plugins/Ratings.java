@@ -7,6 +7,8 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Plugin;
+import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.user.client.Event;
 
@@ -71,6 +73,10 @@ public class Ratings extends GQuery {
       } else {
         control = new Control();
         control.setSerial(raters.bumpCount());
+        Properties metadata = getMetaData(input.get(0).getClassName());
+        if (metadata != null && metadata.defined("split")) {
+          control.setSplit(metadata.getInt("split"));
+        }
         // create rating element
         rater = $("<span class=\"star-rating-control\"/>");
         input.before(rater);
@@ -214,13 +220,24 @@ public class Ratings extends GQuery {
       rater.data("rating", control);
       star.data("rating", control);
       context.data("rating", raters);
-
-      // Initialize ratings (first draw)
-      $(".rating-to-be-drawn").as(Ratings).draw()
-          .removeClass("rating-to-be-drawn");
     }
+    // Initialize ratings (first draw)
+    $(".rating-to-be-drawn").as(Ratings).draw()
+        .removeClass("rating-to-be-drawn");
 
     return this;
+  }
+
+  private Properties getMetaData(String className) {
+    if (className.indexOf("{") == -1) {
+      return Properties.createObject().cast();
+    }
+    Regexp re = new Regexp("{(.*)}");
+    JSArray match = re.exec(className);
+    if (match != null && match.size() > 1) {
+      return Properties.create(match.getStr(1));
+    }
+    return Properties.createObject().cast();
   }
 
   public Ratings blurStar() {
@@ -237,122 +254,133 @@ public class Ratings extends GQuery {
   }
 
   public Ratings fill() {
-    Control control = (Control) this.data("rating");
-    if (control == null) {
-      return this;
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
+
+      // Reset all stars and highlight them up to this element
+      self.as(Ratings).drain();
+      self.prevAll().andSelf().filter(".rater-" + control.getSerial())
+          .addClass("star-rating-hover");
+
     }
-    // do not execute when control is in read-only mode
-    if (control.isReadOnly()) {
-      return this;
-    }
-    // Reset all stars and highlight them up to this element
-    drain();
-    this.prevAll().andSelf().filter(".rater-" + control.getSerial())
-        .addClass("star-rating-hover");
+
     return this;
   }
 
   public Ratings draw() {
-    Control control = (Control) this.data("rating");
-    if (control == null) {
-      return this;
-    }
-    // do not execute when control is in read-only mode
-    if (control.isReadOnly()) {
-      return this;
-    }
-    // Clear all stars
-    this.drain();
-    // Set control value
-    if (control.getCurrent() != null) {
-      ((GQuery) control.current.data("rating.input"))
-          .attr("checked", "checked");
-      control.current.prevAll().andSelf().filter(".rater-" + control.serial)
-          .addClass("star-rating-on");
-    } else {
-      $(control.getInputs()).removeAttr("checked");
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
+
+      // Clear all stars
+      self.as(Ratings).drain();
+      // Set control value
+      if (control.getCurrent() != null) {
+        ((GQuery) control.current.data("rating.input"))
+            .attr("checked", "checked");
+        control.current.prevAll().andSelf().filter(".rater-" + control.serial)
+            .addClass("star-rating-on");
+      } else {
+        $(control.getInputs()).removeAttr("checked");
+      }
+
+      // Show/hide 'cancel' button
+//			control.cancel[control.readOnly || control.required?'hide':'show']();
+      // Add/remove read-only classes to remove hand pointer
+      self.siblings().toggleClass("star-rating-readonly", control.isReadOnly());
     }
 
-    // Show/hide 'cancel' button
-//			control.cancel[control.readOnly || control.required?'hide':'show']();
-    // Add/remove read-only classes to remove hand pointer
-    this.siblings().toggleClass("star-rating-readonly", control.isReadOnly());
     return this;
   }
 
   public Ratings selectStar(int value) {
-    Control control = (Control) this.data("rating");
-    if (control == null) {
-      return this;
-    }
-    // do not execute when control is in read-only mode
-    if (control.isReadOnly()) {
-      return this;
-    }
-    control.setCurrent(null);
-    return $(control.getStar(value)).as(Ratings).selectStar();
-  }
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
 
-  public Ratings selectStar() {
-    Control control = (Control) this.data("rating");
-    if (control == null) {
-      return this;
+      control.setCurrent(null);
+      $(control.getStar(value)).as(Ratings).selectStar();
     }
-    // do not execute when control is in read-only mode
-    if (control.isReadOnly()) {
-      return this;
-    }
-
-    control.current = get(0).getTagName().equalsIgnoreCase("INPUT")
-        ? (GQuery) data("rating.star")
-        : is(".rater-" + control.getSerial()) ? this : null;
-
-    // Update rating control state
-    data("rating", control);
-    // Update display
-    this.draw();
-    // find data for event
-    GQuery input = $(
-        control.current != null ? (GQuery) control.current.data("rating.input")
-            : null);
-    // click callback, as requested here: http://plugins.jquery.com/node/1655
-//			if(control.callback) control.callback.apply(input[0], [input.val(), $('a', control.current)[0]]);// callback event
     return this;
   }
 
-  public Ratings selectStar(String value) {
-    Control control = (Control) this.data("rating");
+  public Ratings selectStar() {
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
+
+      control.current = self.get(0).getTagName().equalsIgnoreCase("INPUT")
+          ? (GQuery) self.data("rating.star")
+          : self.is(".rater-" + control.getSerial()) ? this : null;
+
+      // Update rating control state
+      self.data("rating", control);
+      // Update display
+      self.as(Ratings).draw();
+      // find data for event
+      GQuery input = $(control.current != null ? (GQuery) control.current
+          .data("rating.input") : null);
+      // click callback, as requested here: http://plugins.jquery.com/node/1655
+//			if(control.callback) control.callback.apply(input[0], [input.val(), $('a', control.current)[0]]);// callback event
+    }
+
+    return this;
+  }
+
+  private Control nullControlIfShouldSkipStar(GQuery q) {
+    Control control = (Control) q.data("rating");
     if (control == null) {
-      return this;
+      return null;
     }
     // do not execute when control is in read-only mode
     if (control.isReadOnly()) {
-      return this;
+      return null;
     }
-    control.setCurrent(null);
+    return control;
+  }
 
-    NodeList<Element> stars = control.getStars();
-
-    for (int i = 0; i < stars.getLength(); i++) {
-      String val = ((GQuery) $(stars.getItem(i)).data("rating.input")).val();
-      if (val != null && val.equals(value)) {
-        $(stars.getItem(i)).as(Ratings).selectStar();
+  public Ratings selectStar(String value) {
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
+      control.setCurrent(null);
+      NodeList<Element> stars = control.getStars();
+      for (int i = 0; i < stars.getLength(); i++) {
+        String val = ((GQuery) $(stars.getItem(i)).data("rating.input")).val();
+        if (val != null && val.equals(value)) {
+          $(stars.getItem(i)).as(Ratings).selectStar();
+        }
       }
     }
     return this;
   }
 
   public Ratings drain() {
-    Control control = (Control) this.data("rating");
-    if (control == null) {
-      return this;
+    for (Element e : elements()) {
+      GQuery self = $(e);
+      Control control = nullControlIfShouldSkipStar(self);
+      if (control == null) {
+        continue;
+      }
+      control.rater.children().filter(".rater-" + control.getSerial())
+          .removeClass("star-rating-on").removeClass("star-rating-hover");
     }
-    // do not execute when control is in read-only mode
-    if (control.isReadOnly()) {
-      return this;
-    }
-    control.rater.children().filter(".rater-" + control.getSerial())
-        .removeClass("star-rating-on").removeClass("star-rating-hover");
     return this;
   }
 

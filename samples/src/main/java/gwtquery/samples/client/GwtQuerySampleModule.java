@@ -43,7 +43,15 @@ public class GwtQuerySampleModule implements EntryPoint {
     });
     $(".note").click(lazy().fadeOut().done());
     $(".note").append(" Hello");
+    $(".outer").eq(0).after("<button id='enhance'>Enhance</button>");
+    $("#enhance").one(Event.ONCLICK, null, new Function() {
+      @Override
+      public boolean f(Event e) {
+        $(e).attr("disabled", "true");
+        $("input").as(Ratings.Ratings).rating();
+        return true;
+      }
+    });
 
-    $("input").as(Ratings.Ratings).rating();
   }
 }

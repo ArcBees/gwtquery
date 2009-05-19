@@ -48,6 +48,10 @@ public class Properties extends JavaScriptObject {
     return props;
   }-*/;
 
+  public final native boolean defined(String name) /*-{
+    return this[name] != undefined;  
+  }-*/;
+
   public final native String get(String name) /*-{
     return this[name];
   }-*/;
