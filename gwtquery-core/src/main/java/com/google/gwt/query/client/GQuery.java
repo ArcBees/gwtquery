@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
@@ -41,11 +42,6 @@ import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Gwt Query is a GWT clone of the popular jQuery library.
@@ -84,10 +80,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return !!this[id];
     }-*/;
 
-    public native Object getObject(String id) /*-{
-          return this[id];
-        }-*/;
-
     public native JavaScriptObject get(String id) /*-{
       return this[id];
     }-*/;
@@ -115,6 +107,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     public native int getInt(int id) /*-{
       return this[id];
     }-*/;
+
+    public native Object getObject(String id) /*-{
+          return this[id];
+        }-*/;
 
     public native String getString(String id) /*-{
       return this[id];
@@ -203,7 +199,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   public static Class<GQuery> GQUERY = GQuery.class;
 
-  private static Map<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
+  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
   private static Element windowData = null;
 
@@ -357,9 +353,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static void registerPlugin(Class<? extends GQuery> plugin,
       Plugin<? extends GQuery> pluginFactory) {
     if (plugins == null) {
-      plugins = new HashMap();
+      plugins = JsMap.createObject().cast();
     }
     plugins.put(plugin, pluginFactory);
+  }
+
+  protected static String[] jsArrayToString(JsArrayString array) {
+    if(GWT.isScript()) {
+      return jsArrayToString0(array);
+    }
+    else {
+      String result[]=new String[array.length()];
+      for(int i=0; i<result.length; i++) {
+        result[i]=array.get(i);
+      }
+      return result;
+    }
   }
 
   /**
@@ -428,6 +437,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
+  private static JSArray copyNodeList(NodeList n) {
+    JSArray res = JSArray.create();
+    for (int i = 0; i < n.getLength(); i++) {
+      res.addNode(n.getItem(i));
+    }
+    return res;
+  }
+
   private static String curCSS(Element elem, String name) {
     return curCSS(elem, name, false);
   }
@@ -449,6 +466,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         copyNodeList((NodeList<Element>) (NodeList<?>) div.getChildNodes()));
   }
 
+  private static native String[] jsArrayToString0(JsArrayString array) /*-{
+    return array;
+  }-*/;
+
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
         return nl;
     }-*/;
@@ -456,14 +477,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static NodeList select(String selector, Node context) {
     NodeList n = new SelectorEngine().select(selector, context);
     JSArray res = copyNodeList(n);
-    return res;
-  }
-
-  private static JSArray copyNodeList(NodeList n) {
-    JSArray res = JSArray.create();
-    for (int i = 0; i < n.getLength(); i++) {
-      res.addNode(n.getItem(i));
-    }
     return res;
   }
 
@@ -2205,13 +2218,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (e.getNodeName().equalsIgnoreCase("select")) {
         SelectElement se = SelectElement.as(e);
         if (se.isMultiple()) {
-          List<String> result = new ArrayList<String>();
+          JsArrayString result = JsArrayString.createArray().cast();
           for (OptionElement oe : asArray(se.getOptions())) {
             if (oe.isSelected()) {
-              result.add(oe.getValue());
+              result.set(result.length(), oe.getValue());
             }
           }
-          return result.toArray(new String[0]);
+          return jsArrayToString(result);
         } else if (se.getSelectedIndex() >= 0) {
           return new String[]{
               se.getOptions().getItem(se.getSelectedIndex()).getValue()};

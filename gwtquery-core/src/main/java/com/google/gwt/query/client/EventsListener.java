@@ -20,9 +20,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.dom.client.Element;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
  * This class implements an event queue instance for one element. This queue
  * instance is configured as the default event listener in GWT.
@@ -87,8 +84,8 @@ class EventsListener implements EventListener {
     elem.__gqueryevent = gqevent;
   }-*/;
 
-  private List<EventsListener.BindFunction> elementEvents
-      = new ArrayList<EventsListener.BindFunction>();
+  private JsObjectArray<EventsListener.BindFunction> elementEvents
+      = JsObjectArray.createArray().cast();
 
   private Element element;
 
@@ -126,7 +123,8 @@ class EventsListener implements EventListener {
 
   public void onBrowserEvent(Event event) {
     int etype = DOM.eventGetType(event);
-    for (EventsListener.BindFunction listener : elementEvents) {
+    for (int i=0; i<elementEvents.length(); i++) {
+      EventsListener.BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)) {
         if (!listener.fire(event)) {
           event.cancelBubble(true);
@@ -138,9 +136,10 @@ class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits) {
-    ArrayList<EventsListener.BindFunction> newList
-        = new ArrayList<EventsListener.BindFunction>();
-    for (EventsListener.BindFunction listener : elementEvents) {
+    JsObjectArray<EventsListener.BindFunction> newList
+        = JsObjectArray.createArray().cast();
+    for (int i=0; i<elementEvents.length(); i++) {
+      EventsListener.BindFunction listener = elementEvents.get(i);
       if (!listener.hasEventType(eventbits)) {
         newList.add(listener);
       }

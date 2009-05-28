@@ -490,7 +490,7 @@ public class Effects extends GQuery {
    * some form of height and width associated with them.
    */
   public Effects fadeIn(Speed speed, Function callback) {
-    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+    return animate($$("opacity: \"show\""), speed, Easing.LINEAR, callback);
   }
 
   /**
@@ -500,7 +500,7 @@ public class Effects extends GQuery {
    * some form of height and width associated with them.
    */
   public Effects fadeIn(int speed, Function callback) {
-    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+    return animate($$("opacity: \"show\""), speed, Easing.LINEAR, callback);
   }
 
   /**

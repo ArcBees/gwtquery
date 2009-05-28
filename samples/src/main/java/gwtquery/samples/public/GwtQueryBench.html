@@ -43,6 +43,7 @@
             background-color: black;
             color: white
         }
+
         
        </style>
 </head>
@@ -54,11 +55,12 @@
 <iframe id="dojobench" src="dojobench.html" style="display: none"></iframe>
 <iframe id="prototypebench" src="prototypebench.html" style="display: none"></iframe>
 
-<code style="display: block; height: 200px; width:790px; overflow-y:scroll; overflow-x: hidden">
-<table id="resultstable" border="1" style="width: 780px; border-collapse: collapse">
+<!-- hack, we don't use DIV because we don't want to effect the result of the selectors -->
+<blockquote style="display: block; height: 200px; width:790px; overflow-y:scroll; overflow-x: hidden; margin: 0">
+<table id="resultstable" border="1" style="width: 100%;  border-collapse: collapse">
 
 </table>
-</code>
+</blockquote>
 <div style="display: none">
 <div style="display: none" class="head">
     <p><a href="http://www.w3.org/"><img height=48 alt=W3C

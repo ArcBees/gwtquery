@@ -42,35 +42,37 @@
 
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
-        <all>
-          <when-property-is name="selectorCapability" value="native"/>
-          <when-property-is name="user.agent" value="safari"/>
-        </all>
+        <when-property-is name="selectorCapability" value="native"/>
     </generate-with>
 
-  
+
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImpl">
-        <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImplIE">
-        <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
         <when-property-is name="user.agent" value="ie6"/>
     </replace-with>
 
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJS">
-        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="gecko"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJSIE">
-        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="ie6"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineXPath">
-        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <any>
             <when-property-is name="user.agent" value="gecko1_8"/>
             <when-property-is name="user.agent" value="opera"/>
@@ -82,13 +84,11 @@
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
-        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <all>
-            <when-property-is name="user.agent" value="safari"/>
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
             <when-property-is name="selectorCapability" value="native"/>
-        </all>
     </replace-with>
 
     <entry-point class='com.google.gwt.query.client.css.CSS'/>
-    
+
 </module>

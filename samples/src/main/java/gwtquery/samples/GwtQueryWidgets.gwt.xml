@@ -1,0 +1,7 @@
+<module>
+    <inherits name='com.google.gwt.query.Query'/>
+    <entry-point class='gwtquery.samples.client.GwtQueryWidgetModule'/>
+  
+  
+</module>
+    

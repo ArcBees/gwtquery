@@ -130,6 +130,12 @@
 
             <properties>
                 <gwtversion>1.6.4</gwtversion>
+                <gwt.loglevel>ERROR</gwt.loglevel>
+                <gwt.outputstyle>PRETTY</gwt.outputstyle>
+                <gwt.modulesuffix></gwt.modulesuffix>
+                <gwt.localRepository>${user.home}/.m2/repository
+                </gwt.localRepository>
+                <!--            <maven.test.skip>true</maven.test.skip> -->
             </properties>
         </profile>
 
@@ -143,6 +149,9 @@
             </activation>
             <properties>
                 <gwtplatform>linux</gwtplatform>
+                <google.webtoolkit.extrajvmargs>-Xmx512m
+                </google.webtoolkit.extrajvmargs>
+
             </properties>
         </profile>
 
@@ -155,6 +164,8 @@
             </activation>
             <properties>
                 <gwtplatform>windows</gwtplatform>
+                <google.webtoolkit.extrajvmargs>-Xmx512m
+                </google.webtoolkit.extrajvmargs>
             </properties>
         </profile>
 
@@ -171,6 +182,26 @@
                 </google.webtoolkit.extrajvmargs>
             </properties>
         </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <gwt.loglevel>WARN</gwt.loglevel>
+                <gwt.modulesuffix>Dev</gwt.modulesuffix>
+                <gwt.outputstyle>PRETTY</gwt.outputstyle>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <gwtversion>1.6.4</gwtversion>
+                <gwt.loglevel>ERROR</gwt.loglevel>
+                <gwt.outputstyle>OBF</gwt.outputstyle>
+                <gwt.modulesuffix></gwt.modulesuffix>
+                <!--            <maven.test.skip>true</maven.test.skip> -->
+            </properties>
+        </profile>
+
 
     </profiles>
 </project>

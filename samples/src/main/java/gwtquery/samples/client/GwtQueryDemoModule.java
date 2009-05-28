@@ -39,14 +39,10 @@ public class GwtQueryDemoModule implements EntryPoint {
         // Ask GWT compiler to generate our interface
         final Slide s = GWT.create(Slide.class);
 
-        // Find all slides, set css to display: none
-        // change first slide to display: block
-        $(s.allSlides()).css("display", "none")
-                .eq(0).css("display", "block");
+        $(s.allSlides()).hide().eq(0).show();
 
-
-        // we initially hide all bullets by setting opacity to 0
-        $(s.allSlideBullets()).css("opacity", "0");
+        // we initially hide all bullets
+        $(s.allSlideBullets()).hide();
 
         // add onclick handler to body element
         $(Document.get().getBody()).click(new Function() {
@@ -62,11 +58,14 @@ public class GwtQueryDemoModule implements EntryPoint {
             public boolean f(Event e) {
                 // onclick, if not all bullets shown, show a bullet and increment
                 if (curBullets < bullets.size()) {
-                    bullets.eq(curBullets++).as(Effects).fadeIn();
+                    bullets.eq(curBullets++).show();
                 } else {
                     // all bullets shown, hide them and current slide
-                    bullets.css("opacity","0");
-                    slides.eq(curSlide).css("display", "none");
+//                    bullets.css("opacity","0");
+                  bullets.hide();
+                  slides.eq(curSlide).hide();
+
+//                    slides.eq(curSlide).css("display", "none");
                     // move to next slide, checking for wrap around
                     curSlide++;
                     if(curSlide == slides.size()) {
@@ -76,7 +75,7 @@ public class GwtQueryDemoModule implements EntryPoint {
                     // query for new set of bullets, and show next slide
                     // by changing opacity to 1 and display to block
                     bullets = $(s.slideBulletsCtx(slides.get(curSlide)));
-                    slides.eq(curSlide).css("display", "block").as(Effects).fadeIn();
+                    slides.eq(curSlide).show();
                 }
                 return true;
             }
