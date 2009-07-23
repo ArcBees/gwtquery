@@ -199,7 +199,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   public static Class<GQuery> GQUERY = GQuery.class;
 
-  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
+  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
+      plugins;
 
   private static Element windowData = null;
 
@@ -338,8 +339,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (SelectorEngine.truth(s.getProperty(name))) {
         return s.getProperty(name);
       }
+      return name.equals("opacity") ? "1" : "";
+    } else {
+      return styleImpl.getCurrentStyle(elem, name);
     }
-    return styleImpl.getCurrentStyle(elem, name);
   }
 
   /**
@@ -359,13 +362,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   protected static String[] jsArrayToString(JsArrayString array) {
-    if(GWT.isScript()) {
+    if (GWT.isScript()) {
       return jsArrayToString0(array);
-    }
-    else {
-      String result[]=new String[array.length()];
-      for(int i=0; i<result.length; i++) {
-        result[i]=array.get(i);
+    } else {
+      String result[] = new String[array.length()];
+      for (int i = 0; i < result.length; i++) {
+        result[i] = array.get(i);
       }
       return result;
     }
@@ -1716,7 +1718,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       allPreviousSiblingElements(getPreviousSiblingElement(e), result);
     }
-    return pushStack(unique(result),"prevAll", getSelector());
+    return pushStack(unique(result), "prevAll", getSelector());
   }
 
   /**
@@ -2046,6 +2048,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       e.setInnerText(txt);
     }
     return this;
+  }
+
+  /**
+   * Toggle visibility of elements.
+   */
+  public GQuery toggle() {
+    return as(Effects).toggle();
   }
 
   /**

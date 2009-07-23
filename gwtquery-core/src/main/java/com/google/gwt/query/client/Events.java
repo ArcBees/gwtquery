@@ -94,7 +94,7 @@ public class Events extends GQuery {
  */
 class FireEvents {
 
-   public static void fire(Element element, int eventbits, int... keys) {
+  public static void fire(Element element, int eventbits, int... keys) {
     Event event = null;
 
     String type = getEventTypeStr(eventbits);

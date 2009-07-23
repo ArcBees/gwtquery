@@ -13,8 +13,6 @@ public class Length extends JavaScriptObject {
 
   /**
    * Size in pixels.
-   * @param amt
-   * @return
    */
   public static Length px(int amt) {
     return GWT.isScript() ? createWeb(amt + "px") : createHosted(amt + "px");

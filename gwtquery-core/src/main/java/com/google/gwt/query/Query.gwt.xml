@@ -86,7 +86,7 @@
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-            <when-property-is name="selectorCapability" value="native"/>
+        <when-property-is name="selectorCapability" value="native"/>
     </replace-with>
 
     <entry-point class='com.google.gwt.query.client.css.CSS'/>

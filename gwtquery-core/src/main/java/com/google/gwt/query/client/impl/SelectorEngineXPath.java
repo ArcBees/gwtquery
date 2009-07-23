@@ -19,9 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.Regexp;
-
 import com.google.gwt.query.client.JSArray;
+import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
 import static com.google.gwt.query.client.SelectorEngine.eq;
 import static com.google.gwt.query.client.SelectorEngine.truth;

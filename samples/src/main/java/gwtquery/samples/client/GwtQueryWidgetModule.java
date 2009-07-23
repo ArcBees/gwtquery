@@ -5,10 +5,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.Function;
 import static com.google.gwt.query.client.GQuery.$;
-import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
+import static gwtquery.plugins.widgets.Widgets.Widgets;
 
 public class GwtQueryWidgetModule implements EntryPoint {
 
@@ -18,7 +18,7 @@ public class GwtQueryWidgetModule implements EntryPoint {
     $("#enhance").one(Event.ONCLICK, null, new Function() {
       @Override
       public boolean f(Event e) {
-        $(".btn:nth-child(odd)").as(Widgets.Widgets).button().label("Foo")
+        $(".btn:nth-child(odd)").as(Widgets).button().label("Foo")
             .addClickHandler(new ClickHandler() {
               public void onClick(ClickEvent clickEvent) {
                 Window.alert("You Clicked the Button");
@@ -28,6 +28,5 @@ public class GwtQueryWidgetModule implements EntryPoint {
         return true;
       }
     });
-
   }
 }

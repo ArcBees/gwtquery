@@ -3,11 +3,13 @@ package com.google.gwt.query.client;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Lightweight JSO backed implemented of a Map, using Object.hashCode() as
- * key.
-*/
-final public class JsMap<S,T> extends JavaScriptObject {
-  protected JsMap() {}
+ * Lightweight JSO backed implemented of a Map, using Object.hashCode() as key.
+ */
+final public class JsMap<S, T> extends JavaScriptObject {
+
+  protected JsMap() {
+  }
+
   public T get(S key) {
     return get(key.hashCode());
   }

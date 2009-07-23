@@ -12,24 +12,25 @@ public class RGBColor extends JavaScriptObject {
   }
 
   public static void init() {
-    CSS.AQUA=rgb("aqua");
-    CSS.BLACK=rgb("black");
-    CSS.FUSCHIA=rgb("fuschia");
-    CSS.GRAY=rgb("gray");
-    CSS.GREEN=rgb("green");
-    CSS.LIME=rgb("lime");
-    CSS.MAROON=rgb("lime");
-    CSS.NAVY=rgb("navy");
-    CSS.OLIVE=rgb("olive");
-    CSS.ORANGE=rgb("orange");
-    CSS.PURPLE=rgb("purple");
-    CSS.RED=rgb("red");
-    CSS.SILVER=rgb("silver");
-    CSS.TEAL=rgb("teal");
-    CSS.WHITE=rgb("white");
-    CSS.YELLOW=rgb("yellow");
-    CSS.TRANSPARENT=rgb("transparent");
+    CSS.AQUA = rgb("aqua");
+    CSS.BLACK = rgb("black");
+    CSS.FUSCHIA = rgb("fuschia");
+    CSS.GRAY = rgb("gray");
+    CSS.GREEN = rgb("green");
+    CSS.LIME = rgb("lime");
+    CSS.MAROON = rgb("lime");
+    CSS.NAVY = rgb("navy");
+    CSS.OLIVE = rgb("olive");
+    CSS.ORANGE = rgb("orange");
+    CSS.PURPLE = rgb("purple");
+    CSS.RED = rgb("red");
+    CSS.SILVER = rgb("silver");
+    CSS.TEAL = rgb("teal");
+    CSS.WHITE = rgb("white");
+    CSS.YELLOW = rgb("yellow");
+    CSS.TRANSPARENT = rgb("transparent");
   }
+
   /**
    * RGB color in hexidecimal.
    */

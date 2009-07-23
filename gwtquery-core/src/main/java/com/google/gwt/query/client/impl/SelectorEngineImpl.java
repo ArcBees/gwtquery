@@ -125,8 +125,9 @@ public abstract class SelectorEngineImpl {
 
   /**
    * Parse and execute a given selector expression given a context.
+   *
    * @param selector the CSS selector expression
-   * @param ctx the DOM node to use as a context
+   * @param ctx      the DOM node to use as a context
    * @return a list of matched nodes
    */
   public abstract NodeList<Element> select(String selector, Node ctx);

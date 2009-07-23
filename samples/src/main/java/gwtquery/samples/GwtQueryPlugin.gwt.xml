@@ -1,7 +1,10 @@
 <module>
-    <inherits name='com.google.gwt.query.Query'/>
+    <!--<inherits name='com.google.gwt.query.Query'/>-->
+    <!--<inherits name='gwtquery.Plugins'/>-->
+    <inherits name='com.google.gwt.user.User'/>
+
     <entry-point class='gwtquery.samples.client.GwtQueryPluginModule'/>
-  
-  
+
+
 </module>
     

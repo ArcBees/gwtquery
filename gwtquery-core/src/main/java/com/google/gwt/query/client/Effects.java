@@ -147,8 +147,8 @@ public class Effects extends GQuery {
     public void show() {
       opt.cache.put(prop, elem.getStyle().getProperty(prop));
       opt.show = true;
-      custom("width".equals("width") || "height".equals(prop) ? 1 : 0,
-          cur(false));
+      custom("width".equals(prop) || "height".equals(prop) ? 1 : 0, cur(false));
+      $(elem).show();
     }
 
     public Effects toggle(Speed speed) {

@@ -15,10 +15,10 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 
 /**
  * This class implements an event queue instance for one element. This queue
@@ -123,7 +123,7 @@ class EventsListener implements EventListener {
 
   public void onBrowserEvent(Event event) {
     int etype = DOM.eventGetType(event);
-    for (int i=0; i<elementEvents.length(); i++) {
+    for (int i = 0; i < elementEvents.length(); i++) {
       EventsListener.BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)) {
         if (!listener.fire(event)) {
@@ -136,9 +136,9 @@ class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits) {
-    JsObjectArray<EventsListener.BindFunction> newList
-        = JsObjectArray.createArray().cast();
-    for (int i=0; i<elementEvents.length(); i++) {
+    JsObjectArray<EventsListener.BindFunction> newList = JsObjectArray
+        .createArray().cast();
+    for (int i = 0; i < elementEvents.length(); i++) {
       EventsListener.BindFunction listener = elementEvents.get(i);
       if (!listener.hasEventType(eventbits)) {
         newList.add(listener);

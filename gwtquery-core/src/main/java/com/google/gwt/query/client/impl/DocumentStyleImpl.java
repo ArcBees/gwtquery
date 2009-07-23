@@ -16,8 +16,8 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.SelectorEngine;
 
 /**
  * A helper class to get computed CSS styles for elements.

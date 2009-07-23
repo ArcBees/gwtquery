@@ -16,5 +16,4 @@ public class JsClosure extends JavaScriptObject {
   public final native void invoke() /*-{
      return this();
   }-*/;
-
 }

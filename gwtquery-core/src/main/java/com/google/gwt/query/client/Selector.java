@@ -15,10 +15,10 @@
  */
 package com.google.gwt.query.client;
 
-import java.lang.annotation.Target;
+import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import static java.lang.annotation.ElementType.METHOD;
+import java.lang.annotation.Target;
 
 /**
  * Used to pass a CSS Selector to a generator at compile time
@@ -26,5 +26,6 @@ import static java.lang.annotation.ElementType.METHOD;
 @Target({METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Selector {
-   String value();
+
+  String value();
 }

@@ -22,9 +22,8 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.core.ext.typeinfo.JGenericType;
 import com.google.gwt.core.ext.typeinfo.JTypeParameter;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -149,7 +148,7 @@ public class LazyGenerator extends Generator {
 
     sw.print(")");
     // special case, as() needs to invoke createLazy()
-    if("as".equals(method.getName())) {
+    if ("as".equals(method.getName())) {
       sw.print(".createLazy()");
     }
     sw.println(";");
@@ -200,11 +199,13 @@ public class LazyGenerator extends Generator {
     sw.println("public void f(Element e) {");
     sw.indent();
     String classID = nonLazyType.getSimpleSourceName();
-    if("GQuery".equals(classID)) {
-      classID="GQUERY";
+    if ("GQuery".equals(classID)) {
+      classID = "GQUERY";
     }
-    
-    sw.println("ctx = GQuery.$(e).as(" + nonLazyType.getQualifiedSourceName() + "."+classID+");");
+
+    sw.println(
+        "ctx = GQuery.$(e).as(" + nonLazyType.getQualifiedSourceName() + "."
+            + classID + ");");
     sw.println("for (int i = 0; i < closures.length(); i++) {");
     sw.indent();
     sw.println("closures.get(i).invoke();");

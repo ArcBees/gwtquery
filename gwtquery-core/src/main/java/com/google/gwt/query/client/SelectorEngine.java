@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 
 /**
- *  Core Selector engine functions, and native JS utility functions.
+ * Core Selector engine functions, and native JS utility functions.
  */
 public class SelectorEngine {
 
@@ -45,7 +45,7 @@ public class SelectorEngine {
        return n.previousSibling || null; 
     }-*/;
 
-  public  static native <T> T or(T s1, T s2) /*-{
+  public static native <T> T or(T s1, T s2) /*-{
        return s1 || s2;
     }-*/;
 

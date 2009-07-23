@@ -19,6 +19,12 @@
             <type>jar</type>
         </dependency>
 
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>gwtquery-plugins</artifactId>
+            <version>${version}</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,15 +1,13 @@
 package gwtquery.samples.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.query.client.Effects;
-import com.google.gwt.query.client.Function;
+import static com.google.gwt.query.client.Effects.Easing.LINEAR;
 import static com.google.gwt.query.client.Effects.Effects;
-import static com.google.gwt.query.client.Effects.Easing.*;
+import com.google.gwt.query.client.Function;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.lazy;
 import com.google.gwt.user.client.Event;
-
 
 public class GwtQueryEffectsModule implements EntryPoint {
 
@@ -22,7 +20,6 @@ public class GwtQueryEffectsModule implements EntryPoint {
             done(), lazy().
             css("color", "blue").
             done());
-
 
     $("div.outer > div").css("position", "relative").dblclick(new Function() {
       public boolean f(Event e) {

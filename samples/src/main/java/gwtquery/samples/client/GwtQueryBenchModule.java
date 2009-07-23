@@ -44,7 +44,6 @@ public class GwtQueryBenchModule implements EntryPoint {
             new DojoBenchmark(), new PrototypeBenchmark());
       }
     });
-
   }
 
   public interface Benchmark {

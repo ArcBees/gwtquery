@@ -14,6 +14,7 @@ public interface MySelectors extends Selectors {
 //  NodeList<Element> h1IdContainsSelectors();
 
   //  
+
   @Selector("a[href][lang][class]")
   NodeList<Element> aHrefLangClass();
 
@@ -36,6 +37,7 @@ public interface MySelectors extends Selectors {
 //    NodeList<Element> allFirst();
 
   //    
+
   @Selector("div:not(.example)")
   NodeList<Element> divNotExample();
 

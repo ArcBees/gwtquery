@@ -1,36 +1,50 @@
 <html>
 <head>
-  <title>GQuery Demo</title>
-  <script language="javascript" src="gwtquery.samples.GwtQueryDemo.nocache.js"></script>
-  <style type="text/css">
-      .slide { border: 1px solid black; width: 800px; height: 600px; display: none}
-      .slide {
-           background: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#808080),  color-stop(0.9, #808080));
-           -webkit-background-origin: padding-box; -webkit-background-clip: content-box;
-      }
-      .slide, .slide * { color: white; font-size: 150%;  }
-  </style>
+    <title>GQuery Demo</title>
+    <script language="javascript"
+            src="gwtquery.samples.GwtQueryDemo.nocache.js"></script>
+    <style type="text/css">
+        .slide {
+            border: 1px solid black;
+            width: 800px;
+            height: 600px;
+            display: none
+        }
+
+        .slide {
+            background: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#808080), color-stop(0.9, #808080));
+            -webkit-background-origin: padding-box;
+            -webkit-background-clip: content-box;
+        }
+
+        .slide, .slide * {
+            color: white;
+            font-size: 150%;
+        }
+    </style>
 </head>
 <body>
 <p>
-  Short example of how to do progressively enhance DIV, UL, LI elements into powerpoint-like slides 
+    Short example of how to do progressively enhance DIV, UL, LI elements into
+    powerpoint-like slides
 </p>
+
 <div class="slide transition-appear">
-  Slide 1
-  <ul class="transition-appear">
-    <li>jQuery is</li>
-    <li>such a</li>
-    <li>Cool Library</li>
-  </ul>
+    Slide 1
+    <ul class="transition-appear">
+        <li>jQuery is</li>
+        <li>such a</li>
+        <li>Cool Library</li>
+    </ul>
 </div>
 <div class="slide transition-appear">
-  Slide 2
-  <ul class="transition-appear">
-    <li>Now GWT</li>
-    <li>has a</li>
-    <li>jQuery-like API Too!</li>
-    <li>GwtQuery Rocks!</li>
-  </ul>
+    Slide 2
+    <ul class="transition-appear">
+        <li>Now GWT</li>
+        <li>has a</li>
+        <li>jQuery-like API Too!</li>
+        <li>GwtQuery Rocks!</li>
+    </ul>
 </div>
 
 </body>

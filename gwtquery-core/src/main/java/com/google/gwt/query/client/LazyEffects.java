@@ -8,8 +8,8 @@ public interface LazyEffects extends LazyGQuery {
   LazyEffects animate(Properties properties, Effects.Speed speed,
       Effects.Easing easing, Function complete);
 
-  LazyEffects animate(Properties properties, int speed,
-          Effects.Easing easing, Function complete);
+  LazyEffects animate(Properties properties, int speed, Effects.Easing easing,
+      Function complete);
 
   LazyEffects fadeIn();
 

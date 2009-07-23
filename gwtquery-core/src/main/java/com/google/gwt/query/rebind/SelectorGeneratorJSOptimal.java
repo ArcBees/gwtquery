@@ -23,7 +23,6 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 import java.util.regex.Pattern;
 
-
 /**
  *
  */
@@ -43,7 +42,7 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 
   protected static Pattern nonSpace = Pattern.compile("\\S/");
 
-  private static final String trimReStr = "^\\s+|\\s+$";
+  protected static final String trimReStr = "^\\s+|\\s+$";
 
   protected static Pattern trimRe = Pattern.compile(trimReStr);
 
@@ -67,7 +66,6 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
           "^(?:([\\[\\{])(?:@)?([a-zA-Z_0-9-]+)\\s?(?:(=|.=)\\s?['\"]?(.*?)[\"']?)?[\\]\\}])",
           "n = byAttribute(n, \"{1}\", \"{3}\", \"{2}\", \"{0}\");"),
       new RuleMatcher("^#([a-zA-Z_0-9-]+)", "n = byId(n, null, \"{0}\");")};
-
 
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)

@@ -38,6 +38,7 @@
 
     <modules>
         <module>gwtquery-core</module>
+        <module>plugins</module>
         <module>samples</module>
     </modules>
 

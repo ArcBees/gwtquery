@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.NodeList;
  * GQuery class as '$' if they desire.
  */
 public class $ {
-  
+
   public static GQuery $(String selectorOrHtml) {
     return GQuery.$(selectorOrHtml);
   }
@@ -88,7 +88,6 @@ public class $ {
   /**
    * Return a lazy version of the GQuery interface. Lazy function calls are
    * simply queued up and not executed immediately.
-   * @return
    */
   public static LazyGQuery lazy() {
     return GQuery.lazy();

@@ -34,7 +34,7 @@ public class Properties extends JavaScriptObject {
 
   protected Properties() {
   }
-  
+
   public final Properties $$(String key, String value) {
     set(key, value);
     return this;

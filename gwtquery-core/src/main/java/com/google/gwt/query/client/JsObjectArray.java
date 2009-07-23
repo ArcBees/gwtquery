@@ -7,7 +7,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  * other JSOs.
  */
 public final class JsObjectArray<T> extends JavaScriptObject {
-  protected JsObjectArray() {}
+
+  protected JsObjectArray() {
+  }
 
   public void add(T val) {
     set(length(), val);
@@ -16,6 +18,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public native T get(int i) /*-{
     return this[i];
   }-*/;
+
   public native int length() /*-{
     return this.length;
   }-*/;

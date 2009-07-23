@@ -18,12 +18,11 @@ package com.google.gwt.query.rebind;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.query.client.Selector;
+import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * Compile time selector generator which delegates to native browser
- * methods.
+ * Compile time selector generator which delegates to native browser methods.
  */
 public class SelectorGeneratorNative extends SelectorGeneratorBase {
 
@@ -41,8 +40,9 @@ public class SelectorGeneratorNative extends SelectorGeneratorBase {
       throws UnableToCompleteException {
     String selector = method.getAnnotation(Selector.class).value();
     if (!hasContext) {
-      sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\"") + ");");
+      sw.println(
+          "return " + wrap(method, "querySelectorAll(\"" + selector + "\"")
+              + ");");
     } else {
       sw.println("return "
           + wrap(method, "querySelectorAll(\"" + selector + "\", root)")

@@ -11,6 +11,43 @@ import com.google.gwt.dom.client.Style;
  */
 public class Cursor implements CssProperty<Cursor.CursorValue> {
 
+  final static public class CursorValue extends JavaScriptObject {
+
+    protected static CursorValue create(String val) {
+      return GWT.isScript() ? createWeb(val) : createHosted(val);
+    }
+
+    private static native CursorValue createHosted(String val) /*-{
+      return [val];
+    }-*/;
+
+    private static native CursorValue createWeb(String val) /*-{
+      return val;
+    }-*/;
+
+    protected CursorValue() {
+    }
+
+    public String value() {
+      return GWT.isScript() ? valueWeb() : valueHosted();
+    }
+
+    private native String valueHosted() /*-{
+       return this[0];
+    }-*/;
+
+    private native String valueWeb() /*-{
+       return this;
+    }-*/;
+  }
+
+  /**
+   * Returns a cursor located at the given uri.
+   */
+  public static CursorValue cursor(String uri) {
+    return CursorValue.create("uri(" + uri + ")");
+  }
+
   public static void init() {
     CSS.CURSOR = new Cursor();
     CSS.CURSOR_AUTO = CursorValue.create("auto");
@@ -32,48 +69,11 @@ public class Cursor implements CssProperty<Cursor.CursorValue> {
     CSS.CURSOR_W_RESIZE = CursorValue.create("w-resize");
   }
 
-  public void set(Style s, CursorValue value) {
-    s.setProperty("float", value.value());
-  }
-
   public String get(Style s) {
     return s.getProperty("float");
   }
 
-  /**
-   * Returns a cursor located at the given uri.
-   */
-  public static CursorValue cursor(String uri) {
-    return CursorValue.create("uri(" + uri + ")");
-  }
-
-  final static public class CursorValue extends JavaScriptObject {
-
-    protected CursorValue() {
-    }
-
-    protected static CursorValue create(String val) {
-      return GWT.isScript() ? createWeb(val) : createHosted(val);
-    }
-
-    public String value() {
-      return GWT.isScript() ? valueWeb() : valueHosted();
-    }
-
-    private static native CursorValue createWeb(String val) /*-{
-      return val;
-    }-*/;
-
-    private static native CursorValue createHosted(String val) /*-{
-      return [val];
-    }-*/;
-
-    private native String valueWeb() /*-{
-       return this;
-    }-*/;
-
-    private native String valueHosted() /*-{
-       return this[0];
-    }-*/;
+  public void set(Style s, CursorValue value) {
+    s.setProperty("float", value.value());
   }
 }

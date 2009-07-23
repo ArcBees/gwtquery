@@ -1,4 +1,5 @@
 package com.google.gwt.query.client.css;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -12,8 +13,6 @@ public class Percentage extends JavaScriptObject {
 
   /**
    * Size in percentage units.
-   * @param amt
-   * @return
    */
   public static Percentage pct(int amt) {
     return GWT.isScript() ? createWeb(amt + "%") : createHosted(amt + "%");
