@@ -29,77 +29,43 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.google.gwt</groupId>
-                                    <artifactId>gwt-dev</artifactId>
-                                    <version>${gwtversion}</version>
-                                    <classifier>${gwtplatform}-libs</classifier>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>
-                                        ${settings.localRepository}/com/google/gwt/gwt-dev/${gwtversion}
-                                    </outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.totsp.gwt</groupId>
-                <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
-                <version>2.0-beta24</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>1.1</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
-
-                    <logLevel>WARN</logLevel>
-                    <runTarget>
-                        gwtquery.samples.GwtQueryDemo/index.html
-                    </runTarget>
-                    <compileTargets>
-                        <compileTarget>
+                    <modules>
+                        <module>
                             gwtquery.samples.GwtQueryDemo
-                        </compileTarget>
-                        <compileTarget>
+                        </module>
+                        <module>
                             gwtquery.samples.GwtQueryBench
-                        </compileTarget>
-                        <compileTarget>
+                        </module>
+                        <module>
                             gwtquery.samples.GwtQuerySample
-                        </compileTarget>
-                        <compileTarget>
+                        </module>
+                        <module>
                             gwtquery.samples.GwtQueryPlugin
-                        </compileTarget>
-                        <compileTarget>
+                        </module>
+                        <module>
                             gwtquery.samples.GwtQueryWidgets
-                        </compileTarget>
-                        <compileTarget>
+                        </module>
+                        <module>
                             gwtquery.samples.GwtQueryEffects
-                        </compileTarget>
-
-                    </compileTargets>
+                        </module>
+                    </modules>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>compilegwt</id>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

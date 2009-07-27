@@ -130,12 +130,10 @@
             </activation>
 
             <properties>
-                <gwtversion>1.6.4</gwtversion>
-                <gwt.loglevel>ERROR</gwt.loglevel>
+                <gwtversion>1.7.0</gwtversion>
+                <gwt.loglevel>INFO</gwt.loglevel>
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
                 <gwt.modulesuffix></gwt.modulesuffix>
-                <gwt.localRepository>${user.home}/.m2/repository
-                </gwt.localRepository>
                 <!--            <maven.test.skip>true</maven.test.skip> -->
             </properties>
         </profile>
@@ -195,7 +193,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <gwtversion>1.6.4</gwtversion>
+                <gwtversion>1.7.0</gwtversion>
                 <gwt.loglevel>ERROR</gwt.loglevel>
                 <gwt.outputstyle>OBF</gwt.outputstyle>
                 <gwt.modulesuffix></gwt.modulesuffix>

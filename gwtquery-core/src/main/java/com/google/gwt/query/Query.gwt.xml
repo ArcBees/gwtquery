@@ -22,6 +22,11 @@
 
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorJS">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
+    </generate-with>
+
+
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorJS">
+        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <any>
             <when-property-is name="user.agent" value="gecko"/>
             <when-property-is name="user.agent" value="ie6"/>
@@ -57,6 +62,11 @@
         <when-property-is name="user.agent" value="ie6"/>
     </replace-with>
 
+
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJS">
+        <when-type-assignable
+                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+    </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJS">
         <when-type-assignable
