@@ -22,15 +22,18 @@ import com.google.gwt.core.client.JsArrayString;
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
  */
 public class Properties extends JavaScriptObject {
-
+  
   public static Properties create(String properties) {
-    String s = properties.replaceFirst("^[({]*(.*)[})]*$", "({$1})");
-    return (Properties) createImpl(s);
+    return (Properties) createImpl(wrapPropertiesString(properties));
   }
 
-  public final static native JavaScriptObject createImpl(String properties) /*-{
+  public static final native JavaScriptObject createImpl(String properties) /*-{
       return eval(properties);
     }-*/;
+
+  protected static String wrapPropertiesString(String s) {
+    return "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+", "") + "})";
+  }
 
   protected Properties() {
   }

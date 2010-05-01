@@ -15,10 +15,12 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.junit.client.GWTTestCase;
-import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
@@ -95,6 +97,16 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $("p", e).css(Properties.create("COLOR: 'red', 'FONT-WEIGHT': 'bold'"));
     assertEquals("red", $("p", e).css("color"));
     assertEquals("", $("p", e).css("background"));
+  }
+  
+  public void testProperties() {
+    Properties p = $$("border:'1px solid black'");
+    assertEquals(1, p.keys().length);
+    assertNotNull(p.get("border"));
+    
+    p = $$("({border:'1px solid black'})");
+    assertEquals(1, p.keys().length);
+    assertNotNull(p.get("border"));
   }
 
   public void testEffectsPlugin() {
@@ -574,7 +586,7 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $("p", e).wrap(wrapper);
     assertEquals(expected, $(e).html());
 
-    $(e).html(content+wrapper);
+    $(e).html(content + wrapper);
     expected
         = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
     $("*", e).wrap("<b></b>");
