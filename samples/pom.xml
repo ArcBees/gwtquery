@@ -10,13 +10,14 @@
 
     <name>GwtQuery Samples</name>
     <artifactId>gwtquery-samples</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${version}</version>
             <type>jar</type>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -24,6 +25,7 @@
             <artifactId>gwtquery-plugins</artifactId>
             <version>${version}</version>
             <type>jar</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -31,7 +33,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>1.1</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
@@ -59,6 +60,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>

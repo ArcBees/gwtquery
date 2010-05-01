@@ -18,25 +18,18 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <type>jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtversion}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtversion}</version>
-            <classifier>${gwtplatform}-libs</classifier>
-            <type>zip</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwtversion}</version>
-            <classifier>${gwtplatform}</classifier>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -56,7 +49,6 @@
             <testResource>
                 <directory>${basedir}/src/test/resources</directory>
             </testResource>
-
         </testResources>
 
         <plugins>
@@ -89,29 +81,22 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4.3</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                     <additionalClasspathElements>
-
                         <additionalClasspathElement>
                             ${project.build.sourceDirectory}
                         </additionalClasspathElement>
-
                         <additionalClasspathElement>
                             ${project.build.testSourceDirectory}
                         </additionalClasspathElement>
                     </additionalClasspathElements>
-
-                    <useSystemClassLoader>true</useSystemClassLoader>
-
                     <useManifestOnlyJar>false</useManifestOnlyJar>
-                    <forkMode>always</forkMode>
                     <systemProperties>
                         <property>
                             <name>gwt.args</name>
                             <value>-out target/www</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Xmx1024m</argLine>
                 </configuration>
             </plugin>
         </plugins>
