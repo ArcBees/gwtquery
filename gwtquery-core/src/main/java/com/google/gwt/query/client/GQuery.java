@@ -430,8 +430,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   protected static void setStyleProperty(String prop, String val, Element e) {
+    // put in lower-case only if all letters are upper-case, to avoid modify already camelized properties
+    if (prop.matches("^[A-Z]+$")) {
+       prop = prop.toLowerCase();
+    }    
     String property = camelize(prop);
     e.getStyle().setProperty(property, val);
+    
+    // TODO: this is a workaround in IE which must be moved to IE implementation
     if ("opacity".equals(property)) {
       e.getStyle().setProperty("zoom", "1");
       e.getStyle().setProperty("filter",
@@ -2170,8 +2176,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       String name = e.getNodeName();
       if ("select".equalsIgnoreCase(name)) {
         SelectElement s = SelectElement.as(e);
+        s.setSelectedIndex(-1);
         if (values.length > 1 && s.isMultiple()) {
-          s.setSelectedIndex(-1);
           for (String v : values) {
             for (int i = 0; i < s.getOptions().getLength(); i++) {
               if (v.equals(s.getOptions().getItem(i).getValue())) {

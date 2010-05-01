@@ -97,11 +97,6 @@ public class GwtQueryCoreTest extends GWTTestCase {
     assertEquals("", $("p", e).css("background"));
   }
 
-  public void testBrowserStartUp() {
-    // just a test for seeing in eclipse that GWTTestCase internal browser is starting
-    assertTrue(true);
-  }
-
   public void testEffectsPlugin() {
     $(e).html(
         "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
@@ -179,10 +174,10 @@ public class GwtQueryCoreTest extends GWTTestCase {
     assertEquals("red", $("p", e).css("color"));
 
     // unbind
-    $("p", e).css("color", "");
+    $("p", e).css("color", "white");
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).trigger(Event.ONCLICK);
-    assertEquals("rgb(0, 0, 0)", $("p", e).css("color"));
+    assertEquals("white", $("p", e).css("color"));
 
     // one
     $("p", e).one(Event.ONCLICK, null, new Function() {
@@ -192,9 +187,9 @@ public class GwtQueryCoreTest extends GWTTestCase {
     });
     $("p", e).trigger(Event.ONCLICK);
     assertEquals("red", $("p", e).css("color"));
-    $("p", e).css("color", "");
+    $("p", e).css("color", "white");
     $("p", e).trigger(Event.ONCLICK);
-    assertEquals("rgb(0, 0, 0)", $("p", e).css("color"));
+    assertEquals("white", $("p", e).css("color"));
 
     // hover (mouseover, mouseout)
     $("p", e).hover(new Function() {
@@ -203,13 +198,13 @@ public class GwtQueryCoreTest extends GWTTestCase {
       }
     }, new Function() {
       public void f(Element elem) {
-        $(elem).css("background-color", "");
+        $(elem).css("background-color", "white");
       }
     });
     $("p", e).trigger(Event.ONMOUSEOVER);
     assertEquals("yellow", $("p", e).css("background-color"));
     $("p", e).trigger(Event.ONMOUSEOUT);
-    assertEquals("rgba(0, 0, 0, 0)", $("p", e).css("background-color"));
+    assertEquals("white", $("p", e).css("background-color"));
 
     // focus
     $("p", e).focus(new Function() {
@@ -233,7 +228,7 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $(e).html("<input type='text'/>");
     $("input", e).keypressed(new Function() {
       public boolean f(Event evnt) {
-        Element elem = evnt.getCurrentTarget();
+        Element elem = evnt.getCurrentEventTarget().cast();
         InputElement input = InputElement.as(elem);
         input.setValue(
             input.getValue() + Character.toString((char) evnt.getKeyCode()));
@@ -294,8 +289,16 @@ public class GwtQueryCoreTest extends GWTTestCase {
 
     // select multiple
     $(e).html(
+        "<select name='n' multiple='multiple'><option value='v1'>1</option><option value='v2'>2</option><option value='v3'>3</option></select>");
+    gq = $("select", e);
+    assertEquals(0, gq.vals().length);
+    assertEquals("", gq.val());
+    
+    $(e).html(
         "<select name='n' multiple='multiple'><option value='v1'>1</option><option value='v2' selected='selected'>2</option><option value='v3'>3</option></select>");
     gq = $("select", e);
+    assertEquals(1, gq.vals().length);
+    assertEquals("v2", gq.val());
     gq.val("v1", "v3", "invalid");
     assertEquals(2, gq.vals().length);
     assertEquals("v1", gq.vals()[0]);
@@ -504,13 +507,13 @@ public class GwtQueryCoreTest extends GWTTestCase {
     assertEquals(expected, $("p", e).prev(".selected").get(0).getString());
 
     // siblings()
-    content = "<p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>";
+    content = "<p>Hello</p><div id='mdiv'><span>Hello Again</span></div><p>And Again</p>";
     next1 = "<p>Hello</p>";
     next2 = "<p>And Again</p>";
     $(e).html(content);
-    assertEquals(2, $("div", e).siblings().size());
-    assertEquals(next1, $("div", e).siblings().get(0).getString());
-    assertEquals(next2, $("div", e).siblings().get(1).getString());
+    assertEquals(2, $("#mdiv", e).siblings().size());
+    assertEquals(next1, $("#mdiv", e).siblings().get(0).getString());
+    assertEquals(next2, $("#mdiv", e).siblings().get(1).getString());
 
     // siblings()
     content
@@ -521,17 +524,17 @@ public class GwtQueryCoreTest extends GWTTestCase {
     assertEquals(expected, $("p", e).siblings(".selected").get(0).getString());
 
     // children()
-    content = "<p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>";
+    content = "<p>Hello</p><div id='mdiv'><span>Hello Again</span></div><p>And Again</p>";
     expected = "<span>Hello Again</span>";
     $(e).html(content);
-    assertEquals(expected, $("div", e).children().toString());
+    assertEquals(expected, $("#mdiv", e).children().toString());
 
     // children()
     content
-        = "<div><span>Hello</span><p class=\"selected\">Hello Again</p><p>And Again</p></div>";
+        = "<div id='mdiv'><span>Hello</span><p class=\"selected\">Hello Again</p><p>And Again</p></div>";
     expected = "<p class=\"selected\">Hello Again</p>";
     $(e).html(content);
-    assertEquals(expected, $("div", e).children(".selected").toString());
+    assertEquals(expected, $("#mdiv", e).children(".selected").toString());
 
     // contains()
     content = "<p>This is just a test.</p><p>So is this</p>";
