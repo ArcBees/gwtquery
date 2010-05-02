@@ -36,8 +36,6 @@ public class DocumentStyleImpl {
   public String getPropertyName(String name) {
     if ("float".equals(name)) {
       return "cssFloat";
-    } else if ("class".equals(name)) {
-      return "className";
     } else if ("for".equals(name)) {
       return "htmlFor";
     }

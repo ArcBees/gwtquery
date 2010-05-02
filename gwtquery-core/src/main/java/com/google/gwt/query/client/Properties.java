@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -69,11 +71,15 @@ public class Properties extends JavaScriptObject {
 
   public final String[] keys() {
     JsArrayString a = keysImpl();
-    String[] ret = new String[a.length()];
+    ArrayList<String> list = new ArrayList<String>();
     for (int i = 0; i < a.length(); i++) {
-      ret[i] = "" + a.get(i);
+      String key = a.get(i).toString();
+      // Chrome in DevMode injects a property to JS objects
+      if (!"__gwt_ObjectId".equals(key)) {
+        list.add(key);
+      }
     }
-    return ret;
+    return list.toArray(new String[list.size()]);
   }
 
   public final native JsArrayString keysImpl() /*-{

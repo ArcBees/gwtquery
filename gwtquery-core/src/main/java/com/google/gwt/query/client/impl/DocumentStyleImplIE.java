@@ -33,12 +33,11 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   }
 
   public String getPropertyName(String name) {
-    if ("float".equals(name)) {
+    name = super.getPropertyName(name);
+    if ("cssFloat".equals(name)) {
       return "styleFloat";
     } else if ("class".equals(name)) {
       return "className";
-    } else if ("for".equals(name)) {
-      return "htmlFor";
     }
     return name;
   }

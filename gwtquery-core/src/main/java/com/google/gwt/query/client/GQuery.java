@@ -331,11 +331,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    }-*/;
 
   public static String curCSS(Element elem, String name, boolean force) {
+    name = fixAttributeName(name);
     Style s = elem.getStyle();
-    ensureStyleImpl();
     if (!force) {
-      name = styleImpl.getPropertyName(name);
-
       if (SelectorEngine.truth(s.getProperty(name))) {
         return s.getProperty(name);
       }
@@ -886,6 +884,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single style property to a value, on all matched elements.
    */
   public GQuery css(String prop, String val) {
+    prop = fixAttributeName(prop);
     for (Element e : elements()) {
       setStyleProperty(prop, val, e);
     }
@@ -2574,8 +2573,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  private String fixAttributeName(String key) {
-    return key;
+  private static String fixAttributeName(String key) {
+    ensureStyleImpl();
+    return styleImpl.getPropertyName(key);
   }
 
   private native int getClientBoundingRectLeft(Element element) /*-{

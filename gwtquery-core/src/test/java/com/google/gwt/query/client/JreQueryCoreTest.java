@@ -36,4 +36,9 @@ public class JreQueryCoreTest extends GWTTestCase {
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("({border:'1px solid black'})"));
   }
 
+  public void testAssertHtmlEquals() {
+    GwtQueryCoreTest.assertHtmlEquals("<span>hello</span>","<span $h=\"5\">hello</span>");
+    GwtQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> "," <p class=abc added=\"null\">Whatever</p>");
+  }
+
 }
