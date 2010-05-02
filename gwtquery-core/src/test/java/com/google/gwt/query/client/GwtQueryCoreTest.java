@@ -93,7 +93,19 @@ public class GwtQueryCoreTest extends GWTTestCase {
     assertTrue(gq.hasClass("b2"));
     assertFalse(gq.hasClass("c1"));
     assertFalse(gq.hasClass("c2"));
-
+    
+    // toggleClass()
+    gq.toggleClass("b2");
+    assertTrue(gq.hasClass("b1"));
+    assertFalse(gq.hasClass("b2"));
+    gq.toggleClass("b2");
+    assertTrue(gq.hasClass("b1"));
+    assertTrue(gq.hasClass("b2"));
+    gq.toggleClass("b2", true);
+    assertTrue(gq.hasClass("b2"));
+    gq.toggleClass("b2", false);
+    assertFalse(gq.hasClass("b2"));
+    
     // css()
     String content = "<p style='color:red;'>Test Paragraph.</p>";
     $(e).html(content);

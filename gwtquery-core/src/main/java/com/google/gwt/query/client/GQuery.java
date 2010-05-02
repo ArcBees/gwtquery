@@ -371,62 +371,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  /**
-   * Copied from UIObject.
-   */
-  protected static void setStyleName(Element elem, String style, boolean add) {
-
-    style = style.trim();
-
-    // Get the current style string.
-    String oldStyle = elem.getClassName();
-    int idx = oldStyle.indexOf(style);
-
-    // Calculate matching index.
-    while (idx != -1) {
-      if (idx == 0 || oldStyle.charAt(idx - 1) == ' ') {
-        int last = idx + style.length();
-        int lastPos = oldStyle.length();
-        if ((last == lastPos) || ((last < lastPos) && (oldStyle.charAt(last)
-            == ' '))) {
-          break;
-        }
-      }
-      idx = oldStyle.indexOf(style, idx + 1);
-    }
-
-    if (add) {
-      // Only add the style if it's not already present.
-      if (idx == -1) {
-        if (oldStyle.length() > 0) {
-          oldStyle += " ";
-        }
-        DOM.setElementProperty(elem.<com.google.gwt.user.client.Element>cast(),
-            "className", oldStyle + style);
-      }
-    } else {
-      // Don't try to remove the style if it's not there.
-      if (idx != -1) {
-        // Get the leading and trailing parts, without the removed name.
-        String begin = oldStyle.substring(0, idx).trim();
-        String end = oldStyle.substring(idx + style.length()).trim();
-
-        // Some contortions to make sure we don't leave extra spaces.
-        String newClassName;
-        if (begin.length() == 0) {
-          newClassName = end;
-        } else if (end.length() == 0) {
-          newClassName = begin;
-        } else {
-          newClassName = begin + " " + end;
-        }
-
-        DOM.setElementProperty(elem.<com.google.gwt.user.client.Element>cast(),
-            "className", newClassName);
-      }
-    }
-  }
-
   protected static void setStyleProperty(String prop, String val, Element e) {
     // put in lower-case only if all letters are upper-case, to avoid modify already camelized properties
     if (prop.matches("^[A-Z]+$")) {
@@ -531,7 +475,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery addClass(String... classes) {
     for (Element e : elements()) {
       for (String clz : classes) {
-        setStyleName(e, clz, true);
+        e.addClassName(clz);
       }
     }
     return this;
@@ -1800,7 +1744,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery removeClass(String... classes) {
     for (Element e : elements()) {
       for (String clz : classes) {
-        setStyleName(e, clz, false);
+        e.removeClassName(clz);
       }
     }
     return this;
@@ -2077,15 +2021,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Adds or removes the specified classes to each matched element.
+   * Adds or removes the specified classes to each matched element
+   * depending on the class's presence
    */
   public GQuery toggleClass(String... classes) {
     for (Element e : elements()) {
       for (String clz : classes) {
         if (hasClass(e, clz)) {
-          setStyleName(e, clz, false);
+          e.removeClassName(clz);
         } else {
-          setStyleName(e, clz, true);
+          e.addClassName(clz);
         }
       }
     }
@@ -2093,11 +2038,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Adds or removes the specified classes to each matched element.
+   * Adds or removes the specified classes to each matched element
+   * depending on the value of the switch argument.
+   * 
+   * if addOrRemove is true, the class is added and in the case of
+   * false it is removed.
    */
-  public GQuery toggleClass(String clz, boolean sw) {
-    for (Element e : elements()) {
-      setStyleName(e, clz, sw);
+  public GQuery toggleClass(String clz, boolean addOrRemove) {
+    if (addOrRemove) {
+      addClass(clz);
+    } else {
+      removeClass(clz);
     }
     return this;
   }
