@@ -71,8 +71,19 @@ public class GwtQueryCoreTest extends GWTTestCase {
 
     $(e).html("<p class=\"a1\">Content</p>");
     GQuery gq = $("p", e);
-
+    
     // attr()
+    gq.attr($$("attr1: 'a', attr2: 'b'"));
+    assertEquals("a", gq.attr("attr1"));
+    assertEquals("b", gq.attr("attr2"));
+    
+    gq.attr("attr3", new Function() {
+      public String f(Element e, int i) {
+        return e.getInnerText();
+      }
+    });
+    assertEquals("Content", gq.attr("attr3"));
+
     assertEquals("a1", gq.attr("class"));
     gq.attr("class", "b1 b2");
 
@@ -126,6 +137,16 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $("p", e).css(Properties.create("COLOR: 'red', 'FONT-WEIGHT': 'bold'"));
     assertEquals("red", $("p", e).css("color"));
     assertEquals("", $("p", e).css("background"));
+  }
+  
+  public void testEach() {
+    $(e).html("<p>Content 1</p><p>Content 2</p><p>Content 3</p>");
+    $("p", e).each(new Function() {
+      public void f(Element e) {
+        $(e).text(".");
+      }      
+    });
+    assertHtmlEquals("<p>.</p><p>.</p><p>.</p>", $("p", e));
   }
 
   public void testEffectsPlugin() {
@@ -369,6 +390,10 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $(e).html(pTxt);
     $("p", e).append(bTxt);
     assertHtmlEquals(expected, $(e).html());
+    
+    $(e).html(pTxt);
+    $("p", e).append($(bTxt).get(0));
+    assertHtmlEquals(expected, $(e).html());
 
     // appendTo()
     expected = "<p>I would like to say: <b>Hello</b></p>";
@@ -439,7 +464,7 @@ public class GwtQueryCoreTest extends GWTTestCase {
     // after()
     expected = "<b>Hello</b><p>I would like to say: </p><b>Hello</b>";
     $(e).html(bTxt + pTxt);
-    $("p", e).after($("b", e).clone());
+    $("p", e).after($("b", e).clone().get(0));
     assertHtmlEquals(expected, $(e).html());
   }
   
@@ -535,6 +560,20 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     assertEquals(1, $("p", e).next(".selected").size());
     assertHtmlEquals(expected, $("p", e).next(".selected").get(0).getString());
+    
+    // nextAll()
+    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li>i5</li></ul>";
+    expected = "<li>i4</li><li>i5</li>";
+    $(e).html(content);
+    assertEquals(2, $("li.third-item", e).nextAll().size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextAll());
+    
+    // andSelf()
+    content = "<ul><li>i1</li><li>i2</li><li class=\"third-item\">i3</li><li>i4</li><li>i5</li></ul>";
+    expected = "<li>i4</li><li>i5</li><li class=\"third-item\">i3</li>";
+    $(e).html(content);
+    assertEquals(3, $("li.third-item", e).nextAll().andSelf().size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextAll().andSelf());
 
     // prev()
     content = "<p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>";
