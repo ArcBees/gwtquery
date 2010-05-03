@@ -147,6 +147,13 @@ public class GwtQueryCoreTest extends GWTTestCase {
       }      
     });
     assertHtmlEquals("<p>.</p><p>.</p><p>.</p>", $("p", e));
+    $("p", e).each(new Function() {
+      public String f(Element e, int i) {
+        $(e).text("" + i);
+        return "";
+      }      
+    });
+    assertHtmlEquals("<p>0</p><p>1</p><p>2</p>", $("p", e));
   }
 
   public void testEffectsPlugin() {

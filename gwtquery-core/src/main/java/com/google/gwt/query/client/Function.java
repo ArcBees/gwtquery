@@ -28,6 +28,7 @@ public abstract class Function {
    * invoke a callback on each element.
    */
   public String f(Element e, int i) {
+    f(e);
     return "";
   }
 
@@ -36,6 +37,7 @@ public abstract class Function {
    * return value, apply to a single element only.
    */
   public void f(Element e) {
+    throw new RuntimeException("You have to override the adequate method to handle this action.");
   }
 
   /**

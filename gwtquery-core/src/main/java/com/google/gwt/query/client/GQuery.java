@@ -900,11 +900,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Run one or more Functions over each element of the GQuery.
+   * You have to override one of these funcions:
+   *    public void f(Element e)
+   *    public String f(Element e, int i)
    */
   public GQuery each(Function... f) {
     for (Function f1 : f) {
-      for (Element e : elements()) {
-        f1.f(e);
+      for (int i = 0; i < elements.getLength(); i++) {
+        f1.f(elements.getItem(i), i);
       }
     }
     return this;
