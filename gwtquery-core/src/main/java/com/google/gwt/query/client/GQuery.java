@@ -194,6 +194,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return this[i];
     }-*/;
   }
+  
+  public static final Element window = window();
 
   public static boolean fxOff = false;
 
@@ -2626,7 +2628,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  private native Element window() /*-{
+  private static native Element window() /*-{
     return $wnd;
   }-*/;
 }
