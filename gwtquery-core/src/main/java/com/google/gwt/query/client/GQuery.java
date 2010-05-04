@@ -15,6 +15,9 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.Effects.Effects;
+import static com.google.gwt.query.client.Events.Events;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
@@ -31,8 +34,6 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.TextAreaElement;
-import static com.google.gwt.query.client.Effects.Effects;
-import static com.google.gwt.query.client.Events.Events;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -196,6 +197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   public static final Element window = window();
+  public static final Document document = Document.get();
 
   public static boolean fxOff = false;
 
@@ -229,7 +231,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (selectorOrHtml.trim().charAt(0) == '<') {
       return innerHtml(selectorOrHtml);
     }
-    return $(selectorOrHtml, Document.get());
+    return $(selectorOrHtml, document);
   }
 
   public static <T extends GQuery> T $(T gq) {
@@ -243,15 +245,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * reference to a plugin to be used.
    */
   public static <T extends GQuery> T $(String selector, Class<T> plugin) {
-    try {
-      if (plugins != null) {
-        T gquery = (T) plugins.get(plugin).init($(selector, Document.get()));
-        return gquery;
-      }
-      throw new RuntimeException("No plugin for class " + plugin);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return $(selector, null, plugin);
   }
 
   /**
@@ -270,7 +264,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element containing those elements. The second parameter is the context to
    * use for the selector. The third parameter is the class plugin to use.
    */
-  public static <T extends GQuery> GQuery $(String selector, Node context,
+  public static <T extends GQuery> T $(String selector, Node context,
       Class<T> plugin) {
     try {
       if (plugins != null) {
@@ -669,7 +663,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Trigger a blur event.
    */
   public GQuery blur() {
-    return trigger(Document.get().createBlurEvent(), null);
+    return trigger(document.createBlurEvent(), null);
   }
 
   /**
@@ -683,7 +677,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Trigger a change event.
    */
   public GQuery change() {
-    return trigger(Document.get().createChangeEvent(), null);
+    return trigger(document.createChangeEvent(), null);
   }
 
   /**
@@ -713,7 +707,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery click() {
     return trigger(
-        Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false,
+        document.createClickEvent(0, 0, 0, 0, 0, false, false, false,
             false), null);
   }
 
@@ -870,7 +864,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery dblclick() {
     return trigger(
-        Document.get().createDblClickEvent(0, 0, 0, 0, 0, false, false, false,
+        document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false,
             false), null);
   }
 
@@ -955,7 +949,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Trigger an error event.
    */
   public GQuery error() {
-    return trigger(Document.get().createErrorEvent(), null);
+    return trigger(document.createErrorEvent(), null);
   }
 
   /**
@@ -1057,7 +1051,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Trigger a focus event.
    */
   public GQuery focus() {
-    return trigger(Document.get().createFocusEvent(), null);
+    return trigger(document.createFocusEvent(), null);
   }
 
   /**
@@ -1276,7 +1270,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery keydown() {
     return trigger(
-        Document.get().createKeyDownEvent(false, false, false, false, 0, 0),
+        document.createKeyDownEvent(false, false, false, false, 0, 0),
         null);
   }
 
@@ -1292,7 +1286,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery keypress() {
     return trigger(
-        Document.get().createKeyPressEvent(false, false, false, false, 0, 0),
+        document.createKeyPressEvent(false, false, false, false, 0, 0),
         null);
   }
 
@@ -1308,7 +1302,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery keyup() {
     return trigger(
-        Document.get().createKeyUpEvent(false, false, false, false, 0, 0),
+        document.createKeyUpEvent(false, false, false, false, 0, 0),
         null);
   }
 
@@ -1472,8 +1466,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     int boxtop = getClientBoundingRectTop(get(0));
     int boxleft = getClientBoundingRectLeft(get(0));
-    Element docElem = Document.get().getDocumentElement();
-    Element body = Document.get().getBody();
+    Element docElem = document.getDocumentElement();
+    Element body = document.getBody();
     int clientTop = docElem.getPropertyInt("clientTop");
     if (clientTop == 0) {
       clientTop = body.getPropertyInt("clientTop");
@@ -1497,7 +1491,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery offsetParent() {
     Element offParent = SelectorEngine.
-        or(elements.getItem(0).getOffsetParent(), Document.get().getBody());
+        or(elements.getItem(0).getOffsetParent(), document.getBody());
     while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName()) && "static".
         equals(curCSS(offParent, "position"))) {
@@ -1562,7 +1556,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JSArray result = JSArray.create();
     for (Element e : elements()) {
       Node par = e.getParentNode();
-      while (par != null && par != Document.get()) {
+      while (par != null && par != document) {
         result.addNode(par);
         par = par.getParentNode();
       }
@@ -1836,7 +1830,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery scrollLeft(int left) {
     for (Element e : elements()) {
-      if (e == window() || e == (Node) Document.get()) {
+      if (e == window || e == (Node) document) {
         Window.scrollTo(left, $(e).scrollTop());
       } else {
         e.setPropertyInt("scrollLeft", left);
@@ -1851,10 +1845,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public int scrollLeft() {
     Element e = get(0);
-    if (e == window()) {
+    if (e == window) {
       return Window.getScrollLeft();
-    } else if (e == (Node) Document.get()) {
-      return Document.get().getScrollLeft();
+    } else if (e == (Node) document) {
+      return document.getScrollLeft();
     } else {
       return e.getScrollLeft();
     }
@@ -1867,7 +1861,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery scrollTop(int top) {
     for (Element e : elements()) {
-      if (e == window() || e == (Node) Document.get()) {
+      if (e == window || e == (Node) document) {
         Window.scrollTo($(e).scrollLeft(), top);
       } else {
         e.setPropertyInt("scrollTop", top);
@@ -1882,17 +1876,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public int scrollTop() {
     Element e = get(0);
-    if (e == window()) {
+    if (e == window) {
       return Window.getScrollTop();
-    } else if (e == (Node) Document.get()) {
-      return Document.get().getScrollTop();
+    } else if (e == (Node) document) {
+      return document.getScrollTop();
     } else {
       return e.getScrollTop();
     }
   }
 
   public GQuery select() {
-    return trigger(Document.get().createHtmlEvent("select", false, false),
+    return trigger(document.createHtmlEvent("select", false, false),
         null);
   }
 
@@ -1979,7 +1973,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public GQuery submit() {
-    return trigger(Document.get().createHtmlEvent("submit", false, false),
+    return trigger(document.createHtmlEvent("submit", false, false),
         null);
   }
 
@@ -2017,8 +2011,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery toggle(final Function... fn) {
     return click(new Function() {
       int click = 0;
-
-      @Override
       public boolean f(Event e) {
         return fn[(click++ % fn.length)].f(e);
       }
@@ -2071,6 +2063,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String toString(boolean pretty) {
     String r = "";
     for (Element e : elements()) {
+      if (e == window || e == (Node)document) {
+        continue;
+      }
       r += (pretty && r.length() > 0 ? "\n " : "") + e.getString();
     }
     return r;
@@ -2452,7 +2447,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       postWrap = "</colgroup></table>";
     }
     // TODO: fix IE link tag serialization
-    Element div = Document.get().createDivElement();
+    Element div = document.createDivElement();
     div.setInnerHTML(preWrap + elem + postWrap);
     Node n = div;
     while (wrapPos-- != 0) {
@@ -2467,7 +2462,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
     }
-    item = item == window() ? windowData : item;
+    item = item == window ? windowData : item;
     if (item == null) {
       return value;
     }
@@ -2603,7 +2598,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
     }
-    item = item == window() ? windowData : item;
+    item = item == window ? windowData : item;
     int id = item.hashCode();
     if (name != null) {
       if (!dataCache.exists(id)) {
