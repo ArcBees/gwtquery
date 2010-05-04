@@ -230,7 +230,7 @@ public class GwtQueryCoreTest extends GWTTestCase {
         $(elem).css("color", "red");
       }
     });
-    $("p", e).trigger(Event.ONCLICK);
+    $("p", e, Events.Events).fire(Event.ONCLICK);
     assertEquals("red", $("p", e).css("color"));
 
     // unbind
@@ -238,8 +238,25 @@ public class GwtQueryCoreTest extends GWTTestCase {
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).trigger(Event.ONCLICK);
     assertEquals("white", $("p", e).css("color"));
+    
+    // toggle
+    $("p", e).unbind(Event.ONCLICK);
+    $("p", e).toggle(new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "red");
+      }
+    }, new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "blue");
+      }
+    });
+    $("p", e, Events.Events).fire(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color"));
+    $("p", e, Events.Events).fire(Event.ONCLICK);
+    assertEquals("blue", $("p", e).css("color"));
 
     // one
+    $("p", e).unbind(Event.ONCLICK);
     $("p", e).one(Event.ONCLICK, null, new Function() {
       public void f(Element elem) {
         $(elem).css("color", "red");
