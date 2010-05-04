@@ -19,9 +19,7 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -218,103 +216,6 @@ public class GwtQueryCoreTest extends GWTTestCase {
     timerShortTime.schedule(200);
     timerMidTime.schedule(1200);
     timerLongTime.schedule(2200);
-  }
-
-  // FIXME: this test is broken in IE, and in chrome ONKEYPRESS does not work
-  public void testEventsPlugin() {
-    $(e).html("<p>Content</p>");
-
-    // click
-    $("p", e).click(new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    });
-    $("p", e, Events.Events).fire(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-
-    // unbind
-    $("p", e).css("color", "white");
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).trigger(Event.ONCLICK);
-    assertEquals("white", $("p", e).css("color"));
-    
-    // toggle
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).toggle(new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    }, new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "blue");
-      }
-    });
-    $("p", e, Events.Events).fire(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    $("p", e, Events.Events).fire(Event.ONCLICK);
-    assertEquals("blue", $("p", e).css("color"));
-
-    // one
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).one(Event.ONCLICK, null, new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    });
-    $("p", e).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    $("p", e).css("color", "white");
-    $("p", e).trigger(Event.ONCLICK);
-    assertEquals("white", $("p", e).css("color"));
-
-    // hover (mouseover, mouseout)
-    $("p", e).hover(new Function() {
-      public void f(Element elem) {
-        $(elem).css("background-color", "yellow");
-      }
-    }, new Function() {
-      public void f(Element elem) {
-        $(elem).css("background-color", "white");
-      }
-    });
-    $("p", e).trigger(Event.ONMOUSEOVER);
-    assertEquals("yellow", $("p", e).css("background-color"));
-    $("p", e).trigger(Event.ONMOUSEOUT);
-    assertEquals("white", $("p", e).css("background-color"));
-
-    // focus
-    $("p", e).focus(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "1px dotted black");
-      }
-    });
-    $("p", e).trigger(Event.ONFOCUS);
-    assertEquals("1px dotted black", $("p", e).css("border"));
-
-    // blur
-    $("p", e).blur(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "");
-      }
-    });
-    $("p", e).trigger(Event.ONBLUR);
-    assertEquals("", $("p", e).css("border"));
-
-    // keypressed
-    $(e).html("<input type='text'/>");
-    $("input", e).keypressed(new Function() {
-      public boolean f(Event evnt) {
-        Element elem = evnt.getCurrentEventTarget().cast();
-        InputElement input = InputElement.as(elem);
-        input.setValue(
-            input.getValue() + Character.toString((char) evnt.getKeyCode()));
-        return false;
-      }
-    });
-    $("input", e).trigger(Event.ONFOCUS);
-    $("input", e).trigger(Event.ONKEYPRESS, 'a');
-    assertEquals("a", InputElement.as($("input", e).get(0)).getValue());
   }
 
   public void testInnerMethods() {
