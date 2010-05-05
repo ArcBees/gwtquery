@@ -18,7 +18,8 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
@@ -48,7 +49,6 @@ public class GwtEventsTest extends GWTTestCase {
     }
   }
 
-  // FIXME: this test is broken in IE, and in chrome ONKEYPRESS does not work
   public void testEventsPlugin() {
     $(e).html("<p>Content</p>");
 
@@ -57,14 +57,19 @@ public class GwtEventsTest extends GWTTestCase {
       public void f(Element elem) {
         $(elem).css("color", "red");
       }
+    }, new Function() {
+      public void f(Element elem) {
+        $(elem).css("background", "green");
+      }
     });
-    $("p", e, Events.Events).fire(Event.ONCLICK);
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
     assertEquals("red", $("p", e).css("color"));
+    assertEquals("green", $("p", e).css("background-color"));
 
     // unbind
     $("p", e).css("color", "white");
     $("p", e).unbind(Event.ONCLICK);
-    $("p", e).trigger(Event.ONCLICK);
+    $("p", e).click();
     assertEquals("white", $("p", e).css("color"));
     
     // toggle
@@ -78,9 +83,9 @@ public class GwtEventsTest extends GWTTestCase {
         $(elem).css("color", "blue");
       }
     });
-    $("p", e, Events.Events).fire(Event.ONCLICK);
+    $("p", e).click();
     assertEquals("red", $("p", e).css("color"));
-    $("p", e, Events.Events).fire(Event.ONCLICK);
+    $("p", e).click();
     assertEquals("blue", $("p", e).css("color"));
 
     // one
@@ -90,10 +95,10 @@ public class GwtEventsTest extends GWTTestCase {
         $(elem).css("color", "red");
       }
     });
-    $("p", e).trigger(Event.ONCLICK);
+    $("p", e).click();
     assertEquals("red", $("p", e).css("color"));
     $("p", e).css("color", "white");
-    $("p", e).trigger(Event.ONCLICK);
+    $("p", e).click();
     assertEquals("white", $("p", e).css("color"));
 
     // hover (mouseover, mouseout)
@@ -117,32 +122,52 @@ public class GwtEventsTest extends GWTTestCase {
         $(elem).css("border", "1px dotted black");
       }
     });
-    $("p", e).trigger(Event.ONFOCUS);
-    assertEquals("1px dotted black", $("p", e).css("border"));
-
+    $("p", e).focus();
+    assertEquals("black", $("p", e).css("border-top-color"));
+    assertEquals("dotted", $("p", e).css("border-top-style"));
+    assertEquals("1px", $("p", e).css("border-top-width"));
+    
     // blur
     $("p", e).blur(new Function() {
       public void f(Element elem) {
         $(elem).css("border", "");
       }
     });
-    $("p", e).trigger(Event.ONBLUR);
+    $("p", e).blur();
     assertEquals("", $("p", e).css("border"));
 
-    // keypressed
+    // key events
     $(e).html("<input type='text'/>");
-    $("input", e).keypressed(new Function() {
+    Function keyEventAction = new Function() {
       public boolean f(Event evnt) {
-        Element elem = evnt.getCurrentEventTarget().cast();
-        InputElement input = InputElement.as(elem);
-        input.setValue(
-            input.getValue() + Character.toString((char) evnt.getKeyCode()));
+        GQuery gq = $(evnt);
+        gq.val(gq.val() + Character.toString((char) evnt.getKeyCode()));
         return false;
       }
-    });
-    $("input", e).trigger(Event.ONFOCUS);
-    $("input", e).trigger(Event.ONKEYPRESS, 'a');
-    assertEquals("a", InputElement.as($("input", e).get(0)).getValue());
+    }; 
+    $("input", e).keypress(keyEventAction);
+    $("input", e).keydown(keyEventAction);
+    $("input", e).keyup(keyEventAction);
+    $("input", e).focus();
+    $("input", e).keydown('a');
+    $("input", e).keypress('b');
+    $("input", e).keyup('c');
+    assertEquals("abc", $("input", e).val());
   }
-
+  
+  /**
+   * TODO: DblClick doesn't work with HtmlUnit, investigate and report.
+   */
+  @DoNotRunWith(Platform.HtmlUnit)
+  public void testEventsDblClick() {
+    $(e).html("<p>Content</p>");
+    $("p", e).css("color", "white");
+    $("p", e).dblclick(new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "yellow");
+      }
+    });
+    $("p", e).dblclick();
+    assertEquals("yellow", $("p", e).css("color"));    
+  }
 }

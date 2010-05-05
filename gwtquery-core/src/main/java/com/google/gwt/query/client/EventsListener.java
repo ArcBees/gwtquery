@@ -21,14 +21,14 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 /**
- * This class implements an event queue instance for one element. This queue
+ * This class implements an event queue instance for one Element. The queue
  * instance is configured as the default event listener in GWT.
- *
- * The reference to this queue is stored as a uniq variable in the element's
+ * 
+ * The reference to this queue is stored as a unique variable in the element's
  * DOM
- *
- * The class takes care of calling the appropiate functions for each browser
- * event and also calls sinkEvents methods.
+ * 
+ * The class takes care of calling the appropriate functions for each browser
+ * event and it also calls sinkEvents method.
  */
 class EventsListener implements EventListener {
 
@@ -84,8 +84,8 @@ class EventsListener implements EventListener {
     elem.__gqueryevent = gqevent;
   }-*/;
 
-  private JsObjectArray<EventsListener.BindFunction> elementEvents
-      = JsObjectArray.createArray().cast();
+  private JsObjectArray<EventsListener.BindFunction> elementEvents = JsObjectArray
+      .createArray().cast();
 
   private Element element;
 
@@ -100,25 +100,22 @@ class EventsListener implements EventListener {
     if (function == null) {
       unbind(eventbits);
     } else {
-      DOM.sinkEvents((com.google.gwt.user.client.Element) element,
-          eventbits | DOM
-              .getEventsSunk((com.google.gwt.user.client.Element) element));
+      DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventbits
+          | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
 
       if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS) {
         setFocusable(element);
       }
 
-      elementEvents.add(
-          new EventsListener.BindFunction(eventbits, function, data, times));
+      elementEvents.add(new EventsListener.BindFunction(eventbits, function,
+          data, times));
     }
   }
 
-  public void bind(int eventbits, final Object data, final Function function) {
-    bind(eventbits, data, function, -1);
-  }
-
-  public void fire(int eventbits, int... keys) {
-    FireEvents.fire(element, eventbits, keys);
+  public void bind(int eventbits, final Object data, Function...funcs) {
+    for (Function function: funcs) {
+      bind(eventbits, data, function, -1);
+    }
   }
 
   public void onBrowserEvent(Event event) {
@@ -127,9 +124,11 @@ class EventsListener implements EventListener {
       EventsListener.BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)) {
         if (!listener.fire(event)) {
-          event.cancelBubble(true);
+          System.out.println("Return: " + false);
           event.stopPropagation();
           event.preventDefault();
+        } else {
+          System.out.println("Return: " + true);
         }
       }
     }

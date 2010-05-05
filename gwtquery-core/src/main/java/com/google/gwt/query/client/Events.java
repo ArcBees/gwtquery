@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Event;
 
@@ -47,38 +48,81 @@ public class Events extends GQuery {
   }
 
   /**
-   * Binds a handler to a particular Event for each matched element.
-   *
-   * The event handler is passed as a Function that you can use to prevent
-   * default behaviour. To stop both default action and event bubbling, the
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
-   *
+   * 
    * You can pass an additional Object data to your Function as the second
    * parameter
+   * 
    */
-  public GQuery bind(int eventbits, final Object data, final Function f) {
+  public GQuery bind(int eventbits, Object data, Function...funcs) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(eventbits, data, f);
+      EventsListener.getInstance(e).bind(eventbits, data, funcs);
     }
     return this;
   }
-
+  
   /**
-   * Fires an event on each matched element.
-   *
-   * Example: fire(Event.ONCLICK)
+   * Execute all handlers and behaviors attached to the matched elements for the given event types.
+   * 
+   * Different event types can be passed joining these using the or bit wise operator.
+   * 
+   * For keyboard events you can pass a second parameter which represents 
+   * the key-code of the pushed key. 
+   * 
+   * Example: fire(Event.ONCLICK | Event.ONFOCUS)
+   * Example: fire(Event.ONKEYDOWN. 'a');
    */
-  public GQuery fire(int eventbits, int... keys) {
-    for (Element e : elements()) {
-      EventsListener.getInstance(e).fire(eventbits, keys);
-    }
+  public GQuery trigger(int eventbits, int... keys) {
+    if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
+      dispatchEvent(document.createBlurEvent());
+    if ((eventbits | Event.ONCHANGE) == Event.ONCHANGE)
+      dispatchEvent(document.createChangeEvent());
+    if ((eventbits | Event.ONCLICK) == Event.ONCLICK)
+      dispatchEvent(document.createClickEvent(0, 0, 0, 0, 0, false, false, false, false));
+    if ((eventbits | Event.ONDBLCLICK) == Event.ONDBLCLICK)
+      dispatchEvent(document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false));
+    if ((eventbits | Event.ONFOCUS) == Event.ONFOCUS)
+      dispatchEvent(document.createFocusEvent());
+    if ((eventbits | Event.ONKEYDOWN) == Event.ONKEYDOWN)
+      dispatchEvent(document.createKeyDownEvent(false, false, false, false, keys[0], 0));
+    if ((eventbits | Event.ONKEYPRESS) == Event.ONKEYPRESS)
+      dispatchEvent(document.createKeyPressEvent(false, false, false, false, keys[0], 0));
+    if ((eventbits | Event.ONKEYUP) == Event.ONKEYUP)
+      dispatchEvent(document.createKeyUpEvent(false, false, false, false, keys[0], 0));
+    if ((eventbits | Event.ONLOSECAPTURE) == Event.ONLOSECAPTURE)
+      triggerHtmlEvent("losecapture");
+    if ((eventbits | Event.ONMOUSEDOWN) == Event.ONMOUSEDOWN)
+      dispatchEvent(document.createMouseDownEvent(0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT));
+    if ((eventbits | Event.ONMOUSEMOVE) == Event.ONMOUSEMOVE)
+      dispatchEvent(document.createMouseMoveEvent(0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT));
+    if ((eventbits | Event.ONMOUSEOUT) == Event.ONMOUSEOUT)
+      dispatchEvent(document.createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
+    if ((eventbits | Event.ONMOUSEOVER) == Event.ONMOUSEOVER)
+      dispatchEvent(document.createMouseOverEvent(0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
+    if ((eventbits | Event.ONMOUSEUP) == Event.ONMOUSEUP)
+      dispatchEvent(document.createMouseUpEvent(0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT));
+    if ((eventbits | Event.ONSCROLL) == Event.ONSCROLL)
+      dispatchEvent(document.createScrollEvent());
+    if ((eventbits | Event.ONERROR) == Event.ONERROR)
+      dispatchEvent(document.createErrorEvent());
+    if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
+      dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
+    return this;
+  }
+  
+  protected GQuery triggerHtmlEvent(String htmlEvent) {
+    dispatchEvent(document.createHtmlEvent(htmlEvent, false, false));
     return this;
   }
 
   /**
    * Removes all handlers, that matches the events bits passed, from each
    * element.
-   *
+   * 
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER)
    */
   public GQuery unbind(int eventbits) {
@@ -87,101 +131,10 @@ public class Events extends GQuery {
     }
     return this;
   }
-}
-
-/**
- * Just a class with static methods for firing element events on demand.
- */
-class FireEvents {
-
-  public static void fire(Element element, int eventbits, int... keys) {
-    Event event = null;
-
-    String type = getEventTypeStr(eventbits);
-
-    if ((eventbits & Event.MOUSEEVENTS) != 0
-        || (eventbits | Event.ONCLICK) == Event.ONCLICK) {
-      event = createMouseEventImpl(type);
-    } else if ((eventbits & Event.KEYEVENTS) != 0) {
-      event = createKeyEventImpl(type, keys[0]);
-    } else if ((eventbits & Event.FOCUSEVENTS) != 0) {
-      event = createHtmlEventImpl(type);
-    }
-
-    dispatchEvent(element, event);
-  }
-
-  private static native Event createHtmlEventImpl(String type) /*-{
-   var event = $doc.createEvent('HTMLEvents');
-   event.initEvent( type, true, true);
-   return event;
-  }-*/;
-
-  private static native Event createKeyEventImpl(String type, int keycode) /*-{
-   var event;
-     if( $wnd.KeyEvent ) {
-        event = $doc.createEvent('KeyEvents');
-       event.initKeyEvent( type, true, true, $wnd, false, false, false, false, keycode, 0 );
-     } else {
-        event = $doc.createEvent('UIEvents');
-       event.initUIEvent( type, true, true, $wnd, 1 );
-       event.keyCode = keycode;
-     }
-    return event;
-  }-*/;
-
-  private static native Event createMouseEventImpl(String type) /*-{
-   var event = $doc.createEvent('MouseEvents');
-    event.initEvent(type, true, true);
-    return event;
-  }-*/;
-
-  private static native void dispatchEvent(Element elem, Event event) /*-{
-    elem.dispatchEvent(event);
-    if (event.type == 'focus' && elem.focus)
-      elem.focus();
-    else if (event.type == 'blur' && elem.focus)  
-      elem.blur();
-  }-*/;
-
-  private static String getEventTypeStr(int type) {
-    switch (type) {
-      case Event.ONBLUR:
-        return "blur";
-      case Event.ONCHANGE:
-        return "change";
-      case Event.ONCLICK:
-        return "click";
-      case Event.ONDBLCLICK:
-        return "dblclick";
-      case Event.ONFOCUS:
-        return "focus";
-      case Event.ONKEYDOWN:
-        return "keydown";
-      case Event.ONKEYPRESS:
-        return "keypress";
-      case Event.ONKEYUP:
-        return "keyup";
-      case Event.ONLOSECAPTURE:
-        return "losecapture";
-      case Event.ONMOUSEDOWN:
-        return "mousedown";
-      case Event.ONMOUSEMOVE:
-        return "mousemove";
-      case Event.ONMOUSEOUT:
-        return "mouseout";
-      case Event.ONMOUSEOVER:
-        return "mouseover";
-      case Event.ONMOUSEUP:
-        return "mouseup";
-      case Event.ONSCROLL:
-        return "scroll";
-      case Event.ONERROR:
-        return "error";
-      case Event.ONMOUSEWHEEL:
-        return "mousewheel";
-      default:
-        return "";
+  
+  private void dispatchEvent(NativeEvent evt) {
+    for (Element e : elements()) {
+      e.dispatchEvent(evt);
     }
   }
 }

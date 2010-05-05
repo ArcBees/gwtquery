@@ -27,7 +27,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
@@ -298,7 +297,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an event's target element.
    */
   public static GQuery $(Event event) {
-    return $(event.getCurrentTarget());
+    return $((Element)event.getCurrentEventTarget().cast());
   }
 
   /**
@@ -638,46 +637,45 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
-   * element.
-   *
-   * The event handler is passed as a Function that you can use to prevent
-   * default behaviour. To stop both default action and event bubbling, the
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
-   *
+   * 
    * You can pass an additional Object data to your Function as the second
    * parameter
+   * 
    */
-  public GQuery bind(int eventbits, final Object data, final Function f) {
-    return as(Events).bind(eventbits, data, f);
+  public GQuery bind(int eventbits, final Object data, final Function...funcs) {
+    return as(Events).bind(eventbits, data, funcs);
   }
 
   /**
-   * Bind a function to the blur event of each matched element.
+   * Bind Handlers or fire Events for each matched element. 
    */
-  public GQuery blur(Function f) {
-    return bind(Event.ONBLUR, null, f);
+  private GQuery bindOrFire(int eventbits, final Object data, final Function...funcs) {
+    if (funcs.length == 0) {
+      return trigger(eventbits);
+    } else {
+      return bind(eventbits, data, funcs);
+    }
   }
 
   /**
-   * Trigger a blur event.
+   * Bind a set of functions to the blur event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery blur() {
-    return trigger(document.createBlurEvent(), null);
+  public GQuery blur(Function...f) {
+    return bindOrFire(Event.ONBLUR, null, f);
   }
 
   /**
-   * Bind a function to the change event of each matched element.
+   * Bind a set of functions to the change event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery change(Function f) {
-    return bind(Event.ONCHANGE, null, f);
-  }
-
-  /**
-   * Trigger a change event.
-   */
-  public GQuery change() {
-    return trigger(document.createChangeEvent(), null);
+  public GQuery change(Function...f) {
+    return bindOrFire(Event.ONCHANGE, null, f);
   }
 
   /**
@@ -703,22 +701,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Trigger a click event.
+   * Bind a set of functions to the click event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery click() {
-    return trigger(
-        document.createClickEvent(0, 0, 0, 0, 0, false, false, false,
-            false), null);
+  public GQuery click(Function...f) {
+    return bindOrFire(Event.ONCLICK, null, f);
   }
-
-  /**
-   * Triggers the click event of each matched element. Causes all of the
-   * functions that have been bound to that click event to be executed.
-   */
-  public GQuery click(final Function f) {
-    return bind(Event.ONCLICK, null, f);
-  }
-
+  
   /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
    * copies of the elements to another location in the DOM.
@@ -858,21 +847,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
-   * Trigger a double click event.
+   * Bind a set of functions to the dblclick event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery dblclick() {
-    return trigger(
-        document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false,
-            false), null);
-  }
-
-  /**
-   * Bind a function to the dblclick event of each matched element.
-   */
-  public GQuery dblclick(Function f) {
-    return bind(Event.ONDBLCLICK, null, f);
+  public GQuery dblclick(Function...f) {
+    return bindOrFire(Event.ONDBLCLICK, null, f);
   }
 
   /**
@@ -946,19 +927,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Trigger an error event.
+   * Bind a set of functions to the error event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery error() {
-    return trigger(document.createErrorEvent(), null);
-  }
-
-  /**
-   * Bind a function to the error event of each matched element.
-   */
-  public GQuery error(Function f) {
-    return bind(Event.ONERROR, null, f);
-  }
-
+  public GQuery error(Function...f) {
+    return bindOrFire(Event.ONERROR, null, f);
+  }  
+  
   /**
    * Fade in all matched elements by adjusting their opacity.
    */
@@ -1048,20 +1023,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Trigger a focus event.
+   * Bind a set of functions to the focus event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery focus() {
-    return trigger(document.createFocusEvent(), null);
-  }
-
-  /**
-   * Bind a function to the focus event of each matched element.
-   */
-
-  public GQuery focus(Function f) {
-    return bind(Event.ONFOCUS, null, f);
-  }
-
+  public GQuery focus(Function...f) {
+    return bindOrFire(Event.ONFOCUS, null, f);
+  }  
+  
   /**
    * Return all elements matched in the GQuery as a NodeList. @see #elements()
    * for a method which returns them as an immutable Java array.
@@ -1264,54 +1232,51 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public boolean is(String... filters) {
     return filter(filters).size() > 0;
   }
+  
+  /**
+   * Bind a set of functions to the keydown event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  public GQuery keydown(Function...f) {
+    return bindOrFire(Event.ONKEYDOWN, null, f);
+  }  
 
   /**
-   * Trigger a keydown event.
+   * Trigger a keydown event passing the key pushed
    */
-  public GQuery keydown() {
-    return trigger(
-        document.createKeyDownEvent(false, false, false, false, 0, 0),
-        null);
+  public GQuery keydown(int key) {
+    return trigger(Event.ONKEYDOWN, key);
   }
 
   /**
-   * Bind a function to the keydown event of each matched element.
+   * Bind a set of functions to the keypress event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery keydown(Function f) {
-    return bind(Event.ONKEYDOWN, null, f);
+  public GQuery keypress(Function...f) {
+    return bindOrFire(Event.ONKEYPRESS, null, f);
+  }  
+
+  /**
+   * Trigger a keypress event passing the key pushed
+   */
+  public GQuery keypress(int key) {
+    return trigger(Event.ONKEYPRESS, key);
   }
 
   /**
-   * Trigger a keypress event.
+   * Bind a set of functions to the keyup event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery keypress() {
-    return trigger(
-        document.createKeyPressEvent(false, false, false, false, 0, 0),
-        null);
-  }
+  public GQuery keyup(Function...f) {
+    return bindOrFire(Event.ONKEYUP, null, f);
+  }  
 
   /**
-   * Bind a function to the keypress event of each matched element.
+   * Trigger a keyup event passing the key pushed
    */
-  public GQuery keypressed(Function f) {
-    return bind(Event.ONKEYPRESS, null, f);
-  }
-
-  /**
-   * Trigger a keyup event.
-   */
-  public GQuery keyup() {
-    return trigger(
-        document.createKeyUpEvent(false, false, false, false, 0, 0),
-        null);
-  }
-
-  /**
-   * Bind a function to the keyup event of each matched element.
-   */
-  public GQuery keyup(Function f) {
-    return bind(Event.ONKEYUP, null, f);
-  }
+  public GQuery keyup(int key) {
+    return trigger(Event.ONKEYUP, key);
+  }  
 
   /**
    * Returns the number of elements currently matched. The size function will
@@ -1336,41 +1301,46 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery lt(int pos) {
     return $(slice(0, pos));
   }
+  
+  /**
+   * Bind a set of functions to the mousedown event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  public GQuery mousedown(Function...f) {
+    return bindOrFire(Event.ONMOUSEDOWN, null, f);
+  }  
+ 
+  /**
+   * Bind a set of functions to the mousemove event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  public GQuery mousemove(Function...f) {
+    return bindOrFire(Event.ONMOUSEMOVE, null, f);
+  }  
 
   /**
-   * Bind a function to the mousedown event of each matched element.
+   * Bind a set of functions to the mouseout event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery mousedown(Function f) {
-    return bind(Event.ONMOUSEDOWN, null, f);
-  }
+  public GQuery mouseout(Function...f) {
+    return bindOrFire(Event.ONMOUSEOUT, null, f);
+  }  
 
   /**
-   * Bind a function to the mousemove event of each matched element.
+   * Bind a set of functions to the mouseover event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery mousemove(Function f) {
-    return bind(Event.ONMOUSEMOVE, null, f);
-  }
-
+  public GQuery mouseover(Function...f) {
+    return bindOrFire(Event.ONMOUSEOVER, null, f);
+  }  
+  
   /**
-   * Bind a function to the mouseout event of each matched element.
+   * Bind a set of functions to the mouseup event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  public GQuery mouseout(Function f) {
-    return bind(Event.ONMOUSEOUT, null, f);
-  }
-
-  /**
-   * Bind a function to the mouseover event of each matched element.
-   */
-  public GQuery mouseover(Function f) {
-    return bind(Event.ONMOUSEOVER, null, f);
-  }
-
-  /**
-   * Bind a function to the mouseup event of each matched element.
-   */
-  public GQuery mouseup(Function f) {
-    return bind(Event.ONMOUSEUP, null, f);
-  }
+  public GQuery mouseup(Function...f) {
+    return bindOrFire(Event.ONMOUSEUP, null, f);
+  }    
 
   /**
    * Get a set of elements containing the unique next siblings of each of the
@@ -1816,13 +1786,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return replaceWith($(elem));
   }
 
-  /**
-   * Bind a function to the scroll event of each matched element.
-   */
-  public GQuery scroll(Function f) {
-    return bind(Event.ONSCROLL, null, f);
-  }
 
+  /**
+   * Bind a set of functions to the scroll event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  public GQuery scroll(Function...f) {
+    return bindOrFire(Event.ONSCROLL, null, f);
+  }    
+  
   /**
    * When a value is passed in, the scroll left offset is set to that value on
    * all matched elements. This method works for both visible and hidden
@@ -1886,8 +1858,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public GQuery select() {
-    return trigger(document.createHtmlEvent("select", false, false),
-        null);
+    return as(Events).triggerHtmlEvent("select");
   }
 
   /**
@@ -1973,8 +1944,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public GQuery submit() {
-    return trigger(document.createHtmlEvent("submit", false, false),
-        null);
+    return as(Events).triggerHtmlEvent("submit");
   }
 
   /**
@@ -2071,11 +2041,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return r;
   }
 
+
   /**
-   * Trigger an event of type eventbits on every matched element.
+   * Trigger a set of events on each matched element.
+   * 
+   * For keyboard events you can pass a second parameter which represents 
+   * the key-code of the pushed key. 
+   * 
+   * Example: fire(Event.ONCLICK | Event.ONFOCUS)
+   * Example: fire(Event.ONKEYDOWN. 'a');
    */
   public GQuery trigger(int eventbits, int... keys) {
-    return as(Events).fire(eventbits, keys);
+    return as(Events).trigger(eventbits, keys);
   }
 
   /**
@@ -2617,13 +2594,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       type = type + "queue";
       data(elem, type, data);
     }
-  }
-
-  private GQuery trigger(NativeEvent event, Object o) {
-    for (Element e : elements()) {
-      e.dispatchEvent(event);
-    }
-    return this;
   }
 
   private static native Element window() /*-{
