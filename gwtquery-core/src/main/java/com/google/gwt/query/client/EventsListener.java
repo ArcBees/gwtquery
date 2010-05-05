@@ -34,13 +34,13 @@ class EventsListener implements EventListener {
 
   private static class BindFunction {
 
-    int type;
+    Object data;
 
     Function function;
 
-    Object data;
-
     int times = -1;
+
+    int type;
 
     BindFunction(int t, Function f, Object d) {
       type = t;
@@ -67,32 +67,44 @@ class EventsListener implements EventListener {
   }
 
   public static EventsListener getInstance(Element e) {
-    EventsListener ret = getWidgetElementImpl(e);
+    EventsListener ret = getGQueryEventLinstener(e);
     return ret != null ? ret : new EventsListener(e);
   }
 
-  private static native EventsListener getWidgetElementImpl(Element elem) /*-{
+  private static native EventsListener getGQueryEventLinstener(Element elem) /*-{
     return elem.__gqueryevent;
+  }-*/;
+
+  private static native EventListener getOriginalEventListener(Element elem) /*-{
+    return elem.__listener;
   }-*/;
 
   private static native void setFocusable(Element elem) /*-{
     elem.tabIndex = 0;
   }-*/;
 
-  private static native void setWidgetElementImpl(Element elem,
+  private static native void setGQueryEventListener(Element elem,
       EventsListener gqevent) /*-{
     elem.__gqueryevent = gqevent;
   }-*/;
 
-  private JsObjectArray<EventsListener.BindFunction> elementEvents = JsObjectArray
-      .createArray().cast();
-
   private Element element;
 
-  private EventsListener(Element e) {
-    element = e;
-    setWidgetElementImpl(element, this);
-    DOM.setEventListener((com.google.gwt.user.client.Element) e, this);
+  private JsObjectArray<EventsListener.BindFunction> elementEvents = JsObjectArray
+      .createArray().cast();
+  private EventListener originalEventListener;
+
+  private EventsListener(Element element) {
+    this.element = element;
+    originalEventListener = getOriginalEventListener(element);
+    setGQueryEventListener(element, this);
+    DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
+  }
+
+  public void bind(int eventbits, final Object data, Function...funcs) {
+    for (Function function: funcs) {
+      bind(eventbits, data, function, -1);
+    }
   }
 
   public void bind(int eventbits, final Object data, final Function function,
@@ -112,13 +124,10 @@ class EventsListener implements EventListener {
     }
   }
 
-  public void bind(int eventbits, final Object data, Function...funcs) {
-    for (Function function: funcs) {
-      bind(eventbits, data, function, -1);
-    }
-  }
-
   public void onBrowserEvent(Event event) {
+    if (originalEventListener != null) {
+      originalEventListener.onBrowserEvent(event);
+    }
     int etype = DOM.eventGetType(event);
     for (int i = 0; i < elementEvents.length(); i++) {
       EventsListener.BindFunction listener = elementEvents.get(i);

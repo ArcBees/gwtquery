@@ -18,10 +18,13 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -169,5 +172,25 @@ public class GwtEventsTest extends GWTTestCase {
     });
     $("p", e).dblclick();
     assertEquals("yellow", $("p", e).css("color"));    
+  }
+  
+  public void testWidgetEvents() {
+    final Button b = new Button("click-me");
+    b.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        b.getElement().getStyle().setBackgroundColor("black");
+      }
+    });
+    RootPanel.get().add(b);
+    $("button").click(new Function(){
+      public boolean f(Event e) {
+        $(e).css("color", "red");
+        return true;
+      }
+    });
+    $("button").click();
+    assertEquals("red", $("button").css("color"));    
+    assertEquals("black", $("button").css("background-color"));    
+    RootPanel.get().remove(b);
   }
 }
