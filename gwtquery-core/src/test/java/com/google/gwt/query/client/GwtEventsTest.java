@@ -43,7 +43,7 @@ public class GwtEventsTest extends GWTTestCase {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
-      e.setId("tst");
+      e.setId("evnt-tst");
     } else {
       e.setInnerHTML("");
     }

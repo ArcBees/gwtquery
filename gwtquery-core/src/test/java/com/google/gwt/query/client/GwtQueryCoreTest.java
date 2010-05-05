@@ -59,7 +59,7 @@ public class GwtQueryCoreTest extends GWTTestCase {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
-      e.setId("tst");
+      e.setId("core-tst");
     } else {
       e.setInnerHTML("");
     }
@@ -219,14 +219,13 @@ public class GwtQueryCoreTest extends GWTTestCase {
   }
 
   public void testInnerMethods() {
-    // NOTE: IE reports tags in upper-case and introduces extra spaces an CR 
     String txt = "<p>I would like to say: </p>";
 
-    // Check that setHTML and getHTML works as GQuery html()
+    // Check that setHTML and getHTML work as GQuery html()
     testPanel.setHTML(txt);
     assertHtmlEquals(txt, testPanel.getHTML());
     assertHtmlEquals(txt, $(e).html());
-    assertHtmlEquals(txt, $("#tst").html());
+    assertHtmlEquals(txt, $("#core-tst").html());
     $(e).html("");
     assertHtmlEquals("", $(e).html());
     $(e).html(txt);
