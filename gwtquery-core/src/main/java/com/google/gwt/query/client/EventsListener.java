@@ -124,11 +124,8 @@ class EventsListener implements EventListener {
       EventsListener.BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)) {
         if (!listener.fire(event)) {
-          System.out.println("Return: " + false);
           event.stopPropagation();
           event.preventDefault();
-        } else {
-          System.out.println("Return: " + true);
         }
       }
     }
