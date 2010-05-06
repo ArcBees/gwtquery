@@ -552,6 +552,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Convert to Plugin interface provided by Class literal.
    */
+  @SuppressWarnings("unchecked")
   public <T extends GQuery> T as(Class<T> plugin) {
     // GQuery is not a plugin for itself
     if (plugin == GQUERY) {

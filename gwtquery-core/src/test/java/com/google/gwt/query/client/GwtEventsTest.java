@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.lazy;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -182,12 +183,8 @@ public class GwtEventsTest extends GWTTestCase {
       }
     });
     RootPanel.get().add(b);
-    $("button").click(new Function(){
-      public boolean f(Event e) {
-        $(e).css("color", "red");
-        return true;
-      }
-    });
+    $("button").click(lazy().css("color", "red").done());
+    
     $("button").click();
     assertEquals("red", $("button").css("color"));    
     assertEquals("black", $("button").css("background-color"));    

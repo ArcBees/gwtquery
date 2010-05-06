@@ -3,7 +3,7 @@ package com.google.gwt.query.client;
 /**
  *
  */
-public interface LazyEffects extends LazyGQuery {
+public interface LazyEffects extends LazyGQuery<Effects> {
 
   LazyEffects animate(Properties properties, Effects.Speed speed,
       Effects.Easing easing, Function complete);
