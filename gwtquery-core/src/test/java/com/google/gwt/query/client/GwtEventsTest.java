@@ -38,7 +38,7 @@ public class GwtEventsTest extends GWTTestCase {
   static HTML testPanel = null;
 
   public String getModuleName() {
-    return "com.google.gwt.query.Test";
+    return "com.google.gwt.query.Query";
   }
   
   public void gwtSetUp() {

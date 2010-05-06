@@ -5,7 +5,7 @@
     <groupId>com.google.gwt</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
     <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -52,12 +52,32 @@
     </modules>
 
     <distributionManagement>
+     <!--
         <repository>
             <uniqueVersion>false</uniqueVersion>
             <id>timepedia-deploy</id>
             <url>svn:https://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
         </repository>
+     -->
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>googlecode</id>
+            <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>googlecode</id>
+            <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
+        </snapshotRepository>
     </distributionManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gcupload</id>
+            <name>Repository for gcupload plugin</name>
+            <url>http://gwtupload.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
