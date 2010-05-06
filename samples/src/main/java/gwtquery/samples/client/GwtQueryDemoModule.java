@@ -1,5 +1,8 @@
 package gwtquery.samples.client;
 
+import static com.google.gwt.query.client.Effects.Effects;
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -8,7 +11,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.query.client.Selector;
 import com.google.gwt.query.client.Selectors;
 import com.google.gwt.user.client.Event;
@@ -48,25 +50,19 @@ public class GwtQueryDemoModule implements EntryPoint {
       // two state variables to note current slide being shown
       // and current bullet
       int curSlide = 0;
-
       int curBullets = 0;
 
       // query and store all slides, and bullets of current slide
       GQuery slides = $(s.allSlides());
-
       GQuery bullets = $(s.slideBulletsCtx(slides.get(curSlide)));
-
       public boolean f(Event e) {
         // onclick, if not all bullets shown, show a bullet and increment
         if (curBullets < bullets.size()) {
-          bullets.eq(curBullets++).show();
+          bullets.eq(curBullets++).fadeIn();
         } else {
           // all bullets shown, hide them and current slide
-//                    bullets.css("opacity","0");
           bullets.hide();
-          slides.eq(curSlide).hide();
-
-//                    slides.eq(curSlide).css("display", "none");
+          slides.eq(curSlide).as(Effects).hide();
           // move to next slide, checking for wrap around
           curSlide++;
           if (curSlide == slides.size()) {
@@ -74,7 +70,6 @@ public class GwtQueryDemoModule implements EntryPoint {
           }
           curBullets = 0;
           // query for new set of bullets, and show next slide
-          // by changing opacity to 1 and display to block
           bullets = $(s.slideBulletsCtx(slides.get(curSlide)));
           slides.eq(curSlide).show();
         }
