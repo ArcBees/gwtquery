@@ -189,9 +189,9 @@ public class GwtQueryCoreTest extends GWTTestCase {
     Timer timerShortTime = new Timer() {
       public void run() {
         double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue(o > 0 && o < 0.5);
+        assertTrue("'sectA' opacity must be in the interval 0-0.5 but is: " + o, o > 0 && o < 0.5);
         o = Double.valueOf(sectB.css("opacity"));
-        assertTrue(o > 0.5 && o < 1);
+        assertTrue("'sectB' opacity must be in the interval 0.5-1 but is: " + o, o > 0.5 && o < 1);
       }
     };
     Timer timerMidTime = new Timer() {
@@ -199,9 +199,9 @@ public class GwtQueryCoreTest extends GWTTestCase {
         assertEquals("", sectA.css("display"));
         assertEquals("", sectB.css("display"));
         double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue(o > 0.5 && o < 1);
+        assertTrue("'sectA' opacity must be in the interval 0.5-1 but is: " + o, o > 0.5 && o < 1);
         o = Double.valueOf(sectB.css("opacity"));
-        assertTrue(o > 0 && o < 0.5);
+        assertTrue("'sectB' opacity must be in the interval 0-0.5 but is: " + o, o > 0 && o < 0.5);
       }
     };
     Timer timerLongTime = new Timer() {
