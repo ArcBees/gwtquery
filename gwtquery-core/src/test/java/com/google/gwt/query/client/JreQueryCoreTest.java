@@ -37,8 +37,8 @@ public class JreQueryCoreTest extends GWTTestCase {
   }
 
   public void testAssertHtmlEquals() {
-    GwtQueryCoreTest.assertHtmlEquals("<span>hello</span>","<span $h=\"5\">hello</span>");
-    GwtQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> "," <p class=abc added=\"null\">Whatever</p>");
+    GQueryCoreTest.assertHtmlEquals("<span>hello</span>","<span $h=\"5\">hello</span>");
+    GQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> "," <p class=abc added=\"null\">Whatever</p>");
   }
 
 }
