@@ -27,16 +27,16 @@ public class DocumentStyleImpl {
   public String getCurrentStyle(Element elem, String name) {
     name = hyphenize(name);
     String propVal = getComputedStyle(elem, name, null);
-    if ("opacity".equals(name)) {
+    if ("opacity".equalsIgnoreCase(name)) {
       propVal = SelectorEngine.or(propVal, "1");
     }
     return propVal;
   }
 
   public String getPropertyName(String name) {
-    if ("float".equals(name)) {
+    if ("float".equalsIgnoreCase(name)) {
       return "cssFloat";
-    } else if ("for".equals(name)) {
+    } else if ("for".equalsIgnoreCase(name)) {
       return "htmlFor";
     }
     return GQuery.camelize(name);

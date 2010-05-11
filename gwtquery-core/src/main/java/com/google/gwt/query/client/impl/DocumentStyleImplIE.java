@@ -26,7 +26,7 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   public String getCurrentStyle(Element elem, String name) {
     name = hyphenize(name);
     String propVal = getComputedStyle(elem, name, null);
-    if ("opacity".equals(name)) {
+    if ("opacity".equalsIgnoreCase(name)) {
       propVal = SelectorEngine.or(propVal, "1");
     }
     return propVal;
