@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -124,10 +125,21 @@ class EventsListener implements EventListener {
     }
   }
 
+  double lastEvnt=0;
+  int lastType=0;
+  
   public void onBrowserEvent(Event event) {
+    // Workaround for Issue_20
+    if (lastType == event.getTypeInt() && lastEvnt - Duration.currentTimeMillis() < 10) {
+      return;
+    }
+    lastEvnt = Duration.currentTimeMillis();
+    lastType = event.getTypeInt();
+    
     if (originalEventListener != null) {
       originalEventListener.onBrowserEvent(event);
     }
+    
     int etype = DOM.eventGetType(event);
     for (int i = 0; i < elementEvents.length(); i++) {
       EventsListener.BindFunction listener = elementEvents.get(i);
