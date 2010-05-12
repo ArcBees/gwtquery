@@ -39,15 +39,12 @@ public class SelectorGeneratorNative extends SelectorGeneratorBase {
       TreeLogger treeLogger, boolean hasContext)
       throws UnableToCompleteException {
     String selector = method.getAnnotation(Selector.class).value();
-    System.out.println("generateMethodBody " + method + " " + hasContext);
     if (!hasContext) {
-      sw.println(
-          "return " + wrap(method, "querySelectorAll(\"" + selector + "\"")
-              + ");");
+      sw.println("return "
+          + wrap(method, "querySelectorAll(\"" + selector + "\")") + ";");
     } else {
       sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\", root)")
-          + ");");
+          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
     }
   }
 }

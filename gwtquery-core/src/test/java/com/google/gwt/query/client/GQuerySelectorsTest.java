@@ -62,6 +62,20 @@ public class GQuerySelectorsTest extends GWTTestCase {
 
     @Selector(".branchB")
     public GQuery branchB(Node n);    
+    
+    @Selector("*:checked")
+    public GQuery allChecked();
+    
+    @Selector("*:checked")
+    public GQuery allChecked(Node n);
+  }
+  
+  public void testSelectorsGeneratorNative() {
+    $(e).html( "<input type='radio' name='n' value='v1'>1</input>"
+             + "<input type='radio' name='n' value='v2' checked='checked'>2</input>");
+    
+    TestSelectors selectors = GWT.create(TestSelectors.class);
+    assertEquals(1, selectors.allChecked().size());
   }
 
   public void testSelectorsWithContext() {
@@ -75,7 +89,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     Element branchB = selectors.branchB().get(0);
     assertNotNull(selectors.branchA().get(0));
     assertNotNull(selectors.branchB().get(0));
-
+    
     assertEquals(2, selectors.target(RootPanel.getBodyElement()).length());
     branchA = selectors.branchA(RootPanel.getBodyElement()).get(0);
     branchB = selectors.branchB(RootPanel.getBodyElement()).get(0);
