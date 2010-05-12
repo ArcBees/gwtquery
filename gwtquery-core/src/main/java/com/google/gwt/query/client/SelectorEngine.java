@@ -108,4 +108,16 @@ public class SelectorEngine {
       return r;
     }
   }
+  
+  protected Node root = Document.get();
+ 
+  public void setRoot(Node root) {
+    assert root != null;
+    this.root = root;
+  }
+  
+  public Node getRoot() {
+    return root;
+  }
+  
 }

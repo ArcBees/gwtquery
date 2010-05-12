@@ -165,9 +165,6 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
       }
     }
 
-    if (!hasContext) {
-      sw.println("Node root = Document.get();");
-    }
     sw.println("return " + wrap(method,
         "SelectorEngine.xpathEvaluate(\"" + xPathExpression + "\", root)")
         + ";");

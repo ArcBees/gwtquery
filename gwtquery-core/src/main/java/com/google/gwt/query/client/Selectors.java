@@ -15,10 +15,16 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.dom.client.Node;
+
 /**
  * Tagging interface used to generate compile time selectors.
  */
 public interface Selectors {
 
   DeferredGQuery[] getAllSelectors();
+  
+  public void setRoot(Node node);
+  
+  public Node getRoot();
 }

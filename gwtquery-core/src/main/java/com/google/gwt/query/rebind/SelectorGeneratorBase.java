@@ -88,23 +88,16 @@ public abstract class SelectorGeneratorBase extends Generator {
     sw.indent();
     Selector sel = method.getAnnotation(Selector.class);
 
-    // short circuit #foo
     if (sel != null && sel.value().matches("^#\\w+$")) {
-      sw.println("return " + wrap(method, "JSArray.create(((Document)"
-          + (hasContext ? "root" : "(Node)Document.get()")
-          + ").getElementById(\"" + sel.value().substring(1) + "\"))") + ";");
+      // short circuit #foo
+      sw.println("return " + wrap(method, "JSArray.create(((Document)root).getElementById(\"" + sel.value().substring(1) + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\w+$")) {
       // short circuit FOO
-      sw.println("return " + wrap(method, "JSArray.create(((Element)"
-          + (hasContext ? "root" : "(Node)Document.get()")
-          + ").getElementsByTagName(\"" + sel.value() + "\"))") + ";");
+      sw.println("return " + wrap(method, "JSArray.create(((Element)root).getElementsByTagName(\"" + sel.value() + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\.\\w+$")
         && hasGetElementsByClassName()) {
       // short circuit .foo for browsers with native getElementsByClassName 
-      sw.println("return " + wrap(method,
-          "JSArray.create(getElementsByClassName(\"" + sel.value().substring(1)
-              + "\", " + (hasContext ? "root" : "(Node)Document.get()") + "))")
-          + ";");
+      sw.println("return " + wrap(method, "JSArray.create(getElementsByClassName(\"" + sel.value().substring(1) + "\", root))") + ";");
     } else {
       generateMethodBody(sw, method, logger, hasContext);
     }

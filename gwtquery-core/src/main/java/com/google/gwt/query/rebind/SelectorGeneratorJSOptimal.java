@@ -72,9 +72,6 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
       throws UnableToCompleteException {
 
     String selector = method.getAnnotation(Selector.class).value();
-    if (!hasContext) {
-      sw.println("Node root = Document.get();");
-    }
 
     sw.println("return " + wrap(method,
         "new SelectorEngine().select(\"" + selector + "\", root)") + ";");
