@@ -534,4 +534,13 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("span.target", e).size());
     assertHtmlEquals(content, $(e).html());
   }
+  
+  public void testCapitalLetters() {
+    $(e).html("<div id='testImageDisplay' class='whatEver'>Content</div>");
+    assertEquals(1, $("#testImageDisplay").size());
+    // Commented because IE is case insensitive
+    // assertEquals(0, $("#testimagedisplay").size());
+    assertEquals(1, $(".whatEver").size());
+    assertEquals(0, $(".whatever").size());
+  }
 }
