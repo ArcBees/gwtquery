@@ -130,16 +130,18 @@ class EventsListener implements EventListener {
   
   public void onBrowserEvent(Event event) {
     // Workaround for Issue_20
-    if (lastType == event.getTypeInt() && lastEvnt - Duration.currentTimeMillis() < 10) {
+    if (lastType == event.getTypeInt()
+        && lastEvnt - Duration.currentTimeMillis() < 10
+        && "body".equalsIgnoreCase(element.getTagName())) {
       return;
     }
     lastEvnt = Duration.currentTimeMillis();
     lastType = event.getTypeInt();
-    
+
     if (originalEventListener != null) {
       originalEventListener.onBrowserEvent(event);
     }
-    
+
     int etype = DOM.eventGetType(event);
     for (int i = 0; i < elementEvents.length(); i++) {
       EventsListener.BindFunction listener = elementEvents.get(i);
