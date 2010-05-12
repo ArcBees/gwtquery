@@ -1,0 +1,5 @@
+<module rename-to="test">
+    <inherits name='com.google.gwt.query.Query'/>
+    <entry-point class='com.google.gwt.query.client.DevTestRunner'/>
+</module>
+    

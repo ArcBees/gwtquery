@@ -49,6 +49,7 @@
         <module>gwtquery-core</module>
         <module>plugins</module>
         <module>samples</module>
+        <module>devtest</module>
     </modules>
 
     <distributionManagement>
