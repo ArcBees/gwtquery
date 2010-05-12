@@ -44,7 +44,7 @@ public class GQueryCoreTest extends GWTTestCase {
     // Investigate: IE in method filter adds the attrib added="null"
     return s.toString().trim().toLowerCase().
         replaceAll("[\r\n]", "").
-        replaceAll(" ([\\w]+)=[\"]([^\"]+)[\"]", " $1=$2").
+        replaceAll(" ([\\w]+)=[\"']([^\"']+)[\"']", " $1=$2").
         replaceAll("\\s+\\$h=\"[^\"]+\"", "").
         replaceAll(" added=[^ >]+", "");
   }
@@ -519,9 +519,19 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $(e).html());
 
     $(e).html(content + wrapper);
-    expected
-        = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
+    expected = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
     $("*", e).wrap("<b></b>");
     assertHtmlEquals(expected, $(e).html());
+  }
+  
+  public void testDomManip() {
+    String content = "<span class='branchA'><span class='target'>branchA target</span></span>"
+      + "<span class='branchB'><span class='target'>branchB target</span></span>";
+    
+    $(e).html("");
+    $(e).append(content);
+    assertEquals(4, $("span", e).size());
+    assertEquals(2, $("span.target", e).size());
+    assertHtmlEquals(content, $(e).html());
   }
 }

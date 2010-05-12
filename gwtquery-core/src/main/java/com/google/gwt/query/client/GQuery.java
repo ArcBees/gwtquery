@@ -405,10 +405,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static GQuery innerHtml(String html) {
-    Element div = DOM.createDiv();
-    div.setInnerHTML(html);
-    return new GQuery(
-        copyNodeList((NodeList<Element>) (NodeList<?>) div.getChildNodes()));
+    return $(clean(html));
   }
 
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
@@ -2395,7 +2392,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private JSArray clean(String elem) {
+  protected static JSArray clean(String elem) {
     String tags = elem.trim().toLowerCase();
     String preWrap = "", postWrap = "";
     int wrapPos = 0;
@@ -2475,11 +2472,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return domManip(clean(html), func);
   }
 
-  private GQuery domManip(NodeList nodes, int func) {
+  private GQuery domManip(NodeList<?> nodes, int func) {
     for (Element e : elements()) {
       for (int i = 0; i < nodes.getLength(); i++) {
         Node n = nodes.getItem(i);
-        if (size() > 1) {
+        if (nodes.getLength() > 1) {
           n = n.cloneNode(true);
         }
 
