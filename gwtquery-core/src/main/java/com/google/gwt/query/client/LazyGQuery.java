@@ -2,6 +2,7 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.query.client.css.CssProperty;
 
 /**
  * Created by IntelliJ IDEA. User: ray Date: May 2, 2009 Time: 10:48:07 PM To
@@ -200,7 +201,8 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    *          inferred from the CSS property type
    * @return
    */
-  // <T> LazyGQuery<T> css(CssProperty<T> property, T value);
+   <S, P extends CssProperty<S>> LazyGQuery<T> css(P cssProperty, S value);
+
 
   /**
    * Set a key/value object as style properties to all matched elements. This

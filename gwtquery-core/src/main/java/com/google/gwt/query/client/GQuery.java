@@ -342,7 +342,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return a lazy version of the GQuery interface. Lazy function calls are
    * simply queued up and not executed immediately.
    */
-  public static LazyGQuery lazy() {
+  public static LazyGQuery<?> lazy() {
     return GQuery.$().createLazy();
   }
 

@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -48,6 +49,8 @@ public class GQueryEventsTest extends GWTTestCase {
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
       e.setId("evnt-tst");
+      
+      CSS.init();
     } else {
       e.setInnerHTML("");
     }
@@ -173,6 +176,19 @@ public class GQueryEventsTest extends GWTTestCase {
     });
     $("p", e).dblclick();
     assertEquals("yellow", $("p", e).css("color"));    
+  }
+
+  public void testLazyMethods() {
+    $(e).css("color", "white");
+    assertEquals("white", $(e).css("color"));
+    
+    $(e).one(Event.ONCLICK, null, lazy().css("color", "red").done());
+    $(e).click();
+    assertEquals("red", $(e).css("color"));
+    
+    $(e).click(lazy().css(CSS.COLOR, CSS.BLACK).done());
+    $(e).click();
+    assertEquals("black", $(e).css("color"));    
   }
   
   public void testWidgetEvents() {
