@@ -9,7 +9,7 @@
         <![CDATA[
    // useful for benchmarking tests when you want to force non-accelerated queries
    //if(window.location.href.indexOf("_selector_force_js") != -1) return "js"; 
-   if(document.querySelectorAll && /native/.test(document.querySelectorAll.toString())) {
+   if(document.querySelectorAll && /native/.test(String(document.querySelectorAll))) {
       return "native";
    }
    return "js"
