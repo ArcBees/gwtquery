@@ -73,7 +73,9 @@ public class SelectorEngine {
   public static native NodeList<Element> xpathEvaluate(String selector,
       Node ctx, JSArray r) /*-{
       var node;
-      var result = $doc.evaluate(selector, ctx, null, 0, null);
+      var ownerDoc = ctx && (ctx.ownerDocument || ctx );
+      var evalDoc = ownerDoc ? ownerDoc : $doc;
+      var result = evalDoc.evaluate(selector, ctx, null, 0, null);      
       while ((node = result.iterateNext())) {
           r.push(node);
       }
