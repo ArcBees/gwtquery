@@ -1424,32 +1424,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Get the current offset of the first matched element, in pixels, relative to
-   * the document. The returned object contains two Float properties, top and
-   * left. Browsers usually round these values to the nearest integer pixel for
-   * actual positioning. The method works only with visible elements.
+   * the document. The returned object contains two integer properties, top and
+   * left. The method works only with visible elements.
    */
   public Offset offset() {
-    if (length() == 0) {
-      return new Offset(0, 0);
-    }
-    int boxtop = getClientBoundingRectTop(get(0));
-    int boxleft = getClientBoundingRectLeft(get(0));
-    Element docElem = document.getDocumentElement();
-    Element body = document.getBody();
-    int clientTop = docElem.getPropertyInt("clientTop");
-    if (clientTop == 0) {
-      clientTop = body.getPropertyInt("clientTop");
-    }
-    int clientLeft = docElem.getPropertyInt("clientLeft");
-    if (clientLeft == 0) {
-      clientLeft = body.getPropertyInt("clientLeft");
-    }
-    int wleft = Window.getScrollLeft();
-    int wtop = Window.getScrollTop();
-    int top = boxtop + (wtop == 0 ? body.getScrollTop() : wtop) - clientTop;
-    int left = boxleft + (wleft == 0 ? body.getScrollLeft() : wleft)
-        - clientLeft;
-    return new Offset(top, left);
+    return new Offset(get(0).getAbsoluteTop(), get(0).getAbsoluteLeft());
   }
 
   /**
@@ -1539,22 +1518,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * and padding. This method only works with visible elements.
    */
   public Offset position() {
-
-    if (size() > 0) {
-      GQuery offsetParent = offsetParent();
-      Offset offset = offset();
-      Element e = offsetParent.get(0);
-
-      Offset parentOffset = BodyElement.is(e) || "html".equals(e.getTagName())
-          ? new Offset(0, 0) : offsetParent.offset();
-      offset.top -= num(this, "marginTop");
-      offset.left -= num(this, "marginLeft");
-      parentOffset.top += num(offsetParent, "borderTopWidth");
-      parentOffset.left += num(offsetParent, "borderLeftWidth");
-      return new Offset(offset.top - parentOffset.top,
-          offset.left - parentOffset.left);
-    }
-    return null;
+    return new Offset(get(0).getOffsetTop(), get(0).getAbsoluteLeft());
   }
 
   /**
@@ -2503,14 +2467,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     ensureStyleImpl();
     return styleImpl.getPropertyName(key);
   }
-
-  private native int getClientBoundingRectLeft(Element element) /*-{
-    return element.getClientBoundingRect().left;
-  }-*/;
-
-  private native int getClientBoundingRectTop(Element element) /*-{
-    return element.getClientBoundingRect().top;
-  }-*/;
 
   private native Document getContentDocument(Node n) /*-{
     return n.contentDocument || n.contentWindow.document;
