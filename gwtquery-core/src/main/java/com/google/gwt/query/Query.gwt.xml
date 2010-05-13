@@ -78,6 +78,7 @@
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="ie6"/>
+        <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineXPath">
@@ -97,6 +98,9 @@
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="selectorCapability" value="native"/>
+        <none>
+           <when-property-is name="user.agent" value="ie8"/>
+        </none>
     </replace-with>
 
     <entry-point class='com.google.gwt.query.client.css.CSS'/>
