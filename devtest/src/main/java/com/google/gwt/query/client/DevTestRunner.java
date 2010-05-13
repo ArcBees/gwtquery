@@ -18,6 +18,9 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Event;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -32,10 +35,37 @@ import com.google.gwt.core.client.EntryPoint;
 public class DevTestRunner extends MyTestCase implements EntryPoint {
 
   public void onModuleLoad() {
-    gwtSetUp();
-    testDomManip();
-  }
+    try {
+      gwtSetUp();
+      
+      testIssue23();
 
+      $(e).after("<div>OK</div>");
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      $(e).after("<div>ERROR: " + ex.getMessage() + "</div>");
+    }
+  }
+  
+  int done = 0;
+  
+  public void testIssue23() {
+    $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
+    $("button").click(new Function() {
+      public boolean f(Event e) {
+        $("table > tbody > tr > td > input:checked").each(new Function() {
+          public void f(Element e) {
+            done ++;
+          }
+        });
+        return true;
+      }
+    });
+    done = 0;
+    $("button").click();
+    assertEquals(1,done);
+  }
+  
   public void testDomManip() {
     String content = "<span class='branchA'><span class='target'>branchA target</span></span>"
       + "<span class='branchB'><span class='target'>branchB target</span></span>";

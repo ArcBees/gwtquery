@@ -45,6 +45,14 @@ public class MyTestCase {
   public static void assertEquals(Object a, Object b) {
     check(a.equals(b), "assertEquals: expected=" + a + " actual=" + b);
   }
+
+  public static void assertTrue(boolean b) {
+    check(b, "assertTrue: actual should be true but is false");
+  }
+  
+  public static void assertFalse(boolean b) {
+    check(!b, "assertTrue: actual should be false but is true");
+  }
   
   public static void check(boolean condition, String message) {
     if (!condition) {
@@ -65,5 +73,7 @@ public class MyTestCase {
         replaceAll("\\s+\\$h=\"[^\"]+\"", "").
         replaceAll(" added=[^ >]+", "");
   }
+  
+  
   
 }
