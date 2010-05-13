@@ -534,6 +534,17 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("span.target", e).size());
     assertHtmlEquals(content, $(e).html());
   }
+
+  public void testCleanMethod() {
+    $(e).html("").append($("<tr/>"));
+    assertHtmlEquals("<tr></tr>", $(e).html());
+    
+    $(e).html("").append($("<td/>"));
+    assertHtmlEquals("<td></td>", $(e).html());
+
+    $(e).html("").append($("<th/>"));
+    assertHtmlEquals("<th></th>", $(e).html());
+  }
   
   public void testCapitalLetters() {
     $(e).html("<div id='testImageDisplay' class='whatEver'>Content</div>");
