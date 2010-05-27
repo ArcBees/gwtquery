@@ -323,14 +323,14 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             for (int r = 0, rlen = matchingElms.size(); r < rlen; r++) {
               Element current = matchingElms.getElement(r);
               boolean addElm = false;
-              for (int s = 0, sl = regExpAttributes.length, attributeRegExp;
+              for (int s = 0, sl = regExpAttributes.length;
                   s < sl; s++) {
                 addElm = false;
-                Regexp attributeRegExp2 = regExpAttributes[s];
+                Regexp attributeRegexp = regExpAttributes[s];
                 String currentAttr = getAttr(current, regExpAttributesStr[s]);
                 if (SelectorEngine.truth(currentAttr)
                     && currentAttr.length() != 0) {
-                  if (attributeRegExp2 == null || attributeRegExp2
+                  if (attributeRegexp == null || attributeRegexp
                       .test(currentAttr)) {
                     addElm = true;
                   }
@@ -427,7 +427,6 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     JSArray prevParents = JSArray.create();
     boolean previousDir = pseudoClass.startsWith("first") ? true : false;
     JSArray matchingElms = JSArray.create();
-    Node prev, next, previous;
     if (SelectorEngine.eq("first-child", pseudoClass) || SelectorEngine
         .eq("last-child", pseudoClass)) {
       getFirstChildPseudo(previousMatch, previousDir, matchingElms);

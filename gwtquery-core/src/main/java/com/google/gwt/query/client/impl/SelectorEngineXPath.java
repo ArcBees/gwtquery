@@ -15,15 +15,15 @@
  */
 package com.google.gwt.query.client.impl;
 
-import com.google.gwt.core.client.GWT;
+import static com.google.gwt.query.client.SelectorEngine.eq;
+import static com.google.gwt.query.client.SelectorEngine.truth;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
-import static com.google.gwt.query.client.SelectorEngine.eq;
-import static com.google.gwt.query.client.SelectorEngine.truth;
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath
@@ -58,6 +58,8 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
   private Regexp selectorSplitRegExp;
 
   private Regexp combinator;
+  
+  private SelectorEngineImpl jsEngine = null;
 
   public SelectorEngineXPath() {
   }
@@ -115,7 +117,6 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
                   "[contains(concat(' ', @class, ' '), ' $1 ')]");
         }
         if (truth(splitRule.allAttr)) {
-          GWT.log("AllAttr is " + splitRule.allAttr, null);
           xPathExpression += replaceAttr(
               SelectorEngine.or(splitRule.allAttr, ""));
         }
@@ -139,7 +140,14 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
           }
         }
       }
-      SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm);
+      try {
+        SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm).cast();  
+      } catch (Exception e) {
+        if (jsEngine == null) {
+          jsEngine = new SelectorEngineSizzle();
+        }
+        return jsEngine.select(sel, ctx).cast();
+      }
     }
     return elm;
   }

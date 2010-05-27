@@ -63,22 +63,9 @@
     </replace-with>
 
 
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJS">
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-    </replace-with>
-
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJS">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="user.agent" value="gecko"/>
-    </replace-with>
-
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineJSIE">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="user.agent" value="ie6"/>
-        <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineXPath">

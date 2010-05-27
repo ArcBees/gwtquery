@@ -52,7 +52,7 @@ public abstract class Function {
    * Override this method for bound event handlers.
    */
   public boolean f(Event e) {
-    f(e.getCurrentTarget());
+    f((Element)e.getCurrentEventTarget().cast());
     return true;
   }
 }
