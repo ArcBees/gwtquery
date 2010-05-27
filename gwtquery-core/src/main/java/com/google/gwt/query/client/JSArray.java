@@ -32,47 +32,47 @@ public class JSArray extends NodeList<Element> {
     return [node];
   }-*/;
 
-  public static native JSArray create(NodeList nl) /*-{
-    var r = [], len=nl.length;
-    for(var i=0; i<len; i++) {
-      r.push(nl[i]);
+  public static JSArray create(NodeList<?> nl) {
+    JSArray ret = create();
+    for(int i=0; i<nl.getLength(); i++) {
+      ret.addNode(nl.getItem(i));
     }
-    return r;
-  }-*/;
+    return ret;
+  }
 
   protected JSArray() {
   }
 
   public final native void addInt(int i) /*-{
-       this[this.length]=i;
+    this[this.length]=i;
   }-*/;
 
   public final native void addNode(Node n) /*-{
-     this[this.length]=n;
+    this[this.length]=n;
   }-*/;
 
   public final native void addNode(Node ci, int i) /*-{
-       this[i]=ci;
-    }-*/;
+    this[i]=ci;
+  }-*/;
 
   public final native void concat(JSArray ary) /*-{
-     this.concat(ary);
+    this.concat(ary);
   }-*/;
 
   public final native Element getElement(int i) /*-{
-        return this[i];
-    }-*/;
+    return this[i];
+  }-*/;
 
   public final native int getInt(int i) /*-{
     return this[i]  || 0;
   }-*/;
 
   public final native Node getNode(int i) /*-{
-        return this[i];
+    return this[i];
   }-*/;
 
   public final native String getStr(int i) /*-{
-     return this[i] || null;
+    return this[i] || null;
   }-*/;
 
   public final void pushAll(JSArray prevElem) {
