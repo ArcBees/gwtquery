@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.impl.SelectorEngineJS;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.SelectorEngineXPath;
 import com.google.gwt.user.client.ui.HTML;
