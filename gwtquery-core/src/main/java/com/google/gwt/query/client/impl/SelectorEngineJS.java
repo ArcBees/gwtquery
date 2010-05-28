@@ -170,7 +170,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     selectorSplitRegExp = new Regexp("[^\\s]+", "g");
     childOrSiblingRefRegExp = new Regexp("^(>|\\+|~)$");
     cssSelectorRegExp = new Regexp(
-        "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
+        "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
   }
 
   public NodeList<Element> select(String sel, Node ctx) {
@@ -304,7 +304,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             Regexp[] regExpAttributes = new Regexp[allAttr.size()];
             String[] regExpAttributesStr = new String[allAttr.size()];
             Regexp attributeMatchRegExp = new Regexp(
-                "(\\w+)(\\^|\\$|\\*|\\||~)?=?([\\w\u00C0-\uFFFF\\s\\-_\\.]+)?");
+                "(\\w+)(\\^|\\$|\\*|\\||~)?=?[\"']?([\\w\u00C0-\uFFFF\\s\\-_\\.]+)?");
             for (int q = 0, ql = allAttr.size(); q < ql; q++) {
               JSArray attributeMatch = attributeMatchRegExp
                   .exec(allAttr.getStr(q));

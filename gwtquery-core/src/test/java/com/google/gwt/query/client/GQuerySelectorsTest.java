@@ -25,6 +25,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineJS;
+import com.google.gwt.query.client.impl.SelectorEngineNative;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.SelectorEngineXPath;
 import com.google.gwt.user.client.ui.HTML;
@@ -155,7 +156,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     }
   }
 
-  public void testAllSelectors() {
+  public void testCompiledSelectors() {
     final AllSelectors sel = GWT.create(AllSelectors.class);
     $(e).html(getTestContent());
 
@@ -204,6 +205,15 @@ public class GQuerySelectorsTest extends GWTTestCase {
     assertArrayContains(sel.ulTocLiTocLine2().getLength(), 12);
   }
 
+  public void testIssue12() {
+    $(e).html("<table><tr><td><p myCustomAttr='whatever'><input type='radio' name='wantedName' value='v1'>1</input></p><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button myCustomAttr='val'>Click</button></tr><td></table>");
+    executeSelectInAllImplementations("[myCustomAttr]", 2);
+    executeSelectInAllImplementations("*[myCustomAttr]", 2);
+    executeSelectInAllImplementations("input[name=wantedName]", 1);
+    executeSelectInAllImplementations("input[name='wantedName']", 1);
+    executeSelectInAllImplementations("input[name=\"wantedName\"]", 1);
+  }
+
   public void testSelectorEngineDomAssistant() {
     // This test runs very slow in chrome
     SelectorEngineImpl selEng = new SelectorEngineJS();
@@ -228,7 +238,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     TestSelectors selectors = GWT.create(TestSelectors.class);
     assertEquals(1, selectors.allChecked().size());
   }
-
+  
   public void testSelectorsWithContext() {
     $(e).append(
             "<div class='branchA'><div class='target'>branchA target</div></div>"
@@ -262,6 +272,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
   private void assertArrayContains(Object result, Object... array) {
     assertArrayContains("", result, array);
   }
+  
   private void assertArrayContains(String message, Object result, Object... array) {
     String values = "";
     boolean done = false;
@@ -274,6 +285,23 @@ public class GQuerySelectorsTest extends GWTTestCase {
     message = message + ", value (" + result + ") not found in: " + values;
     assertTrue(message, done);
   }
+  
+  private void executeSelectInAllImplementations(String selector, int result) {
+    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
+    SelectorEngineImpl selJS = new SelectorEngineJS();
+    SelectorEngineImpl selXpath = new SelectorEngineXPath();
+    SelectorEngineImpl selNative = new SelectorEngineNative();
+    assertEquals(result, selSizz.select(selector, e).getLength());
+    assertEquals(result, selJS.select(selector, e).getLength());
+    assertEquals(result, selXpath.select(selector, e).getLength());
+    if (hasNativeSelector()) {
+      assertEquals(result, selNative.select(selector, e).getLength());
+    }
+  }
+  
+  private static native boolean hasNativeSelector() /*-{
+    return !!(document.querySelectorAll && /native/.test(String(document.querySelectorAll)));
+  }-*/;
 
   private void executeSelectorEngineTests(SelectorEngineImpl selEng) {
     $(e).html(getTestContent());
