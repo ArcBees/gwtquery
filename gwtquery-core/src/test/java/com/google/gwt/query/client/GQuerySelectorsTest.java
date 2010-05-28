@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class GQuerySelectorsTest extends GWTTestCase {
 
-  private interface AllSelectors extends Selectors {
+  protected interface AllSelectors extends Selectors {
     // @Selector("h1[id]:contains(Selectors)")
     // NodeList<Element> h1IdContainsSelectors();
     // @Selector("*:first")
@@ -118,7 +118,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     NodeList<Element> ulTocLiTocLine2();
   }
 
-  private interface TestSelectors extends Selectors {
+  protected interface TestSelectors extends Selectors {
     @Selector("*:checked")
     GQuery allChecked();
     @Selector("*:checked")
