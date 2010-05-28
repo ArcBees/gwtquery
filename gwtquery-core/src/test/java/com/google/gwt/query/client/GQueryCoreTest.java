@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Google Inc.
+ * Copyright 2010 Google Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -43,17 +43,19 @@ public class GQueryCoreTest extends GWTTestCase {
     // IE does not put quotes to some attributes
     // Investigate: IE in method find puts the attribute $h="4" 
     // Investigate: IE in method filter adds the attrib added="null"
-    return s.toString().trim().toLowerCase().
-        replaceAll("[\r\n]", "").
-        replaceAll(" ([\\w]+)=[\"']([^\"']+)[\"']", " $1=$2").
-        replaceAll("\\s+\\$h=\"[^\"]+\"", "").
-        replaceAll(" added=[^ >]+", "");
+    return s.toString().trim().toLowerCase().replaceAll(
+            "[\r\n]", "").replaceAll(
+            " ([\\w]+)=[\"']([^\"']+)[\"']", " $1=$2").replaceAll(
+            "\\s+\\$h=\"[^\"]+\"", "").replaceAll(
+            " added=[^ >]+", "");
   }
 
+  int done = 0;
+  
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
-  
+
   public void gwtSetUp() {
     if (e == null) {
       testPanel = new HTML();
@@ -64,7 +66,7 @@ public class GQueryCoreTest extends GWTTestCase {
       e.setInnerHTML("");
     }
   }
-
+  
   public void testAttributeMethods() {
 
     $(e).html("<p class=\"a1\">Content</p>");
@@ -135,6 +137,37 @@ public class GQueryCoreTest extends GWTTestCase {
     $("p", e).css(Properties.create("COLOR: 'red', 'FONT-WEIGHT': 'bold'"));
     assertEquals("red", $("p", e).css("color"));
     assertEquals("", $("p", e).css("background"));
+  }
+
+  public void testCapitalLetters() {
+    $(e).html("<div id='testImageDisplay' class='whatEver'>Content</div>");
+    assertEquals(1, $("#testImageDisplay").size());
+    // Commented because IE is case insensitive
+    // assertEquals(0, $("#testimagedisplay").size());
+    assertEquals(1, $(".whatEver").size());
+    assertEquals(0, $(".whatever").size());
+  }
+
+  public void testCleanMethod() {
+    $(e).html("").append($("<tr/>"));
+    assertHtmlEquals("<tr></tr>", $(e).html());
+    
+    $(e).html("").append($("<td/>"));
+    assertHtmlEquals("<td></td>", $(e).html());
+
+    $(e).html("").append($("<th/>"));
+    assertHtmlEquals("<th></th>", $(e).html());
+  }
+  
+  public void testDomManip() {
+    String content = "<span class='branchA'><span class='target'>branchA target</span></span>"
+      + "<span class='branchB'><span class='target'>branchB target</span></span>";
+    
+    $(e).html("");
+    $(e).append(content);
+    assertEquals(4, $("span", e).size());
+    assertEquals(2, $("span.target", e).size());
+    assertHtmlEquals(content, $(e).html());
   }
   
   public void testEach() {
@@ -240,6 +273,23 @@ public class GQueryCoreTest extends GWTTestCase {
     gq.val("v1");
     assertEquals("v1", gq.val());
   }
+
+  public void testIssue23() {
+    $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
+    $("button").click(new Function() {
+      public boolean f(Event e) {
+        $("table > tbody > tr > td > input:checked").each(new Function() {
+          public void f(Element e) {
+            done++;
+          }
+        });
+        return true;
+      }
+    });
+    done = 0;
+    $("button").click();
+    assertEquals(1,done);
+  }
   
   public void testModifyMethods() {
     String pTxt = "<p>I would like to say: </p>";
@@ -327,7 +377,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $("p", e).after($("b", e).clone().get(0));
     assertHtmlEquals(expected, $(e).html());
   }
-  
+
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
@@ -338,8 +388,6 @@ public class GQueryCoreTest extends GWTTestCase {
     assertNotNull(p.get("border"));
   }
   
-
-
   public void testRelativeMethods() {
     String content = "<p><span>Hello</span>, how are you?</p>";
     String expected = "<span>Hello</span>";
@@ -487,7 +535,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     assertHtmlEquals(expected, $("p", e).contains("test"));
   }
-
+  
   public void testSliceMethods() {
     String content = "<p>This is just a test.</p><p>So is this</p>";
     $(e).html(content);
@@ -508,7 +556,6 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("p", e).slice(0, -1).size());
     assertEquals(0, $("p", e).slice(3, 2).size());
   }
-
   public void testWrapMethod() {
     String content = "<p>Test Paragraph.</p>";
     String wrapper = "<div id=\"content\">Content</div>";
@@ -523,55 +570,6 @@ public class GQueryCoreTest extends GWTTestCase {
     expected = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
     $("*", e).wrap("<b></b>");
     assertHtmlEquals(expected, $(e).html());
-  }
-  
-  public void testDomManip() {
-    String content = "<span class='branchA'><span class='target'>branchA target</span></span>"
-      + "<span class='branchB'><span class='target'>branchB target</span></span>";
-    
-    $(e).html("");
-    $(e).append(content);
-    assertEquals(4, $("span", e).size());
-    assertEquals(2, $("span.target", e).size());
-    assertHtmlEquals(content, $(e).html());
-  }
-
-  public void testCleanMethod() {
-    $(e).html("").append($("<tr/>"));
-    assertHtmlEquals("<tr></tr>", $(e).html());
-    
-    $(e).html("").append($("<td/>"));
-    assertHtmlEquals("<td></td>", $(e).html());
-
-    $(e).html("").append($("<th/>"));
-    assertHtmlEquals("<th></th>", $(e).html());
-  }
-  
-  public void testCapitalLetters() {
-    $(e).html("<div id='testImageDisplay' class='whatEver'>Content</div>");
-    assertEquals(1, $("#testImageDisplay").size());
-    // Commented because IE is case insensitive
-    // assertEquals(0, $("#testimagedisplay").size());
-    assertEquals(1, $(".whatEver").size());
-    assertEquals(0, $(".whatever").size());
-  }
-  
-  int done = 0;
-  public void testIssue23() {
-    $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
-    $("button").click(new Function() {
-      public boolean f(Event e) {
-        $("table > tbody > tr > td > input:checked").each(new Function() {
-          public void f(Element e) {
-            done ++;
-          }
-        });
-        return true;
-      }
-    });
-    done = 0;
-    $("button").click();
-    assertEquals(1,done);
   }
   
 }

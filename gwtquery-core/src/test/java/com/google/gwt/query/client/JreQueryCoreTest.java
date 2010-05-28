@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Google Inc.
+ * Copyright 2010 Google Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,6 +26,11 @@ public class JreQueryCoreTest extends GWTTestCase {
     return null;
   }
   
+  public void testAssertHtmlEquals() {
+    GQueryCoreTest.assertHtmlEquals("<span>hello</span>","<span $h=\"5\">hello</span>");
+    GQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> "," <p class=abc added=\"null\">Whatever</p>");
+  }
+
   public void testWrapPropertiesString() {
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("border:'1px solid black'"));
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("(border:'1px solid black')"));
@@ -34,11 +39,6 @@ public class JreQueryCoreTest extends GWTTestCase {
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("(border:'1px solid black')"));
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("{(border:'1px solid black')}"));
     assertEquals("({border:'1px solid black'})", Properties.wrapPropertiesString("({border:'1px solid black'})"));
-  }
-
-  public void testAssertHtmlEquals() {
-    GQueryCoreTest.assertHtmlEquals("<span>hello</span>","<span $h=\"5\">hello</span>");
-    GQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> "," <p class=abc added=\"null\">Whatever</p>");
   }
 
 }
