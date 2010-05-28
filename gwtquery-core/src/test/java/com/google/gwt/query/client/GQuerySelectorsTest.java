@@ -205,8 +205,8 @@ public class GQuerySelectorsTest extends GWTTestCase {
 
   public void testSelectorEngineDomAssistant() {
     // This test runs very slow in chrome
-    // SelectorEngineImpl selEng = new SelectorEngineJS();
-    // executeSelectorEngineTests(selEng);
+    SelectorEngineImpl selEng = new SelectorEngineJS();
+    executeSelectorEngineTests(selEng);
   }
 
   public void testSelectorEngineSizzle() {
