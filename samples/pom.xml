@@ -39,13 +39,13 @@
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <modules>
                         <module>
-                            gwtquery.samples.GwtQueryDemo
+                            gwtquery.samples.GwtQuerySample
                         </module>
                         <module>
                             gwtquery.samples.GwtQueryBench
                         </module>
                         <module>
-                            gwtquery.samples.GwtQuerySample
+                            gwtquery.samples.GwtQueryDemo
                         </module>
                         <module>
                             gwtquery.samples.GwtQueryPlugin
