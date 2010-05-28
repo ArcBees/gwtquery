@@ -65,10 +65,17 @@
             <id>googlecode</id>
             <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
         </repository>
+     <!--
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
             <id>googlecode</id>
             <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
+        </snapshotRepository>
+      -->
+        <snapshotRepository>
+          <uniqueVersion>false</uniqueVersion>
+          <id>localfolder</id>
+          <url>file:mavenrepo</url>
         </snapshotRepository>
     </distributionManagement>
 
