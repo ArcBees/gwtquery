@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.impl;
 
-import java.util.HashSet;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -630,19 +629,6 @@ public class SelectorEngineSizzle extends SelectorEngineImpl {
     return @com.google.gwt.query.client.impl.SelectorEngineSizzle::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
   }-*/;   
    
-  public static JsArray<Element> unique(JsArray<Element> a) {
-    JsArray<Element> ret = JavaScriptObject.createArray().cast();
-    HashSet<Integer> f = new HashSet<Integer>();
-    for (int i = 0; i < a.length(); i++) {
-      Element e = a.get(i);
-      if (!f.contains(e.hashCode())) {
-        f.add(e.hashCode());
-        ret.push(e);
-      }
-    }    
-    return ret;
-  }
-  
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     results = results || [];
     var origContext = context = context || document;

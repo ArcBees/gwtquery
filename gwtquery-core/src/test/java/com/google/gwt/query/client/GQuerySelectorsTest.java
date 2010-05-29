@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -268,6 +269,23 @@ public class GQuerySelectorsTest extends GWTTestCase {
     assertEquals(1, selectors.target().length());
     assertEquals("branchB target", selectors.target().text());
   }
+  
+  public void testUnique() {
+    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
+    $(e).html(getTestContent());
+    
+    JsArray<Element> a;
+    a = selSizz.select("p", e).cast();
+    int n = a.length();
+    assertTrue(n > 300);
+    for (int i=0; i<n; i++) {
+      a.push(a.get(i));
+    }
+    assertEquals(n * 2 , a.length());
+    a = SelectorEngineImpl.unique(a);
+    assertEquals(n, a.length());
+  }
+  
   
   private void assertArrayContains(Object result, Object... array) {
     assertArrayContains("", result, array);

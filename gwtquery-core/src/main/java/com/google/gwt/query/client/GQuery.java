@@ -20,8 +20,8 @@ import static com.google.gwt.query.client.Events.Events;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -39,6 +39,7 @@ import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -135,41 +136,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }-*/;
   }
 
-  private static final class FastSet extends JavaScriptObject {
-
-    public static FastSet create() {
-      return JavaScriptObject.createObject().cast();
-    }
-
-    protected FastSet() {
-    }
-
-    public void add(Object o) {
-      add0(o.hashCode());
-    }
-
-    public boolean contains(Object o) {
-      return contains0(o.hashCode());
-    }
-
-    public void remove(Object o) {
-      remove0(o.hashCode());
-    }
-
-    private native void add0(int hc) /*-{
-      this[hc]=true;
-    }-*/;
-
-    private native boolean contains0(int hc) /*-{
-      return this[hc] || false;
-    }-*/;
-
-    private native void remove0(int hc) /*-{
-      delete this[hc];
-    }-*/;
-  }
-
-  private static final class Queue<T> extends JavaScriptObject {
+  public static final class Queue<T> extends JavaScriptObject {
 
     public static Queue newInstance() {
       return createArray().cast();
@@ -2029,16 +1996,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * only works on arrays of DOM elements, not strings or numbers.
    */
   public JSArray unique(JSArray result) {
-    FastSet f = FastSet.create();
-    JSArray ret = JSArray.create();
-    for (int i = 0; i < result.getLength(); i++) {
-      Element e = result.getElement(i);
-      if (!f.contains(e)) {
-        f.add(e);
-        ret.addNode(e);
-      }
-    }
-    return ret;
+    return SelectorEngineImpl.unique(result.<JsArray<Element>>cast()).cast();
   }
 
   /**
@@ -2396,7 +2354,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return n.getChildNodes().cast();
   }
 
-  private <S> Object data(Element item, String name, S value) {
+  protected <S> Object data(Element item, String name, S value) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();

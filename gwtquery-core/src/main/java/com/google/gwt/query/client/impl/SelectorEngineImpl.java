@@ -15,6 +15,10 @@
  */
 package com.google.gwt.query.client.impl;
 
+import java.util.HashSet;
+
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -131,4 +135,17 @@ public abstract class SelectorEngineImpl {
    * @return a list of matched nodes
    */
   public abstract NodeList<Element> select(String selector, Node ctx);
+
+  public static JsArray<Element> unique(JsArray<Element> a) {
+    JsArray<Element> ret = JavaScriptObject.createArray().cast();
+    HashSet<Integer> f = new HashSet<Integer>();
+    for (int i = 0; i < a.length(); i++) {
+      Element e = a.get(i);
+      if (!f.contains(e.hashCode())) {
+        f.add(e.hashCode());
+        ret.push(e);
+      }
+    }    
+    return ret;
+  }
 }

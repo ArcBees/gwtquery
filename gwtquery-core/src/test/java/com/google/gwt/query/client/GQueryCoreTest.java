@@ -20,6 +20,8 @@ import static com.google.gwt.query.client.GQuery.$$;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -556,6 +558,20 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("p", e).slice(0, -1).size());
     assertEquals(0, $("p", e).slice(3, 2).size());
   }
+
+  public void testUnique() {
+    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
+    GQuery g = $(e).html("<div><p></p><p></p><span></span><p></p>");
+    JSArray a;
+    a = selSizz.select("p", e).cast();
+    assertEquals(3, a.getLength());
+    a.addNode(a.getNode(0));
+    a.addNode(a.getNode(3));
+    assertEquals(5 , a.getLength());
+    a = g.unique(a);
+    assertEquals(3, a.getLength());
+  }
+  
   public void testWrapMethod() {
     String content = "<p>Test Paragraph.</p>";
     String wrapper = "<div id=\"content\">Content</div>";
