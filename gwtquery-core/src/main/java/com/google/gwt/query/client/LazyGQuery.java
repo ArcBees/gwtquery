@@ -226,16 +226,6 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> dblclick(Function... f);
 
   /**
-   * Removes a queued function from the front of the queue and executes it.
-   */
-  LazyGQuery<T> dequeue(String type);
-
-  /**
-   * Removes a queued function from the front of the FX queue and executes it.
-   */
-  LazyGQuery<T> dequeue();
-
-  /**
    * Run one or more Functions over each element of the GQuery. You have to
    * override one of these funcions: public void f(Element e) public String
    * f(Element e, int i)
@@ -614,18 +604,6 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * Find all sibling elements in front of the current element.
    */
   LazyGQuery<T> prevAll();
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements.
-   */
-  LazyGQuery<T> queue(String type, Function data);
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements in the FX queue.
-   */
-  LazyGQuery<T> queue(Function data);
 
   /**
    * Removes all matched elements from the DOM.

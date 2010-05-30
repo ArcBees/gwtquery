@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Timer;
 /**
  * Effects plugin for Gwt Query.
  */
-public class Effects extends GQuery {
+public class Effects extends GQueryQueue {
 
   /**
    * Built in easing functions.
@@ -290,7 +290,7 @@ public class Effects extends GQuery {
 
     public void complete(Element elem) {
       if (queue) {
-        $(elem).dequeue();
+        new Effects(elem).dequeue();
       }
       if (complete != null) {
         complete.f(elem);

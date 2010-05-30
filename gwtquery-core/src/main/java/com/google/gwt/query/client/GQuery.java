@@ -135,32 +135,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       this[id]=obj;
     }-*/;
   }
-
-  public static final class Queue<T> extends JavaScriptObject {
-
-    public static Queue newInstance() {
-      return createArray().cast();
-    }
-
-    protected Queue() {
-    }
-
-    public native T dequeue() /*-{
-       return this.shift();
-    }-*/;
-
-    public native void enqueue(T foo) /*-{
-       this.push(foo);
-     }-*/;
-
-    public native int length() /*-{
-       return this.length;
-    }-*/;
-
-    public native T peek(int i) /*-{
-      return this[i];
-    }-*/;
-  }
   
   public static final Element window = window();
   public static final Document document = Document.get();
@@ -819,23 +793,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery dblclick(Function...f) {
     return bindOrFire(Event.ONDBLCLICK, null, f);
-  }
-
-  /**
-   * Removes a queued function from the front of the queue and executes it.
-   */
-  public GQuery dequeue(String type) {
-    for (Element e : elements()) {
-      dequeue(e, type);
-    }
-    return this;
-  }
-
-  /**
-   * Removes a queued function from the front of the FX queue and executes it.
-   */
-  public GQuery dequeue() {
-    return dequeue("__FX");
   }
 
   /**
@@ -1566,50 +1523,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       allPreviousSiblingElements(getPreviousSiblingElement(e), result);
     }
     return pushStack(unique(result), "prevAll", getSelector());
-  }
-
-  /**
-   * Returns a reference to the first element's queue (which is an array of
-   * functions).
-   */
-  public Queue<Function> queue(String type) {
-    return queue(elements.getItem(0), type, null);
-  }
-
-  /**
-   * Returns a reference to the FX queue.
-   */
-  public Queue<Function> queue() {
-    return queue(elements.getItem(0), "__FX", null);
-  }
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements.
-   */
-  public GQuery queue(String type, Function data) {
-    for (Element e : elements()) {
-      queue(e, type, data);
-    }
-    return this;
-  }
-
-  /**
-   * Replaces the current queue with the given queue on all matched elements.
-   */
-  public GQuery queue(String type, Queue data) {
-    for (Element e : elements()) {
-      replacequeue(e, type, data);
-    }
-    return this;
-  }
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements in the FX queue.
-   */
-  public GQuery queue(Function data) {
-    return queue("__FX", data);
   }
 
   /**
@@ -2375,21 +2288,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return name != null ? d.getObject(name) : id;
   }
 
-  private void dequeue(Element elem, String type) {
-    Queue<Function> q = queue(elem, type, null);
-
-    if (q != null) {
-      Function f = q.dequeue();
-
-      if (SelectorEngine.eq(type, "__FX")) {
-        f = q.peek(0);
-      }
-      if (f != null) {
-        f.f(elem);
-      }
-    }
-  }
-
   private GQuery domManip(String html, int func) {
     return domManip(clean(html), func);
   }
@@ -2461,27 +2359,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return 0;
   }
 
-  private Queue<Function> queue(Element elem, String type, Function data) {
-    if (elem != null) {
-      type = type + "queue";
-      Object q = (Queue) data(elem, type, null);
-      if (q == null) {
-        q = data(elem, type, Queue.newInstance());
-      }
-      Queue<Function> qq = (Queue<Function>) q;
-      if (data != null) {
-        qq.enqueue(data);
-      }
-      if (SelectorEngine.eq(type, "__FXqueue") && qq.length() == 1) {
-        if (data != null) {
-          data.f(elem);
-        }
-      }
-      return qq;
-    }
-    return null;
-  }
-
   private void removeData(Element item, String name) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
@@ -2498,13 +2375,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     } else {
       dataCache.delete(id);
-    }
-  }
-
-  private void replacequeue(Element elem, String type, Queue data) {
-    if (elem != null) {
-      type = type + "queue";
-      data(elem, type, data);
     }
   }
 
