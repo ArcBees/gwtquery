@@ -39,7 +39,7 @@ public class GQueryEffectsTest extends GWTTestCase {
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
-  
+
   public void gwtSetUp() {
     if (e == null) {
       testPanel = new HTML();
@@ -52,8 +52,9 @@ public class GQueryEffectsTest extends GWTTestCase {
   }
 
   public void testEffects() {
-    $(e).html(
-        "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
+    $(e)
+        .html(
+            "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
 
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
@@ -86,9 +87,13 @@ public class GQueryEffectsTest extends GWTTestCase {
     Timer timerShortTime = new Timer() {
       public void run() {
         double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue("'sectA' opacity must be in the interval 0-0.5 but is: " + o, o > 0 && o < 0.5);
+        assertTrue(
+            "'sectA' opacity must be in the interval 0-0.5 but is: " + o, o > 0
+                && o < 0.5);
         o = Double.valueOf(sectB.css("opacity"));
-        assertTrue("'sectB' opacity must be in the interval 0.5-1 but is: " + o, o > 0.5 && o < 1);
+        assertTrue(
+            "'sectB' opacity must be in the interval 0.5-1 but is: " + o,
+            o > 0.5 && o < 1);
       }
     };
     Timer timerMidTime = new Timer() {
@@ -96,16 +101,21 @@ public class GQueryEffectsTest extends GWTTestCase {
         assertEquals("", sectA.css("display"));
         assertEquals("", sectB.css("display"));
         double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue("'sectA' opacity must be in the interval 0.5-1 but is: " + o, o > 0.5 && o < 1);
+        assertTrue(
+            "'sectA' opacity must be in the interval 0.5-1 but is: " + o,
+            o > 0.5 && o < 1);
         o = Double.valueOf(sectB.css("opacity"));
-        assertTrue("'sectB' opacity must be in the interval 0-0.5 but is: " + o, o > 0 && o < 0.5);
+        assertTrue(
+            "'sectB' opacity must be in the interval 0-0.5 but is: " + o, o > 0
+                && o < 0.5);
       }
     };
     Timer timerLongTime = new Timer() {
       public void run() {
         assertEquals("", sectA.css("display"));
         assertEquals("none", sectB.css("display"));
-        // Last delayed assertion has to stop the test to avoid a timeout failure
+        // Last delayed assertion has to stop the test to avoid a timeout
+        // failure
         finishTest();
       }
     };
@@ -114,40 +124,27 @@ public class GQueryEffectsTest extends GWTTestCase {
     timerMidTime.schedule(1200);
     timerLongTime.schedule(2200);
   }
-  
-  
-  void assertPosition(GQuery g, Offset min, Offset max) {
-    int a = Math.min(min.top, max.top);
-    int b = Math.max(min.top, max.top);
-    boolean c = a <= g.position().top  && g.position().top <=  b;
-    String msg = "Top has the value " + g.position().top + ", but should be in the range: " + a + " - " + b;
-    assertTrue(msg, c);
-    
-    a = Math.min(min.left, max.left);
-    b = Math.max(min.left, max.left);
-    c = a <= g.position().left  && g.position().left <=  b;
-    msg = "Left has the value " + g.position().left + ", but should be in the range: " + a + " - " + b;
-    assertTrue(msg, c);
-  }
-  
-  
-  public void testEffectsShouldBeQueued() {
-    $(e).html(
-        "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
-    
-    final GQuery g = $("#id1").css("position", "relative");
-    final Offset o = g.position();
-    g.as(Effects).
-      animate($$("left: '+=100'"), 400, LINEAR, null).
-      animate($$("top: '+=100'"), 400, LINEAR, null).
-      animate($$("left: '-=100'"), 400, LINEAR, null).
-      animate($$("top: '-=100'"), 400, LINEAR, null);
-    
-    delayTestFinish(2500);
 
+  public void testEffectsShouldBeQueued() {
+    $(e).html("<p id='idtest'>Content 1</p></p>");
+
+    final GQuery g = $("#idtest").css("position", "absolute");
+    final Offset o = g.offset();
+    g.as(Effects).
+        animate($$("left: '+=100'"), 400, LINEAR, null).
+        animate($$("top: '+=100'"), 400, LINEAR, null).
+        animate($$("left: '-=100'"), 400, LINEAR, null).
+        animate($$("top: '-=100'"), 400, LINEAR, null);
+
+    
+    // Configure the max duration for this test
+    delayTestFinish(400 * 4);
+
+    // each timer calls the next one
     final Timer timer1 = new Timer() {
       public void run() {
-        assertPosition(g, o.add(99, 0), o.add(1,0));
+        assertPosition(g, o.add(99, 0), o.add(1, 0));
+        // Last timer should finish the test
         finishTest();
       }
     };
@@ -169,9 +166,27 @@ public class GQueryEffectsTest extends GWTTestCase {
         timer3.schedule(400);
       }
     };
-    
+
+    // Starts the first timer
     timer4.schedule(200);
   }
 
+  private void assertPosition(GQuery g, Offset min, Offset max) {
+    int a = Math.min(min.top, max.top);
+    int b = Math.max(min.top, max.top);
+    int v = g.offset().top;
+    boolean c = a <= v && v <= b;
+    String msg = "Top has the value " + v + ", but should be in the range: "
+        + a + " - " + b;
+    assertTrue(msg, c);
+
+    a = Math.min(min.left, max.left);
+    b = Math.max(min.left, max.left);
+    v = g.offset().left;
+    c = a <= v && v <= b;
+    msg = "Left has the value " + v + ", but should be in the range: " + a
+        + " - " + b;
+    assertTrue(msg, c);
+  }
 
 }
