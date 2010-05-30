@@ -64,13 +64,6 @@ public abstract class GQueryQueue extends GQuery {
   }
 
   /**
-   * Removes a queued function from the front of the FX queue and executes it.
-   */
-  public GQuery dequeue() {
-    return dequeue("__FX");
-  }
-
-  /**
    * Removes a queued function from the front of the queue and executes it.
    */
   public GQueryQueue dequeue(String type) {
@@ -80,20 +73,6 @@ public abstract class GQueryQueue extends GQuery {
     return this;
   }
 
-  /**
-   * Returns a reference to the FX queue.
-   */
-  public Queue<Function> queue() {
-    return queue(elements.getItem(0), "__FX", null);
-  }
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements in the FX queue.
-   */
-  public GQueryQueue queue(Function data) {
-    return queue("__FX", data);
-  }
 
   /**
    * Returns a reference to the first element's queue (which is an array of
@@ -143,19 +122,19 @@ public abstract class GQueryQueue extends GQuery {
   private Queue<Function> queue(Element elem, String type, Function data) {
     if (elem != null) {
       type = type + "queue";
-      Queue<Function> qq = (Queue<Function>) data(elem, type, null);
-      if (qq == null) {
-        qq = (Queue<Function>) data(elem, type, Queue.newInstance());
+      Queue<Function> q = (Queue<Function>) data(elem, type, null);
+      if (q == null) {
+        q = (Queue<Function>) data(elem, type, Queue.newInstance());
       }
       if (data != null) {
-        qq.enqueue(data);
+        q.enqueue(data);
       }
-      if (SelectorEngine.eq(type, "__FXqueue") && qq.length() == 1) {
+      if (SelectorEngine.eq(type, "__FXqueue") && q.length() == 1) {
         if (data != null) {
           data.f(elem);
         }
       }
-      return qq;
+      return q;
     }
     return null;
   }

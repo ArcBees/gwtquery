@@ -60,17 +60,17 @@ public class Effects extends GQueryQueue {
   public enum Speed {
 
     /**
-     * 600 millisecond animation.
+     * 400 millisecond animation.
      */
-    SLOW(600),
+    DEFAULT(400),
     /**
      * 200 millisecond animation.
      */
     FAST(200),
     /**
-     * 400 millisecond animation.
+     * 600 millisecond animation.
      */
-    DEFAULT(400);
+    SLOW(600);
 
     private final int duration;
 
@@ -88,25 +88,25 @@ public class Effects extends GQueryQueue {
    */
   protected class PropFx {
 
-    public SpeedOpts opt;
-
     public Element elem;
+
+    public SpeedOpts opt;
 
     public String prop;
 
-    private double startTime;
-
-    private double start;
-
     private double end;
-
-    private String unit;
 
     private double now;
 
     private double pos;
 
+    private double start;
+
+    private double startTime;
+
     private double state;
+
+    private String unit;
 
     public double cur(boolean force) {
       if (elem.getPropertyString(prop) != null && (elem.getStyle() == null
@@ -136,19 +136,19 @@ public class Effects extends GQueryQueue {
       return animate(genFx("hide", 3), speed, Easing.LINEAR, callback);
     }
 
+    public void show() {
+      opt.cache.put(prop, elem.getStyle().getProperty(prop));
+      opt.show = true;
+      custom("width".equals(prop) || "height".equals(prop) ? 1 : 0, cur(false));
+      $(elem).show();
+    }
+
     public Effects show(Speed speed) {
       return show(speed, null);
     }
 
     public Effects show(Speed speed, Function callback) {
       return animate(genFx("show", 3), speed, Easing.LINEAR, callback);
-    }
-
-    public void show() {
-      opt.cache.put(prop, elem.getStyle().getProperty(prop));
-      opt.show = true;
-      custom("width".equals(prop) || "height".equals(prop) ? 1 : 0, cur(false));
-      $(elem).show();
     }
 
     public Effects toggle(Speed speed) {
@@ -254,27 +254,27 @@ public class Effects extends GQueryQueue {
 
   private class SpeedOpts {
 
-    public String display;
-
-    public String overflow;
-
     public Properties curAnim;
+
+    public String display;
 
     public boolean hide;
 
+    public String overflow;
+
     public boolean show;
 
-    private Properties properties;
+    private GQuery.DataCache cache = DataCache.createObject().cast();
+
+    private Function complete;
 
     private int duration;
 
     private Effects.Easing easing;
 
-    private Function complete;
+    private Properties properties;
 
     private boolean queue = true;
-
-    private GQuery.DataCache cache = DataCache.createObject().cast();
 
     protected SpeedOpts(int speed, Easing easing, Function complete) {
       this.complete = complete;
@@ -378,11 +378,6 @@ public class Effects extends GQueryQueue {
     super(list);
   }
 
-  public Effects animate(final Properties properties, final Speed speed,
-      final Easing easing, final Function complete) {
-    return animate(properties, speed.getDuration(), easing, complete);
-  }
-
   public Effects animate(final Properties properties, final int speed,
       final Easing easing, final Function complete) {
     if (!"false".equals(properties.get("queue"))) {
@@ -456,13 +451,17 @@ public class Effects extends GQueryQueue {
     return this;
   }
 
+
+  public Effects animate(final Properties properties, final Speed speed,
+      final Easing easing, final Function complete) {
+    return animate(properties, speed.getDuration(), easing, complete);
+  }
+  
   /**
-   * Fade in all matched elements by adjusting their opacity. Only the opacity
-   * is adjusted for this animation, meaning that all of the matched elements
-   * should already have some form of height and width associated with them.
+   * Removes a queued function from the front of the FX queue and executes it.
    */
-  public Effects fadeIn() {
-    return fadeIn(Speed.DEFAULT);
+  public Effects dequeue() {
+    return (Effects)dequeue("__FX");
   }
 
   /**
@@ -470,8 +469,8 @@ public class Effects extends GQueryQueue {
    * is adjusted for this animation, meaning that all of the matched elements
    * should already have some form of height and width associated with them.
    */
-  public Effects fadeIn(Speed speed) {
-    return fadeIn(speed, null);
+  public Effects fadeIn() {
+    return fadeIn(Speed.DEFAULT);
   }
 
   /**
@@ -489,8 +488,17 @@ public class Effects extends GQueryQueue {
    * animation, meaning that all of the matched elements should already have
    * some form of height and width associated with them.
    */
-  public Effects fadeIn(Speed speed, Function callback) {
-    return fadeIn(speed.duration, callback);
+  public Effects fadeIn(int speed, Function callback) {
+    return animate($$("opacity: \"show\""), speed, Easing.LINEAR, callback);
+  }
+
+  /**
+   * Fade in all matched elements by adjusting their opacity. Only the opacity
+   * is adjusted for this animation, meaning that all of the matched elements
+   * should already have some form of height and width associated with them.
+   */
+  public Effects fadeIn(Speed speed) {
+    return fadeIn(speed, null);
   }
 
   /**
@@ -499,8 +507,8 @@ public class Effects extends GQueryQueue {
    * animation, meaning that all of the matched elements should already have
    * some form of height and width associated with them.
    */
-  public Effects fadeIn(int speed, Function callback) {
-    return animate($$("opacity: \"show\""), speed, Easing.LINEAR, callback);
+  public Effects fadeIn(Speed speed, Function callback) {
+    return fadeIn(speed.duration, callback);
   }
 
   /**
@@ -511,16 +519,6 @@ public class Effects extends GQueryQueue {
    */
   public Effects fadeOut() {
     return fadeOut(Speed.DEFAULT);
-  }
-
-  /**
-   * Fade out all matched elements by adjusting their opacity to 0, then setting
-   * display to "none". Only the opacity is adjusted for this animation, meaning
-   * that all of the matched elements should already have some form of height
-   * and width associated with them.
-   */
-  public Effects fadeOut(Speed speed) {
-    return fadeOut(speed, null);
   }
 
   /**
@@ -540,8 +538,18 @@ public class Effects extends GQueryQueue {
    * elements should already have some form of height and width associated with
    * them.
    */
-  public Effects fadeOut(Speed speed, Function callback) {
-    return fadeOut(speed.duration, callback);
+  public Effects fadeOut(int speed, Function callback) {
+    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+  }
+
+  /**
+   * Fade out all matched elements by adjusting their opacity to 0, then setting
+   * display to "none". Only the opacity is adjusted for this animation, meaning
+   * that all of the matched elements should already have some form of height
+   * and width associated with them.
+   */
+  public Effects fadeOut(Speed speed) {
+    return fadeOut(speed, null);
   }
 
   /**
@@ -551,8 +559,8 @@ public class Effects extends GQueryQueue {
    * elements should already have some form of height and width associated with
    * them.
    */
-  public Effects fadeOut(int speed, Function callback) {
-    return animate($$("opacity: \"hide\""), speed, Easing.LINEAR, callback);
+  public Effects fadeOut(Speed speed, Function callback) {
+    return fadeOut(speed.duration, callback);
   }
 
   /**
@@ -588,6 +596,14 @@ public class Effects extends GQueryQueue {
       e.getStyle().setProperty("display", "none");
     }
     return this;
+  }
+
+  /**
+   * Adds a new function, to be executed, onto the end of the queue of all
+   * matched elements in the FX queue.
+   */
+  public GQueryQueue queue(Function data) {
+    return queue("__FX", data);
   }
 
   /**
