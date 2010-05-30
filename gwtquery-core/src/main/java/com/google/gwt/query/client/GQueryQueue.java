@@ -86,9 +86,9 @@ public abstract class GQueryQueue extends GQuery {
    * Adds a new function, to be executed, onto the end of the queue of all
    * matched elements.
    */
-  public GQueryQueue queue(String type, Function data) {
+  public GQueryQueue queue(String type, Function func) {
     for (Element e : elements()) {
-      queue(e, type, data);
+      queue(e, type, func);
     }
     return this;
   }
@@ -96,9 +96,9 @@ public abstract class GQueryQueue extends GQuery {
   /**
    * Replaces the current queue with the given queue on all matched elements.
    */
-  public GQueryQueue queue(String type, Queue<?> data) {
+  public GQueryQueue queue(String type, Queue<?> queue) {
     for (Element e : elements()) {
-      replacequeue(e, type, data);
+      replacequeue(e, type, queue);
     }
     return this;
   }
@@ -119,19 +119,19 @@ public abstract class GQueryQueue extends GQuery {
   }
 
   @SuppressWarnings("unchecked")
-  private Queue<Function> queue(Element elem, String type, Function data) {
+  private Queue<Function> queue(Element elem, String type, Function func) {
     if (elem != null) {
       type = type + "queue";
       Queue<Function> q = (Queue<Function>) data(elem, type, null);
       if (q == null) {
         q = (Queue<Function>) data(elem, type, Queue.newInstance());
       }
-      if (data != null) {
-        q.enqueue(data);
+      if (func != null) {
+        q.enqueue(func);
       }
       if (SelectorEngine.eq(type, "__FXqueue") && q.length() == 1) {
-        if (data != null) {
-          data.f(elem);
+        if (func != null) {
+          func.f(elem);
         }
       }
       return q;
@@ -139,10 +139,10 @@ public abstract class GQueryQueue extends GQuery {
     return null;
   }
 
-  private void replacequeue(Element elem, String type, Queue<?> data) {
+  private void replacequeue(Element elem, String type, Queue<?> queue) {
     if (elem != null) {
       type = type + "queue";
-      data(elem, type, data);
+      data(elem, type, queue);
     }
   }
 }

@@ -62,6 +62,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       this.left = left;
       this.top = top;
     }
+    
+    public Offset add(int left, int top) {
+      return new Offset(this.left + left, this.top + top);
+    }
+    
+    public String toString() {
+      return top + "+" + left;
+    }
   }
 
   protected static final class DataCache extends JavaScriptObject {

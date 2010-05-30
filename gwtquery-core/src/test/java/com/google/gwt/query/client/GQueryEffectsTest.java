@@ -15,10 +15,14 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.Effects.Effects;
+import static com.google.gwt.query.client.Effects.Easing.LINEAR;
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -47,7 +51,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     }
   }
 
-  public void testEffectsPlugin() {
+  public void testEffects() {
     $(e).html(
         "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
 
@@ -110,5 +114,64 @@ public class GQueryEffectsTest extends GWTTestCase {
     timerMidTime.schedule(1200);
     timerLongTime.schedule(2200);
   }
+  
+  
+  void assertPosition(GQuery g, Offset min, Offset max) {
+    int a = Math.min(min.top, max.top);
+    int b = Math.max(min.top, max.top);
+    boolean c = a <= g.position().top  && g.position().top <=  b;
+    String msg = "Top has the value " + g.position().top + ", but should be in the range: " + a + " - " + b;
+    assertTrue(msg, c);
+    
+    a = Math.min(min.left, max.left);
+    b = Math.max(min.left, max.left);
+    c = a <= g.position().left  && g.position().left <=  b;
+    msg = "Left has the value " + g.position().left + ", but should be in the range: " + a + " - " + b;
+    assertTrue(msg, c);
+  }
+  
+  
+  public void testEffectsShouldBeQueued() {
+    $(e).html(
+        "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
+    
+    final GQuery g = $("#id1").css("position", "relative");
+    final Offset o = g.position();
+    g.as(Effects).
+      animate($$("left: '+=100'"), 400, LINEAR, null).
+      animate($$("top: '+=100'"), 400, LINEAR, null).
+      animate($$("left: '-=100'"), 400, LINEAR, null).
+      animate($$("top: '-=100'"), 400, LINEAR, null);
+    
+    delayTestFinish(2500);
+
+    final Timer timer1 = new Timer() {
+      public void run() {
+        assertPosition(g, o.add(99, 0), o.add(1,0));
+        finishTest();
+      }
+    };
+    final Timer timer2 = new Timer() {
+      public void run() {
+        assertPosition(g, o.add(100, 99), o.add(100, 1));
+        timer1.schedule(400);
+      }
+    };
+    final Timer timer3 = new Timer() {
+      public void run() {
+        assertPosition(g, o.add(1, 100), o.add(99, 100));
+        timer2.schedule(400);
+      }
+    };
+    final Timer timer4 = new Timer() {
+      public void run() {
+        assertPosition(g, o.add(0, 1), o.add(0, 99));
+        timer3.schedule(400);
+      }
+    };
+    
+    timer4.schedule(200);
+  }
+
 
 }
