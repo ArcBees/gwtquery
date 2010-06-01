@@ -628,7 +628,7 @@ public class SelectorEngineSizzle extends SelectorEngineImpl {
     }
     return @com.google.gwt.query.client.impl.SelectorEngineSizzle::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
   }-*/;   
-   
+  
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     results = results || [];
     var origContext = context = context || document;
@@ -718,7 +718,6 @@ public class SelectorEngineSizzle extends SelectorEngineImpl {
     }
     if ( extra ) {
       @com.google.gwt.query.client.impl.SelectorEngineSizzle::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(extra, origContext, results, seed);
-      @com.google.gwt.query.client.impl.SelectorEngineSizzle::unique(Lcom/google/gwt/core/client/JsArray;)(results);
     }
     return results;     
    }-*/;
@@ -729,6 +728,6 @@ public class SelectorEngineSizzle extends SelectorEngineImpl {
   
   public NodeList<Element> select(String selector, Node context) {
     JsArray<Element> results = JavaScriptObject.createArray().cast();
-    return select(selector, context, results, null).cast();
+    return unique(select(selector, context, results, null)).cast();
   }
 }

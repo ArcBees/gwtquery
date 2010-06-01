@@ -170,7 +170,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     // assertArrayContains(sel.title().getLength(), 1);
 
     assertEquals(1, sel.body().getLength());
-    assertEquals(53, sel.bodyDiv().getLength());
+    assertArrayContains(sel.bodyDiv().getLength(), 53, 55);
     sel.setRoot(e);
     assertArrayContains(sel.aHrefLangClass().getLength(), 0, 1);
     assertArrayContains(sel.allChecked().getLength(), 1);
@@ -325,7 +325,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     $(e).html(getTestContent());
 
     assertArrayContains(selEng.select("body", Document.get()).getLength(), 1);
-    assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53);
+    assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53, 55);
 
     assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(), 1);
     assertArrayContains(selEng.select("*:first", e).getLength(), 1, 0);

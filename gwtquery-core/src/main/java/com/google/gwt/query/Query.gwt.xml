@@ -33,7 +33,7 @@
         </any>
     </generate-with>
 
-    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorXPath">
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorCssToXPath">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <any>
             <when-property-is name="user.agent" value="gecko1_8"/>
@@ -68,7 +68,7 @@
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
     </replace-with>
 
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineXPath">
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineCssToXPath">
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <any>
