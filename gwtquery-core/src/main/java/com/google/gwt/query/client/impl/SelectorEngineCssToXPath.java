@@ -89,51 +89,50 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     // , + ~ >
     "\\s*(\\+|~|>)\\s*", "$1",
     //* ~ + >
-    "([a-zA-Z0-9_\\-\\*])~([a-zA-Z0-9_\\-\\*])", "$1/following-sibling::$2",
-    "([a-zA-Z0-9_\\-\\*])\\+([a-zA-Z0-9_\\-\\*])", "$1/following-sibling::*[1]/self::$2",
-    "([a-zA-Z0-9_\\-\\*])>([a-zA-Z0-9_\\-\\*])", "$1/$2",
+    "([\\w\\-\\*])~([\\w\\-\\*])", "$1/following-sibling::$2",
+    "([\\w\\-\\*])\\+([\\w\\-\\*])", "$1/following-sibling::*[1]/self::$2",
+    "([\\w\\-\\*])>([\\w\\-\\*])", "$1/$2",
     // all unescaped stuff escaped
     "\\[([^=]+)=([^'|\"][^\\]]*)\\]", "[$1='$2']",
     // all descendant or self to 
-    "(^|[^a-zA-Z0-9_\\-\\*])(#|\\.)([a-zA-Z0-9_\\-]+)", "$1*$2$3",
+    "(^|[^\\w\\-\\*])(#|\\.)([\\w\\-]+)", "$1*$2$3",
     "([\\>\\+\\|\\~\\,\\s])([a-zA-Z\\*]+)", "$1//$2",
     "\\s+//", "//",
     // :first-child
-    "([a-zA-Z0-9_\\-\\*]+):first-child", "*[1]/self::$1",
+    "([\\w\\-\\*]+):first-child", "*[1]/self::$1",
     // :last-child
-    "([a-zA-Z0-9_\\-\\*]+):last-child", "$1[not(following-sibling::*)]",
+    "([\\w\\-\\*]+):last-child", "$1[not(following-sibling::*)]",
     // :only-child
-    "([a-zA-Z0-9_\\-\\*]+):only-child", "*[last()=1]/self::$1",
+    "([\\w\\-\\*]+):only-child", "*[last()=1]/self::$1",
     // :empty
-    "([a-zA-Z0-9_\\-\\*]+):empty", "$1[not(*) and not(normalize-space())]",
+    "([\\w\\-\\*]+):empty", "$1[not(*) and not(normalize-space())]",
     "(.+):not\\(([^\\)]*)\\)", rc_Not,
     "([a-zA-Z0-9\\_\\-\\*]+):nth-child\\(([^\\)]*)\\)", rc_nth_child,
     // :contains(selectors)
     ":contains\\(([^\\)]*)\\)", "[contains(string(.),'$1')]",
     // |= attrib
-    "\\[([a-zA-Z0-9_\\-]+)\\|=([^\\]]+)\\]", "[@$1=$2 or starts-with(@$1,concat($2,'-'))]",
+    "\\[([\\w\\-]+)\\|=([^\\]]+)\\]", "[@$1=$2 or starts-with(@$1,concat($2,'-'))]",
     // *= attrib
-    "\\[([a-zA-Z0-9_\\-]+)\\*=([^\\]]+)\\]", "[contains(@$1,$2)]",
+    "\\[([\\w\\-]+)\\*=([^\\]]+)\\]", "[contains(@$1,$2)]",
     // ~= attrib
-    "\\[([a-zA-Z0-9_\\-]+)~=([^\\]]+)\\]", "[contains(concat(' ',normalize-space(@$1),' '),concat(' ',$2,' '))]",
+    "\\[([\\w\\-]+)~=([^\\]]+)\\]", "[contains(concat(' ',normalize-space(@$1),' '),concat(' ',$2,' '))]",
     // ^= attrib
-    "\\[([a-zA-Z0-9_\\-]+)\\^=([^\\]]+)\\]", "[starts-with(@$1,$2)]",
+    "\\[([\\w\\-]+)\\^=([^\\]]+)\\]", "[starts-with(@$1,$2)]",
     // $= attrib
-    "\\[([a-zA-Z0-9_\\-]+)\\$=([^\\]]+)\\]", rc_$Attr,
+    "\\[([\\w\\-]+)\\$=([^\\]]+)\\]", rc_$Attr,
     // != attrib
-    "\\[([a-zA-Z0-9_\\-]+)\\!=([^\\]]+)\\]", "[not(@$1) or @$1!=$2]",
+    "\\[([\\w\\-]+)\\!=([^\\]]+)\\]", "[not(@$1) or @$1!=$2]",
     // ids and classes
-    "#([a-zA-Z0-9_\\-]+)", "[@id='$1']",
-    "\\.([a-zA-Z0-9_\\-]+)", "[contains(concat(' ',normalize-space(@class),' '),' $1 ')]",
+    "#([\\w\\-]+)", "[@id='$1']",
+    "\\.([\\w\\-]+)", "[contains(concat(' ',normalize-space(@class),' '),' $1 ')]",
     // normalize multiple filters
     "\\]\\[([^\\]]+)", " and ($1)",
     // tag:pseudo
-    ":enabled", "[not(@disabled)]",
-    ":checked", "[@checked='checked']",
+    ":(enabled)", "[not(@disabled)]",
+    ":(checked)", "[@$1='$1']",
     ":(disabled)", "[@$1]",
     // put '*' when tag is omitted
-    "^\\[", "*[",
-    "\\|\\[", "|*["
+    "(^|\\|)(\\[)", "$1*$2"
     };
   
   public static SelectorEngineCssToXPath getInstance() {
