@@ -208,14 +208,17 @@ public class GQuerySelectorsTest extends GWTTestCase {
   }
 
   public void testIssue12() {
-    $(e).html("<table><tr><td><p myCustomAttr='whatever'><input type='radio' name='wantedName' value='v1'>1</input></p><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button myCustomAttr='val'>Click</button></tr><td></table>");
+    $(e).html("<table><tr><td><p myCustomAttr='whatever'><input disabled='disabled' type='radio' name='wantedName' value='v1'>1</input></p><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button myCustomAttr='val'>Click</button></tr><td></table>");
+    executeSelectInAllImplementations(":checked", e, 1);
+    executeSelectInAllImplementations(":disabled", e, 1);
+    executeSelectInAllImplementations("input:enabled", e, 1);
     executeSelectInAllImplementations("[myCustomAttr]", e, 2);
     executeSelectInAllImplementations("*[myCustomAttr]", e, 2);
     executeSelectInAllImplementations("input[name=wantedName]", e, 1);
     executeSelectInAllImplementations("input[name='wantedName']", e, 1);
     executeSelectInAllImplementations("input[name=\"wantedName\"]", e, 1);
   }
-
+  
   public void testSelectElementsInsideContext() {
     $(e).html("<spam><p>s</p></spam>");
     GQuery q = $("spam", e);
@@ -343,8 +346,6 @@ public class GQuerySelectorsTest extends GWTTestCase {
     assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53, 55);
 
     assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(), 1);
-    // :first is not a valid selector, it only works in sizzle
-    assertArrayContains(selEng.select("*:first", e).getLength(), 1, 0);
     assertArrayContains(selEng.select("div[class!=madeup]", e).getLength(), 52, 53);
     assertArrayContains(selEng.select("div, p a", e).getLength(), 136, 137, 138);
     assertArrayContains(selEng.select("p:contains(selectors)", e).getLength(), 54, 55);

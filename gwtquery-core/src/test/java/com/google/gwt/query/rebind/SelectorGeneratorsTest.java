@@ -67,6 +67,9 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     assertEquals(".//a[@href and (@lang) and (@class)]", 
         sel.css2Xpath("a[href][lang][class]"));
     
+    assertEquals(".//*[@checked='checked']|*[not(@disabled)]|*[@disabled]", 
+        sel.css2Xpath(":checked, :enabled, :disabled"));
+    
   }
 
   public void testReplaceAll() {
