@@ -19,13 +19,28 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.query.client.Selector;
+import com.google.gwt.query.client.impl.SelectorEngineNative;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * Compile time selector generator which delegates to native browser methods.
  */
-public class SelectorGeneratorNative extends SelectorGeneratorBase {
+public class SelectorGeneratorNative extends SelectorGeneratorCssToXPath {
 
+  @Override
+  protected void generateMethodBody(SourceWriter sw, JMethod method,
+      TreeLogger treeLogger, boolean hasContext)
+      throws UnableToCompleteException {
+    String selector = method.getAnnotation(Selector.class).value();
+    if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
+      super.generateMethodBody(sw, method, treeLogger, hasContext);
+    } else {
+      sw.println("return "
+          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
+    }
+  }
+
+  @Override
   protected String getImplSuffix() {
     return "Native" + super.getImplSuffix();
   }
@@ -33,18 +48,5 @@ public class SelectorGeneratorNative extends SelectorGeneratorBase {
   @Override
   protected boolean hasGetElementsByClassName() {
     return true;
-  }
-
-  protected void generateMethodBody(SourceWriter sw, JMethod method,
-      TreeLogger treeLogger, boolean hasContext)
-      throws UnableToCompleteException {
-    String selector = method.getAnnotation(Selector.class).value();
-    if (!hasContext) {
-      sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\")") + ";");
-    } else {
-      sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
-    }
   }
 }

@@ -237,6 +237,13 @@ public class GQuerySelectorsTest extends GWTTestCase {
     executeSelectorEngineTests(selEng);
   }
 
+  public void testSelectorEngineNative() {
+    SelectorEngineImpl selEng = new SelectorEngineNative();
+    if (hasNativeSelector()) {
+      executeSelectorEngineTests(selEng);
+    }
+  }
+
   public void testSelectorEngineXpath() {
     SelectorEngineImpl selEng = new SelectorEngineXPath();
     executeSelectorEngineTests(selEng);
@@ -328,11 +335,12 @@ public class GQuerySelectorsTest extends GWTTestCase {
     SelectorEngineImpl selNative = new SelectorEngineNative();
     assertArrayContains(selector, selSizz.select(selector, elem).getLength(), array);
     assertArrayContains(selector, selJS.select(selector, elem).getLength(), array);
+    if (hasNativeSelector()) {
+      assertArrayContains(selector, selNative.select(selector, elem).getLength(), array);
+    }   
     assertArrayContains(selector, selXpath.select(selector, elem).getLength(), array);
     assertArrayContains(selector, selC2X.select(selector, elem).getLength(), array);
-    if (hasNativeSelector()) {
-      assertArrayContains(selector, selNative.select(selector, elem), array);
-    }
+ 
   }
   
   private static native boolean hasNativeSelector() /*-{
@@ -352,7 +360,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
     assertArrayContains(selEng.select("a[href][lang][class]", e).getLength(), 1);
     assertArrayContains(selEng.select("*:checked", e).getLength(), 1);
     assertArrayContains(selEng.select("div .example", e).getLength(), 43);
-    assertArrayContains(selEng.select("div > div", e).getLength(), 51);
+    assertArrayContains(selEng.select("div > div", e).getLength(), 51, 52);
     assertArrayContains(selEng.select("div:not(.example)", e).getLength(), 9, 10);
     assertArrayContains(selEng.select("div p", e).getLength(), 324);
     assertArrayContains(selEng.select("div p a", e).getLength(), 85, 84);

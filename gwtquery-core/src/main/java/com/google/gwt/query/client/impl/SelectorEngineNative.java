@@ -24,9 +24,15 @@ import com.google.gwt.query.client.SelectorEngine;
  * Runtime selector engine implementation for browsers with native
  * querySelectorAll support.
  */
-public class SelectorEngineNative extends SelectorEngineImpl {
-
+public class SelectorEngineNative extends SelectorEngineCssToXPath {
+  
+  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=).*";
+  
   public NodeList<Element> select(String selector, Node ctx) {
-    return SelectorEngine.querySelectorAll(selector, ctx);
+    if (selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+      return super.select(selector, ctx); 
+    } else {
+      return SelectorEngine.querySelectorAll(selector, ctx);
+    }
   }
 }

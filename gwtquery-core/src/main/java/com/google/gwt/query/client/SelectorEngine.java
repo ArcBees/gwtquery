@@ -49,10 +49,6 @@ public class SelectorEngine {
        return s1 || s2;
     }-*/;
 
-  public static native NodeList<Element> querySelectorAll(String selector) /*-{
-      return $doc.querySelectorAll(selector);
-  }-*/;
-
   public static native NodeList<Element> querySelectorAll(String selector,
       Node ctx) /*-{
       return ctx.querySelectorAll(selector);
