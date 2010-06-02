@@ -18,6 +18,7 @@ package com.google.gwt.query.client.impl;
 import static com.google.gwt.query.client.SelectorEngine.eq;
 import static com.google.gwt.query.client.SelectorEngine.truth;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -59,8 +60,6 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
 
   private Regexp combinator;
   
-  private SelectorEngineImpl jsEngine = null;
-
   public SelectorEngineXPath() {
   }
 
@@ -140,16 +139,9 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
           }
         }
       }
-      try {
-        SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm).cast();  
-      } catch (Exception e) {
-        if (jsEngine == null) {
-          jsEngine = new SelectorEngineSizzle();
-        }
-        return jsEngine.select(sel, ctx).cast();
-      }
+      SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm);
     }
-    return elm;
+    return unique(elm.<JsArray<Element>>cast()).cast();
   }
 
   private void init() {

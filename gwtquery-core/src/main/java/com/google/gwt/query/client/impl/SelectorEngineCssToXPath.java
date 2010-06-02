@@ -60,9 +60,21 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     }
   };
   
+  private static ReplaceCallback rc_Attr = new ReplaceCallback() {
+    public String foundMatch(ArrayList<String> s) {
+      if (s.get(1) == null || s.get(1).length() == 0) {
+        s.set(1, "*");
+      }
+      if (s.get(3) == null || s.get(3).length() == 0) {
+        s.set(3, "");
+      }
+      return s.get(1) + "[@" + s.get(2) + s.get(3) + "]";
+    }
+  };
+  
   private static ReplaceCallback rc_nth_child = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
-      if (s.get(1).length() == 0) {
+      if (s.get(1) == null || s.get(1).length() == 0) {
         s.set(1, "0");
       }
       if ("n".equals(s.get(2))) {
@@ -82,7 +94,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   };
 
   private static Object[] regs = new Object[]{
-    "\\[([^\\]~\\$\\*\\^\\|\\!]+)(=[^\\]]+)?\\]", "[@$1$2]",
+    // tag[attrib=value]
+    "([a-zA-Z0-9_\\-\\*\\[\\]])?\\[([^\\]@~\\$\\*\\^\\|\\!]+)(=[^\\]]+)?\\]", rc_Attr,
     // multiple queries
     "\\s*,\\s*", "|",
     // , + ~ >
@@ -98,9 +111,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     "([\\>\\+\\|\\~\\,\\s])([a-zA-Z\\*]+)", "$1//$2",
     "\\s+//", "//",
     // :first-child
-    "([a-zA-Z0-9_\\-\\*]+):first-child", "*[1]/self::$1",
-    // :first
-    "([a-zA-Z0-9_\\-\\*]+):first", "*[1]/self::$1",
+    "([a-zA-Z0-9_\\-\\*]+):first-child", "$1[not(preceding-sibling::*)]",
     // :last-child
     "([a-zA-Z0-9_\\-\\*]+):last-child", "$1[not(following-sibling::*)]",
     // :only-child
@@ -127,7 +138,10 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     "#([a-zA-Z0-9_\\-]+)", "[@id='$1']",
     "\\.([a-zA-Z0-9_\\-]+)", "[contains(concat(' ',normalize-space(@class),' '),' $1 ')]",
     // normalize multiple filters
-    "\\]\\[([^\\]]+)", " and ($1)"};
+    "\\]\\[([^\\]]+)", " and ($1)",
+    // tag:attrib
+    "([a-zA-Z0-9_\\-\\*]+):([a-zA-Z0-9_\\-]+)", "$1[@$2='$2']"
+    };
   
   public static SelectorEngineCssToXPath getInstance() {
     if (instance == null) {
@@ -173,12 +187,12 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     for (int i = 0; i < regs.length;) {
       ret = replacer.replaceAll(ret, regs[i++].toString(), regs[i++]);
     }
-    return "//" + ret;
+    return ".//" + ret;
   }
   
   public NodeList<Element> select(String sel, Node ctx) {
     JSArray elm = JSArray.create();
-    if (!sel.startsWith("//") && !sel.startsWith("./") && !sel.startsWith("/")) {
+    if (!sel.startsWith("./") && !sel.startsWith("/")) {
       sel = css2Xpath(sel);
     }
     SelectorEngine.xpathEvaluate(sel, ctx, elm);

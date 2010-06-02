@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.impl;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -369,7 +370,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       elm.pushAll(prevElem);
     }
 
-    return elm;
+    return unique(elm.<JsArray<Element>>cast()).cast();
   }
 
   protected String getAttr(Element current, String name) {
