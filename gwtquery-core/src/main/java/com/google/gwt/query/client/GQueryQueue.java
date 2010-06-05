@@ -51,8 +51,8 @@ public abstract class GQueryQueue extends GQuery {
     }-*/;
   }
 
-  public GQueryQueue(Element element) {
-    super(element);
+  public GQueryQueue(GQuery gq) {
+    super(gq);
   }
 
   public GQueryQueue(JSArray elements) {
@@ -63,32 +63,28 @@ public abstract class GQueryQueue extends GQuery {
     super(list);
   }
 
+  public GQueryQueue(Element element) {
+    super(element);
+  }
+
   /**
    * Removes a queued function from the front of the queue and executes it.
    */
-  public GQueryQueue dequeue(String type) {
+  public GQueryQueue dequeue() {
     for (Element e : elements()) {
-      dequeue(e, type);
+      dequeue(e);
     }
     return this;
   }
 
 
   /**
-   * Returns a reference to the first element's queue (which is an array of
-   * functions).
-   */
-  public Queue<Function> queue(String type) {
-    return queue(elements.getItem(0), type, null);
-  }
-
-  /**
    * Adds a new function, to be executed, onto the end of the queue of all
    * matched elements.
    */
-  public GQueryQueue queue(String type, Function func) {
+  public GQueryQueue queue(Function func) {
     for (Element e : elements()) {
-      queue(e, type, func);
+      queue(e, func);
     }
     return this;
   }
@@ -96,22 +92,18 @@ public abstract class GQueryQueue extends GQuery {
   /**
    * Replaces the current queue with the given queue on all matched elements.
    */
-  public GQueryQueue queue(String type, Queue<?> queue) {
+  public GQueryQueue queue(Queue<?> queue) {
     for (Element e : elements()) {
-      replacequeue(e, type, queue);
+      replacequeue(e, queue);
     }
     return this;
   }
 
-  private void dequeue(Element elem, String type) {
-    Queue<Function> q = queue(elem, type, null);
-
+  private void dequeue(Element elem) {
+    Queue<Function> q = queue(elem, null);
     if (q != null) {
       Function f = q.dequeue();
-
-      if (SelectorEngine.eq(type, "__FX")) {
-        f = q.peek(0);
-      }
+      f = q.peek(0);
       if (f != null) {
         f.f(elem);
       }
@@ -119,30 +111,30 @@ public abstract class GQueryQueue extends GQuery {
   }
 
   @SuppressWarnings("unchecked")
-  private Queue<Function> queue(Element elem, String type, Function func) {
+  private Queue<Function> queue(Element elem, Function func) {
     if (elem != null) {
-      type = type + "queue";
-      Queue<Function> q = (Queue<Function>) data(elem, type, null);
+      Queue<Function> q = (Queue<Function>) data(elem, getQueueType(), null);
       if (q == null) {
-        q = (Queue<Function>) data(elem, type, Queue.newInstance());
+        q = (Queue<Function>) data(elem, getQueueType(), Queue.newInstance());
       }
       if (func != null) {
         q.enqueue(func);
       }
-      if (SelectorEngine.eq(type, "__FXqueue") && q.length() == 1) {
-        if (func != null) {
-          func.f(elem);
-        }
+      if (q.length() == 1 && func != null) {
+        func.f(elem);
       }
       return q;
     }
     return null;
   }
 
-  private void replacequeue(Element elem, String type, Queue<?> queue) {
+  private void replacequeue(Element elem, Queue<?> queue) {
     if (elem != null) {
-      type = type + "queue";
-      data(elem, type, queue);
+      data(elem, getQueueType(), queue);
     }
+  }
+  
+  protected String getQueueType() {
+    return "GQueryQueue_" + this.getClass().getName(); 
   }
 }

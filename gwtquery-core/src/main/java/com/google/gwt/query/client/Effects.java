@@ -456,13 +456,6 @@ public class Effects extends GQueryQueue {
       final Easing easing, final Function complete) {
     return animate(properties, speed.getDuration(), easing, complete);
   }
-  
-  /**
-   * Removes a queued function from the front of the FX queue and executes it.
-   */
-  public Effects dequeue() {
-    return (Effects)dequeue("__FX");
-  }
 
   /**
    * Fade in all matched elements by adjusting their opacity. Only the opacity
@@ -596,14 +589,6 @@ public class Effects extends GQueryQueue {
       e.getStyle().setProperty("display", "none");
     }
     return this;
-  }
-
-  /**
-   * Adds a new function, to be executed, onto the end of the queue of all
-   * matched elements in the FX queue.
-   */
-  public GQueryQueue queue(Function data) {
-    return queue("__FX", data);
   }
 
   /**

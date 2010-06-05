@@ -392,6 +392,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery(Element element) {
     elements = JSArray.create(element);
   }
+  
+  public GQuery(GQuery gq) {
+    this(gq.get());
+  }
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
@@ -810,9 +814,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *    public String f(Element e, int i)
    */
   public GQuery each(Function... f) {
-    for (Function f1 : f) {
-      for (int i = 0; i < elements.getLength(); i++) {
-        f1.f(elements.getItem(i), i);
+    if (f != null) {
+      for (Function f1 : f) {
+        for (int i = 0; i < elements.getLength(); i++) {
+          f1.f(elements.getItem(i), i);
+        }
       }
     }
     return this;
