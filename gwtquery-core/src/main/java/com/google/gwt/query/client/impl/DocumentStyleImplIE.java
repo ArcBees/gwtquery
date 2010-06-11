@@ -16,24 +16,38 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.dom.client.Style;
 
 /**
  * A helper class to get computed CSS styles for elements on IE6.
  */
 public class DocumentStyleImplIE extends DocumentStyleImpl {
 
-  public String getCurrentStyle(Element elem, String name) {
-    name = hyphenize(name);
-    String propVal = getComputedStyle(elem, name, null);
+  /**
+   * Return the string value of a css property of an element. 
+   * IE needs a special workaround to handle opacity.
+   */
+  @Override
+  public String curCSS(Element elem, String name) {
     if ("opacity".equalsIgnoreCase(name)) {
-      propVal = SelectorEngine.or(propVal, "1");
+      Style s = elem.getStyle();
+      String o = s.getProperty("filter");
+      if (o != null) {
+        return !o.matches(".*opacity=.*") ? "1" : ("" + 
+            (Double.valueOf(o.replaceAll("[^\\d]", "")) / 100));
+      }
+      o = s.getProperty("opacity");
+      return o == null || o.length() == 0 ? "1" : o;
     }
-    return propVal;
+    return super.curCSS(elem, name);
   }
 
-  public String getPropertyName(String name) {
-    name = super.getPropertyName(name);
+  /**
+   * Fix style property names.
+   */
+  @Override
+  public String fixPropertyName(String name) {
+    name = super.fixPropertyName(name);
     if ("cssFloat".equals(name)) {
       return "styleFloat";
     } else if ("class".equals(name)) {
@@ -41,12 +55,33 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
     }
     return name;
   }
-  
-  
 
-  // code lifted from jQuery
-  private native String getComputedStyle(Element elem, String name,
+  /**
+   * Remove a style property from an element.
+   */
+  public native void removeStyleProperty(Element elem, String prop) /*-{
+    elem.style.removeAttribute(prop);
+  }-*/;
+
+  /**
+   * Set the value of a style property of an element. 
+   * IE needs a special workaround to handle opacity
+   */
+  @Override
+  public void setStyleProperty(String prop, String val, Element e) {
+    if ("opacity".equals(prop)) {
+      e.getStyle().setProperty("zoom", "1");
+      e.getStyle().setProperty("filter",
+          "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
+    } else {
+      super.setStyleProperty(prop, val, e);
+    }
+  }
+
+  @Override
+  protected native String getComputedStyle(Element elem, String name,
       String pseudo) /*-{
+    // code lifted from jQuery
     var style = elem.style;
     var camelCase = name.replace(/\-(\w)/g, function(all, letter){
         return letter.toUpperCase();
@@ -67,6 +102,6 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
     style.left = left;
     elem.runtimeStyle.left = rsLeft;
     }
-   return ret;
+    return ret;
   }-*/;
 }

@@ -158,7 +158,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
       plugins;
 
-  private static DocumentStyleImpl styleImpl;
+  private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);;
 
   private static Element windowData = null;
 
@@ -270,12 +270,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  public static native String camelize(String s)/*-{
-     return s.replace(/\-(\w)/g, function(all, letter){
-				return letter.toUpperCase();
-			});
-   }-*/;
-
   /**
    * Returns the numeric value of a css propery of the element.
    */
@@ -315,32 +309,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return Double.parseDouble(val);
     }
     return 0.0;
-  }
-  
-  /**
-   * Returns the string value of a css propery of the element.
-   * TODO: use implementations
-   */
-  public static String curCSS(Element elem, String name, boolean force) {
-    name = fixAttributeName(name);
-    Style s = elem.getStyle();
-    if ("opacity".equals(name)) {
-      String o = s.getProperty("filter");
-      if (o != null) { 
-        return !o.matches(".*opacity=.*") ? "1" : 
-            ("" + (Double.valueOf(o.replaceAll("[^\\d]", "")) / 100));
-      }
-      o = s.getProperty("opacity");
-      return o == null || o.length() == 0 ? "1" : o; 
-    }    
-    if (!force) {
-      if (SelectorEngine.truth(s.getProperty(name))) {
-        return s.getProperty(name);
-      }
-    } else {
-      return styleImpl.getCurrentStyle(elem, name);
-    }
-    return "";
   }
   
   /**
@@ -431,23 +399,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return result;
     }
   }
-
-  protected static void setStyleProperty(String prop, String val, Element e) {
-    // put in lower-case only if all letters are upper-case, to avoid modify already camelized properties
-    if (prop.matches("^[A-Z]+$")) {
-       prop = prop.toLowerCase();
-    }    
-    String property = camelize(prop);
-    e.getStyle().setProperty(property, val);
-    
-    // TODO: this is a workaround in IE which must be moved to IE implementation
-    if ("opacity".equals(property)) {
-      e.getStyle().setProperty("zoom", "1");
-      e.getStyle().setProperty("filter",
-          "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
-    }
-  }
-
+  
   private static JSArray copyNodeList(NodeList n) {
     JSArray res = JSArray.create();
     for (int i = 0; i < n.getLength(); i++) {
@@ -457,18 +409,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static String curCSS(Element elem, String name) {
-    return curCSS(elem, name, false);
-  }
-
-  private static void ensureStyleImpl() {
-    if (styleImpl == null) {
-      styleImpl = GWT.create(DocumentStyleImpl.class);
-    }
-  }
-
-  private static String fixAttributeName(String key) {
-    ensureStyleImpl();
-    return styleImpl.getPropertyName(key);
+    return styleImpl.curCSS(elem, name);
   }
 
   private static boolean hasClass(Element e, String clz) {
@@ -484,11 +425,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }-*/;
 
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
-        return nl;
-    }-*/;
+    return nl;
+  }-*/;
 
-  private static NodeList select(String selector, Node context) {
-    NodeList n = new SelectorEngine().select(selector, context);
+  private static NodeList<Element> select(String selector, Node context) {
+    NodeList<Element> n = new SelectorEngine().select(selector, context);
     JSArray res = copyNodeList(n);
     return res;
   }
@@ -648,7 +589,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(Properties properties) {
     for (Element e : elements()) {
       for (String name : properties.keys()) {
-        e.setAttribute(fixAttributeName(name), properties.get(name));
+        e.setAttribute(styleImpl.fixPropertyName(name), properties.get(name));
       }
     }
     return this;
@@ -661,7 +602,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attributes include title, alt, src, href, width, style, etc.
    */
   public String attr(String name) {
-    return elements.getItem(0).getAttribute(fixAttributeName(name));
+    return elements.getItem(0).getAttribute(styleImpl.fixPropertyName(name));
   }
 
   /**
@@ -670,7 +611,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(String key, Function closure) {
     for (int i = 0; i < elements.getLength(); i++) {
       Element e = elements.getItem(i);
-      e.setAttribute(fixAttributeName(key), closure.f(e, i));
+      e.setAttribute(styleImpl.fixPropertyName(key), closure.f(e, i));
     }
     return this;
   }
@@ -679,7 +620,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, String value) {
-    key = fixAttributeName(key);
+    key = styleImpl.fixPropertyName(key);
     for (Element e : elements()) {
       e.setAttribute(key, value);
     }
@@ -822,7 +763,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery contents() {
     JSArray result = JSArray.create();
     for (Element e : elements()) {
-      NodeList children = e.getChildNodes();
+      NodeList<Node> children = e.getChildNodes();
       for (int i = 0; i < children.getLength(); i++) {
         Node n = children.getItem(i);
         if (IFrameElement.is(n)) {
@@ -835,7 +776,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(unique(result));
   }
 
-  public LazyGQuery createLazy() {
+  public LazyGQuery<?> createLazy() {
     return GWT.create(GQuery.class);
   }
 
@@ -865,9 +806,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single style property to a value, on all matched elements.
    */
   public GQuery css(String prop, String val) {
-    prop = fixAttributeName(prop);
     for (Element e : elements()) {
-      setStyleProperty(prop, val, e);
+      styleImpl.setStyleProperty(prop, val, e);
     }
     return this;
   }
@@ -916,6 +856,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * @param clz return type class literal
    */
+  @SuppressWarnings("unchecked")
   public <T> T data(String name, Class<T> clz) {
     return (T) data(elements.getItem(0), name, null);
   }
@@ -1782,7 +1723,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void restoreCssAttrs(String[] cssProps) {
     for (Element e : elements()) {
       for (String a : cssProps) {
-        setStyleProperty(a, (String) data(e, "old-" + a, null), e);
+        styleImpl.setStyleProperty(a, (String) data(e, "old-" + a, null), e);
       }
     }
   }
