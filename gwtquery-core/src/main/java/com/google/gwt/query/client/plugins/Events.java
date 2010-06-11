@@ -13,11 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.JSArray;
+import com.google.gwt.query.client.Plugin;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -58,9 +62,27 @@ public class Events extends GQuery {
    * parameter
    * 
    */
-  public GQuery bind(int eventbits, Object data, Function...funcs) {
+  public Events bind(int eventbits, Object data, Function...funcs) {
     for (Element e : elements()) {
       EventsListener.getInstance(e).bind(eventbits, data, funcs);
+    }
+    return this;
+  }
+  
+  /**
+   * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
+   * element. The handler is executed only once for each element.
+   *
+   * The event handler is passed as a Function that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   *
+   * You can pass an additional Object data to your Function as the second
+   * parameter
+   */  
+  public Events one(int eventbits, final Object data, final Function f) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).bind(eventbits, data, f, 1);
     }
     return this;
   }
@@ -76,7 +98,7 @@ public class Events extends GQuery {
    * Example: fire(Event.ONCLICK | Event.ONFOCUS)
    * Example: fire(Event.ONKEYDOWN. 'a');
    */
-  public GQuery trigger(int eventbits, int... keys) {
+  public Events trigger(int eventbits, int... keys) {
     if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
       dispatchEvent(document.createBlurEvent());
     if ((eventbits | Event.ONCHANGE) == Event.ONCHANGE)
@@ -113,19 +135,25 @@ public class Events extends GQuery {
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
     return this;
   }
-  
-  protected GQuery triggerHtmlEvent(String htmlEvent) {
+
+  /**
+   * Trigger a html event in all matched elements.
+   * 
+   * @param htmlEvent
+   *    An string representing the html event desired 
+   */
+  public Events triggerHtmlEvent(String htmlEvent) {
     dispatchEvent(document.createHtmlEvent(htmlEvent, false, false));
     return this;
   }
-
+  
   /**
    * Removes all handlers, that matches the events bits passed, from each
    * element.
    * 
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER)
    */
-  public GQuery unbind(int eventbits) {
+  public Events unbind(int eventbits) {
     for (Element e : elements()) {
       EventsListener.getInstance(e).unbind(eventbits);
     }

@@ -37,25 +37,14 @@
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
+                    <soyc>true</soyc>
                     <modules>
-                        <module>
-                            gwtquery.samples.GwtQuerySample
-                        </module>
-                        <module>
-                            gwtquery.samples.GwtQueryBench
-                        </module>
-                        <module>
-                            gwtquery.samples.GwtQueryDemo
-                        </module>
-                        <module>
-                            gwtquery.samples.GwtQueryPlugin
-                        </module>
-                        <module>
-                            gwtquery.samples.GwtQueryWidgets
-                        </module>
-                        <module>
-                            gwtquery.samples.GwtQueryEffects
-                        </module>
+                        <module>gwtquery.samples.GwtQueryEffects</module>
+                        <module>gwtquery.samples.GwtQuerySample</module>
+                        <module>gwtquery.samples.GwtQueryBench</module>
+                        <module>gwtquery.samples.GwtQueryDemo</module>
+                        <module>gwtquery.samples.GwtQueryPlugin</module>
+                        <module>gwtquery.samples.GwtQueryWidgets</module>
                     </modules>
                 </configuration>
                 <executions>
@@ -67,7 +56,23 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <configuration>
+                <filesets>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryBench</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryDemo</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryEffects</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryPlugin</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQuerySample</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryWidgets</directory></fileset>
+                  <fileset><directory>src/main/webapp/WEB-INF/classes</directory></fileset>
+                  <fileset><directory>tomcat</directory></fileset>
+                  <fileset><directory>www-test</directory></fileset>
+                  <fileset><directory>.gwt-tmp</directory></fileset>
+                </filesets>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 

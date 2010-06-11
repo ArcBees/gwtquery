@@ -34,7 +34,7 @@ public class Properties extends JavaScriptObject {
     }-*/;
 
   protected static String wrapPropertiesString(String s) {
-    return "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+", "") + "})";
+    return "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "") + "})";
   }
 
   protected Properties() {
@@ -93,4 +93,12 @@ public class Properties extends JavaScriptObject {
   public final native void set(String key, String val) /*-{
     this[key]=val;
   }-*/;
+  
+  public final String tostring() {
+    String ret = "";
+    for (String k : keys()){
+      ret += k + ": '" + get(k) + "', ";
+    }
+    return "({" + ret.replaceAll("[, ]+","") + "})";
+  }
 }

@@ -13,42 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.plugins;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.JSArray;
 
 /**
  * Class used in plugins which need a queue system.
  */
 public abstract class GQueryQueue extends GQuery {
-
-  private static final class Queue<T> extends JavaScriptObject {
-
-    public static Queue<?> newInstance() {
-      return createArray().cast();
-    }
-
-    @SuppressWarnings("unused")
-    protected Queue() {
-    }
-
-    public native T dequeue() /*-{
-      return this.shift();
-    }-*/;
-
-    public native void enqueue(T foo) /*-{
-      this.push(foo);
-    }-*/;
-
-    public native int length() /*-{
-      return this.length;
-    }-*/;
-
-    public native T peek(int i) /*-{
-      return this[i];
-    }-*/;
+  
+  public GQueryQueue(Element element) {
+    super(element);
   }
 
   public GQueryQueue(GQuery gq) {
@@ -61,10 +43,6 @@ public abstract class GQueryQueue extends GQuery {
 
   public GQueryQueue(NodeList<Element> list) {
     super(list);
-  }
-
-  public GQueryQueue(Element element) {
-    super(element);
   }
 
   /**
@@ -99,42 +77,46 @@ public abstract class GQueryQueue extends GQuery {
     return this;
   }
 
+  protected String getQueueType() {
+    return "GQueryQueue_" + this.getClass().getName(); 
+  }
+
   private void dequeue(Element elem) {
-    Queue<Function> q = queue(elem, null);
+    Queue<?> q = queue(elem, null);
     if (q != null) {
-      Function f = q.dequeue();
-      f = q.peek(0);
+      q.poll();
+      Object f = q.peek();
       if (f != null) {
-        f.f(elem);
+        if (f instanceof Function) {
+          ((Function)f).f(elem);
+        }
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  private Queue<Function> queue(Element elem, Function func) {
+  private <S> Queue<S> queue(Element elem, S func) {
     if (elem != null) {
-      Queue<Function> q = (Queue<Function>) data(elem, getQueueType(), null);
+      Queue<S> q = (Queue<S>) data(elem, getQueueType(), null);
       if (q == null) {
-        q = (Queue<Function>) data(elem, getQueueType(), Queue.newInstance());
+        q = (Queue<S>) data(elem, getQueueType(), new LinkedList<S>());
       }
       if (func != null) {
-        q.enqueue(func);
+        q.add(func);
       }
-      if (q.length() == 1 && func != null) {
-        func.f(elem);
+      if (q.size() == 1 && func != null) {
+        if (func instanceof Function) {
+          ((Function)func).f(elem);
+        }
       }
       return q;
     }
     return null;
   }
-
+  
   private void replacequeue(Element elem, Queue<?> queue) {
     if (elem != null) {
       data(elem, getQueueType(), queue);
     }
-  }
-  
-  protected String getQueueType() {
-    return "GQueryQueue_" + this.getClass().getName(); 
   }
 }

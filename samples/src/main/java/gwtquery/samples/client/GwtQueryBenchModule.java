@@ -23,7 +23,7 @@ public class GwtQueryBenchModule implements EntryPoint {
 
   private static final String JQUERY = "jquery";
 
-  private static final String GDYNAMIC = "gwt";
+  private static final String GDYNAMIC = "dgwt";
 
   private static final String DOJO = "dojo";
 
@@ -34,13 +34,13 @@ public class GwtQueryBenchModule implements EntryPoint {
 
     final DeferredGQuery dg[] = m.getAllSelectors();
     HTML h = HTML.wrap(Document.get().getElementById("startrace"));
-    initResultsTable(dg, "GQuery", GCOMPILED, "jQuery"
+    initResultsTable(dg, "GQuery", GCOMPILED, "DGQuery", GDYNAMIC, "jQuery"
         /*"DOMAssistant 2.7" */, JQUERY, "Dojo", DOJO, "Prototype", PROTOTYPE);
 
     h.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent clickEvent) {
 
-        runBenchmarks(dg, new GQueryDynamicBenchmark(), new JQueryBenchmark(),
+        runBenchmarks(dg,new GQueryDynamicBenchmark(), new GQueryCompiledBenchmark(), new JQueryBenchmark(),
             new DojoBenchmark(), new PrototypeBenchmark());
       }
     });

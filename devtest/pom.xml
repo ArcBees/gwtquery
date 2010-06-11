@@ -53,7 +53,7 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
-                <style>PRETTY</style>
+                <!-- <style>PRETTY</style> -->
                 <gwtVersion>${gwtversion}</gwtVersion>
                 <modules>
                     <module>com.google.gwt.query.DevTestRunner</module>

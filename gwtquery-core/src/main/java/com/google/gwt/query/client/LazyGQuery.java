@@ -1,14 +1,49 @@
-package com.google.gwt.query.client;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.query.client.css.CssProperty;
-
-/**
- * Created by IntelliJ IDEA. User: ray Date: May 2, 2009 Time: 10:48:07 PM To
- * change this template use File | Settings | File Templates.
+/*
+ * Copyright 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-public interface LazyGQuery<T> extends LazyBase<T> {
+package com.google.gwt.query.client;
+import static com.google.gwt.query.client.plugins.Effects.Effects;
+import static com.google.gwt.query.client.plugins.Events.Events;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.query.client.css.CssProperty;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.Percentage;
+import com.google.gwt.query.client.css.TakesLength;
+import com.google.gwt.query.client.css.TakesPercentage;
+import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.query.client.LazyBase;
+
+public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
@@ -86,7 +121,15 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   /**
    * Convert to Plugin interface provided by Class literal.
    */
-  <P extends GQuery> P as(Class<P> plugin);
+  <T extends GQuery> T as(Class<T> plugin);
+
+  /**
+   * Access a property on the first matched element. This method makes it easy
+   * to retrieve a property value from the first matched element. If the element
+   * does not have an attribute with such a name, undefined is returned.
+   * Attributes include title, alt, src, href, width, style, etc.
+   */
+  String attr(String name);
 
   /**
    * Set a single property to a value, on all matched elements.
@@ -95,8 +138,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
 
   /**
    * Set a key/value object as properties to all matched elements.
-   * 
-   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test
+   *
    * Image'"))
    */
   LazyGQuery<T> attr(Properties properties);
@@ -138,19 +180,19 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * parameter
    * 
    */
-  LazyGQuery<T> bind(int eventbits, Object data, Function... f);
+  LazyGQuery<T> bind(int eventbits, Object data, Function...funcs);
 
   /**
-   * Bind a set of functions to the blur event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the blur event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> blur(Function... f);
+  LazyGQuery<T> blur(Function...f);
 
   /**
-   * Bind a set of functions to the change event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the change event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> change(Function... f);
+  LazyGQuery<T> change(Function...f);
 
   /**
    * Get a set of elements containing all of the unique children of each of the
@@ -167,10 +209,10 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> children();
 
   /**
-   * Bind a set of functions to the click event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the click event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> click(Function... f);
+  LazyGQuery<T> click(Function...f);
 
   /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
@@ -190,25 +232,30 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> contents();
 
   /**
-   * Set a single style property to a value, on all matched elements using
-   * type-safe overhead-free enumerations.
-   * 
-   * @param property
-   *          a CSS property type
-   * @param value
-   *          a legal value from the type T
-   * @param <T>
-   *          inferred from the CSS property type
-   * @return
+   * Set CSS property on every matched element using type-safe enumerations.
    */
-   <S, P extends CssProperty<S>> LazyGQuery<T> css(P cssProperty, S value);
+  <S, T extends CssProperty<S>> LazyGQuery<T> css(T cssProperty, S value);
 
+  /**
+   * Set CSS property on every matched element using type-safe enumerations.
+   */
+  LazyGQuery<T> css(TakesLength cssProperty, Length value);
+
+  /**
+   * Set CSS property on every matched element using type-safe enumerations.
+   */
+  LazyGQuery<T> css(TakesPercentage cssProperty, Percentage value);
+
+  /**
+   * Return a style property on the first matched element.
+   */
+  String css(String name);
 
   /**
    * Set a key/value object as style properties to all matched elements. This
    * serves as the best way to set a large number of style properties on all
    * matched elements.
-   * 
+   *
    * Example: $(".item").css(Properties.create("color: 'red', background:
    * 'blue'"))
    */
@@ -220,17 +267,42 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> css(String prop, String val);
 
   /**
-   * Bind a set of functions to the dblclick event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Returns value at named data store for the element, as set by data(name,
+   * value).
    */
-  LazyGQuery<T> dblclick(Function... f);
+  Object data(String name);
 
   /**
-   * Run one or more Functions over each element of the GQuery. You have to
-   * override one of these funcions: public void f(Element e) public String
-   * f(Element e, int i)
+   * Returns value at named data store for the element, as set by data(name,
+   * value) with desired return type.
+   *
+   */
+  <T> T data(String name, Class<T> clz);
+
+  /**
+   * Stores the value in the named spot with desired return type.
+   */
+  Object data(String name, Object value);
+
+  /**
+   * Bind a set of functions to the dblclick event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  LazyGQuery<T> dblclick(Function...f);
+
+  /**
+   * Run one or more Functions over each element of the GQuery.
+   * You have to override one of these funcions:
+   *    public void f(Element e)
+   *    public String f(Element e, int i)
    */
   LazyGQuery<T> each(Function... f);
+
+  /**
+   * Returns the working set of nodes as a Java array. <b>Do NOT</b attempt to
+   * modify this array, e.g. assign to its elements, or call Arrays.sort()
+   */
+  Element[] elements();
 
   /**
    * Remove all child nodes from the set of matched elements.
@@ -249,32 +321,32 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> eq(int pos);
 
   /**
-   * Bind a set of functions to the error event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the error event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
   LazyGQuery<T> error(Function... f);
 
   /**
    * Fade in all matched elements by adjusting their opacity.
    */
-  LazyGQuery<T> fadeIn(int millisecs);
+  LazyGQuery<T> fadeIn(int millisecs, Function... f);
 
   /**
    * Fade in all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
-  LazyGQuery<T> fadeIn();
+  LazyGQuery<T> fadeIn(Function... f);
 
   /**
    * Fade out all matched elements by adjusting their opacity.
    */
-  LazyGQuery<T> fadeOut(int millisecs);
+  LazyGQuery<T> fadeOut(int millisecs, Function... f);
 
   /**
    * Fade out all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
-  LazyGQuery<T> fadeOut();
+  LazyGQuery<T> fadeOut(Function... f);
 
   /**
    * Removes all elements from the set of matched elements that do not match the
@@ -296,17 +368,28 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * Searches for all elements that match the specified css expression. This
    * method is a good way to find additional descendant elements with which to
    * process.
-   * 
+   *
    * Provide a comma-separated list of expressions to apply multiple filters at
    * once.
    */
   LazyGQuery<T> find(String... filters);
 
   /**
-   * Bind a set of functions to the focus event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the focus event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> focus(Function... f);
+  LazyGQuery<T> focus(Function...f);
+
+  /**
+   * Return all elements matched in the GQuery as a NodeList. @see #elements()
+   * for a method which returns them as an immutable Java array.
+   */
+  NodeList<Element> get();
+
+  /**
+   * Return the ith element matched.
+   */
+  Element get(int i);
 
   /**
    * Return the previous set of matched elements prior to the last destructive
@@ -315,12 +398,23 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> getPreviousObject();
 
   /**
+   * Return the selector representing the current set of matched elements.
+   */
+  String getSelector();
+
+  /**
    * Returns true any of the specified classes are present on any of the matched
    * Reduce the set of matched elements to all elements after a given position.
    * The position of the element in the set of matched elements starts at 0 and
    * goes to length - 1.
    */
   LazyGQuery<T> gt(int pos);
+
+  /**
+   * Returns true any of the specified classes are present on any of the matched
+   * elements.
+   */
+  boolean hasClass(String... classes);
 
   /**
    * Set the height of every element in the matched set.
@@ -332,6 +426,23 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * using 'percent' or 'em' units Example: $(".a").width("100%")
    */
   LazyGQuery<T> height(String height);
+
+  /**
+   * Get the current computed, pixel, height of the first matched element.
+   */
+  int height();
+
+  /**
+   * Returns the inner height of the first matched element, including padding 
+   * but not the vertical scrollbar height, border, or margin.
+   */
+  int clientHeight();
+
+  /**
+   * Returns the inner width of the first matched element, including padding 
+   * but not the vertical scrollbar width, border, or margin.
+   */
+  int clientWidth();
 
   /**
    * Make invisible all matched elements.
@@ -349,9 +460,19 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> hover(Function fover, Function fout);
 
   /**
+   * Get the innerHTML of the first matched element.
+   */
+  String html();
+
+  /**
    * Set the innerHTML of every matched element.
    */
   LazyGQuery<T> html(String html);
+
+  /**
+   * Find the index of the specified Element.
+   */
+  int index(Element element);
 
   /**
    * Insert all of the matched elements after another, specified, set of
@@ -374,7 +495,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   /**
    * Insert all of the matched elements before another, specified, set of
    * elements.
-   * 
+   *
    * The elements must already be inserted into the document (you can't insert
    * an element after another if it's not in the page).
    */
@@ -383,7 +504,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   /**
    * Insert all of the matched elements before another, specified, set of
    * elements.
-   * 
+   *
    * The elements must already be inserted into the document (you can't insert
    * an element after another if it's not in the page).
    */
@@ -392,17 +513,24 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   /**
    * Insert all of the matched elements before another, specified, set of
    * elements.
-   * 
+   *
    * The elements must already be inserted into the document (you can't insert
    * an element after another if it's not in the page).
    */
   LazyGQuery<T> insertBefore(String selector);
 
   /**
-   * Bind a set of functions to the keydown event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Checks the current selection against an expression and returns true, if at
+   * least one element of the selection fits the given expression. Does return
+   * false, if no element fits or the expression is not valid.
    */
-  LazyGQuery<T> keydown(Function... f);
+  boolean is(String... filters);
+
+  /**
+   * Bind a set of functions to the keydown event of each matched element.
+   * Or trigger the event if no functions are provided.
+   */
+  LazyGQuery<T> keydown(Function...f);
 
   /**
    * Trigger a keydown event passing the key pushed
@@ -410,10 +538,10 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> keydown(int key);
 
   /**
-   * Bind a set of functions to the keypress event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the keypress event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> keypress(Function... f);
+  LazyGQuery<T> keypress(Function...f);
 
   /**
    * Trigger a keypress event passing the key pushed
@@ -421,15 +549,21 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> keypress(int key);
 
   /**
-   * Bind a set of functions to the keyup event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the keyup event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> keyup(Function... f);
+  LazyGQuery<T> keyup(Function...f);
 
   /**
    * Trigger a keyup event passing the key pushed
    */
   LazyGQuery<T> keyup(int key);
+
+  /**
+   * Returns the number of elements currently matched. The size function will
+   * return the same value.
+   */
+  int length();
 
   /**
    * Bind a function to the load event of each matched element.
@@ -444,34 +578,34 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> lt(int pos);
 
   /**
-   * Bind a set of functions to the mousedown event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the mousedown event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> mousedown(Function... f);
+  LazyGQuery<T> mousedown(Function...f);
 
   /**
-   * Bind a set of functions to the mousemove event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the mousemove event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> mousemove(Function... f);
+  LazyGQuery<T> mousemove(Function...f);
 
   /**
-   * Bind a set of functions to the mouseout event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the mouseout event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> mouseout(Function... f);
+  LazyGQuery<T> mouseout(Function...f);
 
   /**
-   * Bind a set of functions to the mouseover event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the mouseover event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> mouseover(Function... f);
+  LazyGQuery<T> mouseover(Function...f);
 
   /**
-   * Bind a set of functions to the mouseup event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the mouseup event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> mouseup(Function... f);
+  LazyGQuery<T> mouseup(Function...f);
 
   /**
    * Get a set of elements containing the unique next siblings of each of the
@@ -512,6 +646,13 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> not(String... filters);
 
   /**
+   * Get the current offset of the first matched element, in pixels, relative to
+   * the document. The returned object contains two integer properties, top and
+   * left. The method works only with visible elements.
+   */
+  com.google.gwt.query.client.GQuery.Offset offset();
+
+  /**
    * Returns a GQuery collection with the positioned parent of the first matched
    * element. This is the first parent of the element that has position (as in
    * relative or absolute). This method only works with visible elements.
@@ -521,11 +662,11 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
    * element. The handler is executed only once for each element.
-   * 
+   *
    * The event handler is passed as a Function that you can use to prevent
-   * default behaviour. To stop both default action and event bubbling, the
+   * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
-   * 
+   *
    * You can pass an additional Object data to your Function as the second
    * parameter
    */
@@ -556,6 +697,14 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * elements (except for the root element).
    */
   LazyGQuery<T> parents();
+
+  /**
+   * Gets the top and left position of an element relative to its offset parent.
+   * The returned object contains two Integer properties, top and left. For
+   * accurate calculations make sure to use pixel values for margins, borders
+   * and padding. This method only works with visible elements.
+   */
+  com.google.gwt.query.client.GQuery.Offset position();
 
   /**
    * Prepend content to the inside of every matched element. This operation is
@@ -668,10 +817,10 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> replaceWith(Element elem);
 
   /**
-   * Bind a set of functions to the scroll event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * Bind a set of functions to the scroll event of each matched element.
+   * Or trigger the event if no functions are provided.
    */
-  LazyGQuery<T> scroll(Function... f);
+  LazyGQuery<T> scroll(Function...f);
 
   /**
    * When a value is passed in, the scroll left offset is set to that value on
@@ -702,6 +851,25 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> select();
 
   /**
+   * Set CSS property on the first element.
+   */
+  <S, T extends CssProperty<S>> LazyGQuery<T> setCss(T cssProperty, S value);
+
+  /**
+   * Set CSS property on first matched element using type-safe enumerations.
+   */
+  LazyGQuery<T> setCss(TakesLength cssProperty, Length value);
+
+  /**
+   * Set CSS property on first matched element using type-safe enumerations.
+   */
+  LazyGQuery<T> setCss(TakesPercentage cssProperty, Percentage value);
+
+  void setPreviousObject(GQuery previousObject);
+
+  void setSelector(String selector);
+
+  /**
    * Return the number of elements in the matched set. Make visible all mached
    * elements
    */
@@ -720,6 +888,11 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> siblings(String... selectors);
 
   /**
+   * Return the number of elements in the matched set.
+   */
+  int size();
+
+  /**
    * Selects a subset of the matched elements.
    */
   LazyGQuery<T> slice(int start, int end);
@@ -727,9 +900,19 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> submit();
 
   /**
+   * Return the text contained in the first matched element.
+   */
+  String text();
+
+  /**
    * Set the innerText of every matched element.
    */
   LazyGQuery<T> text(String txt);
+
+  /**
+   * Toggle visibility of elements.
+   */
+  LazyGQuery<T> toggle();
 
   /**
    * Toggle among two or more function calls every other click.
@@ -737,17 +920,37 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> toggle(Function... fn);
 
   /**
-   * Adds or removes the specified classes to each matched element.
+   * Adds or removes the specified classes to each matched element
+   * depending on the class's presence
    */
   LazyGQuery<T> toggleClass(String... classes);
 
   /**
-   * Adds or removes the specified classes to each matched element.
+   * Adds or removes the specified classes to each matched element
+   * depending on the value of the switch argument.
+   * 
+   * false it is removed.
    */
-  LazyGQuery<T> toggleClass(String clz, boolean sw);
+  LazyGQuery<T> toggleClass(String clz, boolean addOrRemove);
 
   /**
-   * Trigger an event of type eventbits on every matched element.
+   * Produces a string representation of the matched elements.
+   */
+  String toString();
+
+  /**
+   * Produces a string representation of the matched elements.
+   */
+  String toString(boolean pretty);
+
+  /**
+   * Trigger a set of events on each matched element.
+   * 
+   * For keyboard events you can pass a second parameter which represents 
+   * the key-code of the pushed key. 
+   * 
+   * Example: fire(Event.ONCLICK | Event.ONFOCUS)
+   * Example: fire(Event.ONKEYDOWN. 'a');
    */
   LazyGQuery<T> trigger(int eventbits, int... keys);
 
@@ -757,6 +960,23 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> unbind(int eventbits);
 
   /**
+   * Remove all duplicate elements from an array of elements. Note that this
+   * only works on arrays of DOM elements, not strings or numbers.
+   */
+  JSArray unique(JSArray result);
+
+  /**
+   * Gets the content of the value attribute of the first matched element,
+   * returns only the first value even if it is a multivalued element. To get an
+   * array of all values in multivalues elements use vals()
+   *
+   * When the first element is a radio-button and is not checked, then it looks
+   * for a the first checked radio-button that has the same name in the list of
+   * matched elements.
+   */
+  String val();
+
+  /**
    * Sets the value attribute of every matched element In the case of multivalue
    * elements, all values are setted for other elements, only the first value is
    * considered.
@@ -764,9 +984,32 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> val(String... values);
 
   /**
+   * Gets the content of the value attribute of the first matched element,
+   * returns more than one value if it is a multiple select.
+   *
+   * When the first element is a radio-button and is not checked, then it looks
+   * for a the first checked radio-button that has the same name in the list of
+   * matched elements.
+   *
+   * This method always returns an array. If no valid value can be determined
+   * the array will be empty, otherwise it will contain one or more values.
+   */
+  String[] vals();
+
+  /**
+   * Return true if the first element is visible.
+   */
+  boolean visible();
+
+  /**
    * Set the width of every matched element.
    */
   LazyGQuery<T> width(int width);
+
+  /**
+   * Get the current computed, pixel, width of the first matched element.
+   */
+  int width();
 
   /**
    * Wrap each matched element with the specified HTML content. This wrapping
@@ -807,7 +1050,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * get wrapped with an element. This wrapping process is most useful for
    * injecting additional structure into a document, without ruining the
    * original semantic qualities of a document.
-   * 
+   *
    * This works by going through the first element provided (which is generated,
    * on the fly, from the provided HTML) and finds the deepest descendant
    * element within its structure -- it is that element that will enwrap
@@ -821,7 +1064,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * get wrapped with an element. This wrapping process is most useful for
    * injecting additional structure into a document, without ruining the
    * original semantic qualities of a document.
-   * 
+   *
    * This works by going through the first element provided (which is generated,
    * on the fly, from the provided HTML) and finds the deepest descendant
    * element within its structure -- it is that element that will enwrap
@@ -835,7 +1078,7 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * get wrapped with an element. This wrapping process is most useful for
    * injecting additional structure into a document, without ruining the
    * original semantic qualities of a document.
-   * 
+   *
    * This works by going through the first element provided (which is generated,
    * on the fly, from the provided HTML) and finds the deepest descendant
    * element within its structure -- it is that element that will enwrap
@@ -875,4 +1118,15 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * that element that will enwrap everything else.
    */
   LazyGQuery<T> wrapInner(Element elem);
+
+  /**
+   * Save a set of Css properties of every matched element.
+   */
+  void restoreCssAttrs(String[] cssProps);
+
+  /**
+   * Restore a set of previously saved Css properties in every matched element.
+   */
+  void saveCssAttrs(String[] cssProps);
+
 }

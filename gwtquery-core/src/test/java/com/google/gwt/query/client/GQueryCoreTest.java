@@ -588,4 +588,33 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $(e).html());
   }
   
+  public void testShowHide() {
+    $(e)
+    .html(
+        "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
+
+    final GQuery sectA = $("#id1");
+    final GQuery sectB = $("#id2");
+    final GQuery sectC = $("#id3");
+    
+    // hide()
+    sectA.hide();
+    assertEquals("none", sectA.css("display"));
+    sectB.hide();
+    assertEquals("none", sectB.css("display"));
+    
+    // show()
+    sectA.show();
+    assertEquals("inline", sectA.css("display"));
+    sectB.show();
+    assertEquals("", sectB.css("display"));
+    
+    // toggle()
+    assertEquals("", sectC.css("display"));
+    sectC.toggle();
+    assertEquals("none", sectC.css("display"));
+    sectC.toggle();
+    assertEquals("block", sectC.css("display"));
+  }
+  
 }

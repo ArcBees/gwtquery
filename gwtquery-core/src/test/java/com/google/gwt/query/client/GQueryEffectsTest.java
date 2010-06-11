@@ -15,14 +15,14 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.Effects.Effects;
-import static com.google.gwt.query.client.Effects.Easing.LINEAR;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -51,31 +51,16 @@ public class GQueryEffectsTest extends GWTTestCase {
     }
   }
 
-  public void testEffects() {
+  public void testFade() {
     $(e)
-        .html(
-            "<p id='id1'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
+    .html(
+        "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
 
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
-    final GQuery sectC = $("#id3");
-
-    // hide()
-    sectA.hide();
-    assertEquals("none", sectA.css("display"));
-
-    // show()
-    sectB.show();
-    assertEquals("", sectB.css("display"));
-
-    // toggle()
-    assertEquals("", sectC.css("display"));
-    sectC.toggle();
-    assertEquals("none", sectC.css("display"));
-    sectC.toggle();
-    assertEquals("", sectC.css("display"));
-
+    
     // fadeIn() & fadeOut() are tested with delayed assertions
+    sectA.hide();
     sectA.fadeIn(2000);
     sectB.fadeOut(2000);
 
@@ -98,7 +83,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     };
     Timer timerMidTime = new Timer() {
       public void run() {
-        assertEquals("", sectA.css("display"));
+        assertEquals("inline", sectA.css("display"));
         assertEquals("", sectB.css("display"));
         double o = Double.valueOf(sectA.css("opacity"));
         assertTrue(
@@ -112,30 +97,30 @@ public class GQueryEffectsTest extends GWTTestCase {
     };
     Timer timerLongTime = new Timer() {
       public void run() {
-        assertEquals("", sectA.css("display"));
+        assertEquals("inline", sectA.css("display"));
         assertEquals("none", sectB.css("display"));
         // Last delayed assertion has to stop the test to avoid a timeout
         // failure
         finishTest();
       }
     };
+
     // schedule the delayed assertions
     timerShortTime.schedule(200);
     timerMidTime.schedule(1200);
-    timerLongTime.schedule(2200);
-  }
+    timerLongTime.schedule(2200);    
+  }  
 
   public void testEffectsShouldBeQueued() {
     $(e).html("<p id='idtest'>Content 1</p></p>");
 
     final GQuery g = $("#idtest").css("position", "absolute");
     final Offset o = g.offset();
-    g.as(Effects).
-        animate($$("left: '+=100'"), 400, LINEAR, null).
-        animate($$("top: '+=100'"), 400, LINEAR, null).
-        animate($$("left: '-=100'"), 400, LINEAR, null).
-        animate($$("top: '-=100'"), 400, LINEAR, null);
-
+    g.as(Effects.Effects).
+        animate($$("left: '+=100'"), 400, Easing.LINEAR).
+        animate($$("top: '+=100'"), 400, Easing.LINEAR).
+        animate($$("left: '-=100'"), 400, Easing.LINEAR).
+        animate($$("top: '-=100'"), 400, Easing.LINEAR);
     
     // Configure the max duration for this test
     delayTestFinish(400 * 4);
@@ -143,26 +128,26 @@ public class GQueryEffectsTest extends GWTTestCase {
     // each timer calls the next one
     final Timer timer1 = new Timer() {
       public void run() {
-        assertPosition(g, o.add(99, 0), o.add(1, 0));
+        assertPosition(g, o.add(0, 99), o.add(0, 1));
         // Last timer should finish the test
         finishTest();
       }
     };
     final Timer timer2 = new Timer() {
       public void run() {
-        assertPosition(g, o.add(100, 99), o.add(100, 1));
+        assertPosition(g, o.add(99, 100), o.add(1, 100));
         timer1.schedule(400);
       }
     };
     final Timer timer3 = new Timer() {
       public void run() {
-        assertPosition(g, o.add(1, 100), o.add(99, 100));
+        assertPosition(g, o.add(100, 1), o.add(100, 99));
         timer2.schedule(400);
       }
     };
     final Timer timer4 = new Timer() {
       public void run() {
-        assertPosition(g, o.add(0, 1), o.add(0, 99));
+        assertPosition(g, o.add(1, 0), o.add(99, 0));
         timer3.schedule(400);
       }
     };

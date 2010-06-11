@@ -41,6 +41,8 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
     }
     return name;
   }
+  
+  
 
   // code lifted from jQuery
   private native String getComputedStyle(Element elem, String name,

@@ -15,8 +15,9 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.Effects.Effects;
-import static com.google.gwt.query.client.Events.Events;
+
+import static com.google.gwt.query.client.plugins.Effects.Effects;
+import static com.google.gwt.query.client.plugins.Events.Events;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -33,6 +34,7 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -40,7 +42,6 @@ import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
@@ -53,10 +54,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * A POJO used to store the top/left CSS positioning values of an element.
    */
   public static class Offset {
-
-    public int top;
-
     public int left;
+    public int top;
 
     Offset(int left, int top) {
       this.left = left;
@@ -77,11 +76,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     protected DataCache() {
     }
 
-    public native void delete(String name) /*-{
+    public native void delete(int name) /*-{
       delete this[name];
     }-*/;
 
-    public native void delete(int name) /*-{
+    public native void delete(String name) /*-{
       delete this[name];
     }-*/;
 
@@ -89,11 +88,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return !!this[id];
     }-*/;
 
-    public native JavaScriptObject get(String id) /*-{
+    public native JavaScriptObject get(int id) /*-{
       return this[id];
     }-*/;
 
-    public native JavaScriptObject get(int id) /*-{
+    public native JavaScriptObject get(String id) /*-{
       return this[id];
     }-*/;
 
@@ -101,15 +100,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return get(id).cast();
     }
 
-    public native double getDouble(String id) /*-{
-      return this[id];
-    }-*/;
-
     public native double getDouble(int id) /*-{
       return this[id];
     }-*/;
 
-    public native int getInt(String id) /*-{
+    public native double getDouble(String id) /*-{
       return this[id];
     }-*/;
 
@@ -117,15 +112,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return this[id];
     }-*/;
 
+    public native int getInt(String id) /*-{
+      return this[id];
+    }-*/;
+
     public native Object getObject(String id) /*-{
           return this[id];
         }-*/;
 
-    public native String getString(String id) /*-{
+    public native String getString(int id) /*-{
       return this[id];
     }-*/;
 
-    public native String getString(int id) /*-{
+    public native String getString(String id) /*-{
       return this[id];
     }-*/;
 
@@ -135,33 +134,33 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         return !foo;
     }-*/;
 
-    public native void put(String id, Object obj) /*-{
+    public native void put(int id, Object obj) /*-{
       this[id]=obj;
     }-*/;
 
-    public native void put(int id, Object obj) /*-{
+    public native void put(String id, Object obj) /*-{
       this[id]=obj;
     }-*/;
   }
   
-  public static final Element window = window();
   public static final Document document = Document.get();
-
   public static boolean fxOff = false;
 
   public static Class<GQuery> GQUERY = GQuery.class;
 
-  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
-      plugins;
-
-  private static Element windowData = null;
+  public static final Element window = window();
 
   private static DataCache dataCache = null;
 
-  private static DocumentStyleImpl styleImpl;
-
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
+
+  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
+      plugins;
+
+  private static DocumentStyleImpl styleImpl;
+
+  private static Element windowData = null;
 
   /**
    * Create an empty GQuery object.
@@ -171,19 +170,41 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Wrap a GQuery around an existing element.
+   */
+  public static GQuery $(Element element) {
+    JSArray a = JSArray.create();
+    a.addNode(element);
+    return new GQuery(a);
+  }
+
+  /**
+   * Wrap a GQuery around an event's target element.
+   */
+  public static GQuery $(Event event) {
+    return $((Element)event.getCurrentEventTarget().cast());
+  }
+
+  /**
+   * Wrap a GQuery around  existing Elements.
+   */
+  public static GQuery $(NodeList<Element> elements) {
+    return new GQuery(elements);
+  }
+
+  /**
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements.
    */
   public static GQuery $(String selectorOrHtml) {
+    if (selectorOrHtml == null || selectorOrHtml.trim().length() == 0) {
+      return $();
+    }
     if (selectorOrHtml.trim().charAt(0) == '<') {
       return innerHtml(selectorOrHtml);
     }
     return $(selectorOrHtml, document);
-  }
-
-  public static <T extends GQuery> T $(T gq) {
-    return gq;
   }
 
   /**
@@ -226,27 +247,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  /**
-   * Wrap a GQuery around  existing Elements.
-   */
-  public static GQuery $(NodeList<Element> elements) {
-    return new GQuery(elements);
-  }
-
-  /**
-   * Wrap a GQuery around an existing element.
-   */
-  public static GQuery $(Element element) {
-    JSArray a = JSArray.create();
-    a.addNode(element);
-    return new GQuery(a);
-  }
-
-  /**
-   * Wrap a GQuery around an event's target element.
-   */
-  public static GQuery $(Event event) {
-    return $((Element)event.getCurrentEventTarget().cast());
+  public static <T extends GQuery> T $(T gq) {
+    return gq;
   }
 
   /**
@@ -274,19 +276,73 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 			});
    }-*/;
 
+  /**
+   * Returns the numeric value of a css propery of the element.
+   */
+  public static double cur(Element elem, String prop) {
+    GQuery g = $(elem);
+    if ("height".equals(prop)) {
+      return g.clientHeight();
+    }
+    if ("width".equals(prop)) {
+      return g.clientWidth();
+    }
+    if ("absolute".equalsIgnoreCase(g.css("position"))) {
+      if ("left".equals(prop)) {
+        return g.offset().left;
+      }
+      if ("top".equals(prop)) {
+        return g.offset().top;
+      }
+    }
+    if ("opacity".equals(prop)) {
+      return Double.parseDouble(g.css("opacity"));
+    }
+    if (elem.getPropertyString(prop) != null
+        && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
+      return elem.getPropertyDouble(prop);
+    }
+    String val = g.css(prop);
+    if (val != null) {
+      if ("thick".equals(val)) {
+        return (5);
+      } else if ("medium".equals(val)) {
+        return (3);
+      } else if ("thin".equals(val)) {
+        return (1);
+      }
+      val = "0" + val.replaceAll("[^\\d\\.]+", "");
+      return Double.parseDouble(val);
+    }
+    return 0.0;
+  }
+  
+  /**
+   * Returns the string value of a css propery of the element.
+   * TODO: use implementations
+   */
   public static String curCSS(Element elem, String name, boolean force) {
     name = fixAttributeName(name);
     Style s = elem.getStyle();
+    if ("opacity".equals(name)) {
+      String o = s.getProperty("filter");
+      if (o != null) { 
+        return !o.matches(".*opacity=.*") ? "1" : 
+            ("" + (Double.valueOf(o.replaceAll("[^\\d]", "")) / 100));
+      }
+      o = s.getProperty("opacity");
+      return o == null || o.length() == 0 ? "1" : o; 
+    }    
     if (!force) {
       if (SelectorEngine.truth(s.getProperty(name))) {
         return s.getProperty(name);
       }
-      return name.equals("opacity") ? "1" : "";
     } else {
       return styleImpl.getCurrentStyle(elem, name);
     }
+    return "";
   }
-
+  
   /**
    * Return a lazy version of the GQuery interface. Lazy function calls are
    * simply queued up and not executed immediately.
@@ -301,6 +357,67 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       plugins = JsMap.createObject().cast();
     }
     plugins.put(plugin, pluginFactory);
+  }
+
+  protected static JSArray clean(String elem) {
+    String tags = elem.trim().toLowerCase();
+    String preWrap = "", postWrap = "";
+    int wrapPos = 0;
+    if (tags.contains("<opt")) {
+      wrapPos = 1;
+      preWrap = "<select multiple=\"multiple\">";
+      postWrap = "</select>";
+    } else if (tags.contains("<legend")) {
+      wrapPos = 1;
+      preWrap = "<fieldset>";
+      postWrap = "</fieldset>";
+    } else if (tags.matches("^<(thead|tbody|tfoot|colg|cap)")) {
+      wrapPos = 1;
+      preWrap = "<table>";
+      postWrap = "</table>";
+    } else if (tags.contains("<tr")) {
+      wrapPos = 2;
+      preWrap = "<table><tbody>";
+      postWrap = "</tbody></table>";
+    } else if (tags.contains("<td") || tags.contains("<th")) {
+      wrapPos = 3;
+      preWrap = "<table><tbody><tr>";
+      postWrap = "</tr></tbody></table>";
+    } else if (tags.contains("<col")) {
+      wrapPos = 2;
+      preWrap = "<table><tbody></tbody><colgroup>";
+      postWrap = "</colgroup></table>";
+    }
+    // TODO: fix IE link tag serialization
+    Element div = document.createDivElement();
+    div.setInnerHTML(preWrap + elem + postWrap);
+    Node n = div;
+    while (wrapPos-- != 0) {
+      n = n.getLastChild();
+    }
+    // TODO: add fixes for IE TBODY issue
+    return n.getChildNodes().cast();
+  }
+
+  protected static <S> Object data(Element item, String name, S value) {
+    if (dataCache == null) {
+      windowData = JavaScriptObject.createObject().cast();
+      dataCache = JavaScriptObject.createObject().cast();
+    }
+    item = item == window ? windowData : item;
+    if (item == null) {
+      return value;
+    }
+    int id = item.hashCode();
+    if (name != null && !dataCache.exists(id)) {
+      dataCache.put(id, DataCache.createObject().cast());
+    }
+
+    DataCache d = dataCache.get(id).cast();
+    if (name != null && value != null) {
+      d.put(name, value);
+    }
+    return name != null ? d.getObject(name) : id;
   }
 
   protected static String[] jsArrayToString(JsArrayString array) {
@@ -349,6 +466,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
+  private static String fixAttributeName(String key) {
+    ensureStyleImpl();
+    return styleImpl.getPropertyName(key);
+  }
+
   private static boolean hasClass(Element e, String clz) {
     return ((" " + e.getClassName() + " ").matches(".*\\s" + clz + "\\s.*"));
   }
@@ -371,38 +493,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return res;
   }
 
+  private static native Element window() /*-{
+    return $wnd;
+  }-*/;
+
   protected NodeList<Element> elements = null;
 
   private String currentSelector;
 
   private GQuery previousObject;
-
+  
   public GQuery() {
     elements = JavaScriptObject.createArray().cast();
   }
 
-  public GQuery(NodeList<Element> list) {
-    elements = list;
+  public GQuery(Element element) {
+    elements = JSArray.create(element);
+  }
+
+  public GQuery(GQuery gq) {
+    this(gq.get());
   }
 
   public GQuery(JSArray elements) {
     this.elements = elements;
   }
 
-  public GQuery(Element element) {
-    elements = JSArray.create(element);
-  }
-  
-  public GQuery(GQuery gq) {
-    this(gq.get());
-  }
-
-  /**
-   * Add elements to the set of matched elements if they are not included yet.
-   */
-
-  public GQuery add(String selector) {
-    return add($(selector));
+  public GQuery(NodeList<Element> list) {
+    elements = list;
   }
 
   /**
@@ -415,6 +533,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Add elements to the set of matched elements if they are not included yet.
+   */
+
+  public GQuery add(String selector) {
+    return add($(selector));
+  }
+
+  /**
    * Adds the specified classes to each matched element.
    */
   public GQuery addClass(String... classes) {
@@ -424,6 +550,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
     return this;
+  }
+
+  /**
+   * Insert content after each of the matched elements. The elements must
+   * already be inserted into the document (you can't insert an element after
+   * another if it's not in the page).
+   */
+  public GQuery after(GQuery query) {
+    return domManip(query.elements, FUNC_AFTER);
   }
 
   /**
@@ -445,15 +580,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Insert content after each of the matched elements. The elements must
-   * already be inserted into the document (you can't insert an element after
-   * another if it's not in the page).
-   */
-  public GQuery after(GQuery query) {
-    return domManip(query.elements, FUNC_AFTER);
-  }
-
-  /**
    * Add the previous selection to the current selection. Useful for traversing
    * elements, and then adding something that was matched before the last
    * traversal.
@@ -467,8 +593,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * similar to doing an appendChild to all the specified elements, adding them
    * into the document.
    */
-  public GQuery append(String html) {
-    return domManip(html, FUNC_APPEND);
+  public GQuery append(GQuery query) {
+    return domManip(query.elements, FUNC_APPEND);
   }
 
   /**
@@ -485,8 +611,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * similar to doing an appendChild to all the specified elements, adding them
    * into the document.
    */
-  public GQuery append(GQuery query) {
-    return domManip(query.elements, FUNC_APPEND);
+  public GQuery append(String html) {
+    return domManip(html, FUNC_APPEND);
   }
 
   /**
@@ -514,27 +640,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Access a property on the first matched element. This method makes it easy
-   * to retrieve a property value from the first matched element. If the element
-   * does not have an attribute with such a name, undefined is returned.
-   * Attributes include title, alt, src, href, width, style, etc.
-   */
-  public String attr(String name) {
-    return elements.getItem(0).getAttribute(fixAttributeName(name));
-  }
-
-  /**
-   * Set a single property to a value, on all matched elements.
-   */
-  public GQuery attr(String key, String value) {
-    key = fixAttributeName(key);
-    for (Element e : elements()) {
-      e.setAttribute(key, value);
-    }
-    return this;
-  }
-
-  /**
    * Set a key/value object as properties to all matched elements.
    *
    * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test
@@ -550,6 +655,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Access a property on the first matched element. This method makes it easy
+   * to retrieve a property value from the first matched element. If the element
+   * does not have an attribute with such a name, undefined is returned.
+   * Attributes include title, alt, src, href, width, style, etc.
+   */
+  public String attr(String name) {
+    return elements.getItem(0).getAttribute(fixAttributeName(name));
+  }
+
+  /**
    * Set a single property to a computed value, on all matched elements.
    */
   public GQuery attr(String key, Function closure) {
@@ -561,12 +676,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Insert content before each of the matched elements. The elements must
-   * already be inserted into the document (you can't insert an element before
-   * another if it's not in the page).
+   * Set a single property to a value, on all matched elements.
    */
-  public GQuery before(Node n) {
-    return domManip(JSArray.create(n), FUNC_BEFORE);
+  public GQuery attr(String key, String value) {
+    key = fixAttributeName(key);
+    for (Element e : elements()) {
+      e.setAttribute(key, value);
+    }
+    return this;
   }
 
   /**
@@ -576,6 +693,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery before(GQuery query) {
     return domManip(query.elements, FUNC_BEFORE);
+  }
+
+  /**
+   * Insert content before each of the matched elements. The elements must
+   * already be inserted into the document (you can't insert an element before
+   * another if it's not in the page).
+   */
+  public GQuery before(Node n) {
+    return domManip(JSArray.create(n), FUNC_BEFORE);
   }
 
   /**
@@ -603,17 +729,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Bind Handlers or fire Events for each matched element. 
-   */
-  private GQuery bindOrFire(int eventbits, final Object data, final Function...funcs) {
-    if (funcs.length == 0) {
-      return trigger(eventbits);
-    } else {
-      return bind(eventbits, data, funcs);
-    }
-  }
-
-  /**
    * Bind a set of functions to the blur event of each matched element.
    * Or trigger the event if no functions are provided.
    */
@@ -628,16 +743,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery change(Function...f) {
     return bindOrFire(Event.ONCHANGE, null, f);
   }
-
-  /**
-   * Get a set of elements containing all of the unique children of each of the
-   * matched set of elements. This set is filtered with the expressions that
-   * will cause only elements matching any of the selectors to be collected.
-   */
-  public GQuery children(String... filters) {
-    return find(filters);
-  }
-
+  
   /**
    * Get a set of elements containing all of the unique immediate children of
    * each of the matched set of elements. Also note: while parents() will look
@@ -652,13 +758,38 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Get a set of elements containing all of the unique children of each of the
+   * matched set of elements. This set is filtered with the expressions that
+   * will cause only elements matching any of the selectors to be collected.
+   */
+  public GQuery children(String... filters) {
+    return find(filters);
+  }
+
+  /**
    * Bind a set of functions to the click event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   public GQuery click(Function...f) {
     return bindOrFire(Event.ONCLICK, null, f);
   }
-  
+
+  /**
+   * Returns the inner height of the first matched element, including padding 
+   * but not the vertical scrollbar height, border, or margin.
+   */
+  public int clientHeight() {
+    return get(0).getClientHeight();
+  }
+
+  /**
+   * Returns the inner width of the first matched element, including padding 
+   * but not the vertical scrollbar width, border, or margin.
+   */
+  public int clientWidth() {
+    return get(0).getClientWidth();
+  }
+
   /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
    * copies of the elements to another location in the DOM.
@@ -709,6 +840,39 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Set a key/value object as style properties to all matched elements. This
+   * serves as the best way to set a large number of style properties on all
+   * matched elements.
+   *
+   * Example: $(".item").css(Properties.create("color: 'red', background:
+   * 'blue'"))
+   */
+  public GQuery css(Properties properties) {
+    for (String property : properties.keys()) {
+      css(property, properties.get(property));
+    }
+    return this;
+  }
+
+  /**
+   * Return a style property on the first matched element.
+   */
+  public String css(String name) {
+    return curCSS(get(0), name);
+  }
+
+  /**
+   * Set a single style property to a value, on all matched elements.
+   */
+  public GQuery css(String prop, String val) {
+    prop = fixAttributeName(prop);
+    for (Element e : elements()) {
+      setStyleProperty(prop, val, e);
+    }
+    return this;
+  }
+
+  /**
    * Set CSS property on every matched element using type-safe enumerations.
    */
   public <S, T extends CssProperty<S>> GQuery css(T cssProperty, S value) {
@@ -717,7 +881,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
    * Set CSS property on every matched element using type-safe enumerations.
    */
@@ -734,39 +898,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery css(TakesPercentage cssProperty, Percentage value) {
     for (Element e : elements()) {
       cssProperty.setPercentage(e.getStyle(), value);
-    }
-    return this;
-  }
-
-  /**
-   * Return a style property on the first matched element.
-   */
-  public String css(String name) {
-    return curCSS(get(0), name);
-  }
-
-  /**
-   * Set a key/value object as style properties to all matched elements. This
-   * serves as the best way to set a large number of style properties on all
-   * matched elements.
-   *
-   * Example: $(".item").css(Properties.create("color: 'red', background:
-   * 'blue'"))
-   */
-  public GQuery css(Properties properties) {
-    for (String property : properties.keys()) {
-      css(property, properties.get(property));
-    }
-    return this;
-  }
-
-  /**
-   * Set a single style property to a value, on all matched elements.
-   */
-  public GQuery css(String prop, String val) {
-    prop = fixAttributeName(prop);
-    for (Element e : elements()) {
-      setStyleProperty(prop, val, e);
     }
     return this;
   }
@@ -798,7 +929,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-  
+
   /**
    * Bind a set of functions to the dblclick event of each matched element.
    * Or trigger the event if no functions are provided.
@@ -822,8 +953,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
     return this;
-  }
-
+  }  
+  
   /**
    * Returns the working set of nodes as a Java array. <b>Do NOT</b attempt to
    * modify this array, e.g. assign to its elements, or call Arrays.sort()
@@ -866,38 +997,38 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Bind a set of functions to the error event of each matched element.
    * Or trigger the event if no functions are provided.
    */
-  public GQuery error(Function...f) {
+  public GQuery error(Function... f) {
     return bindOrFire(Event.ONERROR, null, f);
-  }  
-  
-  /**
-   * Fade in all matched elements by adjusting their opacity.
-   */
-  public GQuery fadeIn(int millisecs) {
-    return $(as(Effects).fadeIn(millisecs));
   }
 
   /**
    * Fade in all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
-  public GQuery fadeIn() {
-    return $(as(Effects).fadeIn());
+  public GQuery fadeIn(Function... f) {
+    return $(as(Effects).fadeIn(f));
   }
 
   /**
-   * Fade out all matched elements by adjusting their opacity.
+   * Fade in all matched elements by adjusting their opacity.
    */
-  public GQuery fadeOut(int millisecs) {
-    return as(Effects).fadeOut(millisecs);
+  public GQuery fadeIn(int millisecs, Function... f) {
+    return $(as(Effects).fadeIn(millisecs, f));
   }
 
   /**
    * Fade out all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
-  public GQuery fadeOut() {
-    return $(as(Effects).fadeOut());
+  public GQuery fadeOut(Function... f) {
+    return $(as(Effects).fadeOut(f));
+  }  
+  
+  /**
+   * Fade out all matched elements by adjusting their opacity.
+   */
+  public GQuery fadeOut(int millisecs, Function... f) {
+    return as(Effects).fadeOut(millisecs, f);
   }
 
   /**
@@ -964,8 +1095,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery focus(Function...f) {
     return bindOrFire(Event.ONFOCUS, null, f);
-  }  
-  
+  }
+
   /**
    * Return all elements matched in the GQuery as a NodeList. @see #elements()
    * for a method which returns them as an immutable Java array.
@@ -1005,7 +1136,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery gt(int pos) {
     return $(slice(pos + 1, -1));
   }
-
+  
   /**
    * Returns true any of the specified classes are present on any of the matched
    * elements.
@@ -1019,6 +1150,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
     return false;
+  }
+
+  /**
+   * Get the current computed, pixel, height of the first matched element.
+   */
+  public int height() {
+    return get(0).getOffsetHeight();
   }
 
   /**
@@ -1040,19 +1178,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Get the current computed, pixel, height of the first matched element.
-   */
-  public int height() {
-    return DOM.
-        getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
-            "offsetHeight");
-  }
-
-  /**
    * Make invisible all matched elements.
    */
   public GQuery hide() {
-    return $(as(Effects).hide());
+    for (Element e : elements()) {
+      Object old = data(e, "oldDisplay", null);
+      if (old == null) {
+        data(e, "oldDisplay", e.getStyle().getDisplay());
+      }
+      e.getStyle().setDisplay(Display.NONE);
+    }
+    return this;
   }
 
   /**
@@ -1101,14 +1237,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Insert all of the matched elements after another, specified, set of
    * elements.
    */
-  public GQuery insertAfter(String selector) {
-    return insertAfter($(selector));
-  }
-
-  /**
-   * Insert all of the matched elements after another, specified, set of
-   * elements.
-   */
   public GQuery insertAfter(Element elem) {
     return insertAfter($(elem));
   }
@@ -1125,6 +1253,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Insert all of the matched elements after another, specified, set of
+   * elements.
+   */
+  public GQuery insertAfter(String selector) {
+    return insertAfter($(selector));
+  }
+
+  /**
    * Insert all of the matched elements before another, specified, set of
    * elements.
    *
@@ -1134,7 +1270,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery insertBefore(Element item) {
     return insertBefore($(item));
   }
-
+  
   /**
    * Insert all of the matched elements before another, specified, set of
    * elements.
@@ -1147,7 +1283,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       query.before(e);
     }
     return this;
-  }
+  }  
 
   /**
    * Insert all of the matched elements before another, specified, set of
@@ -1167,22 +1303,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public boolean is(String... filters) {
     return filter(filters).size() > 0;
-  }
-  
+  }  
+
   /**
    * Bind a set of functions to the keydown event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   public GQuery keydown(Function...f) {
     return bindOrFire(Event.ONKEYDOWN, null, f);
-  }  
+  }
 
   /**
    * Trigger a keydown event passing the key pushed
    */
   public GQuery keydown(int key) {
     return trigger(Event.ONKEYDOWN, key);
-  }
+  }  
 
   /**
    * Bind a set of functions to the keypress event of each matched element.
@@ -1205,29 +1341,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery keyup(Function...f) {
     return bindOrFire(Event.ONKEYUP, null, f);
-  }  
+  }
 
   /**
    * Trigger a keyup event passing the key pushed
    */
   public GQuery keyup(int key) {
     return trigger(Event.ONKEYUP, key);
-  }  
-
+  }
+  
   /**
    * Returns the number of elements currently matched. The size function will
    * return the same value.
    */
   public int length() {
     return size();
-  }
-
+  }  
+ 
   /**
    * Bind a function to the load event of each matched element.
    */
   public GQuery load(Function f) {
     return bind(Event.ONLOAD, null, f);
-  }
+  }  
 
   /**
    * Reduce the set of matched elements to all elements before a given position.
@@ -1236,8 +1372,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery lt(int pos) {
     return $(slice(0, pos));
-  }
-  
+  }  
+
   /**
    * Bind a set of functions to the mousedown event of each matched element.
    * Or trigger the event if no functions are provided.
@@ -1245,14 +1381,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery mousedown(Function...f) {
     return bindOrFire(Event.ONMOUSEDOWN, null, f);
   }  
- 
+  
   /**
    * Bind a set of functions to the mousemove event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   public GQuery mousemove(Function...f) {
     return bindOrFire(Event.ONMOUSEMOVE, null, f);
-  }  
+  }    
 
   /**
    * Bind a set of functions to the mouseout event of each matched element.
@@ -1260,7 +1396,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery mouseout(Function...f) {
     return bindOrFire(Event.ONMOUSEOUT, null, f);
-  }  
+  }
 
   /**
    * Bind a set of functions to the mouseover event of each matched element.
@@ -1268,15 +1404,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery mouseover(Function...f) {
     return bindOrFire(Event.ONMOUSEOVER, null, f);
-  }  
-  
+  }
+
   /**
    * Bind a set of functions to the mouseup event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   public GQuery mouseup(Function...f) {
     return bindOrFire(Event.ONMOUSEUP, null, f);
-  }    
+  }
 
   /**
    * Get a set of elements containing the unique next siblings of each of the
@@ -1365,8 +1501,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * the document. The returned object contains two integer properties, top and
    * left. The method works only with visible elements.
    */
-  public Offset offset() {
-    return new Offset(get(0).getAbsoluteTop(), get(0).getAbsoluteLeft());
+  public com.google.gwt.query.client.GQuery.Offset offset() {
+    return new Offset(get(0).getAbsoluteLeft(), get(0).getAbsoluteTop());
   }
 
   /**
@@ -1390,17 +1526,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element. The handler is executed only once for each element.
    *
    * The event handler is passed as a Function that you can use to prevent
-   * default behaviour. To stop both default action and event bubbling, the
+   * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
    *
    * You can pass an additional Object data to your Function as the second
    * parameter
    */
   public GQuery one(int eventbits, final Object data, final Function f) {
-    for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(eventbits, data, f, 1);
-    }
-    return this;
+    return as(Events).one(eventbits, data, f);
   }
 
   /**
@@ -1426,15 +1559,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Get a set of elements containing the unique ancestors of the matched set of
-   * elements (except for the root element). The matched elements are filtered,
-   * returning those that match any of the filters.
-   */
-  public GQuery parents(String... filters) {
-    return parents().filter(filters);
-  }
-
-  /**
-   * Get a set of elements containing the unique ancestors of the matched set of
    * elements (except for the root element).
    */
   public GQuery parents() {
@@ -1450,22 +1574,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Get a set of elements containing the unique ancestors of the matched set of
+   * elements (except for the root element). The matched elements are filtered,
+   * returning those that match any of the filters.
+   */
+  public GQuery parents(String... filters) {
+    return parents().filter(filters);
+  }
+
+  /**
    * Gets the top and left position of an element relative to its offset parent.
    * The returned object contains two Integer properties, top and left. For
    * accurate calculations make sure to use pixel values for margins, borders
    * and padding. This method only works with visible elements.
    */
-  public Offset position() {
-    return new Offset(get(0).getOffsetTop(), get(0).getAbsoluteLeft());
-  }
-
-  /**
-   * Prepend content to the inside of every matched element. This operation is
-   * the best way to insert elements inside, at the beginning, of all matched
-   * elements.
-   */
-  public GQuery prepend(String html) {
-    return domManip(html, FUNC_PREPEND);
+  public com.google.gwt.query.client.GQuery.Offset position() {
+    return new Offset(get(0).getOffsetLeft(), get(0).getOffsetTop());
   }
 
   /**
@@ -1484,6 +1608,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery prepend(Node n) {
     return domManip(JSArray.create(n), FUNC_PREPEND);
+  }
+
+  /**
+   * Prepend content to the inside of every matched element. This operation is
+   * the best way to insert elements inside, at the beginning, of all matched
+   * elements.
+   */
+  public GQuery prepend(String html) {
+    return domManip(html, FUNC_PREPEND);
   }
 
   /**
@@ -1590,6 +1723,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
+  public GQuery replaceAll(Element elem) {
+    return replaceAll($(elem));
+  }
+
+  /**
+   * Replaces the elements matched by the specified selector with the matched
+   * elements. This function is the complement to replaceWith() which does the
+   * same task with the parameters reversed.
+   */
   public GQuery replaceAll(GQuery query) {
     for (Element e : elements()) {
       $(e).replaceWith(query);
@@ -1606,15 +1748,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return replaceAll($(html));
   }
 
-  /**
-   * Replaces the elements matched by the specified selector with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
-   */
-  public GQuery replaceAll(Element elem) {
-    return replaceAll($(elem));
-  }
 
+  /**
+   * Replaces all matched elements with the specified HTML or DOM elements. This
+   * returns the GQuery element that was just replaced, which has been removed
+   * from the DOM.
+   */
+  public GQuery replaceWith(Element elem) {
+    return replaceWith($(elem));
+  }    
+  
   /**
    * Replaces all matched elements with the specified HTML or DOM elements. This
    * returns the GQuery element that was just replaced, which has been removed
@@ -1634,14 +1777,26 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Save a set of Css properties of every matched element.
    */
-  public GQuery replaceWith(Element elem) {
-    return replaceWith($(elem));
+  public void restoreCssAttrs(String[] cssProps) {
+    for (Element e : elements()) {
+      for (String a : cssProps) {
+        setStyleProperty(a, (String) data(e, "old-" + a, null), e);
+      }
+    }
   }
 
+  /**
+   * Restore a set of previously saved Css properties in every matched element.
+   */
+  public void saveCssAttrs(String[] cssProps) {
+    for (Element e : elements()) {
+      for (String a : cssProps) {
+        data("old-" + a, curCSS(e, a));
+      }
+    }
+  }
 
   /**
    * Bind a set of functions to the scroll event of each matched element.
@@ -1649,22 +1804,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery scroll(Function...f) {
     return bindOrFire(Event.ONSCROLL, null, f);
-  }    
-  
-  /**
-   * When a value is passed in, the scroll left offset is set to that value on
-   * all matched elements. This method works for both visible and hidden
-   * elements.
-   */
-  public GQuery scrollLeft(int left) {
-    for (Element e : elements()) {
-      if (e == window || e == (Node) document) {
-        Window.scrollTo(left, $(e).scrollTop());
-      } else {
-        e.setPropertyInt("scrollLeft", left);
-      }
-    }
-    return this;
   }
 
   /**
@@ -1683,16 +1822,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * When a value is passed in, the scroll top offset is set to that value on
+   * When a value is passed in, the scroll left offset is set to that value on
    * all matched elements. This method works for both visible and hidden
    * elements.
    */
-  public GQuery scrollTop(int top) {
+  public GQuery scrollLeft(int left) {
     for (Element e : elements()) {
       if (e == window || e == (Node) document) {
-        Window.scrollTo($(e).scrollLeft(), top);
+        Window.scrollTo(left, $(e).scrollTop());
       } else {
-        e.setPropertyInt("scrollTop", top);
+        e.setPropertyInt("scrollLeft", left);
       }
     }
     return this;
@@ -1711,6 +1850,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     } else {
       return e.getScrollTop();
     }
+  }
+
+  /**
+   * When a value is passed in, the scroll top offset is set to that value on
+   * all matched elements. This method works for both visible and hidden
+   * elements.
+   */
+  public GQuery scrollTop(int top) {
+    for (Element e : elements()) {
+      if (e == window || e == (Node) document) {
+        Window.scrollTo($(e).scrollLeft(), top);
+      } else {
+        e.setPropertyInt("scrollTop", top);
+      }
+    }
+    return this;
   }
 
   public GQuery select() {
@@ -1754,7 +1909,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements
    */
   public GQuery show() {
-    return $(as(Effects).show());
+    for (Element e : elements()) {
+      Object old = data(e, "oldDisplay", null);
+      e.getStyle().setProperty("display", old != null? old.toString() : "");
+    }
+    return this;
   }
 
   /**
@@ -1828,8 +1987,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Toggle visibility of elements.
    */
   public GQuery toggle() {
-    return as(Effects).toggle();
+    for (Element e: elements()) {
+      if ($(e).visible()) {
+        $(e).hide();
+      } else {
+        $(e).show();
+        e.getStyle().setDisplay(Display.BLOCK);
+      }
+    }
+    return this;
   }
+
 
   /**
    * Toggle among two or more function calls every other click.
@@ -1838,7 +2006,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return click(new Function() {
       int click = 0;
       public boolean f(Event e) {
-        return fn[(click++ % fn.length)].f(e);
+        int n = fn.length == 1 ? 0 : (click++ % fn.length); 
+        return fn[n].f(e);
       }
     });
   }
@@ -1896,7 +2065,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return r;
   }
-
 
   /**
    * Trigger a set of events on each matched element.
@@ -2050,7 +2218,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.
    */
   public boolean visible() {
-    return as(Effects).visible();
+    return !"none".equalsIgnoreCase(get(0).getStyle().getDisplay());
+  }
+
+  /**
+   * Get the current computed, pixel, width of the first matched element.
+   */
+  public int width() {
+    return get(0).getClientWidth();
   }
 
   /**
@@ -2064,12 +2239,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Get the current computed, pixel, width of the first matched element.
+   * Wrap each matched element with the specified HTML content. This wrapping
+   * process is most useful for injecting additional structure into a document,
+   * without ruining the original semantic qualities of a document. This works
+   * by going through the first element provided (which is generated, on the
+   * fly, from the provided HTML) and finds the deepest descendant element
+   * within its structure -- it is that element that will enwrap everything
+   * else.
    */
-  public int width() {
-    return DOM.
-        getElementPropertyInt((com.google.gwt.user.client.Element) get(0),
-            "offsetWidth");
+  public GQuery wrap(Element elem) {
+    return wrap($(elem));
   }
 
   /**
@@ -2097,37 +2276,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * within its structure -- it is that element that will enwrap everything
    * else.
    */
-  public GQuery wrap(Element elem) {
-    return wrap($(elem));
-  }
-
-  /**
-   * Wrap each matched element with the specified HTML content. This wrapping
-   * process is most useful for injecting additional structure into a document,
-   * without ruining the original semantic qualities of a document. This works
-   * by going through the first element provided (which is generated, on the
-   * fly, from the provided HTML) and finds the deepest descendant element
-   * within its structure -- it is that element that will enwrap everything
-   * else.
-   */
   public GQuery wrap(String html) {
     return wrap($(html));
-  }
-
-  /**
-   * Wrap all the elements in the matched set into a single wrapper element.
-   * This is different from .wrap() where each element in the matched set would
-   * get wrapped with an element. This wrapping process is most useful for
-   * injecting additional structure into a document, without ruining the
-   * original semantic qualities of a document.
-   *
-   * This works by going through the first element provided (which is generated,
-   * on the fly, from the provided HTML) and finds the deepest descendant
-   * element within its structure -- it is that element that will enwrap
-   * everything else.
-   */
-  public GQuery wrapAll(String html) {
-    return wrapAll($(html));
   }
 
   /**
@@ -2175,6 +2325,35 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Wrap all the elements in the matched set into a single wrapper element.
+   * This is different from .wrap() where each element in the matched set would
+   * get wrapped with an element. This wrapping process is most useful for
+   * injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document.
+   *
+   * This works by going through the first element provided (which is generated,
+   * on the fly, from the provided HTML) and finds the deepest descendant
+   * element within its structure -- it is that element that will enwrap
+   * everything else.
+   */
+  public GQuery wrapAll(String html) {
+    return wrapAll($(html));
+  }
+
+  /**
+   * Wrap the inner child contents of each matched element (including text
+   * nodes) with an HTML structure. This wrapping process is most useful for
+   * injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document. This works by going through the
+   * first element provided (which is generated, on the fly, from the provided
+   * HTML) and finds the deepest ancestor element within its structure -- it is
+   * that element that will enwrap everything else.
+   */
+  public GQuery wrapInner(Element elem) {
+    return wrapInner($(elem));
+  }
+
+  /**
    * Wrap the inner child contents of each matched element (including text
    * nodes) with an HTML structure. This wrapping process is most useful for
    * injecting additional structure into a document, without ruining the
@@ -2203,19 +2382,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return wrapInner($(html));
   }
 
-  /**
-   * Wrap the inner child contents of each matched element (including text
-   * nodes) with an HTML structure. This wrapping process is most useful for
-   * injecting additional structure into a document, without ruining the
-   * original semantic qualities of a document. This works by going through the
-   * first element provided (which is generated, on the fly, from the provided
-   * HTML) and finds the deepest ancestor element within its structure -- it is
-   * that element that will enwrap everything else.
-   */
-  public GQuery wrapInner(Element elem) {
-    return wrapInner($(elem));
-  }
-
   protected GQuery pushStack(JSArray elts, String name, String selector) {
     GQuery g = new GQuery(elts);
     g.setPreviousObject(this);
@@ -2241,69 +2407,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  protected static JSArray clean(String elem) {
-    String tags = elem.trim().toLowerCase();
-    String preWrap = "", postWrap = "";
-    int wrapPos = 0;
-    if (tags.contains("<opt")) {
-      wrapPos = 1;
-      preWrap = "<select multiple=\"multiple\">";
-      postWrap = "</select>";
-    } else if (tags.contains("<legend")) {
-      wrapPos = 1;
-      preWrap = "<fieldset>";
-      postWrap = "</fieldset>";
-    } else if (tags.matches("^<(thead|tbody|tfoot|colg|cap)")) {
-      wrapPos = 1;
-      preWrap = "<table>";
-      postWrap = "</table>";
-    } else if (tags.contains("<tr")) {
-      wrapPos = 2;
-      preWrap = "<table><tbody>";
-      postWrap = "</tbody></table>";
-    } else if (tags.contains("<td") || tags.contains("<th")) {
-      wrapPos = 3;
-      preWrap = "<table><tbody><tr>";
-      postWrap = "</tr></tbody></table>";
-    } else if (tags.contains("<col")) {
-      wrapPos = 2;
-      preWrap = "<table><tbody></tbody><colgroup>";
-      postWrap = "</colgroup></table>";
+  /**
+   * Bind Handlers or fire Events for each matched element. 
+   */
+  private GQuery bindOrFire(int eventbits, final Object data, final Function...funcs) {
+    if (funcs.length == 0) {
+      return trigger(eventbits);
+    } else {
+      return bind(eventbits, data, funcs);
     }
-    // TODO: fix IE link tag serialization
-    Element div = document.createDivElement();
-    div.setInnerHTML(preWrap + elem + postWrap);
-    Node n = div;
-    while (wrapPos-- != 0) {
-      n = n.getLastChild();
-    }
-    // TODO: add fixes for IE TBODY issue
-    return n.getChildNodes().cast();
-  }
-
-  protected <S> Object data(Element item, String name, S value) {
-    if (dataCache == null) {
-      windowData = JavaScriptObject.createObject().cast();
-      dataCache = JavaScriptObject.createObject().cast();
-    }
-    item = item == window ? windowData : item;
-    if (item == null) {
-      return value;
-    }
-    int id = item.hashCode();
-    if (name != null && !dataCache.exists(id)) {
-      dataCache.put(id, DataCache.createObject().cast());
-    }
-
-    DataCache d = dataCache.get(id).cast();
-    if (name != null && value != null) {
-      d.put(name, value);
-    }
-    return name != null ? d.getObject(name) : id;
-  }
-
-  private GQuery domManip(String html, int func) {
-    return domManip(clean(html), func);
   }
 
   private GQuery domManip(NodeList<?> nodes, int func) {
@@ -2313,7 +2425,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         if (nodes.getLength() > 1) {
           n = n.cloneNode(true);
         }
-
         switch (func) {
           case FUNC_PREPEND:
             e.insertBefore(n, e.getFirstChild());
@@ -2333,9 +2444,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  private static String fixAttributeName(String key) {
-    ensureStyleImpl();
-    return styleImpl.getPropertyName(key);
+  private GQuery domManip(String html, int func) {
+    return domManip(clean(html), func);
   }
 
   private native Document getContentDocument(Node n) /*-{
@@ -2349,10 +2459,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return sib;
   }-*/;
 
-  private void init(GQuery gQuery) {
-    this.elements = gQuery.elements;
-  }
-
   private JSArray merge(NodeList<Element> first, NodeList<Element> second) {
     JSArray res = copyNodeList(first);
     for (int i = 0; i < second.getLength(); i++) {
@@ -2360,19 +2466,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return res;
   }
-
-  private int num(GQuery gQuery, String val) {
-    Element elem = gQuery.get(0);
-    try {
-      if (elem != null) {
-        String v = GQuery.curCSS(elem, val);
-        return Integer.parseInt(v);
-      }
-    } catch (NumberFormatException e) {
-    }
-    return 0;
-  }
-
+  
   private void removeData(Element item, String name) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
@@ -2390,9 +2484,5 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     } else {
       dataCache.delete(id);
     }
-  }
-
-  private static native Element window() /*-{
-    return $wnd;
-  }-*/;
+  }   
 }

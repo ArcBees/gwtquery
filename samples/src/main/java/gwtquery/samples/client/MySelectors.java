@@ -10,10 +10,8 @@ import com.google.gwt.query.client.Selectors;
  */
 public interface MySelectors extends Selectors {
 
-//  @Selector("h1[id]:contains(Selectors)")
-//  NodeList<Element> h1IdContainsSelectors();
-
-  //  
+  @Selector("h1[id]:contains(Selectors)")
+  NodeList<Element> h1IdContainsSelectors();
 
   @Selector("a[href][lang][class]")
   NodeList<Element> aHrefLangClass();
@@ -35,8 +33,6 @@ public interface MySelectors extends Selectors {
 
 //    @Selector("*:first")
 //    NodeList<Element> allFirst();
-
-  //    
 
   @Selector("div:not(.example)")
   NodeList<Element> divNotExample();
@@ -71,9 +67,8 @@ public interface MySelectors extends Selectors {
   @Selector("div[class=example]")
   NodeList<Element> divWithClassExample();
 
-//    @Selector("div[class!=madeup]")
-//    NodeList<Element> divWithClassNotContainsMadeup();
-//    
+  @Selector("div[class!=madeup]")
+  NodeList<Element> divWithClassNotContainsMadeup();
 
   @Selector("div[class~=dialog]")
   NodeList<Element> divWithClassListContainsDialog();
@@ -96,8 +91,8 @@ public interface MySelectors extends Selectors {
   @Selector("p:last-child")
   NodeList<Element> lastChild();
 
-//  @Selector("div, p a")
-//  NodeList<Element> divCommaPA();
+  @Selector("div, p a")
+  NodeList<Element> divCommaPA();
 
   @Selector(".note")
   NodeList<Element> note();
@@ -111,8 +106,8 @@ public interface MySelectors extends Selectors {
   @Selector("p:nth-child(2n+1)")
   NodeList<Element> nThChild2nPlus1();
 
-//    @Selector("p:contains(selectors)")
-//    NodeList<Element> pContainsSelectors();
+  @Selector("p:contains(selectors)")
+  NodeList<Element> pContainsSelectors();
 
   @Selector("p:nth-child(even)")
   NodeList<Element> nThChildEven();

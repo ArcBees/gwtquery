@@ -17,10 +17,10 @@ package gwtquery.plugins.collapser;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.Effects;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Plugin;
+import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.user.client.Event;
 
 /**
