@@ -47,14 +47,14 @@ public class DocumentStyleImpl {
   /**
    * Return the string value of a css property of an element. 
    */
-  public String curCSS(Element elem, String prop) {
-    prop = fixPropertyName(prop);
+  public String curCSS(Element elem, String name) {
+    name = fixPropertyName(name);
     Style s = elem.getStyle();
-    if (SelectorEngine.truth(s.getProperty(prop))) {
-      return s.getProperty(prop);
+    if (SelectorEngine.truth(s.getProperty(name))) {
+      return s.getProperty(name);
     } else {
-      prop = hyphenize(prop);
-      return getComputedStyle(elem, prop, null);
+      name = hyphenize(name);
+      return getComputedStyle(elem, name, null);
     }
   }
 
