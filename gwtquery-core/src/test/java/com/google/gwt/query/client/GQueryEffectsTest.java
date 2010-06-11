@@ -116,14 +116,16 @@ public class GQueryEffectsTest extends GWTTestCase {
 
     final GQuery g = $("#idtest").css("position", "absolute");
     final Offset o = g.offset();
+    
+    final int duration = 800;
     g.as(Effects.Effects).
-        animate($$("left: '+=100'"), 400, Easing.LINEAR).
-        animate($$("top: '+=100'"), 400, Easing.LINEAR).
-        animate($$("left: '-=100'"), 400, Easing.LINEAR).
-        animate($$("top: '-=100'"), 400, Easing.LINEAR);
+        animate($$("left: '+=100'"), duration, Easing.LINEAR).
+        animate($$("top: '+=100'"), duration, Easing.LINEAR).
+        animate($$("left: '-=100'"), duration, Easing.LINEAR).
+        animate($$("top: '-=100'"), duration, Easing.LINEAR);
     
     // Configure the max duration for this test
-    delayTestFinish(400 * 4);
+    delayTestFinish(duration * 4);
 
     // each timer calls the next one
     final Timer timer1 = new Timer() {
@@ -136,24 +138,24 @@ public class GQueryEffectsTest extends GWTTestCase {
     final Timer timer2 = new Timer() {
       public void run() {
         assertPosition(g, o.add(99, 100), o.add(1, 100));
-        timer1.schedule(400);
+        timer1.schedule(duration);
       }
     };
     final Timer timer3 = new Timer() {
       public void run() {
         assertPosition(g, o.add(100, 1), o.add(100, 99));
-        timer2.schedule(400);
+        timer2.schedule(duration);
       }
     };
     final Timer timer4 = new Timer() {
       public void run() {
         assertPosition(g, o.add(1, 0), o.add(99, 0));
-        timer3.schedule(400);
+        timer3.schedule(duration);
       }
     };
 
     // Starts the first timer
-    timer4.schedule(200);
+    timer4.schedule(duration/2);
   }
 
   private void assertPosition(GQuery g, Offset min, Offset max) {
