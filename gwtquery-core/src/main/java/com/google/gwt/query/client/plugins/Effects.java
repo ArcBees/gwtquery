@@ -31,13 +31,13 @@ import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
  */
 public class Effects extends GQueryQueue  {
   
-  public static int DEFAULT_SPEED = 400;
-
-  public static Class<Effects> Effects = Effects.class;
-
-  public static int FAST = 200;
-
-  public static int SLOW = 600;
+  public static class Speed {
+    public static final int DEFAULT = 400;
+    public static final int SLOW = 600;
+    public static final int FAST = 200;
+  }
+  
+  public static final Class<Effects> Effects = Effects.class;
   
   static {
     GQuery.registerPlugin(Effects.class, new Plugin<Effects>() {
@@ -137,7 +137,7 @@ public class Effects extends GQueryQueue  {
    */
   public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
       ClipAnimation.Direction d, Function... f) {
-    return clip(a, c, d, DEFAULT_SPEED, f);
+    return clip(a, c, d, Speed.DEFAULT, f);
   }
   
   /**
@@ -164,7 +164,7 @@ public class Effects extends GQueryQueue  {
    */
   public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
       Function... f) {
-    return clip(a, c, Direction.BIDIRECTIONAL, DEFAULT_SPEED, f);
+    return clip(a, c, Direction.BIDIRECTIONAL, Speed.DEFAULT, f);
   }
 
   /**
@@ -173,7 +173,7 @@ public class Effects extends GQueryQueue  {
    * The effect goes from the center to the perimeter.
    */
   public Effects clipAppear(Function... f) {
-    return clipAppear(DEFAULT_SPEED, f);
+    return clipAppear(Speed.DEFAULT, f);
   }
   
   /**
@@ -192,7 +192,7 @@ public class Effects extends GQueryQueue  {
    * The effect goes from the perimeter to the center.
    */
   public Effects clipDisappear(Function... f) {
-    return clipDisappear(DEFAULT_SPEED, f);
+    return clipDisappear(Speed.DEFAULT, f);
   }
   
   /**
@@ -211,7 +211,7 @@ public class Effects extends GQueryQueue  {
    * The effect goes from the top to the bottom.
    */
   public Effects clipDown(Function... f) {
-    return clipDown(DEFAULT_SPEED, f);
+    return clipDown(Speed.DEFAULT, f);
   }
 
   /**
@@ -230,7 +230,7 @@ public class Effects extends GQueryQueue  {
    * The effect goes from the bottom to the top.
    */
   public Effects clipUp(Function... f) {
-    return clipUp(DEFAULT_SPEED, f);
+    return clipUp(Speed.DEFAULT, f);
   }
 
   /**
@@ -250,7 +250,7 @@ public class Effects extends GQueryQueue  {
    * some form of height and width associated with them.
    */  
   public Effects fadeIn(Function... f) {
-    return fadeIn(DEFAULT_SPEED, f);
+    return fadeIn(Speed.DEFAULT, f);
   }
 
   /**
@@ -271,7 +271,7 @@ public class Effects extends GQueryQueue  {
    * them.
    */  
   public Effects fadeOut(Function... f) {
-    return fadeOut(DEFAULT_SPEED, f);
+    return fadeOut(Speed.DEFAULT, f);
   }
 
   /**
@@ -300,7 +300,7 @@ public class Effects extends GQueryQueue  {
    * optional callback after completion.
    */
   public Effects slideDown(Function... f) {
-    return slideDown(DEFAULT_SPEED, f);
+    return slideDown(Speed.DEFAULT, f);
   }
 
   /**
@@ -316,7 +316,7 @@ public class Effects extends GQueryQueue  {
    * callback after completion.
    */
   public Effects slideLeft(Function... f) {
-    return slideLeft(DEFAULT_SPEED, f);
+    return slideLeft(Speed.DEFAULT, f);
   }
 
   /**
@@ -332,7 +332,7 @@ public class Effects extends GQueryQueue  {
    * optional callback after completion.
    */
   public Effects slideRight(Function... f) {
-    return slideRight(DEFAULT_SPEED, f);
+    return slideRight(Speed.DEFAULT, f);
   }
 
   /**
@@ -358,7 +358,7 @@ public class Effects extends GQueryQueue  {
    * callback after completion.
    */
   public Effects slideUp(Function... f) {
-    return slideUp(DEFAULT_SPEED, f);
+    return slideUp(Speed.DEFAULT, f);
   }
 
   /**
@@ -374,7 +374,7 @@ public class Effects extends GQueryQueue  {
    */
   @Override
   public Effects toggle() {
-    return toggle(DEFAULT_SPEED);
+    return toggle(Speed.DEFAULT);
   }
 
   /**
