@@ -1124,7 +1124,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       Object old = data(e, "oldDisplay", null);
       if (old == null) {
-        data(e, "oldDisplay", e.getStyle().getDisplay());
+        data(e, "oldDisplay", styleImpl.curCSS(e, "display"));
       }
       e.getStyle().setDisplay(Display.NONE);
     }
@@ -1851,7 +1851,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery show() {
     for (Element e : elements()) {
       Object old = data(e, "oldDisplay", null);
-      e.getStyle().setProperty("display", old != null? old.toString() : "");
+      styleImpl.setStyleProperty("display", old != null? old.toString() : "block", e);
     }
     return this;
   }
@@ -2158,7 +2158,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.
    */
   public boolean visible() {
-    return !"none".equalsIgnoreCase(get(0).getStyle().getDisplay());
+    return !"none".equalsIgnoreCase(css("display"));
   }
 
   /**
