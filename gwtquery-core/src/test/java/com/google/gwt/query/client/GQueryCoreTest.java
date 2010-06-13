@@ -607,10 +607,10 @@ public class GQueryCoreTest extends GWTTestCase {
     sectA.show();
     assertEquals("inline", sectA.css("display"));
     sectB.show();
-    assertEquals("block", sectB.css("display"));
+    assertEquals("", sectB.css("display"));
     
     // toggle()
-    assertEquals("block", sectC.css("display"));
+    assertEquals("", sectC.css("display"));
     sectC.toggle();
     assertEquals("none", sectC.css("display"));
     sectC.toggle();

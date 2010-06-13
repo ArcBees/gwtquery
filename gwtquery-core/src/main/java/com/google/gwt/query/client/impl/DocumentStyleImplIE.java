@@ -26,9 +26,18 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   /**
    * Return the string value of a css property of an element. 
    * IE needs a special workaround to handle opacity.
+   * 
+   * The parameter force has a special meaning here:
+   * - When force is false, returns the value of the css property defined
+   *   in the style attribute of the element. 
+   * - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style
+   * but in the css stylesheet, it returns an empty string unless you
+   * pass the parameter force=true.   
    */
   @Override
-  public String curCSS(Element elem, String name) {
+  public String curCSS(Element elem, String name, boolean force) {
     if ("opacity".equalsIgnoreCase(name)) {
       Style s = elem.getStyle();
       String o = s.getProperty("filter");
@@ -39,7 +48,7 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
       o = s.getProperty("opacity");
       return o == null || o.length() == 0 ? "1" : o;
     }
-    return super.curCSS(elem, name);
+    return super.curCSS(elem, name, force);
   }
 
   /**
@@ -68,25 +77,22 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
    * IE needs a special workaround to handle opacity
    */
   @Override
-  public void setStyleProperty(String prop, String val, Element e) {
+  public void setStyleProperty(Element e, String prop, String val) {
     if ("opacity".equals(prop)) {
       e.getStyle().setProperty("zoom", "1");
       e.getStyle().setProperty("filter",
           "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
     } else {
-      super.setStyleProperty(prop, val, e);
+      super.setStyleProperty(e, prop, val);
     }
   }
 
   @Override
-  protected native String getComputedStyle(Element elem, String name,
-      String pseudo) /*-{
+  protected native String getComputedStyle(Element elem, String hyphenName,
+      String camelName, String pseudo) /*-{
     // code lifted from jQuery
     var style = elem.style;
-    var camelCase = name.replace(/\-(\w)/g, function(all, letter){
-        return letter.toUpperCase();
-    });
-    var ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
+    var ret = elem.currentStyle[hyphenName] || elem.currentStyle[camelName];
     // From the awesome hack by Dean Edwards
     // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
     // If we're not dealing with a regular pixel number

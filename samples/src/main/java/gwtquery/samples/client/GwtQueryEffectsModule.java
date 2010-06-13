@@ -33,13 +33,19 @@ public class GwtQueryEffectsModule implements EntryPoint {
     
     final Effects a = $(".a, .b > div:nth-child(2)").as(Effects.Effects);
     
-    $("#b1").toggle(new Function() {
+    $("#b0").width(150).css("font-size", "10px").toggle(new Function() {
       public void f(Element e) {
-        $("#i1").as(Effects.Effects).animate(" width: '70%', opacity: '0.4', marginLeft: '0.6in', fontSize: '3em', borderWidth: '10px'");
+        $("#b0").as(Effects.Effects).animate(" width: '400', opacity: '0.4', marginLeft: '0.6in', fontSize: '24px'");
       }
     }, new Function() {
       public void f(Element e) {
-        $("#i1").as(Effects.Effects).animate(" width: '0%', opacity: '1', marginLeft: '0', fontSize: '1em', borderWidth: '5px'");
+        $("#b0").as(Effects.Effects).animate(" width: '150', opacity: '1', marginLeft: '0', fontSize: '10px'");
+      }
+    });
+    
+    $("#b1").toggle(new Function() {
+      public void f(Element e) {
+        $(".a").toggle();
       }
     }, new Function() {
       public void f(Element e) {
@@ -67,15 +73,19 @@ public class GwtQueryEffectsModule implements EntryPoint {
       }
     }, new Function() {
       public void f(Element e) {
-        a.animate("left: '+=25%', width: 'hide'");
+        a.animate("left: '+=300', width: 'hide'");
       }
     }, new Function() {
       public void f(Element e) {
-        a.animate("left: '-=25%', width: 'show'");
+        a.animate("left: '-=300', width: 'show'");
       }
     });
     
     $("#b2").toggle(new Function() {
+      public void f(Element e) {
+        $(".a").toggle();
+      }
+    }, new Function() {
       public void f(Element e) {
         a.as(Effects.Effects).clipUp();
       }

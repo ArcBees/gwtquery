@@ -84,7 +84,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     Timer timerMidTime = new Timer() {
       public void run() {
         assertEquals("inline", sectA.css("display"));
-        assertEquals("block", sectB.css("display"));
+        assertEquals("", sectB.css("display"));
         double o = Double.valueOf(sectA.css("opacity"));
         assertTrue(
             "'sectA' opacity must be in the interval 0.5-1 but is: " + o,

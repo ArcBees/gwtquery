@@ -16,8 +16,6 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.query.client.SelectorEngine;
 
 /**
  * A helper class to get computed CSS styles for elements.
@@ -25,9 +23,7 @@ import com.google.gwt.query.client.SelectorEngine;
 public class DocumentStyleImpl {
 
   /**
-   * Camelize style property names.
-   *  for instance:
-   *   font-name -> fontName 
+   * Camelize style property names. for instance: font-name -> fontName
    */
   public static native String camelize(String s)/*-{
     return s.replace(/\-(\w)/g, function(all, letter) {
@@ -36,25 +32,30 @@ public class DocumentStyleImpl {
   }-*/;
 
   /**
-   * Hyphenize style property names.
-   *  for instance:
-   *   fontName -> font-name 
+   * Hyphenize style property names. for instance: fontName -> font-name
    */
   public static native String hyphenize(String name) /*-{
     return name.replace(/([A-Z])/g, "-$1" ).toLowerCase();
   }-*/;
 
   /**
-   * Return the string value of a css property of an element. 
+   * Return the string value of a css property of an element.
+   * 
+   * The parameter force has a special meaning here: - When force is false,
+   * returns the value of the css property defined in the style attribute of the
+   * element. - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style but in
+   * the css stylesheet, it returns an empty string unless you pass the
+   * parameter force=true.
    */
-  public String curCSS(Element elem, String name) {
+  public String curCSS(Element elem, String name, boolean force) {
     name = fixPropertyName(name);
-    Style s = elem.getStyle();
-    if (SelectorEngine.truth(s.getProperty(name))) {
-      return s.getProperty(name);
+    if (force) {
+      return getComputedStyle(elem, hyphenize(name), name, null);
     } else {
-      name = hyphenize(name);
-      return getComputedStyle(elem, name, null);
+      String ret = elem.getStyle().getProperty(name);
+      return ret == null ? "" : ret;
     }
   }
 
@@ -80,9 +81,9 @@ public class DocumentStyleImpl {
   /**
    * Set the value of a style property of an element.
    */
-  public void setStyleProperty(String prop, String val, Element e) {
+  public void setStyleProperty(Element e, String prop, String val) {
     prop = fixPropertyName(prop);
-    // put it in lower-case only when all letters are upper-case, to avoid 
+    // put it in lower-case only when all letters are upper-case, to avoid
     // modifying already camelized properties
     if (prop.matches("^[A-Z]+$")) {
       prop = prop.toLowerCase();
@@ -94,11 +95,18 @@ public class DocumentStyleImpl {
       e.getStyle().setProperty(prop, val);
     }
   }
+  
+  /**
+   * Return whether the element is visible
+   */
+  public boolean isVisible(Element e) {
+    return !"none".equalsIgnoreCase(curCSS(e, "display", true));
+  }
 
-  protected native String getComputedStyle(Element elem, String name,
-      String pseudo) /*-{
-    var cStyle = $doc.defaultView.getComputedStyle( elem, pseudo );
-    return cStyle ? cStyle.getPropertyValue( name ) : null;
+  protected native String getComputedStyle(Element elem, String hyphenName,
+      String camelName, String pseudo) /*-{
+    var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
+    return cStyle ? cStyle.getPropertyValue(hyphenName) : null;
   }-*/;
 
 }

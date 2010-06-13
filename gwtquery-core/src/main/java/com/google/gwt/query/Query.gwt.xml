@@ -24,15 +24,6 @@
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
     </generate-with>
 
-
-    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorJS">
-        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
-        <any>
-            <when-property-is name="user.agent" value="gecko"/>
-            <when-property-is name="user.agent" value="ie6"/>
-        </any>
-    </generate-with>
-
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorCssToXPath">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <any>
@@ -48,8 +39,10 @@
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <when-property-is name="selectorCapability" value="native"/>
+        <none>
+           <when-property-is name="user.agent" value="ie8"/>
+        </none>
     </generate-with>
-
 
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImpl">
         <when-type-assignable
@@ -59,9 +52,11 @@
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImplIE">
         <when-type-assignable
                 class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
-        <when-property-is name="user.agent" value="ie6"/>
+        <any>
+	        <when-property-is name="user.agent" value="ie6"/>
+	        <when-property-is name="user.agent" value="ie8"/>
+        </any>
     </replace-with>
-
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
         <when-type-assignable

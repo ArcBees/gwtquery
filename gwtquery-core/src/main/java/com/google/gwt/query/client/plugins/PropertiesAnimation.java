@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.Regexp;
@@ -42,16 +43,14 @@ public class PropertiesAnimation extends Animation {
 
     public String attr;
     public double end;
-    public String old;
     public double start;
     public String unit;
     public String value;
 
-    Effect(String attr, String value, String old, double start, double end,
+    Effect(String attr, String value, double start, double end,
         String unit) {
       this.attr = attr;
       this.value = value;
-      this.old = old;
       this.start = start;
       this.end = end;
       this.unit = nonPx.test(attr) ? "" : unit == null ? "px" : unit;
@@ -64,7 +63,7 @@ public class PropertiesAnimation extends Animation {
   }
 
   private static final String[] attrsToSave = new String[] { "overflow",
-      "visivility", "white-space" };
+      "visibility", "white-space" };
   private Element e;
   private Easing easing = Easing.SWING;
   private ArrayList<Effect> effects = new ArrayList<Effect>();
@@ -90,16 +89,16 @@ public class PropertiesAnimation extends Animation {
   @Override
   public void onComplete() {
     super.onComplete();
-    g.restoreCssAttrs(attrsToSave);
     for (Effect l : effects) {
       if ("hide".equals(l.value)) {
         g.hide();
-        g.css(l.attr, l.old);
+        g.restoreCssAttrs(l.attr);
       } else if ("show".equals(l.value)) {
         g.show();
-        g.css(l.attr, l.old);
+        g.restoreCssAttrs(l.attr);
       }
     }
+    g.restoreCssAttrs(attrsToSave);
     g.each(funcs);
     g.dequeue();
   }
@@ -107,6 +106,7 @@ public class PropertiesAnimation extends Animation {
   @Override
   public void onStart() {
     boolean hidden = !g.visible();
+    boolean resize = false;
     g.show();
     for (String key : prps.keys()) {
       String val = prps.get(key);
@@ -114,13 +114,13 @@ public class PropertiesAnimation extends Animation {
         val = hidden ? "show" : "hide";
       }
       if (("top".equals(key) || "left".equals(key))
-          && !"absolute".equalsIgnoreCase(g.css("position"))) {
+          && !"absolute".equalsIgnoreCase(g.css("position", true))) {
         g.css("position", "relative");
       }
 
       JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
       String unit = parts != null ? parts.getStr(3) : "";
-      double start = Effects.cur(e, key);
+      double start = GQuery.cur(e, key);
       double end = start;
       if (parts != null) {
         end = Double.parseDouble(parts.getStr(2));
@@ -131,18 +131,23 @@ public class PropertiesAnimation extends Animation {
         if (!hidden) {
           return;
         }
+        g.saveCssAttrs(key);
         start = 0;
       } else if ("hide".equals(val)) {
         if (hidden) {
           return;
         }
+        g.saveCssAttrs(key);
         end = 0;
       }
-      effects.add(new Effect(key, val, g.css(key), start, end, unit));
+      resize = resize || "height".equals(key) || "width".equals(key);
+      effects.add(new Effect(key, val, start, end, unit));
     }
     g.saveCssAttrs(attrsToSave);
-    g.css("overflow", "hidden");
-    g.css("visivility", "visible");
+    if (resize) {
+      g.css("overflow", "hidden");
+    }
+    g.css("visibility", "visible");
     g.css("white-space", "nowrap");
     super.onStart();
   }

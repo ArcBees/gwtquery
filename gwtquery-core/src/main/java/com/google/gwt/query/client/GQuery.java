@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 
@@ -270,44 +269,42 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns the numeric value of a css propery of the element.
+   * Returns the numeric value of an element css property
    */
   public static double cur(Element elem, String prop) {
     GQuery g = $(elem);
-    if ("height".equals(prop)) {
+    String val = g.css(prop, true);
+    if ("height".equalsIgnoreCase(prop)) {
       return g.clientHeight();
     }
-    if ("width".equals(prop)) {
+    if ("width".equalsIgnoreCase(prop)) {
       return g.clientWidth();
     }
-    if ("absolute".equalsIgnoreCase(g.css("position"))) {
-      if ("left".equals(prop)) {
+    if ("absolute".equalsIgnoreCase(g.css("position", true))) {
+      if ("left".equalsIgnoreCase(prop)) {
         return g.offset().left;
       }
-      if ("top".equals(prop)) {
+      if ("top".equalsIgnoreCase(prop)) {
         return g.offset().top;
       }
     }
-    if ("opacity".equals(prop)) {
-      return Double.parseDouble(g.css("opacity"));
+    if ("opacity".equalsIgnoreCase(prop)) {
+      return Double.parseDouble(val);
     }
     if (elem.getPropertyString(prop) != null
         && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
       return elem.getPropertyDouble(prop);
     }
-    String val = g.css(prop);
-    if (val != null) {
-      if ("thick".equals(val)) {
-        return (5);
-      } else if ("medium".equals(val)) {
-        return (3);
-      } else if ("thin".equals(val)) {
-        return (1);
-      }
-      val = "0" + val.replaceAll("[^\\d\\.]+", "");
-      return Double.parseDouble(val);
+    
+    if ("thick".equalsIgnoreCase(val)) {
+      return (5);
+    } else if ("medium".equalsIgnoreCase(val)) {
+      return (3);
+    } else if ("thin".equalsIgnoreCase(val)) {
+      return (1);
     }
-    return 0.0;
+    val = "0" + val.replaceAll("[^\\d\\.]+", "");
+    return Double.parseDouble(val);
   }
   
   /**
@@ -405,10 +402,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       res.addNode(n.getItem(i));
     }
     return res;
-  }
-
-  private static String curCSS(Element elem, String name) {
-    return styleImpl.curCSS(elem, name);
   }
 
   private static boolean hasClass(Element e, String clz) {
@@ -798,7 +791,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return a style property on the first matched element.
    */
   public String css(String name) {
-    return curCSS(get(0), name);
+    return styleImpl.curCSS(get(0), name, false);
+  }
+  
+  /**
+   * Return a style property on the first matched element.
+   * 
+   * The parameter force has a special meaning here:
+   * - When force is false, returns the value of the css property defined
+   *   in the style attribute of the element. 
+   * - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style
+   * but in the css stylesheet, it returns an empty string unless you
+   * pass the parameter force=true.   
+   */
+  public String css(String name, boolean force) {
+    return styleImpl.curCSS(get(0), name, force);
   }
 
   /**
@@ -806,7 +815,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery css(String prop, String val) {
     for (Element e : elements()) {
-      styleImpl.setStyleProperty(prop, val, e);
+      styleImpl.setStyleProperty(e, prop, val);
     }
     return this;
   }
@@ -1124,7 +1133,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       Object old = data(e, "oldDisplay", null);
       if (old == null) {
-        data(e, "oldDisplay", styleImpl.curCSS(e, "display"));
+        data(e, "oldDisplay", styleImpl.curCSS(e, "display", false));
       }
       e.getStyle().setDisplay(Display.NONE);
     }
@@ -1455,7 +1464,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         or(elements.getItem(0).getOffsetParent(), document.getBody());
     while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName()) && "static".
-        equals(curCSS(offParent, "position"))) {
+        equals(styleImpl.curCSS(offParent, "position", true))) {
       offParent = offParent.getOffsetParent();
     }
     return new GQuery(offParent);
@@ -1719,10 +1728,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Save a set of Css properties of every matched element.
    */
-  public void restoreCssAttrs(String[] cssProps) {
+  public void restoreCssAttrs(String... cssProps) {
     for (Element e : elements()) {
       for (String a : cssProps) {
-        styleImpl.setStyleProperty(a, (String) data(e, "old-" + a, null), e);
+        styleImpl.setStyleProperty(e, a, (String) data(e, "old-" + a, null));
       }
     }
   }
@@ -1730,10 +1739,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Restore a set of previously saved Css properties in every matched element.
    */
-  public void saveCssAttrs(String[] cssProps) {
+  public void saveCssAttrs(String... cssProps) {
     for (Element e : elements()) {
       for (String a : cssProps) {
-        data("old-" + a, curCSS(e, a));
+        data("old-" + a, styleImpl.curCSS(e, a, false));
       }
     }
   }
@@ -1850,8 +1859,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery show() {
     for (Element e : elements()) {
-      Object old = data(e, "oldDisplay", null);
-      styleImpl.setStyleProperty("display", old != null? old.toString() : "block", e);
+      styleImpl.setStyleProperty(e, "display", SelectorEngine.or((String)data(e, "oldDisplay", null), ""));
+      // When the display=none is in the stylesheet.
+      if (!styleImpl.isVisible(e)) {
+        styleImpl.setStyleProperty(e, "display", "block");
+      }
     }
     return this;
   }
@@ -2158,7 +2170,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.
    */
   public boolean visible() {
-    return !"none".equalsIgnoreCase(css("display"));
+    return styleImpl.isVisible(get(0));
   }
 
   /**
