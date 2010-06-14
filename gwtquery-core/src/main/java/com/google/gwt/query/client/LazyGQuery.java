@@ -29,7 +29,6 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.query.client.css.CssProperty;
@@ -46,20 +45,27 @@ import com.google.gwt.query.client.LazyBase;
 public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
-   * Add elements to the set of matched elements if they are not included yet.
-   */
-  LazyGQuery<T> add(String selector);
-
-  /**
    * Adds the specified classes to each matched element. Add elements to the set
    * of matched elements if they are not included yet.
    */
   LazyGQuery<T> add(GQuery previousObject);
 
   /**
+   * Add elements to the set of matched elements if they are not included yet.
+   */
+  LazyGQuery<T> add(String selector);
+
+  /**
    * Adds the specified classes to each matched element.
    */
   LazyGQuery<T> addClass(String... classes);
+
+  /**
+   * Insert content after each of the matched elements. The elements must
+   * already be inserted into the document (you can't insert an element after
+   * another if it's not in the page).
+   */
+  LazyGQuery<T> after(GQuery query);
 
   /**
    * Insert content after each of the matched elements. The elements must
@@ -76,13 +82,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> after(String html);
 
   /**
-   * Insert content after each of the matched elements. The elements must
-   * already be inserted into the document (you can't insert an element after
-   * another if it's not in the page).
-   */
-  LazyGQuery<T> after(GQuery query);
-
-  /**
    * Add the previous selection to the current selection. Useful for traversing
    * elements, and then adding something that was matched before the last
    * traversal.
@@ -94,7 +93,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * similar to doing an appendChild to all the specified elements, adding them
    * into the document.
    */
-  LazyGQuery<T> append(String html);
+  LazyGQuery<T> append(GQuery query);
 
   /**
    * Append content to the inside of every matched element. This operation is
@@ -108,7 +107,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * similar to doing an appendChild to all the specified elements, adding them
    * into the document.
    */
-  LazyGQuery<T> append(GQuery query);
+  LazyGQuery<T> append(String html);
 
   /**
    * Append all of the matched elements to another, specified, set of elements.
@@ -124,6 +123,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   <T extends GQuery> T as(Class<T> plugin);
 
   /**
+   * Set a key/value object as properties to all matched elements.
+   *
+   * Image'"))
+   */
+  LazyGQuery<T> attr(Properties properties);
+
+  /**
    * Access a property on the first matched element. This method makes it easy
    * to retrieve a property value from the first matched element. If the element
    * does not have an attribute with such a name, undefined is returned.
@@ -132,28 +138,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   String attr(String name);
 
   /**
-   * Set a single property to a value, on all matched elements.
-   */
-  LazyGQuery<T> attr(String key, String value);
-
-  /**
-   * Set a key/value object as properties to all matched elements.
-   *
-   * Image'"))
-   */
-  LazyGQuery<T> attr(Properties properties);
-
-  /**
    * Set a single property to a computed value, on all matched elements.
    */
   LazyGQuery<T> attr(String key, Function closure);
 
   /**
-   * Insert content before each of the matched elements. The elements must
-   * already be inserted into the document (you can't insert an element before
-   * another if it's not in the page).
+   * Set a single property to a value, on all matched elements.
    */
-  LazyGQuery<T> before(Node n);
+  LazyGQuery<T> attr(String key, String value);
 
   /**
    * Insert content before each of the matched elements. The elements must
@@ -161,6 +153,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * another if it's not in the page).
    */
   LazyGQuery<T> before(GQuery query);
+
+  /**
+   * Insert content before each of the matched elements. The elements must
+   * already be inserted into the document (you can't insert an element before
+   * another if it's not in the page).
+   */
+  LazyGQuery<T> before(Node n);
 
   /**
    * Insert content before each of the matched elements. The elements must
@@ -195,13 +194,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> change(Function...f);
 
   /**
-   * Get a set of elements containing all of the unique children of each of the
-   * matched set of elements. This set is filtered with the expressions that
-   * will cause only elements matching any of the selectors to be collected.
-   */
-  LazyGQuery<T> children(String... filters);
-
-  /**
    * Get a set of elements containing all of the unique immediate children of
    * each of the matched set of elements. Also note: while parents() will look
    * at all ancestors, children() will only consider immediate child elements.
@@ -209,10 +201,29 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> children();
 
   /**
+   * Get a set of elements containing all of the unique children of each of the
+   * matched set of elements. This set is filtered with the expressions that
+   * will cause only elements matching any of the selectors to be collected.
+   */
+  LazyGQuery<T> children(String... filters);
+
+  /**
    * Bind a set of functions to the click event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   LazyGQuery<T> click(Function...f);
+
+  /**
+   * Returns the inner height of the first matched element, including padding 
+   * but not the vertical scrollbar height, border, or margin.
+   */
+  int clientHeight();
+
+  /**
+   * Returns the inner width of the first matched element, including padding 
+   * but not the vertical scrollbar width, border, or margin.
+   */
+  int clientWidth();
 
   /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
@@ -232,6 +243,40 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> contents();
 
   /**
+   * Set a key/value object as style properties to all matched elements. This
+   * serves as the best way to set a large number of style properties on all
+   * matched elements.
+   *
+   * Example: $(".item").css(Properties.create("color: 'red', background:
+   * 'blue'"))
+   */
+  LazyGQuery<T> css(Properties properties);
+
+  /**
+   * Return a style property on the first matched element.
+   */
+  String css(String name);
+
+  /**
+   * Return a style property on the first matched element.
+   * 
+   * The parameter force has a special meaning here:
+   * - When force is false, returns the value of the css property defined
+   *   in the style attribute of the element. 
+   * - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style
+   * but in the css stylesheet, it returns an empty string unless you
+   * pass the parameter force=true.   
+   */
+  String css(String name, boolean force);
+
+  /**
+   * Set a single style property to a value, on all matched elements.
+   */
+  LazyGQuery<T> css(String prop, String val);
+
+  /**
    * Set CSS property on every matched element using type-safe enumerations.
    */
   <S, T extends CssProperty<S>> LazyGQuery<T> css(T cssProperty, S value);
@@ -245,26 +290,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Set CSS property on every matched element using type-safe enumerations.
    */
   LazyGQuery<T> css(TakesPercentage cssProperty, Percentage value);
-
-  /**
-   * Return a style property on the first matched element.
-   */
-  String css(String name);
-
-  /**
-   * Set a key/value object as style properties to all matched elements. This
-   * serves as the best way to set a large number of style properties on all
-   * matched elements.
-   *
-   * Example: $(".item").css(Properties.create("color: 'red', background:
-   * 'blue'"))
-   */
-  LazyGQuery<T> css(Properties properties);
-
-  /**
-   * Set a single style property to a value, on all matched elements.
-   */
-  LazyGQuery<T> css(String prop, String val);
 
   /**
    * Returns value at named data store for the element, as set by data(name,
@@ -327,26 +352,26 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> error(Function... f);
 
   /**
-   * Fade in all matched elements by adjusting their opacity.
-   */
-  LazyGQuery<T> fadeIn(int millisecs, Function... f);
-
-  /**
    * Fade in all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
   LazyGQuery<T> fadeIn(Function... f);
 
   /**
-   * Fade out all matched elements by adjusting their opacity.
+   * Fade in all matched elements by adjusting their opacity.
    */
-  LazyGQuery<T> fadeOut(int millisecs, Function... f);
+  LazyGQuery<T> fadeIn(int millisecs, Function... f);
 
   /**
    * Fade out all matched elements by adjusting their opacity. The effect will
    * take 1000 milliseconds to complete
    */
   LazyGQuery<T> fadeOut(Function... f);
+
+  /**
+   * Fade out all matched elements by adjusting their opacity.
+   */
+  LazyGQuery<T> fadeOut(int millisecs, Function... f);
 
   /**
    * Removes all elements from the set of matched elements that do not match the
@@ -417,6 +442,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   boolean hasClass(String... classes);
 
   /**
+   * Get the current computed, pixel, height of the first matched element.
+   */
+  int height();
+
+  /**
    * Set the height of every element in the matched set.
    */
   LazyGQuery<T> height(int height);
@@ -426,23 +456,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * using 'percent' or 'em' units Example: $(".a").width("100%")
    */
   LazyGQuery<T> height(String height);
-
-  /**
-   * Get the current computed, pixel, height of the first matched element.
-   */
-  int height();
-
-  /**
-   * Returns the inner height of the first matched element, including padding 
-   * but not the vertical scrollbar height, border, or margin.
-   */
-  int clientHeight();
-
-  /**
-   * Returns the inner width of the first matched element, including padding 
-   * but not the vertical scrollbar width, border, or margin.
-   */
-  int clientWidth();
 
   /**
    * Make invisible all matched elements.
@@ -478,12 +491,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Insert all of the matched elements after another, specified, set of
    * elements.
    */
-  LazyGQuery<T> insertAfter(String selector);
-
-  /**
-   * Insert all of the matched elements after another, specified, set of
-   * elements.
-   */
   LazyGQuery<T> insertAfter(Element elem);
 
   /**
@@ -491,6 +498,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * elements.
    */
   LazyGQuery<T> insertAfter(GQuery query);
+
+  /**
+   * Insert all of the matched elements after another, specified, set of
+   * elements.
+   */
+  LazyGQuery<T> insertAfter(String selector);
 
   /**
    * Insert all of the matched elements before another, specified, set of
@@ -687,16 +700,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Get a set of elements containing the unique ancestors of the matched set of
+   * elements (except for the root element).
+   */
+  LazyGQuery<T> parents();
+
+  /**
+   * Get a set of elements containing the unique ancestors of the matched set of
    * elements (except for the root element). The matched elements are filtered,
    * returning those that match any of the filters.
    */
   LazyGQuery<T> parents(String... filters);
-
-  /**
-   * Get a set of elements containing the unique ancestors of the matched set of
-   * elements (except for the root element).
-   */
-  LazyGQuery<T> parents();
 
   /**
    * Gets the top and left position of an element relative to its offset parent.
@@ -711,13 +724,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * the best way to insert elements inside, at the beginning, of all matched
    * elements.
    */
-  LazyGQuery<T> prepend(String html);
-
-  /**
-   * Prepend content to the inside of every matched element. This operation is
-   * the best way to insert elements inside, at the beginning, of all matched
-   * elements.
-   */
   LazyGQuery<T> prepend(GQuery query);
 
   /**
@@ -726,6 +732,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * elements.
    */
   LazyGQuery<T> prepend(Node n);
+
+  /**
+   * Prepend content to the inside of every matched element. This operation is
+   * the best way to insert elements inside, at the beginning, of all matched
+   * elements.
+   */
+  LazyGQuery<T> prepend(String html);
 
   /**
    * Prepend all of the matched elements to another, specified, set of elements.
@@ -779,6 +792,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
+  LazyGQuery<T> replaceAll(Element elem);
+
+  /**
+   * Replaces the elements matched by the specified selector with the matched
+   * elements. This function is the complement to replaceWith() which does the
+   * same task with the parameters reversed.
+   */
   LazyGQuery<T> replaceAll(GQuery query);
 
   /**
@@ -789,11 +809,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> replaceAll(String html);
 
   /**
-   * Replaces the elements matched by the specified selector with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
+   * Replaces all matched elements with the specified HTML or DOM elements. This
+   * returns the GQuery element that was just replaced, which has been removed
+   * from the DOM.
    */
-  LazyGQuery<T> replaceAll(Element elem);
+  LazyGQuery<T> replaceWith(Element elem);
 
   /**
    * Replaces all matched elements with the specified HTML or DOM elements. This
@@ -810,17 +830,26 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> replaceWith(String html);
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Save a set of Css properties of every matched element.
    */
-  LazyGQuery<T> replaceWith(Element elem);
+  void restoreCssAttrs(String... cssProps);
+
+  /**
+   * Restore a set of previously saved Css properties in every matched element.
+   */
+  void saveCssAttrs(String... cssProps);
 
   /**
    * Bind a set of functions to the scroll event of each matched element.
    * Or trigger the event if no functions are provided.
    */
   LazyGQuery<T> scroll(Function...f);
+
+  /**
+   * Gets the scroll left offset of the first matched element. This method works
+   * for both visible and hidden elements.
+   */
+  int scrollLeft();
 
   /**
    * When a value is passed in, the scroll left offset is set to that value on
@@ -830,10 +859,10 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> scrollLeft(int left);
 
   /**
-   * Gets the scroll left offset of the first matched element. This method works
+   * Gets the scroll top offset of the first matched element. This method works
    * for both visible and hidden elements.
    */
-  int scrollLeft();
+  int scrollTop();
 
   /**
    * When a value is passed in, the scroll top offset is set to that value on
@@ -841,12 +870,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * elements.
    */
   LazyGQuery<T> scrollTop(int top);
-
-  /**
-   * Gets the scroll top offset of the first matched element. This method works
-   * for both visible and hidden elements.
-   */
-  int scrollTop();
 
   LazyGQuery<T> select();
 
@@ -1002,25 +1025,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   boolean visible();
 
   /**
-   * Set the width of every matched element.
-   */
-  LazyGQuery<T> width(int width);
-
-  /**
    * Get the current computed, pixel, width of the first matched element.
    */
   int width();
 
   /**
-   * Wrap each matched element with the specified HTML content. This wrapping
-   * process is most useful for injecting additional structure into a document,
-   * without ruining the original semantic qualities of a document. This works
-   * by going through the first element provided (which is generated, on the
-   * fly, from the provided HTML) and finds the deepest descendant element
-   * within its structure -- it is that element that will enwrap everything
-   * else.
+   * Set the width of every matched element.
    */
-  LazyGQuery<T> wrap(GQuery query);
+  LazyGQuery<T> width(int width);
 
   /**
    * Wrap each matched element with the specified HTML content. This wrapping
@@ -1042,21 +1054,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * within its structure -- it is that element that will enwrap everything
    * else.
    */
-  LazyGQuery<T> wrap(String html);
+  LazyGQuery<T> wrap(GQuery query);
 
   /**
-   * Wrap all the elements in the matched set into a single wrapper element.
-   * This is different from .wrap() where each element in the matched set would
-   * get wrapped with an element. This wrapping process is most useful for
-   * injecting additional structure into a document, without ruining the
-   * original semantic qualities of a document.
-   *
-   * This works by going through the first element provided (which is generated,
-   * on the fly, from the provided HTML) and finds the deepest descendant
-   * element within its structure -- it is that element that will enwrap
-   * everything else.
+   * Wrap each matched element with the specified HTML content. This wrapping
+   * process is most useful for injecting additional structure into a document,
+   * without ruining the original semantic qualities of a document. This works
+   * by going through the first element provided (which is generated, on the
+   * fly, from the provided HTML) and finds the deepest descendant element
+   * within its structure -- it is that element that will enwrap everything
+   * else.
    */
-  LazyGQuery<T> wrapAll(String html);
+  LazyGQuery<T> wrap(String html);
 
   /**
    * Wrap all the elements in the matched set into a single wrapper element.
@@ -1087,6 +1096,31 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> wrapAll(GQuery query);
 
   /**
+   * Wrap all the elements in the matched set into a single wrapper element.
+   * This is different from .wrap() where each element in the matched set would
+   * get wrapped with an element. This wrapping process is most useful for
+   * injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document.
+   *
+   * This works by going through the first element provided (which is generated,
+   * on the fly, from the provided HTML) and finds the deepest descendant
+   * element within its structure -- it is that element that will enwrap
+   * everything else.
+   */
+  LazyGQuery<T> wrapAll(String html);
+
+  /**
+   * Wrap the inner child contents of each matched element (including text
+   * nodes) with an HTML structure. This wrapping process is most useful for
+   * injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document. This works by going through the
+   * first element provided (which is generated, on the fly, from the provided
+   * HTML) and finds the deepest ancestor element within its structure -- it is
+   * that element that will enwrap everything else.
+   */
+  LazyGQuery<T> wrapInner(Element elem);
+
+  /**
    * Wrap the inner child contents of each matched element (including text
    * nodes) with an HTML structure. This wrapping process is most useful for
    * injecting additional structure into a document, without ruining the
@@ -1107,26 +1141,5 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * that element that will enwrap everything else.
    */
   LazyGQuery<T> wrapInner(String html);
-
-  /**
-   * Wrap the inner child contents of each matched element (including text
-   * nodes) with an HTML structure. This wrapping process is most useful for
-   * injecting additional structure into a document, without ruining the
-   * original semantic qualities of a document. This works by going through the
-   * first element provided (which is generated, on the fly, from the provided
-   * HTML) and finds the deepest ancestor element within its structure -- it is
-   * that element that will enwrap everything else.
-   */
-  LazyGQuery<T> wrapInner(Element elem);
-
-  /**
-   * Save a set of Css properties of every matched element.
-   */
-  void restoreCssAttrs(String[] cssProps);
-
-  /**
-   * Restore a set of previously saved Css properties in every matched element.
-   */
-  void saveCssAttrs(String[] cssProps);
 
 }
