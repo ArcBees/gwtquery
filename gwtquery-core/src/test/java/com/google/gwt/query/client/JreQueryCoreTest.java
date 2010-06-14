@@ -17,16 +17,6 @@ package com.google.gwt.query.client;
 
 import java.util.Hashtable;
 
-import javax.naming.Binding;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.Name;
-import javax.naming.NameClassPair;
-import javax.naming.NameParser;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.spi.InitialContextFactory;
-
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
