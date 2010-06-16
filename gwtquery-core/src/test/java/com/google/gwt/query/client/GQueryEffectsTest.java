@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
@@ -153,9 +154,51 @@ public class GQueryEffectsTest extends GWTTestCase {
         timer3.schedule(duration);
       }
     };
-
     // Starts the first timer
     timer4.schedule(duration/2);
+  }
+  
+  public void testClipAnimation() {
+    $(e).html("<p id='idtest'>Content 1</p></p>");
+    
+    final GQuery g = $("#idtest");
+    final int duration = 800;
+    
+    // Clip effect paces a relative div in the position of the original element
+    // So check that there is not any div.
+    GQuery back = $("div", e);
+    assertEquals(0, back.size());
+
+    g.as(Effects.Effects).clipDisappear(duration);
+
+    // Check that the back div has been created
+    back = $("div", e);
+    assertEquals(1, back.size());
+    
+    // Configure the max duration for this test
+    delayTestFinish(duration * 2);
+    
+    // each timer calls the next one
+    final Timer timer1 = new Timer() {
+      public void run() {
+        // Check that the back div has been removed
+        GQuery back = $("div", e);
+        assertEquals(0, back.size());
+        // Check that the attribute clip has been removed
+        assertEquals("", g.css("clip"));
+        finishTest();
+      }
+    };
+    final Timer timer2 = new Timer() {
+      public void run() {
+        // Check that the attribute clip has been set
+        assertTrue(g.css("clip").matches("rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)"));
+        timer1.schedule(duration/2 + 1);
+      }
+    };
+    
+    // Start the first timer
+    timer2.schedule(duration/2);
   }
 
   private void assertPosition(GQuery g, Offset min, Offset max) {

@@ -617,4 +617,18 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("block", sectC.css("display"));
   }
   
+  public void testWidthHeight() {
+    $(e)
+    .html(
+        "<div style='border: 1px solid red; padding: 10px; width: 100px; height: 100px'>Content 1</div>");
+    GQuery g = $("div", e);
+    assertEquals(120, g.width());
+    assertEquals(122, g.height());
+    assertEquals(120, g.clientWidth());
+    assertEquals(120, g.clientHeight());
+    assertEquals(100, (int)GQuery.cur(g.get(0), "width"));
+    assertEquals(100, (int)GQuery.cur(g.get(0), "height"));
+    assertEquals("100px", g.css("width"));
+    assertEquals("100px", g.css("height"));
+  }
 }

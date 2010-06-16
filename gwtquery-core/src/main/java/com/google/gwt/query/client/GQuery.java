@@ -275,10 +275,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     GQuery g = $(elem);
     String val = g.css(prop, true);
     if ("height".equalsIgnoreCase(prop)) {
-      return g.clientHeight();
+      return elem.getClientHeight() - cur(elem, "paddingTop") - cur(elem, "paddingBottom");
     }
     if ("width".equalsIgnoreCase(prop)) {
-      return g.clientWidth();
+      return elem.getClientWidth() - cur(elem, "paddingLeft") - cur(elem, "paddingRight");
     }
     if ("absolute".equalsIgnoreCase(g.css("position", true))) {
       if ("left".equalsIgnoreCase(prop)) {
