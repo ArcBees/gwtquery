@@ -4,6 +4,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Plugin;
@@ -295,7 +296,7 @@ public class Ratings extends GQuery {
         rater.addClass("rating-to-be-drawn");
 
         // Accept readOnly setting from 'disabled' property
-        if (SelectorEngine.truth(input.attr("disabled"))) {
+        if (GQUtils.truth(input.attr("disabled"))) {
           control.setReadOnly(true);
         }
 
