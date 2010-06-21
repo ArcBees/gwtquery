@@ -101,7 +101,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     final GQuery g = $("#idtest").css("position", "absolute");
     final Offset o = g.offset();
     
-    final int duration = 800;
+    final int duration = 1000;
     g.as(Effects.Effects).
         animate($$("left: '+=100'"), duration, Easing.LINEAR).
         animate($$("top: '+=100'"), duration, Easing.LINEAR).

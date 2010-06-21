@@ -65,16 +65,27 @@ public class SelectorEngine {
       return r;
   }-*/;
 
-  private SelectorEngineImpl impl;
+  protected SelectorEngineImpl impl;
+
+  protected Node root = Document.get();
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
   }
 
+  public Node getRoot() {
+    return root;
+  }
+  
   public NodeList<Element> select(String selector, Node ctx) {
     return impl.select(selector, ctx);
   }
-
+ 
+  public void setRoot(Node root) {
+    assert root != null;
+    this.root = root;
+  }
+  
   protected JSArray veryQuickId(Node context, String id) {
     JSArray r = JSArray.create();
     if (context.getNodeType() == Node.DOCUMENT_NODE) {
@@ -84,17 +95,6 @@ public class SelectorEngine {
       r.addNode(context.getOwnerDocument().getElementById(id));
       return r;
     }
-  }
-  
-  protected Node root = Document.get();
- 
-  public void setRoot(Node root) {
-    assert root != null;
-    this.root = root;
-  }
-  
-  public Node getRoot() {
-    return root;
   }
   
 }

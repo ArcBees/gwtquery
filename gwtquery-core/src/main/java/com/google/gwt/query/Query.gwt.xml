@@ -39,19 +39,20 @@
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <when-property-is name="selectorCapability" value="native"/>
-        <none>
-           <when-property-is name="user.agent" value="ie8"/>
-        </none>
+    </generate-with>
+
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNativeIE8">
+        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
+        <when-property-is name="selectorCapability" value="native"/>
+        <when-property-is name="user.agent" value="ie8"/>
     </generate-with>
 
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImpl">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
+        <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImplIE">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
+        <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
         <any>
 	        <when-property-is name="user.agent" value="ie6"/>
 	        <when-property-is name="user.agent" value="ie8"/>
@@ -59,8 +60,7 @@
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
     </replace-with>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineCssToXPath">
@@ -76,14 +76,19 @@
         </any>
     </replace-with>
 
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="selectorCapability" value="native"/>
-        <none>
-           <when-property-is name="user.agent" value="ie8"/>
-        </none>
     </replace-with>
+    
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="selectorCapability" value="native"/>
+        <when-property-is name="user.agent" value="ie8"/>
+    </replace-with>
+
+    <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
+    <add-linker name="stddoctype"/>
 
     <entry-point class='com.google.gwt.query.client.css.CSS'/>
 

@@ -74,7 +74,7 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
     String selector = method.getAnnotation(Selector.class).value();
 
     sw.println("return " + wrap(method,
-        "new SelectorEngine().select(\"" + selector + "\", root)") + ";");
+        "impl.select(\"" + selector + "\", root)") + ";");
 //    sw.println("JSArray n = JSArray.create();");
 //    if(!hasContext) { 
 //      sw.println("Node root = Document.get();");

@@ -80,7 +80,7 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
   }
 
   protected String getImplSuffix() {
-    return "XPath" + super.getImplSuffix();
+    return "CssToXPath" + super.getImplSuffix();
   }
 
 }

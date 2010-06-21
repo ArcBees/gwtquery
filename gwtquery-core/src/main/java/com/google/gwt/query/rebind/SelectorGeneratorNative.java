@@ -31,6 +31,7 @@ public class SelectorGeneratorNative extends SelectorGeneratorCssToXPath {
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)
       throws UnableToCompleteException {
+
     String selector = method.getAnnotation(Selector.class).value();
     if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);

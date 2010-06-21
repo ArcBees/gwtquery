@@ -380,9 +380,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
     return nl;
   }-*/;
+  
+  private static SelectorEngine engine;
 
   private static NodeList<Element> select(String selector, Node context) {
-    NodeList<Element> n = new SelectorEngine().select(selector, context);
+    if (engine == null) {
+      engine = new SelectorEngine();
+    }
+    NodeList<Element> n = engine.select(selector, context);
     JSArray res = copyNodeList(n);
     return res;
   }

@@ -19,23 +19,34 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.query.client.Selector;
+import com.google.gwt.query.client.impl.SelectorEngineNativeIE8;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * An implementaton of pure-JS compile time selectors. This implementation
- * simply defers to the runtime selector engine.
+ * Compile time selector generator which delegates to native browser methods.
  */
-public class SelectorGeneratorJS extends SelectorGeneratorBase {
+public class SelectorGeneratorNativeIE8 extends SelectorGeneratorJS {
 
-  protected String getImplSuffix() {
-    return "JS" + super.getImplSuffix();
-  }
-
+  @Override
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)
       throws UnableToCompleteException {
     String selector = method.getAnnotation(Selector.class).value();
-    sw.println("return "
-        + wrap(method, "impl.select(\"" + selector + "\", root)") + ";");
+    if (selector.matches(SelectorEngineNativeIE8.NATIVE_EXCEPTIONS_REGEXP)) {
+      super.generateMethodBody(sw, method, treeLogger, hasContext);
+    } else {
+      sw.println("return "
+          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
+    }
+  }
+
+  @Override
+  protected String getImplSuffix() {
+    return "IE8" + super.getImplSuffix();
+  }
+
+  @Override
+  protected boolean hasGetElementsByClassName() {
+    return false;
   }
 }
