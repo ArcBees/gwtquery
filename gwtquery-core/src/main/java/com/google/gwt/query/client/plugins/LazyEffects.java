@@ -14,6 +14,7 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;

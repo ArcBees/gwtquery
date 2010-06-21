@@ -15,16 +15,18 @@
  */
 package com.google.gwt.query.client.impl;
 
-import static com.google.gwt.query.client.SelectorEngine.eq;
-import static com.google.gwt.query.client.SelectorEngine.truth;
+import static com.google.gwt.query.client.GQUtils.eq;
+import static com.google.gwt.query.client.GQUtils.truth;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
+
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath
@@ -141,7 +143,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
       }
       SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm);
     }
-    return unique(elm.<JsArray<Element>>cast()).cast();
+    return GQUtils.unique(elm.<JsArray<Element>>cast()).cast();
   }
 
   private void init() {

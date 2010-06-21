@@ -21,6 +21,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
@@ -188,7 +189,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       sel = css2Xpath(sel);
     }
     SelectorEngine.xpathEvaluate(sel, ctx, elm);
-    return unique(elm.<JsArray<Element>> cast()).cast();
+    return GQUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
   
 }

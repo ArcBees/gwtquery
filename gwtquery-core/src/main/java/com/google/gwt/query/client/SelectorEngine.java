@@ -16,7 +16,6 @@
 package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -27,10 +26,6 @@ import com.google.gwt.query.client.impl.SelectorEngineImpl;
  * Core Selector engine functions, and native JS utility functions.
  */
 public class SelectorEngine {
-
-  public static native boolean eq(String s1, String s2) /*-{
-       return s1 == s2;
-    }-*/;
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
@@ -54,14 +49,6 @@ public class SelectorEngine {
       return ctx.querySelectorAll(selector);
   }-*/;
 
-  public static boolean truth(String a) {
-    return GWT.isScript() ? truth0(a) : a != null && !"".equals(a);
-  }
-
-  public static boolean truth(JavaScriptObject a) {
-    return GWT.isScript() ? truth0(a) : a != null;
-  }
-
   public static NodeList<Element> xpathEvaluate(String selector, Node ctx) {
     return xpathEvaluate(selector, ctx, JSArray.create());
   }
@@ -77,14 +64,6 @@ public class SelectorEngine {
       }
       return r;
   }-*/;
-
-  private static native boolean truth0(String a) /*-{
-       return a;
-    }-*/;
-
-  private static native boolean truth0(JavaScriptObject a) /*-{
-         return a;
-      }-*/;
 
   private SelectorEngineImpl impl;
 

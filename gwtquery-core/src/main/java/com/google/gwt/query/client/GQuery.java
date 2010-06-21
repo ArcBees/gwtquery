@@ -39,7 +39,6 @@ import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
@@ -269,45 +268,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns the numeric value of an element css property
-   */
-  public static double cur(Element elem, String prop) {
-    GQuery g = $(elem);
-    String val = g.css(prop, true);
-    if ("height".equalsIgnoreCase(prop)) {
-      return elem.getClientHeight() - cur(elem, "paddingTop") - cur(elem, "paddingBottom");
-    }
-    if ("width".equalsIgnoreCase(prop)) {
-      return elem.getClientWidth() - cur(elem, "paddingLeft") - cur(elem, "paddingRight");
-    }
-    if ("absolute".equalsIgnoreCase(g.css("position", true))) {
-      if ("left".equalsIgnoreCase(prop)) {
-        return g.offset().left;
-      }
-      if ("top".equalsIgnoreCase(prop)) {
-        return g.offset().top;
-      }
-    }
-    if ("opacity".equalsIgnoreCase(prop)) {
-      return Double.parseDouble(val);
-    }
-    if (elem.getPropertyString(prop) != null
-        && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
-      return elem.getPropertyDouble(prop);
-    }
-    
-    if ("thick".equalsIgnoreCase(val)) {
-      return (5);
-    } else if ("medium".equalsIgnoreCase(val)) {
-      return (3);
-    } else if ("thin".equalsIgnoreCase(val)) {
-      return (1);
-    }
-    val = "0" + val.replaceAll("[^\\d\\.]+", "");
-    return Double.parseDouble(val);
-  }
-  
-  /**
    * Return a lazy version of the GQuery interface. Lazy function calls are
    * simply queued up and not executed immediately.
    */
@@ -353,6 +313,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       postWrap = "</colgroup></table>";
     }
     // TODO: fix IE link tag serialization
+    // TODO: fix IE <script> tag
     Element div = document.createDivElement();
     div.setInnerHTML(preWrap + elem + postWrap);
     Node n = div;
@@ -923,7 +884,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         e.removeChild(e.getFirstChild());
       }
     }
-
     return this;
   }
 
@@ -1492,7 +1452,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery parent() {
     JSArray result = JSArray.create();
     for (Element e : elements()) {
-      result.addNode(e.getParentElement());
+      Element p = e.getParentElement();
+      if (p != null) {
+        result.addNode(p);
+      }
     }
     return new GQuery(unique(result));
   }
@@ -2043,7 +2006,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * only works on arrays of DOM elements, not strings or numbers.
    */
   public JSArray unique(JSArray result) {
-    return SelectorEngineImpl.unique(result.<JsArray<Element>>cast()).cast();
+    return GQUtils.unique(result.<JsArray<Element>>cast()).cast();
   }
 
   /**
@@ -2436,5 +2399,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     } else {
       dataCache.delete(id);
     }
-  }   
+  }
+  
 }

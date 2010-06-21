@@ -22,6 +22,12 @@ import com.google.gwt.user.client.Event;
  * Extend this class to implement functions callbacks.
  */
 public abstract class Function {
+  
+  /**
+   * Override this to define a cancel action.
+   */
+  public void cancel(Element e) {
+  }
 
   /**
    * Override this for GQuery methods which loop over matched elements and

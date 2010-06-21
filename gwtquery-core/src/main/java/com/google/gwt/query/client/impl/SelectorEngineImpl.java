@@ -14,17 +14,16 @@
  * the License.
  */
 package com.google.gwt.query.client.impl;
+import static com.google.gwt.query.client.GQUtils.eq;
+import static com.google.gwt.query.client.GQUtils.truth;
 
-import java.util.HashSet;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
-import com.google.gwt.query.client.SelectorEngine;
 
 /**
  * Base/Utility class for runtime selector engine implementations.
@@ -87,21 +86,21 @@ public abstract class SelectorEngineImpl {
     Regexp expressionRegExp = new Regexp(
         "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
     JSArray pseudoValue = expressionRegExp.exec(expression);
-    if (!SelectorEngine.truth(pseudoValue)) {
+    if (!truth(pseudoValue)) {
       return null;
     } else {
-      if (SelectorEngine.truth(pseudoValue.getStr(2))) {        // odd or even
-        start = (SelectorEngine.eq(pseudoValue.getStr(2), "odd")) ? 1 : 2;
+      if (truth(pseudoValue.getStr(2))) {        // odd or even
+        start = (eq(pseudoValue.getStr(2), "odd")) ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
-      } else if (SelectorEngine
+      } else if (GQUtils
           .truth(pseudoValue.getStr(3))) {        // single digit
         start = Integer.parseInt(pseudoValue.getStr(3), 10);
         add = 0;
         max = start;
-      } else if (SelectorEngine.truth(pseudoValue.getStr(4))) {        // an+b
-        add = SelectorEngine.truth(pseudoValue.getStr(6)) ? Integer
+      } else if (truth(pseudoValue.getStr(4))) {        // an+b
+        add = truth(pseudoValue.getStr(6)) ? Integer
             .parseInt(pseudoValue.getStr(6), 10) : 1;
-        start = SelectorEngine.truth(pseudoValue.getStr(7)) ? Integer.parseInt(
+        start = truth(pseudoValue.getStr(7)) ? Integer.parseInt(
             (pseudoValue.getStr(8).charAt(0) == '+' ? ""
                 : pseudoValue.getStr(8)) + pseudoValue.getStr(9), 10) : 0;
         while (start < 1) {
@@ -109,8 +108,8 @@ public abstract class SelectorEngineImpl {
         }
         modVal = (start > add) ? (start - add) % add
             : ((start == add) ? 0 : start);
-      } else if (SelectorEngine.truth(pseudoValue.getStr(10))) {        // -an+b
-        add = SelectorEngine.truth(pseudoValue.getStr(12)) ? Integer
+      } else if (truth(pseudoValue.getStr(10))) {        // -an+b
+        add = truth(pseudoValue.getStr(12)) ? Integer
             .parseInt(pseudoValue.getStr(12), 10) : 1;
         start = max = Integer.parseInt(pseudoValue.getStr(13), 10);
         while (start > add) {
@@ -135,17 +134,4 @@ public abstract class SelectorEngineImpl {
    * @return a list of matched nodes
    */
   public abstract NodeList<Element> select(String selector, Node ctx);
-
-  public static JsArray<Element> unique(JsArray<Element> a) {
-    JsArray<Element> ret = JavaScriptObject.createArray().cast();
-    HashSet<Integer> f = new HashSet<Integer>();
-    for (int i = 0; i < a.length(); i++) {
-      Element e = a.get(i);
-      if (!f.contains(e.hashCode())) {
-        f.add(e.hashCode());
-        ret.push(e);
-      }
-    }    
-    return ret;
-  }
 }

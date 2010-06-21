@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.plugins;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
@@ -31,13 +32,18 @@ import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
  */
 public class Effects extends GQueryQueue  {
   
+  /**
+   * Just a class to store predefined speed constant values.
+   */
   public static class Speed {
     public static final int DEFAULT = 400;
-    public static final int SLOW = 600;
     public static final int FAST = 200;
+    public static final int SLOW = 600;
   }
-  
+
   public static final Class<Effects> Effects = Effects.class;
+
+  private static final String EFFECTS_RUNNNING = "EffectsRunnning";
   
   static {
     GQuery.registerPlugin(Effects.class, new Plugin<Effects>() {
@@ -82,13 +88,21 @@ public class Effects extends GQueryQueue  {
   public Effects animate(final Properties p, final int duration,
       final Easing easing, final Function... funcs) {
     queue(new Function() {
+      public void cancel(Element e) {
+        Animation anim = (Animation) data(e, EFFECTS_RUNNNING, null);
+        if (anim != null) {
+          anim.cancel();
+        }
+      }
       public void f(Element e) {
-        new PropertiesAnimation(easing, e, p, funcs).run(duration);
+        Animation anim = new PropertiesAnimation(easing, e, p, funcs);
+        anim.run(duration);
+        data(e, EFFECTS_RUNNNING, anim);
       }
     });
     return this;
   }
-
+  
   /**
    * The animate() method allows us to create animation effects on any numeric CSS property. 
    * The only required parameter is a map of CSS properties. 
@@ -126,7 +140,7 @@ public class Effects extends GQueryQueue  {
    *  from the current value of the property.
    */  
   public Effects animate(String prop, int duration, Function... funcs) {
-    return animate($$(prop), duration, Easing.SWING, funcs);
+    return animate($$(prop), duration, Easing.LINEAR, funcs);
   }
 
   /**
@@ -149,10 +163,18 @@ public class Effects extends GQueryQueue  {
   public Effects clip(final ClipAnimation.Action a, final ClipAnimation.Corner c, 
       final ClipAnimation.Direction d, final int duration, final Function... f) {
     queue(new Function() {
-      public void f(Element e) {
-        new ClipAnimation(e, a, c, d, f).run(duration);
+      public void cancel(Element e) {
+        Animation anim = (Animation) data(e, EFFECTS_RUNNNING, null);
+        if (anim != null) {
+          anim.cancel();
+        }
       }
-    });
+      public void f(Element e) {
+        Animation anim = new ClipAnimation(e, a, c, d, f);
+        anim.run(duration);
+        data(e, EFFECTS_RUNNNING, a);
+      }
+    });    
     return this;
   }
 

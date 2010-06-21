@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
@@ -37,9 +38,10 @@ public class PropertiesAnimation extends Animation {
     LINEAR, SWING
   }
   
-  private static class Effect {
-    private static Regexp nonPx = new Regexp(
-        "z-?index|font-?weight|opacity|zoom|line-?height", "i");
+  /**
+   * A pojo to store effect values.
+   */
+  public static class Effect {
 
     public String attr;
     public double end;
@@ -53,21 +55,67 @@ public class PropertiesAnimation extends Animation {
       this.value = value;
       this.start = start;
       this.end = end;
-      this.unit = nonPx.test(attr) ? "" : unit == null ? "px" : unit;
+      this.unit = unit;
     }
 
     public String getVal(double progress) {
       double ret = (start + ((end - start) * progress));
       return ("px".equals(unit) ? ((int) ret) : ret) + unit;
     }
+    
+    public String toString() {
+      return ("attr=" + attr + " value=" + value + " start=" + start + " end=" + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
+    }
   }
-
+  
   private static final String[] attrsToSave = new String[] { "overflow",
       "visibility", "white-space" };
+
+  private static Regexp nonPxRegExp = new Regexp(
+      "z-?index|font-?weight|opacity|zoom|line-?height", "i");
+  
+  public static Effect computeFxProp(Element e, String key, String val, boolean hidden) {
+    GQuery g = Effects.$(e);
+    if ("toggle".equals(val)) {
+      val = hidden ? "show" : "hide";
+    }
+    double start = GQUtils.cur(e, key, true), end = start;
+    if ("show".equals(val)) {
+      if (!hidden) {
+        return null;
+      }
+      g.saveCssAttrs(key);
+      start = 0;
+    } else if ("hide".equals(val)) {
+      if (hidden) {
+        return null;
+      }
+      g.saveCssAttrs(key);
+      end = 0;
+    } 
+    JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
+    String unit = "";
+    if (parts != null) {
+      unit = nonPxRegExp.test(key) ? "" : parts.getStr(3) == null ? "px" : parts.getStr(3); 
+      end = Double.parseDouble(parts.getStr(2));
+      if (!"px".equals(unit)) {
+        double to = end == 0 ? 1 : end;
+        g.css(key, to + unit);
+        start = to * start / GQUtils.cur(e, key, true);
+        g.css(key, start + unit);
+      }
+      if (parts.getStr(1) != null) {
+        end = (("-=".equals(parts.getStr(1)) ? -1 : 1) * end) + start;
+      }
+    } 
+    Effect fx = new Effect(key, val, start, end, unit);
+    return fx;
+  }
   private Element e;
   private Easing easing = Easing.SWING;
   private ArrayList<Effect> effects = new ArrayList<Effect>();
   private Function[] funcs;
+
   private Effects g;
 
   private Properties prps;
@@ -105,47 +153,25 @@ public class PropertiesAnimation extends Animation {
 
   @Override
   public void onStart() {
-    boolean hidden = !g.visible();
     boolean resize = false;
+    boolean move = false;
+    boolean hidden = !g.visible();
+    Effect fx;
     g.show();
     for (String key : prps.keys()) {
       String val = prps.get(key);
-      if ("toggle".equals(val)) {
-        val = hidden ? "show" : "hide";
+      if ((fx = computeFxProp(e, key, val, hidden)) != null) {
+        effects.add(fx);
+        resize = resize || "height".equals(key) || "width".equals(key);
+        move = move || "top".equals(key) || "left".equals(key);
       }
-      if (("top".equals(key) || "left".equals(key))
-          && !"absolute".equalsIgnoreCase(g.css("position", true))) {
-        g.css("position", "relative");
-      }
-
-      JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
-      String unit = parts != null ? parts.getStr(3) : "";
-      double start = GQuery.cur(e, key);
-      double end = start;
-      if (parts != null) {
-        end = Double.parseDouble(parts.getStr(2));
-        if (parts.getStr(1) != null) {
-          end = (("-=".equals(parts.getStr(1)) ? -1 : 1) * end) + start;
-        }
-      } else if ("show".equals(val)) {
-        if (!hidden) {
-          return;
-        }
-        g.saveCssAttrs(key);
-        start = 0;
-      } else if ("hide".equals(val)) {
-        if (hidden) {
-          return;
-        }
-        g.saveCssAttrs(key);
-        end = 0;
-      }
-      resize = resize || "height".equals(key) || "width".equals(key);
-      effects.add(new Effect(key, val, start, end, unit));
     }
     g.saveCssAttrs(attrsToSave);
     if (resize) {
       g.css("overflow", "hidden");
+    }
+    if (move && !g.css("position", true).matches("absolute|relative")) {
+      g.css("position", "relative");    
     }
     g.css("visibility", "visible");
     g.css("white-space", "nowrap");

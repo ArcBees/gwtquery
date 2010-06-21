@@ -29,6 +29,8 @@ import com.google.gwt.query.client.JSArray;
  */
 public abstract class GQueryQueue extends GQuery {
   
+  private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
+
   public GQueryQueue(Element element) {
     super(element);
   }
@@ -55,7 +57,6 @@ public abstract class GQueryQueue extends GQuery {
     return this;
   }
 
-
   /**
    * Adds a new function, to be executed, onto the end of the queue of all
    * matched elements.
@@ -76,9 +77,20 @@ public abstract class GQueryQueue extends GQuery {
     }
     return this;
   }
+  
+  /**
+   * Stop the function which is currently in execution, remove it
+   * from the queue an start the next one.  
+   */
+  public GQueryQueue stop() {
+    for (Element e : elements()) {
+      stop(e);
+    }
+    return this;
+  }
 
   protected String getQueueType() {
-    return "GQueryQueue_" + this.getClass().getName(); 
+    return QUEUE_DATA_PREFIX + this.getClass().getName(); 
   }
 
   private void dequeue(Element elem) {
@@ -88,12 +100,12 @@ public abstract class GQueryQueue extends GQuery {
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
-          ((Function)f).f(elem);
+          ((Function) f).f(elem);
         }
       }
     }
   }
-
+  
   @SuppressWarnings("unchecked")
   private <S> Queue<S> queue(Element elem, S func) {
     if (elem != null) {
@@ -106,17 +118,30 @@ public abstract class GQueryQueue extends GQuery {
       }
       if (q.size() == 1 && func != null) {
         if (func instanceof Function) {
-          ((Function)func).f(elem);
+          ((Function) func).f(elem);
         }
       }
       return q;
     }
     return null;
   }
-  
+
   private void replacequeue(Element elem, Queue<?> queue) {
     if (elem != null) {
       data(elem, getQueueType(), queue);
+    }
+  }
+  
+  private void stop(Element elem) {
+    Queue<?> q = queue(elem, null);
+    if (q != null) {
+      Object f = q.peek();
+      if (f != null) {
+        if (f instanceof Function) {
+          ((Function) f).cancel(elem);
+        }
+      }
+      dequeue();
     }
   }
 }

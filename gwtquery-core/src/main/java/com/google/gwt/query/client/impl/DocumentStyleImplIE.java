@@ -22,35 +22,7 @@ import com.google.gwt.dom.client.Style;
  * A helper class to get computed CSS styles for elements on IE6.
  */
 public class DocumentStyleImplIE extends DocumentStyleImpl {
-
-  /**
-   * Return the string value of a css property of an element. 
-   * IE needs a special workaround to handle opacity.
-   * 
-   * The parameter force has a special meaning here:
-   * - When force is false, returns the value of the css property defined
-   *   in the style attribute of the element. 
-   * - Otherwise it returns the real computed value.
-   * 
-   * For instance if you define 'display=none' not in the element style
-   * but in the css stylesheet, it returns an empty string unless you
-   * pass the parameter force=true.   
-   */
-  @Override
-  public String curCSS(Element elem, String name, boolean force) {
-    if ("opacity".equalsIgnoreCase(name)) {
-      Style s = elem.getStyle();
-      String o = s.getProperty("filter");
-      if (o != null) {
-        return !o.matches(".*opacity=.*") ? "1" : ("" + 
-            (Double.valueOf(o.replaceAll("[^\\d]", "")) / 100));
-      }
-      o = s.getProperty("opacity");
-      return o == null || o.length() == 0 ? "1" : o;
-    }
-    return super.curCSS(elem, name, force);
-  }
-
+  
   /**
    * Fix style property names.
    */
@@ -65,12 +37,35 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
     return name;
   }
 
+  @Override
+  public int getHeight(Element e) {
+    return (int) (e.getOffsetHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true))
+        - num(curCSS(e, "borderTopWidth", true)) - num(curCSS(e, "borderBottomWidth", true)));
+  }
+
+  @Override
+  public double getOpacity(Element e) {
+    Style s = e.getStyle();
+    String o = s.getProperty("filter");
+    if (o != null) {
+      return !o.matches(".*opacity=.*") ? 1 : Double.valueOf(o.replaceAll("[^\\d]", "")) / 100;
+    }
+    return super.getOpacity(e);
+  }
+
+  @Override
+  public int getWidth(Element e) {
+    return (int) (e.getOffsetWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true))
+        - num(curCSS(e, "borderRightWidth", true)) - num(curCSS(e, "borderRightWidth", true)));
+  }
+  
   /**
    * Remove a style property from an element.
    */
   public native void removeStyleProperty(Element elem, String prop) /*-{
     elem.style.removeAttribute(prop);
   }-*/;
+  
 
   /**
    * Set the value of a style property of an element. 
@@ -79,35 +74,38 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   @Override
   public void setStyleProperty(Element e, String prop, String val) {
     if ("opacity".equals(prop)) {
-      e.getStyle().setProperty("zoom", "1");
-      e.getStyle().setProperty("filter",
-          "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
+      setOpacity(e, val);
     } else {
       super.setStyleProperty(e, prop, val);
     }
   }
-
+  
   @Override
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
     // code lifted from jQuery
     var style = elem.style;
     var ret = elem.currentStyle[hyphenName] || elem.currentStyle[camelName];
-    // From the awesome hack by Dean Edwards
-    // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
-    // If we're not dealing with a regular pixel number
-    // but a number that has a weird ending, we need to convert it to pixels
     if ( !/^\d+(px)?$/i.test( ret ) && /^\d/.test( ret ) ) {
-    // Remember the original values
-    var left = style.left, rsLeft = elem.runtimeStyle.left;
-    // Put in the new values to get a computed value out
-    elem.runtimeStyle.left = elem.currentStyle.left;
-    style.left = ret || 0;
-    ret = style.pixelLeft + "px";
-    // Revert the changed values
-    style.left = left;
-    elem.runtimeStyle.left = rsLeft;
+      // Remember the original values
+      var left = style.left, rsLeft = elem.runtimeStyle.left;
+      // Put in the new values to get a computed value out
+      elem.runtimeStyle.left = elem.currentStyle.left;
+      style.left = ret || 0;
+      ret = style.pixelLeft + "px";
+      // Revert the changed values
+      style.left = left;
+      elem.runtimeStyle.left = rsLeft;
     }
     return ret;
   }-*/;
+
+  private void setOpacity(Element e, String val) {
+    if (val == null || val.trim().length() == 0) {
+      val = "1";
+    }
+    e.getStyle().setProperty("zoom", "1");
+    e.getStyle().setProperty("filter",
+        "alpha(opacity=" + (int) (Double.valueOf(val) * 100) + ")");
+  }
 }

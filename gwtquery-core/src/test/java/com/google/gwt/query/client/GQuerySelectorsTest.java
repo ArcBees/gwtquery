@@ -305,10 +305,9 @@ public class GQuerySelectorsTest extends GWTTestCase {
       a.push(a.get(i));
     }
     assertEquals(n * 2 , a.length());
-    a = SelectorEngineImpl.unique(a);
+    a = GQUtils.unique(a);
     assertEquals(n, a.length());
   }
-  
   
   private void assertArrayContains(Object result, Object... array) {
     assertArrayContains("", result, array);

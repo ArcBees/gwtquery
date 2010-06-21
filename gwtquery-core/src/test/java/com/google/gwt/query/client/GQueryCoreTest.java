@@ -380,6 +380,21 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $(e).html());
   }
 
+  public void testOpacity() {
+    $(e)
+    .html(
+        "<p id='id1' style='opacity: 0.6; filter: alpha(opacity=60)'>Content 1</p>");
+    GQuery g = $("#id1");
+    assertEquals("0.6", g.css("opacity", false));
+    assertEquals("0.6", g.css("opacity", true));
+    g.css("opacity", "");
+    assertEquals("1.0", g.css("opacity", false));
+    assertEquals("1.0", g.css("opacity", true));
+    g.css("opacity", "0.4");
+    assertEquals("0.4", g.css("opacity", false));
+    assertEquals("0.4", g.css("opacity", true));
+  }
+  
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
@@ -537,57 +552,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     assertHtmlEquals(expected, $("p", e).contains("test"));
   }
-  
-  public void testSliceMethods() {
-    String content = "<p>This is just a test.</p><p>So is this</p>";
-    $(e).html(content);
 
-    String expected = "<p>So is this</p>";
-    assertEquals(1, $("p", e).eq(1).size());
-    assertHtmlEquals(expected, $("p", e).eq(1));
-
-    expected = "<p>This is just a test.</p>";
-    assertEquals(1, $("p", e).lt(1).size());
-    assertHtmlEquals(expected, $("p", e).lt(1));
-
-    expected = "<p>So is this</p>";
-    assertEquals(1, $("p", e).gt(0).size());
-    assertHtmlEquals(expected, $("p", e).gt(0));
-
-    assertEquals(2, $("p", e).slice(0, 2).size());
-    assertEquals(2, $("p", e).slice(0, -1).size());
-    assertEquals(0, $("p", e).slice(3, 2).size());
-  }
-
-  public void testUnique() {
-    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
-    GQuery g = $(e).html("<div><p></p><p></p><span></span><p></p>");
-    JSArray a;
-    a = selSizz.select("p", e).cast();
-    assertEquals(3, a.getLength());
-    a.addNode(a.getNode(0));
-    a.addNode(a.getNode(3));
-    assertEquals(5 , a.getLength());
-    a = g.unique(a);
-    assertEquals(3, a.getLength());
-  }
-  
-  public void testWrapMethod() {
-    String content = "<p>Test Paragraph.</p>";
-    String wrapper = "<div id=\"content\">Content</div>";
-
-    String expected = "<div id=\"content\">Content<p>Test Paragraph.</p></div>";
-    $(e).html(content);
-
-    $("p", e).wrap(wrapper);
-    assertHtmlEquals(expected, $(e).html());
-
-    $(e).html(content + wrapper);
-    expected = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
-    $("*", e).wrap("<b></b>");
-    assertHtmlEquals(expected, $(e).html());
-  }
-  
   public void testShowHide() {
     $(e)
     .html(
@@ -617,6 +582,76 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("block", sectC.css("display"));
   }
   
+  public void testSliceMethods() {
+    String content = "<p>This is just a test.</p><p>So is this</p>";
+    $(e).html(content);
+
+    String expected = "<p>So is this</p>";
+    assertEquals(1, $("p", e).eq(1).size());
+    assertHtmlEquals(expected, $("p", e).eq(1));
+
+    expected = "<p>This is just a test.</p>";
+    assertEquals(1, $("p", e).lt(1).size());
+    assertHtmlEquals(expected, $("p", e).lt(1));
+
+    expected = "<p>So is this</p>";
+    assertEquals(1, $("p", e).gt(0).size());
+    assertHtmlEquals(expected, $("p", e).gt(0));
+
+    assertEquals(2, $("p", e).slice(0, 2).size());
+    assertEquals(2, $("p", e).slice(0, -1).size());
+    assertEquals(0, $("p", e).slice(3, 2).size());
+  }
+  
+  public void testUnique() {
+    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
+    GQuery g = $(e).html("<div><p></p><p></p><span></span><p></p>");
+    JSArray a;
+    a = selSizz.select("p", e).cast();
+    assertEquals(3, a.getLength());
+    a.addNode(a.getNode(0));
+    a.addNode(a.getNode(3));
+    assertEquals(5 , a.getLength());
+    a = g.unique(a);
+    assertEquals(3, a.getLength());
+  }
+  
+  public void testUtilsEq() {
+    assertTrue(GQUtils.eq("a", "a"));
+    assertTrue(GQUtils.eq(true, true));
+    assertTrue(GQUtils.eq(45, 45));
+    assertTrue(GQUtils.eq(45d, 45f));
+    assertTrue(GQUtils.eq("", ""));
+    assertTrue(GQUtils.eq(0.45, 0.45));
+    assertTrue(GQUtils.eq(0.45d, 0.45d));
+    assertTrue(GQUtils.eq(0.45f, 0.45f));
+    
+    assertFalse(GQUtils.eq("a", ""));
+    assertFalse(GQUtils.eq(true, false));
+    assertFalse(GQUtils.eq(45, 42));
+    assertFalse(GQUtils.eq("", null));
+    assertFalse(GQUtils.eq(0.45, 0.451));
+  }
+  
+  public void testUtilsTruth() {
+    assertTrue(GQUtils.truth("a"));
+    assertTrue(GQUtils.truth(this));
+    assertTrue(GQUtils.truth(45));
+    assertTrue(GQUtils.truth(0.33));
+    assertTrue(GQUtils.truth(45l));
+    assertTrue(GQUtils.truth(45d));
+    assertTrue(GQUtils.truth(45f));
+    assertTrue(GQUtils.truth(0.33f));
+
+    assertFalse(GQUtils.truth(0));
+    assertFalse(GQUtils.truth(0l));
+    assertFalse(GQUtils.truth(0d));
+    assertFalse(GQUtils.truth(00.00d));
+    assertFalse(GQUtils.truth(00.00f));
+    assertFalse(GQUtils.truth(null));
+    assertFalse(GQUtils.truth(""));
+  }
+  
   public void testWidthHeight() {
     $(e)
     .html(
@@ -626,9 +661,30 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(122, g.height());
     assertEquals(120, g.clientWidth());
     assertEquals(120, g.clientHeight());
-    assertEquals(100, (int)GQuery.cur(g.get(0), "width"));
-    assertEquals(100, (int)GQuery.cur(g.get(0), "height"));
-    assertEquals("100px", g.css("width"));
-    assertEquals("100px", g.css("height"));
+    assertEquals(100, (int)GQUtils.cur(g.get(0), "width", false));
+    assertEquals(100, (int)GQUtils.cur(g.get(0), "height", false));
+    assertEquals(100, (int)GQUtils.cur(g.get(0), "width", true));
+    assertEquals(100, (int)GQUtils.cur(g.get(0), "height", true));
+    assertEquals("100", g.css("width"));
+    assertEquals("100", g.css("height"));
+    assertEquals("100px", g.get(0).getStyle().getProperty("width"));
+    assertEquals("100px", g.get(0).getStyle().getProperty("height"));
   }
+  
+  public void testWrapMethod() {
+    String content = "<p>Test Paragraph.</p>";
+    String wrapper = "<div id=\"content\">Content</div>";
+
+    String expected = "<div id=\"content\">Content<p>Test Paragraph.</p></div>";
+    $(e).html(content);
+
+    $("p", e).wrap(wrapper);
+    assertHtmlEquals(expected, $(e).html());
+
+    $(e).html(content + wrapper);
+    expected = "<b><p>Test Paragraph.</p></b><b><div id=\"content\">Content</div></b>";
+    $("*", e).wrap("<b></b>");
+    assertHtmlEquals(expected, $(e).html());
+  }
+  
 }

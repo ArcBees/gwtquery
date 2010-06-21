@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQUtils;
 
 /**
  * A helper class to get computed CSS styles for elements.
@@ -51,14 +52,23 @@ public class DocumentStyleImpl {
    */
   public String curCSS(Element elem, String name, boolean force) {
     name = fixPropertyName(name);
-    if (force) {
-      return getComputedStyle(elem, hyphenize(name), name, null);
-    } else {
+    if ("height".equalsIgnoreCase(name)) {
+      return String.valueOf(getHeight(elem));
+    }
+    if ("width".equalsIgnoreCase(name)) {
+      return String.valueOf(getWidth(elem));
+    }    
+    if ("opacity".equalsIgnoreCase(name)) {
+      return String.valueOf(getOpacity(elem));
+    }
+    if (!force && elem.getStyle().getProperty(name) != null) {
       String ret = elem.getStyle().getProperty(name);
       return ret == null ? "" : ret;
+    } else {
+      return getComputedStyle(elem, hyphenize(name), name, null);
     }
   }
-
+  
   /**
    * Fix style property names.
    */
@@ -71,13 +81,38 @@ public class DocumentStyleImpl {
     return camelize(name);
   }
 
+  public int getHeight(Element e) {
+    return (int) (e.getClientHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true)));
+  }
+  
+  public double getOpacity(Element e) {
+    String o = e.getStyle().getOpacity();
+    return GQUtils.truth(o) ? num(o) : 1;
+  }
+  
+  public int getWidth(Element e) {
+    return (int) (e.getClientWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true)));
+  }
+
+  /**
+   * Return whether the element is visible
+   */
+  public boolean isVisible(Element e) {
+    return !"none".equalsIgnoreCase(curCSS(e, "display", true));
+  }
+
+  public double num(String val) {
+    val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
+    return GQUtils.truth(val) ? Double.parseDouble(val) : 0;
+  }
+
   /**
    * Remove a style property from an element.
    */
   public void removeStyleProperty(Element elem, String prop) {
     elem.getStyle().setProperty(prop, "");
   }
-
+  
   /**
    * Set the value of a style property of an element.
    */
@@ -95,18 +130,11 @@ public class DocumentStyleImpl {
       e.getStyle().setProperty(prop, val);
     }
   }
-  
-  /**
-   * Return whether the element is visible
-   */
-  public boolean isVisible(Element e) {
-    return !"none".equalsIgnoreCase(curCSS(e, "display", true));
-  }
 
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
     var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
     return cStyle ? cStyle.getPropertyValue(hyphenName) : null;
   }-*/;
-
+  
 }
