@@ -32,6 +32,7 @@ public class GwtQueryEffectsModule implements EntryPoint {
     $(".note").append(" Hello");
     
     final Effects a = $(".a, .b > div:nth-child(2)").as(Effects.Effects);
+    final Effects b = $(".b > div:nth-child(odd)").as(Effects.Effects);
     
     $("#b0").width(150).css("font-size", "10px").toggle(new Function() {
       public void f(Element e) {
@@ -83,23 +84,19 @@ public class GwtQueryEffectsModule implements EntryPoint {
     
     $("#b2").toggle(new Function() {
       public void f(Element e) {
-        $(".a").toggle();
+        b.as(Effects.Effects).clipUp();
       }
     }, new Function() {
       public void f(Element e) {
-        a.as(Effects.Effects).clipUp();
+        b.as(Effects.Effects).clipDown();
       }
     }, new Function() {
       public void f(Element e) {
-        a.as(Effects.Effects).clipDown();
+        b.as(Effects.Effects).clipDisappear();
       }
     }, new Function() {
       public void f(Element e) {
-        a.as(Effects.Effects).clipDisappear();
-      }
-    }, new Function() {
-      public void f(Element e) {
-        a.as(Effects.Effects).clipAppear();
+        b.as(Effects.Effects).clipAppear();
       }
     });
     

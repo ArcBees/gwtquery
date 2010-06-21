@@ -45,6 +45,7 @@
                         <module>gwtquery.samples.GwtQueryDemo</module>
                         <module>gwtquery.samples.GwtQueryPlugin</module>
                         <module>gwtquery.samples.GwtQueryWidgets</module>
+			<module>gwtquery.samples.GwtQueryImageZoom</module>
                     </modules>
                 </configuration>
                 <executions>
@@ -66,6 +67,7 @@
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryPlugin</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQuerySample</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryWidgets</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryImageZoom</directory></fileset>
                   <fileset><directory>src/main/webapp/test</directory></fileset>
                   <fileset><directory>src/main/webapp/WEB-INF/classes</directory></fileset>
                   <fileset><directory>tomcat</directory></fileset>

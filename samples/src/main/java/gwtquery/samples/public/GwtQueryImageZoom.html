@@ -1,0 +1,108 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>GwtQuery: Fancy Thumbnail Hover Effect</title>
+<style type="text/css">
+	body {
+		font-family: verdana;
+		margin: 0; 
+		padding: 0;
+	}
+	* {
+	    margin: 0; 
+	    padding: 0;
+	}
+	img {
+	    border: none;
+	}
+	.container {
+		height: 360px;
+		width: 360px;
+		margin: -180px 0 0 -180px;
+		top: 40%; left: 50%;
+		position: absolute;
+	}
+	ul.thumb {
+		float: left;
+		list-style: none;
+		margin: 0; padding: 10px;
+		width: 360px;
+	}
+	ul.thumb li {
+		margin: 0; padding: 5px;
+		float: left;
+		position: relative;
+		width: 110px;
+		height: 110px;
+	}
+	ul.thumb li img {
+		width: 100px; height: 100px;
+		border: 1px solid #ddd;
+		padding: 5px;
+		background: #f0f0f0;
+		position: absolute;
+		left: 0; top: 0;
+		-ms-interpolation-mode: bicubic; 
+	}
+	ul.thumb li img.hover {
+		background:url(images/zoom/thumb_bg.png) no-repeat center center;
+		border: none;
+	}
+</style>
+    <script language="javascript" src="gwtquery.samples.GwtQueryImageZoom.nocache.js"></script>
+</head>
+
+<body>
+<div class="container">
+<br/>
+ Soh Tanaka's Fancy Thumbnail Hover Effect ported to GwtQuery
+<br/>
+<br/>
+<ul class="thumb">
+	<li><a href="#"><img src="images/zoom/thumb1.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb2.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb3.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb4.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb5.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb6.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb7.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb8.jpg" alt="" /></a></li>
+	<li><a href="#"><img src="images/zoom/thumb9.jpg" alt="" /></a></li>
+</ul>
+</div>
+<!-- Original jQuery code 
+<script language="javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript"> 
+	$(document).ready(function(){
+		$("ul.thumb li").hover(function() {
+			$(this).css({'z-index' : '10'});
+			$(this).find('img').addClass("hover").stop()
+				.animate({
+					marginTop: '-110px', 
+					marginLeft: '-110px', 
+					top: '50%', 
+					left: '50%', 
+					width: '174px', 
+					height: '174px',
+					padding: '20px' 
+				}, 200);
+			
+			} , function() {
+			$(this).css({'z-index' : '0'});
+			$(this).find('img').removeClass("hover").stop()
+				.animate({
+					marginTop: '0', 
+					marginLeft: '0',
+					top: '0', 
+					left: '0', 
+					width: '100px', 
+					height: '100px', 
+					padding: '5px'
+				}, 400);
+		});
+	});
+</script> 
+ -->
+</body>
+</html>
