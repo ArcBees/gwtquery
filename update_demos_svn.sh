@@ -17,6 +17,6 @@ do
    [ ! -f samples/target/gwtquery-samples-$V/$i ] && svn delete demos/$i 
 done
 
-find demos -type f | grep -v .svn | xargs svn add
+find demos  | grep -v .svn | xargs svn add
 
 find demos -type f -name "*html" -exec svn propset svn:mime-type text/html '{}' ';'
