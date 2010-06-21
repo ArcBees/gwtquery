@@ -62,7 +62,6 @@
                 <hostedWebapp>target/www</hostedWebapp>
                 <soyc>true</soyc>
             </configuration>
-<!--
         <executions>
           <execution>
             <phase>prepare-package</phase>
@@ -71,7 +70,6 @@
             </goals>
           </execution>
         </executions>
--->
       </plugin>
 
         </plugins>

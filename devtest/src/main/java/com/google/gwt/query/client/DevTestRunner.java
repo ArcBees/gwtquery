@@ -19,21 +19,11 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
-import com.google.gwt.query.client.impl.SelectorEngineJS;
-import com.google.gwt.query.client.impl.SelectorEngineNative;
-import com.google.gwt.query.client.impl.SelectorEngineSizzle;
-import com.google.gwt.query.client.impl.SelectorEngineXPath;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -47,90 +37,83 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class DevTestRunner extends MyTestCase implements EntryPoint {
 
+  static native String $j (String s) /*-{
+    return "" + eval(s);
+  }-*/;
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      
-      testCompiledSelectors();
-      testIssue12();
-      testSelectElementsInsideContext();
-      testSelectorEngineDomAssistant();
-      testSelectorEngineSizzle();
-      testSelectorEngineXpath();
-      testSelectorEngineCssToXpath();
       testSelectorEngineNative();
-      testSelectorsGeneratorNative();
-      testSelectorsWithContext();
-      testUnique();
+      testCompiledSelectors();
+      testPropertiesAnimationComputeEffects();
       
-      testFade();
-      
-//      $(e).html("").after("<div>OK</div>");
+      $(e).html("").after("<div>OK</div>");
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
-
-  public void testFade() {
-    $(e)
-    .html(
-        "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
-
-    final GQuery sectA = $("#id1");
-    final GQuery sectB = $("#id2");
+  public void testSelectorEngineNative() {
+    SelectorEngineImpl selEng = GWT.create(SelectorEngineImpl.class);
+    executeSelectorEngineTests(selEng);
+  }
+  
+  public void runTestJQuery() {
+    GQUtils.loadScript("jquery-1.3.1.js", "jq");
+    new Timer(){
+      private int cont = 0;
+      private native boolean loaded(String func) /*-{
+        return eval("$wnd." + func) ? true : false; 
+      }-*/;
+      public void run() {
+        if (cont++ > 10 || loaded("$")) {
+          testPropertiesAnimationComputeEffects();
+        } else {
+          schedule(100);
+        }
+      }
+    }.run();
+  }
+  
+  private native String evalJQurey(String command) /*-{
+    command = command.replace(/\$/g, "$wnd.$");
+    try {
+      return "" + eval(command);
+    } catch(e) {
+      $wnd.alert(command + " " + e);
+      return "";
+    }
+  }-*/;
+  
+  public void validateCssBoth(String selector, boolean force, String... attrs) {
+    for (String attr: attrs) {
+      String gs = $(selector).css(attr, force);
+      String js = evalJQurey("$.css($('" + selector + "').get(0), '" + attr + "', " + force + ")");
+      System.out.println(selector + " " + attr + " " + force + " g:" + gs + " j:" + js + " " + (gs.replaceAll("px", "").equals(js.replaceAll("px", ""))));
+      assertEquals(gs.replaceAll("px", ""), js.replaceAll("px", ""));
+    }
+  }
+  public void validateCurBoth(String selector, String... attrs) {
+    for (String attr: attrs) {
+      String gs = Double.toString(GQUtils.cur($(selector).get(0), attr, true)).replaceFirst("\\.\\d+$", "");
+      String js = evalJQurey("$.cur($('" + selector + "').get(0), '" + attr + "', true)");
+      System.out.println(selector + " " + attr + " " + gs + " " + js + " " + (gs.equals(js)));
+      assertEquals(gs, js);
+    }
+  }
+  
+  public void testPropertiesAnimationComputeEffects() {
+    $(e).html("<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px'>Content 1</p></div>");
     
-    // fadeIn() & fadeOut() are tested with delayed assertions
-    sectA.hide();
-    sectA.fadeIn(2000);
-    sectB.fadeOut(2000);
+    GQuery g = $("#child");
+    Properties prop1;
 
-    // Configure the max duration for this test
-    // If the test exceeds the timeout without calling finishTest() it will fail
-    delayTestFinish(2500);
-
-    // Delayed assertions at different intervals
-    Timer timerShortTime = new Timer() {
-      public void run() {
-        double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue(
-            "'sectA' opacity must be in the interval 0-0.5 but is: " + o, o > 0
-                && o < 0.5);
-        o = Double.valueOf(sectB.css("opacity"));
-        assertTrue(
-            "'sectB' opacity must be in the interval 0.5-1 but is: " + o,
-            o > 0.5 && o < 1);
-      }
-    };
-    Timer timerMidTime = new Timer() {
-      public void run() {
-        assertEquals("inline", sectA.css("display"));
-        assertEquals("", sectB.css("display"));
-        double o = Double.valueOf(sectA.css("opacity"));
-        assertTrue(
-            "'sectA' opacity must be in the interval 0.5-1 but is: " + o,
-            o > 0.5 && o < 1);
-        o = Double.valueOf(sectB.css("opacity"));
-        assertTrue(
-            "'sectB' opacity must be in the interval 0-0.5 but is: " + o, o > 0
-                && o < 0.5);
-      }
-    };
-    Timer timerLongTime = new Timer() {
-      public void run() {
-        assertEquals("inline", sectA.css("display"));
-        assertEquals("none", sectB.css("display"));
-        // Last delayed assertion has to stop the test to avoid a timeout
-        // failure
-        finishTest();
-      }
-    };
-
-    // schedule the delayed assertions
-    timerShortTime.schedule(200);
-    timerMidTime.schedule(1200);
-    timerLongTime.schedule(2200);    
-  }  
+    prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
+    g.css(prop1);
+    validateCurBoth("#child", prop1.keys());
+    
+  }
+  
   
   protected interface AllSelectors extends Selectors {
     // @Selector("h1[id]:contains(Selectors)")
@@ -214,44 +197,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     @Selector("ul.toc li.tocline2")
     NodeList<Element> ulTocLiTocLine2();
   }
-
-  protected interface TestSelectors extends Selectors {
-    @Selector("*:checked")
-    GQuery allChecked();
-    @Selector("*:checked")
-    GQuery allChecked(Node n);
-    @Selector(".branchA")
-    GQuery branchA();
-    @Selector(".branchA")
-    GQuery branchA(Node n);
-    @Selector(".branchB")
-    GQuery branchB();
-    @Selector(".branchB")
-    GQuery branchB(Node n);
-    @Selector(".target")
-    GQuery target();
-    @Selector(".target")
-    GQuery target(Node n);
-  }
-
-  static Element e = null;
-  static HTML testPanel = null;
-
-  public String getModuleName() {
-    return "com.google.gwt.query.Query";
-  }
-
-  public void gwtSetUp() {
-    if (e == null) {
-      testPanel = new HTML();
-      RootPanel.get().add(testPanel);
-      e = testPanel.getElement();
-      e.setId("select-tst");
-    } else {
-      e.setInnerHTML("");
-    }
-  }
-
+  
   public void testCompiledSelectors() {
     final AllSelectors sel = GWT.create(AllSelectors.class);
     $(e).html(getTestContent());
@@ -265,7 +211,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     // assertArrayContains(sel.title().getLength(), 1);
 
     assertEquals(1, sel.body().getLength());
-    assertArrayContains(sel.bodyDiv().getLength(), 53, 55);
+    assertArrayContains(sel.bodyDiv().getLength(), 53, 54, 55);
     sel.setRoot(e);
     assertArrayContains(sel.aHrefLangClass().getLength(), 0, 1);
     assertArrayContains(sel.allChecked().getLength(), 1);
@@ -299,137 +245,12 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     assertArrayContains(sel.titleAndh1Title().getLength(), 0, 1);
     assertArrayContains(sel.ulTocline2().getLength(), 12);
     assertArrayContains(sel.ulTocLiTocLine2().getLength(), 12);
-  }
-
-  public void testIssue12() {
-    $(e).html("<table><tr><td><p myCustomAttr='whatever'><input disabled='disabled' type='radio' name='wantedName' value='v1'>1</input></p><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button myCustomAttr='val'>Click</button></tr><td></table>");
-    executeSelectInAllImplementations(":checked", e, 1);
-    executeSelectInAllImplementations(":disabled", e, 1);
-    executeSelectInAllImplementations("input:enabled", e, 1);
-    executeSelectInAllImplementations("[myCustomAttr]", e, 2);
-    executeSelectInAllImplementations("*[myCustomAttr]", e, 2);
-    executeSelectInAllImplementations("input[name=wantedName]", e, 1);
-    executeSelectInAllImplementations("input[name='wantedName']", e, 1);
-    executeSelectInAllImplementations("input[name=\"wantedName\"]", e, 1);
-  }
-  
-  public void testSelectElementsInsideContext() {
-    $(e).html("<spam><p>s</p></spam>");
-    GQuery q = $("spam", e);
-    // TODO: in XPath engine it returns 2 when it should return 1
-    executeSelectInAllImplementations("*", q.get(0), 1, 2);
-  }
-
-  public void testSelectorEngineDomAssistant() {
-    // This test runs very slow in chrome
-    SelectorEngineImpl selEng = new SelectorEngineJS();
-    executeSelectorEngineTests(selEng);
-  }
-
-  public void testSelectorEngineSizzle() {
-    SelectorEngineImpl selEng = new SelectorEngineSizzle();
-    executeSelectorEngineTests(selEng);
-  }
-
-  public void testSelectorEngineNative() {
-    SelectorEngineImpl selEng = new SelectorEngineNative();
-    if (hasNativeSelector()) {
-      Window.alert("Testing native selector");
-      executeSelectorEngineTests(selEng);
-    }
-  }
-
-  public void testSelectorEngineXpath() {
-    SelectorEngineImpl selEng = new SelectorEngineXPath();
-    executeSelectorEngineTests(selEng);
-  }
-
-  public void testSelectorEngineCssToXpath() {
-    SelectorEngineImpl selEng = new SelectorEngineCssToXPath();
-    executeSelectorEngineTests(selEng);
-  }
-
-  public void testSelectorsGeneratorNative() {
-    $(e).html(
-            "<input type='radio' name='n' value='v1'>1</input>"
-                + "<input type='radio' name='n' value='v2' checked='checked'>2</input>");
-
-    TestSelectors selectors = GWT.create(TestSelectors.class);
-    assertEquals(1, selectors.allChecked().size());
-  }
-  
-  public void testSelectorsWithContext() {
-    $(e).append(
-            "<div class='branchA'><div class='target'>branchA target</div></div>"
-                + "<div class='branchB'><div class='target'>branchB target</div></div>");
-
-    TestSelectors selectors = GWT.create(TestSelectors.class);
-
-    assertEquals(2, selectors.target().length());
-    Element branchA = selectors.branchA().get(0);
-    Element branchB = selectors.branchB().get(0);
-    assertNotNull(selectors.branchA().get(0));
-    assertNotNull(selectors.branchB().get(0));
-
-    assertEquals(2, selectors.target(RootPanel.getBodyElement()).length());
-    branchA = selectors.branchA(RootPanel.getBodyElement()).get(0);
-    branchB = selectors.branchB(RootPanel.getBodyElement()).get(0);
-    assertNotNull(branchA);
-    assertNotNull(branchB);
-    assertEquals("branchA target", selectors.target(branchA).text());
-    assertEquals("branchB target", selectors.target(branchB).text());
-
-    selectors.setRoot(branchA);
-    assertEquals(1, selectors.target().length());
-    assertEquals("branchA target", selectors.target().text());
-
-    selectors.setRoot(branchB);
-    assertEquals(1, selectors.target().length());
-    assertEquals("branchB target", selectors.target().text());
-  }
-  
-  public void testUnique() {
-    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
-    $(e).html(getTestContent());
-    
-    JsArray<Element> a;
-    a = selSizz.select("p", e).cast();
-    int n = a.length();
-    assertTrue(n > 300);
-    for (int i=0; i<n; i++) {
-      a.push(a.get(i));
-    }
-    assertEquals(n * 2 , a.length());
-    a = SelectorEngineImpl.unique(a);
-    assertEquals(n, a.length());
-  }
-  
-  private void executeSelectInAllImplementations(String selector, Element elem, Object... array) {
-    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
-    SelectorEngineImpl selJS = new SelectorEngineJS();
-    SelectorEngineImpl selXpath = new SelectorEngineXPath();
-    SelectorEngineImpl selC2X = new SelectorEngineCssToXPath();
-    SelectorEngineImpl selNative = new SelectorEngineNative();
-    assertArrayContains(selector, selSizz.select(selector, elem).getLength(), array);
-    assertArrayContains(selector, selJS.select(selector, elem).getLength(), array);
-    if (hasNativeSelector()) {
-      assertArrayContains(selector, selNative.select(selector, elem).getLength(), array);
-    }   
-//    assertArrayContains(selector, selXpath.select(selector, elem).getLength(), array);
-//    assertArrayContains(selector, selC2X.select(selector, elem).getLength(), array);
- 
-  }
-  
-  private static native boolean hasNativeSelector() /*-{
-//    alert(document.querySelectorAll + " " + document.querySelector);
-    return !!(document.querySelectorAll && /native/.test(String(document.querySelectorAll)));
-  }-*/;
-
+  }  
   private void executeSelectorEngineTests(SelectorEngineImpl selEng) {
     $(e).html(getTestContent());
 
     assertArrayContains(selEng.select("body", Document.get()).getLength(), 1);
-    assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53, 55);
+    assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53, 54, 55);
 
     assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(), 1);
     assertArrayContains(selEng.select("div[class!=madeup]", e).getLength(), 52, 53);
@@ -467,7 +288,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     assertArrayContains(selEng.select("#title", e).getLength(), 1);
     assertArrayContains(selEng.select("#title, h1#title", e).getLength(), 1);
     assertArrayContains(selEng.select("ul.toc li.tocline2", e).getLength(), 12);    
-//    assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(),  1);
+    assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(),  1);
   }
 
   // This method is used to initialize a huge html String, because
