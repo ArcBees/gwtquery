@@ -30,7 +30,7 @@ import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
 /**
  *  Effects plugin for Gwt Query. 
  */
-public class Effects extends GQueryQueue  {
+public class Effects extends GQueryQueue<Effects>  {
   
   /**
    * Just a class to store predefined speed constant values.

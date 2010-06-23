@@ -27,7 +27,7 @@ import com.google.gwt.query.client.JSArray;
 /**
  * Class used in plugins which need a queue system.
  */
-public abstract class GQueryQueue extends GQuery {
+public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
   
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
 
@@ -50,43 +50,47 @@ public abstract class GQueryQueue extends GQuery {
   /**
    * Removes a queued function from the front of the queue and executes it.
    */
-  public GQueryQueue dequeue() {
+  @SuppressWarnings("unchecked")
+  public T dequeue() {
     for (Element e : elements()) {
       dequeue(e);
     }
-    return this;
+    return (T)this;
   }
 
   /**
    * Adds a new function, to be executed, onto the end of the queue of all
    * matched elements.
    */
-  public GQueryQueue queue(Function func) {
+  @SuppressWarnings("unchecked")
+  public T queue(Function func) {
     for (Element e : elements()) {
       queue(e, func);
     }
-    return this;
+    return (T)this;
   }
 
   /**
    * Replaces the current queue with the given queue on all matched elements.
    */
-  public GQueryQueue queue(Queue<?> queue) {
+  @SuppressWarnings("unchecked")
+  public T queue(Queue<?> queue) {
     for (Element e : elements()) {
       replacequeue(e, queue);
     }
-    return this;
+    return (T)this;
   }
   
   /**
    * Stop the function which is currently in execution, remove it
    * from the queue an start the next one.  
    */
-  public GQueryQueue stop() {
+  @SuppressWarnings("unchecked")
+  public T stop() {
     for (Element e : elements()) {
       stop(e);
     }
-    return this;
+    return (T)this;
   }
 
   protected String getQueueType() {
