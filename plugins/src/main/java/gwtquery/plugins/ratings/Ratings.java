@@ -10,7 +10,6 @@ import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Plugin;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.Regexp;
-import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -267,7 +266,7 @@ public class Ratings extends GQuery {
     Control control = null;
     for (Element e : elements()) {
       GQuery input = $(e);
-      String eid = SelectorEngine
+      String eid = GQUtils
           .or(e.getPropertyString("name"), "unnamed-rating")
           .replaceAll("\\[|\\]", "_").replaceAll("^\\_+|\\_$", "");
       GQuery context = $(getContext(e));
@@ -334,7 +333,7 @@ public class Ratings extends GQuery {
       // insert rating star
       GQuery star = $("<div class=\"star-rating rater-" + control.getSerial()
           + "\"><a title=\""
-          + (SelectorEngine.or(e.getTitle(), e.getPropertyString("value")))
+          + (GQUtils.or(e.getTitle(), e.getPropertyString("value")))
           + "\">" + e.getPropertyString("value") + "</a></div>");
       rater.append(star);
 
