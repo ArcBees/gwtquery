@@ -668,6 +668,8 @@ public class GQueryCoreTest extends GWTTestCase {
     assertFalse(GQUtils.eq(45, 42));
     assertFalse(GQUtils.eq("", null));
     assertFalse(GQUtils.eq(0.45, 0.451));
+    
+//    assertEquals("a", GQUtils.or("a", ""));
   }
   
   public void testUtilsTruth() {

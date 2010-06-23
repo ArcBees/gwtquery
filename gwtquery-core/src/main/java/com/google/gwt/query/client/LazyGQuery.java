@@ -878,12 +878,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   void saveCssAttrs(String... cssProps);
 
   /**
-   * Force the current matched set of elements to become
-   * the specified array of elements.
-   */
-  LazyGQuery<T> setArray(NodeList<Element> nodes);
-
-  /**
    * Bind a set of functions to the scroll event of each matched element.
    * Or trigger the event if no functions are provided.
    */
@@ -916,6 +910,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> scrollTop(int top);
 
   LazyGQuery<T> select();
+
+  /**
+   * Force the current matched set of elements to become
+   * the specified array of elements.
+   */
+  LazyGQuery<T> setArray(NodeList<Element> nodes);
 
   /**
    * Set CSS property on the first element.
@@ -988,7 +988,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Adds or removes the specified classes to each matched element
-   * depending on the class's presence
+   * depending on the class's presence.
    */
   LazyGQuery<T> toggleClass(String... classes);
 

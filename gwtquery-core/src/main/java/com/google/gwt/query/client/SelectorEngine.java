@@ -40,10 +40,6 @@ public class SelectorEngine {
        return n.previousSibling || null; 
     }-*/;
 
-  public static native <T> T or(T s1, T s2) /*-{
-       return s1 || s2;
-    }-*/;
-
   public static native NodeList<Element> querySelectorAll(String selector,
       Node ctx) /*-{
       return ctx.querySelectorAll(selector);

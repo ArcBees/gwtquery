@@ -87,6 +87,20 @@ public class GQUtils {
     GQuery.$("#" + id).remove();
     gp.append(gs.attr("src", url).attr("type", "text/javascript").attr("id", id));
   }
+  
+  /**
+   * Return the element which is truth in the double scope. 
+   */
+  public static native double or(double s1, double s2) /*-{
+    return s1 || s2;
+  }-*/;
+  
+  /**
+   * Return the element which is truth in the javascript scope.
+   */
+  public static native <T> T or(T s1, T s2) /*-{
+    return s1 || s2;
+  }-*/;
 
   /**
    * Check if a number is true in the javascript scope. 

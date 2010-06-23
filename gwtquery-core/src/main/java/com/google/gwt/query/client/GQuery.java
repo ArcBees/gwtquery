@@ -48,8 +48,6 @@ import com.google.gwt.user.client.Window;
  */
 public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
-  private static final String OLD_DATA_PREFIX = "old-";
-
   /**
    * A POJO used to store the top/left CSS positioning values of an element.
    */
@@ -71,6 +69,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
+  /**
+   * A class to store data in an element
+   */
   protected static final class DataCache extends JavaScriptObject {
 
     protected DataCache() {
@@ -142,25 +143,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       this[id]=obj;
     }-*/;
   }
-  
-  public static final Document document = Document.get();
+
   public static final BodyElement body = Document.get().getBody();
   
+  public static final Document document = Document.get();
   public static boolean fxOff = false;
-
+  
   public static Class<GQuery> GQUERY = GQuery.class;
 
   public static final Element window = window();
 
   private static DataCache dataCache = null;
 
+  private static SelectorEngine engine;
+
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
 
-  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
-      plugins;
+  private static final String OLD_DATA_PREFIX = "old-";
 
-  private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);;
+  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
+      plugins;;
+
+  private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
 
   private static Element windowData = null;
 
@@ -179,17 +184,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Wrap a GQuery around an event's target element.
+   */
+  public static GQuery $(Event event) {
+    return $((Element) event.getCurrentEventTarget().cast());
+  }
+
+  /**
    * Wrap a GQuery around an existing node.
    */
   public static GQuery $(Node n) {
     return new GQuery(JSArray.create(n));
-  }
-
-  /**
-   * Wrap a GQuery around an event's target element.
-   */
-  public static GQuery $(Event event) {
-    return $((Element)event.getCurrentEventTarget().cast());
   }
 
   /**
@@ -244,8 +249,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       Class<T> plugin) {
     try {
       if (plugins != null) {
-        T gquery = (T) plugins.get(plugin).
-            init(new GQuery(select(selector, context)));
+        T gquery = (T) plugins.get(plugin).init(new GQuery(select(selector, context)));
         return gquery;
       }
       throw new RuntimeException("No plugin for class " + plugin);
@@ -331,7 +335,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>)n.getChildNodes().cast());
+    return $((NodeList<Element>) n.getChildNodes().cast());
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -354,7 +358,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return name != null ? d.getObject(name) : id;
   }
-
+  
   protected static String[] jsArrayToString(JsArrayString array) {
     if (GWT.isScript()) {
       return jsArrayToString0(array);
@@ -366,7 +370,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return result;
     }
   }
-  
+
   private static JSArray copyNodeList(NodeList n) {
     JSArray res = JSArray.create();
     for (int i = 0; i < n.getLength(); i++) {
@@ -386,12 +390,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
     return array;
   }-*/;
-
+  
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
     return nl;
   }-*/;
-  
-  private static SelectorEngine engine;
 
   private static NodeList<Element> select(String selector, Node context) {
     if (engine == null) {
@@ -1150,8 +1152,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * function fires.
    */
   public GQuery hover(Function fover, Function fout) {
-    return bind(Event.ONMOUSEOVER, null, fover).
-        bind(Event.ONMOUSEOUT, null, fout);
+    return bind(Event.ONMOUSEOVER, null, fover).bind(Event.ONMOUSEOUT, null, fout);
   }
 
   /**
@@ -1461,11 +1462,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * relative or absolute). This method only works with visible elements.
    */
   public GQuery offsetParent() {
-    Element offParent = SelectorEngine.
-        or(elements.getItem(0).getOffsetParent(), body);
-    while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
-        && !"html".equalsIgnoreCase(offParent.getTagName()) && "static".
-        equals(styleImpl.curCSS(offParent, "position", true))) {
+    Element offParent = GQUtils.or(elements.getItem(0).getOffsetParent(), body);
+    while (offParent != null 
+        && !"body".equalsIgnoreCase(offParent.getTagName())
+        && !"html".equalsIgnoreCase(offParent.getTagName()) 
+        && "static".equals(styleImpl.curCSS(offParent, "position", true))) {
       offParent = offParent.getOffsetParent();
     }
     return new GQuery(offParent);
@@ -1778,15 +1779,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Force the current matched set of elements to become
-   * the specified array of elements.
-   */
-  public GQuery setArray(NodeList<Element> nodes){
-    this.elements = nodes;
-    return this;
-  }
-
-  /**
    * Bind a set of functions to the scroll event of each matched element.
    * Or trigger the event if no functions are provided.
    */
@@ -1861,6 +1853,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Force the current matched set of elements to become
+   * the specified array of elements.
+   */
+  public GQuery setArray(NodeList<Element> nodes) {
+    this.elements = nodes;
+    return this;
+  }
+
+  /**
    * Set CSS property on the first element.
    */
   public <S, T extends CssProperty<S>> GQuery setCss(T cssProperty, S value) {
@@ -1898,7 +1899,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery show() {
     for (Element e : elements()) {
-      styleImpl.setStyleProperty(e, "display", SelectorEngine.or((String)data(e, "oldDisplay", null), ""));
+      styleImpl.setStyleProperty(e, "display", 
+          GQUtils.or((String) data(e, "oldDisplay", null), ""));
       // When the display=none is in the stylesheet.
       if (!styleImpl.isVisible(e)) {
         styleImpl.setStyleProperty(e, "display", "block");
@@ -1978,7 +1980,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Toggle visibility of elements.
    */
   public GQuery toggle() {
-    for (Element e: elements()) {
+    for (Element e : elements()) {
       if ($(e).visible()) {
         $(e).hide();
       } else {
@@ -1988,7 +1990,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
 
   /**
    * Toggle among two or more function calls every other click.
@@ -2005,7 +2006,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Adds or removes the specified classes to each matched element
-   * depending on the class's presence
+   * depending on the class's presence.
    */
   public GQuery toggleClass(String... classes) {
     for (Element e : elements()) {
@@ -2124,8 +2125,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       } else if ("input".equalsIgnoreCase(name)) {
         InputElement ie = InputElement.as(e);
         String type = ie.getType();
-        if ("radio".equalsIgnoreCase((type)) || "checkbox".
-            equalsIgnoreCase(type)) {
+        if ("radio".equalsIgnoreCase((type)) 
+            || "checkbox".equalsIgnoreCase(type)) {
           if ("checkbox".equalsIgnoreCase(type)) {
             for (String val : values) {
               if (ie.getValue().equals(val)) {
@@ -2413,7 +2414,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JSArray newNodes = JSArray.create();
     for (int i = 0; i < elements().length; i++) {
       Element e = elements()[i];
-      if (document.equals(e)){
+      if (document.equals(e)) {
         e = body;
       }
       for (int j = 0; j < g.size(); j++) {
