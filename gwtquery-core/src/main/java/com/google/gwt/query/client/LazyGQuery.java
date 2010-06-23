@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -37,7 +38,6 @@ import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.query.client.LazyBase;
@@ -110,12 +110,31 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> append(String html);
 
   /**
-   * Append all of the matched elements to another, specified, set of elements.
-   * This operation is, essentially, the reverse of doing a regular
-   * $(A).append(B), in that instead of appending B to A, you're appending A to
-   * B.
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
    */
   LazyGQuery<T> appendTo(GQuery other);
+
+  /**
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
+   */
+  LazyGQuery<T> appendTo(Node n);
+
+  /**
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
+   */
+  LazyGQuery<T> appendTo(String html);
 
   /**
    * Convert to Plugin interface provided by Class literal.
@@ -741,12 +760,31 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prepend(String html);
 
   /**
-   * Prepend all of the matched elements to another, specified, set of elements.
-   * This operation is, essentially, the reverse of doing a regular
-   * $(A).prepend(B), in that instead of prepending B to A, you're prepending A
-   * to B.
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
    */
-  LazyGQuery<T> prependTo(GQuery elms);
+  LazyGQuery<T> prependTo(GQuery other);
+
+  /**
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
+   */
+  LazyGQuery<T> prependTo(Node n);
+
+  /**
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
+   */
+  LazyGQuery<T> prependTo(String html);
 
   /**
    * Get a set of elements containing the unique previous siblings of each of
@@ -838,6 +876,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Restore a set of previously saved Css properties in every matched element.
    */
   void saveCssAttrs(String... cssProps);
+
+  /**
+   * Force the current matched set of elements to become
+   * the specified array of elements.
+   */
+  LazyGQuery<T> setArray(NodeList<Element> nodes);
 
   /**
    * Bind a set of functions to the scroll event of each matched element.
