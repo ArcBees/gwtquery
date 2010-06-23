@@ -119,7 +119,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
         }
         if (truth(splitRule.allAttr)) {
           xPathExpression += replaceAttr(
-              SelectorEngine.or(splitRule.allAttr, ""));
+              GQUtils.or(splitRule.allAttr, ""));
         }
         if (truth(splitRule.allPseudos)) {
           Regexp pseudoSplitRegExp = new Regexp(

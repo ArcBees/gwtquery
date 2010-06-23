@@ -315,7 +315,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
                       ? attributeMatch.getStr(3).replaceAll("\\.", "\\.")
                       : null;
               String attrVal = attrToRegExp(attributeValue,
-                  (SelectorEngine.or(attributeMatch.getStr(2), null)));
+                  (GQUtils.or(attributeMatch.getStr(2), null)));
               regExpAttributes[q] = (GQUtils.truth(attrVal) ? new Regexp(
                   attrVal) : null);
               regExpAttributesStr[q] = attributeMatch.getStr(1);
