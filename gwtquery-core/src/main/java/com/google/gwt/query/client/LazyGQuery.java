@@ -565,7 +565,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> keydown(Function...f);
 
   /**
-   * Trigger a keydown event passing the key pushed
+   * Trigger a keydown event passing the key pushed.
    */
   LazyGQuery<T> keydown(int key);
 
@@ -576,7 +576,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> keypress(Function...f);
 
   /**
-   * Trigger a keypress event passing the key pushed
+   * Trigger a keypress event passing the key pushed.
    */
   LazyGQuery<T> keypress(int key);
 
@@ -587,7 +587,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> keyup(Function...f);
 
   /**
-   * Trigger a keyup event passing the key pushed
+   * Trigger a keyup event passing the key pushed.
    */
   LazyGQuery<T> keyup(int key);
 

@@ -70,7 +70,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * A class to store data in an element
+   * A class to store data in an element.
    */
   protected static final class DataCache extends JavaScriptObject {
 
@@ -245,6 +245,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element containing those elements. The second parameter is the context to
    * use for the selector. The third parameter is the class plugin to use.
    */
+  @SuppressWarnings("unchecked")
   public static <T extends GQuery> T $(String selector, Node context,
       Class<T> plugin) {
     try {
@@ -269,6 +270,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return Properties.create(properties);
   }
 
+  @SuppressWarnings("unchecked")
   public static <T extends Node> T[] asArray(NodeList<T> nl) {
     if (GWT.isScript()) {
       return reinterpretCast(nl);
@@ -286,7 +288,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * simply queued up and not executed immediately.
    */
   public static LazyGQuery<?> lazy() {
-    return GQuery.$().createLazy();
+    return $().createLazy();
   }
 
   public static void registerPlugin(Class<? extends GQuery> plugin,
@@ -297,6 +299,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     plugins.put(plugin, pluginFactory);
   }
 
+  @SuppressWarnings("unchecked")
   protected static GQuery clean(String elem) {
     String tags = elem.trim().toLowerCase();
     String preWrap = "", postWrap = "";
@@ -371,7 +374,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static JSArray copyNodeList(NodeList n) {
+  private static JSArray copyNodeList(NodeList<? extends Node> n) {
     JSArray res = JSArray.create();
     for (int i = 0; i < n.getLength(); i++) {
       res.addNode(n.getItem(i));
@@ -1265,7 +1268,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Trigger a keydown event passing the key pushed
+   * Trigger a keydown event passing the key pushed.
    */
   public GQuery keydown(int key) {
     return trigger(Event.ONKEYDOWN, key);
@@ -1280,7 +1283,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }  
 
   /**
-   * Trigger a keypress event passing the key pushed
+   * Trigger a keypress event passing the key pushed.
    */
   public GQuery keypress(int key) {
     return trigger(Event.ONKEYPRESS, key);
@@ -1295,7 +1298,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Trigger a keyup event passing the key pushed
+   * Trigger a keyup event passing the key pushed.
    */
   public GQuery keyup(int key) {
     return trigger(Event.ONKEYUP, key);
@@ -1728,7 +1731,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return replaceAll($(html));
   }
 
-
   /**
    * Replaces all matched elements with the specified HTML or DOM elements. This
    * returns the GQuery element that was just replaced, which has been removed
@@ -2050,7 +2052,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String toString(boolean pretty) {
     String r = "";
     for (Element e : elements()) {
-      if (e == window || e == (Node)document) {
+      if (window.equals(e) || document.equals(e)) {
         continue;
       }
       r += (pretty && r.length() > 0 ? "\n " : "") + e.getString();
