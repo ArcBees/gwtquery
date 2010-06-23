@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -310,8 +311,17 @@ public class GQueryCoreTest extends GWTTestCase {
     // appendTo()
     expected = "<p>I would like to say: <b>Hello</b></p>";
     $(e).html(bTxt + pTxt);
-    $("b", e).appendTo($("p", e));
+    GQuery g = $("b", e).appendTo($("p", e));
     assertHtmlEquals(expected, $(e).html());
+    assertHtmlEquals("<b>Hello</b>", g.toString());
+    // document is a valid node, actually it is substituted by body
+    g.appendTo(document);
+    expected = "<p>I would like to say: </p>";
+    assertHtmlEquals(expected, $(e).html());
+    g.remove();
+    // Check that the new elements are returned and can be modified
+    $("<div id='mid'>Hello</div>").appendTo(e).css("color", "white");
+    assertEquals("white", $("#mid").css("color"));
 
     // prepend()
     expected = "<p><b>Hello</b>I would like to say: </p>";
@@ -324,6 +334,9 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(bTxt + pTxt);
     $("b", e).prependTo($("p", e));
     assertHtmlEquals(expected, $(e).html());
+    // Check that the new elements are returned and can be modified
+    $("<div id='mid'>Hello</div>").prependTo(e).css("color", "yellow");
+    assertEquals("yellow", $("#mid").css("color"));
 
     // prependTo()
     expected = "<b>Hello</b><p><b>Hello</b>I would like to say: </p>";
@@ -378,6 +391,35 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(bTxt + pTxt);
     $("p", e).after($("b", e).clone().get(0));
     assertHtmlEquals(expected, $(e).html());
+    
+    // The set of elements should be the same after the manipulation 
+    String content = "<span>s</span>"; 
+    expected = "<p>p</p>";
+    GQuery g1  = $(content);
+    GQuery g2  = $(expected);
+    $(e).html("").append(g1);
+    assertEquals(1, g1.size());
+    assertEquals(content, g1.toString());
+    
+    $(g1).append(g2);
+    assertEquals(1, g1.size());
+    assertEquals(1, g2.size());
+    assertEquals(expected, g2.toString());
+    
+    $(g1).prepend(g2);
+    assertEquals(1, g1.size());
+    assertEquals(1, g2.size());
+    assertEquals(expected, g2.toString());
+    
+    $(g1).after(g2);
+    assertEquals(1, g1.size());
+    assertEquals(1, g2.size());
+    assertEquals(expected, g2.toString());
+    
+    $(g1).before(g2);
+    assertEquals(1, g1.size());
+    assertEquals(1, g2.size());
+    assertEquals(expected, g2.toString());    
   }
 
   public void testOpacity() {
@@ -418,11 +460,6 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     expected = "<p class=\"selected\">Hello</p>";
     assertHtmlEquals(expected, $("p", e).filter(".selected"));
-
-    // filter()
-    // Commented because GQuery doesn't support this syntax yet
-    // expected = "<p class=\"selected\">Hello</p>";
-    // assertHtmlEquals(expected, $("p", e).filter(".selected, :first").toString());
 
     // not()
     expected = "<p>First</p><p>How are you?</p>";

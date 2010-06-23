@@ -91,7 +91,7 @@ public class ClipAnimation extends Animation {
   public void onStart() {
     g.show();
     g.saveCssAttrs(attrsToSave);
-    if (!"absolute".equalsIgnoreCase(g.css("position"))) {
+    if (!"absolute".equalsIgnoreCase(g.css("position", true))) {
       g.css("position", "absolute");
       g.css("top", g.offset().top + "px");
       g.css("left", g.offset().left + "px");

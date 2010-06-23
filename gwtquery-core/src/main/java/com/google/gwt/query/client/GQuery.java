@@ -22,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -46,6 +47,8 @@ import com.google.gwt.user.client.Window;
  * Gwt Query is a GWT clone of the popular jQuery library.
  */
 public class GQuery implements Lazy<GQuery, LazyGQuery> {
+
+  private static final String OLD_DATA_PREFIX = "old-";
 
   /**
    * A POJO used to store the top/left CSS positioning values of an element.
@@ -141,6 +144,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   public static final Document document = Document.get();
+  public static final BodyElement body = Document.get().getBody();
+  
   public static boolean fxOff = false;
 
   public static Class<GQuery> GQUERY = GQuery.class;
@@ -170,9 +175,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing element.
    */
   public static GQuery $(Element element) {
-    JSArray a = JSArray.create();
-    a.addNode(element);
-    return new GQuery(a);
+    return new GQuery(JSArray.create(element));
+  }
+
+  /**
+   * Wrap a GQuery around an existing node.
+   */
+  public static GQuery $(Node n) {
+    return new GQuery(JSArray.create(n));
   }
 
   /**
@@ -283,7 +293,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     plugins.put(plugin, pluginFactory);
   }
 
-  protected static JSArray clean(String elem) {
+  protected static GQuery clean(String elem) {
     String tags = elem.trim().toLowerCase();
     String preWrap = "", postWrap = "";
     int wrapPos = 0;
@@ -321,7 +331,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return n.getChildNodes().cast();
+    return $((NodeList<Element>)n.getChildNodes().cast());
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -457,7 +467,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery after(GQuery query) {
-    return domManip(query.elements, FUNC_AFTER);
+    return domManip(query, FUNC_AFTER);
   }
 
   /**
@@ -466,7 +476,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery after(Node n) {
-    return domManip(JSArray.create(n), FUNC_AFTER);
+    return domManip($(n), FUNC_AFTER);
   }
 
   /**
@@ -493,7 +503,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * into the document.
    */
   public GQuery append(GQuery query) {
-    return domManip(query.elements, FUNC_APPEND);
+    return domManip(query, FUNC_APPEND);
   }
 
   /**
@@ -502,7 +512,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * into the document.
    */
   public GQuery append(Node n) {
-    return domManip(JSArray.create(n), FUNC_APPEND);
+    return domManip($(n), FUNC_APPEND);
   }
 
   /**
@@ -515,13 +525,39 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Append all of the matched elements to another, specified, set of elements.
-   * This operation is, essentially, the reverse of doing a regular
-   * $(A).append(B), in that instead of appending B to A, you're appending A to
-   * B.
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
    */
   public GQuery appendTo(GQuery other) {
-    return other.append(this);
+    other.append(this);
+    return this;
+  }
+
+  /**
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
+   */
+  public GQuery appendTo(Node n) {
+    $(n).append(this);
+    return this;
+  }
+
+  /**
+   * All of the matched set of elements will be inserted at the end 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
+   * $(A).append(B), instead of appending B to A, you're appending A to B.
+   */
+  public GQuery appendTo(String html) {
+    $(html).append(this);
+    return this;
   }
 
   /**
@@ -591,7 +627,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery before(GQuery query) {
-    return domManip(query.elements, FUNC_BEFORE);
+    return domManip(query, FUNC_BEFORE);
   }
 
   /**
@@ -600,7 +636,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery before(Node n) {
-    return domManip(JSArray.create(n), FUNC_BEFORE);
+    return domManip($(n), FUNC_BEFORE);
   }
 
   /**
@@ -1426,7 +1462,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery offsetParent() {
     Element offParent = SelectorEngine.
-        or(elements.getItem(0).getOffsetParent(), document.getBody());
+        or(elements.getItem(0).getOffsetParent(), body);
     while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName()) && "static".
         equals(styleImpl.curCSS(offParent, "position", true))) {
@@ -1515,7 +1551,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements.
    */
   public GQuery prepend(GQuery query) {
-    return domManip(query.elements, FUNC_PREPEND);
+    return domManip(query, FUNC_PREPEND);
   }
 
   /**
@@ -1524,7 +1560,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements.
    */
   public GQuery prepend(Node n) {
-    return domManip(JSArray.create(n), FUNC_PREPEND);
+    return domManip($(n), FUNC_PREPEND);
   }
 
   /**
@@ -1535,15 +1571,41 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery prepend(String html) {
     return domManip(html, FUNC_PREPEND);
   }
+  
+  /**
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
+   */
+  public GQuery prependTo(GQuery other) {
+    other.prepend(this);
+    return this;
+  }
 
   /**
-   * Prepend all of the matched elements to another, specified, set of elements.
-   * This operation is, essentially, the reverse of doing a regular
-   * $(A).prepend(B), in that instead of prepending B to A, you're prepending A
-   * to B.
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
    */
-  public GQuery prependTo(GQuery elms) {
-    return elms.prepend(this);
+  public GQuery prependTo(Node n) {
+    $(n).prepend(this);
+    return this;
+  }
+
+  /**
+   * All of the matched set of elements will be inserted at the beginning 
+   * of the element(s) specified by the parameter other.
+   * 
+   * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
+   * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
+   */
+  public GQuery prependTo(String html) {
+    $(html).prepend(this);
+    return this;
   }
 
   /**
@@ -1634,7 +1696,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
    * Replaces the elements matched by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
@@ -1699,7 +1761,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void restoreCssAttrs(String... cssProps) {
     for (Element e : elements()) {
       for (String a : cssProps) {
-        styleImpl.setStyleProperty(e, a, (String) data(e, "old-" + a, null));
+        styleImpl.setStyleProperty(e, a, (String) data(e, OLD_DATA_PREFIX + a, null));
       }
     }
   }
@@ -1710,9 +1772,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void saveCssAttrs(String... cssProps) {
     for (Element e : elements()) {
       for (String a : cssProps) {
-        data("old-" + a, styleImpl.curCSS(e, a, false));
+        data(OLD_DATA_PREFIX + a, styleImpl.curCSS(e, a, false));
       }
     }
+  }
+
+  /**
+   * Force the current matched set of elements to become
+   * the specified array of elements.
+   */
+  public GQuery setArray(NodeList<Element> nodes){
+    this.elements = nodes;
+    return this;
   }
 
   /**
@@ -2338,28 +2409,36 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private GQuery domManip(NodeList<?> nodes, int func) {
-    for (Element e : elements()) {
-      for (int i = 0; i < nodes.getLength(); i++) {
-        Node n = nodes.getItem(i);
-        if (nodes.getLength() > 1) {
+  private GQuery domManip(GQuery g, int func) {
+    JSArray newNodes = JSArray.create();
+    for (int i = 0; i < elements().length; i++) {
+      Element e = elements()[i];
+      if (document.equals(e)){
+        e = body;
+      }
+      for (int j = 0; j < g.size(); j++) {
+        Node n = g.get(j);
+        if (g.size() > 1) {
           n = n.cloneNode(true);
         }
         switch (func) {
           case FUNC_PREPEND:
-            e.insertBefore(n, e.getFirstChild());
+            newNodes.addNode(e.insertBefore(n, e.getFirstChild()));
             break;
           case FUNC_APPEND:
-            e.appendChild(n);
+            newNodes.addNode(e.appendChild(n));
             break;
           case FUNC_AFTER:
-            e.getParentNode().insertBefore(n, e.getNextSibling());
+            newNodes.addNode(e.getParentNode().insertBefore(n, e.getNextSibling()));
             break;
           case FUNC_BEFORE:
-            e.getParentNode().insertBefore(n, e);
+            newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
       }
+    }
+    if (newNodes.size() > 0) {
+      g.setArray(newNodes);
     }
     return this;
   }
