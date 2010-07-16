@@ -232,13 +232,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
-   * element containing those elements. The second parameter is the context to
-   * use for the selector.
+   * element containing those elements.
+   * The second parameter is the context to use for the selector, or 
+   * the document where the new elements will be created.
    */
-  public static GQuery $(String selector, Node context) {
-    return new GQuery(select(selector, context));
+  public static GQuery $(String selectorOrHtml, Node ctx) {
+    if (selectorOrHtml == null || selectorOrHtml.trim().length() == 0) {
+      return $();
+    }
+    if (selectorOrHtml.trim().charAt(0) == '<') {
+      Document doc = ctx instanceof Document ? (Document)ctx : document;
+      return $(clean(selectorOrHtml, doc));
+    }
+    return new GQuery(select(selectorOrHtml, ctx));
   }
-
+  
   /**
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
@@ -300,7 +308,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   @SuppressWarnings("unchecked")
-  protected static GQuery clean(String elem) {
+  protected static GQuery clean(String elem, Document doc) {
     String tags = elem.trim().toLowerCase();
     String preWrap = "", postWrap = "";
     int wrapPos = 0;
@@ -331,7 +339,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     // TODO: fix IE link tag serialization
     // TODO: fix IE <script> tag
-    Element div = document.createDivElement();
+    Element div = doc.createDivElement();
     div.setInnerHTML(preWrap + elem + postWrap);
     Node n = div;
     while (wrapPos-- != 0) {
@@ -387,7 +395,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static GQuery innerHtml(String html) {
-    return $(clean(html));
+    return $(clean(html, document));
   }
 
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
@@ -490,7 +498,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery after(String html) {
-    return domManip(html, FUNC_AFTER);
+    return domManip(html, document, FUNC_AFTER);
   }
 
   /**
@@ -526,7 +534,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * into the document.
    */
   public GQuery append(String html) {
-    return domManip(html, FUNC_APPEND);
+    return domManip(html, document, FUNC_APPEND);
   }
 
   /**
@@ -650,7 +658,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery before(String html) {
-    return domManip(html, FUNC_BEFORE);
+    return domManip(html, document, FUNC_BEFORE);
   }
 
   /**
@@ -762,13 +770,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery contents() {
     JSArray result = JSArray.create();
     for (Element e : elements()) {
-      NodeList<Node> children = e.getChildNodes();
-      for (int i = 0; i < children.getLength(); i++) {
-        Node n = children.getItem(i);
-        if (IFrameElement.is(n)) {
-          result.addNode(getContentDocument(n));
-        } else {
-          result.addNode(n);
+      if (IFrameElement.is(e)){
+        result.addNode(getContentDocument(e));
+      } else {
+        NodeList<Node> children = e.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+          result.addNode(children.getItem(i));
         }
       }
     }
@@ -879,7 +886,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Stores the value in the named spot with desired return type.
    */
-  public Object data(String name, Object value) {
+  public GQuery data(String name, Object value) {
     for (Element e : elements()) {
       data(e, name, value);
     }
@@ -1305,6 +1312,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
+   * Returns the computed left position of the first element matched.
+   */
+  public int left() {
+    return (int) GQUtils.cur(get(0), "left", true);
+  }  
+  
+  /**
    * Returns the number of elements currently matched. The size function will
    * return the same value.
    */
@@ -1573,7 +1587,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements.
    */
   public GQuery prepend(String html) {
-    return domManip(html, FUNC_PREPEND);
+    return domManip(html, document, FUNC_PREPEND);
   }
   
   /**
@@ -1768,7 +1782,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
   }
-
+  
   /**
    * Restore a set of previously saved Css properties in every matched element.
    */
@@ -2038,6 +2052,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
+  
+  /**
+   * Returns the computed left position of the first element matched.
+   */
+  public int top() {
+    return (int) GQUtils.cur(get(0), "top", true);
+  }  
 
   /**
    * Produces a string representation of the matched elements.
@@ -2052,7 +2073,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String toString(boolean pretty) {
     String r = "";
     for (Element e : elements()) {
-      if (window.equals(e) || document.equals(e)) {
+      if (window.equals(e)) {
         continue;
       }
       r += (pretty && r.length() > 0 ? "\n " : "") + e.getString();
@@ -2446,8 +2467,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  private GQuery domManip(String html, int func) {
-    return domManip(clean(html), func);
+  private GQuery domManip(String html, Document doc, int func) {
+    return domManip(clean(html, doc), func);
   }
 
   private native Document getContentDocument(Node n) /*-{
