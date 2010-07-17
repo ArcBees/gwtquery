@@ -133,8 +133,11 @@ public class Events extends GQuery {
       dispatchEvent(document.createErrorEvent());
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
+    if (eventbits == EventsListener.ONSUBMIT)
+      triggerHtmlEvent("submit");
     return this;
   }
+  
 
   /**
    * Trigger a html event in all matched elements.
@@ -143,7 +146,7 @@ public class Events extends GQuery {
    *    An string representing the html event desired 
    */
   public Events triggerHtmlEvent(String htmlEvent) {
-    dispatchEvent(document.createHtmlEvent(htmlEvent, false, false));
+    dispatchEvent(document.createHtmlEvent(htmlEvent, true, true));
     return this;
   }
   

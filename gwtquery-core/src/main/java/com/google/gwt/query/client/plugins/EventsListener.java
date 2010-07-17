@@ -33,16 +33,13 @@ import com.google.gwt.user.client.EventListener;
  * The class takes care of calling the appropriate functions for each browser
  * event and it also calls sinkEvents method.
  */
-class EventsListener implements EventListener {
+public class EventsListener implements EventListener {
 
   private static class BindFunction {
 
     Object data;
-
     Function function;
-
     int times = -1;
-
     int type;
 
     BindFunction(int t, Function f, Object d) {
@@ -69,6 +66,9 @@ class EventsListener implements EventListener {
     }
   }
 
+  // Gwt Events class has not this event defined
+  public static int ONSUBMIT = 0x08000;
+
   public static EventsListener getInstance(Element e) {
     EventsListener ret = getGQueryEventLinstener(e);
     return ret != null ? ret : new EventsListener(e);
@@ -81,22 +81,38 @@ class EventsListener implements EventListener {
   private static native EventListener getOriginalEventListener(Element elem) /*-{
     return elem.__listener;
   }-*/;
-
-  private static native void setFocusable(Element elem) /*-{
-    elem.tabIndex = 0;
-  }-*/;
-
+  
   private static native void setGQueryEventListener(Element elem,
       EventsListener gqevent) /*-{
     elem.__gqueryevent = gqevent;
   }-*/;
 
+  // Gwt does't handle submit events in DOM.sinkEvents
+  private static native void sinkSubmitEvent(Element elem) /*-{
+    if (elem.__gquerysubmit) return;
+    elem.__gquerysubmit = true;
+    
+    var handle = function(event) {
+      elem.__gqueryevent.@com.google.gwt.query.client.plugins.EventsListener::dispatchEvent(Lcom/google/gwt/user/client/Event;)(event);
+    };
+    
+    if (elem.addEventListener)
+      elem.addEventListener("submit", handle, true);
+    else
+      elem.attachEvent("onsubmit", handle);
+  }-*/;
+
+  double lastEvnt=0;
+  int lastType=0;
+  
+
   private Element element;
 
-  private JsObjectArray<EventsListener.BindFunction> elementEvents = JsObjectArray
+  private JsObjectArray<BindFunction> elementEvents = JsObjectArray
       .createArray().cast();
-  private EventListener originalEventListener;
 
+  private EventListener originalEventListener;
+  
   private EventsListener(Element element) {
     this.element = element;
     originalEventListener = getOriginalEventListener(element);
@@ -114,21 +130,35 @@ class EventsListener implements EventListener {
       int times) {
     if (function == null) {
       unbind(eventbits);
+      return;
+    }
+    
+    if (eventbits == ONSUBMIT) {
+      sinkSubmitEvent(element);
     } else {
+      if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS) {
+        element.setAttribute("tabIndex", "0");
+      }
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventbits
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-
-      if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS) {
-        setFocusable(element);
+      
+    }
+    elementEvents.add(new BindFunction(eventbits, function, data, times));
+  }
+  
+  public void dispatchEvent(Event event) {
+    int etype = "submit".equalsIgnoreCase(event.getType()) ? ONSUBMIT
+        : DOM.eventGetType(event);
+    for (int i = 0; i < elementEvents.length(); i++) {
+      BindFunction listener = elementEvents.get(i);
+      if (listener.hasEventType(etype)) {
+        if (!listener.fire(event)) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
       }
-
-      elementEvents.add(new EventsListener.BindFunction(eventbits, function,
-          data, times));
     }
   }
-
-  double lastEvnt=0;
-  int lastType=0;
   
   public void onBrowserEvent(Event event) {
     // Workaround for Issue_20
@@ -140,27 +170,19 @@ class EventsListener implements EventListener {
     lastEvnt = Duration.currentTimeMillis();
     lastType = event.getTypeInt();
 
+    // Execute the original Gwt listener
     if (originalEventListener != null) {
       originalEventListener.onBrowserEvent(event);
     }
-
-    int etype = DOM.eventGetType(event);
-    for (int i = 0; i < elementEvents.length(); i++) {
-      EventsListener.BindFunction listener = elementEvents.get(i);
-      if (listener.hasEventType(etype)) {
-        if (!listener.fire(event)) {
-          event.stopPropagation();
-          event.preventDefault();
-        }
-      }
-    }
+    
+    dispatchEvent(event);
   }
-
+  
   public void unbind(int eventbits) {
-    JsObjectArray<EventsListener.BindFunction> newList = JsObjectArray
+    JsObjectArray<BindFunction> newList = JsObjectArray
         .createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
-      EventsListener.BindFunction listener = elementEvents.get(i);
+      BindFunction listener = elementEvents.get(i);
       if (!listener.hasEventType(eventbits)) {
         newList.add(listener);
       }

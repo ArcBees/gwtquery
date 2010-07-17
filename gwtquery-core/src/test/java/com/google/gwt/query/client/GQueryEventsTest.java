@@ -26,7 +26,9 @@ import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -43,14 +45,14 @@ public class GQueryEventsTest extends GWTTestCase {
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
-  
+
   public void gwtSetUp() {
     if (e == null) {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
       e.setId("evnt-tst");
-      
+
       CSS.init();
     } else {
       e.setInnerHTML("");
@@ -79,7 +81,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).click();
     assertEquals("white", $("p", e).css("color"));
-    
+
     // toggle
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).toggle(new Function() {
@@ -134,7 +136,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("black", $("p", e).css("border-top-color"));
     assertEquals("dotted", $("p", e).css("border-top-style"));
     assertEquals("1px", $("p", e).css("border-top-width"));
-    
+
     // blur
     $("p", e).blur(new Function() {
       public void f(Element elem) {
@@ -152,7 +154,7 @@ public class GQueryEventsTest extends GWTTestCase {
         gq.val(gq.val() + Character.toString((char) evnt.getKeyCode()));
         return false;
       }
-    }; 
+    };
     $("input", e).keypress(keyEventAction);
     $("input", e).keydown(keyEventAction);
     $("input", e).keyup(keyEventAction);
@@ -162,7 +164,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $("input", e).keyup('c');
     assertEquals("abc", $("input", e).val());
   }
-  
+
   /**
    * TODO: DblClick doesn't work with HtmlUnit, investigate and report.
    */
@@ -176,22 +178,22 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e).dblclick();
-    assertEquals("yellow", $("p", e).css("color"));    
+    assertEquals("yellow", $("p", e).css("color"));
   }
 
   public void testLazyMethods() {
     $(e).css("color", "white");
     assertEquals("white", $(e).css("color"));
-    
+
     $(e).one(Event.ONCLICK, null, lazy().css("color", "red").done());
     $(e).click();
     assertEquals("red", $(e).css("color"));
-    
+
     $(e).click(lazy().css(CSS.COLOR, CSS.BLACK).done());
     $(e).click();
-    assertEquals("black", $(e).css("color"));    
+    assertEquals("black", $(e).css("color"));
   }
-  
+
   public void testWidgetEvents() {
     final Button b = new Button("click-me");
     b.addClickHandler(new ClickHandler() {
@@ -201,10 +203,46 @@ public class GQueryEventsTest extends GWTTestCase {
     });
     RootPanel.get().add(b);
     $("button").click(lazy().css("color", "red").done());
-    
+
     $("button").click();
-    assertEquals("red", $("button").css("color"));    
-    assertEquals("black", $("button").css("background-color"));    
+    assertEquals("red", $("button").css("color"));
+    assertEquals("black", $("button").css("background-color"));
     RootPanel.get().remove(b);
+  }
+
+  int testSubmitEventCont = 0;
+
+  public void testSubmitEvent() {
+    // Add a form and an iframe to the dom. The form target is the iframe
+    $(e).html("<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    testSubmitEventCont = 0;
+
+    // Add an onsubmit function to the form returning false to cancel the action
+    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+      public boolean f(Event e) {
+        testSubmitEventCont++;
+        return false;
+      }
+    });
+
+    // Check that the onsubmit function is called and the iframe has not changed
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+    assertFalse($("#miframe").contents().find("body").text().contains("ERROR"));
+
+    // Remove the binding
+    $("form").unbind(EventsListener.ONSUBMIT);
+
+    // Check that on submit function is not called and the form has been
+    // submitted
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+    new Timer() {
+      public void run() {
+        // Check that the server returns an error since the action does not
+        // exist
+        assertTrue($("#miframe").contents().find("body").text().contains("ERROR"));
+      }
+    }.schedule(500);
   }
 }

@@ -18,6 +18,8 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 
+import java.util.HashMap;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -40,6 +42,7 @@ import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 
@@ -161,7 +164,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       FUNC_BEFORE = 3;
 
   private static final String OLD_DATA_PREFIX = "old-";
-
+  
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>>
       plugins;;
 
@@ -241,8 +244,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return $();
     }
     if (selectorOrHtml.trim().charAt(0) == '<') {
-      Document doc = ctx instanceof Document ? (Document)ctx : document;
-      return $(clean(selectorOrHtml, doc));
+      Document doc = ctx instanceof Document ? ctx.<Document>cast() : ctx.getOwnerDocument();
+      return $(cleanHtmlString(selectorOrHtml, doc));
     }
     return new GQuery(select(selectorOrHtml, ctx));
   }
@@ -308,7 +311,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   @SuppressWarnings("unchecked")
-  protected static GQuery clean(String elem, Document doc) {
+  protected static GQuery cleanHtmlString(String elem, Document doc) {
     String tags = elem.trim().toLowerCase();
     String preWrap = "", postWrap = "";
     int wrapPos = 0;
@@ -395,7 +398,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static GQuery innerHtml(String html) {
-    return $(clean(html, document));
+    return $(cleanHtmlString(html, document));
   }
 
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
@@ -424,7 +427,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private String currentSelector;
 
   private GQuery previousObject;
-  
+
   public GQuery() {
     elements = JavaScriptObject.createArray().cast();
   }
@@ -446,8 +449,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Adds the specified classes to each matched element. Add elements to the set
-   * of matched elements if they are not included yet.
+   * Add elements to the set of matched elements if they are not included yet.
+   * It also update the selector appending the new one. 
    */
   public GQuery add(GQuery previousObject) {
     return pushStack(unique(merge(elements, previousObject.elements)), "add",
@@ -1177,6 +1180,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery html(String html) {
     for (Element e : elements()) {
+      if (e.getNodeType() == Node.DOCUMENT_NODE) {
+        e = e.<Document>cast().getBody();
+      }
       e.setInnerHTML(html);
     }
     return this;
@@ -1968,7 +1974,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public GQuery submit() {
-    return as(Events).triggerHtmlEvent("submit");
+    return as(Events).trigger(EventsListener.ONSUBMIT);
   }
 
   /**
@@ -2432,13 +2438,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return bind(eventbits, data, funcs);
     }
   }
+  
+  private GQuery domManip(String htmlString, int func) {
+    GQuery ret = $();
+    HashMap<Document, GQuery> cache = new HashMap<Document, GQuery>();
+    for (Element e: elements()) {
+      Document d = e.getNodeType() == Node.DOCUMENT_NODE ? e.<Document>cast() : e.getOwnerDocument();
+      GQuery g = cache.get(d);
+      if (g == null) {
+        g = cleanHtmlString(htmlString, d);
+        cache.put(d, g);
+      }
+      ret.add(domManip(g, func));
+    }
+    return ret;
+  }
 
   private GQuery domManip(GQuery g, int func) {
     JSArray newNodes = JSArray.create();
     for (int i = 0; i < elements().length; i++) {
       Element e = elements()[i];
-      if (document.equals(e)) {
-        e = body;
+      e.getOwnerDocument();
+      if (e.getNodeType() == Node.DOCUMENT_NODE) { 
+        e = e.<Document>cast().getBody();
       }
       for (int j = 0; j < g.size(); j++) {
         Node n = g.get(j);
@@ -2468,13 +2490,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery domManip(String html, Document doc, int func) {
-    return domManip(clean(html, doc), func);
+    return domManip(html, func);
   }
 
   private native Document getContentDocument(Node n) /*-{
-    return n.contentDocument || n.contentWindow.document;
+    var d =  n.contentDocument || n.contentWindow.document;
+    if (!d.body) d.write("<body/>");
+    return d;
   }-*/;
-
+  
   private native Element getPreviousSiblingElement(Element elem)  /*-{
     var sib = elem.previousSibling;
     while (sib && sib.nodeType != 1)

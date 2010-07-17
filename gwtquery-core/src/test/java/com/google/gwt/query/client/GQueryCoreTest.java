@@ -19,6 +19,7 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
@@ -190,6 +191,19 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals("<p>0</p><p>1</p><p>2</p>", $("p", e));
   }
 
+  public void testIFrameManipulation() {
+    $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    Document d = $("#miframe").contents().get(0).cast();
+    assertNotNull(d);
+    assertNotNull(d.getBody());
+    assertEquals(1, $("#miframe").contents().size());
+    assertEquals(1, $("#miframe").contents().find("body").size());
+    assertEquals(0, $("#miframe").contents().find("body > h1").size());
+    $("#miframe").contents().find("body").append("<h1>Test</h1>");
+    assertEquals(1, $("#miframe").contents().find("body > h1").size());
+    assertEquals(1, $(d).find("h1").size());
+  }
+
   public void testInnerMethods() {
     String txt = "<p>I would like to say: </p>";
 
@@ -276,7 +290,7 @@ public class GQueryCoreTest extends GWTTestCase {
     gq.val("v1");
     assertEquals("v1", gq.val());
   }
-
+  
   public void testIssue23() {
     $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
     $("button").click(new Function() {
@@ -293,7 +307,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $("button").click();
     assertEquals(1,done);
   }
-  
+
   public void testModifyMethods() {
     String pTxt = "<p>I would like to say: </p>";
     String bTxt = "<b>Hello</b>";
@@ -421,7 +435,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());    
   }
-
+  
   public void testOpacity() {
     $(e)
     .html(
@@ -446,7 +460,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(1, p.keys().length);
     assertNotNull(p.get("border"));
   }
-  
+
   public void testRelativeMethods() {
     String content = "<p><span>Hello</span>, how are you?</p>";
     String expected = "<span>Hello</span>";
@@ -589,7 +603,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     assertHtmlEquals(expected, $("p", e).contains("test"));
   }
-
+  
   public void testShowHide() {
     $(e)
     .html(
@@ -725,5 +739,5 @@ public class GQueryCoreTest extends GWTTestCase {
     $("*", e).wrap("<b></b>");
     assertHtmlEquals(expected, $(e).html());
   }
-  
+
 }

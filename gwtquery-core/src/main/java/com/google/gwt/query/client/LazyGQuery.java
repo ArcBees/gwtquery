@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
+import java.util.HashMap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -38,6 +39,7 @@ import com.google.gwt.query.client.css.Percentage;
 import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.query.client.LazyBase;
@@ -45,8 +47,7 @@ import com.google.gwt.query.client.LazyBase;
 public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
-   * Adds the specified classes to each matched element. Add elements to the set
-   * of matched elements if they are not included yet.
+   * Add elements to the set of matched elements if they are not included yet.
    */
   LazyGQuery<T> add(GQuery previousObject);
 
@@ -326,7 +327,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Stores the value in the named spot with desired return type.
    */
-  Object data(String name, Object value);
+  LazyGQuery<T> data(String name, Object value);
 
   /**
    * Bind a set of functions to the dblclick event of each matched element.
@@ -590,6 +591,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Trigger a keyup event passing the key pushed.
    */
   LazyGQuery<T> keyup(int key);
+
+  /**
+   * Returns the computed left position of the first element matched.
+   */
+  int left();
 
   /**
    * Returns the number of elements currently matched. The size function will
@@ -999,6 +1005,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * false it is removed.
    */
   LazyGQuery<T> toggleClass(String clz, boolean addOrRemove);
+
+  /**
+   * Returns the computed left position of the first element matched.
+   */
+  int top();
 
   /**
    * Produces a string representation of the matched elements.
