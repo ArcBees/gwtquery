@@ -111,27 +111,27 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> append(String html);
 
   /**
-   * All of the matched set of elements will be inserted at the end 
+   * All of the matched set of elements will be inserted at the end
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
    * $(A).append(B), instead of appending B to A, you're appending A to B.
    */
   LazyGQuery<T> appendTo(GQuery other);
 
   /**
-   * All of the matched set of elements will be inserted at the end 
+   * All of the matched set of elements will be inserted at the end
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
    * $(A).append(B), instead of appending B to A, you're appending A to B.
    */
   LazyGQuery<T> appendTo(Node n);
 
   /**
-   * All of the matched set of elements will be inserted at the end 
+   * All of the matched set of elements will be inserted at the end
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular
    * $(A).append(B), instead of appending B to A, you're appending A to B.
    */
@@ -190,14 +190,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Binds a set of handlers to a particular Event for each matched element.
-   * 
+   *
    * The event handlers are passed as Functions that you can use to prevent
    * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
-   * 
+   *
    * You can pass an additional Object data to your Function as the second
    * parameter
-   * 
+   *
    */
   LazyGQuery<T> bind(int eventbits, Object data, Function...funcs);
 
@@ -234,13 +234,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> click(Function...f);
 
   /**
-   * Returns the inner height of the first matched element, including padding 
+   * Returns the inner height of the first matched element, including padding
    * but not the vertical scrollbar height, border, or margin.
    */
   int clientHeight();
 
   /**
-   * Returns the inner width of the first matched element, including padding 
+   * Returns the inner width of the first matched element, including padding
    * but not the vertical scrollbar width, border, or margin.
    */
   int clientWidth();
@@ -279,15 +279,15 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Return a style property on the first matched element.
-   * 
+   *
    * The parameter force has a special meaning here:
    * - When force is false, returns the value of the css property defined
-   *   in the style attribute of the element. 
+   *   in the style attribute of the element.
    * - Otherwise it returns the real computed value.
-   * 
+   *
    * For instance if you define 'display=none' not in the element style
    * but in the css stylesheet, it returns an empty string unless you
-   * pass the parameter force=true.   
+   * pass the parameter force=true.
    */
   String css(String name, boolean force);
 
@@ -351,6 +351,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Remove all child nodes from the set of matched elements.
+   * In the case of a document element, it removes all the content.
+   * want to add dynamic content to it.
    */
   LazyGQuery<T> empty();
 
@@ -766,27 +768,27 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prepend(String html);
 
   /**
-   * All of the matched set of elements will be inserted at the beginning 
+   * All of the matched set of elements will be inserted at the beginning
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
    * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
    */
   LazyGQuery<T> prependTo(GQuery other);
 
   /**
-   * All of the matched set of elements will be inserted at the beginning 
+   * All of the matched set of elements will be inserted at the beginning
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
    * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
    */
   LazyGQuery<T> prependTo(Node n);
 
   /**
-   * All of the matched set of elements will be inserted at the beginning 
+   * All of the matched set of elements will be inserted at the beginning
    * of the element(s) specified by the parameter other.
-   * 
+   *
    * The operation $(A).prependTo(B) is, essentially, the reverse of doing a regular
    * $(A).prepend(B), instead of prepending B to A, you're prepending A to B.
    */
@@ -1001,7 +1003,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Adds or removes the specified classes to each matched element
    * depending on the value of the switch argument.
-   * 
+   *
    * false it is removed.
    */
   LazyGQuery<T> toggleClass(String clz, boolean addOrRemove);
@@ -1023,10 +1025,10 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Trigger a set of events on each matched element.
-   * 
-   * For keyboard events you can pass a second parameter which represents 
-   * the key-code of the pushed key. 
-   * 
+   *
+   * For keyboard events you can pass a second parameter which represents
+   * the key-code of the pushed key.
+   *
    * Example: fire(Event.ONCLICK | Event.ONFOCUS)
    * Example: fire(Event.ONKEYDOWN. 'a');
    */

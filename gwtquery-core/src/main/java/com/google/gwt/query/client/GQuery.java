@@ -511,7 +511,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery after(String html) {
-    return domManip(html, document, FUNC_AFTER);
+    return domManip(html, FUNC_AFTER);
   }
 
   /**
@@ -547,7 +547,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * into the document.
    */
   public GQuery append(String html) {
-    return domManip(html, document, FUNC_APPEND);
+    return domManip(html, FUNC_APPEND);
   }
 
   /**
@@ -671,7 +671,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * another if it's not in the page).
    */
   public GQuery before(String html) {
-    return domManip(html, document, FUNC_BEFORE);
+    return domManip(html, FUNC_BEFORE);
   }
 
   /**
@@ -1610,7 +1610,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements.
    */
   public GQuery prepend(String html) {
-    return domManip(html, document, FUNC_PREPEND);
+    return domManip(html, FUNC_PREPEND);
   }
 
   /**
@@ -2489,10 +2489,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       g.setArray(newNodes);
     }
     return this;
-  }
-
-  private GQuery domManip(String html, Document doc, int func) {
-    return domManip(html, func);
   }
 
   private GQuery domManip(String htmlString, int func) {
