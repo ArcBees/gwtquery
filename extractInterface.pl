@@ -31,7 +31,7 @@ while(<F>) {
    s/^(\*.*)$/ $1/g;
    $inh = 0 if (/^\/\*\*/);
    $head .= $_ if ($inh);
-   $inclass=1 if ($ingq && m/(^|\s+|\()(class|enum|new) /);
+   $inclass=1 if (!$in && $ingq && m/(^|\s+|\()(class|enum|new) /);
    if ($ingq && !$inclass) {
       $in = 1 if (/^\/\**\s*$/);
       $com = "" if (/^\/\**\s*$/);

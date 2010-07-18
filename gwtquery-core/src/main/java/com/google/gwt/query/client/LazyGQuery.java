@@ -48,6 +48,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
+   * It also update the selector appending the new one.
    */
   LazyGQuery<T> add(GQuery previousObject);
 
@@ -145,6 +146,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Set a key/value object as properties to all matched elements.
    *
+   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test
    * Image'"))
    */
   LazyGQuery<T> attr(Properties properties);
@@ -321,6 +323,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Returns value at named data store for the element, as set by data(name,
    * value) with desired return type.
    *
+   * @param clz return type class literal
    */
   <T> T data(String name, Class<T> clz);
 
@@ -351,7 +354,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Remove all child nodes from the set of matched elements.
-   * In the case of a document element, it removes all the content.
+   * In the case of a document element, it removes all the content
+   * You should call this method whenever you create a new iframe and you
    * want to add dynamic content to it.
    */
   LazyGQuery<T> empty();
@@ -1004,6 +1008,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Adds or removes the specified classes to each matched element
    * depending on the value of the switch argument.
    *
+   * if addOrRemove is true, the class is added and in the case of
    * false it is removed.
    */
   LazyGQuery<T> toggleClass(String clz, boolean addOrRemove);
