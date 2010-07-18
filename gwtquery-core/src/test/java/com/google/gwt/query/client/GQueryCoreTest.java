@@ -193,7 +193,9 @@ public class GQueryCoreTest extends GWTTestCase {
 
   public void testIFrameManipulation() {
     $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    Document d = $("#miframe").contents().get(0).cast();
+    // FF has to call empty to open and close the document before 
+    // accessing the recently created iframe content
+    Document d = $("#miframe").contents().empty().get(0).cast();
     assertNotNull(d);
     assertNotNull(d.getBody());
     assertEquals(1, $("#miframe").contents().size());
