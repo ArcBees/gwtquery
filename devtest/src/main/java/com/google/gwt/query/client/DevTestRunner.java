@@ -16,13 +16,25 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.body;
+import static com.google.gwt.query.client.plugins.Effects.Effects;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.impl.SelectorEngineJS;
+import com.google.gwt.query.client.impl.SelectorEngineNative;
+import com.google.gwt.query.client.impl.SelectorEngineSizzle;
+import com.google.gwt.query.client.impl.SelectorEngineSizzleGwt;
+import com.google.gwt.query.client.impl.SelectorEngineXPath;
+import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -36,23 +48,106 @@ import com.google.gwt.user.client.Timer;
  * 
  */
 public class DevTestRunner extends MyTestCase implements EntryPoint {
+  
+  public void test() {
+    Effects e = $().as(Effects).dequeue();
+  }
 
   static native String $j (String s) /*-{
     return "" + eval(s);
   }-*/;
+  
+  public void testSelectorsInIframe() {
+    $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    Element d = $("#miframe").contents().empty().get(0);
+    assertNotNull(d);
+    
+    $(d).html(
+            "<div class='branchA'><div class='target'>branchA target</div></div>"
+                + "<div class='branchB'><div class='target'>branchB target</div></div>");
+    
+    
+    executeSelectInAllImplementations(".branchA .target", d, 1);
+    executeSelectInAllImplementations(".branchA .target", body, 0);
+    executeSelectInAllImplementations("div .target", d, 2);
+    executeSelectInAllImplementations("div .target", body, 0);
+
+//    TestSelectors selectors = GWT.create(TestSelectors.class);
+//    assertEquals(1, selectors.branchAtarget(d).length());
+//    assertEquals(0, selectors.branchAtarget().length());
+//    assertEquals(2, selectors.divTarget(d).length());
+//    assertEquals(0, selectors.divTarget().length());
+
+  }
+  private void executeSelectInAllImplementations(String selector, Element elem, Object... array) {
+    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
+    SelectorEngineImpl selSizzGwt = new SelectorEngineSizzleGwt();
+    SelectorEngineImpl selJS = new SelectorEngineJS();
+    SelectorEngineImpl selXpath = new SelectorEngineXPath();
+    SelectorEngineImpl selC2X = new SelectorEngineCssToXPath();
+    SelectorEngineImpl selNative = new SelectorEngineNative();
+    assertArrayContains(selector, selSizz.select(selector, elem).getLength(), array);
+    assertArrayContains(selector, selSizzGwt.select(selector, elem).getLength(), array);
+    assertArrayContains(selector, selJS.select(selector, elem).getLength(), array);
+      assertArrayContains(selector, selNative.select(selector, elem).getLength(), array);
+    assertArrayContains(selector, selXpath.select(selector, elem).getLength(), array);
+    assertArrayContains(selector, selC2X.select(selector, elem).getLength(), array);
+  }
+  
+  public void testIFrameManipulation() {
+    $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    Document d = $("#miframe").contents().empty().get(0).cast();
+    $(d).html(getTestContent());
+    
+    SelectorEngineImpl s = new SelectorEngineSizzle();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+    s = new SelectorEngineSizzleGwt();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+    s = new SelectorEngineJS();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+    s = new SelectorEngineNative();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+    s = new SelectorEngineCssToXPath();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+    s = new SelectorEngineXPath();
+    System.out.println(s.select("div", d).getLength());
+    System.out.println(s.select("div", GQuery.document).getLength());
+//    
+//    assertNotNull(d);
+//    assertNotNull(d.getBody());
+//    assertEquals(1, $("#miframe").contents().size());
+//    assertEquals(1, $("#miframe").contents().find("body").size());
+//    assertEquals(0, $("#miframe").contents().find("body > h1").size());
+//    $("#miframe").contents().find("body").append("<h1>Test</h1>");
+//    assertEquals(1, $("#miframe").contents().find("body > h1").size());
+//    assertEquals(1, $(d).find("h1").size());
+  }
+  
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testSelectorEngineNative();
-      testCompiledSelectors();
-      testPropertiesAnimationComputeEffects();
-      
-      $(e).html("").after("<div>OK</div>");
+      testSelectorsInIframe();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
+  
+  public void testDomManip() {
+    String content = "<p>First</p><p class=\"selected\">Hello</p><p>How are you?</p>";
+    String expected = "<p class=\"selected\">Hello</p>";    
+    // filter()
+//     Commented because GQuery doesn't support this syntax yet
+    $(e).html(content);
+     System.out.println($("p", e).filter("p.selected:first-child"));
+//     assertHtmlEquals(expected, $("p", e).filter(".selected").toString());
+    
+  }  
   public void testSelectorEngineNative() {
     SelectorEngineImpl selEng = GWT.create(SelectorEngineImpl.class);
     executeSelectorEngineTests(selEng);
@@ -295,7 +390,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   // java 1.5 has a limitation in the size of static strings.
   private String getTestContent() {
     String ret = "";
-    ret += "<html><head>      </head><body><div>";
+    ret += "<div>";
     ret += "      <div class='head dialog'>";
     ret += "          <p><a href='http://www.w3.org/'><img alt='W3C' src='' height='48' width='72'></a></p>";
     ret += "          <h1 id='title'>Selectors</h1>";
@@ -2172,8 +2267,18 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     ret += "      </dd></dl>'; </div>";
     ret += "      <input name='n' value='v1' type='radio'>1";
     ret += "      <input name='n' value='v2' checked='checked' type='radio'>2";
-    ret += "</body></html>";
+    ret += "";
     return ret;
+  }
+
+  public HandlerRegistration addFocusHandler(FocusHandler handler) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void fireEvent(GwtEvent<?> event) {
+    // TODO Auto-generated method stub
+    
   }
   
 }

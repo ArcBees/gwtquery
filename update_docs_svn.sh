@@ -17,3 +17,8 @@ done
 find gwtquery-core/javadoc/  | grep -v .svn | xargs svn add
 
 find gwtquery-core/javadoc/ -type f -name "*html" -exec svn propset svn:mime-type text/html '{}' ';'
+
+
+
+
+
