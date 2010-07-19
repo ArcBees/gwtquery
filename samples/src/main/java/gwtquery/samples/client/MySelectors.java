@@ -1,6 +1,7 @@
 package gwtquery.samples.client;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Selector;
 import com.google.gwt.query.client.Selectors;
@@ -11,122 +12,122 @@ import com.google.gwt.query.client.Selectors;
 public interface MySelectors extends Selectors {
 
   @Selector("h1[id]:contains(Selectors)")
-  NodeList<Element> h1IdContainsSelectors();
+  NodeList<Element> h1IdContainsSelectors(Node n);
 
   @Selector("a[href][lang][class]")
-  NodeList<Element> aHrefLangClass();
+  NodeList<Element> aHrefLangClass(Node n);
 
-  @Selector("*:checked")
-  NodeList<Element> allChecked();
+//  @Selector("*:checked")
+//  NodeList<Element> allChecked(Node n);
 
   @Selector("body")
-  NodeList<Element> body();
+  NodeList<Element> body(Node n);
 
   @Selector("body div")
-  NodeList<Element> bodyDiv();
+  NodeList<Element> bodyDiv(Node n);
 
   @Selector("div .example")
-  NodeList<Element> divExample();
+  NodeList<Element> divExample(Node n);
 
   @Selector("div > div")
-  NodeList<Element> divGtP();
+  NodeList<Element> divGtP(Node n);
 
 //    @Selector("*:first")
-//    NodeList<Element> allFirst();
+//    NodeList<Element> allFirst(Node n);
 
   @Selector("div:not(.example)")
-  NodeList<Element> divNotExample();
+  NodeList<Element> divNotExample(Node n);
 
   @Selector("div p")
-  NodeList<Element> divP();
+  NodeList<Element> divP(Node n);
 
   @Selector("div p a")
-  NodeList<Element> divPA();
+  NodeList<Element> divPA(Node n);
 
   @Selector("div + p")
-  NodeList<Element> divPlusP();
+  NodeList<Element> divPlusP(Node n);
 
   @Selector("div[class^=exa][class$=mple]")
-  NodeList<Element> divPrefixExaSuffixMple();
+  NodeList<Element> divPrefixExaSuffixMple(Node n);
 
   @Selector("div #title")
-  NodeList<Element> divSpaceTitle();
+  NodeList<Element> divSpaceTitle(Node n);
 
   @Selector("div ~ p")
-  NodeList<Element> divTildeP();
+  NodeList<Element> divTildeP(Node n);
 
   @Selector("div[class]")
-  NodeList<Element> divWithClass();
+  NodeList<Element> divWithClass(Node n);
 
   @Selector("div[class~=dialog]")
-  NodeList<Element> divWithClassContainsDialog();
+  NodeList<Element> divWithClassContainsDialog(Node n);
 
   @Selector("div[class*=e]")
-  NodeList<Element> divWithClassContainsE();
+  NodeList<Element> divWithClassContainsE(Node n);
 
   @Selector("div[class=example]")
-  NodeList<Element> divWithClassExample();
+  NodeList<Element> divWithClassExample(Node n);
 
   @Selector("div[class!=madeup]")
-  NodeList<Element> divWithClassNotContainsMadeup();
+  NodeList<Element> divWithClassNotContainsMadeup(Node n);
 
   @Selector("div[class~=dialog]")
-  NodeList<Element> divWithClassListContainsDialog();
+  NodeList<Element> divWithClassListContainsDialog(Node n);
 
   @Selector("div[class^=exa]")
-  NodeList<Element> divWithClassPrefixExa();
+  NodeList<Element> divWithClassPrefixExa(Node n);
 
   @Selector("div[class$=mple]")
-  NodeList<Element> divWithClassSuffixMple();
+  NodeList<Element> divWithClassSuffixMple(Node n);
 
   @Selector("p:first-child")
-  NodeList<Element> firstChild();
+  NodeList<Element> firstChild(Node n);
 
   @Selector("h1#title")
-  NodeList<Element> h1Title();
+  NodeList<Element> h1Title(Node n);
 
   @Selector("h1#title + div > p")
-  NodeList<Element> h1TitlePlusDivGtP();
+  NodeList<Element> h1TitlePlusDivGtP(Node n);
 
   @Selector("p:last-child")
-  NodeList<Element> lastChild();
+  NodeList<Element> lastChild(Node n);
 
   @Selector("div, p a")
-  NodeList<Element> divCommaPA();
+  NodeList<Element> divCommaPA(Node n);
 
   @Selector(".note")
-  NodeList<Element> note();
+  NodeList<Element> note(Node n);
 
   @Selector("p:nth-child(n)")
-  NodeList<Element> nthChild();
+  NodeList<Element> nthChild(Node n);
 
   @Selector("p:nth-child(2n)")
-  NodeList<Element> nThChild2n();
+  NodeList<Element> nThChild2n(Node n);
 
   @Selector("p:nth-child(2n+1)")
-  NodeList<Element> nThChild2nPlus1();
+  NodeList<Element> nThChild2nPlus1(Node n);
 
   @Selector("p:contains(selectors)")
-  NodeList<Element> pContainsSelectors();
+  NodeList<Element> pContainsSelectors(Node n);
 
   @Selector("p:nth-child(even)")
-  NodeList<Element> nThChildEven();
+  NodeList<Element> nThChildEven(Node n);
 
   @Selector("p:nth-child(odd)")
-  NodeList<Element> nThChildOdd();
+  NodeList<Element> nThChildOdd(Node n);
 
   @Selector("p:only-child")
-  NodeList<Element> onlyChild();
+  NodeList<Element> onlyChild(Node n);
 
   @Selector("#title")
-  NodeList<Element> title();
+  NodeList<Element> title(Node n);
 
   @Selector("#title,h1#title")
-  NodeList<Element> titleAndh1Title();
+  NodeList<Element> titleAndh1Title(Node n);
 
   @Selector("ul .tocline2")
-  NodeList<Element> ulTocline2();
+  NodeList<Element> ulTocline2(Node n);
 
   @Selector("ui.toc li.tocline2")
-  NodeList<Element> ulTocLiTocLine2();
+  NodeList<Element> ulTocLiTocLine2(Node n);
 }

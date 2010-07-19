@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../js/dojo.js"></script>
+    <script type="text/javascript">
+        window.parent.dojobenchmark = function(sel) {
+            return dojo.query(sel).length;
+        }
+    </script>
+    <script type="text/javascript" src="../js/sizzle.js"></script>
+    <script type="text/javascript">
+        window.parent.sizzlebenchmark = function(sel) {
+            return Sizzle(sel).length;
+        }
+    </script>    
+    <script type="text/javascript" src="../js/DOMAssistantComplete-2.7.js"></script>
+    <script type="text/javascript">
+        DOMAssistant.harmonize();
+        window.parent.domassistantbenchmark = function(sel) {
+        	return DOMAssistant.$(sel).length;
+        }
+    </script>
+    <script language="javascript" src="../js/jquery-1.3.1.js"></script>
+    <script type="text/javascript">
+        jQuery.noConflict()
+        window.parent.jquerybenchmark = function(sel) {
+            return jQuery(sel).length;
+        }
+    </script>
+    <script type="text/javascript" src="../js/prototype-1.6.0.3.js"></script>
+    <script type="text/javascript">
+        window.parent.prototypebenchmark = function(sel) {
+            return $$(sel).length;
+        }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
