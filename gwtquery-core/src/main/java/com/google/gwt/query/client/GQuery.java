@@ -941,8 +941,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Remove all child nodes from the set of matched elements.
-   * In the case of a document element, it removes all the content.
-   * You should call empty() when you create a new iframe and you
+   * In the case of a document element, it removes all the content
+   * You should call this method whenever you create a new iframe and you
    * want to add dynamic content to it.
    */
   public GQuery empty() {

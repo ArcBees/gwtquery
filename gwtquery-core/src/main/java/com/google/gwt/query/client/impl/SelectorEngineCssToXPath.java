@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
@@ -29,9 +30,11 @@ import com.google.gwt.query.client.SelectorEngine;
 /**
  * Runtime selector engine implementation which translates selectors to XPath
  * and delegates to document.evaluate(). 
- * It is based on the regular expressions in Andrea Giammarchi's Css2Xpath 
+ * It is based on the regular expressions taken from Andrea Giammarchi's Css2Xpath 
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
+  
+  HashMap<String, String> cache = new HashMap<String, String>();
   
   /**
    * Interface for callbacks in replaceAll operations.
@@ -185,10 +188,12 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
   public NodeList<Element> select(String sel, Node ctx) {
     JSArray elm = JSArray.create();
-    if (!sel.startsWith("./") && !sel.startsWith("/")) {
-      sel = css2Xpath(sel);
+    String xsel = cache.get(sel);
+    if (xsel == null) {
+      xsel =  sel.startsWith("./") || sel.startsWith("/") ? sel : css2Xpath(sel);
+      cache.put(sel, xsel);
     }
-    SelectorEngine.xpathEvaluate(sel, ctx, elm);
+    SelectorEngine.xpathEvaluate(xsel, ctx, elm);
     return GQUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
   
