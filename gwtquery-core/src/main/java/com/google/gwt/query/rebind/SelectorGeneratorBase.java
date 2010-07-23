@@ -46,9 +46,13 @@ public abstract class SelectorGeneratorBase extends Generator {
     nodeType = oracle.findType("com.google.gwt.dom.client.Node");
 
     JClassType selectorType = oracle.findType(requestedClass);
+
+    String generatedPkgName = selectorType.getPackage().getName();
+    String generatedClassName = selectorType.getName().replace('.', '_') + "_"
+        + getImplSuffix();
+
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext,
-        selectorType.getPackage().getName(),
-        selectorType.getSimpleSourceName() + getImplSuffix(), requestedClass);
+        generatedPkgName, generatedClassName, requestedClass);
     if (sw != null) {
       for (JMethod method : selectorType.getMethods()) {
         generateMethod(sw, method, treeLogger);
@@ -57,8 +61,7 @@ public abstract class SelectorGeneratorBase extends Generator {
       sw.commit(treeLogger);
     }
 
-    return selectorType.getPackage().getName() + "."
-        + selectorType.getSimpleSourceName() + getImplSuffix();
+    return generatedPkgName + "." + generatedClassName;
   }
 
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
@@ -90,14 +93,21 @@ public abstract class SelectorGeneratorBase extends Generator {
 
     if (sel != null && sel.value().matches("^#\\w+$")) {
       // short circuit #foo
-      sw.println("return " + wrap(method, "JSArray.create(((Document)root).getElementById(\"" + sel.value().substring(1) + "\"))") + ";");
+      sw.println("return "
+          + wrap(method, "JSArray.create(((Document)root).getElementById(\""
+              + sel.value().substring(1) + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\w+$")) {
       // short circuit FOO
-      sw.println("return " + wrap(method, "JSArray.create(((Element)root).getElementsByTagName(\"" + sel.value() + "\"))") + ";");
+      sw.println("return "
+          + wrap(method,
+              "JSArray.create(((Element)root).getElementsByTagName(\""
+                  + sel.value() + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\.\\w+$")
         && hasGetElementsByClassName()) {
-      // short circuit .foo for browsers with native getElementsByClassName 
-      sw.println("return " + wrap(method, "JSArray.create(getElementsByClassName(\"" + sel.value().substring(1) + "\", root))") + ";");
+      // short circuit .foo for browsers with native getElementsByClassName
+      sw.println("return "
+          + wrap(method, "JSArray.create(getElementsByClassName(\""
+              + sel.value().substring(1) + "\", root))") + ";");
     } else {
       generateMethodBody(sw, method, logger, hasContext);
     }
@@ -107,7 +117,7 @@ public abstract class SelectorGeneratorBase extends Generator {
   }
 
   protected void debug(String s) {
-//    System.err.println(s);
+    // System.err.println(s);
     treeLogger.log(TreeLogger.DEBUG, s, null);
   }
 
@@ -125,12 +135,12 @@ public abstract class SelectorGeneratorBase extends Generator {
     if (printWriter == null) {
       return null;
     }
-    ClassSourceFileComposerFactory composerFactory
-        = new ClassSourceFileComposerFactory(packageName, className);
+    ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
+        packageName, className);
     composerFactory.setSuperclass("com.google.gwt.query.client.SelectorEngine");
     composerFactory.addImport("com.google.gwt.core.client.GWT");
     composerFactory.addImport("com.google.gwt.query.client.*");
-//    composerFactory.addImport("com.google.gwt.query.client.JSArray");
+    // composerFactory.addImport("com.google.gwt.query.client.JSArray");
 
     composerFactory.addImport("com.google.gwt.dom.client.*");
     for (String interfaceName : interfaceNames) {
@@ -169,8 +179,8 @@ public abstract class SelectorGeneratorBase extends Generator {
       TreeLogger treeLogger) {
     sw.println("public DeferredGQuery[] getAllSelectors() {");
     sw.indent();
-    sw.println(
-        "DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length) + "];");
+    sw.println("DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length)
+        + "];");
     int i = 0;
     for (JMethod m : methods) {
       Selector selectorAnnotation = m.getAnnotation(Selector.class);
@@ -181,16 +191,20 @@ public abstract class SelectorGeneratorBase extends Generator {
 
       sw.println("dg[" + i + "]=new DeferredGQuery() {");
       sw.indent();
-      sw.println(
-          "public String getSelector() { return \"" + selector + "\"; }");
-      sw.println("public GQuery eval(Node ctx) { return " + wrapJS(m,
-          m.getName() + (m.getParameters().length == 0 ? "()" : "(ctx)") + "")
-          + " ;}");
-      sw.println("public NodeList<Element> array(Node ctx) { return "
-          + ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? (
-          m.getName() + (m.getParameters().length == 0 ? "(); " : "(ctx); "))
-          : "eval" + (m.getParameters().length == 0 ? "(null).get(); "
-              : "(ctx).get(); ")) + "}");
+      sw
+          .println("public String getSelector() { return \"" + selector
+              + "\"; }");
+      sw.println("public GQuery eval(Node ctx) { return "
+          + wrapJS(m, m.getName()
+              + (m.getParameters().length == 0 ? "()" : "(ctx)") + "") + " ;}");
+      sw
+          .println("public NodeList<Element> array(Node ctx) { return "
+              + ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? (m
+                  .getName() + (m.getParameters().length == 0 ? "(); "
+                  : "(ctx); "))
+                  : "eval"
+                      + (m.getParameters().length == 0 ? "(null).get(); "
+                          : "(ctx).get(); ")) + "}");
 
       i++;
       sw.outdent();
