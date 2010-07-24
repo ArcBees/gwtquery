@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  *    min=200         Minimum time running each selector
  *    track=false     Don't draw the horse race
  *    ask=false       Run default benchmarks, don't ask the user.
+ *    wait=6000       Number of milliseconds to wait to insert the test html stuff in the iframes
  *    
  */
 public class GwtQueryBenchModule implements EntryPoint {
@@ -141,6 +142,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   
   private boolean useTrack = true;
   private boolean ask = true;
+  private int waitToLoad = 6000;
 
   /**
    * List of available benchmarks. 
@@ -290,6 +292,11 @@ public class GwtQueryBenchModule implements EntryPoint {
     if (par != null && "false".equals(par)) {
       ask = false;
     }
+    par = Window.Location.getParameter("wait"); 
+    if (par != null) {
+      waitToLoad = Integer.parseInt(par);
+    }
+    
     
     initSelects(benchmarks);
     initIFrames();
@@ -336,7 +343,7 @@ public class GwtQueryBenchModule implements EntryPoint {
         writeTestContent($(".ibench").contents().find("body").get(0));
         gwtiframe = $(".ibench").eq(0).contents().get(0);
       }
-    }.schedule(1000);
+    }.schedule(waitToLoad);
   }
 
 
