@@ -7,13 +7,11 @@
                      values="native,js"/>
     <property-provider name="selectorCapability">
         <![CDATA[
-   // useful for benchmarking tests when you want to force non-accelerated queries
-   //if(window.location.href.indexOf("_selector_force_js") != -1) return "js"; 
-   if(document.querySelectorAll && /native/.test(String(document.querySelectorAll))) {
-      return "native";
-   }
-   return "js"
-     ]]>
+         // useful for benchmarking tests when you want to force non-accelerated queries
+         if(window.location.href.indexOf("_selector_force_js") != -1) return "js"; 
+         if(document.querySelectorAll && /native/.test(String(document.querySelectorAll))) return "native";
+         return "js";
+        ]]>
     </property-provider>
 
     <generate-with class="com.google.gwt.query.rebind.LazyGenerator">

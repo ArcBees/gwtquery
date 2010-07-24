@@ -22,8 +22,7 @@ import com.google.gwt.query.client.Selector;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * An implementaton of pure-JS compile time selectors. This implementation
- * simply defers to the runtime selector engine.
+ * An implementation which simply defers to the runtime selector engine.
  */
 public class SelectorGeneratorJS extends SelectorGeneratorBase {
 
