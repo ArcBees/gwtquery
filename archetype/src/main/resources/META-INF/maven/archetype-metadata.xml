@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="gwtquery-plugin">
+
+  <requiredProperties>
+    <requiredProperty key="projectName"/>
+    <requiredProperty key="version">
+      <defaultValue>1.0-SNAPSHOT</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>.settings</directory>
+      <includes>
+        <include>**/*.prefs</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>.project</include>
+        <include>.classpath</include>
+        <include>README.txt</include>
+      </includes>
+    </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+            <include>**/*.xml</include>
+            <include>**/*.html</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/main/webapp</directory>
+          <includes>
+            <include>**/*.html</include>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+  </fileSets>
+</archetype-descriptor>

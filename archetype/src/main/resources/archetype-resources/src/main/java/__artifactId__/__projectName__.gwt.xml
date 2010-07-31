@@ -1,0 +1,8 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<module rename-to='${projectName}'>
+    <inherits name='com.google.gwt.query.Query'/>
+    <entry-point class='${package}.${artifactId}.client.${projectName}'/>
+</module>
+    

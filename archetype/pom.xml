@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.googlecode.gwtquery</groupId>
+  <artifactId>gquery-archetype</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>maven-archetype</packaging>
+  <name>This archetype generates a Gwt project with GwtQuery</name>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>3</version>
+  </parent>
+
+  <scm>
+    <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk/archetype</connection>
+    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/trunk/archetype</developerConnection>
+    <url>http://code.google.com/p/gwtquery/source/browse/trunk/archetype</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>manolo</id>
+      <name>Manuel Carrasco Moñino</name>
+      <email>manolo@apache.org</email>
+      <organization>ASF</organization>
+      <roles>
+         <role>Owner</role>
+         <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.jvnet.wagon-svn</groupId>
+        <artifactId>wagon-svn</artifactId>
+        <version>1.8</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.archetype</groupId>
+        <artifactId>archetype-packaging</artifactId>
+        <version>2.0-alpha-5</version>
+      </extension>
+    </extensions>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-archetype-plugin</artifactId>
+          <version>2.0-alpha-5</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.riedelcastro</groupId>
+        <artifactId>gcupload-maven-plugin</artifactId>
+        <version>0.9</version>
+        <configuration>
+          <allowSnapshots>true</allowSnapshots>
+          <projectName>gwtquery</projectName>
+          <uploads>
+          <upload>
+            <extensions>jar</extensions>
+            <labels>Featured</labels>
+          </upload>
+          </uploads>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>

@@ -16,26 +16,26 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.body;
-import static com.google.gwt.query.client.plugins.Effects.Effects;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
-import com.google.gwt.query.client.impl.SelectorEngineJS;
-import com.google.gwt.query.client.impl.SelectorEngineNative;
-import com.google.gwt.query.client.impl.SelectorEngineSizzle;
-import com.google.gwt.query.client.impl.SelectorEngineSizzleGwt;
-import com.google.gwt.query.client.impl.SelectorEngineXPath;
-import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -49,94 +49,87 @@ import com.google.gwt.user.client.Timer;
  */
 public class DevTestRunner extends MyTestCase implements EntryPoint {
   
-  public void test() {
-    Effects e = $().as(Effects).dequeue();
-  }
-
   static native String $j (String s) /*-{
     return "" + eval(s);
   }-*/;
   
-  public void testSelectorsInIframe() {
-    $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    Element d = $("#miframe").contents().empty().get(0);
-    assertNotNull(d);
-    
-    $(d).html(
-            "<div class='branchA'><div class='target'>branchA target</div></div>"
-                + "<div class='branchB'><div class='target'>branchB target</div></div>");
-    
-    
-    executeSelectInAllImplementations(".branchA .target", d, 1);
-    executeSelectInAllImplementations(".branchA .target", body, 0);
-    executeSelectInAllImplementations("div .target", d, 2);
-    executeSelectInAllImplementations("div .target", body, 0);
-
-//    TestSelectors selectors = GWT.create(TestSelectors.class);
-//    assertEquals(1, selectors.branchAtarget(d).length());
-//    assertEquals(0, selectors.branchAtarget().length());
-//    assertEquals(2, selectors.divTarget(d).length());
-//    assertEquals(0, selectors.divTarget().length());
-
-  }
-  private void executeSelectInAllImplementations(String selector, Element elem, Object... array) {
-    SelectorEngineImpl selSizz = new SelectorEngineSizzle();
-    SelectorEngineImpl selSizzGwt = new SelectorEngineSizzleGwt();
-    SelectorEngineImpl selJS = new SelectorEngineJS();
-    SelectorEngineImpl selXpath = new SelectorEngineXPath();
-    SelectorEngineImpl selC2X = new SelectorEngineCssToXPath();
-    SelectorEngineImpl selNative = new SelectorEngineNative();
-    assertArrayContains(selector, selSizz.select(selector, elem).getLength(), array);
-    assertArrayContains(selector, selSizzGwt.select(selector, elem).getLength(), array);
-    assertArrayContains(selector, selJS.select(selector, elem).getLength(), array);
-      assertArrayContains(selector, selNative.select(selector, elem).getLength(), array);
-    assertArrayContains(selector, selXpath.select(selector, elem).getLength(), array);
-    assertArrayContains(selector, selC2X.select(selector, elem).getLength(), array);
-  }
-  
-  public void testIFrameManipulation() {
-    $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    Document d = $("#miframe").contents().empty().get(0).cast();
-    $(d).html(getTestContent());
-    
-    SelectorEngineImpl s = new SelectorEngineSizzle();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-    s = new SelectorEngineSizzleGwt();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-    s = new SelectorEngineJS();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-    s = new SelectorEngineNative();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-    s = new SelectorEngineCssToXPath();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-    s = new SelectorEngineXPath();
-    System.out.println(s.select("div", d).getLength());
-    System.out.println(s.select("div", GQuery.document).getLength());
-//    
-//    assertNotNull(d);
-//    assertNotNull(d.getBody());
-//    assertEquals(1, $("#miframe").contents().size());
-//    assertEquals(1, $("#miframe").contents().find("body").size());
-//    assertEquals(0, $("#miframe").contents().find("body > h1").size());
-//    $("#miframe").contents().find("body").append("<h1>Test</h1>");
-//    assertEquals(1, $("#miframe").contents().find("body > h1").size());
-//    assertEquals(1, $(d).find("h1").size());
-  }
   
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testSelectorsInIframe();
+      testCompiledSelectors();
+      System.out.println("ok");
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
+  
+  public void myTest() {
+    Strangeness s = new Strangeness();
+    RootPanel.get().add(s);
+  }
+  
+  
+  public class Strangeness extends SimplePanel {
+    private final Button noprob;
+    private final Dilemma prob;
+
+    public Strangeness() {
+      this.noprob = new Button("toggle");
+      this.prob = new Dilemma();
+
+      // The button has a click handler to toggle ...
+      this.noprob.addClickHandler(new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          toggle();
+
+        }
+
+      });
+      // ... and the dilemma will use gwt-query to toggle.
+
+      setWidget(prob);
+    }
+
+    protected void toggle() {
+      setWidget(getWidget() == noprob ? prob : noprob);
+    }
+
+    private class Dilemma extends Composite {
+      private final Widget label;
+
+      public Dilemma() {
+        label = new HTML("<div class='dilemma'>I am a dilemma.</div>");
+        initWidget(label);
+      }
+
+      @Override
+      protected void onLoad() {
+        super.onLoad();
+        // This works:
+        // $(".dilemma") // (*)
+        // but this not:
+        $(label.getElement()) // (**)
+            .mousedown(new Function() {
+              @Override
+              public boolean f(Event e) {
+                toggle();
+                return true;
+              }
+            });
+      }
+
+      @Override
+      protected void onUnload() {
+        // $(".dilemma").unbind(Event.ONMOUSEDOWN); (*)
+//        $(label.getElement()).unbind(Event.ONMOUSEDOWN); // (**)
+        super.onUnload();
+      }
+    }
+  }
+  
+  
   
   public void testDomManip() {
     String content = "<p>First</p><p class=\"selected\">Hello</p><p>How are you?</p>";

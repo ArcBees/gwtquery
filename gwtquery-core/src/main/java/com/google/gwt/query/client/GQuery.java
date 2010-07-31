@@ -2529,7 +2529,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     item = item == window ? windowData : item;
     int id = item.hashCode();
     if (name != null) {
-      if (!dataCache.exists(id)) {
+      if (dataCache.exists(id)) {
         dataCache.getCache(id).delete(name);
       }
       if (dataCache.getCache(id).isEmpty()) {

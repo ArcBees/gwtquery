@@ -20,3 +20,4 @@ done
 find demos  | grep -v .svn | xargs svn add
 
 find demos -type f -name "*html" -exec svn propset svn:mime-type text/html '{}' ';'
+find demos -type f -name "*js" -exec svn propset svn:mime-type text/javascript '{}' ';'
