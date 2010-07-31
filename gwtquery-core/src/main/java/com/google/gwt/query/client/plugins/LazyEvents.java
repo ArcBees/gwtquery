@@ -40,6 +40,36 @@ public interface LazyEvents<T> extends LazyBase<T>{
   LazyEvents<T> bind(int eventbits, Object data, Function...funcs);
 
   /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The namespace is a way to group events of the same type, making easier unbind
+   * specific handlers.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function
+   * 
+   */  
+  LazyEvents<T> bind(int eventbits, String namespace, Object data, Function...funcs);
+
+  /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The name could contain a namespace which is a way to group events of the same type, 
+   * making easier unbind specific handlers.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function
+   * 
+   */  
+  LazyEvents<T> bind(String event, Object data, Function...funcs);
+
+  /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
    * element. The handler is executed only once for each element.
    *
@@ -80,5 +110,21 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER)
    */
   LazyEvents<T> unbind(int eventbits);
+
+  /**
+   * Removes all handlers, that matches the events bits and the namespace
+   * passed, from each element.
+   * 
+   * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER, "my.namespace")
+   */
+  LazyEvents<T> unbind(int eventbits, String name);
+
+  /**
+   * Removes all handlers, that matches event name passed. This name
+   * could contain a namespace.
+   * 
+   * Example: unbind("click.my.namespace")
+   */
+  LazyEvents<T> unbind(String name);
 
 }
