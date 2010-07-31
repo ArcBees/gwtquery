@@ -219,7 +219,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("green", $("p", e).css("background-color"));
     assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
     
-    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    $("p", e).css("color","").css("background","").css("fontSize", "12px");
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
     assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
@@ -231,7 +231,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
     
     
-    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    $("p", e).css("color","").css("background","").css("fontSize", "12px");
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
     assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
