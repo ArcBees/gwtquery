@@ -1,6 +1,0 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-eclipse.preferences.version=1
-entryPointModules=${package}.${artifactId}.${projectName}
-filesCopiedToWebInfLib=gwt-servlet.jar
