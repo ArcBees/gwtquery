@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.gwtquery</groupId>
   <artifactId>gquery-archetype</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>This archetype generates a Gwt project with GwtQuery</name>
 
@@ -15,9 +15,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:http://gwtquery.googlecode.com/svn/tags/gquery-archetype-0.1</connection>
-    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/tags/gquery-archetype-0.1</developerConnection>
-    <url>http://code.google.com/p/gwtquery/source/browse/tags/gquery-archetype-0.1</url>
+    <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk/archetype</connection>
+    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/trunk/archetype</developerConnection>
+    <url>http://code.google.com/p/gwtquery/source/browse/trunk/archetype</url>
   </scm>
 
   <developers>
