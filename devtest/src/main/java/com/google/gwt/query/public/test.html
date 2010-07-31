@@ -4,22 +4,6 @@
   </head>
   <body>
    <script language="javascript" src="test.nocache.js"></script>
-   <script language="javascript" src="jquery-1.3.1.js"></script>
-   
-   <button id="a">A</button>
-   <button id="b">B</button>
-   <script>
-     var a = $("#a");
-     var b = $("#b");
-     $(a).toggle(function() {
-         $(b).remove();
-     },function() {
-         $(a).after($(b));
-     });
-     $(b).click(function() {
-         alert("b clicked");
-     });
-   </script>
   </body>
 </html>
     

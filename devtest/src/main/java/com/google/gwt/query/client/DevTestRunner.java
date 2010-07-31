@@ -22,20 +22,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -58,89 +49,12 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     try {
       gwtSetUp();
       testCompiledSelectors();
-      System.out.println("ok");
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
   
-  public void myTest() {
-    Strangeness s = new Strangeness();
-    RootPanel.get().add(s);
-  }
-  
-  
-  public class Strangeness extends SimplePanel {
-    private final Button noprob;
-    private final Dilemma prob;
-
-    public Strangeness() {
-      this.noprob = new Button("toggle");
-      this.prob = new Dilemma();
-
-      // The button has a click handler to toggle ...
-      this.noprob.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
-          toggle();
-
-        }
-
-      });
-      // ... and the dilemma will use gwt-query to toggle.
-
-      setWidget(prob);
-    }
-
-    protected void toggle() {
-      setWidget(getWidget() == noprob ? prob : noprob);
-    }
-
-    private class Dilemma extends Composite {
-      private final Widget label;
-
-      public Dilemma() {
-        label = new HTML("<div class='dilemma'>I am a dilemma.</div>");
-        initWidget(label);
-      }
-
-      @Override
-      protected void onLoad() {
-        super.onLoad();
-        // This works:
-        // $(".dilemma") // (*)
-        // but this not:
-        $(label.getElement()) // (**)
-            .mousedown(new Function() {
-              @Override
-              public boolean f(Event e) {
-                toggle();
-                return true;
-              }
-            });
-      }
-
-      @Override
-      protected void onUnload() {
-        // $(".dilemma").unbind(Event.ONMOUSEDOWN); (*)
-//        $(label.getElement()).unbind(Event.ONMOUSEDOWN); // (**)
-        super.onUnload();
-      }
-    }
-  }
-  
-  
-  
-  public void testDomManip() {
-    String content = "<p>First</p><p class=\"selected\">Hello</p><p>How are you?</p>";
-    String expected = "<p class=\"selected\">Hello</p>";    
-    // filter()
-//     Commented because GQuery doesn't support this syntax yet
-    $(e).html(content);
-     System.out.println($("p", e).filter("p.selected:first-child"));
-//     assertHtmlEquals(expected, $("p", e).filter(".selected").toString());
-    
-  }  
   public void testSelectorEngineNative() {
     SelectorEngineImpl selEng = GWT.create(SelectorEngineImpl.class);
     executeSelectorEngineTests(selEng);
