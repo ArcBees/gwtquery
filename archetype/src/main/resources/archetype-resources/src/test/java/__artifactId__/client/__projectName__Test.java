@@ -11,7 +11,7 @@ import com.google.gwt.query.client.plugins.Effects.Speed;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 /**
- * Test class for ${projecName} entry-point
+ * Test class for ${projectName} entry-point
  */
 public class ${projectName}Test extends GWTTestCase {
 
@@ -29,7 +29,7 @@ public class ${projectName}Test extends GWTTestCase {
     final GQuery g =  $("<div></div>").appendTo(document);
 
     // run onModuleLoad
-    Art a = new Art();
+    ${projectName} a = new ${projectName}();
     a.onModuleLoad();
 
     // delay the test

@@ -12,7 +12,7 @@
       <maven.compiler.source>1.5</maven.compiler.source>
       <maven.compiler.target>1.5</maven.compiler.target>
       <gQueryVersion>1.0.0-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.0.3</gwtversion>
+      <gwtversion>2.0.4</gwtversion>
     </properties>
 
     <repositories>
@@ -45,6 +45,24 @@
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtversion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtversion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtversion}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
             <scope>provided</scope>
@@ -71,6 +89,23 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <configuration>
+                 <additionalClasspathElements>
+                   <additionalClasspathElement>\${project.build.sourceDirectory}</additionalClasspathElement>
+                   <additionalClasspathElement>\${project.build.testSourceDirectory}</additionalClasspathElement>
+                 </additionalClasspathElements>
+                 <useManifestOnlyJar>false</useManifestOnlyJar>
+                 <forkMode>always</forkMode>
+                 <systemProperties>
+                   <property>
+                     <name>gwt.args</name>
+                     <value>-out target/www</value>
+                   </property>
+                 </systemProperties>
+               </configuration>
             </plugin>
             <plugin>
               <artifactId>maven-clean-plugin</artifactId>
