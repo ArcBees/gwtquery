@@ -42,6 +42,8 @@ public class GQueryEventsTest extends GWTTestCase {
 
   static HTML testPanel = null;
 
+  int testSubmitEventCont = 0;
+
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
@@ -57,6 +59,22 @@ public class GQueryEventsTest extends GWTTestCase {
     } else {
       e.setInnerHTML("");
     }
+  } 
+  
+  /**
+   * TODO: DblClick doesn't work with HtmlUnit, investigate and report.
+   */
+  @DoNotRunWith(Platform.HtmlUnit)
+  public void testEventsDblClick() {
+    $(e).html("<p>Content</p>");
+    $("p", e).css("color", "white");
+    $("p", e).dblclick(new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "yellow");
+      }
+    });
+    $("p", e).dblclick();
+    assertEquals("yellow", $("p", e).css("color"));
   }
 
   public void testEventsPlugin() {
@@ -165,22 +183,6 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("abc", $("input", e).val());
   }
 
-  /**
-   * TODO: DblClick doesn't work with HtmlUnit, investigate and report.
-   */
-  @DoNotRunWith(Platform.HtmlUnit)
-  public void testEventsDblClick() {
-    $(e).html("<p>Content</p>");
-    $("p", e).css("color", "white");
-    $("p", e).dblclick(new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "yellow");
-      }
-    });
-    $("p", e).dblclick();
-    assertEquals("yellow", $("p", e).css("color"));
-  }
-
   public void testLazyMethods() {
     $(e).css("color", "white");
     assertEquals("white", $(e).css("color"));
@@ -194,23 +196,52 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("black", $(e).css("color"));
   }
 
-  public void testWidgetEvents() {
-    final Button b = new Button("click-me");
-    b.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        b.getElement().getStyle().setBackgroundColor("black");
+  public void testNamedBinding() {
+    $(e).html("<p>Content</p>");
+
+    $("p", e, Events.Events).bind("click.first.namespace", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("color", "red");
       }
     });
-    RootPanel.get().add(b);
-    $("button").click(lazy().css("color", "red").done());
+    $("p", e, Events.Events).bind("click.second.namespace", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("background", "green");
+      }
+    });
+    $("p", e, Events.Events).bind("click", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("fontSize", "24px");
+      }
+    });
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color"));
+    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    
+    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
 
-    $("button").click();
-    assertEquals("red", $("button").css("color"));
-    assertEquals("black", $("button").css("background-color"));
-    RootPanel.get().remove(b);
+    $("p", e, Events.Events).unbind("click.first.namespace");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    
+    
+    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+
+    $("p", e, Events.Events).unbind("click");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
   }
-
-  int testSubmitEventCont = 0;
 
   public void testSubmitEvent() {
     // Add a form and an iframe to the dom. The form target is the iframe
@@ -244,5 +275,21 @@ public class GQueryEventsTest extends GWTTestCase {
         assertTrue($("#miframe").contents().find("body").text().contains("ERROR"));
       }
     }.schedule(500);
+  }
+
+  public void testWidgetEvents() {
+    final Button b = new Button("click-me");
+    b.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        b.getElement().getStyle().setBackgroundColor("black");
+      }
+    });
+    RootPanel.get().add(b);
+    $("button").click(lazy().css("color", "red").done());
+
+    $("button").click();
+    assertEquals("red", $("button").css("color"));
+    assertEquals("black", $("button").css("background-color"));
+    RootPanel.get().remove(b);
   }
 }

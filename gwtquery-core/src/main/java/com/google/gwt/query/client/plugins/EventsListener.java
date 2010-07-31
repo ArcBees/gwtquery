@@ -39,17 +39,21 @@ public class EventsListener implements EventListener {
 
     Object data;
     Function function;
+    String nameSpace = "";
     int times = -1;
     int type;
 
-    BindFunction(int t, Function f, Object d) {
+    BindFunction(int t, String n, Function f, Object d) {
       type = t;
       function = f;
       data = d;
+      if (n!=null) {
+        nameSpace = n;
+      }
     }
 
-    BindFunction(int t, Function f, Object d, int times) {
-      this(t, f, d);
+    BindFunction(int t, String n, Function f, Object d, int times) {
+      this(t, n, f, d);
       this.times = times;
     }
 
@@ -65,7 +69,6 @@ public class EventsListener implements EventListener {
       return (type | etype) == type;
     }
   }
-
   // Gwt Events class has not this event defined
   public static int ONSUBMIT = 0x08000;
 
@@ -119,17 +122,26 @@ public class EventsListener implements EventListener {
     setGQueryEventListener(element, this);
     DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
   }
-
+  
   public void bind(int eventbits, final Object data, Function...funcs) {
-    for (Function function: funcs) {
-      bind(eventbits, data, function, -1);
-    }
+    bind(eventbits, null, data, funcs);
   }
-
+  
   public void bind(int eventbits, final Object data, final Function function,
       int times) {
+    bind(eventbits, null, data, function, times);
+  }
+
+  public void bind(int eventbits, String name, final Object data, Function...funcs) {
+    for (Function function: funcs) {
+      bind(eventbits, name, data, function, -1);
+    }
+  }
+  
+  public void bind(int eventbits, String namespace, final Object data, final Function function,
+      int times) {
     if (function == null) {
-      unbind(eventbits);
+      unbind(eventbits, namespace);
       return;
     }
     
@@ -143,7 +155,21 @@ public class EventsListener implements EventListener {
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
       
     }
-    elementEvents.add(new BindFunction(eventbits, function, data, times));
+    elementEvents.add(new BindFunction(eventbits, namespace, function, data, times));
+  }
+  
+  public void bind(String event, final Object data, Function...funcs) {
+    String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
+    String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
+    int b = 0;
+    if ("submit".equals(eventName)) {
+      b = ONSUBMIT;
+    } else {
+      b = Event.getTypeInt(eventName);
+    }
+    for (Function function: funcs) {
+      bind(b, nameSpace, data, function, -1);
+    }
   }
   
   public void dispatchEvent(Event event) {
@@ -179,14 +205,31 @@ public class EventsListener implements EventListener {
   }
   
   public void unbind(int eventbits) {
+    unbind(eventbits, null);
+  }
+  
+  public void unbind(int eventbits, String namespace) {
     JsObjectArray<BindFunction> newList = JsObjectArray
         .createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
-      if (!listener.hasEventType(eventbits)) {
+      
+      if (!listener.hasEventType(eventbits) || (namespace != null && namespace.length() != 0 && !listener.nameSpace.equals(namespace))) {
         newList.add(listener);
       }
     }
     elementEvents = newList;
+  }
+  
+  public void unbind(String event) {
+    String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
+    String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
+    int b = 0;
+    if ("submit".equals(eventName)) {
+      b = ONSUBMIT;
+    } else {
+      b = Event.getTypeInt(eventName);
+    }
+    unbind(b, nameSpace);
   }
 }

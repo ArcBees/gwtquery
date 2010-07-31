@@ -50,7 +50,7 @@ public class Events extends GQuery {
   public Events(NodeList<Element> list) {
     super(list);
   }
-
+  
   /**
    * Binds a set of handlers to a particular Event for each matched element.
    * 
@@ -65,6 +65,46 @@ public class Events extends GQuery {
   public Events bind(int eventbits, Object data, Function...funcs) {
     for (Element e : elements()) {
       EventsListener.getInstance(e).bind(eventbits, data, funcs);
+    }
+    return this;
+  }
+
+  /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The namespace is a way to group events of the same type, making easier unbind
+   * specific handlers.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function
+   * 
+   */  
+  public Events bind(int eventbits, String namespace, Object data, Function...funcs) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).bind(eventbits, namespace, data, funcs);
+    }
+    return this;
+  }
+
+  /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The name could contain a namespace which is a way to group events of the same type, 
+   * making easier unbind specific handlers.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function
+   * 
+   */  
+  public Events bind(String event, Object data, Function...funcs) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).bind(event, data, funcs);
     }
     return this;
   }
@@ -159,6 +199,32 @@ public class Events extends GQuery {
   public Events unbind(int eventbits) {
     for (Element e : elements()) {
       EventsListener.getInstance(e).unbind(eventbits);
+    }
+    return this;
+  }
+  
+  /**
+   * Removes all handlers, that matches the events bits and the namespace
+   * passed, from each element.
+   * 
+   * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER, "my.namespace")
+   */
+  public Events unbind(int eventbits, String name) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).unbind(eventbits, name);
+    }
+    return this;
+  }
+  
+  /**
+   * Removes all handlers, that matches event name passed. This name
+   * could contain a namespace.
+   * 
+   * Example: unbind("click.my.namespace")
+   */
+  public Events unbind(String name) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).unbind(name);
     }
     return this;
   }
