@@ -189,6 +189,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       selectedBenchmarks = readBenchmarkSelection();
       selectPanel.hide();
       $("#startrace").hide();
+      $("#results").show();
 
       initResultsTable(dg, selectedBenchmarks);
       initTrack(selectedBenchmarks);
@@ -300,8 +301,8 @@ public class GwtQueryBenchModule implements EntryPoint {
     
     initSelects(benchmarks);
     initIFrames();
+    $("#results").hide();
 
-    $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
   }
 
   private void d(int selnumber, int benchnumber, String text) {
@@ -337,11 +338,16 @@ public class GwtQueryBenchModule implements EntryPoint {
     } else {
       $(i.replaceAll("%ID%", "iframe")).appendTo(document).hide();
     }
+    
+    $("#startrace").text("Loading ...");
     // Wait a while until the iframe/s have been loaded
     new Timer() {
       public void run() {
         writeTestContent($(".ibench").contents().find("body").get(0));
         gwtiframe = $(".ibench").eq(0).contents().get(0);
+        $("#startrace").text("Start Race");
+        $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
+
       }
     }.schedule(waitToLoad);
   }
@@ -406,7 +412,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       g.append($(s));
     }
 
-    int height = g.find(".horse").height() * (benchs.length + 1);
+    int height = Math.max(35, g.find(".horse").height() * (benchs.length + 1));
     $("#racetrack").css("height", height + "px");
     
     GQuery flag = $("<img class=flag src='images/bench/animated-flag.gif'/>").appendTo(document);
