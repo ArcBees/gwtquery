@@ -92,7 +92,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   }
 
   /**
-   * Benchmark for others dynamic selectors
+   * Benchmark for other dynamic selectors
    */
   private class GQueryDynamicBenchmark implements Benchmark {
 
@@ -269,12 +269,22 @@ public class GwtQueryBenchModule implements EntryPoint {
       });
     }
   };
+  
+  private static native String showCapabilities() /*-{
+    return window + " " + $wnd + " " + document.querySelectorAll + " " + $doc.querySelectorAll; 
+  }-*/;
 
   /**
    * EntryPoint
    */
   public void onModuleLoad() {
+    
+    
     final MySelectors m = GWT.create(MySelectors.class);
+    
+    System.out.println(showCapabilities());
+    System.out.println($("body"));
+    
     dg = m.getAllSelectors();
     
     String par = Window.Location.getParameter("min");
@@ -412,11 +422,17 @@ public class GwtQueryBenchModule implements EntryPoint {
       g.append($(s));
     }
 
-    int height = Math.max(35, g.find(".horse").height() * (benchs.length + 1));
+    GQuery flag = $("<img class=flag src='images/bench/animated-flag.gif'/>").appendTo(document);
+
+    // These values are set in the css.
+    int horseHeight = 35;
+    int horseWidth = 150;
+    int flagWidth = 35;
+
+    int height = horseHeight * (benchs.length + 1);
     $("#racetrack").css("height", height + "px");
     
-    GQuery flag = $("<img class=flag src='images/bench/animated-flag.gif'/>").appendTo(document);
-    trackWidth = g.width() - g.find(".horse").width() - flag.width();
+    trackWidth = g.width() - horseWidth - flagWidth;
     flag.hide();
   }
   
