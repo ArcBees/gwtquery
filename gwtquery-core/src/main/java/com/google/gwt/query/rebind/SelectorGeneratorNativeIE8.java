@@ -36,7 +36,7 @@ public class SelectorGeneratorNativeIE8 extends SelectorGeneratorJS {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {
       sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
+          + wrap(method, "querySelectorAllIE8(\"" + selector + "\", root)") + ";");
     }
   }
 

@@ -7,9 +7,15 @@
                      values="native,js"/>
     <property-provider name="selectorCapability">
         <![CDATA[
-         // useful for benchmarking tests when you want to force non-accelerated queries
-         if(window.location.href.indexOf("_selector_force_js") != -1) return "js"; 
-         if(document.querySelectorAll && /native/.test(String(document.querySelectorAll))) return "native";
+         // Select javascript permutation when the user wants to
+         // force non-accelerated queries (for benchmarking tests)
+         if ($doc.location.href.indexOf("_selector_force_js") != -1) 
+           return "js"; 
+           
+         // Select the native permutation if querySelectorAll is available
+         if ($doc.querySelectorAll && /native/.test(String($doc.querySelectorAll))) 
+           return "native";
+           
          return "js";
         ]]>
     </property-provider>
@@ -74,7 +80,7 @@
         </any>
     </replace-with>
 
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="selectorCapability" value="native"/>
     </replace-with>
@@ -84,10 +90,10 @@
         <when-property-is name="selectorCapability" value="native"/>
         <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
-
+    
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
     <add-linker name="stddoctype"/>
-
+    
     <entry-point class='com.google.gwt.query.client.css.CSS'/>
 
 </module>

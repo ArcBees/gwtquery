@@ -27,12 +27,21 @@ import com.google.gwt.query.client.SelectorEngine;
 public class SelectorEngineNativeIE8 extends SelectorEngineSizzle {
   
   public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=|:checked|:not|:nth-|:last-|:only-).*";
+
+  private static boolean degradate = false;
   
   public NodeList<Element> select(String selector, Node ctx) {
-    if (selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+    if (degradate || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return super.select(selector, ctx); 
     } else {
-      return SelectorEngine.querySelectorAll(selector, ctx);
+      try {
+        return SelectorEngine.querySelectorAll(selector, ctx);
+      } catch (Exception e) {
+        System.out.println("IE8 Degradating to dynamic implementation, it seems IE8 is not running in standars mode");
+        degradate = true;
+        return super.select(selector, ctx); 
+      }
     }
   }
+  
 }

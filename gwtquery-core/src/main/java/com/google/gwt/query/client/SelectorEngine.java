@@ -39,6 +39,21 @@ public class SelectorEngine {
   public static native Node getPreviousSibling(Node n) /*-{
        return n.previousSibling || null; 
     }-*/;
+  
+  private static boolean degradate = false;
+  
+  public NodeList<Element> querySelectorAllIE8(String selector, Node ctx) {
+    if (degradate) {
+      return impl.select(selector, ctx);
+    } 
+    try {
+      return querySelectorAll(selector, ctx);
+    } catch (Exception e) {
+      System.out.println("IE8 Degradating to dynamic implementation, it seems IE8 is not running in standars mode");
+      degradate = true;
+      return querySelectorAll(selector, ctx);
+    }
+  }
 
   public static native NodeList<Element> querySelectorAll(String selector,
       Node ctx) /*-{
@@ -67,6 +82,7 @@ public class SelectorEngine {
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
+    // System.out.println("SelectorEngineImpl used: " + impl.getClass().getName());
   }
 
   public Node getRoot() {
