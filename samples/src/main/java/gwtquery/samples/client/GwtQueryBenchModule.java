@@ -11,10 +11,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.DeferredGQuery;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineJS;
+import com.google.gwt.query.client.impl.SelectorEngineNative;
+import com.google.gwt.query.client.impl.SelectorEngineNativeIE8;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.SelectorEngineSizzleGwt;
 import com.google.gwt.query.client.impl.SelectorEngineXPath;
@@ -52,31 +53,17 @@ public class GwtQueryBenchModule implements EntryPoint {
 
   public interface Benchmark {
     String getId();
-    int runSelector(DeferredGQuery dq, String selector);
+    String getName();
+    int runSelector(DeferredGQuery dq);
   }
   
-  /**
-   * Benchmark for the default dynamic selector implementation 
-   */
-  private class DynamicBenchmark extends GQueryDynamicBenchmark {
-    private SelectorEngineImpl engine;
-
-    DynamicBenchmark(SelectorEngineImpl engine, String name) {
-      super(name);
-      this.engine = engine;
-    }
-
-    public int runSelector(DeferredGQuery dq, String selector) {
-      return engine.select(selector, gwtiframe).getLength();
-    }
-  }
-
   /**
    * Benchmark for the compiled selectors
    */
   private class GQueryCompiledBenchmark implements Benchmark {
     
     String id;
+    String name;
     
     GQueryCompiledBenchmark(String id) {
       this.id = id;
@@ -86,30 +73,47 @@ public class GwtQueryBenchModule implements EntryPoint {
       return id;
     }
 
-    public int runSelector(DeferredGQuery dq, String selector) {
+    public int runSelector(DeferredGQuery dq) {
       return dq.array(gwtiframe).getLength();
+    }
+
+    public String getName() {
+      if (name == null) {
+        MySelectors s = GWT.create(MySelectors.class);
+        s.body(document);
+        name = s.getClass().getName().replaceAll("^.*_", "");
+        if (s.isDegradated()) {
+          name += " [degradated]";
+        }
+      }
+      return name;
     }
   }
 
   /**
-   * Benchmark for other dynamic selectors
+   * Benchmark for dynamic selectors
    */
-  private class GQueryDynamicBenchmark implements Benchmark {
+  private class DynamicBenchmark implements Benchmark {
 
-    private SelectorEngine engine;
+    protected SelectorEngineImpl engine;
     private String id;
 
-    GQueryDynamicBenchmark(String name) {
+    DynamicBenchmark(SelectorEngineImpl engine, String name) {
       this.id = name;
-      this.engine = new SelectorEngine();
+      this.engine = engine;
     }
 
     public String getId() {
       return id;
     }
 
-    public int runSelector(DeferredGQuery dq, String selector) {
-      return engine.select(selector, gwtiframe).getLength();
+    public int runSelector(DeferredGQuery dq) {
+      return engine.select(dq.getSelector(), gwtiframe).getLength();
+    }
+
+    public String getName() {
+      String name = engine.getClass().getName().replaceAll("^.*\\.", "");
+      return name;
     }
   }
 
@@ -127,13 +131,17 @@ public class GwtQueryBenchModule implements EntryPoint {
       return id;
     }
 
-    public int runSelector(DeferredGQuery dq, String selector) {
-      return runSelector(dq, id, selector);
+    public int runSelector(DeferredGQuery dq) {
+      return runSelector(id, dq.getSelector());
     }
 
-    public native int runSelector(DeferredGQuery dq, String id, String selector) /*-{
+    public native int runSelector(String id, String selector) /*-{
       return eval("$wnd." + id + "benchmark('" + selector + "')");
     }-*/;
+
+    public String getName() {
+      return id;
+    }
   }
 
   private int min_time = 200;
@@ -149,12 +157,14 @@ public class GwtQueryBenchModule implements EntryPoint {
    */
   private final Benchmark[] benchmarks = new Benchmark[] {
       new GQueryCompiledBenchmark("gwt_compiled"), 
-      new GQueryDynamicBenchmark("gwt_dynamic"),
+      new DynamicBenchmark((SelectorEngineImpl)GWT.create(SelectorEngineImpl.class), "gwt_dynamic"),
       new DynamicBenchmark(new SelectorEngineSizzle(), "gwt_sizzle_jsni"),
       new DynamicBenchmark(new SelectorEngineSizzleGwt(), "gwt_sizzle_java"),
       new DynamicBenchmark(new SelectorEngineJS(), "gwt_domassist_java"),
       new DynamicBenchmark(new SelectorEngineXPath(), "gwt_xpath"),
       new DynamicBenchmark(new SelectorEngineCssToXPath(), "gwt_css2xpath"),
+      new DynamicBenchmark(new SelectorEngineNative(), "gwt_native"),
+      new DynamicBenchmark(new SelectorEngineNativeIE8(), "gwt_nativeIE8"),
       new IframeBenchmark("jquery"),
       new IframeBenchmark("dojo"), 
       new IframeBenchmark("prototype"),
@@ -241,12 +251,11 @@ public class GwtQueryBenchModule implements EntryPoint {
           int num = 0;
           long end = start;
           Benchmark m = selectedBenchmarks[benchMarkNumber];
-          String selector = d.getSelector();
           double runtime = min_time;
           int found = 0;
           try {
             do {
-              num += m.runSelector(d, selector);
+              num += m.runSelector(d);
               end = System.currentTimeMillis();
               numCalls++;
             } while (end - start < min_time);
@@ -279,7 +288,6 @@ public class GwtQueryBenchModule implements EntryPoint {
    */
   public void onModuleLoad() {
     
-    
     final MySelectors m = GWT.create(MySelectors.class);
     
     System.out.println(showCapabilities());
@@ -307,7 +315,6 @@ public class GwtQueryBenchModule implements EntryPoint {
     if (par != null) {
       waitToLoad = Integer.parseInt(par);
     }
-    
     
     initSelects(benchmarks);
     initIFrames();
@@ -401,7 +408,7 @@ public class GwtQueryBenchModule implements EntryPoint {
           select = select.replaceAll("%SEL%", "checked='checked'");
         }
       }
-      g.append(select.replaceAll("%ID%", b.getId()).replaceAll("%SEL", ""));
+      g.append(select.replaceAll("%ID%", b.getId() + " " + b.getName()).replaceAll("%SEL", ""));
     }
     g.append("<br/><button id=run>Run</button>");
     $("#run").click(runBenchMarks);
@@ -463,7 +470,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   private Benchmark[] readBenchmarkSelection() {
     ArrayList<Benchmark> bs = new ArrayList<Benchmark>();
     for (Element e : $("input", selectPanel.getElement()).elements()) {
-      String val = $(e).val();
+      String val = $(e).val().replaceAll(" .*$", "");
       if (!"".equals(val)) {
         for (Benchmark b : benchmarks) {
           if (b.getId().equals(val)) {

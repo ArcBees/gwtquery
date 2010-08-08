@@ -27,4 +27,6 @@ public interface Selectors {
   public void setRoot(Node node);
   
   public Node getRoot();
+  
+  public boolean isDegradated();
 }

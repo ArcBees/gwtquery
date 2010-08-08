@@ -82,7 +82,6 @@ public class SelectorEngine {
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
-    // System.out.println("SelectorEngineImpl used: " + impl.getClass().getName());
   }
 
   public Node getRoot() {
@@ -107,6 +106,14 @@ public class SelectorEngine {
       r.addNode(context.getOwnerDocument().getElementById(id));
       return r;
     }
+  }
+  
+  public String getName() {
+    return getClass().getName().replaceAll("^.*\\.", "");
+  }
+  
+  public boolean isDegradated() {
+    return degradate;
   }
   
 }
