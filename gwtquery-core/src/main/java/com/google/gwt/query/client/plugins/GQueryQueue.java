@@ -53,7 +53,7 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
   @SuppressWarnings("unchecked")
   public T dequeue() {
     for (Element e : elements()) {
-      dequeue(e);
+      dequeueCurrentAndRunNext(e);
     }
     return (T)this;
   }
@@ -83,12 +83,22 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
   
   /**
    * Stop the function which is currently in execution, remove it
-   * from the queue an start the next one.  
+   * from the queue and start the next one.  
+   */
+  public T stop() {
+    return stop(false);
+  }
+  
+  /**
+   * Stop the function which is currently in execution and depending
+   * on the value of the parameter:
+   * - remove it from the queue and start the next one.
+   * - or remove all functions in the queue.  
    */
   @SuppressWarnings("unchecked")
-  public T stop() {
+  public T stop(boolean clearQueue) {
     for (Element e : elements()) {
-      stop(e);
+      stop(e, clearQueue);
     }
     return (T)this;
   }
@@ -97,10 +107,12 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
     return QUEUE_DATA_PREFIX + this.getClass().getName(); 
   }
 
-  private void dequeue(Element elem) {
+  private void dequeueCurrentAndRunNext(Element elem) {
     Queue<?> q = queue(elem, null);
     if (q != null) {
+      // Remove current function
       q.poll();
+      // Run the next in the queue
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
@@ -136,7 +148,7 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
     }
   }
   
-  private void stop(Element elem) {
+  private void stop(Element elem, boolean clear) {
     Queue<?> q = queue(elem, null);
     if (q != null) {
       Object f = q.peek();
@@ -145,7 +157,11 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
           ((Function) f).cancel(elem);
         }
       }
-      dequeue();
+      if (clear) {
+        q.clear();
+      } else {
+        dequeueCurrentAndRunNext(elem);
+      }
     }
   }
 }
