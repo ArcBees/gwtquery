@@ -59,7 +59,7 @@
                 <targetJdk>1.6</targetJdk>
               </configuration>
             </plugin>
-          <plugins>
+          </plugins>
         <pluginManagement>
         <plugins>
             <plugin>
