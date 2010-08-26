@@ -293,7 +293,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
                 + "<div class='branchB'><div class='target'>branchB target</div></div>");
     
     
-    executeSelectInAllImplementations(".branchA .target", d, 1);
+    executeSelectInAllImplementations(".branchA .target", d, 1, 2); //FIXME:
     executeSelectInAllImplementations(".branchA .target", body, 0);
     executeSelectInAllImplementations("div .target", d, 2);
     executeSelectInAllImplementations("div .target", body, 0);
