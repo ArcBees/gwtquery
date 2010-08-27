@@ -16,7 +16,6 @@
             <groupId>${groupId}</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${version}</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

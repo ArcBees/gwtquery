@@ -49,7 +49,7 @@
         <module>gwtquery-core</module>
         <module>plugins</module>
         <module>samples</module>
-        <module>devtest</module>
+        <!-- <module>devtest</module> -->
     </modules>
 
     <distributionManagement>
@@ -159,21 +159,14 @@
         </repository>
     </repositories>
 
+    <properties>
+        <gwtversion>2.0.4</gwtversion>
+        <gwt.loglevel>INFO</gwt.loglevel>
+        <gwt.outputstyle>PRETTY</gwt.outputstyle>
+        <gwt.modulesuffix></gwt.modulesuffix>
+    </properties>
+
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <jdk>1</jdk>
-            </activation>
-
-            <properties>
-                <gwtversion>2.0.4</gwtversion>
-                <gwt.loglevel>INFO</gwt.loglevel>
-                <gwt.outputstyle>PRETTY</gwt.outputstyle>
-                <gwt.modulesuffix></gwt.modulesuffix>
-            </properties>
-        </profile>
-
         <profile>
             <id>dev</id>
             <properties>
@@ -183,7 +176,6 @@
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
             </properties>
         </profile>
-
         <profile>
             <id>prod</id>
             <properties>
@@ -193,6 +185,5 @@
                 <gwt.modulesuffix></gwt.modulesuffix>
             </properties>
         </profile>
-
     </profiles>
 </project>
