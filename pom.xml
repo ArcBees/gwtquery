@@ -88,6 +88,17 @@
     </pluginRepositories>
 
     <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <configuration>
+                <targetJdk>1.5</targetJdk>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -156,7 +167,7 @@
             </activation>
 
             <properties>
-                <gwtversion>2.0.3</gwtversion>
+                <gwtversion>2.0.4</gwtversion>
                 <gwt.loglevel>INFO</gwt.loglevel>
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
                 <gwt.modulesuffix></gwt.modulesuffix>
@@ -166,7 +177,7 @@
         <profile>
             <id>dev</id>
             <properties>
-                <gwtversion>2.0.3</gwtversion>
+                <gwtversion>2.0.4</gwtversion>
                 <gwt.loglevel>WARN</gwt.loglevel>
                 <gwt.modulesuffix>Dev</gwt.modulesuffix>
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
@@ -176,7 +187,7 @@
         <profile>
             <id>prod</id>
             <properties>
-                <gwtversion>2.0.3</gwtversion>
+                <gwtversion>2.0.4</gwtversion>
                 <gwt.loglevel>ERROR</gwt.loglevel>
                 <gwt.outputstyle>OBF</gwt.outputstyle>
                 <gwt.modulesuffix></gwt.modulesuffix>

@@ -50,17 +50,6 @@
                 <directory>${basedir}/src/test/resources</directory>
             </testResource>
         </testResources>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-pmd-plugin</artifactId>
-              <configuration>
-                <targetJdk>1.6</targetJdk>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
