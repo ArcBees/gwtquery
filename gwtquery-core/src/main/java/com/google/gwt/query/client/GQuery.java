@@ -1529,6 +1529,46 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery one(int eventbits, final Object data, final Function f) {
     return as(Events).one(eventbits, data, f);
   }
+  
+  /**
+   * Get the current computed height for the first element in the set of matched elements, 
+   * including padding, border, but not the margin.
+   */
+  public int outerHeight(){
+    return outerHeight(false);
+  }
+  
+  /**
+   * Get the current computed height for the first element in the set of matched elements, 
+   * including padding, border, and optionally margin.
+   */
+  public int outerHeight(boolean includeMargin){
+    int outerHeight  = get(0).getOffsetHeight(); //height including padding and border
+    if (includeMargin){
+      outerHeight+=GQUtils.cur( get(0), "marginTop", true)+GQUtils.cur( get(0), "marginBottom", true);
+    }
+    return  outerHeight;
+  }   
+  
+  /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding, border, but not the margin.
+   */
+  public int outerWidth(){
+    return outerWidth(false);
+  }
+  
+  /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding and border and optionally margin.
+   */
+  public int outerWidth(boolean includeMargin){
+    int outerWidth  = get(0).getOffsetWidth(); //width including padding and border
+    if (includeMargin){
+      outerWidth+=GQUtils.cur( get(0), "marginRight", true)+GQUtils.cur( get(0), "marginLeft", true);
+    }
+    return  outerWidth;
+  } 
 
   /**
    * Get a set of elements containing the unique parents of the matched set of
@@ -2545,5 +2585,4 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache.delete(id);
     }
   }
-
 }

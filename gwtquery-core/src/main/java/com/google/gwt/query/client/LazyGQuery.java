@@ -717,6 +717,30 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> one(int eventbits, Object data, Function f);
 
   /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding, border, but not the margin.
+   */
+  int outerWidth();
+
+  /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding and border and optionally margin.
+   */
+  int outerWidth(boolean includeMargin);
+
+  /**
+   * Get the current computed height for the first element in the set of matched elements, 
+   * including padding, border, but not the margin.
+   */
+  int outerHeight();
+
+  /**
+   * Get the current computed height for the first element in the set of matched elements, 
+   * including padding, border, and optionally margin.
+   */
+  int outerHeight(boolean includeMargin);
+
+  /**
    * Get a set of elements containing the unique parents of the matched set of
    * elements.
    */
