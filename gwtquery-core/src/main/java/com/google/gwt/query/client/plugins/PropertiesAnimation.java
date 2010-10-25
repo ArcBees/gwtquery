@@ -169,12 +169,12 @@ public class PropertiesAnimation extends Animation {
     g.saveCssAttrs(attrsToSave);
     if (resize) {
       g.css("overflow", "hidden");
+      g.css("white-space", "nowrap");
     }
     if (move && !g.css("position", true).matches("absolute|relative")) {
       g.css("position", "relative");    
     }
     g.css("visibility", "visible");
-    g.css("white-space", "nowrap");
     super.onStart();
   }
 
