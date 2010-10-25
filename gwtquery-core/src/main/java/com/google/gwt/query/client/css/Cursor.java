@@ -70,10 +70,10 @@ public class Cursor implements CssProperty<Cursor.CursorValue> {
   }
 
   public String get(Style s) {
-    return s.getProperty("float");
+    return s.getProperty("cursor");
   }
 
   public void set(Style s, CursorValue value) {
-    s.setProperty("float", value.value());
+    s.setProperty("cursor", value.value());
   }
 }
