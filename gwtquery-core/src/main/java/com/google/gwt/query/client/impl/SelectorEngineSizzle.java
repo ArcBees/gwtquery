@@ -924,7 +924,6 @@ GQS.getText = function( elems ) {
 
   div = null; // release memory in IE
 })();
-alert("");
 //if ( document.querySelectorAll ) {
 //  (function(){
 //    var oldGQS = GQS, div = document.createElement("div");

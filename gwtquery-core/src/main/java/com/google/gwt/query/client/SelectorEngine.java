@@ -120,7 +120,7 @@ public class SelectorEngine {
   public static native boolean hasQuerySelectorAll() /*-{
     return $doc.location.href.indexOf("_force_no_native") < 0 &&
            $doc.querySelectorAll && 
-           /native/.test(String($doc.querySelectorAll)); 
+           /native/.test(String($doc.querySelectorAll)) ? true : false; 
   }-*/;
   
 }
