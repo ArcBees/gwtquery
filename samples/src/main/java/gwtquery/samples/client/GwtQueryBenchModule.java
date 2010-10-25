@@ -18,11 +18,11 @@ import com.google.gwt.query.client.impl.SelectorEngineNative;
 import com.google.gwt.query.client.impl.SelectorEngineNativeIE8;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.SelectorEngineSizzleGwt;
+import com.google.gwt.query.client.impl.SelectorEngineSizzleIE;
 import com.google.gwt.query.client.impl.SelectorEngineXPath;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.IncrementalCommand;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -46,50 +46,15 @@ import com.google.gwt.user.client.ui.RootPanel;
  *    min=200         Minimum time running each selector
  *    track=false     Don't draw the horse race
  *    ask=false       Run default benchmarks, don't ask the user.
- *    wait=6000       Number of milliseconds to wait to insert the test html stuff in the iframes
- *    
  */
 public class GwtQueryBenchModule implements EntryPoint {
-
+  
   public interface Benchmark {
     String getId();
     String getName();
     int runSelector(DeferredGQuery dq);
   }
   
-  /**
-   * Benchmark for the compiled selectors
-   */
-  private class GQueryCompiledBenchmark implements Benchmark {
-    
-    String id;
-    String name;
-    
-    GQueryCompiledBenchmark(String id) {
-      this.id = id;
-    }
-    
-    public String getId() {
-      return id;
-    }
-
-    public int runSelector(DeferredGQuery dq) {
-      return dq.array(gwtiframe).getLength();
-    }
-
-    public String getName() {
-      if (name == null) {
-        MySelectors s = GWT.create(MySelectors.class);
-        s.body(document);
-        name = s.getClass().getName().replaceAll("^.*_", "");
-        if (s.isDegradated()) {
-          name += " [degradated]";
-        }
-      }
-      return name;
-    }
-  }
-
   /**
    * Benchmark for dynamic selectors
    */
@@ -107,16 +72,49 @@ public class GwtQueryBenchModule implements EntryPoint {
       return id;
     }
 
-    public int runSelector(DeferredGQuery dq) {
-      return engine.select(dq.getSelector(), gwtiframe).getLength();
-    }
-
     public String getName() {
       String name = engine.getClass().getName().replaceAll("^.*\\.", "");
       return name;
     }
+
+    public int runSelector(DeferredGQuery dq) {
+      return engine.select(dq.getSelector(), gwtiframe).getLength();
+    }
   }
 
+  /**
+   * Benchmark for the compiled selectors
+   */
+  private class GQueryCompiledBenchmark implements Benchmark {
+    
+    String id;
+    String name;
+    
+    GQueryCompiledBenchmark(String id) {
+      this.id = id;
+    }
+    
+    public String getId() {
+      return id;
+    }
+
+    public String getName() {
+      if (name == null) {
+        MySelectors s = GWT.create(MySelectors.class);
+        s.body(document);
+        name = s.getClass().getName().replaceAll("^.*_", "");
+        if (s.isDegradated()) {
+          name += " [degradated]";
+        }
+      }
+      return name;
+    }
+
+    public int runSelector(DeferredGQuery dq) {
+      return dq.array(gwtiframe).getLength();
+    }
+  }
+  
   /**
    * Benchmark for external libraries
    */
@@ -131,6 +129,10 @@ public class GwtQueryBenchModule implements EntryPoint {
       return id;
     }
 
+    public String getName() {
+      return id;
+    }
+
     public int runSelector(DeferredGQuery dq) {
       return runSelector(id, dq.getSelector());
     }
@@ -138,20 +140,26 @@ public class GwtQueryBenchModule implements EntryPoint {
     public native int runSelector(String id, String selector) /*-{
       return eval("$wnd." + id + "benchmark('" + selector + "')");
     }-*/;
-
-    public String getName() {
-      return id;
-    }
   }
 
-  private int min_time = 200;
-  
-  private boolean shareIframes = true;
-  
-  private boolean useTrack = true;
-  private boolean ask = true;
-  private int waitToLoad = 6000;
+  public static native void exportIframeReadyCallback(GwtQueryBenchModule bench) /*-{
+    $wnd.iframebench_ready_callback = function() {
+      bench.@gwtquery.samples.client.GwtQueryBenchModule::iframeReadyCallback()();
+    };
+  }-*/;
 
+  private boolean ask = true;
+  
+  private Function askBenchMarks = new Function(){
+    public void f() {
+      if (!running && ask) {
+        selectPanel.center();
+      } else {
+        runBenchMarks.f();
+      }
+    }
+  };
+  
   /**
    * List of available benchmarks. 
    */
@@ -159,6 +167,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       new GQueryCompiledBenchmark("gwt_compiled"), 
       new DynamicBenchmark((SelectorEngineImpl)GWT.create(SelectorEngineImpl.class), "gwt_dynamic"),
       new DynamicBenchmark(new SelectorEngineSizzle(), "gwt_sizzle_jsni"),
+      new DynamicBenchmark(new SelectorEngineSizzleIE(), "gwt_sizzle_ie_jsni"),
       new DynamicBenchmark(new SelectorEngineSizzleGwt(), "gwt_sizzle_java"),
       new DynamicBenchmark(new SelectorEngineJS(), "gwt_domassist_java"),
       new DynamicBenchmark(new SelectorEngineXPath(), "gwt_xpath"),
@@ -171,34 +180,35 @@ public class GwtQueryBenchModule implements EntryPoint {
       new IframeBenchmark("sizzle"), 
       new IframeBenchmark("domassistant") 
   };
-  
   /**
    * Pre-selected benchmarks
    */
   private String[] defaultBenchmarks = {"gwt_compiled", "gwt_dynamic", "jquery", "prototype", "dojo"};
 
   private DeferredGQuery dg[];
-  private FlexTable grid = new FlexTable();
-  private Element gwtiframe;
-  private Benchmark[] selectedBenchmarks;
-  private double trackWidth;
-  private PopupPanel selectPanel = new PopupPanel();
   
-  private Function askBenchMarks = new Function(){
-    public void f(Element e) {
-      selectPanel.center();
-    }
-  };
+  private FlexTable grid = new FlexTable();
 
+  private Element gwtiframe;
+  private int min_time = 200;
+  private boolean running = false;
   /**
    * Main function to run all the selected benchmarks
    */
   private Function runBenchMarks = new Function() {
-    public void f(Element elem) {
+    public void f() {
+      
+      // Force to stop the race
+      if (running) {
+        running = false;
+        $("#startrace").text("Run Again");
+        return;
+      }
+      running = true;
       
       selectedBenchmarks = readBenchmarkSelection();
       selectPanel.hide();
-      $("#startrace").hide();
+      $("#startrace").text("Stop Race");
       $("#results").show();
 
       initResultsTable(dg, selectedBenchmarks);
@@ -215,6 +225,10 @@ public class GwtQueryBenchModule implements EntryPoint {
         double winTime = Double.MAX_VALUE;
 
         public boolean execute() {
+          // The race has been stopped
+          if (!running) {
+            return false;
+          }
           if (benchMarkNumber >= selectedBenchmarks.length) {
             benchMarkNumber = 0;
             numCalls = 0;
@@ -239,7 +253,7 @@ public class GwtQueryBenchModule implements EntryPoint {
                 d(selectorNumber, i, (((int) (totalTimes[i] * 100)) / 100.0) + " ms");
                 if (totalTimes[i] <= min) {
                   flagWinner(selectedBenchmarks[i].getId());
-                  $("#startrace").show();
+                  $("#startrace").text("Run Again");
                   setResultClass(selectorNumber, i);
                 }
               }
@@ -278,10 +292,20 @@ public class GwtQueryBenchModule implements EntryPoint {
       });
     }
   };
+  private Benchmark[] selectedBenchmarks;
+  private PopupPanel selectPanel = new PopupPanel();
+  private boolean shareIframes = true;
   
-  private static native String showCapabilities() /*-{
-    return window + " " + $wnd + " " + document.querySelectorAll + " " + $doc.querySelectorAll; 
-  }-*/;
+  private double trackWidth;
+
+  private boolean useTrack = true;
+  
+  public void iframeReadyCallback() {
+    writeTestContent($(".ibench").contents().find("body").get(0));
+    gwtiframe = $(".ibench").eq(0).contents().get(0);
+    $("#startrace").text("Start Race");
+    $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
+  }
 
   /**
    * EntryPoint
@@ -289,9 +313,6 @@ public class GwtQueryBenchModule implements EntryPoint {
   public void onModuleLoad() {
     
     final MySelectors m = GWT.create(MySelectors.class);
-    
-    System.out.println(showCapabilities());
-    System.out.println($("body"));
     
     dg = m.getAllSelectors();
     
@@ -311,26 +332,23 @@ public class GwtQueryBenchModule implements EntryPoint {
     if (par != null && "false".equals(par)) {
       ask = false;
     }
-    par = Window.Location.getParameter("wait"); 
-    if (par != null) {
-      waitToLoad = Integer.parseInt(par);
-    }
     
+    exportIframeReadyCallback(this);
     initSelects(benchmarks);
     initIFrames();
     $("#results").hide();
 
   }
 
+  private void d(int selnumber, int benchnumber, double time, int found) {
+    String text = found < 0 ? "Error" : "" + (((int) (time * 10)) / 10.0) + " ms | " + found  + " found";
+    d(selnumber, benchnumber,  text);
+  }
+
   private void d(int selnumber, int benchnumber, String text) {
     grid.setText(selnumber + 1, benchnumber + 1, text);
     Element td = grid.getCellFormatter().getElement(selnumber + 1, benchnumber + 1);
     DOM.scrollIntoView((com.google.gwt.user.client.Element) td);
-  }
-
-  private void d(int selnumber, int benchnumber, double time, int found) {
-    String text = found < 0 ? "Error" : "" + (((int) (time * 10)) / 10.0) + " ms | " + found  + " found";
-    d(selnumber, benchnumber,  text);
   }
 
   private void flagWinner(String idWinner) {
@@ -355,20 +373,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     } else {
       $(i.replaceAll("%ID%", "iframe")).appendTo(document).hide();
     }
-    
-    $("#startrace").text("Loading ...");
-    // Wait a while until the iframe/s have been loaded
-    new Timer() {
-      public void run() {
-        writeTestContent($(".ibench").contents().find("body").get(0));
-        gwtiframe = $(".ibench").eq(0).contents().get(0);
-        $("#startrace").text("Start Race");
-        $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
-
-      }
-    }.schedule(waitToLoad);
   }
-
 
   /**
    * Reset the result table
@@ -462,11 +467,6 @@ public class GwtQueryBenchModule implements EntryPoint {
     }
   }
   
-  private void setResultClass(int selNumber, int winNumber) {
-    Element e = grid.getCellFormatter().getElement(selNumber + 1, winNumber + 1);
-    $(e).addClass("win").siblings().attr("class", "").addClass("tie").eq(0).removeClass("tie");
-  }
-  
   private Benchmark[] readBenchmarkSelection() {
     ArrayList<Benchmark> bs = new ArrayList<Benchmark>();
     for (Element e : $("input", selectPanel.getElement()).elements()) {
@@ -480,6 +480,11 @@ public class GwtQueryBenchModule implements EntryPoint {
       }
     }
     return bs.toArray(new Benchmark[bs.size()]);
+  }
+  
+  private void setResultClass(int selNumber, int winNumber) {
+    Element e = grid.getCellFormatter().getElement(selNumber + 1, winNumber + 1);
+    $(e).addClass("win").siblings().attr("class", "").addClass("tie").eq(0).removeClass("tie");
   }
 
   /**
