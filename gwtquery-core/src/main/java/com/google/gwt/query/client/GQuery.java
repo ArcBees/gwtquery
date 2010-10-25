@@ -58,7 +58,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     public int left;
     public int top;
 
-    Offset(int left, int top) {
+    public Offset(int left, int top) {
       this.left = left;
       this.top = top;
     }
