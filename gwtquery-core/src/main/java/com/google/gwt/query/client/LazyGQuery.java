@@ -42,6 +42,10 @@ import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
@@ -144,10 +148,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   <T extends GQuery> T as(Class<T> plugin);
 
   /**
+   * Return a GWT Widget containing the first matched element.
+   * 
+   * If the element is already associated to a widget it returns the original widget, 
+   * otherwise a new GWT widget will be created depending on the tagName.
+   * 
+   */
+  Widget asWidget();
+
+  /**
    * Set a key/value object as properties to all matched elements.
    *
-   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test
-   * Image'"))
+   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test Image'"))
    */
   LazyGQuery<T> attr(Properties properties);
 
@@ -717,18 +729,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> one(int eventbits, Object data, Function f);
 
   /**
-   * Get the current computed width for the first element in the set of matched elements, 
-   * including padding, border, but not the margin.
-   */
-  int outerWidth();
-
-  /**
-   * Get the current computed width for the first element in the set of matched elements, 
-   * including padding and border and optionally margin.
-   */
-  int outerWidth(boolean includeMargin);
-
-  /**
    * Get the current computed height for the first element in the set of matched elements, 
    * including padding, border, but not the margin.
    */
@@ -739,6 +739,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * including padding, border, and optionally margin.
    */
   int outerHeight(boolean includeMargin);
+
+  /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding, border, but not the margin.
+   */
+  int outerWidth();
+
+  /**
+   * Get the current computed width for the first element in the set of matched elements, 
+   * including padding and border and optionally margin.
+   */
+  int outerWidth(boolean includeMargin);
 
   /**
    * Get a set of elements containing the unique parents of the matched set of

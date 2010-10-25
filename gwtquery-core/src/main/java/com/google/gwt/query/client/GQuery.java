@@ -45,6 +45,10 @@ import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Gwt Query is a GWT clone of the popular jQuery library.
@@ -184,6 +188,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static GQuery $(Element element) {
     return new GQuery(JSArray.create(element));
+  }
+
+  /**
+   * Wrap a GQuery around an existing widget.
+   */
+  public static GQuery $(Widget widget) {
+    GQuery q = new GQuery(JSArray.create(widget.getElement()));
+    q.data("widget", widget);
+    return q;
   }
 
   /**
@@ -602,12 +615,37 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     throw new RuntimeException("No plugin registered for class " + plugin.getName());
   }
+  
+  /**
+   * Return a GWT Widget containing the first matched element.
+   * 
+   * If the element is already associated to a widget it returns the original widget, 
+   * otherwise a new GWT widget will be created depending on the tagName.
+   * 
+   */
+  public Widget asWidget() {
+    // TODO: complete it and move to the Widget plugin
+    if (data("widget") == null) {
+      Element e = elements.getItem(0);
+      Widget w = null;
+      if ("div".equalsIgnoreCase(e.getTagName()) || "span".equalsIgnoreCase(e.getTagName())) {
+        w = HTML.wrap(e); 
+      } else  if ("button".equalsIgnoreCase(e.getTagName())) {
+        w = Button.wrap(e);
+      } else  if ("text".equalsIgnoreCase(e.getTagName())) {
+        w = TextBox.wrap(e);
+      } else {
+        w = new HTML($(e).toString());
+      }
+      data(e, "widget", w);
+    }
+    return (Widget) data("widget");
+  }
 
   /**
    * Set a key/value object as properties to all matched elements.
    *
-   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test
-   * Image'"))
+   * Example: $("img").attr(new Properties("src: 'test.jpg', alt: 'Test Image'"))
    */
   public GQuery attr(Properties properties) {
     for (Element e : elements()) {

@@ -21,10 +21,13 @@ import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -754,6 +757,24 @@ public class GQueryCoreTest extends GWTTestCase {
     myNewElement.appendTo(document);
     isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
     assertEquals(true, isAttachedToTheDOM);
+  }
+  
+  public void testGQueryWidgets() {
+    final Button b1 = new Button("click-me");
+    RootPanel.get().add(b1);
+    GQuery g = $(b1);
+    Button b2 = (Button) g.asWidget();
+    assertEquals(b1, b2);
+    
+    b2 = (Button)$("<button>Click-me</button>").appendTo(document).asWidget();
+    b2.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        $(b1).css("color", "red");
+      }
+    });
+    
+    (b2).click();
+    assertEquals("red", $(b1).css("color"));
   }
 
 }
