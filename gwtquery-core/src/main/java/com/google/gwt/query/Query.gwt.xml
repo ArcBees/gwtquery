@@ -84,7 +84,8 @@
         <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
 
-    <!-- IE8 needs the iframe with the app set to standard to use native selector -->    
+    <!-- IE8 needs the iframe where the js of app is loaded set to standard in order 
+         to use the queryAll native selector -->    
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
     <add-linker name="stddoctype"/>
     

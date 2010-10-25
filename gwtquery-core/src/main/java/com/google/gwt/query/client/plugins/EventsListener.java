@@ -66,7 +66,7 @@ public class EventsListener implements EventListener {
     }
 
     public boolean hasEventType(int etype) {
-      return (type | etype) == type;
+      return (type & etype) == type;
     }
   }
   // Gwt Events class has not this event defined

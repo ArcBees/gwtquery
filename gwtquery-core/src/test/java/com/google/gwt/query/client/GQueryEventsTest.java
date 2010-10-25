@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
 
 import com.google.gwt.dom.client.Element;
@@ -289,5 +290,31 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("red", $("button").css("color"));
     assertEquals("black", $("button").css("background-color"));
     RootPanel.get().remove(b);
+  }
+  
+  
+  public void testUnbindMultipleEvents() {
+    String content = "<p>content</p>";
+    $(e).html(content);
+    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
+      public void f(Element e){
+        $("p").css("color", "red");
+      }
+    });
+    $(document).bind(Event.ONMOUSEUP, null, new Function(){
+      public void f(Element e){
+        $("p").css("color", "yellow");
+      }
+    });
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("red", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("yellow", $("p").css("color"));
+    $("p").css("color", "black");
+    $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("black", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("black", $("p").css("color"));
   }
 }
