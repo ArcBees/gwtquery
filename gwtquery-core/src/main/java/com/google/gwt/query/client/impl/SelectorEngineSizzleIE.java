@@ -24,10 +24,22 @@ import com.google.gwt.dom.client.NodeList;
 
 /**
  * Original Sizzle CSS Selector Engine v1.0 inserted in a JSNI method.
- * The only difference with the original is that it uses the window.GQS
- * instead of window.Sizzle to avoid interfering with the original one.
+ * There are a couple of differences with the original:
+ * - It uses the window.IES instead of window.Sizzle to avoid interfering.
+ * - All the stuff related with non IE browsers has been removed making this
+ *   implementation a bit faster and smaller.
+ * 
+ * There are some reasons why we are using sizzle with IE instead of any other 
+ * implementation.
+ *  - Sizzle is the faster selector with IE we have tested.
+ *  - Only IE8 under some conditions and with a limited set of selectors
+ *    has a native and fast method for selecting dom elements. So we need
+ *    a complete implementation in javascript.
+ *  - We don't want to make the effort of writing a complete js implementation (DRY).
+ *  - It is supposed this class will be here for a while, because new versions of
+ *    IE are coming.
  */
-public class SelectorEngineSizzle extends SelectorEngineImpl {
+public class SelectorEngineSizzleIE extends SelectorEngineImpl {
   
   
   public static native void initialize() /*-{
@@ -36,19 +48,9 @@ public class SelectorEngineSizzle extends SelectorEngineImpl {
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
   done = 0,
   toString = Object.prototype.toString,
-  hasDuplicate = false,
-  baseHasDuplicate = true;
+  hasDuplicate = false;
 
-// Here we check if the JavaScript engine is using some sort of
-// optimization where it does not always call our comparision
-// function. If that is the case, discard the hasDuplicate value.
-//   Thus far that includes Google Chrome.
-[0, 0].sort(function(){
-  baseHasDuplicate = false;
-  return 0;
-});
-
-var GQS = function(selector, context, results, seed) {
+var IES = function(selector, context, results, seed) {
   results = results || [];
   context = context || document;
 
@@ -62,7 +64,7 @@ var GQS = function(selector, context, results, seed) {
     return results;
   }
 
-  var parts = [], m, set, checkSet, extra, prune = true, contextXML = GQS.isXML(context),
+  var parts = [], m, set, checkSet, extra, prune = true, contextXML = IES.isXML(context),
     soFar = selector, ret, cur, pop, i;
   
   // Reset the position of the chunker regexp (start from head)
@@ -88,7 +90,7 @@ var GQS = function(selector, context, results, seed) {
     } else {
       set = Expr.relative[ parts[0] ] ?
         [ context ] :
-        GQS( parts.shift(), context );
+        IES( parts.shift(), context );
 
       while ( parts.length ) {
         selector = parts.shift();
@@ -105,15 +107,15 @@ var GQS = function(selector, context, results, seed) {
     // (but not if it'll be faster if the inner selector is an ID)
     if ( !seed && parts.length > 1 && context.nodeType === 9 && !contextXML &&
         Expr.match.ID.test(parts[0]) && !Expr.match.ID.test(parts[parts.length - 1]) ) {
-      ret = GQS.find( parts.shift(), context, contextXML );
-      context = ret.expr ? GQS.filter( ret.expr, ret.set )[0] : ret.set[0];
+      ret = IES.find( parts.shift(), context, contextXML );
+      context = ret.expr ? IES.filter( ret.expr, ret.set )[0] : ret.set[0];
     }
 
     if ( context ) {
       ret = seed ?
         { expr: parts.pop(), set: makeArray(seed) } :
-        GQS.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
-      set = ret.expr ? GQS.filter( ret.expr, ret.set ) : ret.set;
+        IES.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
+      set = ret.expr ? IES.filter( ret.expr, ret.set ) : ret.set;
 
       if ( parts.length > 0 ) {
         checkSet = makeArray(set);
@@ -147,7 +149,7 @@ var GQS = function(selector, context, results, seed) {
   }
 
   if ( !checkSet ) {
-    GQS.error( cur || selector );
+    IES.error( cur || selector );
   }
 
   if ( toString.call(checkSet) === "[object Array]" ) {
@@ -155,7 +157,7 @@ var GQS = function(selector, context, results, seed) {
       results.push.apply( results, checkSet );
     } else if ( context && context.nodeType === 1 ) {
       for ( i = 0; checkSet[i] != null; i++ ) {
-        if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && GQS.contains(context, checkSet[i])) ) {
+        if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && IES.contains(context, checkSet[i])) ) {
           results.push( set[i] );
         }
       }
@@ -171,16 +173,16 @@ var GQS = function(selector, context, results, seed) {
   }
 
   if ( extra ) {
-    GQS( extra, origContext, results, seed );
-    GQS.uniqueSort( results );
+    IES( extra, origContext, results, seed );
+    IES.uniqueSort( results );
   }
 
   return results;
 };
 
-GQS.uniqueSort = function(results){
+IES.uniqueSort = function(results){
   if ( sortOrder ) {
-    hasDuplicate = baseHasDuplicate;
+    hasDuplicate = false;
     results.sort(sortOrder);
 
     if ( hasDuplicate ) {
@@ -195,11 +197,11 @@ GQS.uniqueSort = function(results){
   return results;
 };
 
-GQS.matches = function(expr, set){
-  return GQS(expr, null, null, set);
+IES.matches = function(expr, set){
+  return IES(expr, null, null, set);
 };
 
-GQS.find = function(expr, context, isXML){
+IES.find = function(expr, context, isXML){
   var set;
 
   if ( !expr ) {
@@ -231,9 +233,9 @@ GQS.find = function(expr, context, isXML){
   return {set: set, expr: expr};
 };
 
-GQS.filter = function(expr, set, inplace, not){
+IES.filter = function(expr, set, inplace, not){
   var old = expr, result = [], curLoop = set, match, anyFound,
-    isXMLFilter = set && set[0] && GQS.isXML(set[0]);
+    isXMLFilter = set && set[0] && IES.isXML(set[0]);
 
   while ( expr && set.length ) {
     for ( var type in Expr.filter ) {
@@ -300,7 +302,7 @@ GQS.filter = function(expr, set, inplace, not){
     // Improper expression
     if ( expr === old ) {
       if ( anyFound == null ) {
-        GQS.error( expr );
+        IES.error( expr );
       } else {
         break;
       }
@@ -312,11 +314,11 @@ GQS.filter = function(expr, set, inplace, not){
   return curLoop;
 };
 
-GQS.error = function( msg ) {
+IES.error = function( msg ) {
   throw "Syntax error, unrecognized expression: " + msg;
 };
 
-var Expr = GQS.selectors = {
+var Expr = IES.selectors = {
   order: [ "ID", "NAME", "TAG" ],
   match: {
     ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
@@ -335,7 +337,7 @@ var Expr = GQS.selectors = {
   },
   attrHandle: {
     href: function(elem){
-      return elem.getAttribute("href");
+      return elem.getAttribute("href", 2);
     }
   },
   relative: {
@@ -359,7 +361,7 @@ var Expr = GQS.selectors = {
       }
 
       if ( isPartStrNotTag ) {
-        GQS.filter( part, checkSet, true );
+        IES.filter( part, checkSet, true );
       }
     },
     ">": function(checkSet, part){
@@ -387,7 +389,7 @@ var Expr = GQS.selectors = {
         }
 
         if ( isPartStr ) {
-          GQS.filter( part, checkSet, true );
+          IES.filter( part, checkSet, true );
         }
       }
     },
@@ -418,7 +420,7 @@ var Expr = GQS.selectors = {
     ID: function(match, context, isXML){
       if ( typeof context.getElementById !== "undefined" && !isXML ) {
         var m = context.getElementById(match[1]);
-        return m ? [m] : [];
+        return m ? m.id === match[1] || typeof m.getAttributeNode !== "undefined" && m.getAttributeNode("id").nodeValue === match[1] ? [m] : undefined : [];
       }
     },
     NAME: function(match, context){
@@ -434,8 +436,20 @@ var Expr = GQS.selectors = {
         return ret.length === 0 ? null : ret;
       }
     },
+    // IE espedific
     TAG: function(match, context){
-      return context.getElementsByTagName(match[1]);
+      var results = context.getElementsByTagName(match[1]);
+      // Filter out possible comments
+      if ( match[1] === "*" ) {
+        var tmp = [];
+        for ( var i = 0; results[i]; i++ ) {
+          if ( results[i].nodeType === 1 ) {
+            tmp.push( results[i] );
+          }
+        }
+        results = tmp;
+      }
+      return results;
     }
   },
   preFilter: {
@@ -500,9 +514,9 @@ var Expr = GQS.selectors = {
       if ( match[1] === "not" ) {
         // If we're dealing with a complex expression, or a simple one
         if ( ( chunker.exec(match[3]) || "" ).length > 1 || /^\w/.test(match[3]) ) {
-          match[3] = GQS(match[3], null, null, curLoop);
+          match[3] = IES(match[3], null, null, curLoop);
         } else {
-          var ret = GQS.filter(match[3], curLoop, inplace, true ^ not);
+          var ret = IES.filter(match[3], curLoop, inplace, true ^ not);
           if ( !inplace ) {
             result.push.apply( result, ret );
           }
@@ -542,7 +556,7 @@ var Expr = GQS.selectors = {
       return !elem.firstChild;
     },
     has: function(elem, i, match){
-      return !!GQS( match[3], elem ).length;
+      return !!IES( match[3], elem ).length;
     },
     header: function(elem){
       return (/h\d/i).test( elem.nodeName );
@@ -611,7 +625,7 @@ var Expr = GQS.selectors = {
       if ( filter ) {
         return filter( elem, i, match, array );
       } else if ( name === "contains" ) {
-        return (elem.textContent || elem.innerText || GQS.getText([ elem ]) || "").indexOf(match[3]) >= 0;
+        return (elem.textContent || elem.innerText || IES.getText([ elem ]) || "").indexOf(match[3]) >= 0;
       } else if ( name === "not" ) {
         var not = match[3];
 
@@ -623,7 +637,7 @@ var Expr = GQS.selectors = {
 
         return true;
       } else {
-        GQS.error( "Syntax error, unrecognized expression: " + name );
+        IES.error( "Syntax error, unrecognized expression: " + name );
       }
     },
     CHILD: function(elem, match){
@@ -676,7 +690,8 @@ var Expr = GQS.selectors = {
       }
     },
     ID: function(elem, match){
-      return elem.nodeType === 1 && elem.getAttribute("id") === match;
+      var node = typeof elem.getAttributeNode !== "undefined" && elem.getAttributeNode("id");
+      return elem.nodeType === 1 && node && node.nodeValue === match;
     },
     TAG: function(elem, match){
       return (match === "*" && elem.nodeType === 1) || elem.nodeName.toLowerCase() === match;
@@ -777,25 +792,7 @@ try {
   };
 }
 
-var sortOrder;
-
-if ( document.documentElement.compareDocumentPosition ) {
-  sortOrder = function( a, b ) {
-    if ( !a.compareDocumentPosition || !b.compareDocumentPosition ) {
-      if ( a == b ) {
-        hasDuplicate = true;
-      }
-      return a.compareDocumentPosition ? -1 : 1;
-    }
-
-    var ret = a.compareDocumentPosition(b) & 4 ? -1 : a === b ? 0 : 1;
-    if ( ret === 0 ) {
-      hasDuplicate = true;
-    }
-    return ret;
-  };
-} else if ( "sourceIndex" in document.documentElement ) {
-  sortOrder = function( a, b ) {
+var sortOrder = function( a, b ) {
     if ( !a.sourceIndex || !b.sourceIndex ) {
       if ( a == b ) {
         hasDuplicate = true;
@@ -808,31 +805,10 @@ if ( document.documentElement.compareDocumentPosition ) {
       hasDuplicate = true;
     }
     return ret;
-  };
-} else if ( document.createRange ) {
-  sortOrder = function( a, b ) {
-    if ( !a.ownerDocument || !b.ownerDocument ) {
-      if ( a == b ) {
-        hasDuplicate = true;
-      }
-      return a.ownerDocument ? -1 : 1;
-    }
-
-    var aRange = a.ownerDocument.createRange(), bRange = b.ownerDocument.createRange();
-    aRange.setStart(a, 0);
-    aRange.setEnd(a, 0);
-    bRange.setStart(b, 0);
-    bRange.setEnd(b, 0);
-    var ret = aRange.compareBoundaryPoints(Range.START_TO_END, bRange);
-    if ( ret === 0 ) {
-      hasDuplicate = true;
-    }
-    return ret;
-  };
-}
+};
 
 // Utility function for retreiving the text value of an array of DOM nodes
-GQS.getText = function( elems ) {
+IES.getText = function( elems ) {
   var ret = "", elem;
 
   for ( var i = 0; elems[i]; i++ ) {
@@ -844,147 +820,12 @@ GQS.getText = function( elems ) {
 
     // Traverse everything else, except comment nodes
     } else if ( elem.nodeType !== 8 ) {
-      ret += GQS.getText( elem.childNodes );
+      ret += IES.getText( elem.childNodes );
     }
   }
 
   return ret;
 };
-
-// Check to see if the browser returns elements by name when
-// querying by getElementById (and provide a workaround)
-(function(){
-  // We're going to inject a fake input element with a specified name
-  var form = document.createElement("div"),
-    id = "script" + (new Date()).getTime();
-  form.innerHTML = "<a name='" + id + "'/>";
-
-  // Inject it into the root element, check its status, and remove it quickly
-  var root = document.documentElement;
-  root.insertBefore( form, root.firstChild );
-
-  // The workaround has to do additional checks after a getElementById
-  // Which slows things down for other browsers (hence the branching)
-  if ( document.getElementById( id ) ) {
-    Expr.find.ID = function(match, context, isXML){
-      if ( typeof context.getElementById !== "undefined" && !isXML ) {
-        var m = context.getElementById(match[1]);
-        return m ? m.id === match[1] || typeof m.getAttributeNode !== "undefined" && m.getAttributeNode("id").nodeValue === match[1] ? [m] : undefined : [];
-      }
-    };
-
-    Expr.filter.ID = function(elem, match){
-      var node = typeof elem.getAttributeNode !== "undefined" && elem.getAttributeNode("id");
-      return elem.nodeType === 1 && node && node.nodeValue === match;
-    };
-  }
-
-  root.removeChild( form );
-  root = form = null; // release memory in IE
-})();
-
-(function(){
-  // Check to see if the browser returns only elements
-  // when doing getElementsByTagName("*")
-
-  // Create a fake element
-  var div = document.createElement("div");
-  div.appendChild( document.createComment("") );
-
-  // Make sure no comments are found
-  if ( div.getElementsByTagName("*").length > 0 ) {
-    Expr.find.TAG = function(match, context){
-      var results = context.getElementsByTagName(match[1]);
-
-      // Filter out possible comments
-      if ( match[1] === "*" ) {
-        var tmp = [];
-
-        for ( var i = 0; results[i]; i++ ) {
-          if ( results[i].nodeType === 1 ) {
-            tmp.push( results[i] );
-          }
-        }
-
-        results = tmp;
-      }
-
-      return results;
-    };
-  }
-
-  // Check to see if an attribute returns normalized href attributes
-  div.innerHTML = "<a href='#'></a>";
-  if ( div.firstChild && typeof div.firstChild.getAttribute !== "undefined" &&
-      div.firstChild.getAttribute("href") !== "#" ) {
-    Expr.attrHandle.href = function(elem){
-      return elem.getAttribute("href", 2);
-    };
-  }
-
-  div = null; // release memory in IE
-})();
-alert("");
-//if ( document.querySelectorAll ) {
-//  (function(){
-//    var oldGQS = GQS, div = document.createElement("div");
-//    div.innerHTML = "<p class='TEST'></p>";
-//
-//    // Safari can't handle uppercase or unicode characters when
-//    // in quirks mode.
-//    if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
-//      return;
-//    }
-//  
-//    GQS = function(query, context, extra, seed){
-//      context = context || document;
-//
-//      // Only use querySelectorAll on non-XML documents
-//      // (ID selectors don't work in non-HTML documents)
-//      if ( !seed && context.nodeType === 9 && !GQS.isXML(context) ) {
-//        try {
-//          return makeArray( context.querySelectorAll(query), extra );
-//        } catch(e){}
-//      }
-//    
-//      return oldGQS(query, context, extra, seed);
-//    };
-//
-//    for ( var prop in oldGQS ) {
-//      GQS[ prop ] = oldGQS[ prop ];
-//    }
-//
-//    div = null; // release memory in IE
-//  })();
-//}
-
-(function(){
-  var div = document.createElement("div");
-
-  div.innerHTML = "<div class='test e'></div><div class='test'></div>";
-
-  // Opera can't find a second classname (in 9.6)
-  // Also, make sure that getElementsByClassName actually exists
-  if ( !div.getElementsByClassName || div.getElementsByClassName("e").length === 0 ) {
-    return;
-  }
-
-  // Safari caches class attributes, doesn't catch changes (in 3.2)
-  div.lastChild.className = "e";
-
-  if ( div.getElementsByClassName("e").length === 1 ) {
-    return;
-  }
-  
-  Expr.order.splice(1, 0, "CLASS");
-  Expr.find.CLASS = function(match, context, isXML) {
-    if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
-      return context.getElementsByClassName(match[1]);
-    }
-  };
-
-  div = null; // release memory in IE
-})();
 
 function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
   for ( var i = 0, l = checkSet.length; i < l; i++ ) {
@@ -1041,7 +882,7 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
               break;
             }
 
-          } else if ( GQS.filter( cur, [elem] ).length > 0 ) {
+          } else if ( IES.filter( cur, [elem] ).length > 0 ) {
             match = elem;
             break;
           }
@@ -1055,13 +896,11 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
   }
 }
 
-GQS.contains = document.compareDocumentPosition ? function(a, b){
-  return !!(a.compareDocumentPosition(b) & 16);
-} : function(a, b){
+IES.contains = function(a, b) {
   return a !== b && (a.contains ? a.contains(b) : true);
 };
 
-GQS.isXML = function(elem){
+IES.isXML = function(elem){
   // documentElement is verified for cases where it doesn't yet exist
   // (such as loading iframes in IE - #4833) 
   var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
@@ -1082,16 +921,16 @@ var posProcess = function(selector, context){
   selector = Expr.relative[selector] ? selector + "*" : selector;
 
   for ( var i = 0, l = root.length; i < l; i++ ) {
-    GQS( selector, root[i], tmpSet );
+    IES( selector, root[i], tmpSet );
   }
 
-  return GQS.filter( later, tmpSet );
+  return IES.filter( later, tmpSet );
 };
 
 // EXPOSE
 
-window.GQS = GQS;
-$wnd.GQS = GQS;
+window.IES = IES;
+$wnd.IES = IES;
 
 })();
     
@@ -1099,12 +938,12 @@ $wnd.GQS = GQS;
   
 
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
-    return $wnd.GQS(selector, context, results, seed);
+    return $wnd.IES(selector, context, results, seed);
   }-*/;
   
   static boolean initialized = false;
   
-  public SelectorEngineSizzle() {
+  public SelectorEngineSizzleIE() {
     if (!initialized) {
       initialize();
     }

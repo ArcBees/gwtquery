@@ -24,21 +24,17 @@ import com.google.gwt.query.client.SelectorEngine;
  * Runtime selector engine implementation for browsers with native
  * querySelectorAll support.
  */
-public class SelectorEngineNativeIE8 extends SelectorEngineSizzle {
+public class SelectorEngineNativeIE8 extends SelectorEngineSizzleIE {
   
   public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=|:checked|:not|:nth-|:last-|:only-).*";
-
-  private static boolean degradate = false;
   
   public NodeList<Element> select(String selector, Node ctx) {
-    if (degradate || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return super.select(selector, ctx); 
     } else {
       try {
-        return SelectorEngine.querySelectorAll(selector, ctx);
+        return SelectorEngine.querySelectorAllImpl(selector, ctx);
       } catch (Exception e) {
-        System.out.println("IE8 Degradating to dynamic implementation, it seems IE8 is not running in standars mode");
-        degradate = true;
         return super.select(selector, ctx); 
       }
     }

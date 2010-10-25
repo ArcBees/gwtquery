@@ -1,12 +1,11 @@
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.core.client.EntryPoint;
 
 /**
  * Created by IntelliJ IDEA. User: ray Date: May 2, 2009 Time: 12:56:09 AM To
  * change this template use File | Settings | File Templates.
  */
-public class CSS implements EntryPoint {
+public class CSS {
 
   /**
    * This property affects the vertical positioning inside a line box of the
@@ -447,7 +446,7 @@ public class CSS implements EntryPoint {
    */
   public static Height HEIGHT;
 
-  public static void init() {
+  static {
     INHERIT = Inherit.create();
     BackgroundAttachment.init();
     BackgroundColor.init();
@@ -463,7 +462,4 @@ public class CSS implements EntryPoint {
     Width.init();
   }
 
-  public void onModuleLoad() {
-    CSS.init();
-  }
 }

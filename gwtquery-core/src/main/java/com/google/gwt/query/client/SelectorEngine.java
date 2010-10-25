@@ -30,32 +30,28 @@ public class SelectorEngine {
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
         return ctx.getElementsByClassName(clazz);
-    }-*/;
+  }-*/;
 
   public static native Node getNextSibling(Node n) /*-{
        return n.nextSibling || null; 
-    }-*/;
+  }-*/;
 
   public static native Node getPreviousSibling(Node n) /*-{
        return n.previousSibling || null; 
-    }-*/;
+  }-*/;
   
-  private static boolean degradate = false;
-  
-  public NodeList<Element> querySelectorAllIE8(String selector, Node ctx) {
-    if (degradate) {
+  public NodeList<Element> querySelectorAll(String selector, Node ctx) {
+    if (!hasQuerySelector) {
       return impl.select(selector, ctx);
-    } 
+    }
     try {
-      return querySelectorAll(selector, ctx);
+      return querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      System.out.println("IE8 Degradating to dynamic implementation, it seems IE8 is not running in standars mode");
-      degradate = true;
-      return querySelectorAll(selector, ctx);
+      return impl.select(selector, ctx);
     }
   }
 
-  public static native NodeList<Element> querySelectorAll(String selector,
+  public static native NodeList<Element> querySelectorAllImpl(String selector,
       Node ctx) /*-{
       return ctx.querySelectorAll(selector);
   }-*/;
@@ -79,6 +75,8 @@ public class SelectorEngine {
   protected SelectorEngineImpl impl;
 
   protected Node root = Document.get();
+  
+  public static final boolean hasQuerySelector = hasQuerySelectorAll();
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
@@ -113,7 +111,16 @@ public class SelectorEngine {
   }
   
   public boolean isDegradated() {
-    return degradate;
+    return !hasQuerySelector;
   }
+  
+  /**
+   * Check if the browser has native support for css selectors
+   */
+  public static native boolean hasQuerySelectorAll() /*-{
+    return $doc.location.href.indexOf("_force_no_native") < 0 &&
+           $doc.querySelectorAll && 
+           /native/.test(String($doc.querySelectorAll)); 
+  }-*/;
   
 }

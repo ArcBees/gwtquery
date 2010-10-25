@@ -30,6 +30,13 @@ public abstract class Function {
   }
 
   /**
+   * Override this to define a function which does not need any parameter
+   */
+  public void f() {
+    throw new RuntimeException("You have to override the adequate method to handle this action.");
+  }
+
+  /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
    */
@@ -43,7 +50,7 @@ public abstract class Function {
    * return value, apply to a single element only.
    */
   public void f(Element e) {
-    throw new RuntimeException("You have to override the adequate method to handle this action.");
+    f();
   }
 
   /**

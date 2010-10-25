@@ -94,7 +94,7 @@ public class GQUtils {
   public static native double or(double s1, double s2) /*-{
     return s1 || s2;
   }-*/;
-  
+
   /**
    * Return the element which is truth in the javascript scope.
    */
@@ -115,7 +115,10 @@ public class GQUtils {
   public static native boolean truth(Object a) /*-{
     return a ? true : false;
   }-*/;
-
+  
+  /**
+   * Remove duplicates from an elements array
+   */
   public static JsArray<Element> unique(JsArray<Element> a) {
     JsArray<Element> ret = JavaScriptObject.createArray().cast();
     HashSet<Integer> f = new HashSet<Integer>();

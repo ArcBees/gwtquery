@@ -172,6 +172,10 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(4, $("span", e).size());
     assertEquals(2, $("span.target", e).size());
     assertHtmlEquals(content, $(e).html());
+    
+    $(e).html("<span>a</span><span>b</span>");
+    $("span").append("<div>c</div>");
+    assertHtmlEquals("<span>a<div>c</div></span><span>b<div>c</div></span>", $(e).html());
   }
   
   public void testEach() {

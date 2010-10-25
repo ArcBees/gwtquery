@@ -595,9 +595,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (plugin == GQUERY) {
       return (T) $(this);
     } else if (plugins != null) {
-      return (T) plugins.get(plugin).init(this);
+      Plugin p = plugins.get(plugin);
+      if (p != null) {
+        return (T) p.init(this);
+      }
     }
-    throw new RuntimeException("No plugin registered for class " + plugin);
+    throw new RuntimeException("No plugin registered for class " + plugin.getName());
   }
 
   /**
@@ -2181,8 +2184,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
                 ie.setChecked(false);
               }
             }
-          } else if (values[0].equals(ie.getValue())) {
+          } else if (ie.getValue().equals(values[0])) {
             ie.setChecked(true);
+          } else {
+            ie.setChecked(false);
           }
         } else {
           ie.setValue(values[0]);
@@ -2456,10 +2461,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private GQuery domManip(GQuery g, int func) {
+  private GQuery domManip(GQuery g, int func, Element...elms) {
     JSArray newNodes = JSArray.create();
-    for (int i = 0; i < elements().length; i++) {
-      Element e = elements()[i];
+    if (elms.length == 0) {
+      elms = elements();
+    }
+    for (Element e: elms) {
       e.getOwnerDocument();
       if (e.getNodeType() == Node.DOCUMENT_NODE) {
         e = e.<Document>cast().getBody();
@@ -2485,14 +2492,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         }
       }
     }
-    if (newNodes.size() > 0) {
+    if (newNodes.size() > g.size()) {
       g.setArray(newNodes);
     }
     return this;
   }
-
+  
   private GQuery domManip(String htmlString, int func) {
-    GQuery ret = $();
     HashMap<Document, GQuery> cache = new HashMap<Document, GQuery>();
     for (Element e: elements()) {
       Document d = e.getNodeType() == Node.DOCUMENT_NODE ? e.<Document>cast() : e.getOwnerDocument();
@@ -2501,9 +2507,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         g = cleanHtmlString(htmlString, d);
         cache.put(d, g);
       }
-      ret.add(domManip(g, func));
+      domManip(g.clone(), func, e);
     }
-    return ret;
+    return this;
   }
 
   private native Element getPreviousSiblingElement(Element elem)  /*-{

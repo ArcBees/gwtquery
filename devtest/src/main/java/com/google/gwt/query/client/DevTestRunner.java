@@ -26,6 +26,8 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -48,11 +50,75 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testCompiledSelectors();
+      testSiblings();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
+  }
+  
+  public void testSiblings() {
+    String content = "<table><tr ><td class='r1'>1</td><td>2</td></tr><tr><td>1</td><td>2</td></tr></table>";
+    $(e).html(content);
+    $(".r1").css("background", "red");
+    
+    $(".r1").hover(new Function() {
+      public void f(Element e) {
+        $(e).add($(e).siblings()).text("A");
+      }
+    },new Function() {
+      public void f(Element e) {
+        $(e).add($(e).siblings()).text("B");
+      }
+    });
+  }
+  
+  
+  public void testNamedBinding() {
+    $(e).html("<p>Content</p>");
+
+    $("p", e, Events.Events).bind("click.first.namespace", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("color", "red");
+      }
+    });
+    $("p", e, Events.Events).bind("click.second.namespace", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("background", "green");
+      }
+    });
+    $("p", e, Events.Events).bind("click", null, new Function() {; 
+      public void f(Element elem) {
+        $(elem).css("fontSize", "24px");
+      }
+    });
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color"));
+    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    
+    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+
+    $("p", e, Events.Events).unbind("click.first.namespace");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    
+    
+    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+
+    $("p", e, Events.Events).unbind("click");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
   }
   
   public void testSelectorEngineNative() {

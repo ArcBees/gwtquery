@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.impl;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -24,15 +25,28 @@ import com.google.gwt.query.client.SelectorEngine;
  * Runtime selector engine implementation for browsers with native
  * querySelectorAll support.
  */
-public class SelectorEngineNative extends SelectorEngineCssToXPath {
+public class SelectorEngineNative extends SelectorEngineImpl {
   
   public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=).*";
   
-  public NodeList<Element> select(String selector, Node ctx) {
-    if (selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
-      return super.select(selector, ctx); 
-    } else {
-      return SelectorEngine.querySelectorAll(selector, ctx);
+  private static HasSelector impl;
+  
+  public SelectorEngineNative() {
+    if (impl == null) {
+      impl = GWT.create(HasSelector.class);
     }
   }
+  
+  public NodeList<Element> select(String selector, Node ctx) {
+    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+      return impl.select(selector, ctx); 
+    } else {
+      try {
+        return SelectorEngine.querySelectorAllImpl(selector, ctx);
+      } catch (Exception e) {
+        return impl.select(selector, ctx); 
+      }
+    }
+  }
+  
 }

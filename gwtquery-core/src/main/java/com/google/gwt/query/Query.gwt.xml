@@ -3,58 +3,48 @@
 
     <!--<define-property name="selectorCapability" values="native,xpath,js"/>-->
       <!-- enable for native getClassByName shortcut acceleration -->
-    <define-property name="selectorCapability"
-                     values="native,js"/>
-    <property-provider name="selectorCapability">
-        <![CDATA[
-         // Select javascript permutation when the user wants to
-         // force non-accelerated queries (for benchmarking tests)
-         if ($doc.location.href.indexOf("_selector_force_js") != -1) 
-           return "js"; 
-           
-         // Select the native permutation if querySelectorAll is available
-         if ($doc.querySelectorAll && /native/.test(String($doc.querySelectorAll))) 
-           return "native";
-           
-         return "js";
-        ]]>
-    </property-provider>
+<!--    <define-property name="selectorCapability"-->
+<!--                     values="native,js"/>-->
+<!--    <property-provider name="selectorCapability">-->
+<!--        <![CDATA[-->
+<!--         // Select javascript permutation when the user wants to-->
+<!--         // force non-accelerated queries (for benchmarking tests)-->
+<!--         if ($doc.location.href.indexOf("_selector_force_js") != -1) -->
+<!--           return "js"; -->
+<!--           -->
+<!--         // Select the native permutation if querySelectorAll is available-->
+<!--         if ($doc.querySelectorAll && /native/.test(String($doc.querySelectorAll))) -->
+<!--           return "native";-->
+<!--           -->
+<!--         return "js";-->
+<!--        ]]>-->
+<!--    </property-provider>-->
 
     <generate-with class="com.google.gwt.query.rebind.LazyGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Lazy"/>
     </generate-with>
-
+    
+    <!-- Selector Generators -->
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorJS">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
     </generate-with>
-
-    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorCssToXPath">
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <any>
             <when-property-is name="user.agent" value="gecko1_8"/>
             <when-property-is name="user.agent" value="opera"/>
-            <all>
-                <when-property-is name="selectorCapability" value="js"/>
-                <when-property-is name="user.agent" value="safari"/>
-            </all>
+            <when-property-is name="user.agent" value="safari"/>
         </any>
     </generate-with>
-
-    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNative">
-        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
-        <when-property-is name="selectorCapability" value="native"/>
-    </generate-with>
-
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNativeIE8">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
-        <when-property-is name="selectorCapability" value="native"/>
         <when-property-is name="user.agent" value="ie8"/>
     </generate-with>
 
+    <!--  Document Style -->
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImpl">
         <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
     </replace-with>
-
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImplIE">
         <when-type-assignable class="com.google.gwt.query.client.impl.DocumentStyleImpl"/>
         <any>
@@ -63,37 +53,39 @@
         </any>
     </replace-with>
 
+    <!-- Selector Engines -->
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
+        <when-type-assignable class="com.google.gwt.query.client.impl.HasSelector"/>
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzleIE">
+        <when-type-assignable class="com.google.gwt.query.client.impl.HasSelector"/>
+        <any>
+            <when-property-is name="user.agent" value="ie8"/>
+            <when-property-is name="user.agent" value="ie6"/>
+        </any>
+    </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
     </replace-with>
-
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineCssToXPath">
-        <when-type-assignable
-                class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzleIE">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="user.agent" value="ie6"/>
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <any>
             <when-property-is name="user.agent" value="gecko1_8"/>
             <when-property-is name="user.agent" value="opera"/>
-            <all>
-                <when-property-is name="selectorCapability" value="js"/>
-                <when-property-is name="user.agent" value="safari"/>
-            </all>
+            <when-property-is name="user.agent" value="safari"/>
         </any>
     </replace-with>
-
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
-        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="selectorCapability" value="native"/>
-    </replace-with>
-    
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="selectorCapability" value="native"/>
         <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
-    
+
+    <!-- IE8 needs the iframe with the app set to standard to use native selector -->    
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
     <add-linker name="stddoctype"/>
     
-    <entry-point class='com.google.gwt.query.client.css.CSS'/>
-
 </module>
