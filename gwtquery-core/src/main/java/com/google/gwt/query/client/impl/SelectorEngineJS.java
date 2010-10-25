@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.impl;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -103,6 +104,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
   }
 
   private static NodeList<Element> getElementsByTagName(String tag, Node ctx) {
+    if (ctx == null) {
+      return JavaScriptObject.createArray().cast();
+    }
     return ((Element) ctx).getElementsByTagName(tag);
   }
 

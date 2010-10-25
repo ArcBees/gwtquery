@@ -745,5 +745,15 @@ public class GQueryCoreTest extends GWTTestCase {
     $("*", e).wrap("<b></b>");
     assertHtmlEquals(expected, $(e).html());
   }
+  
+  public void testFilterBody() {
+    GQuery myNewElement = $("<div>my new div</div>");
+    boolean isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
+    assertEquals(false, isAttachedToTheDOM);
+    
+    myNewElement.appendTo(document);
+    isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
+    assertEquals(true, isAttachedToTheDOM);
+  }
 
 }
