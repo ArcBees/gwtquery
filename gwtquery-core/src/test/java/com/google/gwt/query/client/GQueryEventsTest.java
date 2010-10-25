@@ -54,8 +54,6 @@ public class GQueryEventsTest extends GWTTestCase {
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
       e.setId("evnt-tst");
-
-      CSS.init();
     } else {
       e.setInnerHTML("");
     }
