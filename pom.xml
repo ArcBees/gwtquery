@@ -2,7 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.google.gwt</groupId>
+    <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
@@ -13,6 +13,12 @@
         <system>Google Code</system>
         <url>http://code.google.com/p/gwtquery/issues/list</url>
     </issueManagement>
+
+    <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>3</version>
+    </parent>
 
     <developers>
         <developer>
@@ -47,8 +53,8 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <module>plugins</module>
-        <module>samples</module>
+        <!-- <module>plugins</module> -->
+        <!-- <module>samples</module> -->
         <!-- <module>devtest</module> -->
     </modules>
 
@@ -71,12 +77,12 @@
             <id>googlecode</id>
             <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
         </snapshotRepository>
-      -->
         <snapshotRepository>
           <uniqueVersion>false</uniqueVersion>
           <id>localfolder</id>
           <url>file:mavenrepo</url>
         </snapshotRepository>
+      -->
     </distributionManagement>
 
     <pluginRepositories>
