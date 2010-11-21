@@ -32,6 +32,7 @@ import com.google.gwt.user.client.EventListener;
  * 
  * The class takes care of calling the appropriate functions for each browser
  * event and it also calls sinkEvents method.
+ * 
  */
 public class EventsListener implements EventListener {
 
@@ -184,6 +185,15 @@ public class EventsListener implements EventListener {
         }
       }
     }
+  }
+  
+  /**
+   * Return the original gwt EventListener associated with
+   * this element, before gquery replaced it to introduce its
+   * own event handler.
+   */
+  public EventListener getOriginalEventListener() {
+    return originalEventListener;
   }
   
   public void onBrowserEvent(Event event) {
