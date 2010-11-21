@@ -33,7 +33,7 @@ public class ${projectName}Test extends GWTTestCase {
     a.onModuleLoad();
 
     // delay the test
-    delayTestFinish(Speed.DEFAULT * 3);
+    delayTestFinish(Speed.DEFAULT * 5);
 
     // trigger mouse over event
     final double size1 = fontSize(g);

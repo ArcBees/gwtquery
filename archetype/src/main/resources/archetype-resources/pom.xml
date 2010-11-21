@@ -12,7 +12,7 @@
       <maven.compiler.source>1.5</maven.compiler.source>
       <maven.compiler.target>1.5</maven.compiler.target>
       <gQueryVersion>1.0.0-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.0.4</gwtversion>
+      <gwtversion>2.1.0</gwtversion>
     </properties>
 
     <repositories>
@@ -21,8 +21,10 @@
          <url>http://repo1.maven.org/maven2</url>
        </repository>
        <repository>
-         <id>site</id>
-         <url>http://gwtquery.googlecode.com/svn/mavenrepo</url>
+         <id>sonatype</id>
+         <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+         <snapshots><enabled>true</enabled></snapshots>
+         <releases><enabled>false</enabled></releases>
        </repository>
        <repository>
          <id>m.g.o</id>
@@ -53,7 +55,7 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtversion}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -62,7 +64,7 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.gwt</groupId>
+            <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
             <scope>provided</scope>
@@ -73,6 +75,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwtversion}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
