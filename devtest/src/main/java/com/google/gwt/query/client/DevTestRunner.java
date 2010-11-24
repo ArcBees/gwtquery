@@ -16,19 +16,29 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -50,11 +60,220 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testSiblings();
+      testEventsPlugin();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
+  }
+  
+  public void testEventsPlugin() {
+    $(e).html("<p>Content</p>");
+
+    // click
+    $("p", e).click(new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "red");
+      }
+    }, new Function() {
+      public void f(Element elem) {
+        $(elem).css("background", "green");
+      }
+    });
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color"));
+    assertEquals("green", $("p", e).css("background-color"));
+
+    // unbind
+    $("p", e).css("color", "white");
+    $("p", e).unbind(Event.ONCLICK);
+    $("p", e).click();
+    assertEquals("white", $("p", e).css("color"));
+
+    // toggle
+    $("p", e).unbind(Event.ONCLICK);
+    $("p", e).toggle(new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "red");
+      }
+    }, new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "blue");
+      }
+    });
+    $("p", e).click();
+    assertEquals("red", $("p", e).css("color"));
+    $("p", e).click();
+    assertEquals("blue", $("p", e).css("color"));
+
+    // one
+    $("p", e).unbind(Event.ONCLICK);
+    $("p", e).one(Event.ONCLICK, null, new Function() {
+      public void f(Element elem) {
+        $(elem).css("color", "red");
+      }
+    });
+    $("p", e).click();
+    assertEquals("red", $("p", e).css("color"));
+    $("p", e).css("color", "white");
+    $("p", e).click();
+    assertEquals("white", $("p", e).css("color"));
+
+    // hover (mouseover, mouseout)
+    $("p", e).hover(new Function() {
+      public void f(Element elem) {
+        $(elem).css("background-color", "yellow");
+      }
+    }, new Function() {
+      public void f(Element elem) {
+        $(elem).css("background-color", "white");
+      }
+    });
+    $("p", e).trigger(Event.ONMOUSEOVER);
+    assertEquals("yellow", $("p", e).css("background-color"));
+    $("p", e).trigger(Event.ONMOUSEOUT);
+    assertEquals("white", $("p", e).css("background-color"));
+
+    // focus
+    $("p", e).focus(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "1px dotted black");
+      }
+    });
+    $("p", e).focus();
+    assertEquals("black", $("p", e).css("border-top-color"));
+    assertEquals("dotted", $("p", e).css("border-top-style"));
+    assertEquals("1px", $("p", e).css("border-top-width"));
+
+    // blur
+    $("p", e).blur(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "");
+      }
+    });
+    $("p", e).blur();
+    assertEquals("", $("p", e).css("border"));
+
+    // key events
+    $(e).html("<input type='text'/>");
+    Function keyEventAction = new Function() {
+      public boolean f(Event evnt) {
+        GQuery gq = $(evnt);
+        gq.val(gq.val() + Character.toString((char) evnt.getKeyCode()));
+        return false;
+      }
+    };
+    $("input", e).keypress(keyEventAction);
+    $("input", e).keydown(keyEventAction);
+    $("input", e).keyup(keyEventAction);
+    $("input", e).focus();
+    $("input", e).keydown('a');
+    $("input", e).keypress('b');
+    $("input", e).keyup('c');
+    assertEquals("abc", $("input", e).val());
+  }
+  
+  public void testUnbindMultipleEvents() {
+    String content = "<p>content</p>";
+    $(e).html(content);
+    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
+      public void f(Element e){
+        $("p").css("color", "red");
+      }
+    });
+    $(document).bind(Event.ONMOUSEUP, null, new Function(){
+      public void f(Element e){
+        $("p").css("color", "yellow");
+      }
+    });
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("red", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("yellow", $("p").css("color"));
+    $("p").css("color", "black");
+    $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("black", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("black", $("p").css("color"));
+  }
+  
+  public void testGWTQueryCoreWidgets() {
+    final FlowPanel p = new FlowPanel();
+    Button b = new Button("test");
+    RootPanel.get().add(b);
+    RootPanel.get().add(p);
+    
+    int nitems = 4;
+    final String label1 = "I'm the label ";
+    final String label2 = "Finally I'm just a simple label";
+    
+    for (int i = 0; i < nitems; i++) {
+      Label l = new Label(label1 + i);
+      p.add(l);
+    }
+    $("<div>whatever</div").appendTo($(p));
+    
+    b.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        $(".gwt-Label", p).each(new Function() {
+          @Override
+          public void f(Widget w) {
+            Label l = (Label) w;
+            l.setText(label2);
+          }
+        });
+      }
+    });
+    
+    $(".gwt-Label", p).each(new Function() {
+      @Override
+      public Object f(Widget w, int i) {
+        assertEquals(label1 + i, ((Label)w).getText());
+        return null;
+      }
+    });
+    
+    $(b).click();
+
+    $(".gwt-Label", p).each(new Function() {
+      public void f(Element e) {
+        assertEquals(label2, $(e).text());
+      }
+    });
+    
+    $("div", p).each(new Function() {
+      public void f(Element e) {
+        // Just to avoid the exception when non-widget elements match
+      }
+      public void f(Widget w) {
+        if (w instanceof Label) {
+          assertEquals(label2, $(e).text());
+        }
+      }
+    });
+    
+    p.removeFromParent();
+    b.removeFromParent();
+  }
+  
+  public void testGQueryWidgets() {
+    final Button b1 = new Button("click-me");
+    RootPanel.get().add(b1);
+    GQuery g = $(b1);
+    Button b2 = (Button) g.as(Widgets.Widgets).widget();
+    assertEquals(b1, b2);
+    
+    
+    b2 = (Button)$("<button>Click-me</button>").appendTo(document).asWidget();
+    b2.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        $(b1).css("color", "red");
+      }
+    });
+    
+    b2.click();
+    assertEquals("red", $(b1).css("color"));
   }
   
   public void testSiblings() {

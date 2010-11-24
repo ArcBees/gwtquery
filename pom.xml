@@ -13,12 +13,13 @@
         <system>Google Code</system>
         <url>http://code.google.com/p/gwtquery/issues/list</url>
     </issueManagement>
-
+<!--
     <parent>
       <groupId>org.sonatype.oss</groupId>
       <artifactId>oss-parent</artifactId>
       <version>3</version>
     </parent>
+-->
 
     <developers>
         <developer>
@@ -77,12 +78,12 @@
             <id>googlecode</id>
             <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
         </snapshotRepository>
+      -->
         <snapshotRepository>
           <uniqueVersion>false</uniqueVersion>
           <id>localfolder</id>
           <url>file:mavenrepo</url>
         </snapshotRepository>
-      -->
     </distributionManagement>
 
     <pluginRepositories>
@@ -166,7 +167,7 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.0.4</gwtversion>
+        <gwtversion>2.1.0</gwtversion>
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>PRETTY</gwt.outputstyle>
         <gwt.modulesuffix></gwt.modulesuffix>

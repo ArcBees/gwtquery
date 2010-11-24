@@ -17,8 +17,9 @@ package com.google.gwt.query.linker;
 
 import com.google.gwt.core.ext.LinkerContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.linker.IFrameLinker;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.linker.LinkerOrder;
+import com.google.gwt.core.linker.IFrameLinker;
 
 /**
  * Adds doctype to the iframe used to load the application.
@@ -30,14 +31,17 @@ public class IFrameWithDocTypeLinker extends IFrameLinker {
   private static final String DOCTYPE = "<!doctype html>\n";
 
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
-      String strongName) {
+      String strongName) throws UnableToCompleteException {
     return DOCTYPE + super.getModulePrefix(logger, context, strongName);
+
   }
 
   @Override
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
-      String strongName, int numFragments) {
+      String strongName, int numFragments) throws UnableToCompleteException {
     return DOCTYPE
         + super.getModulePrefix(logger, context, strongName, numFragments);
+
   }
 }
+
