@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Extend this class to implement functions callbacks.
@@ -30,29 +31,36 @@ public abstract class Function {
   }
 
   /**
-   * Override this to define a function which does not need any parameter
+   * Override this to define a function which does not need any parameter.
+   * 
    */
   public void f() {
-    throw new RuntimeException("You have to override the adequate method to handle this action.");
+    throw new RuntimeException("You have to override the adequate method to handle this action, or you have to override 'public void f()' to avoid this error");
   }
 
   /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
    */
-  public String f(Element e, int i) {
-    f(e);
-    return "";
+  public Object f(Element e, int i) {
+    Widget w = GQuery.getAssociatedWidget(e);
+    if (w != null){
+      return f(w, i);
+    } else {
+      f(e);
+      return "";
+    }
   }
 
   /**
-   * Override this for GQuery methods which take a callback, but do not expect a
-   * return value, apply to a single element only.
+   * Override this for GQuery methods which loop over matched widgets and
+   * invoke a callback on each widget.
    */
-  public void f(Element e) {
-    f();
+  public Object f(Widget w, int i) {
+    f(w.getElement());
+    return "";
   }
-
+  
   /**
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
@@ -67,5 +75,31 @@ public abstract class Function {
   public boolean f(Event e) {
     f((Element)e.getCurrentEventTarget().cast());
     return true;
+  }
+  
+  /**
+   * Override this for GQuery methods which take a callback, but do not expect a
+   * return value, apply to a single element only.
+   */
+  public void f(Element e) {
+    Widget w = GQuery.getAssociatedWidget(e);
+    if (w != null){
+      f(w);
+    }else{
+      f();
+    }
+  }
+  
+  /**
+   * Override this for GQuery methods which take a callback, but do not expect a
+   * return value, apply to a single widget.
+   * 
+   * NOTE: If your query is returning non-widget elements you might need to override 
+   * 'public void f()' or 'public void f(Element e)' to handle these elements or to
+   * avoid a runtime exception. 
+   * 
+   */
+  public void f(Widget w){
+    f();
   }
 }

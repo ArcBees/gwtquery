@@ -17,8 +17,12 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
+import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -34,8 +38,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -43,11 +47,10 @@ import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -184,19 +187,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Wrap a GQuery around a collection of existing widget.
+   */
+  public static GQuery $(Collection<Widget> widgetList){
+    JSArray elements = JSArray.create();
+    for (Widget w : widgetList){
+      elements.addNode(w.getElement());
+    }
+    return $(elements);
+  }
+
+  /**
    * Wrap a GQuery around an existing element.
    */
   public static GQuery $(Element element) {
     return new GQuery(JSArray.create(element));
-  }
-
-  /**
-   * Wrap a GQuery around an existing widget.
-   */
-  public static GQuery $(Widget widget) {
-    GQuery q = new GQuery(JSArray.create(widget.getElement()));
-    q.data("widget", widget);
-    return q;
   }
 
   /**
@@ -242,7 +247,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * reference to a plugin to be used.
    */
   public static <T extends GQuery> T $(String selector, Class<T> plugin) {
-    return $(selector, null, plugin);
+    return $(selector, (Node) null, plugin);
   }
 
   /**
@@ -283,8 +288,48 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
+  /**
+   * This function accepts a string containing a CSS selector which is then used
+   * to match a set of elements, or it accepts raw HTML creating a GQuery
+   * element containing those elements.
+   * The second parameter is the context to use for the selector, or
+   * the document where the new elements will be created.
+   */
+  public static GQuery $(String selectorOrHtml, Widget context) {
+    return $(selectorOrHtml, context.getElement());
+  }
+
+  /**
+   * This function accepts a string containing a CSS selector which is then used
+   * to match a set of elements, or it accepts raw HTML creating a GQuery
+   * element containing those elements. The second parameter is the context to
+   * use for the selector. The third parameter is the class plugin to use.
+   */
+  public static <T extends GQuery> T $(String selector, Widget context,
+      Class<T> plugin) {
+    return $(selector, context.getElement(), plugin);
+  }
+
   public static <T extends GQuery> T $(T gq) {
     return gq;
+  }
+
+  /**
+   * Wrap a GQuery around an existing widget.
+   */
+  public static GQuery $(Widget w){
+    return $(w.getElement());
+  }
+
+  /**
+   * Wrap a GQuery around a array of existing widget.
+   */
+  public static GQuery $(Widget... widgetArray){
+    JSArray elements = JSArray.create();
+    for (Widget w : widgetArray){
+      elements.addNode(w.getElement());
+    }
+    return $(elements);
   }
 
   /**
@@ -398,6 +443,33 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
+  /**
+   * We will use the fact as GWT use the widget itself as EventListener !
+   * If no Widget associated with the element, this method returns null.
+   * @param e
+   * @return
+   */
+   protected static Widget getAssociatedWidget(Element e){
+    EventListener listener = DOM.getEventListener((com.google.gwt.user.client.Element) e);
+    
+    //No listener attached to the element, so no widget exist for this element
+    if (listener == null){
+      return null;
+    }
+    if (listener instanceof Widget){
+      //GWT uses the widget as event listener
+      return (Widget)  listener;
+    }else if (listener instanceof EventsListener){
+      EventsListener gQueryListener = (EventsListener)listener;
+      if (gQueryListener.getOriginalEventListener() != null && gQueryListener.getOriginalEventListener() instanceof Widget){
+        return (Widget) gQueryListener.getOriginalEventListener();
+      }
+    }
+    // I think it's not a good idea to generate ourself a new widget wrapping the element...
+    // To be discussed
+    return null;
+  }
+
   private static JSArray copyNodeList(NodeList<? extends Node> n) {
     JSArray res = JSArray.create();
     for (int i = 0; i < n.getLength(); i++) {
@@ -405,6 +477,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return res;
   }
+
+  private static native void emptyDocument(Document d) /*-{
+    d.open(); d.write("<head/><body/>"); d.close();
+  }-*/;
 
   private native static Document getContentDocument(Node n) /*-{
     var d =  n.contentDocument || n.contentWindow.document;
@@ -426,10 +502,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
     return nl;
-  }-*/;
-
-  private static native void emptyDocument(Document d) /*-{
-    d.open(); d.write("<head/><body/>"); d.close();
   }-*/;
 
   private static NodeList<Element> select(String selector, Node context) {
@@ -544,7 +616,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery append(GQuery query) {
     return domManip(query, FUNC_APPEND);
   }
-
+  
   /**
    * Append content to the inside of every matched element. This operation is
    * similar to doing an appendChild to all the specified elements, adding them
@@ -608,14 +680,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (plugin == GQUERY) {
       return (T) $(this);
     } else if (plugins != null) {
-      Plugin p = plugins.get(plugin);
+      Plugin<?> p = plugins.get(plugin);
       if (p != null) {
         return (T) p.init(this);
       }
     }
     throw new RuntimeException("No plugin registered for class " + plugin.getName());
   }
-  
+
   /**
    * Return a GWT Widget containing the first matched element.
    * 
@@ -624,22 +696,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    */
   public Widget asWidget() {
-    // TODO: complete it and move to the Widget plugin
-    if (data("widget") == null) {
-      Element e = elements.getItem(0);
-      Widget w = null;
-      if ("div".equalsIgnoreCase(e.getTagName()) || "span".equalsIgnoreCase(e.getTagName())) {
-        w = HTML.wrap(e); 
-      } else  if ("button".equalsIgnoreCase(e.getTagName())) {
-        w = Button.wrap(e);
-      } else  if ("text".equalsIgnoreCase(e.getTagName())) {
-        w = TextBox.wrap(e);
-      } else {
-        w = new HTML($(e).toString());
-      }
-      data(e, "widget", w);
-    }
-    return (Widget) data("widget");
+    return as(Widgets).widget();
   }
 
   /**
@@ -672,7 +729,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(String key, Function closure) {
     for (int i = 0; i < elements.getLength(); i++) {
       Element e = elements.getItem(i);
-      e.setAttribute(styleImpl.fixPropertyName(key), closure.f(e, i));
+      e.setAttribute(styleImpl.fixPropertyName(key), String.valueOf(closure.f(e, i)));
     }
     return this;
   }
@@ -1489,7 +1546,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return pushStack(unique(result), "nextAll", getSelector());
   }
-
+  
   /**
    * Removes the specified Element from the set of matched elements. This method
    * is used to remove a single Element from a jQuery object.
@@ -1503,7 +1560,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return $(array);
   }
-
+  
   /**
    * Removes any elements inside the passed set of elements from the set of
    * matched elements.
@@ -1514,8 +1571,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       ret = ret.not(e);
     }
     return ret;
-  }
-
+  }   
+  
   /**
    * Removes elements matching the specified expression from the set of matched
    * elements.
@@ -1527,7 +1584,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return ret;
   }
-
+  
   /**
    * Get the current offset of the first matched element, in pixels, relative to
    * the document. The returned object contains two integer properties, top and
@@ -1535,7 +1592,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public com.google.gwt.query.client.GQuery.Offset offset() {
     return new Offset(get(0).getAbsoluteLeft(), get(0).getAbsoluteTop());
-  }
+  } 
 
   /**
    * Returns a GQuery collection with the positioned parent of the first matched
@@ -1567,7 +1624,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery one(int eventbits, final Object data, final Function f) {
     return as(Events).one(eventbits, data, f);
   }
-  
+
   /**
    * Get the current computed height for the first element in the set of matched elements, 
    * including padding, border, but not the margin.
@@ -1575,7 +1632,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int outerHeight(){
     return outerHeight(false);
   }
-  
+
   /**
    * Get the current computed height for the first element in the set of matched elements, 
    * including padding, border, and optionally margin.
@@ -1586,8 +1643,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       outerHeight+=GQUtils.cur( get(0), "marginTop", true)+GQUtils.cur( get(0), "marginBottom", true);
     }
     return  outerHeight;
-  }   
-  
+  }
+
   /**
    * Get the current computed width for the first element in the set of matched elements, 
    * including padding, border, but not the margin.
@@ -1595,7 +1652,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int outerWidth(){
     return outerWidth(false);
   }
-  
+
   /**
    * Get the current computed width for the first element in the set of matched elements, 
    * including padding and border and optionally margin.
@@ -1606,7 +1663,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       outerWidth+=GQUtils.cur( get(0), "marginRight", true)+GQUtils.cur( get(0), "marginLeft", true);
     }
     return  outerWidth;
-  } 
+  }
 
   /**
    * Get a set of elements containing the unique parents of the matched set of
@@ -2343,6 +2400,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Return the first non null attached widget from the matched elements
+   * or null if there isn't any.
+   */
+  public Widget widget(){
+    for (Element e : elements()){
+      Widget w = getAssociatedWidget(e);
+      if (w != null){
+        return w;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * return the list of attached widgets matching the query
+   */
+  public List<Widget> widgets(){
+    List<Widget> widgets = new ArrayList<Widget>();
+    for (Element e : elements()){
+      Widget w = getAssociatedWidget(e);
+      if (w != null){
+        widgets.add(w);
+      }
+    }
+   return widgets;
+  }
+
+  /**
    * Get the current computed, pixel, width of the first matched element.
    */
   public int width() {
@@ -2460,7 +2545,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery wrapAll(String html) {
     return wrapAll($(html));
   }
-
+  
   /**
    * Wrap the inner child contents of each matched element (including text
    * nodes) with an HTML structure. This wrapping process is most useful for
@@ -2510,6 +2595,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return g;
   }
 
+  
   private void allNextSiblingElements(Element firstChildElement, JSArray result,
       Element elem) {
     while (firstChildElement != null) {
@@ -2519,7 +2605,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       firstChildElement = firstChildElement.getNextSiblingElement();
     }
   }
-
+  
   private void allPreviousSiblingElements(Element firstChildElement,
       JSArray result) {
     while (firstChildElement != null) {
@@ -2527,7 +2613,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       firstChildElement = getPreviousSiblingElement(firstChildElement);
     }
   }
-
+  
   /**
    * Bind Handlers or fire Events for each matched element.
    */
@@ -2538,7 +2624,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return bind(eventbits, data, funcs);
     }
   }
-
+  
   private GQuery domManip(GQuery g, int func, Element...elms) {
     JSArray newNodes = JSArray.create();
     if (elms.length == 0) {
@@ -2589,14 +2675,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
+  
   private native Element getPreviousSiblingElement(Element elem)  /*-{
     var sib = elem.previousSibling;
     while (sib && sib.nodeType != 1)
       sib = sib.previousSibling;
     return sib;
   }-*/;
-
+  
   private JSArray merge(NodeList<Element> first, NodeList<Element> second) {
     JSArray res = copyNodeList(first);
     for (int i = 0; i < second.getLength(); i++) {
@@ -2604,7 +2691,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return res;
   }
-
+  
+  
+  
+  
+  
   private void removeData(Element item, String name) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();

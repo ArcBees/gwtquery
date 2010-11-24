@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Test class for testing events plugin.
+ * Test class for testing gwt events plugin api.
  */
 public class GQueryEventsTest extends GWTTestCase {
 

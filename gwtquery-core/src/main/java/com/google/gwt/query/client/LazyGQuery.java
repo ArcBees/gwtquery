@@ -16,7 +16,11 @@
 package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
+import static com.google.gwt.query.client.plugins.Widgets.Widgets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -31,8 +35,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -40,11 +44,10 @@ import com.google.gwt.query.client.css.TakesLength;
 import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.query.client.LazyBase;
 
@@ -1121,6 +1124,17 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Return true if the first element is visible.
    */
   boolean visible();
+
+  /**
+   * Return the first non null attached widget from the matched elements
+   * or null if there isn't any.
+   */
+  Widget widget();
+
+  /**
+   * return the list of attached widgets matching the query
+   */
+  List<Widget> widgets();
 
   /**
    * Get the current computed, pixel, width of the first matched element.

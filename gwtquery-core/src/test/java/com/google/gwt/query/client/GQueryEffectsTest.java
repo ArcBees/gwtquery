@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Test class for testing gwtquery-core api.
+ * Test class for testing gwtquery effects plugin api.
  */
 public class GQueryEffectsTest extends GWTTestCase {
 
