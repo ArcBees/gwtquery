@@ -29,7 +29,7 @@ public class JSArray extends NodeList<Element> {
   }
 
   public static native JSArray create(Node node) /*-{
-    return [node];
+    return node ? [node] : [];
   }-*/;
 
   public static JSArray create(NodeList<?> nl) {
@@ -48,11 +48,11 @@ public class JSArray extends NodeList<Element> {
   }-*/;
 
   public final native void addNode(Node n) /*-{
-    this[this.length]=n;
+    if (n) this[this.length]=n;
   }-*/;
 
-  public final native void addNode(Node ci, int i) /*-{
-    this[i]=ci;
+  public final native void addNode(Node n, int i) /*-{
+    if (n) this[i]=n;
   }-*/;
 
   public final native void concat(JSArray ary) /*-{

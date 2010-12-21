@@ -117,6 +117,9 @@ public class DocumentStyleImpl {
    * Set the value of a style property of an element.
    */
   public void setStyleProperty(Element e, String prop, String val) {
+    if (e == null || prop == null) {
+      return;
+    }
     prop = fixPropertyName(prop);
     // put it in lower-case only when all letters are upper-case, to avoid
     // modifying already camelized properties

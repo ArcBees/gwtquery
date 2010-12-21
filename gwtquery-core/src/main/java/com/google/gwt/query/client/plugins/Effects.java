@@ -245,6 +245,26 @@ public class Effects extends GQueryQueue<Effects>  {
     return clip(Action.SHOW, ClipAnimation.Corner.TOP_LEFT,
         ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
   }
+  
+  /**
+   * Toggle the visibility of all matched elements by adjusting the clip property
+   * and firing an optional callback after completion.
+   * The effect goes from the bottom to the top.
+   */
+  public Effects clipToggle(Function... f) {
+    return clipToggle(Speed.DEFAULT, f);
+  }
+
+  /**
+   * Toggle the visibility of all matched elements by adjusting the clip property
+   * and firing an optional callback after completion.
+   * The effect goes from the bottom to the top.
+   */
+  public Effects clipToggle(int millisecs, Function... f) {
+    return clip(Action.TOGGLE, ClipAnimation.Corner.TOP_LEFT,
+        ClipAnimation.Direction.VERTICAL, millisecs, f);
+  }
+
 
   /**
    * Hide all matched elements by adjusting the clip property firing an

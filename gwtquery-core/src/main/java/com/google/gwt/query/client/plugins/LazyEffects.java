@@ -150,6 +150,20 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> clipDown(int millisecs, Function... f);
 
   /**
+   * Toggle the visibility of all matched elements by adjusting the clip property
+   * and firing an optional callback after completion.
+   * The effect goes from the bottom to the top.
+   */
+  LazyEffects<T> clipToggle(Function... f);
+
+  /**
+   * Toggle the visibility of all matched elements by adjusting the clip property
+   * and firing an optional callback after completion.
+   * The effect goes from the bottom to the top.
+   */
+  LazyEffects<T> clipToggle(int millisecs, Function... f);
+
+  /**
    * Hide all matched elements by adjusting the clip property firing an
    * optional callback after completion.
    * The effect goes from the bottom to the top.

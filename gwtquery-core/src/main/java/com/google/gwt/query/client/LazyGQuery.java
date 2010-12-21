@@ -362,7 +362,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> each(Function... f);
 
   /**
-   * Returns the working set of nodes as a Java array. <b>Do NOT</b attempt to
+   * Returns the working set of nodes as a Java array. <b>Do NOT</b> attempt to
    * modify this array, e.g. assign to its elements, or call Arrays.sort()
    */
   Element[] elements();

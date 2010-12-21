@@ -1030,7 +1030,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns the working set of nodes as a Java array. <b>Do NOT</b attempt to
+   * Returns the working set of nodes as a Java array. <b>Do NOT</b> attempt to
    * modify this array, e.g. assign to its elements, or call Arrays.sort()
    */
   public Element[] elements() {

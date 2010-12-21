@@ -29,7 +29,7 @@ public class ClipAnimation extends Animation {
    * Type of the effect action.
    */
   public static enum Action {
-    HIDE, SHOW
+    HIDE, SHOW, TOGGLE
   }
 
   /**
@@ -60,6 +60,9 @@ public class ClipAnimation extends Animation {
 
   public ClipAnimation(Element elem, Action a, Corner c, Direction d,
       final Function... funcs) {
+    if  (a == Action.TOGGLE) {
+      a = GQuery.$(elem).visible() ? Action.HIDE : Action.SHOW; 
+    }
     this.action = a;
     this.corner = c;
     this.direction = d;
@@ -101,7 +104,6 @@ public class ClipAnimation extends Animation {
     }
     g.css("overflow", "hidden");
     g.css("visivility", "visible");
-    g.css("white-space", "nowrap");
     super.onStart();
   }
 
