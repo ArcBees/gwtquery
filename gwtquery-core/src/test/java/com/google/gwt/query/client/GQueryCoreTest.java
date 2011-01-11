@@ -460,6 +460,20 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("0.4", g.css("opacity", true));
   }
   
+  public void testPosition(){
+    $(e).html("<div style='top:25px; left:25px; padding:20px; position:relative;'><div id='child' style='margin:30px'>test</div></div> ");
+    GQuery g = $("#child");
+    assertEquals(20, g.position().left);
+    assertEquals(20, g.position().top);
+    
+    $(e).html("<div style='top:25px; left:25px; position:relative;'><div id='child' style='position:relative; top:15px; left:35px;'>test</div></div> ");
+    g = $("#child");
+    assertEquals(35, g.position().left);
+    assertEquals(15, g.position().top);
+    
+
+  }
+  
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);

@@ -19,11 +19,6 @@ import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -38,8 +33,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -52,6 +47,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Gwt Query is a GWT clone of the popular jQuery library.
@@ -1720,8 +1720,45 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * accurate calculations make sure to use pixel values for margins, borders
    * and padding. This method only works with visible elements.
    */
-  public com.google.gwt.query.client.GQuery.Offset position() {
-    return new Offset(get(0).getOffsetLeft(), get(0).getOffsetTop());
+  public Offset position() {
+    Element element = get(0);
+    if (element == null) {
+      return null;
+    }
+    // Get *real* offsetParent
+    Element offsetParent = element.getOffsetParent();
+    // Get correct offsets
+    Offset offset = offset();
+    Offset parentOffset = null;
+    if ("body".equalsIgnoreCase(offsetParent.getNodeName())
+        || "html".equalsIgnoreCase(offsetParent.getNodeName())) {
+      parentOffset = new Offset(0, 0);
+    } else {
+      parentOffset = $(offsetParent).offset();
+    }
+
+    // Subtract element margins
+    int topMargin = (int) GQUtils.cur(element, "marginTop", true);
+    // When margin-left = auto, Safari and chrome return a value while IE and
+    // Firefox return 0
+    // force the margin-left to 0 if margin-left = auto.
+    int leftMargin = 0;
+    if (!"auto".equals(element.getStyle().getMarginLeft())) {
+      leftMargin = (int) GQUtils.cur(element, "marginLeft", true);
+    }
+
+    offset = offset.add(-leftMargin, -topMargin);
+
+    // Add offsetParent borders
+    int parentOffsetBorderTop = (int) GQUtils.cur(offsetParent,
+        "borderTopWidth", true);
+    int parentOffsetBorderLeft = (int) GQUtils.cur(offsetParent,
+        "borderLeftWidth", true);
+    parentOffset = parentOffset.add(parentOffsetBorderLeft,
+        parentOffsetBorderTop);
+
+    // Subtract the two offsets
+    return offset.add(-parentOffset.left, -parentOffset.top);
   }
 
   /**
