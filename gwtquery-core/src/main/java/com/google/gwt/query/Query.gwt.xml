@@ -83,6 +83,16 @@
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
+    
+    <replace-with
+		class="gwtquery.plugins.commonui.client.GQuery.GQueryUiImplTrident">
+		<when-type-is
+			class="gwtquery.plugins.commonui.client.GQuery.GQueryUiImpl" />
+		<any>
+			<when-property-is name="user.agent" value="ie6" />
+			<when-property-is name="user.agent" value="ie8" />
+		</any>
+	</replace-with>
 
     <!-- IE8 needs the iframe where the js of app is loaded set to standard in order 
          to use the queryAll native selector -->    
