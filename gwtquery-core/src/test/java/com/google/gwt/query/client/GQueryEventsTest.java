@@ -318,4 +318,23 @@ public class GQueryEventsTest extends GWTTestCase {
     $(document).trigger(Event.ONMOUSEUP);
     assertEquals("black", $("p").css("color"));
   }
+  
+  /**
+   * Test for issue 62
+   * http://code.google.com/p/gwtquery/issues/detail?id=62
+   */
+  public void testTabInbexInFocusEventBinding(){
+    String content="<div id='test'>test content</div>";
+    $(e).html(content);
+    $("#test").focus(new Function(){});
+    
+    assertEquals($("#test").attr("tabIndex"), "0");
+    
+    content="<div id='test' tabIndex='2'>test content</div>";
+    $(e).html(content);
+    $("#test").focus(new Function(){});
+    
+    assertEquals($("#test").attr("tabIndex"), "2");
+    
+  }
 }

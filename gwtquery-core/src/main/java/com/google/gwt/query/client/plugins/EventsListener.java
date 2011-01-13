@@ -149,7 +149,7 @@ public class EventsListener implements EventListener {
     if (eventbits == ONSUBMIT) {
       sinkSubmitEvent(element);
     } else {
-      if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS) {
+      if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS && element.getAttribute("tabIndex").length() == 0) {
         element.setAttribute("tabIndex", "0");
       }
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventbits
