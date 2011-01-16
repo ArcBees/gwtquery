@@ -303,18 +303,18 @@ public class GQueryCoreTest extends GWTTestCase {
   public void testIssue23() {
     $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
     $("button").click(new Function() {
-      public boolean f(Event e) {
-        $("table > tbody > tr > td > input:checked").each(new Function() {
+      public boolean f(Event ev) {
+    	done = 0;
+        $("table > tbody > tr > td > input:checked", e).each(new Function() {
           public void f(Element e) {
             done++;
           }
         });
+        assertEquals(1, done);
         return true;
       }
     });
-    done = 0;
     $("button").click();
-    assertEquals(1,done);
   }
 
   public void testModifyMethods() {
