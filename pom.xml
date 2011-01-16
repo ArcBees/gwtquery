@@ -57,21 +57,6 @@
         <!-- <module>devtest</module> -->
     </modules>
 
-    <distributionManagement>
-      <!--
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>timefire-deploy</id>
-            <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>timefire-snapshots</id>
-            <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
-        </snapshotRepository>
-      -->
-    </distributionManagement>
-
     <pluginRepositories>
         <pluginRepository>
             <id>repo1</id>
@@ -153,10 +138,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>timepedia</id>
-            <url>http://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
-        </repository>
-        <repository>
             <id>maven2-repository.dev.java.net</id>
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
@@ -165,8 +146,8 @@
 
     <properties>
         <gwtversion>2.1.0</gwtversion>
-        <gwt.loglevel>INFO</gwt.loglevel>
-        <gwt.outputstyle>PRETTY</gwt.outputstyle>
+        <gwt.loglevel>ERROR</gwt.loglevel>
+        <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix></gwt.modulesuffix>
     </properties>
 
@@ -174,20 +155,24 @@
         <profile>
             <id>dev</id>
             <properties>
-                <gwtversion>2.0.4</gwtversion>
                 <gwt.loglevel>WARN</gwt.loglevel>
-                <gwt.modulesuffix>Dev</gwt.modulesuffix>
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
             </properties>
         </profile>
         <profile>
-            <id>prod</id>
-            <properties>
-                <gwtversion>2.0.4</gwtversion>
-                <gwt.loglevel>ERROR</gwt.loglevel>
-                <gwt.outputstyle>OBF</gwt.outputstyle>
-                <gwt.modulesuffix></gwt.modulesuffix>
-            </properties>
+           <id>timefire</id>
+           <distributionManagement>
+                <repository>
+                    <uniqueVersion>false</uniqueVersion>
+                    <id>timefire-deploy</id>
+                    <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
+                </repository>
+                <snapshotRepository>
+                    <uniqueVersion>false</uniqueVersion>
+                    <id>timefire-snapshots</id>
+                    <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
+                </snapshotRepository>
+           </distributionManagement>
         </profile>
     </profiles>
 </project>
