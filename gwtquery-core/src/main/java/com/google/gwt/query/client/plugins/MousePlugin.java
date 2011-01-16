@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 The gwtquery plugins team.
+ * Copyright 2011 Google Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,16 +27,12 @@ import com.google.gwt.query.client.plugins.Events;
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
  * 
- * @author Julien Dramaix (julien.dramaix@gmail.com, @jdramaix)
- * 
  */
 public abstract class MousePlugin extends GQueryUi {
 
   private Event mouseDownEvent;
   private boolean mouseStarted = false;
   private Duration mouseUpDuration;
-  // private int mouseDownX;
-  // private int mouseDownY;
   private MouseOptions options;
   private boolean preventClickEvent = false;
 
@@ -65,14 +61,12 @@ public abstract class MousePlugin extends GQueryUi {
    * Return a String identifying the plugin. This string is used as namespace
    * when we bind handlers.
    * 
-   * @return
    */
   protected abstract String getPluginName();
 
   /**
    * This method initialize all needed handlers
    * 
-   * @param options
    */
   protected void initMouseHandler(MouseOptions options) {
     this.options = options;
@@ -110,7 +104,6 @@ public abstract class MousePlugin extends GQueryUi {
   /**
    * Test if the mouse down event must be handled by the plugin or not.
    * 
-   * 
    */
   protected boolean mouseCapture(Element draggable, Event event) {
     return true;
@@ -119,9 +112,6 @@ public abstract class MousePlugin extends GQueryUi {
   /**
    * Method called when mouse click
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected boolean mouseClick(Element element, Event event) {
     return true;
@@ -133,9 +123,6 @@ public abstract class MousePlugin extends GQueryUi {
    * You should not override this method. Instead, override
    * {@link #mouseStart(Element, Event)} method
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected boolean mouseDown(Element element, Event event) {
 
@@ -174,9 +161,6 @@ public abstract class MousePlugin extends GQueryUi {
   /**
    * Method called when the mouse is dragging
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected abstract boolean mouseDrag(Element element, Event event);
 
@@ -186,9 +170,6 @@ public abstract class MousePlugin extends GQueryUi {
    * You should not override this method. Instead, override
    * {@link #mouseMove(Element, Event)} method
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected boolean mouseMove(Element element, Event event) {
     if (mouseStarted) {
@@ -212,18 +193,12 @@ public abstract class MousePlugin extends GQueryUi {
    * Method called when the mouse is clicked and all conditions for starting the
    * plugin are met.
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected abstract boolean mouseStart(Element element, Event event);
 
   /**
    * Method called when the mouse button is released
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected abstract boolean mouseStop(Element element, Event event);
 
@@ -233,9 +208,6 @@ public abstract class MousePlugin extends GQueryUi {
    * You should not override this method. Instead, override
    * {@link #mouseStop(Element, Event)} method
    * 
-   * @param element
-   * @param event
-   * @return
    */
   protected boolean mouseUp(Element element, Event event) {
     unbindOtherMouseEvent();
