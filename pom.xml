@@ -13,13 +13,11 @@
         <system>Google Code</system>
         <url>http://code.google.com/p/gwtquery/issues/list</url>
     </issueManagement>
-<!--
     <parent>
       <groupId>org.sonatype.oss</groupId>
       <artifactId>oss-parent</artifactId>
       <version>3</version>
     </parent>
--->
 
     <developers>
         <developer>
@@ -60,33 +58,25 @@
     </modules>
 
     <distributionManagement>
-     <!--
+      <!--
         <repository>
             <uniqueVersion>false</uniqueVersion>
-            <id>timepedia-deploy</id>
-            <url>svn:https://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
+            <id>timefire-deploy</id>
+            <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
         </repository>
-     -->
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>googlecode</id>
-            <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
-        </repository>
-     <!--
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>googlecode</id>
-            <url>svn:https://gwtquery.googlecode.com/svn/mavenrepo/</url>
+            <id>timefire-snapshots</id>
+            <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
         </snapshotRepository>
       -->
-        <snapshotRepository>
-          <uniqueVersion>false</uniqueVersion>
-          <id>localfolder</id>
-          <url>file:mavenrepo</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <pluginRepositories>
+        <pluginRepository>
+            <id>repo1</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
         <pluginRepository>
             <id>gcupload</id>
             <name>Repository for gcupload plugin</name>
@@ -155,6 +145,13 @@
     </reporting>
 
     <repositories>
+        <repository>
+            <id>repo1</id>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>timepedia</id>
             <url>http://gwt-chronoscope.googlecode.com/svn/mavenrepo/</url>
