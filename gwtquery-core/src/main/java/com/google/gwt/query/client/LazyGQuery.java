@@ -787,7 +787,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * accurate calculations make sure to use pixel values for margins, borders
    * and padding. This method only works with visible elements.
    */
-  Offset position();
+  com.google.gwt.query.client.GQuery.Offset position();
 
   /**
    * Prepend content to the inside of every matched element. This operation is

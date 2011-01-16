@@ -1720,7 +1720,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * accurate calculations make sure to use pixel values for margins, borders
    * and padding. This method only works with visible elements.
    */
-  public Offset position() {
+  public com.google.gwt.query.client.GQuery.Offset position() {
     Element element = get(0);
     if (element == null) {
       return null;
