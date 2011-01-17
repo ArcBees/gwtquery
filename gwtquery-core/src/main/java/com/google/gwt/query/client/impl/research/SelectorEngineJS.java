@@ -13,7 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.impl;
+package com.google.gwt.query.client.impl.research;
+
+import static com.google.gwt.query.client.GQUtils.eq;
+import static com.google.gwt.query.client.GQUtils.truth;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -25,12 +28,110 @@ import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
 
 /**
  * Runtime selector engine implementation with no-XPath/native support based on
  * DOMAssistant.
  */
 public class SelectorEngineJS extends SelectorEngineImpl {
+  
+
+  /**
+   * Internal class.
+   */
+  protected static class Sequence {
+
+    public int start;
+
+    public int max;
+
+    public int add;
+
+    public int modVal;
+  }
+
+  /**
+   * Internal class.
+   */
+  protected static class SplitRule {
+
+    public String tag;
+
+    public String id;
+
+    public String allClasses;
+
+    public String allAttr;
+
+    public String allPseudos;
+
+    public String tagRelation;
+
+    public SplitRule(String tag, String id, String allClasses, String allAttr,
+        String allPseudos) {
+      this.tag = tag;
+      this.id = id;
+      this.allClasses = allClasses;
+      this.allAttr = allAttr;
+      this.allPseudos = allPseudos;
+    }
+
+    public SplitRule(String tag, String id, String allClasses, String allAttr,
+        String allPseudos, String tagRelation) {
+      this.tag = tag;
+      this.id = id;
+      this.allClasses = allClasses;
+      this.allAttr = allAttr;
+      this.allPseudos = allPseudos;
+      this.tagRelation = tagRelation;
+    }
+  }
+
+  protected static Sequence getSequence(String expression) {
+    int start = 0, add = 2, max = -1, modVal = -1;
+    Regexp expressionRegExp = new Regexp(
+        "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
+    JSArray pseudoValue = expressionRegExp.exec(expression);
+    if (!truth(pseudoValue)) {
+      return null;
+    } else {
+      if (truth(pseudoValue.getStr(2))) {        // odd or even
+        start = (eq(pseudoValue.getStr(2), "odd")) ? 1 : 2;
+        modVal = (start == 1) ? 1 : 0;
+      } else if (GQUtils
+          .truth(pseudoValue.getStr(3))) {        // single digit
+        start = Integer.parseInt(pseudoValue.getStr(3), 10);
+        add = 0;
+        max = start;
+      } else if (truth(pseudoValue.getStr(4))) {        // an+b
+        add = truth(pseudoValue.getStr(6)) ? Integer
+            .parseInt(pseudoValue.getStr(6), 10) : 1;
+        start = truth(pseudoValue.getStr(7)) ? Integer.parseInt(
+            (pseudoValue.getStr(8).charAt(0) == '+' ? ""
+                : pseudoValue.getStr(8)) + pseudoValue.getStr(9), 10) : 0;
+        while (start < 1) {
+          start += add;
+        }
+        modVal = (start > add) ? (start - add) % add
+            : ((start == add) ? 0 : start);
+      } else if (truth(pseudoValue.getStr(10))) {        // -an+b
+        add = truth(pseudoValue.getStr(12)) ? Integer
+            .parseInt(pseudoValue.getStr(12), 10) : 1;
+        start = max = Integer.parseInt(pseudoValue.getStr(13), 10);
+        while (start > add) {
+          start -= add;
+        }
+        modVal = (max > add) ? (max - add) % add : ((max == add) ? 0 : max);
+      }
+    }
+    Sequence s = new Sequence();
+    s.start = start;
+    s.add = add;
+    s.max = max;
+    s.modVal = modVal;
+    return s;
+  }
 
   public static void clearAdded(JSArray a) {
     for (int i = 0, len = a.size(); i < len; i++) {

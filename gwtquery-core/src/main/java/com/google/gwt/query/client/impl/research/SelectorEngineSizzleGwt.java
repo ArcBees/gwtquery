@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.impl;
+package com.google.gwt.query.client.impl.research;
 
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQUtils;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
 
 /**
  * Pure Javascript Selector Engine Gwt Implementation based on
@@ -84,7 +85,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
             }
           }
           if ( isPartStrNotTag ) {
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( part, checkSet, true );
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( part, checkSet, true );
           }
         },
         ">": function(checkSet, part){
@@ -109,7 +110,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
               }
             }
             if ( isPartStr ) {
-              @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( part, checkSet, true );
+              @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( part, checkSet, true );
             }
           }
         },
@@ -117,17 +118,17 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
           var doneName = done++;
           if ( typeof part === "string" && !/\W/.test(part) ) {
             checkFn = $wnd.dirNodeCheck;
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::dirNodeCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("parentNode", part, doneName, checkSet);
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::dirNodeCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("parentNode", part, doneName, checkSet);
           } else {
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::dirCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("parentNode", part, doneName, checkSet);
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::dirCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("parentNode", part, doneName, checkSet);
           }
         },
         "~": function(checkSet, part){
           var doneName = done++;
           if ( typeof part === "string" && !/\W/.test(part) ) {
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::dirNodeCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("previousSibling", part, doneName, checkSet);
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::dirNodeCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("previousSibling", part, doneName, checkSet);
           } else {
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::dirCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("previousSibling", part, doneName, checkSet);
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::dirCheck(Ljava/lang/String;Ljava/lang/Object;ILjava/lang/Object;)("previousSibling", part, doneName, checkSet);
           }
         }
       },
@@ -204,9 +205,9 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
           if ( match[1] === "not" ) {
             // If we're dealing with a complex expression, or a simple one
             if ( ( $wnd.Expr.match.CHUNKER.exec(match[3]) || "" ).length > 1 || /^\w/.test(match[3]) ) {
-              match[3] = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(match[3], null, null, curLoop);
+              match[3] = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(match[3], null, null, curLoop);
             } else {
-              var ret = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)(match[3], curLoop, inplace, true ^ not);
+              var ret = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)(match[3], curLoop, inplace, true ^ not);
               if ( !inplace ) {
                 result.push.apply( result, ret );
               }
@@ -245,7 +246,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
           return !elem.firstChild;
         },
         has: function(elem, i, match){
-          return !!@com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(match[3], elem, null, null).length;
+          return !!@com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(match[3], elem, null, null).length;
         },
         header: function(elem){
           return /h\d/i.test( elem.nodeName );
@@ -313,7 +314,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
           if ( filter ) {
             return filter( elem, i, match, array );
           } else if ( name === "contains" ) {
-            return (elem.textContent || elem.innerText || @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::getText(Ljava/lang/Object;)([ elem ]) || "").indexOf(match[3]) >= 0;
+            return (elem.textContent || elem.innerText || @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::getText(Ljava/lang/Object;)([ elem ]) || "").indexOf(match[3]) >= 0;
           } else if ( name === "not" ) {
             var not = match[3];
 
@@ -324,7 +325,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
             }
             return true;
           } else {
-            @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::error(Ljava/lang/String;)("Syntax error, unrecognized expression: " + name);
+            @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::error(Ljava/lang/String;)("Syntax error, unrecognized expression: " + name);
           }
         },
         CHILD: function(elem, match){
@@ -450,7 +451,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
                  match = true;
                  break;
                }
-             } else if ( @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( cur, [elem], false ).length > 0 ) {
+             } else if ( @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( cur, [elem], false ).length > 0 ) {
                match = elem;
                break;
              }
@@ -548,7 +549,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       // Improper expression
       if ( expr === old ) {
         if ( anyFound == null ) {
-          @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::error(Ljava/lang/String;)(expr);
+          @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::error(Ljava/lang/String;)(expr);
         } else {
           break;
         }
@@ -595,7 +596,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
         ret += elem.nodeValue;
       // Traverse everything else, except comment nodes
       } else if ( elem.nodeType !== 8 ) {
-        ret += @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::getText(Ljava/lang/Object;)(elem.childNodes);
+        ret += @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::getText(Ljava/lang/Object;)(elem.childNodes);
       }
     }
     return ret;
@@ -629,9 +630,9 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     }
     selector = $wnd.Expr.relative[selector] ? selector + "*" : selector;
     for ( var i = 0, l = root.length; i < l; i++ ) {
-      @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(selector, root[i], tmpSet, null);
+      @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(selector, root[i], tmpSet, null);
     }
-    return @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
+    return @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
   }-*/;   
   
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
@@ -649,17 +650,17 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     }
     if ( parts.length > 1 && $wnd.Expr.match.POS.exec( selector ) ) {
       if ( parts.length === 2 && $wnd.Expr.relative[ parts[0] ] ) {
-        set = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::posProcess(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)(parts[0] + parts[1], context);
+        set = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::posProcess(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)(parts[0] + parts[1], context);
       } else {
         set = $wnd.Expr.relative[ parts[0] ] ?
           [ context ] :
-          @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(parts.shift(), context, null, null);
+          @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(parts.shift(), context, null, null);
         while ( parts.length ) {
           selector = parts.shift();
           if ( $wnd.Expr.relative[ selector ] ) {
             selector += parts.shift();
           }
-          set = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::posProcess(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)(selector, set);
+          set = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::posProcess(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)(selector, set);
         }
       }
     } else {
@@ -667,16 +668,16 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       // (but not if it'll be faster if the inner selector is an ID)
       if ( !seed && parts.length > 1 && context.nodeType === 9 &&
           $wnd.Expr.match.ID.test(parts[0]) && !$wnd.Expr.match.ID.test(parts[parts.length - 1]) ) {
-        var ret = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::find(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)( parts.shift(), context);
-        context = ret.expr ? @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( ret.expr, ret.set, false )[0] : ret.set[0];
+        var ret = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::find(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)( parts.shift(), context);
+        context = ret.expr ? @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( ret.expr, ret.set, false )[0] : ret.set[0];
       }
       if ( context ) {
         var ret = seed ?
-          { expr: parts.pop(), set: @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(seed, null) } :
-          @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::find(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context);
-        set = ret.expr ? @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( ret.expr, ret.set, false ) : ret.set;
+          { expr: parts.pop(), set: @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(seed, null) } :
+          @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::find(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;)( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context);
+        set = ret.expr ? @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( ret.expr, ret.set, false ) : ret.set;
         if ( parts.length > 0 ) {
-          checkSet = @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(set, null);
+          checkSet = @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(set, null);
         } else {
           prune = false;
         }
@@ -700,14 +701,14 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       checkSet = set;
     }
     if ( !checkSet ) {
-      @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::error(Ljava/lang/String;)(cur || selector);
+      @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::error(Ljava/lang/String;)(cur || selector);
     }
     if ( Object.prototype.toString.call(checkSet) === "[object Array]" ) {
       if ( !prune ) {
         results.push.apply( results, checkSet );
       } else if ( context && context.nodeType === 1 ) {
         for ( var i = 0; checkSet[i] != null; i++ ) {
-          if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::contains(Ljava/lang/Object;Ljava/lang/Object;)(context, checkSet[i])) ) {
+          if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::contains(Ljava/lang/Object;Ljava/lang/Object;)(context, checkSet[i])) ) {
             results.push( set[i] );
           }
         }
@@ -719,10 +720,10 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
         }
       }
     } else {
-      @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(checkSet, results);
+      @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::makeArray(Lcom/google/gwt/dom/client/NodeList;Lcom/google/gwt/core/client/JsArray;)(checkSet, results);
     }
     if ( extra ) {
-      @com.google.gwt.query.client.impl.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(extra, origContext, results, seed);
+      @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(extra, origContext, results, seed);
     }
     return results;     
    }-*/;

@@ -19,6 +19,8 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -789,6 +791,41 @@ public class GQueryCoreTest extends GWTTestCase {
     
     (b2).click();
     assertEquals("red", $(b1).css("color"));
+  }
+  
+  public void testGQueryMap() {
+    String content = "<p id='1'/><p/><p id='2'/><p id='4'/>";
+    $(e).html(content);
+    
+    ArrayList<String> s = $("p", e).map(new Function() {
+      public Object f(Element e, int i) {
+        return null;
+      }
+    });
+    assertNotNull(s);
+    assertEquals(0, s.size());
+
+    s = $("p", e).map(new Function() {
+      public Object f(Element e, int i) {
+        String id = $(e).attr("id");
+        return id.isEmpty() ? null: id;
+      }
+    });
+    assertEquals(3, s.size());
+    assertEquals("1", s.get(0));
+    assertEquals("2", s.get(1));
+    assertEquals("4", s.get(2));
+    
+
+    ArrayList<Element> a = $("p", e).map(new Function() {
+      public Object f(Element e, int i) {
+        String id = $(e).attr("id");
+        return id.isEmpty() ? null: e;
+      }
+    });
+    assertEquals(3, a.size());
+    assertEquals(3, $(a).size());
+    
   }
 
 }

@@ -19,28 +19,23 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.user.client.Window;
 
 /**
- * Runtime selector engine implementation for IE with native
- * querySelectorAll support (IE8 standards mode).
+ * Runtime selector engine implementation for browsers with native
+ * querySelectorAll support.
  * 
- * It will fall back to Sizzle engine when QuerySelector were unavailable
- * or in the case of selectors unsupported by the IE8 native QuerySelector.
- * 
+ * In the case of unsupported selectors, it will display an error message 
+ * instead of falling back to a pure js implementation.
  */
-public class SelectorEngineNativeIE8 extends SelectorEngineSizzleIE {
-  
-  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=|:checked|:not|:nth-|:last-|:only-).*";
+public class SelectorEngineNativeMin extends SelectorEngineImpl {
   
   public NodeList<Element> select(String selector, Node ctx) {
-    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
-      return super.select(selector, ctx); 
-    } else {
-      try {
-        return SelectorEngine.querySelectorAllImpl(selector, ctx);
-      } catch (Exception e) {
-        return super.select(selector, ctx); 
-      }
+    try {
+      return SelectorEngine.querySelectorAllImpl(selector, ctx);
+    } catch (Exception e) {
+      Window.alert("Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
+      return null;
     }
   }
   

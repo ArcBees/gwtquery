@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.impl;
+package com.google.gwt.query.client.impl.research;
 
 import static com.google.gwt.query.client.GQUtils.eq;
 import static com.google.gwt.query.client.GQUtils.truth;
@@ -26,6 +26,9 @@ import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Regexp;
 import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.impl.research.SelectorEngineJS.Sequence;
+import com.google.gwt.query.client.impl.research.SelectorEngineJS.SplitRule;
 
 
 /**
@@ -173,7 +176,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
           + ")";
     } else if (eq("nth-child", pseudoClass)) {
       if (!eq("n", pseudoClass)) {
-        Sequence sequence = getSequence(pseudoValue);
+        Sequence sequence = SelectorEngineJS.getSequence(pseudoValue);
         if (sequence != null) {
           if (sequence.start == sequence.max) {
             xpath = "count(preceding-sibling::*) = " + (sequence.start - 1);
@@ -189,7 +192,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
       }
     } else if (eq("nth-of-type", pseudoClass)) {
       if (!pseudoValue.startsWith("n")) {
-        Sequence sequence = getSequence(pseudoValue);
+        Sequence sequence = SelectorEngineJS.getSequence(pseudoValue);
         if (sequence != null) {
           if (sequence.start == sequence.max) {
             xpath = pseudoValue;
@@ -235,13 +238,13 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
         if(!allAttr) return "";
         return allAttr.replace(/["']+/g,'').replace(/(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?/g, 
             function(a,b,c,d) {
-              return @com.google.gwt.query.client.impl.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
+              return @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
             });
             
     }-*/;
 
   private native String replaceAttr2(String allAttr) /*-{
         if(!allAttr) return "";
-        return allAttr.replace(/\[(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?\]/g, @com.google.gwt.query.client.impl.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;));
+        return allAttr.replace(/\[(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?\]/g, @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;));
     }-*/;
 }

@@ -52,7 +52,6 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <!-- <module>plugins</module> -->
         <!-- <module>samples</module> -->
         <!-- <module>devtest</module> -->
     </modules>
@@ -145,8 +144,8 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.1.0</gwtversion>
-        <gwt.loglevel>ERROR</gwt.loglevel>
+        <gwtversion>2.1.1</gwtversion>
+        <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix></gwt.modulesuffix>
     </properties>
@@ -155,7 +154,6 @@
         <profile>
             <id>dev</id>
             <properties>
-                <gwt.loglevel>WARN</gwt.loglevel>
                 <gwt.outputstyle>PRETTY</gwt.outputstyle>
             </properties>
         </profile>

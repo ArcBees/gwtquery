@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.google.gwt</groupId>
+        <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -19,14 +19,21 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>${groupId}</groupId>
-            <artifactId>gwtquery-plugins</artifactId>
-            <version>${version}</version>
-            <type>jar</type>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>${groupId}</groupId>-->
+<!--            <artifactId>gwtquery-plugins</artifactId>-->
+<!--            <version>${version}</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
@@ -37,14 +44,15 @@
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
-                    <soyc>false</soyc>
+                    <compileReport>true</compileReport>
                     <modules>
+                        <module>gwtquery.samples.GwtQueryDemo</module>
                         <module>gwtquery.samples.GwtQueryEffects</module>
+                        <module>gwtquery.samples.GwtQueryEffectsMin</module>
                         <module>gwtquery.samples.GwtQuerySample</module>
                         <module>gwtquery.samples.GwtQueryBench</module>
-                        <module>gwtquery.samples.GwtQueryDemo</module>
                         <module>gwtquery.samples.GwtQueryWidgets</module>
-			<module>gwtquery.samples.GwtQueryImageZoom</module>
+                        <module>gwtquery.samples.GwtQueryImageZoom</module>
                     </modules>
                 </configuration>
                 <executions>
@@ -63,6 +71,7 @@
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryBench</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryDemo</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryEffects</directory></fileset>
+                  <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryEffectsMin</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryPlugin</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQuerySample</directory></fileset>
                   <fileset><directory>src/main/webapp/gwtquery.samples.GwtQueryWidgets</directory></fileset>
@@ -75,6 +84,27 @@
                 </filesets>
               </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                    <additionalBuildcommands>
+                        <buildCommand>
+                            <name>
+                                com.google.gwt.eclipse.core.gwtProjectValidator
+                            </name>
+                        </buildCommand>
+                    </additionalBuildcommands>
+                    <additionalProjectnatures>
+                        <projectnature>com.google.gwt.eclipse.core.gwtNature
+                        </projectnature>
+                    </additionalProjectnatures>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

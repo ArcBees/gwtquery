@@ -1,0 +1,44 @@
+<module>
+    <!--
+     Include com.google.gwt.query.QueryMin instead of com.google.gwt.query.Query
+     if you want small javascript code and you are not using any of the selectors: 
+     ".*(:contains|!=|:checked|:not|:nth-|:last-|:only-).*"
+     
+     Note: that this will increase the number of total permutations. 
+     -->
+    <inherits name='com.google.gwt.query.Query'/>
+
+    <define-property name="selectorCapability" values="native,js"/>
+    <property-provider name="selectorCapability">
+        <![CDATA[
+         return document.location.href.indexOf("_force_no_native") < 0 &&
+                document.querySelectorAll && 
+                /native/.test(String(document.querySelectorAll)) ? "native" : "js"; 
+        ]]>
+    </property-provider>
+
+    <!-- Selector Engines -->
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <any>
+            <when-property-is name="user.agent" value="gecko1_8"/>
+            <when-property-is name="user.agent" value="opera"/>
+            <when-property-is name="user.agent" value="safari"/>
+        </any>
+        <when-property-is name="selectorCapability" value="native"/>
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineCssToXPath">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <any>
+            <when-property-is name="user.agent" value="gecko1_8"/>
+            <when-property-is name="user.agent" value="opera"/>
+            <when-property-is name="user.agent" value="safari"/>
+        </any>
+        <when-property-is name="selectorCapability" value="js"/>
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMinIE8">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="user.agent" value="ie8"/>
+        <when-property-is name="selectorCapability" value="native"/>
+    </replace-with>
+</module>

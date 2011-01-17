@@ -1,6 +1,0 @@
-<module>
-    <inherits name='com.google.gwt.query.Query'/>
-    <source path="plugins"/>
-</module>
-    
-

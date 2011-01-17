@@ -1,4 +1,4 @@
-package com.google.gwt.query.client.impl;
+package com.google.gwt.query.client.impl.research;
 
 import com.google.gwt.dom.client.Element;
 

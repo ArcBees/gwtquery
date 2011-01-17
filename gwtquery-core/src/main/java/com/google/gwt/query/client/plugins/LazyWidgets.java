@@ -27,6 +27,6 @@ import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
 
-  Widget widget();
+  <W extends Widget> W widget();
 
 }

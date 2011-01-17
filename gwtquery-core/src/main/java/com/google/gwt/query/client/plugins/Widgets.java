@@ -56,8 +56,10 @@ public class Widgets extends GQueryQueue<Widgets>  {
     super(list);
   }
   
+  @SuppressWarnings("unchecked")
   @Override
-  public Widget widget() {
+  // TODO: consider more widgets
+  public  <W extends Widget> W widget() {
     Widget w = super.widget();
     if (w == null) {
       Element e = elements.getItem(0);
@@ -71,7 +73,7 @@ public class Widgets extends GQueryQueue<Widgets>  {
         w = new HTML($(e).toString());
       }
     }
-    return w;
+    return (W)w;
   }
 
 }

@@ -19,6 +19,11 @@ import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -33,8 +38,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.Percentage;
@@ -47,11 +52,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Gwt Query is a GWT clone of the popular jQuery library.
@@ -222,6 +222,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around  existing Elements.
    */
   public static GQuery $(NodeList<Element> elements) {
+    return new GQuery(elements);
+  }
+  
+  /**
+   * Create a new GQuery given a list of objects. 
+   * Only node objects will be added;
+   */
+  public static GQuery $(@SuppressWarnings("rawtypes") ArrayList a) {
+    JSArray elements = JSArray.create();
+    for (Object o : a ) {
+      if (o instanceof Node) {
+        elements.addNode((Node)o);
+      } else if (o instanceof Widget) {
+        elements.addNode(((Widget)o).getElement());
+      }
+    }
     return new GQuery(elements);
   }
 
@@ -1168,6 +1184,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return pushStack(unique(array), "find", filters[0]);
   }
+  
+  /**
+   * Reduce the set of matched elements to the first in the set.
+   */
+  public GQuery first() {
+    return eq(0);
+  }
 
   /**
    * Bind a set of functions to the focus event of each matched element.
@@ -1431,6 +1454,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery keyup(int key) {
     return trigger(Event.ONKEYUP, key);
   }
+  
+  /**
+   * Reduce the set of matched elements to the final one in the set.
+   */
+  public GQuery last() {
+    return eq(size() - 1);
+  }
 
   /**
    * Returns the computed left position of the first element matched.
@@ -1463,6 +1493,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(slice(0, pos));
   }
 
+  /**
+   * Pass each element in the current matched set through a function, 
+   * producing a new array containing the return values.
+   */
+  @SuppressWarnings("unchecked")
+  public <W> ArrayList<W> map(Function f) {
+    @SuppressWarnings("rawtypes")
+    ArrayList ret = new ArrayList();
+    for (int i = 0; i < elements().length; i++) {
+      Object o = f.f(elements()[i], i);
+      if (o != null) {
+        ret.add(o);
+      }
+    }
+    return ret;
+  }
+  
   /**
    * Bind a set of functions to the mousedown event of each matched element.
    * Or trigger the event if no functions are provided.
@@ -2440,9 +2487,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return the first non null attached widget from the matched elements
    * or null if there isn't any.
    */
-  public Widget widget(){
+  public <W extends Widget> W widget(){
     for (Element e : elements()){
-      Widget w = getAssociatedWidget(e);
+      @SuppressWarnings("unchecked")
+      W w = (W) getAssociatedWidget(e);
       if (w != null){
         return w;
       }
@@ -2631,7 +2679,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     g.setSelector(selector);
     return g;
   }
-
   
   private void allNextSiblingElements(Element firstChildElement, JSArray result,
       Element elem) {
@@ -2713,7 +2760,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
   
-  
   private native Element getPreviousSiblingElement(Element elem)  /*-{
     var sib = elem.previousSibling;
     while (sib && sib.nodeType != 1)
@@ -2728,10 +2774,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return res;
   }
-  
-  
-  
-  
   
   private void removeData(Element item, String name) {
     if (dataCache == null) {

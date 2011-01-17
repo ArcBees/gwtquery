@@ -47,7 +47,7 @@ public abstract class Function {
     if (w != null){
       return f(w, i);
     } else {
-      f(e);
+      f((com.google.gwt.user.client.Element)e);
       return "";
     }
   }
@@ -73,7 +73,7 @@ public abstract class Function {
    * Override this method for bound event handlers.
    */
   public boolean f(Event e) {
-    f((Element)e.getCurrentEventTarget().cast());
+    f((com.google.gwt.user.client.Element)e.getCurrentEventTarget().cast());
     return true;
   }
   
@@ -90,6 +90,11 @@ public abstract class Function {
     }
   }
   
+
+  public void f(com.google.gwt.user.client.Element e) {
+   f((Element)e);
+  }
+  
   /**
    * Override this for GQuery methods which take a callback, but do not expect a
    * return value, apply to a single widget.
@@ -102,4 +107,5 @@ public abstract class Function {
   public void f(Widget w){
     f();
   }
+
 }
