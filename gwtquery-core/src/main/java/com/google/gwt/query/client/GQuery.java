@@ -154,13 +154,24 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }-*/;
   }
 
+  /**
+   * The body element in the current page.
+   */
   public static final BodyElement body = Document.get().getBody();
 
+  /**
+   * The document element in the current page. 
+   */
   public static final Document document = Document.get();
-  public static boolean fxOff = false;
 
+  /**
+   * A static reference to the GQuery class.
+   */
   public static Class<GQuery> GQUERY = GQuery.class;
 
+  /**
+   * The window object.
+   */
   public static final Element window = window();
 
   private static DataCache dataCache = null;
