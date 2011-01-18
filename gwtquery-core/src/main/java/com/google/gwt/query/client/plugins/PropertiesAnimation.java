@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client.plugins;
 
-import java.util.ArrayList;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -25,6 +23,8 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.Regexp;
+
+import java.util.ArrayList;
 
 /**
  *  Animation effects on any numeric CSS property. 
@@ -69,45 +69,59 @@ public class PropertiesAnimation extends Animation {
   }
   
   private static final String[] attrsToSave = new String[] { "overflow",
-      "visibility", "white-space" };
+      "visibility" };
 
   private static Regexp nonPxRegExp = new Regexp(
       "z-?index|font-?weight|opacity|zoom|line-?height", "i");
   
-  public static Effect computeFxProp(Element e, String key, String val, boolean hidden) {
+  
+  public static Effect computeFxProp(Element e, String key, String val,
+      boolean hidden) {
     GQuery g = Effects.$(e);
+    String unit = "";
     if ("toggle".equals(val)) {
       val = hidden ? "show" : "hide";
     }
+    
+    if (("show".equals(val) && !hidden) || ("hide").equals(val) && hidden){
+      return null;
+    }
+    
+    if (hidden){
+      g.show();
+    }
     double start = GQUtils.cur(e, key, true), end = start;
+    
     if ("show".equals(val)) {
-      if (!hidden) {
-        return null;
-      }
       g.saveCssAttrs(key);
       start = 0;
+      unit = nonPxRegExp.test(key) ? "" : "px";
     } else if ("hide".equals(val)) {
       if (hidden) {
         return null;
       }
       g.saveCssAttrs(key);
       end = 0;
-    } 
-    JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
-    String unit = "";
-    if (parts != null) {
-      unit = nonPxRegExp.test(key) ? "" : parts.getStr(3) == null ? "px" : parts.getStr(3); 
-      end = Double.parseDouble(parts.getStr(2));
-      if (!"px".equals(unit)) {
-        double to = end == 0 ? 1 : end;
-        g.css(key, to + unit);
-        start = to * start / GQUtils.cur(e, key, true);
-        g.css(key, start + unit);
+      unit = nonPxRegExp.test(key) ? "" : "px";
+    } else {
+      JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
+
+      if (parts != null) {
+        unit = nonPxRegExp.test(key) ? "" : parts.getStr(3) == null ? "px"
+            : parts.getStr(3);
+        end = Double.parseDouble(parts.getStr(2));
+        if (!"px".equals(unit)) {
+          double to = end == 0 ? 1 : end;
+          g.css(key, to + unit);
+          start = to * start / GQUtils.cur(e, key, true);
+          g.css(key, start + unit);
+        }
+        if (parts.getStr(1) != null) {
+          end = (("-=".equals(parts.getStr(1)) ? -1 : 1) * end) + start;
+        }
       }
-      if (parts.getStr(1) != null) {
-        end = (("-=".equals(parts.getStr(1)) ? -1 : 1) * end) + start;
-      }
-    } 
+    }
+    
     Effect fx = new Effect(key, val, start, end, unit);
     return fx;
   }
@@ -144,7 +158,7 @@ public class PropertiesAnimation extends Animation {
       } else if ("show".equals(l.value)) {
         g.show();
         g.restoreCssAttrs(l.attr);
-      }
+      }     
     }
     g.restoreCssAttrs(attrsToSave);
     g.each(funcs);
@@ -157,7 +171,7 @@ public class PropertiesAnimation extends Animation {
     boolean move = false;
     boolean hidden = !g.visible();
     Effect fx;
-    g.show();
+    //g.show();
     for (String key : prps.keys()) {
       String val = prps.get(key);
       if ((fx = computeFxProp(e, key, val, hidden)) != null) {
@@ -169,7 +183,6 @@ public class PropertiesAnimation extends Animation {
     g.saveCssAttrs(attrsToSave);
     if (resize) {
       g.css("overflow", "hidden");
-      g.css("white-space", "nowrap");
     }
     if (move && !g.css("position", true).matches("absolute|relative")) {
       g.css("position", "relative");    
