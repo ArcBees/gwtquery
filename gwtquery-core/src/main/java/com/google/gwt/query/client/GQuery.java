@@ -743,7 +743,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Access a property on the first matched element. This method makes it easy
    * to retrieve a property value from the first matched element. If the element
-   * does not have an attribute with such a name, undefined is returned.
+   * does not have an attribute with such a name, empty string is returned.
    * Attributes include title, alt, src, href, width, style, etc.
    */
   public String attr(String name) {
@@ -1814,7 +1814,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         "borderLeftWidth", true);
     parentOffset = parentOffset.add(parentOffsetBorderLeft,
         parentOffsetBorderTop);
-
+        
     // Subtract the two offsets
     return offset.add(-parentOffset.left, -parentOffset.top);
   }
@@ -2166,8 +2166,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Return the number of elements in the matched set. Make visible all mached
-   * elements
+   * Make all matched elements visible
    */
   public GQuery show() {
     for (Element e : elements()) {
