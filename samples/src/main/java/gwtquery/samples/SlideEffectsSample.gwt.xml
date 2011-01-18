@@ -1,0 +1,8 @@
+<module  rename-to='SlideEffectsSample'>
+	<inherits name='com.google.gwt.query.Query' />
+	<inherits name='gwtquery.Plugins' />
+	<entry-point
+		class="gwtquery.samples.client.effects.SlideEffectsSample">
+	</entry-point>
+</module>
+
