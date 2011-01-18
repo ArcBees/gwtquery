@@ -169,7 +169,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Access a property on the first matched element. This method makes it easy
    * to retrieve a property value from the first matched element. If the element
-   * does not have an attribute with such a name, undefined is returned.
+   * does not have an attribute with such a name, empty string is returned.
    * Attributes include title, alt, src, href, width, style, etc.
    */
   String attr(String name);
@@ -1004,8 +1004,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   void setSelector(String selector);
 
   /**
-   * Return the number of elements in the matched set. Make visible all mached
-   * elements
+   * Make all matched elements visible
    */
   LazyGQuery<T> show();
 
