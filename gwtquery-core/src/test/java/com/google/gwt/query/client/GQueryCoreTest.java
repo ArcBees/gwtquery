@@ -455,7 +455,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("0.6", g.css("opacity", false));
     assertEquals("0.6", g.css("opacity", true));
     g.css("opacity", "");
-    assertEquals("1.0", g.css("opacity", false));
+    assertEquals("", g.css("opacity", false));
     assertEquals("1.0", g.css("opacity", true));
     g.css("opacity", "0.4");
     assertEquals("0.4", g.css("opacity", false));
@@ -743,8 +743,8 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(100, (int)GQUtils.cur(g.get(0), "height", false));
     assertEquals(100, (int)GQUtils.cur(g.get(0), "width", true));
     assertEquals(100, (int)GQUtils.cur(g.get(0), "height", true));
-    assertEquals("100", g.css("width"));
-    assertEquals("100", g.css("height"));
+    assertEquals("100px", g.css("width"));
+    assertEquals("100px", g.css("height"));
     assertEquals("100px", g.get(0).getStyle().getProperty("width"));
     assertEquals("100px", g.get(0).getStyle().getProperty("height"));
   }

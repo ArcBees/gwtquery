@@ -52,22 +52,25 @@ public class DocumentStyleImpl {
    */
   public String curCSS(Element elem, String name, boolean force) {
     name = fixPropertyName(name);
+    //value defined in the element style
+    String ret = elem.getStyle().getProperty(name);
+    
     if ("height".equalsIgnoreCase(name)) {
-      return String.valueOf(getHeight(elem));
+      return force ? String.valueOf(getHeight(elem))+"px" : ret;
     }
     if ("width".equalsIgnoreCase(name)) {
-      return String.valueOf(getWidth(elem));
+      return force ? String.valueOf(getWidth(elem))+"px" : ret;
     }    
     if ("opacity".equalsIgnoreCase(name)) {
-      return String.valueOf(getOpacity(elem));
+      return force ? String.valueOf(getOpacity(elem)) : ret;
     }
-    if (!force && elem.getStyle().getProperty(name) != null) {
-      String ret = elem.getStyle().getProperty(name);
+    if (!force) {   
       return ret == null ? "" : ret;
     } else {
       return getComputedStyle(elem, hyphenize(name), name, null);
     }
   }
+  
   
   /**
    * Fix style property names.
