@@ -44,7 +44,7 @@ public class Effects extends GQueryQueue<Effects>  {
   public static final Class<Effects> Effects = Effects.class;
 
   private static final String EFFECTS_RUNNNING = "EffectsRunnning";
-  
+
   static {
     GQuery.registerPlugin(Effects.class, new Plugin<Effects>() {
       public Effects init(GQuery gq) {
@@ -94,6 +94,7 @@ public class Effects extends GQueryQueue<Effects>  {
           anim.cancel();
         }
       }
+
       public void f(Element e) {
         Animation anim = new PropertiesAnimation(easing, e, p, funcs);
         anim.run(duration);
@@ -102,7 +103,7 @@ public class Effects extends GQueryQueue<Effects>  {
     });
     return this;
   }
-  
+
   /**
    * The animate() method allows us to create animation effects on any numeric CSS property. 
    * The only required parameter is a map of CSS properties. 
@@ -153,12 +154,12 @@ public class Effects extends GQueryQueue<Effects>  {
       ClipAnimation.Direction d, Function... f) {
     return clip(a, c, d, Speed.DEFAULT, f);
   }
-  
+
   /**
-   * Animate the set of matched elements using the clip property.
-   * It is possible to show or hide a set of elements, 
-   * specify the direction of the animation and the start corner of the effect.
-   * Finally it executes the set of functions passed as arguments.
+   * Animate the set of matched elements using the clip property. It is possible
+   * to show or hide a set of elements, specify the direction of the animation
+   * and the start corner of the effect. Finally it executes the set of
+   * functions passed as arguments.
    */
   public Effects clip(final ClipAnimation.Action a, final ClipAnimation.Corner c, 
       final ClipAnimation.Direction d, final int duration, final Function... f) {
@@ -169,12 +170,13 @@ public class Effects extends GQueryQueue<Effects>  {
           anim.cancel();
         }
       }
+
       public void f(Element e) {
         Animation anim = new ClipAnimation(e, a, c, d, f);
         anim.run(duration);
         data(e, EFFECTS_RUNNNING, a);
       }
-    });    
+    });
     return this;
   }
 
@@ -197,7 +199,7 @@ public class Effects extends GQueryQueue<Effects>  {
   public Effects clipAppear(Function... f) {
     return clipAppear(Speed.DEFAULT, f);
   }
-  
+
   /**
    * Reveal all matched elements by adjusting the clip property firing an
    * optional callback after completion.
@@ -216,7 +218,7 @@ public class Effects extends GQueryQueue<Effects>  {
   public Effects clipDisappear(Function... f) {
     return clipDisappear(Speed.DEFAULT, f);
   }
-  
+
   /**
    * Hide all matched elements by adjusting the clip property firing an
    * optional callback after completion.
@@ -245,7 +247,7 @@ public class Effects extends GQueryQueue<Effects>  {
     return clip(Action.SHOW, ClipAnimation.Corner.TOP_LEFT,
         ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
   }
-  
+
   /**
    * Toggle the visibility of all matched elements by adjusting the clip property
    * and firing an optional callback after completion.
@@ -264,7 +266,6 @@ public class Effects extends GQueryQueue<Effects>  {
     return clip(Action.TOGGLE, ClipAnimation.Corner.TOP_LEFT,
         ClipAnimation.Direction.VERTICAL, millisecs, f);
   }
-
 
   /**
    * Hide all matched elements by adjusting the clip property firing an
@@ -336,7 +337,27 @@ public class Effects extends GQueryQueue<Effects>  {
   public Effects fadeTo(int millisecs, double opacity, Function... f) {
     return animate("opacity: " + opacity, millisecs, f);
   }
-  
+
+  /**
+   * Display or hide the matched elements by animating their opacity. and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public Effects fadeToggle(Function... f) {
+    return fadeToggle(Speed.DEFAULT, f);
+  }
+
+  /**
+   * Display or hide the matched elements by animating their opacity. and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public Effects fadeToggle(int millisecs, Function... f) {
+    return animate("opacity: 'toggle'", millisecs, f);
+  };
+
   /**
    * Reveal all matched elements by adjusting their height and firing an
    * optional callback after completion.
@@ -390,7 +411,7 @@ public class Effects extends GQueryQueue<Effects>  {
    * firing an optional callback after completion. Only the height is adjusted
    * for this animation, causing all matched elements to be hidden or shown in a
    * "sliding" manner
-   */  
+   */
   public Effects slideToggle(int millisecs, Function... f) {
     return animate("height: 'toggle'", millisecs, f);
   }
@@ -414,15 +435,41 @@ public class Effects extends GQueryQueue<Effects>  {
   /**
    * Toggle displaying each of the set of matched elements.
    */
-  @Override
-  public Effects toggle() {
-    return toggle(Speed.DEFAULT);
-  }
+  /*
+   * -> already implemented in GQuery and this is the good one
+   * 
+   * @Override public Effects toggle() { return toogle(Speed.DEFAULT); }
+   */
 
   /**
    * Toggle displaying each of the set of matched elements.
+   * 
+   * @param showOrHide A Boolean indicating whether to show or hide the
+   *          elements.
+   */
+  // maybe move this function in GQuery class directly ?
+  public Effects toggle(boolean showOrHide) {
+    for (Element element : elements()) {
+      GQuery $element = $(element);
+      if (!showOrHide) {
+        $element.hide();
+      } else {
+        $element.show();
+      }
+
+    }
+    return this;
+  }
+
+  /**
+   * Toggle displaying each of the set of matched elements by animating the
+   * width, height, and opacity of the matched elements simultaneously. When
+   * these properties reach 0 after a hiding animation, the display style
+   * property is set to none to ensure that the element no longer affects the
+   * layout of the page.
    */
   public Effects toggle(int millisecs, Function... f) {
-    return animate("opacity: 'toggle'", millisecs, f);
+    return animate("opacity: 'toggle', width : 'toggle', height : 'toggle'",
+        millisecs, f);
   }
 }

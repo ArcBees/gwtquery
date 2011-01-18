@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.plugins;
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
@@ -220,6 +221,22 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> fadeTo(int millisecs, double opacity, Function... f);
 
   /**
+   * Display or hide the matched elements by animating their opacity. and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  LazyEffects<T> fadeToggle(Function... f);
+
+  /**
+   * Display or hide the matched elements by animating their opacity. and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  LazyEffects<T> fadeToggle(int millisecs, Function... f);
+
+  /**
    * Reveal all matched elements by adjusting their height and firing an
    * optional callback after completion.
    */
@@ -277,11 +294,18 @@ public interface LazyEffects<T> extends LazyBase<T>{
 
   /**
    * Toggle displaying each of the set of matched elements.
+   * 
+   * @param showOrHide
+   *          A Boolean indicating whether to show or hide the elements.
    */
-  LazyEffects<T> toggle();
+  LazyEffects<T> toggle(boolean showOrHide);
 
   /**
-   * Toggle displaying each of the set of matched elements.
+   * Toggle displaying each of the set of matched elements by animating the
+   * width, height, and opacity of the matched elements simultaneously. When
+   * these properties reach 0 after a hiding animation, the display style
+   * property is set to none to ensure that the element no longer affects the
+   * layout of the page.
    */
   LazyEffects<T> toggle(int millisecs, Function... f);
 
