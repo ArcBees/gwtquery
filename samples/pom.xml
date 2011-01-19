@@ -53,6 +53,8 @@
                         <module>gwtquery.samples.GwtQueryBench</module>
                         <module>gwtquery.samples.GwtQueryWidgets</module>
                         <module>gwtquery.samples.GwtQueryImageZoom</module>
+                        <module>gwtquery.samples.FadeEffectsSample</module>
+                        <module>gwtquery.samples.SlideEffectsSample</module>
                     </modules>
                 </configuration>
                 <executions>
