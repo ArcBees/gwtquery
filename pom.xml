@@ -40,6 +40,14 @@
                <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>julien</id>
+            <name>Julien Dramaix</name>
+            <email>julien.dramaix@gmail.com</email>
+            <roles>
+               <role>Developer</role>
+            </roles>
+        </developer>
     </developers>
 
     <scm>
