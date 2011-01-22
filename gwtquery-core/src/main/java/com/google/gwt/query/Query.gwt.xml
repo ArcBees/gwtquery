@@ -1,24 +1,21 @@
+<!--
+  Copyright 2011, The gwtquery team.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  use this file except in compliance with the License. You may obtain a copy of
+  the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  License for the specific language governing permissions and limitations under
+  the License.
+-->
+
 <module>
     <inherits name='com.google.gwt.user.User'/>
-
-    <!--<define-property name="selectorCapability" values="native,xpath,js"/>-->
-      <!-- enable for native getClassByName shortcut acceleration -->
-<!--    <define-property name="selectorCapability"-->
-<!--                     values="native,js"/>-->
-<!--    <property-provider name="selectorCapability">-->
-<!--        <![CDATA[-->
-<!--         // Select javascript permutation when the user wants to-->
-<!--         // force non-accelerated queries (for benchmarking tests)-->
-<!--         if ($doc.location.href.indexOf("_selector_force_js") != -1) -->
-<!--           return "js"; -->
-<!--           -->
-<!--         // Select the native permutation if querySelectorAll is available-->
-<!--         if ($doc.querySelectorAll && /native/.test(String($doc.querySelectorAll))) -->
-<!--           return "native";-->
-<!--           -->
-<!--         return "js";-->
-<!--        ]]>-->
-<!--    </property-provider>-->
 
     <generate-with class="com.google.gwt.query.rebind.LazyGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Lazy"/>
@@ -84,6 +81,7 @@
         <when-property-is name="user.agent" value="ie8"/>
     </replace-with>
     
+    <!-- UI implementations -->
     <replace-with
 		class="gwtquery.plugins.commonui.client.GQuery.GQueryUiImplTrident">
 		<when-type-is

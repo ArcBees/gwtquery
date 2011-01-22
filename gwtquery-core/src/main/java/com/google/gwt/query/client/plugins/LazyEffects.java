@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Google Inc.
+ * Copyright 2011, The gwtquery team.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.plugins;
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
@@ -93,10 +92,10 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, Function... f);
 
   /**
-   * Animate the set of matched elements using the clip property.
-   * It is possible to show or hide a set of elements, 
-   * specify the direction of the animation and the start corner of the effect.
-   * Finally it executes the set of functions passed as arguments.
+   * Animate the set of matched elements using the clip property. It is possible
+   * to show or hide a set of elements, specify the direction of the animation
+   * and the start corner of the effect. Finally it executes the set of
+   * functions passed as arguments.
    */
   LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, int duration, Function... f);
 
@@ -277,7 +276,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * firing an optional callback after completion. Only the height is adjusted
    * for this animation, causing all matched elements to be hidden or shown in a
    * "sliding" manner
-   */  
+   */
   LazyEffects<T> slideToggle(int millisecs, Function... f);
 
   /**
@@ -295,8 +294,8 @@ public interface LazyEffects<T> extends LazyBase<T>{
   /**
    * Toggle displaying each of the set of matched elements.
    * 
-   * @param showOrHide
-   *          A Boolean indicating whether to show or hide the elements.
+   * @param showOrHide A Boolean indicating whether to show or hide the
+   *          elements.
    */
   LazyEffects<T> toggle(boolean showOrHide);
 
