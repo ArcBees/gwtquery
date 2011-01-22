@@ -6,6 +6,9 @@
     <script language="javascript"
             src="gwtquery.samples.GwtQueryEffectsMin.nocache.js"></script>
 	<style type="text/css">
+	body {
+	   font-family: Helvetica;
+	}
 	.box {
 	   border-style: groove;
 	   border-color: green;
@@ -19,11 +22,17 @@
 	   width: 50%;
 	   padding: 10px;
 	   display: none;
+	   height: 24px;
+	}
+	.outer {
+	   -webkit-user-select:none;
+	   -moz-user-select:none;
 	}
 	</style>
 </head>
 <body>
 <div class="outer">
+    Click or DblClick on these notes 
     <div>Foo <span class="note">bar</span> baz</div>
     <div>Foo <span class="note">bar</span> <span class="xyz">baz</span></div>
     <div>Foo <span class="note">bar</span> <span class="xyz">baz</span></div>
@@ -51,15 +60,6 @@
 <div class="box">Div 3</div>
 <div class="box">Div 4</div>
 </div>
-
-<script src="jquery-1.3.1.js"></script>
-<script>
-// $("#b1").click(function(){
-// $("#i1").animate(({width: '70%', opacity: '0.4', marginLeft: '0.6in', fontSize: '3em', borderWidth: '10px'}));
-// });
-</script>
-
-
 </body>
 </html>
     
