@@ -54,7 +54,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Gwt Query is a GWT clone of the popular jQuery library.
+ * GwtQuery is a GWT clone of the popular jQuery library.
  */
 public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
@@ -2266,13 +2266,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Toggle among two or more function calls every other click.
    */
   public GQuery toggle(final Function... fn) {
-    return click(new Function() {
-      int click = 0;
-      public boolean f(Event e) {
-        int n = fn.length == 1 ? 0 : (click++ % fn.length);
-        return fn[n].f(e);
-      }
-    });
+    for(Element e: elements()) {
+      $(e).click(new Function(){
+        int click = 0;
+        public boolean f(Event e) {
+          int n = fn.length == 1 ? 0 : (click++ % fn.length);
+          return fn[n].f(e);
+        }
+      });
+    }
+    return this;
   }
 
   /**
