@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-import java.util.Hashtable;
-
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**

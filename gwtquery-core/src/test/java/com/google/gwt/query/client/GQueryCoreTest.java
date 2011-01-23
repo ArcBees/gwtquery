@@ -737,8 +737,8 @@ public class GQueryCoreTest extends GWTTestCase {
     GQuery g = $("div", e);
     assertEquals(100, g.width());
     assertEquals(100, g.height());
-    assertEquals(120, g.clientWidth());
-    assertEquals(120, g.clientHeight());
+    assertEquals(120, g.innerWidth());
+    assertEquals(120, g.innerHeight());
     assertEquals(100d, g.cur("width", false));
     assertEquals(100d, g.cur("height", false));
     assertEquals(100d, g.cur("width", true));
