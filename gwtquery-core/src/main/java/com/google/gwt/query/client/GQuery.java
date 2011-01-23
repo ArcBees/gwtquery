@@ -1287,7 +1287,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get the current computed, pixel, height of the first matched element.
    */
   public int height() {
-    return get(0).getOffsetHeight();
+    return (int)cur("height", true);
   }
 
   /**
@@ -2546,7 +2546,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get the current computed, pixel, width of the first matched element.
    */
   public int width() {
-    return get(0).getClientWidth();
+    return (int)cur("width", true);
   }
 
   /**
