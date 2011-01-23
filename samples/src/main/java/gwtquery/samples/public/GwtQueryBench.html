@@ -71,7 +71,15 @@
 		  border-radius: 15px;
         }
 
-
+        .base {
+		   margin-left: auto;
+		   margin-right: auto;
+		   width: 170px;
+        }
+		.base, .base a {
+		   font-size: 85%;
+		   color: green;
+		}
     </style>
 </head>
 <body>
@@ -84,11 +92,13 @@
 	 </div>
 	</div>
 	
-	<div id ="results" style="display: block; height: 200px; overflow-y:scroll; overflow-x: hidden; margin: 0">
+	<div id ="results" style="display: block; height: 300px; overflow-y:scroll; overflow-x: hidden; margin: 0">
 	    <table id="resultstable" border="1" style="width: 100%;  border-collapse: collapse">
 	    </table>
 	</div>
-	        
+	
+	<div class='base'>Based on the <a href='http://mootools.net/slickspeed/'>SlickSpeed</a> test</div>        
 	<script language="javascript" src="gwtquery.samples.GwtQueryBench.nocache.js"></script>
+	
 </body>
 </html>

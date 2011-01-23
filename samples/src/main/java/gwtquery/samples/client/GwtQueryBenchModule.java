@@ -318,7 +318,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   public void iframeReadyCallback() {
     writeTestContent($(".ibench").contents().find("body").get(0));
     gwtiframe = $(".ibench").eq(0).contents().get(0);
-    $("#startrace").text("Start Race");
+    $("#startrace").text("Click to start the race");
     $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
   }
 
