@@ -22,6 +22,8 @@ import java.util.ArrayList;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.DeferredGQuery;
 import com.google.gwt.query.client.Function;
@@ -36,8 +38,6 @@ import com.google.gwt.query.client.impl.research.SelectorEngineJS;
 import com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt;
 import com.google.gwt.query.client.impl.research.SelectorEngineXPath;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.IncrementalCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -229,7 +229,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       initResultsTable(dg, selectedBenchmarks);
       initTrack(selectedBenchmarks);
       
-      DeferredCommand.addCommand(new IncrementalCommand() {
+      Scheduler.get().scheduleIncremental(new RepeatingCommand() {
         int benchMarkNumber = 0;
         int numCalls = 0;
         int row = 0;
