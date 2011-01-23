@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Selector;
 import com.google.gwt.query.client.Selectors;
+import com.google.gwt.user.client.Window;
 
 public class GwtQuerySampleModule implements EntryPoint {
 
@@ -45,8 +46,23 @@ public class GwtQuerySampleModule implements EntryPoint {
       );
     
     // Cascade effects
-    $("<div id='id1'>content</div>").appendTo(document).hide().fadeIn(5000).fadeOut(3000);
+    $("<div id='id' style='font-size: 150%;'>Cascade Efects</div>").appendTo(document).hide().fadeIn(5000).fadeOut(3000);
+    
+    int gqw = $(".outer").width();
+    String jqw = runJsCommand("$wnd.$('.outer').width()");
+    
+    int gqh = $(".outer").height();
+    String jqh = runJsCommand("$wnd.$('.outer').height()");
+    
+    String msg = ".outer size: GQuery: " + gqw + "x" + gqh + " jQuery: " + jqw + "x" + jqh;
+    Window.alert(msg);
   }
   
-  
+  private native String runJsCommand(String js) /*-{
+    try {
+      return "" + eval(js);
+    } catch (e) {
+      return "" + e;
+    }
+  }-*/;
 }
