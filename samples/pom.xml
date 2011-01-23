@@ -25,15 +25,6 @@
             <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
-
-
-<!--        <dependency>-->
-<!--            <groupId>${groupId}</groupId>-->
-<!--            <artifactId>gwtquery-plugins</artifactId>-->
-<!--            <version>${version}</version>-->
-<!--            <type>jar</type>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
@@ -46,7 +37,6 @@
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
                     <modules>
-<!--
                         <module>gwtquery.samples.GwtQueryDemo</module>
                         <module>gwtquery.samples.GwtQueryEffects</module>
                         <module>gwtquery.samples.GwtQueryEffectsMin</module>
@@ -55,7 +45,6 @@
                         <module>gwtquery.samples.GwtQueryImageZoom</module>
                         <module>gwtquery.samples.FadeEffectsSample</module>
                         <module>gwtquery.samples.SlideEffectsSample</module>
--->
                         <module>gwtquery.samples.GwtQueryBench</module>
                     </modules>
                 </configuration>
