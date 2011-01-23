@@ -15,16 +15,15 @@
  */
 package com.google.gwt.query.client.plugins;
 
+import java.util.ArrayList;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.Regexp;
-
-import java.util.ArrayList;
 
 /**
  *  Animation effects on any numeric CSS property. 
@@ -90,7 +89,7 @@ public class PropertiesAnimation extends Animation {
     if (hidden){
       g.show();
     }
-    double start = GQUtils.cur(e, key, true), end = start;
+    double start = g.cur(key, true), end = start;
     
     if ("show".equals(val)) {
       g.saveCssAttrs(key);
@@ -113,7 +112,7 @@ public class PropertiesAnimation extends Animation {
         if (!"px".equals(unit)) {
           double to = end == 0 ? 1 : end;
           g.css(key, to + unit);
-          start = to * start / GQUtils.cur(e, key, true);
+          start = to * start / g.cur(key, true);
           g.css(key, start + unit);
         }
         if (parts.getStr(1) != null) {

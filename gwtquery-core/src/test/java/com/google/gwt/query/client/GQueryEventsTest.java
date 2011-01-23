@@ -217,30 +217,30 @@ public class GQueryEventsTest extends GWTTestCase {
     $("p", e, Events.Events).trigger(Event.ONCLICK);
     assertEquals("red", $("p", e).css("color"));
     assertEquals("green", $("p", e).css("background-color"));
-    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
     $("p", e).css("color","").css("background","").css("fontSize", "12px");
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
 
     $("p", e, Events.Events).unbind("click.first.namespace");
     $("p", e, Events.Events).trigger(Event.ONCLICK);
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertEquals("green", $("p", e).css("background-color"));
-    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
     
     $("p", e).css("color","").css("background","").css("fontSize", "12px");
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
 
     $("p", e, Events.Events).unbind("click");
     $("p", e, Events.Events).trigger(Event.ONCLICK);
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
   }
 
   public void testSubmitEvent() {
@@ -292,7 +292,6 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("black", $("button").css("background-color"));
     RootPanel.get().remove(b);
   }
-  
   
   public void testUnbindMultipleEvents() {
     String content = "<p>content</p>";

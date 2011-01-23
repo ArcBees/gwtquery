@@ -329,6 +329,21 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> css(TakesPercentage cssProperty, Percentage value);
 
   /**
+   * Returns the numeric value of a css property.
+   */
+  double cur(String prop);
+
+  /**
+   * Returns the numeric value of a css property.
+   *  
+   * The parameter force has a special meaning:
+   * - When force is false, returns the value of the css property defined
+   *   in the set of style attributes. 
+   * - When true returns the real computed value.   
+   */
+  double cur(String prop, boolean force);
+
+  /**
    * Returns value at named data store for the element, as set by data(name,
    * value).
    */

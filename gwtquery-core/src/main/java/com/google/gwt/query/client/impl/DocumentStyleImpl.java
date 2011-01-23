@@ -38,16 +38,45 @@ public class DocumentStyleImpl {
   public static native String hyphenize(String name) /*-{
     return name.replace(/([A-Z])/g, "-$1" ).toLowerCase();
   }-*/;
-
+  
+  /**
+   * Returns the numeric value of a css property.
+   *  
+   * The parameter force has a special meaning:
+   * - When force is false, returns the value of the css property defined
+   *   in the set of style attributes. 
+   * - Otherwise it returns the real computed value.   
+   */
+  public double cur(Element elem, String prop, boolean force) {
+    if (elem.getPropertyString(prop) != null
+        && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
+      return elem.getPropertyDouble(prop);
+    }
+    String val = curCSS(elem, prop, force);
+    if ("thick".equalsIgnoreCase(val)) {
+      return (5);
+    } else if ("medium".equalsIgnoreCase(val)) {
+      return (3);
+    } else if ("thin".equalsIgnoreCase(val)) {
+      return (1);
+    }
+    if (!val.matches("^[\\d\\.]+.*$")) {
+      val = curCSS(elem, prop, false); 
+    }
+    val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
+    return val.length() == 0 ? 0 : Double.parseDouble(val);
+  }
+  
   /**
    * Return the string value of a css property of an element.
    * 
-   * The parameter force has a special meaning here: - When force is false,
-   * returns the value of the css property defined in the style attribute of the
-   * element. - Otherwise it returns the real computed value.
+   * The parameter force has a special meaning:
+   * - When force is false, returns the value of the css property defined
+   *   in the set of style attributes. 
+   * - Otherwise it returns the real computed value.   
    * 
-   * For instance if you define 'display=none' not in the element style but in
-   * the css stylesheet, it returns an empty string unless you pass the
+   * For instance if you do not define 'display=none' in the element style but in
+   * the css stylesheet, it will return an empty string unless you pass the
    * parameter force=true.
    */
   public String curCSS(Element elem, String name, boolean force) {
@@ -70,7 +99,6 @@ public class DocumentStyleImpl {
       return getComputedStyle(elem, hyphenize(name), name, null);
     }
   }
-  
   
   /**
    * Fix style property names.

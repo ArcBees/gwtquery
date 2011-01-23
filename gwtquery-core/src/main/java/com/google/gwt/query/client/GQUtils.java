@@ -31,32 +31,11 @@ import com.google.gwt.user.client.DOM;
 public class GQUtils {
 
   /**
-   * Returns the numeric value of a css property.
-   *  
-   * The parameter force has a special meaning:
-   * - When force is false, returns the value of the css property defined
-   *   in the set of style attributes. 
-   * - Otherwise it returns the real computed value.   
+   * Use the method in the gquery class $(elem).cur(prop, force);
    */
+  @Deprecated
   public static double cur(Element elem, String prop, boolean force) {
-    if (elem.getPropertyString(prop) != null
-        && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
-      return elem.getPropertyDouble(prop);
-    }
-    GQuery g = GQuery.$(elem);
-    String val = g.css(prop, force);
-    if ("thick".equalsIgnoreCase(val)) {
-      return (5);
-    } else if ("medium".equalsIgnoreCase(val)) {
-      return (3);
-    } else if ("thin".equalsIgnoreCase(val)) {
-      return (1);
-    }
-    if (!val.matches("^[\\d\\.]+.*$")) {
-      val = g.css(prop, false); 
-    }
-    val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
-    return val.length() == 0 ? 0 : Double.parseDouble(val);
+    return GQuery.$(elem).cur(prop, force);
   }
 
   /**

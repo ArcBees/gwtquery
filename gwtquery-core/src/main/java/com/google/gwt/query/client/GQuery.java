@@ -473,8 +473,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * We will use the fact as GWT use the widget itself as EventListener !
    * If no Widget associated with the element, this method returns null.
-   * @param e
-   * @return
    */
    protected static Widget getAssociatedWidget(Element e){
     EventListener listener = DOM.getEventListener((com.google.gwt.user.client.Element) e);
@@ -1001,6 +999,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
+  
+  /**
+   * Returns the numeric value of a css property.
+   */
+  public double cur(String prop) {
+    return cur(prop, false);
+  }
+  
+  /**
+   * Returns the numeric value of a css property.
+   *  
+   * The parameter force has a special meaning:
+   * - When force is false, returns the value of the css property defined
+   *   in the set of style attributes. 
+   * - When true returns the real computed value.   
+   */
+  public double cur(String prop, boolean force) {
+    return styleImpl.cur(get(0), prop, force);
+  }
 
   /**
    * Returns value at named data store for the element, as set by data(name,
@@ -1477,7 +1494,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Returns the computed left position of the first element matched.
    */
   public int left() {
-    return (int) GQUtils.cur(get(0), "left", true);
+    return (int)cur("left", true);
   }
 
   /**
@@ -1698,7 +1715,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int outerHeight(boolean includeMargin){
     int outerHeight  = get(0).getOffsetHeight(); //height including padding and border
     if (includeMargin){
-      outerHeight+=GQUtils.cur( get(0), "marginTop", true)+GQUtils.cur( get(0), "marginBottom", true);
+      outerHeight += cur("marginTop", true) + cur("marginBottom", true);
     }
     return  outerHeight;
   }
@@ -1718,7 +1735,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int outerWidth(boolean includeMargin){
     int outerWidth  = get(0).getOffsetWidth(); //width including padding and border
     if (includeMargin){
-      outerWidth+=GQUtils.cur( get(0), "marginRight", true)+GQUtils.cur( get(0), "marginLeft", true);
+      outerWidth += cur("marginRight", true) + cur("marginLeft", true);
     }
     return  outerWidth;
   }
@@ -1788,29 +1805,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     // Get correct offsets
     Offset offset = offset();
     Offset parentOffset = null;
-    if ("body".equalsIgnoreCase(offsetParent.getNodeName())
-        || "html".equalsIgnoreCase(offsetParent.getNodeName())) {
+    if (offsetParent == body || offsetParent == (Node)document) {
       parentOffset = new Offset(0, 0);
     } else {
       parentOffset = $(offsetParent).offset();
     }
 
     // Subtract element margins
-    int topMargin = (int) GQUtils.cur(element, "marginTop", true);
+    int topMargin = (int)styleImpl.cur(element, "marginTop", true);
+    // TODO: move this check to styleImpl
     // When margin-left = auto, Safari and chrome return a value while IE and
     // Firefox return 0
     // force the margin-left to 0 if margin-left = auto.
     int leftMargin = 0;
     if (!"auto".equals(element.getStyle().getMarginLeft())) {
-      leftMargin = (int) GQUtils.cur(element, "marginLeft", true);
+      leftMargin = (int)styleImpl.cur(element, "marginLeft", true);
     }
 
     offset = offset.add(-leftMargin, -topMargin);
 
     // Add offsetParent borders
-    int parentOffsetBorderTop = (int) GQUtils.cur(offsetParent,
+    int parentOffsetBorderTop = (int)styleImpl.cur(offsetParent,
         "borderTopWidth", true);
-    int parentOffsetBorderLeft = (int) GQUtils.cur(offsetParent,
+    int parentOffsetBorderLeft = (int)styleImpl.cur(offsetParent,
         "borderLeftWidth", true);
     parentOffset = parentOffset.add(parentOffsetBorderLeft,
         parentOffsetBorderTop);
@@ -2315,7 +2332,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Returns the computed left position of the first element matched.
    */
   public int top() {
-    return (int) GQUtils.cur(get(0), "top", true);
+    return (int)cur("top", true);
   }
 
   /**

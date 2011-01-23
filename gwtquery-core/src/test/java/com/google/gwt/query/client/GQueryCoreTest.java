@@ -739,10 +739,10 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(122, g.height());
     assertEquals(120, g.clientWidth());
     assertEquals(120, g.clientHeight());
-    assertEquals(100, (int)GQUtils.cur(g.get(0), "width", false));
-    assertEquals(100, (int)GQUtils.cur(g.get(0), "height", false));
-    assertEquals(100, (int)GQUtils.cur(g.get(0), "width", true));
-    assertEquals(100, (int)GQUtils.cur(g.get(0), "height", true));
+    assertEquals(100d, g.cur("width", false));
+    assertEquals(100d, g.cur("height", false));
+    assertEquals(100d, g.cur("width", true));
+    assertEquals(100d, g.cur("height", true));
     assertEquals("100px", g.css("width"));
     assertEquals("100px", g.css("height"));
     assertEquals("100px", g.get(0).getStyle().getProperty("width"));
