@@ -859,19 +859,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns the inner height of the first matched element, including padding
-   * but not the vertical scrollbar height, border, or margin.
+   * @deprecated use innerHeight()
    */
+  @Deprecated
   public int clientHeight() {
-    return get(0).getClientHeight();
+    return innerHeight();
   }
 
   /**
-   * Returns the inner width of the first matched element, including padding
-   * but not the vertical scrollbar width, border, or margin.
+   * @deprecated use innerWidth()
    */
+  @Deprecated
   public int clientWidth() {
-    return get(0).getClientWidth();
+    return innerWidth();
   }
 
   /**
@@ -1367,6 +1367,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return -1;
   }
 
+  /**
+   * Returns the inner height of the first matched element, including padding
+   * but not the vertical scrollbar height, border, or margin.
+   */
+  public int innerHeight() {
+    return get(0).getClientHeight();
+  }
+
+  /**
+   * Returns the inner width of the first matched element, including padding
+   * but not the vertical scrollbar width, border, or margin.
+   */
+  public int innerWidth() {
+    return get(0).getClientWidth();
+  }
+  
   /**
    * Insert all of the matched elements after another, specified, set of
    * elements.

@@ -251,14 +251,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> click(Function...f);
 
   /**
-   * Returns the inner height of the first matched element, including padding
-   * but not the vertical scrollbar height, border, or margin.
+   * @deprecated use innerHeight()
    */
   int clientHeight();
 
   /**
-   * Returns the inner width of the first matched element, including padding
-   * but not the vertical scrollbar width, border, or margin.
+   * @deprecated use innerWidth()
    */
   int clientWidth();
 
@@ -548,6 +546,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Find the index of the specified Element.
    */
   int index(Element element);
+
+  /**
+   * Returns the inner height of the first matched element, including padding
+   * but not the vertical scrollbar height, border, or margin.
+   */
+  int innerHeight();
+
+  /**
+   * Returns the inner width of the first matched element, including padding
+   * but not the vertical scrollbar width, border, or margin.
+   */
+  int innerWidth();
 
   /**
    * Insert all of the matched elements after another, specified, set of
