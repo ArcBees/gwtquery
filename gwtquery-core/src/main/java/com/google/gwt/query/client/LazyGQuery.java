@@ -504,6 +504,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Get the current computed, pixel, height of the first matched element.
+   * It does not include margin, padding nor border.
    */
   int height();
 
@@ -1168,6 +1169,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Get the current computed, pixel, width of the first matched element.
+   * It does not include margin, padding nor border.
    */
   int width();
 

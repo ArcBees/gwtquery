@@ -1285,6 +1285,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Get the current computed, pixel, height of the first matched element.
+   * It does not include margin, padding nor border.
    */
   public int height() {
     return (int)cur("height", true);
@@ -2544,6 +2545,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Get the current computed, pixel, width of the first matched element.
+   * It does not include margin, padding nor border.
    */
   public int width() {
     return (int)cur("width", true);
