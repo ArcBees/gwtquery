@@ -1016,7 +1016,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * - When true returns the real computed value.   
    */
   public double cur(String prop, boolean force) {
-    return styleImpl.cur(get(0), prop, force);
+    return size() == 0 ? 0 : styleImpl.cur(get(0), prop, force);
   }
 
   /**
