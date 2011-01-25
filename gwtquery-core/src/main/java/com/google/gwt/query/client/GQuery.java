@@ -442,7 +442,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
     }
-    item = item == window ? windowData : item;
+    item = item == window || item.getNodeName() == null? windowData : item;
     if (item == null) {
       return value;
     }
@@ -2098,7 +2098,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public int scrollLeft() {
     Element e = get(0);
-    if (e == window) {
+    if (e == window || e.getNodeName() == null) {
       return Window.getScrollLeft();
     } else if (e == (Node) document) {
       return document.getScrollLeft();
@@ -2114,7 +2114,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery scrollLeft(int left) {
     for (Element e : elements()) {
-      if (e == window || e == (Node) document) {
+      if (e == window || e.getNodeName() == null || e == (Node) document) {
         Window.scrollTo(left, $(e).scrollTop());
       } else {
         e.setPropertyInt("scrollLeft", left);
@@ -2129,7 +2129,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public int scrollTop() {
     Element e = get(0);
-    if (e == window) {
+    if (e == window || e.getNodeName() == null) {
       return Window.getScrollTop();
     } else if (e == (Node) document) {
       return document.getScrollTop();
@@ -2145,7 +2145,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery scrollTop(int top) {
     for (Element e : elements()) {
-      if (e == window || e == (Node) document) {
+      if (e == window || e.getNodeName() == null || e == (Node) document) {
         Window.scrollTo($(e).scrollLeft(), top);
       } else {
         e.setPropertyInt("scrollTop", top);
@@ -2828,7 +2828,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
     }
-    item = item == window ? windowData : item;
+    item = item == window || item.getNodeName() == null? windowData : item;
     int id = item.hashCode();
     if (name != null) {
       if (dataCache.exists(id)) {
