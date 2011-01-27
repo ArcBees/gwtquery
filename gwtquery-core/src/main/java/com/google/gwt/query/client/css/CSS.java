@@ -71,6 +71,31 @@ public class CSS {
   public static BorderWidthProperty BORDER_WIDTH;
 
   /**
+   * For absolutely positioned elements, the bottom property sets the bottom
+   * edge of an element to a unit above/below the bottom edge of its containing
+   * element.
+   * 
+   * For relatively positioned elements, the bottom property sets the bottom
+   * edge of an element to a unit above/below its normal position.
+   * 
+   * For static positioned elements, the bottom property has no effect.
+   */
+  public static EdgePositionProperty BOTTOM;
+
+  /**
+   * The clear property specifies which sides of an element where other floating
+   * elements are not allowed.
+   */
+  public static ClearProperty CLEAR;
+  /**
+   * The clip property lets you specify the dimensions of an absolutely
+   * positioned element that should be visible, and the element is clipped into
+   * this shape, and displayed.
+   * 
+   * The clip property does not work if the overflow property is set to visible.
+   */
+  public static ClipProperty CLIP;
+  /**
    * This property describes the foreground color of an element's text content.
    */
   public static ColorProperty COLOR;
@@ -80,10 +105,12 @@ public class CSS {
    * device.
    */
   public static CursorProperty CURSOR;
+
   /**
    * This property specifies the mechanism by which elements are rendered.
    */
   public static DisplayProperty DISPLAY;
+
   /**
    * This property specifies whether a box should float to the left, right, or
    * not at all. It may be set for any element, but only applies to elements
@@ -111,6 +138,18 @@ public class CSS {
 
   public static final String INHERIT_VALUE = "inherit";
 
+  /**
+   * For absolutely positioned elements, the left property sets the left edge of
+   * an element to a unit to the left/right of the left edge of its containing
+   * element.
+   * 
+   * For relatively positioned elements, the left property sets the left edge of
+   * an element to a unit to the left/right to its normal position.
+   * 
+   * For static positioned elements, the left property has no effect.
+   */
+  public static EdgePositionProperty LEFT;
+
   public static ListStyleProperty LIST_STYLE;
 
   public static ListStyleImageProperty LIST_STYLE_IMAGE;
@@ -129,6 +168,42 @@ public class CSS {
 
   public static MarginProperty MARGIN_TOP;
 
+  /**
+   * An outline is a line that is drawn around elements (outside the borders) to
+   * make the element "stand out".
+   * 
+   * The outline shorthand property sets all the outline properties in one
+   * declaration.
+   */
+  public static OutlineProperty OUTLINE;
+
+  /**
+   * An outline is a line that is drawn around elements (outside the borders) to
+   * make the element "stand out". The outline-color property specifies the
+   * color of an outline.
+   */
+  public static OutlineColorProperty OUTLINE_COLOR;
+
+  /**
+   * An outline is a line that is drawn around elements (outside the borders) to
+   * make the element "stand out". The outline-color property specifies the
+   * style of an outline.
+   */
+  public static OutlineStyleProperty OUTLINE_STYLE;
+
+  /**
+   * An outline is a line that is drawn around elements (outside the borders) to
+   * make the element "stand out". The outline-width specifies the width of an
+   * outline
+   */
+  public static OutlineWidthProperty OUTLINE_WIDTH;
+
+  /**
+   * This property specifies what happens if content overflows an element's
+   * box..
+   */
+  public static OverflowProperty OVERFLOW;
+
   public static PaddingProperty PADDING;
 
   public static PaddingProperty PADDING_BOTTOM;
@@ -140,9 +215,32 @@ public class CSS {
   public static PaddingProperty PADDING_TOP;
 
   /**
+   * For absolutely positioned elements, the right property sets the right edge
+   * of an element to a unit to the left/right of the right edge of its
+   * containing element.
+   * 
+   * For relatively positioned elements, the right property sets the right edge
+   * of an element to a unit to the left/right to its normal position.
+   * 
+   * For static positioned elements, the right property has no effect.
+   */
+  public static EdgePositionProperty RIGHT;
+
+  /**
    * This property describes how inline content of a block is aligned.
    */
   public static TextAlignProperty TEXT_ALIGN;
+
+  /**
+   * For absolutely positioned elements, the top property sets the top edge of
+   * an element to a unit above/below the top edge of its containing element.
+   * 
+   * For relatively positioned elements, the top property sets the top edge of
+   * an element to a unit above/below its normal position.
+   * 
+   * For static positioned elements, the top property has no effect.
+   */
+  public static EdgePositionProperty TOP;
 
   /**
    * This property affects the vertical positioning inside a line box of the
@@ -173,42 +271,15 @@ public class CSS {
    */
   public static WidthProperty WIDTH;
 
-  /**
-   * An outline is a line that is drawn around elements (outside the borders) to
-   * make the element "stand out". The outline-color property specifies the
-   * color of an outline.
-   */
-  public static OutlineColorProperty OUTLINE_COLOR;
-
-  /**
-   * An outline is a line that is drawn around elements (outside the borders) to
-   * make the element "stand out". The outline-color property specifies the
-   * style of an outline.
-   */
-  public static OutlineStyleProperty OUTLINE_STYLE;
- 
-  /**
-   * An outline is a line that is drawn around elements (outside the borders) to
-   * make the element "stand out".
-   * The outline-width specifies the width of an outline
-   */
-  public static OutlineWidthProperty OUTLINE_WIDTH;
-
-  /**
-   * An outline is a line that is drawn around elements (outside the borders) to
-   * make the element "stand out".
-   * 
-   * The outline shorthand property sets all the outline properties in one
-   * declaration.
-   */
-  public static OutlineProperty OUTLINE;
-
   static {
     BackgroundProperty.init();
     BorderProperty.init();
     ColorProperty.init();
     CursorProperty.init();
+    ClearProperty.init();
+    ClipProperty.init();
     DisplayProperty.init();
+    EdgePositionProperty.init();
     FloatProperty.init();
     FontStyleProperty.init();
     FontVariantProperty.init();
@@ -218,6 +289,7 @@ public class CSS {
     ListStyleProperty.init();
     MarginProperty.init();
     OutlineProperty.init();
+    OverflowProperty.init();
     PaddingProperty.init();
     TextAlignProperty.init();
     VerticalAlignProperty.init();

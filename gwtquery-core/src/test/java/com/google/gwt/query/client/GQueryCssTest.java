@@ -23,6 +23,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.ListStyleType;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -36,6 +37,8 @@ import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosi
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
 import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.ClearProperty.Clear;
+import com.google.gwt.query.client.css.ClipProperty.Shape;
 import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
 import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
@@ -387,6 +390,34 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("wait", $("#test").css(CSS.CURSOR));
 
   }
+  
+  public void testClearProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.CLEAR, Clear.BOTH);
+    assertEquals("both", $("#test").css("clear"));
+    assertEquals("both", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.LEFT);
+    assertEquals("left", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.RIGHT);
+    assertEquals("right", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.NONE);
+    assertEquals("none", $("#test").css(CSS.CLEAR));
+
+  }
+  
+  public void testClipProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.CLIP, Shape.rect(0, 10, 10, 0));
+    assertEquals("rect(0px,10px,10px,0px)", $("#test").css("clip"));
+    assertEquals("rect(0px,10px,10px,0px)", $("#test").css(CSS.CLIP));
+  }
 
   public void testDisplayProperty() {
 
@@ -398,6 +429,29 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("inline", $("#test").css(CSS.DISPLAY));
 
   }
+  
+  public void testEdgePositionProperty() {
+
+    $(e).html("<div id='test'>Content</div><");
+
+    $("#test").css(CSS.LEFT,Length.px(10));
+    assertEquals("10px", $("#test").css("left"));
+    assertEquals("10px", $("#test").css(CSS.LEFT));
+    
+    $("#test").css(CSS.TOP,Length.px(15));
+    assertEquals("15px", $("#test").css("top"));
+    assertEquals("15px", $("#test").css(CSS.TOP));
+    
+    $("#test").css(CSS.RIGHT,Length.px(0));
+    assertEquals("0px", $("#test").css("right"));
+    assertEquals("0px", $("#test").css(CSS.RIGHT));
+    
+    $("#test").css(CSS.BOTTOM,Length.px(20));
+    assertEquals("20px", $("#test").css("bottom"));
+    assertEquals("20px", $("#test").css(CSS.BOTTOM));
+
+  }
+
 
   public void testFloatProperty() {
 
@@ -613,6 +667,23 @@ public class GQueryCssTest extends GWTTestCase {
     $("#test").css(CSS.OUTLINE, RGBColor.BLACK, LineStyle.DASHED, LineWidth.length(15, Unit.PX));
     assertEquals("black dashed 15px", $("#test").css("outline"));
     assertEquals("black dashed 15px", $("#test").css(CSS.OUTLINE));
+    
+  }
+  
+  public void testOverflowProperty(){
+    $(e).html("<div id='test'>Content</div>");
+    
+    $("#test").css(CSS.OVERFLOW, Overflow.HIDDEN);
+    assertEquals("hidden", $("#test").css("overflow"));
+    assertEquals("hidden", $("#test").css(CSS.OVERFLOW));
+    
+    $("#test").css(CSS.OVERFLOW, Overflow.SCROLL);
+    assertEquals("scroll", $("#test").css("overflow"));
+    assertEquals("scroll", $("#test").css(CSS.OVERFLOW));
+    
+    $("#test").css(CSS.OVERFLOW, Overflow.VISIBLE);
+    assertEquals("visible", $("#test").css("overflow"));
+    assertEquals("visible", $("#test").css(CSS.OVERFLOW));
     
   }
   
