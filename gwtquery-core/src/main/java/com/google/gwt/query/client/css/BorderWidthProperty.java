@@ -23,34 +23,34 @@ import com.google.gwt.dom.client.Style.Unit;
  * This property set the width of an element's border.
  */
 public class BorderWidthProperty extends
-    AbstractCssProperty<BorderWidthProperty.BorderWidth> implements TakesLength {
+    AbstractCssProperty<BorderWidthProperty.LineWidth> implements TakesLength {
 
-  public static class BorderWidth implements HasCssName {
+  public static class LineWidth implements HasCssName {
 
-    public static BorderWidth INHERIT;
-    public static BorderWidth MEDIUM;
-    public static BorderWidth THICK;
-    public static BorderWidth THIN;
+    public static LineWidth INHERIT;
+    public static LineWidth MEDIUM;
+    public static LineWidth THICK;
+    public static LineWidth THIN;
 
     static {
-      MEDIUM = new BorderWidth("medium");
-      THICK = new BorderWidth("thick");
-      THIN = new BorderWidth("thin");
-      INHERIT = new BorderWidth(CSS.INHERIT_VALUE);
+      MEDIUM = new LineWidth("medium");
+      THICK = new LineWidth("thick");
+      THIN = new LineWidth("thin");
+      INHERIT = new LineWidth(CSS.INHERIT_VALUE);
 
     }
 
-    public static BorderWidth length(int l, Unit unit) {
-      return new BorderWidth("" + l + (unit != null ? unit.getType() : ""));
+    public static LineWidth length(int l, Unit unit) {
+      return new LineWidth("" + l + (unit != null ? unit.getType() : ""));
     }
 
-    public static BorderWidth length(Length l) {
-      return new BorderWidth(l.getCssName());
+    public static LineWidth length(Length l) {
+      return new LineWidth(l.getCssName());
     }
 
     private String cssValue;
 
-    private BorderWidth(String value) {
+    private LineWidth(String value) {
       cssValue = value;
     }
 

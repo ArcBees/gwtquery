@@ -21,22 +21,25 @@ import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 
 /**
+ * An outline is a line that is drawn around elements (outside the borders) to
+ * make the element "stand out".
  * 
- *
+ * The outline shorthand property sets all the outline properties in one
+ * declaration.
  */
-public class BorderProperty implements
-    CssShorthandProperty3<LineWidth, LineStyle, RGBColor> {
+public class OutlineProperty implements
+    CssShorthandProperty3<RGBColor, LineStyle, LineWidth> {
 
-  private static final String CSS_PROPERTY = "border";
+  private static final String CSS_PROPERTY = "outline";
 
   static void init() {
-    CSS.BORDER = new BorderProperty();
-    BorderColorProperty.init();
-    BorderStyleProperty.init();
-    BorderWidthProperty.init();
+    CSS.OUTLINE = new OutlineProperty();
+    OutlineStyleProperty.init();
+    OutlineColorProperty.init();
+    OutlineWidthProperty.init();
   }
 
-  private BorderProperty() {
+  private OutlineProperty() {
   }
 
   public String get(Style s) {
@@ -47,10 +50,10 @@ public class BorderProperty implements
     return CSS_PROPERTY;
   }
 
-  public void set(Style s, LineWidth borderWidth, LineStyle borderStyle,
-      RGBColor borderColor) {
-    String value = notNull(borderWidth) + notNull(borderStyle)
-        + notNull(borderColor).trim();
+  public void set(Style s, RGBColor outlineColor, LineStyle outlineStyle,
+      LineWidth outlineWidth) {
+    String value = notNull(outlineColor) + notNull(outlineStyle)
+        + notNull(outlineWidth).trim();
     s.setProperty(CSS_PROPERTY, value);
   }
 

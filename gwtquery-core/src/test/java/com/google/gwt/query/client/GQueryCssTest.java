@@ -34,8 +34,8 @@ import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
-import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
-import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
+import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
+import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
 import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
@@ -218,13 +218,13 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.BORDER, BorderWidth.THICK, BorderStyle.DASHED,
+    $("#test").css(CSS.BORDER, LineWidth.THICK, LineStyle.DASHED,
         RGBColor.BLACK);
     assertEquals("thick dashed black", $("#test").css("border"));
     assertEquals("thick dashed black", $("#test").css(CSS.BORDER));
 
-    $("#test").css(CSS.BORDER, BorderWidth.length(15, Unit.PX),
-        BorderStyle.SOLID, RGBColor.rgb("#000000"));
+    $("#test").css(CSS.BORDER, LineWidth.length(15, Unit.PX),
+        LineStyle.SOLID, RGBColor.rgb("#000000"));
     assertEquals("15px solid #000000", $("#test").css("border"));
     assertEquals("15px solid #000000", $("#test").css(CSS.BORDER));
 
@@ -234,23 +234,23 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.BORDER_STYLE, BorderStyle.DOTTED);
+    $("#test").css(CSS.BORDER_STYLE, LineStyle.DOTTED);
     assertEquals("dotted", $("#test").css("borderStyle"));
     assertEquals("dotted", $("#test").css(CSS.BORDER_STYLE));
 
-    $("#test").css(CSS.BORDER_BOTTOM_STYLE, BorderStyle.DASHED);
+    $("#test").css(CSS.BORDER_BOTTOM_STYLE, LineStyle.DASHED);
     assertEquals("dashed", $("#test").css("borderBottomStyle"));
     assertEquals("dashed", $("#test").css(CSS.BORDER_BOTTOM_STYLE));
 
-    $("#test").css(CSS.BORDER_TOP_STYLE, BorderStyle.DOUBLE);
+    $("#test").css(CSS.BORDER_TOP_STYLE, LineStyle.DOUBLE);
     assertEquals("double", $("#test").css("borderTopStyle"));
     assertEquals("double", $("#test").css(CSS.BORDER_TOP_STYLE));
 
-    $("#test").css(CSS.BORDER_LEFT_STYLE, BorderStyle.HIDDEN);
+    $("#test").css(CSS.BORDER_LEFT_STYLE, LineStyle.HIDDEN);
     assertEquals("hidden", $("#test").css("borderLeftStyle"));
     assertEquals("hidden", $("#test").css(CSS.BORDER_LEFT_STYLE));
 
-    $("#test").css(CSS.BORDER_RIGHT_STYLE, BorderStyle.SOLID);
+    $("#test").css(CSS.BORDER_RIGHT_STYLE, LineStyle.SOLID);
     assertEquals("solid", $("#test").css("borderRightStyle"));
     assertEquals("solid", $("#test").css(CSS.BORDER_RIGHT_STYLE));
 
@@ -260,32 +260,32 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.BORDER_WIDTH, BorderWidth.MEDIUM);
+    $("#test").css(CSS.BORDER_WIDTH, LineWidth.MEDIUM);
     assertEquals("medium", $("#test").css("borderWidth"));
     assertEquals("medium", $("#test").css(CSS.BORDER_WIDTH));
 
     $("#test").css(CSS.BORDER_WIDTH, Length.px(15));
     assertEquals("15px", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").css(CSS.BORDER_WIDTH, BorderWidth.length(Length.px(20)));
+    $("#test").css(CSS.BORDER_WIDTH, LineWidth.length(Length.px(20)));
     assertEquals("20px", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").css(CSS.BORDER_WIDTH, BorderWidth.length(20, Unit.MM));
+    $("#test").css(CSS.BORDER_WIDTH, LineWidth.length(20, Unit.MM));
     assertEquals("20mm", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").css(CSS.BORDER_BOTTOM_WIDTH, BorderWidth.THICK);
+    $("#test").css(CSS.BORDER_BOTTOM_WIDTH, LineWidth.THICK);
     assertEquals("thick", $("#test").css("borderBottomWidth"));
     assertEquals("thick", $("#test").css(CSS.BORDER_BOTTOM_WIDTH));
 
-    $("#test").css(CSS.BORDER_TOP_WIDTH, BorderWidth.THIN);
+    $("#test").css(CSS.BORDER_TOP_WIDTH, LineWidth.THIN);
     assertEquals("thin", $("#test").css("borderTopWidth"));
     assertEquals("thin", $("#test").css(CSS.BORDER_TOP_WIDTH));
 
-    $("#test").css(CSS.BORDER_LEFT_WIDTH, BorderWidth.THIN);
+    $("#test").css(CSS.BORDER_LEFT_WIDTH, LineWidth.THIN);
     assertEquals("thin", $("#test").css("borderLeftWidth"));
     assertEquals("thin", $("#test").css(CSS.BORDER_LEFT_WIDTH));
 
-    $("#test").css(CSS.BORDER_RIGHT_WIDTH, BorderWidth.THICK);
+    $("#test").css(CSS.BORDER_RIGHT_WIDTH, LineWidth.THICK);
     assertEquals("thick", $("#test").css("borderRightWidth"));
     assertEquals("thick", $("#test").css(CSS.BORDER_RIGHT_WIDTH));
 
@@ -590,6 +590,32 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("50px", $("#test").css("marginRight"));
     assertEquals("50px", $("#test").css(CSS.MARGIN_RIGHT));
   }
+  
+  public void testOutlineProperty(){
+    $(e).html("<div id='test'>Content</div>");
+    
+    $("#test").css(CSS.OUTLINE_WIDTH, Length.px(10));
+    assertEquals("10px", $("#test").css("outlineWidth"));
+    assertEquals("10px", $("#test").css(CSS.OUTLINE_WIDTH));
+    
+    $("#test").css(CSS.OUTLINE_WIDTH, LineWidth.MEDIUM);
+    assertEquals("medium", $("#test").css("outlineWidth"));
+    assertEquals("medium", $("#test").css(CSS.OUTLINE_WIDTH));
+    
+    $("#test").css(CSS.OUTLINE_COLOR, RGBColor.GRAY);
+    assertEquals("gray", $("#test").css("outlineColor"));
+    assertEquals("gray", $("#test").css(CSS.OUTLINE_COLOR));
+    
+    $("#test").css(CSS.OUTLINE_STYLE, LineStyle.DOTTED);
+    assertEquals("dotted", $("#test").css("outlineStyle"));
+    assertEquals("dotted", $("#test").css(CSS.OUTLINE_STYLE));
+
+    $("#test").css(CSS.OUTLINE, RGBColor.BLACK, LineStyle.DASHED, LineWidth.length(15, Unit.PX));
+    assertEquals("black dashed 15px", $("#test").css("outline"));
+    assertEquals("black dashed 15px", $("#test").css(CSS.OUTLINE));
+    
+  }
+  
   
   public void testPaddingProperty() {
 

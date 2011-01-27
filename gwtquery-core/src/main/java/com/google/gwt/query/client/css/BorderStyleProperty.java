@@ -21,9 +21,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * This property describes the foreground color of an element's text content.
  */
 public class BorderStyleProperty extends
-    AbstractCssProperty<BorderStyleProperty.BorderStyle> {
+    AbstractCssProperty<BorderStyleProperty.LineStyle> {
 
-  public static enum BorderStyle implements HasCssName {
+  public static enum LineStyle implements HasCssName {
     DASHED {
       @Override
       public String getCssName() {
@@ -93,6 +93,7 @@ public class BorderStyleProperty extends
 
     public abstract String getCssName();
   }
+
   private static final String BORDER_BOTTOM_STYLE_PROPERTY = "borderBottomStyle";
   private static final String BORDER_LEFT_STYLE_PROPERTY = "borderLeftStyle";
   private static final String BORDER_RIGHT_STYLE_PROPERTY = "borderRightStyle";
