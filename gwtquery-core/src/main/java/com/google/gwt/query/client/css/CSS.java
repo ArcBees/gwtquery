@@ -215,6 +215,11 @@ public class CSS {
   public static PaddingProperty PADDING_TOP;
 
   /**
+   * The position property is used to position an element.
+   */
+  public static PositionProperty POSITION;
+
+  /**
    * For absolutely positioned elements, the right property sets the right edge
    * of an element to a unit to the left/right of the right edge of its
    * containing element.
@@ -291,6 +296,7 @@ public class CSS {
     OutlineProperty.init();
     OverflowProperty.init();
     PaddingProperty.init();
+    PositionProperty.init();
     TextAlignProperty.init();
     VerticalAlignProperty.init();
     VisibilityProperty.init();

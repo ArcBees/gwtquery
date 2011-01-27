@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.ListStyleType;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -716,6 +717,28 @@ public class GQueryCssTest extends GWTTestCase {
 
     assertEquals("50px", $("#test").css("paddingRight"));
     assertEquals("50px", $("#test").css(CSS.PADDING_RIGHT));
+  }
+  
+  public void testPositionProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.POSITION, Position.ABSOLUTE);
+    assertEquals("absolute", $("#test").css("position"));
+    assertEquals("absolute", $("#test").css(CSS.POSITION));
+
+    $("#test").css(CSS.POSITION, Position.FIXED);
+    assertEquals("fixed", $("#test").css("position"));
+    assertEquals("fixed", $("#test").css(CSS.POSITION));
+    
+    $("#test").css(CSS.POSITION, Position.RELATIVE);
+    assertEquals("relative", $("#test").css("position"));
+    assertEquals("relative", $("#test").css(CSS.POSITION));
+    
+    $("#test").css(CSS.POSITION, Position.STATIC);
+    assertEquals("static", $("#test").css("position"));
+    assertEquals("static", $("#test").css(CSS.POSITION));
+
   }
   
   public void testTextAlignProperty() {
