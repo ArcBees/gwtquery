@@ -18,11 +18,11 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style;
 
 /**
- * An enumerated CSS property with values of type X,Y,W,Z.
+ * 
+ * An enumerated CSS property with values of type V, W, X,Y,Z.
  */
-public interface CssProperty4<X, Y, Z, W> {
+public interface CssShorthandProperty5<V, W, X, Y, Z> extends CssProperty {
 
-  void set(Style s, X value1, Y value2, Z value3, W value4);
+  void set(Style s, V value1, W value2, X value3, Y value4, Z value5);
 
-  String get(Style s);
 }

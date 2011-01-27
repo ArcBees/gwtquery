@@ -15,22 +15,23 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.FontWeight;
 
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property specifies the mechanism by which elements are rendered.
  */
-public interface CssProperty {
+public class FontWeightProperty extends AbstractCssProperty<FontWeight> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "fontWeight";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.FONT_WEIGHT = new FontWeightProperty();
+  }
+
+  private FontWeightProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
 }

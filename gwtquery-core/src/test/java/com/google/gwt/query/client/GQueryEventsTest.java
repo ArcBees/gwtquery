@@ -26,6 +26,7 @@ import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.Event;
@@ -191,7 +192,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $(e).click();
     assertEquals("red", $(e).css("color"));
 
-    $(e).click(lazy().css(CSS.COLOR, CSS.BLACK).done());
+    $(e).click(lazy().css(CSS.COLOR, RGBColor.BLACK).done());
     $(e).click();
     assertEquals("black", $(e).css("color"));
   }

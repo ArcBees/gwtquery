@@ -16,21 +16,30 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Float;
 
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property specifies whether a box should float to the left, right, or not
+ * at all. It may be set for any element, but only applies to elements that
+ * generate boxes that are not absolutely positioned.
  */
-public interface CssProperty {
+public class FloatProperty extends AbstractCssProperty<Float> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "float";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.FLOAT = new FloatProperty();
+  }
+
+  private FloatProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
+
+  @Override
+  public void set(Style s, Float value) {
+    s.setFloat(value);
+  }
 }

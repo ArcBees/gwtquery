@@ -15,22 +15,21 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property describes the foreground color of an element's text content.
  */
-public interface CssProperty {
+public class ColorProperty extends AbstractCssProperty<RGBColor> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "color";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.COLOR = new ColorProperty();
+  }
+
+  private ColorProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
 }

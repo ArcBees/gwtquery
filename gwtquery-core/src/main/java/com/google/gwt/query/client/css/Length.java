@@ -15,83 +15,92 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * Length type constructors.
  */
-public class Length extends JavaScriptObject {
-
-  protected Length() {
-  }
+public class Length implements HasCssName {
 
   /**
-   * Size in pixels.
+   * Size in centimeters.
    */
-  public static Length px(int amt) {
-    return GWT.isScript() ? createWeb(amt + "px") : createHosted(amt + "px");
+  public static Length cm(int amt) {
+    return new Length(amt + Unit.CM.getType());
   }
 
   /**
    * Size as multiple of the 'font-size' of the relevant font.
    */
   public static Length em(int amt) {
-    return GWT.isScript() ? createWeb(amt + "em") : createHosted(amt + "em");
+    return new Length(amt + Unit.EM.getType());
   }
 
   /**
    * Size as multiple of the 'x-height' of the relevant font.
    */
   public static Length ex(int amt) {
-    return GWT.isScript() ? createWeb(amt + "ex") : createHosted(amt + "ex");
-  }
-
-  /**
-   * Size in picas.
-   */
-  public static Length pc(int amt) {
-    return GWT.isScript() ? createWeb(amt + "pc") : createHosted(amt + "pc");
-  }
-
-  /**
-   * Size in millimeters.
-   */
-  public static Length mm(int amt) {
-    return GWT.isScript() ? createWeb(amt + "mm") : createHosted(amt + "mm");
-  }
-
-  /**
-   * Size in centimeters.
-   */
-  public static Length cm(int amt) {
-    return GWT.isScript() ? createWeb(amt + "cm") : createHosted(amt + "cm");
+    return new Length(amt + Unit.EX.getType());
   }
 
   /**
    * Size in inches.
    */
   public static Length in(int amt) {
-    return GWT.isScript() ? createWeb(amt + "in") : createHosted(amt + "in");
+    return new Length(amt + Unit.IN.getType());
   }
 
-  private static native Length createWeb(String pct) /*-{
-    return pct;
-  }-*/;
-
-  private static native Length createHosted(String pct) /*-{
-    return [pct];
-  }-*/;
-
-  final public String value() {
-    return GWT.isScript() ? valueWeb() : valueHosted();
+  /**
+   * Size in millimeters.
+   */
+  public static Length mm(int amt) {
+    return new Length(amt + Unit.MM.getType());
   }
 
-  private native String valueWeb() /*-{
-    return this;
-  }-*/;
+  /**
+   * Size in picas.
+   */
+  public static Length pc(int amt) {
+    return new Length(amt + Unit.PC.getType());
+  }
 
-  private native String valueHosted() /*-{
-    return this[0];
-  }-*/;
+  /**
+   * Size in percentage units.
+   */
+  public static Length pct(int amt) {
+    return new Length(amt + Unit.PCT.getType());
+  }
+
+  /**
+   * Size in point.
+   */
+  public static Length pt(int amt) {
+    return new Length(amt + Unit.PT.getType());
+  }
+
+  /**
+   * Size in pixels.
+   */
+  public static Length px(int amt) {
+    return new Length(amt + Unit.PX.getType());
+  }
+
+  private String value;
+
+  protected Length(String value) {
+    this.value = value;
+  }
+
+  public String getCssName() {
+    return value;
+  }
+
+  /**
+   * @deprecated use {@link Length#getCssName()} instead
+   */
+  @Deprecated
+  public String value() {
+    return getCssName();
+  }
 }

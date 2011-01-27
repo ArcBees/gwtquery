@@ -16,11 +16,23 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Interface to be implemented by properties which take percentage units.
+ * Base class for Css property
+ * 
+ * @param <T> Class of the value associated with the css property
  */
-public interface TakesPercentage {
+public abstract class AbstractCssProperty<T extends HasCssName> implements
+    TakeCssValue<T> {
 
-  void setPercentage(Style s, Percentage p);
+  public String get(Style s) {
+    return s.getProperty(getCssName());
+  }
+
+  public abstract String getCssName();
+
+  public void set(Style s, T value) {
+    s.setProperty(getCssName(), value.getCssName());
+  }
 }

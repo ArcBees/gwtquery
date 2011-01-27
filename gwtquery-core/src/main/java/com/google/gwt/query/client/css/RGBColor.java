@@ -15,73 +15,78 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
  * Color type constructors.
  */
-public class RGBColor extends JavaScriptObject {
+public class RGBColor implements HasCssName {
 
-  protected RGBColor() {
-  }
+  public static RGBColor AQUA;
+  public static RGBColor BLACK;
+  public static RGBColor FUSCHIA;
+  public static RGBColor GRAY;
+  public static RGBColor GREEN;
+  public static RGBColor INHERIT;
+  public static RGBColor LIME;
+  public static RGBColor MAROON;
+  public static RGBColor NAVY;
+  public static RGBColor OLIVE;
+  public static RGBColor ORANGE;
+  public static RGBColor PURPLE;
+  public static RGBColor RED;
+  public static RGBColor SILVER;
+  public static RGBColor TEAL;
+  public static RGBColor TRANSPARENT;
+  public static RGBColor WHITE;
+  public static RGBColor YELLOW;
 
-  public static void init() {
-    CSS.AQUA = rgb("aqua");
-    CSS.BLACK = rgb("black");
-    CSS.FUSCHIA = rgb("fuschia");
-    CSS.GRAY = rgb("gray");
-    CSS.GREEN = rgb("green");
-    CSS.LIME = rgb("lime");
-    CSS.MAROON = rgb("lime");
-    CSS.NAVY = rgb("navy");
-    CSS.OLIVE = rgb("olive");
-    CSS.ORANGE = rgb("orange");
-    CSS.PURPLE = rgb("purple");
-    CSS.RED = rgb("red");
-    CSS.SILVER = rgb("silver");
-    CSS.TEAL = rgb("teal");
-    CSS.WHITE = rgb("white");
-    CSS.YELLOW = rgb("yellow");
-    CSS.TRANSPARENT = rgb("transparent");
-  }
-
-  /**
-   * RGB color in hexidecimal.
-   */
-  public static RGBColor rgb(String hex) {
-    return GWT.isScript() ? createWeb(hex) : createHosted(hex);
+  static {
+    AQUA = rgb("aqua");
+    BLACK = rgb("black");
+    FUSCHIA = rgb("fuschia");
+    GRAY = rgb("gray");
+    GREEN = rgb("green");
+    LIME = rgb("lime");
+    MAROON = rgb("maroon");
+    NAVY = rgb("navy");
+    OLIVE = rgb("olive");
+    ORANGE = rgb("orange");
+    PURPLE = rgb("purple");
+    RED = rgb("red");
+    SILVER = rgb("silver");
+    TEAL = rgb("teal");
+    WHITE = rgb("white");
+    YELLOW = rgb("yellow");
+    TRANSPARENT = rgb("transparent");
+    INHERIT = rgb(CSS.INHERIT_VALUE);
   }
 
   /**
    * RGB color as r,g,b triple.
    */
   public static RGBColor rgb(int r, int g, int b) {
-    return GWT.isScript() ? createWeb(makeRgb(r, g, b))
-        : createHosted(makeRgb(r, g, b));
+    return new RGBColor(makeRgb(r, g, b));
+  }
+
+  /**
+   * RGB color in hexidecimal.
+   */
+  public static RGBColor rgb(String hex) {
+    return new RGBColor(hex);
   }
 
   private static String makeRgb(int r, int g, int b) {
     return "rgb(" + r + "," + g + "," + b + ")";
   }
 
-  private static native RGBColor createWeb(String pct) /*-{
-    return pct;
-  }-*/;
+  private String value;
 
-  private static native RGBColor createHosted(String pct) /*-{
-    return [pct];
-  }-*/;
-
-  final public String value() {
-    return GWT.isScript() ? valueWeb() : valueHosted();
+  private RGBColor(String value) {
+    this.value = value;
   }
 
-  private native String valueWeb() /*-{
-    return this;
-  }-*/;
-
-  private native String valueHosted() /*-{
-    return this[0];
-  }-*/;
+  public String getCssName() {
+    return value;
+  }
 }

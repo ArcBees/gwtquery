@@ -18,19 +18,11 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style;
 
 /**
- * Minimal contract for an object defining a css property
  * 
+ * An enumerated CSS property with values of type X,Y,Z.
  */
-public interface CssProperty {
+public interface CssShorthandProperty3<X, Y, Z> extends CssProperty{
+  
+  void set(Style s, X value1, Y value2, Z value3);
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
-
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
 }

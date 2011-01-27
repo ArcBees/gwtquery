@@ -15,22 +15,21 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property sets an image as the list-item marker.
  */
-public interface CssProperty {
+public class ListStyleImageProperty extends AbstractCssProperty<ImageValue> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "listStyleImage";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.LIST_STYLE_IMAGE = new ListStyleImageProperty();
+  }
+
+  private ListStyleImageProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
 }

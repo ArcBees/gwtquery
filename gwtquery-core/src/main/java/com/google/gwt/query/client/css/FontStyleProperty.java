@@ -15,25 +15,23 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.FontStyle;
 
 /**
- * This property describes the foreground color of an element's text content.
+ * This property specifies the mechanism by which elements are rendered.
  */
-public class Color implements CssProperty<RGBColor> {
+public class FontStyleProperty extends AbstractCssProperty<FontStyle> {
+
+  private static final String CSS_PROPERTY = "fontStyle";
 
   public static void init() {
-    CSS.COLOR = new Color();
+    CSS.FONT_STYLE = new FontStyleProperty();
   }
 
-  public Color() {
+  private FontStyleProperty() {
   }
 
-  public String get(Style s) {
-    return s.getProperty("color");
-  }
-
-  public void set(Style s, RGBColor value) {
-    s.setProperty("color", value.value());
+  public String getCssName() {
+    return CSS_PROPERTY;
   }
 }

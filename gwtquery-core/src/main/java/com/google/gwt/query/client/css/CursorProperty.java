@@ -15,22 +15,23 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Cursor;
 
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property specifies all possible value for cursor.
  */
-public interface CssProperty {
+public class CursorProperty extends AbstractCssProperty<Cursor> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "cursor";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.CURSOR = new CursorProperty();
+  }
+
+  private CursorProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
 }

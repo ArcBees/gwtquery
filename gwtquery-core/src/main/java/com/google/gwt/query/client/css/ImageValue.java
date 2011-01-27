@@ -15,22 +15,33 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Minimal contract for an object defining a css property
- * 
+ * Image as css value
  */
-public interface CssProperty {
+public class ImageValue implements HasCssName {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  public static final ImageValue INHERIT;
+  public static final ImageValue NONE;
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  static {
+    NONE = new ImageValue("none");
+    INHERIT = new ImageValue(CSS.INHERIT_VALUE);
+  }
+
+  public static ImageValue url(String url) {
+    return new ImageValue("url('" + url + "')");
+  }
+
+  private String value;
+
+  private ImageValue(String value) {
+    this.value = value;
+  }
+
+  public String getCssName() {
+    return value;
+  }
+
 }

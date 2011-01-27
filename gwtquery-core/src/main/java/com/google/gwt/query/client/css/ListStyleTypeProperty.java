@@ -15,22 +15,23 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.ListStyleType;
 
 /**
- * Minimal contract for an object defining a css property
- * 
+ * This property sets the type of the list-item marker.
  */
-public interface CssProperty {
+public class ListStyleTypeProperty extends AbstractCssProperty<ListStyleType> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  private static final String CSS_PROPERTY = "listStyleType";
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+  public static void init() {
+    CSS.LIST_STYLE_TYPE = new ListStyleTypeProperty();
+  }
+
+  private ListStyleTypeProperty() {
+  }
+
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
 }

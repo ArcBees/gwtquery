@@ -19,11 +19,6 @@ import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -38,13 +33,14 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.query.client.css.CssProperty;
+import com.google.gwt.query.client.css.CssShorthandProperty3;
+import com.google.gwt.query.client.css.CssShorthandProperty5;
 import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.Percentage;
+import com.google.gwt.query.client.css.TakeCssValue;
 import com.google.gwt.query.client.css.TakesLength;
-import com.google.gwt.query.client.css.TakesPercentage;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -52,6 +48,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -943,6 +944,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String css(String name) {
     return styleImpl.curCSS(get(0), name, false);
   }
+  
+  /**
+   * Return a style property on the first matched element using type-safe
+   * enumerations.
+   * 
+   * Ex : $("#myId").css(CSS.BACKGROUND_COLOR);
+   */
+  public String css(CssProperty property) {
+    return css(property, false);
+  }
+
+  /**
+   * Return a style property on the first matched element using type-safe
+   * enumerations.
+   * 
+   * The parameter force has a special meaning here: - When force is false,
+   * returns the value of the css property defined in the style attribute of the
+   * element. - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style but in
+   * the css stylesheet, it returns an empty string unless you pass the
+   * parameter force=true.
+   * 
+   * Ex : $("#myId").css(CSS.WIDTH, true);
+   */
+  public String css(CssProperty property, boolean force) {
+    return css(property.getCssName(), force);
+  }
 
   /**
    * Return a style property on the first matched element.
@@ -971,9 +1000,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Set CSS property on every matched element using type-safe enumerations.
+   * Set CSS a single style property on every matched element using type-safe
+   * enumerations.
    */
-  public <S, T extends CssProperty<S>> GQuery css(T cssProperty, S value) {
+  public <S, T extends TakeCssValue<S>> GQuery css(T cssProperty, S value) {
     for (Element e : elements()) {
       cssProperty.set(e.getStyle(), value);
     }
@@ -981,25 +1011,43 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Set CSS property on every matched element using type-safe enumerations.
+   * Set CSS a single style property on every matched element using type-safe
+   * enumerations.
    */
   public GQuery css(TakesLength cssProperty, Length value) {
     for (Element e : elements()) {
-      cssProperty.setLength(e.getStyle(), value);
+      cssProperty.set(e.getStyle(), value);
     }
     return this;
   }
 
   /**
-   * Set CSS property on every matched element using type-safe enumerations.
+   * Set a multiple style property on every matched element using type-safe
+   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
+   * BorderStyle.DASHED, RGBColor.BLACK);
    */
-  public GQuery css(TakesPercentage cssProperty, Percentage value) {
+  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery css(
+      T cssProperty, X value1, Y value2, Z value3) {
     for (Element e : elements()) {
-      cssProperty.setPercentage(e.getStyle(), value);
+      cssProperty.set(e.getStyle(), value1, value2, value3);
     }
     return this;
   }
-  
+
+  /**
+   * Set a multiple style property on every matched element using type-safe
+   * enumerations. ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
+   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
+   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+   */
+  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery css(
+      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
+    for (Element e : elements()) {
+      cssProperty.set(e.getStyle(), value1, value2, value3, value4, value5);
+    }
+    return this;
+  }
+
   /**
    * Returns the numeric value of a css property.
    */
@@ -2170,7 +2218,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Set CSS property on the first element.
    */
-  public <S, T extends CssProperty<S>> GQuery setCss(T cssProperty, S value) {
+  public <S, T extends TakeCssValue<S>> GQuery setCss(T cssProperty, S value) {
     cssProperty.set(elements.getItem(0).getStyle(), value);
     return this;
   }
@@ -2179,15 +2227,36 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set CSS property on first matched element using type-safe enumerations.
    */
   public GQuery setCss(TakesLength cssProperty, Length value) {
-    cssProperty.setLength(elements.getItem(0).getStyle(), value);
+    cssProperty.set(elements.getItem(0).getStyle(), value);
     return this;
   }
 
   /**
-   * Set CSS property on first matched element using type-safe enumerations.
+   * Set a multiple style property on first matched element using type-safe
+   * enumerations.
+   * 
+   * ex : $("#id").css(CSS.BORDER, BorderWidth.thick(), BorderStyle.DASHED,
+   * RGBColor.BLACK);
    */
-  public GQuery setCss(TakesPercentage cssProperty, Percentage value) {
-    cssProperty.setPercentage(elements.getItem(0).getStyle(), value);
+  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery setCss(
+      T cssProperty, X value1, Y value2, Z value3) {
+    cssProperty.set(get(0).getStyle(), value1, value2, value3);
+
+    return this;
+  }
+
+  /**
+   * Set a multiple style property on first matched element using type-safe
+   * enumerations.
+   * 
+   * ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
+   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
+   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+   */
+  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery setCss(
+      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
+    cssProperty.set(get(0).getStyle(), value1, value2, value3, value4, value5);
+
     return this;
   }
 

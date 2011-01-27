@@ -18,9 +18,11 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style;
 
 /**
- * Interface to be implemented by properties which take length units.
+ * Interface to be implemented by properties which take length units in addition
+ * to an other type. If the properties takes only length units, please use
+ * {@link TakeCssValue} instead.
  */
 public interface TakesLength {
 
-  void setLength(Style s, Length p);
+  void set(Style s, Length p);
 }
