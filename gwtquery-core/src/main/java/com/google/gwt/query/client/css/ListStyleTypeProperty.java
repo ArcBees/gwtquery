@@ -29,9 +29,6 @@ public class ListStyleTypeProperty extends AbstractCssProperty<ListStyleType> {
   }
 
   private ListStyleTypeProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

@@ -27,9 +27,6 @@ public class ListStyleImageProperty extends AbstractCssProperty<ImageValue> {
   }
 
   private ListStyleImageProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

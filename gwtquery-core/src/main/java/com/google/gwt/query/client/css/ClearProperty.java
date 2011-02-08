@@ -87,9 +87,6 @@ public class ClearProperty extends AbstractCssProperty<ClearProperty.Clear> {
   }
 
   private ClearProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

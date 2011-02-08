@@ -25,25 +25,32 @@ import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.ListStyleType;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.TextDecoration;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.CssNumber;
 import com.google.gwt.query.client.css.ImageValue;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
+import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
+import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
 import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
 import com.google.gwt.query.client.css.ClearProperty.Clear;
 import com.google.gwt.query.client.css.ClipProperty.Shape;
 import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
 import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
 import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
+import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
+import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -191,7 +198,46 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("repeat-x", $("#test").css("backgroundRepeat"));
     assertEquals("repeat-x", $("#test").css(CSS.BACKGROUND_REPEAT));
   }
+  
+  public void testBorderCollapseProperty() {
 
+    $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
+
+    $("#test").css(CSS.BORDER_COLLAPSE, BorderCollapse.COLLAPSE);
+
+    assertEquals("collapse", $("#test").css("borderCollapse"));
+    assertEquals("collapse", $("#test").css(CSS.BORDER_COLLAPSE));
+    
+    $("#test").css(CSS.BORDER_COLLAPSE, BorderCollapse.SEPARATE);
+
+    assertEquals("separate", $("#test").css("borderCollapse"));
+    assertEquals("separate", $("#test").css(CSS.BORDER_COLLAPSE));
+  }
+  
+  public void testCaptionSideProperty() {
+
+    $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
+
+    $("#test").css(CSS.CAPTION_SIDE, CaptionSide.BOTTOM);
+    assertEquals("bottom", $("#test").css("captionSide"));
+    assertEquals("bottom", $("#test").css(CSS.CAPTION_SIDE));
+    
+  }
+
+  public void testBorderSpacingProperty() {
+
+    $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
+
+    $("#test").css(CSS.BORDER_SPACING, new BorderSpacing(Length.px(15)));
+
+    assertEquals("15px 15px", $("#test").css("borderSpacing"));
+    assertEquals("15px 15px", $("#test").css(CSS.BORDER_SPACING));
+    
+    $("#test").css(CSS.BORDER_SPACING, new BorderSpacing(Length.px(10), Length.em(20)));
+
+    assertEquals("10px 20em", $("#test").css("borderSpacing"));
+    assertEquals("10px 20em", $("#test").css(CSS.BORDER_SPACING));
+  }
   public void testBorderColorProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -231,6 +277,26 @@ public class GQueryCssTest extends GWTTestCase {
         LineStyle.SOLID, RGBColor.rgb("#000000"));
     assertEquals("15px solid #000000", $("#test").css("border"));
     assertEquals("15px solid #000000", $("#test").css(CSS.BORDER));
+    
+    $("#test").css(CSS.BORDER_TOP, LineWidth.MEDIUM, LineStyle.SOLID,
+        RGBColor.GRAY);
+    assertEquals("medium solid gray", $("#test").css("borderTop"));
+    assertEquals("medium solid gray", $("#test").css(CSS.BORDER_TOP));
+    
+    $("#test").css(CSS.BORDER_BOTTOM, LineWidth.THIN, LineStyle.DOUBLE,
+        RGBColor.FUSCHIA);
+    assertEquals("thin double fuschia", $("#test").css("borderBottom"));
+    assertEquals("thin double fuschia", $("#test").css(CSS.BORDER_BOTTOM));
+    
+    $("#test").css(CSS.BORDER_LEFT, LineWidth.THIN, LineStyle.SOLID,
+        RGBColor.BLACK);
+    assertEquals("thin solid black", $("#test").css("borderLeft"));
+    assertEquals("thin solid black", $("#test").css(CSS.BORDER_LEFT));
+    
+    $("#test").css(CSS.BORDER_RIGHT, LineWidth.MEDIUM, LineStyle.DASHED,
+        RGBColor.GRAY);
+    assertEquals("medium dashed gray", $("#test").css("borderRight"));
+    assertEquals("medium dashed gray", $("#test").css(CSS.BORDER_RIGHT));
 
   }
 
@@ -295,6 +361,34 @@ public class GQueryCssTest extends GWTTestCase {
 
   }
 
+  public void testClearProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.CLEAR, Clear.BOTH);
+    assertEquals("both", $("#test").css("clear"));
+    assertEquals("both", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.LEFT);
+    assertEquals("left", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.RIGHT);
+    assertEquals("right", $("#test").css(CSS.CLEAR));
+    
+    $("#test").css(CSS.CLEAR, Clear.NONE);
+    assertEquals("none", $("#test").css(CSS.CLEAR));
+
+  }
+
+  public void testClipProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.CLIP, Shape.rect(0, 10, 10, 0));
+    assertEquals("rect(0px,10px,10px,0px)", $("#test").css("clip"));
+    assertEquals("rect(0px,10px,10px,0px)", $("#test").css(CSS.CLIP));
+  }
+
   public void testColorProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -314,7 +408,7 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("rgb(35,45,55)", $("#test").css(CSS.COLOR));
 
   }
-
+  
   public void testColorValue() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -380,7 +474,7 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("rgb(35,45,55)", $("#test").css(CSS.COLOR));
 
   }
-
+  
   public void testCursorProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -390,34 +484,6 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("wait", $("#test").css("cursor"));
     assertEquals("wait", $("#test").css(CSS.CURSOR));
 
-  }
-  
-  public void testClearProperty() {
-
-    $(e).html("<div id='test'>Content</div>");
-
-    $("#test").css(CSS.CLEAR, Clear.BOTH);
-    assertEquals("both", $("#test").css("clear"));
-    assertEquals("both", $("#test").css(CSS.CLEAR));
-    
-    $("#test").css(CSS.CLEAR, Clear.LEFT);
-    assertEquals("left", $("#test").css(CSS.CLEAR));
-    
-    $("#test").css(CSS.CLEAR, Clear.RIGHT);
-    assertEquals("right", $("#test").css(CSS.CLEAR));
-    
-    $("#test").css(CSS.CLEAR, Clear.NONE);
-    assertEquals("none", $("#test").css(CSS.CLEAR));
-
-  }
-  
-  public void testClipProperty() {
-
-    $(e).html("<div id='test'>Content</div>");
-
-    $("#test").css(CSS.CLIP, Shape.rect(0, 10, 10, 0));
-    assertEquals("rect(0px,10px,10px,0px)", $("#test").css("clip"));
-    assertEquals("rect(0px,10px,10px,0px)", $("#test").css(CSS.CLIP));
   }
 
   public void testDisplayProperty() {
@@ -521,7 +587,7 @@ public class GQueryCssTest extends GWTTestCase {
 
   }
 
-  public void testHeightProperty() {
+  public void testHeightProperties() {
 
     $(e).html("<div id='test'>Content</div>");
 
@@ -529,6 +595,16 @@ public class GQueryCssTest extends GWTTestCase {
 
     assertEquals("10px", $("#test").css("height"));
     assertEquals("10px", $("#test").css(CSS.HEIGHT));
+    
+    $("#test").css(CSS.MAX_HEIGHT, Length.px(15));
+
+    assertEquals("15px", $("#test").css("maxHeight"));
+    assertEquals("15px", $("#test").css(CSS.MAX_HEIGHT));
+    
+    $("#test").css(CSS.MIN_HEIGHT, Length.px(5));
+
+    assertEquals("5px", $("#test").css("minHeight"));
+    assertEquals("5px", $("#test").css(CSS.MIN_HEIGHT));
   }
 
   public void testLengthValue() {
@@ -564,6 +640,31 @@ public class GQueryCssTest extends GWTTestCase {
 
   }
 
+  public void testLetterSpacingProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.LETTER_SPACING, Length.px(15));
+    assertEquals("15px", $("#test").css("letterSpacing"));
+    assertEquals("15px", $("#test").css(CSS.LETTER_SPACING));
+
+  }
+
+  public void testLineHeightProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.LINE_HEIGHT, Length.px(15));
+    assertEquals("15px", $("#test").css("lineHeight"));
+    assertEquals("15px", $("#test").css(CSS.LINE_HEIGHT));
+    
+    $("#test").css(CSS.LINE_HEIGHT, new CssNumber(2));
+    assertEquals("2", $("#test").css("lineHeight"));
+    assertEquals("2", $("#test").css(CSS.LINE_HEIGHT));
+    
+
+  }
+
   public void testListStyleImageProperty() {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
@@ -573,7 +674,7 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("url('arrow.jpg')", $("#test").css(CSS.LIST_STYLE_IMAGE));
 
   }
-
+  
   public void testListStylePositionProperty() {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
@@ -585,16 +686,6 @@ public class GQueryCssTest extends GWTTestCase {
     $("#test").css(CSS.LIST_STYLE_POSITION, ListStylePosition.OUTSIDE);
     assertEquals("outside", $("#test").css("listStylePosition"));
     assertEquals("outside", $("#test").css(CSS.LIST_STYLE_POSITION));
-
-  }
-
-  public void testListStyleTypeProperty() {
-
-    $(e).html("<ul id='test'><li>Content</li></ul>");
-
-    $("#test").css(CSS.LIST_STYLE_TYPE, ListStyleType.DISC);
-    assertEquals("disc", $("#test").css("listStyleType"));
-    assertEquals("disc", $("#test").css(CSS.LIST_STYLE_TYPE));
 
   }
   
@@ -613,6 +704,16 @@ public class GQueryCssTest extends GWTTestCase {
     $("#test").css(CSS.LIST_STYLE, null, ListStylePosition.OUTSIDE, ImageValue.NONE);
     assertEquals("outside none", $("#test").css("listStyle"));
     assertEquals("outside none", $("#test").css(CSS.LIST_STYLE));
+
+  }
+  
+  public void testListStyleTypeProperty() {
+
+    $(e).html("<ul id='test'><li>Content</li></ul>");
+
+    $("#test").css(CSS.LIST_STYLE_TYPE, ListStyleType.DISC);
+    assertEquals("disc", $("#test").css("listStyleType"));
+    assertEquals("disc", $("#test").css(CSS.LIST_STYLE_TYPE));
 
   }
   
@@ -645,6 +746,7 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("50px", $("#test").css("marginRight"));
     assertEquals("50px", $("#test").css(CSS.MARGIN_RIGHT));
   }
+  
   
   public void testOutlineProperty(){
     $(e).html("<div id='test'>Content</div>");
@@ -687,7 +789,6 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("visible", $("#test").css(CSS.OVERFLOW));
     
   }
-  
   
   public void testPaddingProperty() {
 
@@ -763,6 +864,41 @@ public class GQueryCssTest extends GWTTestCase {
 
   }
   
+  public void testTextDecorationProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.TEXT_DECORATION, TextDecoration.LINE_THROUGH);
+    assertEquals("line-through", $("#test").css("textDecoration"));
+    assertEquals("line-through", $("#test").css(CSS.TEXT_DECORATION));
+   
+  }
+
+  public void testTextIdentProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.TEXT_IDENT, Length.px(15));
+    assertEquals("15px", $("#test").css("textIdent"));
+    assertEquals("15px", $("#test").css(CSS.TEXT_IDENT));
+   
+  }
+  
+  public void testTextTransformProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.TEXT_TRANSFORM, TextTransform.UPPERCASE);
+    assertEquals("uppercase", $("#test").css("textTransform"));
+    assertEquals("uppercase", $("#test").css(CSS.TEXT_TRANSFORM));
+   
+    $("#test").css(CSS.TEXT_TRANSFORM, TextTransform.LOWERCASE);
+    assertEquals("lowercase", $("#test").css("textTransform"));
+    
+    $("#test").css(CSS.TEXT_TRANSFORM, TextTransform.CAPITALIZE);
+    assertEquals("capitalize", $("#test").css("textTransform"));
+  }
+  
   public void testVerticalAlignProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -815,6 +951,29 @@ public class GQueryCssTest extends GWTTestCase {
 
   }
   
+  public void testWhiteSpaceProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.WHITE_SPACE, WhiteSpace.NORMAL);
+    assertEquals("normal", $("#test").css("whiteSpace"));
+    assertEquals("normal", $("#test").css(CSS.WHITE_SPACE));
+    
+    $("#test").css(CSS.WHITE_SPACE, WhiteSpace.NOWRAP);
+    assertEquals("nowrap", $("#test").css(CSS.WHITE_SPACE));
+    
+    $("#test").css(CSS.WHITE_SPACE, WhiteSpace.PRE);
+    assertEquals("pre", $("#test").css(CSS.WHITE_SPACE));
+    
+    $("#test").css(CSS.WHITE_SPACE, WhiteSpace.PRE_LINE);
+    assertEquals("pre-line", $("#test").css(CSS.WHITE_SPACE));
+    
+    $("#test").css(CSS.WHITE_SPACE, WhiteSpace.PRE_WRAP);
+    assertEquals("pre-wrap", $("#test").css(CSS.WHITE_SPACE));
+   
+  
+  }
+  
   public void testWidthProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -822,7 +981,36 @@ public class GQueryCssTest extends GWTTestCase {
     $("#test").css(CSS.WIDTH, Length.px(20));
     assertEquals("20px", $("#test").css("width"));
     assertEquals("20px", $("#test").css(CSS.WIDTH));
+    
+    $("#test").css(CSS.MIN_WIDTH, Length.px(10));
+    assertEquals("10px", $("#test").css("minWidth"));
+    assertEquals("10px", $("#test").css(CSS.MIN_WIDTH));
+    
+    $("#test").css(CSS.MAX_WIDTH, Length.px(30));
+    assertEquals("30px", $("#test").css("maxWidth"));
+    assertEquals("30px", $("#test").css(CSS.MAX_WIDTH));
+
+  }
+  
+  public void testWordSpacingProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.WORD_SPACING, Length.pt(2));
+    assertEquals("2pt", $("#test").css("wordSpacing"));
+    assertEquals("2pt", $("#test").css(CSS.WORD_SPACING));
+  
+  }
+  
+  public void testZIndexProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.ZINDEX, new CssNumber(1000));
+    assertEquals("1000", $("#test").css("zIndex"));
+    assertEquals("1000", $("#test").css(CSS.ZINDEX));
 
   }
 
+  
 }

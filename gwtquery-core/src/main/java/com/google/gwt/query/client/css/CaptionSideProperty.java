@@ -15,20 +15,37 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * This property describes how inline content of a block is aligned.
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class CaptionSideProperty extends
+    AbstractCssProperty<CaptionSideProperty.CaptionSide> {
 
-  private static final String CSS_PROPERTY = "display";
+  public enum CaptionSide implements HasCssName {
+    /**
+     * Puts the caption above the table
+     */
+    TOP,
+    /**
+     *  Puts the caption below the table
+     */
+    BOTTOM;
+
+    public String getCssName() {
+      return name().toLowerCase();
+    };
+  }
+
+  private static final String CSS_PROPERTY = "captionSide";
 
   public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+    CSS.CAPTION_SIDE = new CaptionSideProperty();
   }
 
-  private DisplayProperty() {
+  private CaptionSideProperty() {
     super(CSS_PROPERTY);
   }
+
 }

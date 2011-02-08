@@ -91,9 +91,6 @@ public class BackgroundPositionProperty extends
   }
 
   private BackgroundPositionProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

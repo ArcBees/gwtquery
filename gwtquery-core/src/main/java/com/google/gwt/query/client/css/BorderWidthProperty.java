@@ -76,18 +76,12 @@ public class BorderWidthProperty extends
     CSS.BORDER_TOP_WIDTH = new BorderWidthProperty(BORDER_TOP_WIDTH_PROPERTY);
   }
 
-  private String cssName;
-
   private BorderWidthProperty(String value) {
-    this.cssName = value;
-  }
-
-  public String getCssName() {
-    return cssName;
+   super(value);
   }
 
   public void set(Style s, Length p) {
-    s.setProperty(cssName, p.getCssName());
+    s.setProperty(getCssName(), p.getCssName());
 
   }
 }

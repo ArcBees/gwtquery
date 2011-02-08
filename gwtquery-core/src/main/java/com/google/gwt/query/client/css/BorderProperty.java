@@ -21,37 +21,50 @@ import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 
 /**
+ * The border shorthand property sets all the border properties in one
+ * declaration.
  * 
- *
  */
 public class BorderProperty implements
     CssShorthandProperty3<LineWidth, LineStyle, RGBColor> {
 
-  private static final String CSS_PROPERTY = "border";
+  private static final String BORDER_BOTTOM_PROPERTY = "borderBottom";
+  private static final String BORDER_PROPERTY = "border";
+  private static final String BORDER_LEFT_PROPERTY = "borderLeft";
+  private static final String BORDER_RIGHT_PROPERTY = "borderRight";
+  private static final String BORDER_TOP_PROPERTY = "borderTop";
 
   static void init() {
-    CSS.BORDER = new BorderProperty();
+    CSS.BORDER = new BorderProperty(BORDER_PROPERTY);
+    CSS.BORDER_BOTTOM = new BorderProperty(BORDER_BOTTOM_PROPERTY);
+    CSS.BORDER_TOP = new BorderProperty(BORDER_TOP_PROPERTY);
+    CSS.BORDER_RIGHT = new BorderProperty(BORDER_RIGHT_PROPERTY);
+    CSS.BORDER_LEFT = new BorderProperty(BORDER_LEFT_PROPERTY);
+
     BorderColorProperty.init();
     BorderStyleProperty.init();
     BorderWidthProperty.init();
   }
 
-  private BorderProperty() {
+  private String cssProperty;
+
+  private BorderProperty(String property) {
+    cssProperty = property;
   }
 
   public String get(Style s) {
-    return s.getProperty(CSS_PROPERTY);
+    return s.getProperty(cssProperty);
   }
 
   public String getCssName() {
-    return CSS_PROPERTY;
+    return cssProperty;
   }
 
   public void set(Style s, LineWidth borderWidth, LineStyle borderStyle,
       RGBColor borderColor) {
     String value = notNull(borderWidth) + notNull(borderStyle)
         + notNull(borderColor).trim();
-    s.setProperty(CSS_PROPERTY, value);
+    s.setProperty(cssProperty, value);
   }
 
   private String notNull(HasCssName value) {

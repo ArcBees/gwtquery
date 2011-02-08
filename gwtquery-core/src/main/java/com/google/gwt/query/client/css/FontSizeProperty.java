@@ -128,10 +128,7 @@ public class FontSizeProperty extends
   }
 
   private FontSizeProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 
   /**

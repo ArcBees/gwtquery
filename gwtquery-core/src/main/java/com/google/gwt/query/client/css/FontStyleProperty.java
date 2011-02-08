@@ -29,9 +29,6 @@ public class FontStyleProperty extends AbstractCssProperty<FontStyle> {
   }
 
   private FontStyleProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

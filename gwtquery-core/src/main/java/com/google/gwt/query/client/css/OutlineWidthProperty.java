@@ -33,10 +33,7 @@ public class OutlineWidthProperty extends AbstractCssProperty<LineWidth>
   }
 
   private OutlineWidthProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 
   public void set(Style s, Length p) {

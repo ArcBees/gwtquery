@@ -29,9 +29,7 @@ public class PositionProperty extends AbstractCssProperty<Position> {
   }
 
   private PositionProperty() {
+    super(CSS_PROPERTY);
   }
 
-  public String getCssName() {
-    return CSS_PROPERTY;
-  }
 }

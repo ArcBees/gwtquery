@@ -18,40 +18,36 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The clip property lets you specify the dimensions of an absolutely positioned
- * element that should be visible, and the element is clipped into this shape,
- * and displayed.
- * 
- * The clip property does not work if the overflow property is set to visible.
+ * This property describes the color of a border.
  */
-public class ClipProperty extends AbstractCssProperty<ClipProperty.Shape> {
+public class BorderCollapseProperty extends
+    AbstractCssProperty<BorderCollapseProperty.BorderCollapse> {
 
-  public static class Shape implements HasCssName {
-
-    public static Shape rect(int top, int right, int bottom, int left) {
-      return new Shape("rect(" + top + "px," + right + "px," + bottom + "px,"
-          + left + "px)");
-    }
-
-    private String value;
-
-    private Shape(String value) {
-      this.value = value;
-    }
-
+  public static enum BorderCollapse implements HasCssName {
+    /**
+     * Borders are collapsed into a single border when possible (border-spacing
+     * and empty-cells properties will be ignored)
+     */
+    COLLAPSE,
+    /**
+     * Borders are detached (border-spacing and empty-cells properties will not
+     * be ignored).
+     */
+    SEPARATE;
+    
     public String getCssName() {
-      return value;
+      return name().toLowerCase();
     }
-
   }
 
-  private static final String CSS_PROPERTY = "clip";
+  private static final String CSS_PROPERTY = "borderCollapse";
 
   public static void init() {
-    CSS.CLIP = new ClipProperty();
+    CSS.BORDER_COLLAPSE = new BorderCollapseProperty();
+
   }
 
-  private ClipProperty() {
+  private BorderCollapseProperty() {
     super(CSS_PROPERTY);
   }
 }

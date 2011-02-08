@@ -15,20 +15,26 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * all height css properties : max-height, min-height, height
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class LineHeightProperty extends AbstractCssProperty<CssNumber> implements TakesLength {
 
-  private static final String CSS_PROPERTY = "display";
+  private static final String CSS_PROPERTY = "lineHeight";
 
   public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+    CSS.LINE_HEIGHT = new LineHeightProperty();
   }
 
-  private DisplayProperty() {
+  private LineHeightProperty() {
     super(CSS_PROPERTY);
   }
+
+  public void set(Style s, Length p) {
+    s.setProperty(CSS_PROPERTY, p.getCssName());
+    
+  }
+
 }

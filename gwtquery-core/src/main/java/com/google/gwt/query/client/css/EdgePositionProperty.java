@@ -27,13 +27,7 @@ public class EdgePositionProperty extends AbstractCssProperty<Length> {
     CSS.TOP = new EdgePositionProperty("top");
   }
 
-  private String cssName;
-
   private EdgePositionProperty(String value) {
-    this.cssName = value;
-  }
-
-  public String getCssName() {
-    return cssName;
+    super(value);
   }
 }

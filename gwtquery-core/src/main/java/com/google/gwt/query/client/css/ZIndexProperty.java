@@ -16,27 +16,40 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Float;
 
 /**
- * This property specifies whether a box should float to the left, right, or not
- * at all. It may be set for any element, but only applies to elements that
- * generate boxes that are not absolutely positioned.
+ * The z-index property specifies the stack order of an element.
+ * 
+ * An element with greater stack order is always in front of an element with a
+ * lower stack order.
+ * 
+ * The z-index property only works on positioned elements (position:absolute,
+ * position:relative, or position:fixed).
  */
-public class FloatProperty extends AbstractCssProperty<Float> {
+public class ZIndexProperty extends AbstractCssProperty<CssNumber> {
 
-  private static final String CSS_PROPERTY = "float";
+  private static final String CSS_PROPERTY = "zIndex";
 
   public static void init() {
-    CSS.FLOAT = new FloatProperty();
+    CSS.ZINDEX = new ZIndexProperty();
   }
 
-  private FloatProperty() {
+  private ZIndexProperty() {
     super(CSS_PROPERTY);
   }
 
   @Override
-  public void set(Style s, Float value) {
-    s.setFloat(value);
+  public String get(Style s) {
+    return getZIndex(s);
   }
+
+  /**
+   * See GWT issue 5548
+   * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
+   */
+  private native String getZIndex(Style s) /*-{
+    //force to return a string
+    return ""+s["zIndex"];
+  }-*/;
+
 }

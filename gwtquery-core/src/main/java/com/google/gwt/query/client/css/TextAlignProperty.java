@@ -78,10 +78,7 @@ public class TextAlignProperty extends
   }
 
   private TextAlignProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 
 }

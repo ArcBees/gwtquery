@@ -65,9 +65,6 @@ public class FontVariantProperty extends
   }
 
   private FontVariantProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

@@ -35,14 +35,8 @@ public class PaddingProperty extends AbstractCssProperty<Length> {
     CSS.PADDING_BOTTOM = new PaddingProperty(PADDING_BOTTOM_PROPERTY);
   }
 
-  private String cssName;
-
   private PaddingProperty(String cssName) {
-    this.cssName = cssName;
-  }
-
-  public String getCssName() {
-    return cssName;
+    super(cssName);
   }
 
 }

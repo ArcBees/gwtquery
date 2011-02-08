@@ -29,9 +29,6 @@ public class CursorProperty extends AbstractCssProperty<Cursor> {
   }
 
   private CursorProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

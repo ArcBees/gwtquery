@@ -15,20 +15,19 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
-
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * all height css properties : max-height, min-height, height
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class LetterSpacingProperty extends AbstractCssProperty<Length> {
 
-  private static final String CSS_PROPERTY = "display";
+  private static final String CSS_PROPERTY = "letterSpacing";
 
   public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+    CSS.LETTER_SPACING = new LetterSpacingProperty();
   }
 
-  private DisplayProperty() {
+  private LetterSpacingProperty() {
     super(CSS_PROPERTY);
   }
+
 }

@@ -25,12 +25,19 @@ import com.google.gwt.dom.client.Style.HasCssName;
  */
 public abstract class AbstractCssProperty<T extends HasCssName> implements
     TakeCssValue<T> {
+  private String cssName;
+  
+  protected AbstractCssProperty(String cssName){
+    this.cssName = cssName;
+  }
 
   public String get(Style s) {
     return s.getProperty(getCssName());
   }
 
-  public abstract String getCssName();
+  public String getCssName(){
+    return cssName;
+  }
 
   public void set(Style s, T value) {
     s.setProperty(getCssName(), value.getCssName());

@@ -30,9 +30,6 @@ public class OverflowProperty extends
   }
 
   private OverflowProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

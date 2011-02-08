@@ -68,9 +68,6 @@ public class ListStylePositionProperty extends
   }
 
   private ListStylePositionProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

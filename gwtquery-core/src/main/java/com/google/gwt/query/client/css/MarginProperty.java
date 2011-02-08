@@ -34,14 +34,8 @@ public class MarginProperty extends AbstractCssProperty<Length> {
     CSS.MARGIN_BOTTOM = new MarginProperty(MARGIN_BOTTOM_PROPERTY);
   }
 
-  private String cssName;
-
   private MarginProperty(String cssName) {
-    this.cssName = cssName;
-  }
-
-  public String getCssName() {
-    return cssName;
+    super(cssName);
   }
 
 }

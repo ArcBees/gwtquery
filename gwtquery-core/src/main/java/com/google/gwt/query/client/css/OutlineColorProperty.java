@@ -30,9 +30,6 @@ public class OutlineColorProperty extends AbstractCssProperty<RGBColor> {
 
 
   private OutlineColorProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

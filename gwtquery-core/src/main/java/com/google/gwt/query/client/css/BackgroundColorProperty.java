@@ -28,9 +28,6 @@ public class BackgroundColorProperty extends AbstractCssProperty<RGBColor> {
   }
 
   private BackgroundColorProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

@@ -89,9 +89,6 @@ public class BackgroundRepeatProperty extends
   }
 
   private BackgroundRepeatProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

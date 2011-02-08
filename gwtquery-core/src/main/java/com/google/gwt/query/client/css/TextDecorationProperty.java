@@ -15,20 +15,24 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.TextDecoration;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * This property describes how inline content of a block is aligned.
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class TextDecorationProperty extends
+    AbstractCssProperty<TextDecoration> {
 
-  private static final String CSS_PROPERTY = "display";
+  
+  private static final String CSS_PROPERTY = "textDecoration";
+ 
 
   public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+    CSS.TEXT_DECORATION= new TextDecorationProperty();
   }
 
-  private DisplayProperty() {
+  private TextDecorationProperty() {
     super(CSS_PROPERTY);
   }
+
 }

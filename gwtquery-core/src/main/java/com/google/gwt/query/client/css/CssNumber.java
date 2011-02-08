@@ -15,20 +15,25 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * Some css property take simply number as value.
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class CssNumber implements HasCssName {
 
-  private static final String CSS_PROPERTY = "display";
+  private String value;
 
-  public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+  public CssNumber(String value) {
+    this.value = value;
+  }
+  
+  public CssNumber(int value) {
+    this(""+value);
   }
 
-  private DisplayProperty() {
-    super(CSS_PROPERTY);
+  public String getCssName() {
+    return value;
   }
+
 }

@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.css;
 
 /**
- * This property describes the foreground color of an element's text content.
+ * This property describes the color of a border.
  */
 public class BorderColorProperty extends AbstractCssProperty<RGBColor> {
 
@@ -35,14 +35,8 @@ public class BorderColorProperty extends AbstractCssProperty<RGBColor> {
         BORDER_RIGHT_COLOR_PROPERTY);
     CSS.BORDER_TOP_COLOR = new BorderColorProperty(BORDER_TOP_COLOR_PROPERTY);
   }
-
-  private String cssName;
-
+  
   private BorderColorProperty(String value) {
-    this.cssName = value;
-  }
-
-  public String getCssName() {
-    return cssName;
+   super(value);
   }
 }

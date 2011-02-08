@@ -47,6 +47,7 @@ public class BackgroundAttachmentProperty extends
     public abstract String getCssName();
 
   }
+
   private static final String CSS_PROPERTY = "backgroundAttachment";
   private static final String FIXED_VALUE = "fixed";
 
@@ -56,9 +57,8 @@ public class BackgroundAttachmentProperty extends
     CSS.BACKGROUND_ATTACHMENT = new BackgroundAttachmentProperty();
   }
 
-  private BackgroundAttachmentProperty() {}
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+  private BackgroundAttachmentProperty() {
+    super(CSS_PROPERTY);
   }
+
 }

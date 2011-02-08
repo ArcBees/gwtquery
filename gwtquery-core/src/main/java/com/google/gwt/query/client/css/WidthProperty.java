@@ -30,17 +30,18 @@ package com.google.gwt.query.client.css;
  */
 public class WidthProperty extends AbstractCssProperty<Length> {
 
-  private static final String CSS_PROPERTY = "width";
+  private static final String WIDTH_PROPERTY = "width";
+  private static final String MAX_WIDTH_PROPERTY = "maxWidth";
+  private static final String MIN_WIDTH_PROPERTY = "minWidth";
 
   public static void init() {
-    CSS.WIDTH = new WidthProperty();
+    CSS.WIDTH = new WidthProperty(WIDTH_PROPERTY);
+    CSS.MAX_WIDTH = new WidthProperty(MAX_WIDTH_PROPERTY);
+    CSS.MIN_WIDTH = new WidthProperty(MIN_WIDTH_PROPERTY);
   }
-
-  private WidthProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+  
+  private WidthProperty(String cssName) {
+    super(cssName);
   }
 
 }

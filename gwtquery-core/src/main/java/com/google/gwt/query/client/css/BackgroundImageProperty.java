@@ -27,10 +27,7 @@ public class BackgroundImageProperty extends AbstractCssProperty<ImageValue> {
   }
 
   private BackgroundImageProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 
 }

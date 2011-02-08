@@ -32,9 +32,6 @@ public class OutlineStyleProperty extends AbstractCssProperty<LineStyle> {
 
 
   private OutlineStyleProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

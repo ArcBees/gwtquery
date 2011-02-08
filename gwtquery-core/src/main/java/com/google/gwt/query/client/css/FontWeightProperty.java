@@ -29,9 +29,6 @@ public class FontWeightProperty extends AbstractCssProperty<FontWeight> {
   }
 
   private FontWeightProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

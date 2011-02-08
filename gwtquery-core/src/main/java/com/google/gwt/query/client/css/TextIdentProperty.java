@@ -15,20 +15,23 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Display;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * This property describes how inline content of a block is aligned.
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class TextIdentProperty extends
+    AbstractCssProperty<Length> {
 
-  private static final String CSS_PROPERTY = "display";
+  
+  private static final String CSS_PROPERTY = "textIdent";
+ 
 
   public static void init() {
-    CSS.DISPLAY = new DisplayProperty();
+    CSS.TEXT_IDENT= new TextIdentProperty();
   }
 
-  private DisplayProperty() {
+  private TextIdentProperty() {
     super(CSS_PROPERTY);
   }
+
 }

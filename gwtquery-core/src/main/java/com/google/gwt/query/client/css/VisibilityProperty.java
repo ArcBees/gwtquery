@@ -32,9 +32,7 @@ public class VisibilityProperty extends AbstractCssProperty<Visibility> {
   }
 
   private VisibilityProperty() {
+    super(CSS_PROPERTY);
   }
 
-  public String getCssName() {
-    return CSS_PROPERTY;
-  }
 }

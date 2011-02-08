@@ -27,9 +27,6 @@ public class ColorProperty extends AbstractCssProperty<RGBColor> {
   }
 
   private ColorProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 }

@@ -32,10 +32,7 @@ public class VerticalAlignProperty extends AbstractCssProperty<VerticalAlign>
   }
 
   private VerticalAlignProperty() {
-  }
-
-  public String getCssName() {
-    return CSS_PROPERTY;
+    super(CSS_PROPERTY);
   }
 
   public void set(Style s, Length p) {

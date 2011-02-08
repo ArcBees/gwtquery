@@ -111,13 +111,8 @@ public class BorderStyleProperty extends
     CSS.BORDER_TOP_STYLE = new BorderStyleProperty(BORDER_TOP_STYLE_PROPERTY);
   }
 
-  private String cssName;
-
   private BorderStyleProperty(String value) {
-    this.cssName = value;
+    super(value);
   }
 
-  public String getCssName() {
-    return cssName;
-  }
 }
