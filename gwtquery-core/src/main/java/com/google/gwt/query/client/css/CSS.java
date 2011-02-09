@@ -127,6 +127,8 @@ public class CSS {
    */
   public static DisplayProperty DISPLAY;
 
+  public static EmptyCellsProperty EMPTY_CELLS;
+
   /**
    * This property specifies whether a box should float to the left, right, or
    * not at all. It may be set for any element, but only applies to elements
@@ -328,6 +330,7 @@ public class CSS {
     ClipProperty.init();
     DisplayProperty.init();
     EdgePositionProperty.init();
+    EmptyCellsProperty.init();
     FloatProperty.init();
     FontStyleProperty.init();
     FontVariantProperty.init();

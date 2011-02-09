@@ -32,6 +32,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.CssNumber;
+import com.google.gwt.query.client.css.EmptyCellsProperty;
 import com.google.gwt.query.client.css.ImageValue;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
@@ -224,6 +225,18 @@ public class GQueryCssTest extends GWTTestCase {
     
   }
 
+  
+  public void testEmptyCellsProperty() {
+
+    $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
+
+    $("#test").css(CSS.EMPTY_CELLS, EmptyCellsProperty.EmptyCells.HIDE);
+    assertEquals("hide", $("#test").css("emptyCells"));
+    assertEquals("hide", $("#test").css(CSS.EMPTY_CELLS));
+    
+  }
+
+  
   public void testBorderSpacingProperty() {
 
     $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
