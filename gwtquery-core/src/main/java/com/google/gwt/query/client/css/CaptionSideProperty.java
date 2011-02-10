@@ -18,20 +18,29 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes how inline content of a block is aligned.
+ * This property specifies the position of the caption box with respect to the
+ * table box.
  */
 public class CaptionSideProperty extends
     AbstractCssProperty<CaptionSideProperty.CaptionSide> {
 
   public enum CaptionSide implements HasCssName {
     /**
-     * Puts the caption above the table
+     * Positions the caption box above the table box.
      */
     TOP,
     /**
-     *  Puts the caption below the table
+     * Positions the caption box below the table box.
      */
-    BOTTOM;
+    BOTTOM,
+    /**
+     * Positions the caption box to the left of the table box.
+     */
+    LEFT,
+    /**
+     * Positions the caption box to the right of the table box.
+     */
+    RIGHT;
 
     public String getCssName() {
       return name().toLowerCase();

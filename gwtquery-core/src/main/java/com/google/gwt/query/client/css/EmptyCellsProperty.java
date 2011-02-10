@@ -18,7 +18,11 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes how inline content of a block is aligned.
+ * This property controls the rendering of borders around cells that have no
+ * visible content. Empty cells and cells with the 'visibility' property set to
+ * 'hidden' are considered to have no visible content. Visible content includes
+ * "&nbsp;" and other whitespace except ASCII CR ("\0D"), LF ("\0A"), tab
+ * ("\09"), and space ("\20").
  */
 public class EmptyCellsProperty extends
     AbstractCssProperty<EmptyCellsProperty.EmptyCells> {
@@ -29,7 +33,7 @@ public class EmptyCellsProperty extends
      */
     HIDE,
     /**
-     *  Background and borders are shown on empty cells.
+     * Background and borders are shown on empty cells.
      */
     SHOW;
 
