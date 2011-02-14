@@ -23,7 +23,7 @@ $o =~ s/$iclass/$oclass/;
 my $c = 0;
 
 open(F, $i) || die $!;
-my ($in, $com, $ingq, $inclass, $inh, $head, $body, $inmeth, $meth) = (0, "", 0, 0, 1, "", "", 0, "");
+my ($in, $com, $ingq, $inclass, $inh, $head, $body, $inmeth, $meth, $dep) = (0, "", 0, 0, 1, "", "", 0, "", 0);
 my ($a, $b) = (0,0);
 while(<F>) {
    s/\r+//g;
@@ -35,9 +35,12 @@ while(<F>) {
    if ($ingq && !$inclass) {
       $in = 1 if (/^\/\**\s*$/);
       $com = "" if (/^\/\**\s*$/);
+      $dep = 1 if (/^\s*\@Deprecated/);
       next if /static/;
       next if /$iclass\s*\(/;
       $inmeth = 1 if (!$inmeth && !$in && /(public .*?\(.*)\s*$/);
+      $dep = $inmeth = 0 if ($dep && $inmeth);
+      $dep = $in = 0 if ($dep && $in);
       $meth .= $_ if ($inmeth);
       if ($inmeth && /\{/) {
          $meth =~ s/final\s+//g;

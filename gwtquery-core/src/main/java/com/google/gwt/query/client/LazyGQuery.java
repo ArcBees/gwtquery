@@ -252,16 +252,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> click(Function...f);
 
   /**
-   * @deprecated use innerHeight()
-   */
-  int clientHeight();
-
-  /**
-   * @deprecated use innerWidth()
-   */
-  int clientWidth();
-
-  /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
    * copies of the elements to another location in the DOM.
    */
