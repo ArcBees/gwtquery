@@ -60,7 +60,7 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <!-- <module>samples</module> -->
+        <module>samples</module>
         <!-- <module>devtest</module> -->
     </modules>
 
@@ -149,10 +149,14 @@
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
         </repository>
+        <repository>
+            <id>gwt-2.2.0-temporal</id>
+            <url>http://oss.sonatype.org/content/repositories/comgoogle-108</url>
+        </repository>
     </repositories>
 
     <properties>
-        <gwtversion>2.1.1</gwtversion>
+        <gwtversion>2.2.0</gwtversion>
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix></gwt.modulesuffix>
