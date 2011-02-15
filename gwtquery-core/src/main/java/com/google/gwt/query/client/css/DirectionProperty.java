@@ -25,23 +25,13 @@ public class DirectionProperty extends
 
   public static enum Direction implements HasCssName {
 
-    LTR {
-      public String getCssName() {
-        return "ltr";
-      };
-    },
-    RTL {
-      public String getCssName() {
-        return "rtl";
-      };
-    },
-    INHERIT {
-      public String getCssName() {
-        return "inherit";
-      };
-    };
+    LTR ,
+    RTL,
+    INHERIT;
 
-    public abstract String getCssName();
+    public String getCssName(){
+      return name().toLowerCase();
+    }
 
   }
 

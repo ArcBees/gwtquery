@@ -15,11 +15,39 @@
  */
 package com.google.gwt.query.client.css;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.HasCssName;
+
 /**
  * The margin property sets the margins of an element.
  */
 public class MarginProperty extends AbstractCssProperty<Length> {
 
+  public static class ShorthandMarginProperty implements CssShorthandProperty4<Length, Length, Length, Length>{
+
+    private  ShorthandMarginProperty() {
+    }
+    
+    public void set(Style s, Length margin1, Length margin2, Length margin3,
+        Length margin4) {
+      String margin = notNull(margin1)+notNull(margin2)+notNull(margin3)+notNull(margin4);
+      s.setProperty(MARGIN_PROPERTY, margin.trim());
+      
+    }
+
+    public String get(Style s) {
+      return s.getMargin();
+    }
+
+    public String getCssName() {
+      return MARGIN_PROPERTY;
+    }
+    
+    private String notNull(HasCssName value) {
+      return value != null ? value.getCssName() + " " : "";
+    }
+    
+  }
   private static String MARGIN_BOTTOM_PROPERTY = "marginBottom";
   private static String MARGIN_LEFT_PROPERTY = "marginLeft";
   private static String MARGIN_PROPERTY = "margin";
@@ -27,7 +55,7 @@ public class MarginProperty extends AbstractCssProperty<Length> {
   private static String MARGIN_TOP_PROPERTY = "marginTop";
 
   public static void init() {
-    CSS.MARGIN = new MarginProperty(MARGIN_PROPERTY);
+    CSS.MARGIN = new ShorthandMarginProperty();
     CSS.MARGIN_LEFT = new MarginProperty(MARGIN_LEFT_PROPERTY);
     CSS.MARGIN_RIGHT = new MarginProperty(MARGIN_RIGHT_PROPERTY);
     CSS.MARGIN_TOP = new MarginProperty(MARGIN_TOP_PROPERTY);

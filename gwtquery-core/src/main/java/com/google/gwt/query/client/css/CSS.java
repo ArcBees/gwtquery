@@ -15,7 +15,16 @@
  */
 package com.google.gwt.query.client.css;
 
+import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.FontStyle;
+import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.dom.client.Style.ListStyleType;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.TextDecoration;
+import com.google.gwt.dom.client.Style.VerticalAlign;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
@@ -25,7 +34,17 @@ import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
 import com.google.gwt.query.client.css.ClearProperty.Clear;
+import com.google.gwt.query.client.css.ClipProperty.Shape;
+import com.google.gwt.query.client.css.DirectionProperty.Direction;
 import com.google.gwt.query.client.css.EmptyCellsProperty.EmptyCells;
+import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
+import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
+import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
+import com.google.gwt.query.client.css.MarginProperty.ShorthandMarginProperty;
+import com.google.gwt.query.client.css.PaddingProperty.ShorthandPaddingProperty;
+import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
+import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
+import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 
 /**
  * This class lists all CSS properties.
@@ -50,7 +69,7 @@ public class CSS {
    * <pre class="code">$("#myId").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
    *     ImageValue.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
    *     BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);</code>
-   * 
+   *
    * </pre>
    */
   public static BackgroundProperty BACKGROUND;
@@ -130,7 +149,7 @@ public class CSS {
    * 
    * <pre class="code">
    * $("#myId").css(CSS.BACKGROUND_POSITION, BackgroundPosition.CENTER_TOP);
-   * $("#myId2").css(CSS.BACKGROUND_POSITION, BackgroundPosition.position(25, 25, Unit.PCT));
+   * $("#myId2").css(CSS.BACKGROUND_POSITION,BackgroundPosition.position(25, 25, Unit.PCT));
    * </pre>
    * 
    */
@@ -167,8 +186,8 @@ public class CSS {
    * <h3>Example:</h3>
    * 
    * <pre class="code">
-   * $("#myId").css(CSS.BORDER, LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER, LineWidth.length(3, Unit.PX), LineStyle.SOLID, RGBColor.rgb("#000000"));
+   * $("#myId").css(CSS.BORDER, LineWidth.THICK, LineStyle.DASHED,RGBColor.BLACK);
+   * $("#myId2").css(CSS.BORDER, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
    * </pre>
    */
   public static BorderProperty BORDER;
@@ -182,8 +201,8 @@ public class CSS {
    * <h3>Examples:</h3>
    * 
    * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM, LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_BOTTOM, LineWidth.length(3, Unit.PX), LineStyle.SOLID, RGBColor.rgb("#000000"));
+   * $("#myId").css(CSS.BORDER_BOTTOM, LineWidth.THICK,LineStyle.DASHED, RGBColor.BLACK);
+   * $("#myId2").css(CSS.BORDER_BOTTOM, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
    * </pre>
    */
   public static BorderProperty BORDER_BOTTOM;
@@ -258,7 +277,6 @@ public class CSS {
    * 
    * <pre class="code">
    * $("#myId").css(CSS.BORDER_COLLAPSE, BorderCollapse.COLLAPSE);
-
    * </pre>
    */
   public static BorderCollapseProperty BORDER_COLLAPSE;
@@ -363,8 +381,8 @@ public class CSS {
    * <h3>Examples:</h3>
    * 
    * <pre class="code">
-   * $("#myId").css(CSS.BORDER_RIGHT, LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_RIGHT, LineWidth.length(3, Unit.PX), LineStyle.SOLID, RGBColor.rgb("#000000"));
+   * $("#myId").css(CSS.BORDER_RIGHT, LineWidth.THICK,LineStyle.DASHED, RGBColor.BLACK);
+   * $("#myId2").css(CSS.BORDER_RIGHT, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
    * </pre>
    */
   public static BorderProperty BORDER_RIGHT;
@@ -630,29 +648,116 @@ public class CSS {
   public static ClearProperty CLEAR;
 
   /**
-   * The clip property lets you specify the dimensions of an absolutely
-   * positioned element that should be visible, and the element is clipped into
-   * this shape, and displayed.
+   * <p>
+   * A clipping region defines what portion of an element's rendered content is
+   * visible. By default, the clipping region has the same size and shape as the
+   * element's box(es). The <i>clip</i> property allows you to modify this
+   * cliping region by defining a shape.
+   * </p>
+   * <p>
+   * The <i>clip</i> property applies to elements that have a <i>overflow</i>
+   * property with a value other than <i>visible</i>.
+   * </p>
+   * <p>
+   * This property takes a {@link Shape} object as value.
+   * </p>
    * 
-   * The clip property does not work if the overflow property is set to visible.
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.CLIP, Shape.rect(0, 10, 10, 0));
+   * </pre>
    */
   public static ClipProperty CLIP;
 
   /**
-   * This property describes the foreground color of an element's text content.
+   * <p>
+   * The <i>color</i> property describes the foreground color of an element's
+   * text content.
+   * </p>
+   * <p>
+   * This property takes a {@link RGBColor} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // Three different ways to specify red as text color for the element with id 'myId'
+   * $("#myId").css(CSS.COLOR, RGBColor.RED);
+   * $("#myId").css(CSS.COLOR, RGBColor.rgb(255,0,0));
+   * $("#myId").css(CSS.COLOR, RGBColor.rgb("#FF0000"));
+   *
+   * String color =  $("#myId").css(CSS.COLOR); 
+   * // retrieve the color of the element with id 'myId'
+   * </pre>
    */
   public static ColorProperty COLOR;
 
   /**
-   * This property specifies the type of cursor to be displayed for the pointing
-   * device.
+   * <p>
+   * The <i>cursor</i> property specifies the type of cursor to be displayed for
+   * the pointing device
+   * </p>
+   * <p>
+   * This property takes a {@link Cursor} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // set a cursor to the element with id 'myId'
+   * $("#myId").css(CSS.CURSOR, Cursor.WAIT);
+   * // retrieve the cursor of the element with id 'myId'
+   * String cursor = $("#myId").css(CSS.CURSOR);
+   *
+   * </pre>
    */
   public static CursorProperty CURSOR;
 
+  /**
+   * <p>
+   * The <i>direction</i> specifies the base writing direction of blocks and the
+   * direction of embeddings and overrides (see 'unicode-bidi') for the Unicode
+   * bidirectional algorithm. In addition, it specifies the direction of table
+   * column layout, the direction of horizontal overflow, and the position of an
+   * incomplete last line in a block in case of 'text-align: justify'.
+   * </p>
+   * <p>
+   * This property takes a {@link Direction} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // set the direction property to the element with id 'myId'
+   * $("#myId").css(CSS.DIRECTION, DIRECTION.RTL);
+   * // retrieve the direction property of the element with id 'myId'
+   * String direction = $("#myId").css(CSS.DIRECTION);
+   *
+   * </pre>
+   */
   public static DirectionProperty DIRECTION;
 
+  public static UnicodeBidiProperty UNICODE_BIDI;
+
   /**
-   * This property specifies the mechanism by which elements are rendered.
+   * <p>
+   * The <i>display</i> property specifies the mechanism by which elements are
+   * rendered.
+   * </p>
+   * <p>
+   * This property takes a {@link Display} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // set the display property to the element with id 'myId'
+   * $("#myId").css(CSS.DISPLAY, Display.INLINE);
+   * // retrieve the display property of the element with id 'myId'
+   * String display = $("#myId").css(CSS.DISPLAY);
+   *
+   * </pre>
    */
   public static DisplayProperty DISPLAY;
 
@@ -682,6 +787,7 @@ public class CSS {
    * <h3>Example:</h3>
    * 
    * <pre class="code">
+   * // set the empty-cells property to the element with id 'myId'
    * $("#myId").css(CSS.EMPTY_CELLS, EmptyCells.HIDE);
    * </pre>
    */
@@ -691,9 +797,7 @@ public class CSS {
    * <p>
    * The <i>float</i> property specifies whether a box should float to the left,
    * right, or not at all. It may be set for elements that generate boxes that
-   * are not absolutely positioned. The values of this property have the
-   * following meanings:
-   * 
+   * are not absolutely positioned.
    * </p>
    * 
    * <p>
@@ -708,21 +812,102 @@ public class CSS {
    */
   public static FloatProperty FLOAT;
 
+  /**
+   * <p>
+   * The <i>font-size</i> property requests normal (sometimes referred to as
+   * "roman" or "upright"), italic, and oblique faces within a font family.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link FontSize} or a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Examples:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.FONT_SIZE, FontSize.X_LARGE);
+   * $("#myId").css(CSS.FONT_SIZE, Length.px(16));
+   * </pre>
+   */
   public static FontSizeProperty FONT_SIZE;
 
+  /**
+   * <p>
+   * The <i>font-style</i> property requests normal (sometimes referred to as
+   * "roman" or "upright"), italic, and oblique faces within a font family.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link FontStyle} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.FONT_STYLE, FontStyle.ITALIC);
+   * </pre>
+   */
   public static FontStyleProperty FONT_STYLE;
 
+  /**
+   * <p>
+   * In a small-caps font, the glyphs for lowercase letters look similar to the
+   * uppercase ones, but in a smaller size and with slightly different
+   * proportions. The <i>font-variant</i> property requests such a font for
+   * bicameral (having two cases, as with Latin script). This property has no
+   * visible effect for scripts that are unicameral (having only one case, as
+   * with most of the world's writing systems).
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link FontVariant} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.FONT_VARIANT, FontVariant.SMALL_CAPS);
+   * </pre>
+   */
   public static FontVariantProperty FONT_VARIANT;
 
+  /**
+   * <p>
+   * The <i>font-weight</i> property specifies the weight of the font.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link FontWeight} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.FONT_WEIGHT, FontWeight.BOLD);
+   * </pre>
+   */
   public static FontWeightProperty FONT_WEIGHT;
 
   /**
-   * This property specifies the content height of boxes generated by
-   * block-level, inline-block and replaced elements.
-   * 
+   * <p>
+   * The <i>height</i> property specifies the content height of boxes generated
+   * by block-level, inline-block and replaced elements.
+   * </p>
+   * <p>
    * This property does not apply to non-replaced inline-level elements. See the
    * section on computing heights and margins for non-replaced inline elements
    * for the rules used instead.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.HEIGHT, Length.px(10))
+   * </pre>
    */
   public static HeightProperty HEIGHT;
 
@@ -758,80 +943,487 @@ public class CSS {
    */
   public static EdgePositionProperty LEFT;
 
+  /**
+   * <p>
+   * The <i>letter-spacing</i> property specifies spacing behavior between text
+   * characters.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LETTER_SPACING, Length.px(3));
+   * </pre>
+   */
   public static LetterSpacingProperty LETTER_SPACING;
 
+  /**
+   * <p>
+   * If the property is set on a block-level element whose content is composed
+   * of inline-level elements, it specifies the minimal height of each generated
+   * inline box.
+   * </p>
+   * 
+   * <p>
+   * If the property is set on an inline-level element, it specifies the exact
+   * height of each box generated by the element. (Except for inline replaced
+   * elements, where the height of the box is given by the <i>height</i>
+   * property.)
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object or a {@link CssNumber} object
+   * as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LINE_HEIGHT, Length.px(15));
+   * $("#myId").css(CSS.LINE_HEIGHT, new CssNumber(2));
+   * </pre>
+   */
   public static LineHeightProperty LINE_HEIGHT;
 
+  /**
+   * <p>
+   * The <i>list-style</i> property is a shorthand notation for setting the
+   * three properties <i>list-style-type</i>, <i>list-style-image</i>, and
+   * <i>list-style-position</i> at the same place in the style sheet.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LIST_STYLE, ListStyleType.DISC,ListStylePosition.OUTSIDE, ImageValue.NONE);
+   * </pre>
+   */
   public static ListStyleProperty LIST_STYLE;
 
+  /**
+   * <p>
+   * The <i>list-style-image</i> property sets the image that will be used as
+   * the list item marker. When the image is available, it will replace the
+   * marker set with the <i>list-style-type</i> marker.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link ImageValue} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LIST_STYLE_IMAGE, ImageValue.url("arrow.jpg"));
+   * </pre>
+   */
   public static ListStyleImageProperty LIST_STYLE_IMAGE;
 
+  /**
+   * <p>
+   * The <i>list-style-position</i> property specifies the position of the
+   * marker box in the principal block box.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link ListStylePosition} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LIST_STYLE_POSITION, ListStylePosition.OUTSIDE);
+   * </pre>
+   */
   public static ListStylePositionProperty LIST_STYLE_POSITION;
 
+  /**
+   * <p>
+   * The <i>list-style-type</i> property specifies appearance of the list item
+   * marker if <i>list-style-image</i> has the value 'none' or if the image
+   * pointed to by the URI cannot be displayed. The value 'none' specifies no
+   * marker, otherwise there are three types of marker: glyphs, numbering
+   * systems, and alphabetic systems. Note. Numbered lists improve document
+   * accessibility by making lists easier to navigate.
+   * </p>
+   * 
+   * <p>
+   * Glyphs are specified with disc, circle, and square. Their exact rendering
+   * depends on the user agent.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link ListStyleType} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.LIST_STYLE_TYPE, ListStyleType.DISC);
+   * </pre>
+   */
   public static ListStyleTypeProperty LIST_STYLE_TYPE;
 
-  public static MarginProperty MARGIN;
+  /**
+   * <p>
+   * The <i>margin</i> property is a shorthand property for setting
+   * <i>margin-top</i>, <i>margin-right</i>, <i>margin-bottom</i>, and
+   * <i>margin-left</i> at the same place in the style sheet.
+   * </p>
+   * 
+   * <p>
+   * If there is only one value, it applies to all sides. If there are two
+   * values, the top and bottom margins are set to the first value and the right
+   * and left margins are set to the second. If there are three values, the top
+   * is set to the first value, the left and right are set to the second, and
+   * the bottom is set to the third. If there are four values, they apply to the
+   * top, right, bottom, and left, respectively
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // set margin-top and margin-bottom to 10px and margin-left and margin-right to 20px
+   * $("#myId").css(CSS.MARGIN, Length.px(10), Length.px(20), null, null);
+   * // set margin-top to 10px, margin-right to 20px and margin-bottom to 30px and margin-right to 40px
+   * $("#myId").css(CSS.MARGIN, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
+   * </pre>
+   */
+  public static ShorthandMarginProperty MARGIN;
 
+  /**
+   * <p>
+   * The <i>margin-bottom</i> property specifies the width of the margin area of
+   * the bottom of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MARGIN_BOTTOM, Length.px(30));
+   * </pre>
+   */
   public static MarginProperty MARGIN_BOTTOM;
 
+  /**
+   * <p>
+   * The <i>margin-left</i> property specifies the width of the margin area of
+   * the left side of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MARGIN_LEFT, Length.px(30));
+   * </pre>
+   */
   public static MarginProperty MARGIN_LEFT;
 
+  /**
+   * <p>
+   * The <i>margin-right</i> property specifies the width of the margin area of
+   * the right side of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MARGIN_RIGHT, Length.px(30));
+   * </pre>
+   */
   public static MarginProperty MARGIN_RIGHT;
 
+  /**
+   * <p>
+   * The <i>margin-top</i> property specifies the width of the margin area of
+   * the top of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MARGIN_TOP, Length.px(30));
+   * </pre>
+   */
   public static MarginProperty MARGIN_TOP;
 
+  /**
+   * <p>
+   * The <i>max-height</i> property sets the maximum height of an element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MAX_HEIGHT, Length.px(15));
+   * </pre>
+   */
   public static HeightProperty MAX_HEIGHT;
 
+  /**
+   * <p>
+   * The <i>max-width</i> property sets the maximum width of an element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MAX_WIDTH, Length.px(100));
+   * </pre>
+   */
   public static WidthProperty MAX_WIDTH;
 
+  /**
+   * <p>
+   * The <i>min-height</i> property sets the minimum height of an element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MIN_HEIGHT, Length.px(15));
+   * </pre>
+   */
   public static HeightProperty MIN_HEIGHT;
 
+  /**
+   * <p>
+   * The <i>max-width</i> property sets the minimum width of an element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.MIN_WIDTH, Length.px(15));
+   * </pre>
+   */
   public static WidthProperty MIN_WIDTH;
 
   /**
+   * <p>
    * An outline is a line that is drawn around elements (outside the borders) to
    * make the element "stand out".
-   * 
+   * <p>
+   * </p>
    * The outline shorthand property sets all the outline properties in one
-   * declaration.
+   * declaration. </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.OUTLINE, RGBColor.BLACK, LineStyle.DASHED, LineWidth.length(15, Unit.PX));
+   * </pre>
    */
   public static OutlineProperty OUTLINE;
 
   /**
+   * <p>
    * An outline is a line that is drawn around elements (outside the borders) to
    * make the element "stand out". The outline-color property specifies the
    * color of an outline.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link RGBColor} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.OUTLINE_COLOR, RGBColor.GRAY);
+   * </pre>
    */
   public static OutlineColorProperty OUTLINE_COLOR;
 
   /**
+   * <p>
    * An outline is a line that is drawn around elements (outside the borders) to
    * make the element "stand out". The outline-color property specifies the
    * style of an outline.
+   * </p>
+   * <p>
+   * This property takes a {@link LineStyle} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.OUTLINE_STYLE, LineStyle.DOTTED);
+   * </pre>
    */
   public static OutlineStyleProperty OUTLINE_STYLE;
 
   /**
+   * <p>
    * An outline is a line that is drawn around elements (outside the borders) to
    * make the element "stand out". The outline-width specifies the width of an
    * outline
+   * </p>
+   * <p>
+   * This property takes a {@link LineWidth} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.OUTLINE_WIDTH, LineWidth.MEDIUM);
+   * </pre>
+   * 
    */
   public static OutlineWidthProperty OUTLINE_WIDTH;
 
   /**
-   * This property specifies what happens if content overflows an element's
-   * box..
+   * <p>
+   * The <i>overflow</i> property specifies whether the content of a block-level
+   * element is clipped when it overflows the element's box (which is acting as
+   * a containing block for the content).
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Overflow} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+  * $("#myId").css(CSS.OVERFLOW, Overflow.HIDDEN);
+  * </pre>
    */
   public static OverflowProperty OVERFLOW;
 
-  public static PaddingProperty PADDING;
+  /**
+   * <p>
+   * The <i>padding</i> property is a shorthand property for setting
+   * <i>padding-top</i>, <i>padding-right</i>, <i>padding-bottom</i>, and
+   * <i>padding-left</i> at the same place in the style sheet.
+   * </p>
+   * 
+   * <p>
+   * If there is only one component value, it applies to all sides. If there are
+   * two values, the top and bottom paddings are set to the first value and the
+   * right and left paddings are set to the second. If there are three values,
+   * the top is set to the first value, the left and right are set to the
+   * second, and the bottom is set to the third. If there are four values, they
+   * apply to the top, right, bottom, and left, respectively.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * // set padding-top and padding-bottom to 10px and padding-left and padding-right to 20px
+   * $("#myId").css(CSS.PADDING, Length.px(10), Length.px(20), null, null);
+   * // set padding-top to 10px, padding-right to 20px and padding-bottom to 30px and padding-right to 40px
+   * $("#myId").css(CSS.PADDING, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
+   * </pre>
+   */
+  public static ShorthandPaddingProperty PADDING;
 
+  /**
+   * <p>
+   * The <i>padding-bottom</i> property specifies the width of the padding area
+   * of the bottom of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.PADDING_BOTTOM, Length.px(30));
+   * </pre>
+   */
   public static PaddingProperty PADDING_BOTTOM;
 
+  /**
+   * <p>
+   * The <i>padding-left</i> property specifies the width of the padding area of
+   * the left side of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.PADDING_LEFT, Length.px(30));
+   * </pre>
+   */
   public static PaddingProperty PADDING_LEFT;
 
+  /**
+   * <p>
+   * The <i>padding-right</i> property specifies the width of the padding area
+   * of the right side of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.PADDING_RIGHT, Length.px(30));
+   * </pre>
+   */
   public static PaddingProperty PADDING_RIGHT;
 
+  /**
+   * <p>
+   * The <i>padding-top</i> property specifies the width of the padding area of
+   * the top of a box
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.PADDING_TOP, Length.px(30));
+   * </pre>
+   */
   public static PaddingProperty PADDING_TOP;
 
   /**
@@ -883,14 +1475,99 @@ public class CSS {
   public static EdgePositionProperty RIGHT;
 
   /**
-   * This property describes how inline content of a block is aligned.
+   * <p>
+   * The <i>text-align</i> property describes how inline-level content of a
+   * block container is aligned.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link TextAlign} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.TEXT_ALIGN, TextAlign.CENTER);
+   * </pre>
    */
   public static TextAlignProperty TEXT_ALIGN;
 
+  /**
+   * <p>
+   * The <i>text-decoration</i> property describes decorations that are added to
+   * the text of an element using the element's color. When specified on or
+   * propagated to an inline element, it affects all the boxes generated by that
+   * element, and is further propagated to any in-flow block-level boxes that
+   * split the inline. For block containers that establish an inline formatting
+   * context, the decorations are propagated to an anonymous inline element that
+   * wraps all the in-flow inline-level children of the block container. For all
+   * other elements it is propagated to any in-flow children. Note that text
+   * decorations are not propagated to floating and absolutely positioned
+   * descendants, nor to the contents of atomic inline-level descendants such as
+   * inline blocks and inline tables.
+   * </p>
+   * <p>
+   * Underlines, overlines, and line-throughs are applied only to text
+   * (including white space, letter spacing, and word spacing): margins,
+   * borders, and padding are skipped. User agents must not render these text
+   * decorations on content that is not text. For example, images and inline
+   * blocks must not be underlined.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link TextDecoration} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.TEXT_DECORATION, TextDecoration.LINE_THROUGH);
+   * </pre>
+   */
   public static TextDecorationProperty TEXT_DECORATION;
 
+  /**
+   * <p>
+   * The <i>text-ident</i> property specifies the indentation of the first line
+   * of text in a block container. More precisely, it specifies the indentation
+   * of the first box that flows into the block's first line box. The box is
+   * indented with respect to the left (or right, for right-to-left layout) edge
+   * of the line box. User agents must render this indentation as blank space.
+   * 
+   * </p>
+   * <p>
+   * <i>Text-ident</i> only affects a line if it is the first formatted line of
+   * an element. For example, the first line of an anonymous block box is only
+   * affected if it is the first child of its parent element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.TEXT_IDENT, Length.px(15));
+   * </pre>
+   */
   public static TextIdentProperty TEXT_IDENT;
 
+  /**
+   * <p>
+   * The <i>text-transform</i> property controls capitalization effects of an
+   * element's text.
+   * </p>
+   * <p>
+   * This property takes a {@link TextTransform} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.TEXT_TRANSFORM, TextTransform.UPPERCASE);
+   * </pre>
+   */
   public static TextTransformProperty TEXT_TRANSFORM;
 
   /**
@@ -917,42 +1594,133 @@ public class CSS {
    * <h3>Example:</h3>
    * 
    * <pre class="code">
-   * $("#myId").css(CSS.TOP,Length.px(20));
-   * </pre>
+  * $("#myId").css(CSS.TOP,Length.px(20));
+  * </pre>
    */
   public static EdgePositionProperty TOP;
 
   /**
-   * This property affects the vertical positioning inside a line box of the
-   * boxes generated by an inline-level element.
+   * <p>
+   * The <i>vertical-align</i> property affects the vertical positioning inside
+   * a line box of the boxes generated by an inline-level element.
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link VerticalAlign} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.VERTICAL_ALIGN, VerticalAlign.BOTTOM);
+   * </pre>
    */
   public static VerticalAlignProperty VERTICAL_ALIGN;
 
   /**
-   * The 'visibility' property specifies whether the boxes generated by an
+   * <p>
+   * The <i>overflow</i> property specifies whether the boxes generated by an
    * element are rendered. Invisible boxes still affect layout (set the
-   * 'display' property to 'none' to suppress box generation altogether).
+   * <i>display<i> property to <i>none</i> to suppress box generation
+   * altogether).
+   * </p>
+   * 
+   * <p>
+   * This property takes a {@link Visibility} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.VISIBILITY, Visibility.HIDDEN);
+   * </pre>
    */
   public static VisibilityProperty VISIBILITY;
 
+  /**
+   * <p>
+   * The <i>white-space</i> property declares how white space inside the element
+   * is handled
+   * </p>
+   * <p>
+   * Newlines in the source can be represented by a carriage return (U+000D), a
+   * linefeed (U+000A) or both (U+000D U+000A) or by some other mechanism that
+   * identifies the beginning and end of document segments, such as the SGML
+   * RECORD-START and RECORD-END tokens. The CSS 'white-space' processing model
+   * assumes all newlines have been normalized to line feeds. UAs that recognize
+   * other newline representations must apply the white space processing rules
+   * as if this normalization has taken place. If no newline rules are specified
+   * for the document language, each carriage return (U+000D) and CRLF sequence
+   * (U+000D U+000A) in the document text is treated as single line feed
+   * character. This default normalization rule also applies to generated
+   * content.
+   * </p>
+   * <p>
+   * This property takes a {@link WhiteSpace} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.WHITE_SPACE, WhiteSpace.NOWRAP);
+   * </pre>
+   */
   public static WhiteSpaceProperty WHITE_SPACE;
 
   /**
+   * <p>
    * This property specifies the content width of boxes generated by block-level
    * and replaced elements.
-   * 
+   * </p>
+   * <p>
    * This property does not apply to non-replaced inline-level elements. The
    * content width of a non-replaced inline element's boxes is that of the
    * rendered content within them (before any relative offset of children).
    * Recall that inline boxes flow into line boxes. The width of line boxes is
    * given by the their containing block, but may be shorted by the presence of
    * floats.
+   * </p>
    * 
+   * <p>
    * The width of a replaced element's box is intrinsic and may be scaled by the
-   * user agent if the value of this property is different than 'auto'.
+   * user agent if the value of this property is different than <i>auto</i>.
+   * </p>
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.WIDTH, Length.px(100))
+   * </pre>
    */
   public static WidthProperty WIDTH;
 
+  /**
+   * <p>
+   * The <i>white-space</i> property specifies spacing behavior between words.
+   * </p>
+   * <p>
+   * Word spacing algorithms are user agent-dependent. Word spacing is also
+   * influenced by justification (see the <i>text-align</i> property). Word
+   * spacing affects each space (U+0020) and non-breaking space (U+00A0), left
+   * in the text after the white space processing rules have been applied. The
+   * effect of the property on other word-separator characters is undefined.
+   * However general punctuation, characters with zero advance width (such as
+   * the zero with space U+200B) and fixed-width spaces (such as U+3000 and
+   * U+2000 through U+200A) are not affected.
+   * </p>
+   * <p>
+   * This property takes a {@link Length} object as value.
+   * </p>
+   * 
+   * <h3>Example:</h3>
+   * 
+   * <pre class="code">
+   * $("#myId").css(CSS.WORD_SPACING, Length.pt(2));
+   * </pre>
+   */
   public static WordSpacingProperty WORD_SPACING;
 
   /**
@@ -1008,6 +1776,7 @@ public class CSS {
     TextDecorationProperty.init();
     TextIdentProperty.init();
     TextTransformProperty.init();
+    UnicodeBidiProperty.init();
     VerticalAlignProperty.init();
     VisibilityProperty.init();
     WidthProperty.init();

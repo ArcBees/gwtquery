@@ -18,38 +18,38 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes how inline content of a block is aligned.
+ * This property declares how white space inside the element is handled
  */
 public class WhiteSpaceProperty extends
     AbstractCssProperty<WhiteSpaceProperty.WhiteSpace> {
 
   public enum WhiteSpace implements HasCssName {
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will
-     * wrap when necessary.
+     * This value directs user agents to collapse sequences of white space, and
+     * break lines as necessary to fill line boxes.
      */
     NORMAL,
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will
-     * never wrap to the next line. The text continues on the same line until a <br />
-     * tag is encountered
+     * This value collapses white space as for 'normal', but suppresses line
+     * breaks within text.
      */
     NOWRAP,
     /**
-     * Whitespace is preserved by the browser. Text will only wrap on line
-     * breaks Acts like the
-     * 
-     * <pre> tag in HTML
+     * This value prevents user agents from collapsing sequences of white space.
+     * Lines are only broken at newlines in the source, or at occurrences of
+     * "\A" in generated content.
      */
     PRE,
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will
-     * wrap when necessary, and on line breaks
+     * This value directs user agents to collapse sequences of white space.
+     * Lines are broken at newlines in the source, at occurrences of "\A" in
+     * generated content, and as necessary to fill line boxes.
      */
     PRE_LINE,
     /**
-     * Whitespace is preserved by the browser. Text will wrap when necessary,
-     * and on line breaks
+     * This value prevents user agents from collapsing sequences of white space.
+     * Lines are broken at newlines in the source, at occurrences of "\A" in
+     * generated content, and as necessary to fill line boxes.
      */
     PRE_WRAP;
 
