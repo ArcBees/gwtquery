@@ -35,6 +35,7 @@ import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.CssShorthandProperty3;
+import com.google.gwt.query.client.css.CssShorthandProperty4;
 import com.google.gwt.query.client.css.CssShorthandProperty5;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.TakeCssValue;
@@ -339,14 +340,21 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> css(TakesLength cssProperty, Length value);
 
   /**
-   * Set a multiple style property on every matched element using type-safe
+   * Set a shorthand style property taking 3 values on every matched element using type-safe
    * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
    * BorderStyle.DASHED, RGBColor.BLACK);
    */
   <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> LazyGQuery<T> css( T cssProperty, X value1, Y value2, Z value3);
 
   /**
-   * Set a multiple style property on every matched element using type-safe
+   * Set a shorthand style property taking 3 values on every matched element using type-safe
+   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
+   * BorderStyle.DASHED, RGBColor.BLACK);
+   */
+  <W, X, Y, Z, T extends CssShorthandProperty4<W, X, Y, Z>> LazyGQuery<T> css( T cssProperty, W value0, X value1, Y value2, Z value3);
+
+  /**
+   * Set a shorthand style property taking 5 values on every matched element using type-safe
    * enumerations. ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
    * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
    * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
