@@ -734,10 +734,20 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.MARGIN, Length.px(10));
+    $("#test").css(CSS.MARGIN, Length.px(10), Length.px(20), null, null);
+
+    assertEquals("10px 20px", $("#test").css("margin"));
+    assertEquals("10px 20px", $("#test").css(CSS.MARGIN));
+    
+    $("#test").css(CSS.MARGIN, Length.px(10), null, null, null);
 
     assertEquals("10px", $("#test").css("margin"));
     assertEquals("10px", $("#test").css(CSS.MARGIN));
+    
+    $("#test").css(CSS.MARGIN, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
+
+    assertEquals("10px 20px 30px 40px", $("#test").css("margin"));
+    assertEquals("10px 20px 30px 40px", $("#test").css(CSS.MARGIN));
 
     $("#test").css(CSS.MARGIN_TOP, Length.px(20));
 
@@ -807,10 +817,25 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.PADDING, Length.px(10));
+    $("#test").css(CSS.PADDING, Length.px(10), null, null, null);
 
     assertEquals("10px", $("#test").css("padding"));
     assertEquals("10px", $("#test").css(CSS.PADDING));
+    
+    $("#test").css(CSS.PADDING, Length.px(10), Length.px(20), null, null);
+
+    assertEquals("10px 20px", $("#test").css("padding"));
+    assertEquals("10px 20px", $("#test").css(CSS.PADDING));
+    
+    $("#test").css(CSS.PADDING, Length.px(10), Length.px(20), Length.px(30), null);
+
+    assertEquals("10px 20px 30px", $("#test").css("padding"));
+    assertEquals("10px 20px 30px", $("#test").css(CSS.PADDING));
+    
+    $("#test").css(CSS.PADDING, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
+
+    assertEquals("10px 20px 30px 40px", $("#test").css("padding"));
+    assertEquals("10px 20px 30px 40px", $("#test").css(CSS.PADDING));
 
     $("#test").css(CSS.PADDING_TOP, Length.px(20));
 
