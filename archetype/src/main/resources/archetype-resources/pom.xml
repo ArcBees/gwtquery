@@ -12,13 +12,18 @@
       <maven.compiler.source>1.5</maven.compiler.source>
       <maven.compiler.target>1.5</maven.compiler.target>
       <gQueryVersion>1.0.0-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.1.0</gwtversion>
+      <gwtversion>2.2.0</gwtversion>
+      <gwtmaven>2.1.0-1</gwtmaven>
     </properties>
 
     <repositories>
        <repository>
          <id>central</id>
          <url>http://repo1.maven.org/maven2</url>
+       </repository>
+       <repository>
+         <id>gwtquery-plugins</id>
+         <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
        </repository>
        <repository>
          <id>sonatype</id>
@@ -55,7 +60,7 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtversion}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -67,6 +72,8 @@
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
+            <!-- Put 2.2.0 for gwt-2.2.0 or leave empty for 2.1.x -->
+            <classifier>2.2.0</classifier>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -75,7 +82,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwtversion}</version>
+                <version>${gwtmaven}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
