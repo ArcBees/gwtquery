@@ -19,6 +19,14 @@
       <version>3</version>
     </parent>
 
+    <distributionManagement>
+      <snapshotRepository>
+        <id>sonatype-nexus-snapshots</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <uniqueVersion>false</uniqueVersion>
+      </snapshotRepository>
+    </distributionManagement>
+
     <developers>
         <developer>
             <id>ray</id>

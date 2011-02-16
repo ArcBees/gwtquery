@@ -36,6 +36,34 @@
   <build>
     <finalName>gwtquery-${version}-${artifactId}</finalName>
     <plugins>
+
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/gwtquery-${version}-${artifactId}.jar</file>
+              <repositoryId>sonatype-nexus-snapshots</repositoryId>
+              <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+              <packaging>jar</packaging>
+              <artifactId>gwtquery</artifactId>
+              <groupId>${groupId}</groupId>
+              <version>${version}</version>
+              <classifier>${artifactId}</classifier>
+              <generatePom>true</generatePom>
+              <uniqueVersion>false</uniqueVersion>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+        <skip>true  </skip>
+        </configuration>
+      </plugin>
+
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -52,29 +80,32 @@
           </execution>
         </executions>
       </plugin>
-	<plugin>
-	  <groupId>org.codehaus.mojo</groupId>
-	  <artifactId>build-helper-maven-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <id>add-sources</id>
-	    <phase>generate-sources</phase>
-	    <goals>
-	      <goal>add-source</goal>
-	    </goals>
-	    <configuration>
-	      <sources>
-	        <source>${project.build.directory}/generated-resources</source>
-	      </sources>
-	    </configuration>
-	  </execution>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-resources</source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
+
     <resources>
       <resource>
         <directory>${project.build.directory}/generated-resources/</directory>
       </resource>
     </resources>
+
   </build>
 </project>
