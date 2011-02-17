@@ -18,7 +18,7 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes the color of a border.
+ *The <i>border-collapse</i> selects a table's border model.
  */
 public class BorderCollapseProperty extends
     AbstractCssProperty<BorderCollapseProperty.BorderCollapse> {
@@ -29,12 +29,13 @@ public class BorderCollapseProperty extends
      * and empty-cells properties will be ignored)
      */
     COLLAPSE,
+
     /**
      * Borders are detached (border-spacing and empty-cells properties will not
      * be ignored).
      */
     SEPARATE;
-    
+
     public String getCssName() {
       return name().toLowerCase();
     }

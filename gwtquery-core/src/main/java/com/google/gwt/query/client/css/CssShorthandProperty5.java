@@ -23,6 +23,9 @@ import com.google.gwt.dom.client.Style;
  */
 public interface CssShorthandProperty5<V, W, X, Y, Z> extends CssProperty {
 
+  /**
+   * Set the value of the property.
+   */
   void set(Style s, V value1, W value2, X value3, Y value4, Z value5);
 
 }

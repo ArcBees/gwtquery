@@ -18,16 +18,22 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The clip property lets you specify the dimensions of an absolutely positioned
- * element that should be visible, and the element is clipped into this shape,
- * and displayed.
- * 
- * The clip property does not work if the overflow property is set to visible.
+ * A clipping region defines what portion of an element's rendered content is
+ * visible. By default, the clipping region has the same size and shape as the
+ * element's box(es). The <i>clip</i> property allows you to modify this
+ * clipping region by defining a shape.
  */
 public class ClipProperty extends AbstractCssProperty<ClipProperty.Shape> {
 
+  /**
+   * Object defining a clipping region used as value for <i>clip</i> property.
+   * 
+   */
   public static class Shape implements HasCssName {
 
+    /**
+     * Define a rectangular shape.
+     */
     public static Shape rect(int top, int right, int bottom, int left) {
       return new Shape("rect(" + top + "px," + right + "px," + bottom + "px,"
           + left + "px)");

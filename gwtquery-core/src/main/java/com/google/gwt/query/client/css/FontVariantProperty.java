@@ -18,44 +18,34 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * In a small-caps font, the glyphs for lowercase letters look similar to the
+ * uppercase ones, but in a smaller size and with slightly different
+ * proportions. The <i>font-variant</i> property requests such a font for
+ * bicameral (having two cases, as with Latin script). This property has no
+ * visible effect for scripts that are unicameral (having only one case, as with
+ * most of the world's writing systems).
  */
 public class FontVariantProperty extends
     AbstractCssProperty<FontVariantProperty.FontVariant> {
 
   /**
-   * Enum for the font-variant property.
+   * Possible values for the <i>font-variant</i> property.
    */
   public static enum FontVariant implements HasCssName {
-    /**
-     * Specifies that the font variant should be inherited from the parent
-     * element
-     */
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return CSS.INHERIT_VALUE;
-      }
-    },
+
     /**
      * The browser displays a normal font
      */
-    NORMAL {
-      @Override
-      public String getCssName() {
-        return "normal";
-      }
-    },
+    NORMAL,
+
     /**
      * The browser displays a small-caps font
      */
-    SMALL_CAPS {
-      @Override
-      public String getCssName() {
-        return "small-caps";
-      }
-    };
-    public abstract String getCssName();
+    SMALL_CAPS;
+
+    public String getCssName() {
+      return name().toLowerCase().replace('_', '-');
+    }
   }
 
   private static final String CSS_PROPERTY = "fontVariant";

@@ -335,6 +335,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Set CSS a single style property on every matched element using type-safe
+   * enumerations. This method allows you to set manually the value or set
+   * <i>inherit</i> value
+   * 
+   * ex :
+   * <pre class="code">
+   * $(#myId).css(CSS.TEXT_DECORATION, CSS.INHERIT);
+   * </pre>
+   */
+  LazyGQuery<T> css(TakeCssValue<?> cssProperty, String value);
+
+  /**
+   * Set CSS a single style property on every matched element using type-safe
    * enumerations.
    */
   LazyGQuery<T> css(TakesLength cssProperty, Length value);

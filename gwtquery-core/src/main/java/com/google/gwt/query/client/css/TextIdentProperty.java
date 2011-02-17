@@ -15,19 +15,19 @@
  */
 package com.google.gwt.query.client.css;
 
-
 /**
- * This property describes how inline content of a block is aligned.
+ * The <i>text-ident</i> property specifies the indentation of the first line of
+ * text in a block container. More precisely, it specifies the indentation of
+ * the first box that flows into the block's first line box. The box is indented
+ * with respect to the left (or right, for right-to-left layout) edge of the
+ * line box. User agents must render this indentation as blank space.
  */
-public class TextIdentProperty extends
-    AbstractCssProperty<Length> {
+public class TextIdentProperty extends AbstractCssProperty<Length> {
 
-  
   private static final String CSS_PROPERTY = "textIdent";
- 
 
   public static void init() {
-    CSS.TEXT_IDENT= new TextIdentProperty();
+    CSS.TEXT_IDENT = new TextIdentProperty();
   }
 
   private TextIdentProperty() {

@@ -21,7 +21,9 @@ import com.google.gwt.dom.client.Style.ListStyleType;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
 
 /**
- * This property sets all list properties in one declaration.
+ * The <i>list-style</i> property is a shorthand notation for setting the three
+ * properties <i>list-style-type</i>, <i>list-style-image</i>, and
+ * <i>list-style-position</i> at the same place in the style sheet.
  */
 public class ListStyleProperty implements
     CssShorthandProperty3<ListStyleType, ListStylePosition, ImageValue> {

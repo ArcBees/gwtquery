@@ -18,8 +18,8 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The border style properties specify the line style of a box's border (solid,
- * double, dashed, etc.).
+ * The <i>border-style</i> property specifies the line style of a box's border
+ * (solid, double, dashed, etc.).
  */
 public class BorderStyleProperty extends
     AbstractCssProperty<BorderStyleProperty.LineStyle> {
@@ -28,107 +28,62 @@ public class BorderStyleProperty extends
     /**
      * The border is a series of short line segments.
      */
-    DASHED {
-      @Override
-      public String getCssName() {
-        return "dashed";
-      }
-    },
+    DASHED,
+
     /**
      * The border is a series of dots.
      */
-    DOTTED {
-      @Override
-      public String getCssName() {
-        return "dotted";
-      }
-    },
+    DOTTED,
+
     /**
      * The border is two solid lines. The sum of the two lines and the space
      * between them equals the value of 'border-width'.
      */
-    DOUBLE {
-      @Override
-      public String getCssName() {
-        return "double";
-      }
-    },
+    DOUBLE,
+
     /**
      * The border looks as though it were carved into the canvas.
      */
-    GROOVE {
-      @Override
-      public String getCssName() {
-        return "groove";
-      }
-    },
+    GROOVE,
+
     /**
      * Same as NONE, except in terms of border conflict resolution for table
      * elements.
      */
-    HIDDEN {
-      @Override
-      public String getCssName() {
-        return "hidden";
-      }
-    },
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return CSS.INHERIT_VALUE;
-      }
-    },
+    HIDDEN,
+
     /**
      * The border makes the entire box look as though it were embedded in the
      * canvas.
      */
-    INSET {
-      @Override
-      public String getCssName() {
-        return "inset";
-      }
-    },
+    INSET,
+
     /**
      * No border. This value forces the computed value of <i>border-width</i> to
      * be '0'.
      */
-    NONE {
-      @Override
-      public String getCssName() {
-        return "none";
-      }
-    },
+    NONE,
+
     /**
      * The opposite of INSET: the border makes the entire box look as though it
      * were coming out of the canvas.
      */
-    OUTSET {
-      @Override
-      public String getCssName() {
-        return "outset";
-      }
-    },
+    OUTSET,
+
     /**
      * The opposite of GROOVE: the border looks as though it were coming out of
      * the canvas.
      */
-    RIDGE {
-      @Override
-      public String getCssName() {
-        return "ridge";
-      }
-    },
+    RIDGE,
+
     /**
      * The border is a single line segment.
      */
-    SOLID {
-      @Override
-      public String getCssName() {
-        return "solid";
-      }
-    };
+    SOLID;
 
-    public abstract String getCssName();
+    public String getCssName() {
+      return name().toLowerCase();
+    }
   }
 
   private static final String BORDER_BOTTOM_STYLE_PROPERTY = "borderBottomStyle";

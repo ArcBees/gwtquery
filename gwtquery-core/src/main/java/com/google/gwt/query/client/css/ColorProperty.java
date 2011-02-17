@@ -16,7 +16,8 @@
 package com.google.gwt.query.client.css;
 
 /**
- * This property describes the foreground color of an element's text content.
+ * The <i>color</i> property describes the foreground color of an element's text
+ * content.
  */
 public class ColorProperty extends AbstractCssProperty<RGBColor> {
 

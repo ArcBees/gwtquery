@@ -16,7 +16,8 @@
 package com.google.gwt.query.client.css;
 
 /**
- * all height css properties : max-height, min-height, height
+ * All height css properties : <i>max-height</i>, <i>min-height</i>,
+ * <i>height</i>
  */
 public class HeightProperty extends AbstractCssProperty<Length> {
 
@@ -30,7 +31,6 @@ public class HeightProperty extends AbstractCssProperty<Length> {
     CSS.MIN_HEIGHT = new HeightProperty(MIN_HEIGHT_PROPERTY);
   }
 
-  
   private HeightProperty(String cssName) {
     super(cssName);
   }

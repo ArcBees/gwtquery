@@ -30,7 +30,6 @@ public class OutlineStyleProperty extends AbstractCssProperty<LineStyle> {
     CSS.OUTLINE_STYLE = new OutlineStyleProperty();
   }
 
-
   private OutlineStyleProperty() {
     super(CSS_PROPERTY);
   }

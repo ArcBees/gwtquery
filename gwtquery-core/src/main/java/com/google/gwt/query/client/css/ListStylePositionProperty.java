@@ -18,46 +18,33 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property specifies if the list-item markers should appear inside or
- * outside the content flow.
+ * The <i>list-style-position</i> property specifies the position of the marker
+ * box in the principal block box.
  */
 public class ListStylePositionProperty extends
     AbstractCssProperty<ListStylePositionProperty.ListStylePosition> {
 
+  /**
+   * Possible values for <i>list-style-position</i> property.
+   * 
+   */
   public static enum ListStylePosition implements HasCssName {
 
-    /**
-     * Specifies that the value of the list-style-position property should be
-     * inherited from the parent element
-     */
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return "inherit";
-      }
-    },
     /**
      * Indents the marker and the text. The bullets appear inside the content
      * flow
      */
-    INSIDE {
-      @Override
-      public String getCssName() {
-        return "inside";
-      }
-    },
+    INSIDE,
+
     /**
      * Keeps the marker to the left of the text. The bullets appears outside the
      * content flow. This is default
      */
-    OUTSIDE {
-      @Override
-      public String getCssName() {
-        return "outside";
-      }
-    };
+    OUTSIDE;
 
-    public abstract String getCssName();
+    public String getCssName() {
+      return name().toLowerCase();
+    }
 
   }
 

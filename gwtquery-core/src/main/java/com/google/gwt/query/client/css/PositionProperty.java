@@ -18,7 +18,8 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.Position;
 
 /**
- * The position property is used to position an element.
+ * The <i>position</i> property determines which of the CSS2 positioning
+ * algorithms is used to calculate the position of a box.
  */
 public class PositionProperty extends AbstractCssProperty<Position> {
 

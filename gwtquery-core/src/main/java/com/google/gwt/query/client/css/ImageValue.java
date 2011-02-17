@@ -22,14 +22,18 @@ import com.google.gwt.dom.client.Style.HasCssName;
  */
 public class ImageValue implements HasCssName {
 
-  public static final ImageValue INHERIT;
+  /**
+   * Specify that no image is used
+   */
   public static final ImageValue NONE;
 
   static {
     NONE = new ImageValue("none");
-    INHERIT = new ImageValue(CSS.INHERIT_VALUE);
   }
 
+  /**
+   * Define an image by its url
+   */
   public static ImageValue url(String url) {
     return new ImageValue("url('" + url + "')");
   }

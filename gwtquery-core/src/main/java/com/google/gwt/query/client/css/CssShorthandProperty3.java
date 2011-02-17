@@ -21,8 +21,11 @@ import com.google.gwt.dom.client.Style;
  * 
  * An enumerated CSS property with values of type X,Y,Z.
  */
-public interface CssShorthandProperty3<X, Y, Z> extends CssProperty{
-  
+public interface CssShorthandProperty3<X, Y, Z> extends CssProperty {
+
+  /**
+   * Set the value of the css property
+   */
   void set(Style s, X value1, Y value2, Z value3);
 
 }

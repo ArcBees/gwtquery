@@ -21,16 +21,20 @@ import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 
 /**
- * The border shorthand property sets all the border properties in one
- * declaration.
+ * The <i>border</i> property is a shorthand property for setting the same
+ * width, color, and style for all four borders of a box. Unlike the shorthand
+ * <i>margin</i> and <i>padding</i> properties, the <i>border</i> property
+ * cannot set different values on the four borders. To do so, one or more of the
+ * other border properties must be used.
+ * 
  * 
  */
 public class BorderProperty implements
     CssShorthandProperty3<LineWidth, LineStyle, RGBColor> {
 
   private static final String BORDER_BOTTOM_PROPERTY = "borderBottom";
-  private static final String BORDER_PROPERTY = "border";
   private static final String BORDER_LEFT_PROPERTY = "borderLeft";
+  private static final String BORDER_PROPERTY = "border";
   private static final String BORDER_RIGHT_PROPERTY = "borderRight";
   private static final String BORDER_TOP_PROPERTY = "borderTop";
 

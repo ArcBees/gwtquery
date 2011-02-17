@@ -25,100 +25,57 @@ public class FontSizeProperty extends
     AbstractCssProperty<FontSizeProperty.FontSize> implements TakesLength {
 
   /**
-   * Enum for the font-size property.
+   * Possible values for the <i>font-size</i> property.
    */
   public static enum FontSize implements HasCssName {
-    /**
-     * Specifies that the font size should be inherited from the parent element
-     */
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return CSS.INHERIT_VALUE;
-      }
-    },
+
     /**
      * Sets the font-size to a large size
      */
-    LARGE {
-      @Override
-      public String getCssName() {
-        return "large";
-      }
-    },
+    LARGE,
+
     /**
      * Sets the font-size to a larger size than the parent element
      */
-    LARGER {
-      @Override
-      public String getCssName() {
-        return "larger";
-      }
-    },
+    LARGER,
+
     /**
      * Sets the font-size to a medium size
      */
-    MEDIUM {
-      @Override
-      public String getCssName() {
-        return "medium";
-      }
-    },
+    MEDIUM,
+
     /**
      * Sets the font-size to a small size
      */
-    SMALL {
-      @Override
-      public String getCssName() {
-        return "small";
-      }
-    },
+    SMALL,
+
     /**
      * Sets the font-size to a smaller size than the parent element
      */
-    SMALLER {
-      @Override
-      public String getCssName() {
-        return "smaller";
-      }
-    },
+    SMALLER,
+
     /**
      * Sets the font-size to an extra large size
      */
-    X_LARGE {
-      @Override
-      public String getCssName() {
-        return "x-large";
-      }
-    },
+    X_LARGE,
+
     /**
      * Sets the font-size to an extra small size
      */
-    X_SMALL {
-      @Override
-      public String getCssName() {
-        return "x-small";
-      }
-    },
+    X_SMALL,
+
     /**
      * Sets the font-size to an extra extra large size
      */
-    XX_LARGE {
-      @Override
-      public String getCssName() {
-        return "xx-large";
-      }
-    },
+    XX_LARGE,
+
     /**
      * Sets the font-size to an extra extra small size
      */
-    XX_SMALL {
-      @Override
-      public String getCssName() {
-        return "xx-small";
-      }
-    };
-    public abstract String getCssName();
+    XX_SMALL;
+    public String getCssName() {
+      return name().toLowerCase().replace('_', '-');
+    }
   }
 
   private static final String CSS_PROPERTY = "fontSize";

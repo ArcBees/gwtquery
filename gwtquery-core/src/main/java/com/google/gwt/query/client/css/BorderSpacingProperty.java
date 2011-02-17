@@ -18,31 +18,47 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes the color of a border.
+ * The <i>border-spacing</i> property specifies the distance that separates
+ * adjacent cell borders in a table context. If one length is specified, it
+ * gives both the horizontal and vertical spacing. If two are specified, the
+ * first gives the horizontal spacing and the second the vertical spacing.
+ * Lengths may not be negative.
  */
 public class BorderSpacingProperty extends
     AbstractCssProperty<BorderSpacingProperty.BorderSpacing> {
 
+  /**
+   * value for <i>border-spacing</i> property.
+   * 
+   */
   public static class BorderSpacing implements HasCssName {
-    
-    private Length verticalSpacing;
+
     private Length horizontalSpacing;
-    
+    private Length verticalSpacing;
+
+    /**
+     * Construct a {@link BorderSpacing} object with same horizontal and
+     * vertical spacing
+     */
     public BorderSpacing(Length spacing) {
       this(spacing, spacing);
     }
-    
+
+    /**
+     * Construct a {@link BorderSpacing} object by specifying a horizontal and
+     * avertical spacings.
+     */
     public BorderSpacing(Length horizontalSpacing, Length verticalSpacing) {
       assert horizontalSpacing != null : "horizontal spacing cannot be null";
       assert verticalSpacing != null : "vertical spacing cannot be null";
-      
+
       this.verticalSpacing = verticalSpacing;
       this.horizontalSpacing = horizontalSpacing;
     }
-    
-    
+
     public String getCssName() {
-      return horizontalSpacing.getCssName()+" "+verticalSpacing.getCssName();
+      return horizontalSpacing.getCssName() + " "
+          + verticalSpacing.getCssName();
     }
   }
 

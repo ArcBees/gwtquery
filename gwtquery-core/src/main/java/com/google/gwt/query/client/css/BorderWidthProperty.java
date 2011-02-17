@@ -20,30 +20,48 @@ import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.Style.Unit;
 
 /**
- * This property set the width of an element's border.
+ * The <i>border-width</i> property specifies the width of the border of a box.
  */
 public class BorderWidthProperty extends
     AbstractCssProperty<BorderWidthProperty.LineWidth> implements TakesLength {
 
+  /**
+   * Object allowing to specify a width of a line
+   */
   public static class LineWidth implements HasCssName {
 
-    public static LineWidth INHERIT;
+    /**
+     * Define a medium border.
+     */
     public static LineWidth MEDIUM;
+
+    /**
+     * Define a thick border.
+     */
     public static LineWidth THICK;
+
+    /**
+     * Define a thin border.
+     */
     public static LineWidth THIN;
 
     static {
       MEDIUM = new LineWidth("medium");
       THICK = new LineWidth("thick");
       THIN = new LineWidth("thin");
-      INHERIT = new LineWidth(CSS.INHERIT_VALUE);
 
     }
 
+    /**
+     * Return a {@link LineWidth} defining by an explicit value.
+     */
     public static LineWidth length(int l, Unit unit) {
       return new LineWidth("" + l + (unit != null ? unit.getType() : ""));
     }
 
+    /**
+     * Return a {@link LineWidth} defining by a {@link Length}
+     */
     public static LineWidth length(Length l) {
       return new LineWidth(l.getCssName());
     }
@@ -77,7 +95,7 @@ public class BorderWidthProperty extends
   }
 
   private BorderWidthProperty(String value) {
-   super(value);
+    super(value);
   }
 
   public void set(Style s, Length p) {

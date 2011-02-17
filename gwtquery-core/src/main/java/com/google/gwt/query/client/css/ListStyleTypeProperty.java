@@ -18,7 +18,12 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.ListStyleType;
 
 /**
- * This property sets the type of the list-item marker.
+ * The <i>list-style-type</i> property specifies appearance of the list item
+ * marker if <i>list-style-image</i> has the value 'none' or if the image
+ * pointed to by the URI cannot be displayed. The value 'none' specifies no
+ * marker, otherwise there are three types of marker: glyphs, numbering systems,
+ * and alphabetic systems. Note. Numbered lists improve document accessibility
+ * by making lists easier to navigate.
  */
 public class ListStyleTypeProperty extends AbstractCssProperty<ListStyleType> {
 

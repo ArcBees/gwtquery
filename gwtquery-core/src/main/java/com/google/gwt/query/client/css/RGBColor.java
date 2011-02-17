@@ -27,7 +27,6 @@ public class RGBColor implements HasCssName {
   public static RGBColor FUSCHIA;
   public static RGBColor GRAY;
   public static RGBColor GREEN;
-  public static RGBColor INHERIT;
   public static RGBColor LIME;
   public static RGBColor MAROON;
   public static RGBColor NAVY;
@@ -59,7 +58,6 @@ public class RGBColor implements HasCssName {
     WHITE = rgb("white");
     YELLOW = rgb("yellow");
     TRANSPARENT = rgb("transparent");
-    INHERIT = rgb(CSS.INHERIT_VALUE);
   }
 
   /**

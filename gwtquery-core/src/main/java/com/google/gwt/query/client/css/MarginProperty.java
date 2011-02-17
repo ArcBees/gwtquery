@@ -28,19 +28,19 @@ public class MarginProperty extends AbstractCssProperty<Length> {
     private  ShorthandMarginProperty() {
     }
     
-    public void set(Style s, Length margin1, Length margin2, Length margin3,
-        Length margin4) {
-      String margin = notNull(margin1)+notNull(margin2)+notNull(margin3)+notNull(margin4);
-      s.setProperty(MARGIN_PROPERTY, margin.trim());
-      
-    }
-
     public String get(Style s) {
       return s.getMargin();
     }
 
     public String getCssName() {
       return MARGIN_PROPERTY;
+    }
+
+    public void set(Style s, Length margin1, Length margin2, Length margin3,
+        Length margin4) {
+      String margin = notNull(margin1)+notNull(margin2)+notNull(margin3)+notNull(margin4);
+      s.setProperty(MARGIN_PROPERTY, margin.trim());
+      
     }
     
     private String notNull(HasCssName value) {

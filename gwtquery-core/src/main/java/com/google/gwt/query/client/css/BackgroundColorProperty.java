@@ -16,8 +16,9 @@
 package com.google.gwt.query.client.css;
 
 /**
- * This property sets the background color of an element, either a <color> value
- * or the keyword 'transparent', to make the underlying colors shine through.
+ * This property sets the background color of an element, either a <i>color</i>
+ * value or the keyword 'transparent', to make the underlying colors shine
+ * through.
  */
 public class BackgroundColorProperty extends AbstractCssProperty<RGBColor> {
 

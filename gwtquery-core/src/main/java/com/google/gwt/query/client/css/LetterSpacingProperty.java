@@ -16,7 +16,8 @@
 package com.google.gwt.query.client.css;
 
 /**
- * all height css properties : max-height, min-height, height
+ * The <i>letter-spacing</i> property specifies spacing behavior between text
+ * characters.
  */
 public class LetterSpacingProperty extends AbstractCssProperty<Length> {
 

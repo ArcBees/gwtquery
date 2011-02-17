@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.css;
 
 /**
- * all height css properties : max-height, min-height, height
+ * The <i>word-spacing</i> property specifies spacing behavior between words.
  */
 public class WordSpacingProperty extends AbstractCssProperty<Length> {
 

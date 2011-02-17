@@ -15,32 +15,102 @@
  */
 package com.google.gwt.query.client.css;
 
-import static com.google.gwt.query.client.css.CSS.INHERIT_VALUE;
-
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.Style.Unit;
 
 /**
- * The {@link BackgroundPositionProperty} define the position of a
- * background-image.
+ * If a background image has been specified, this property specifies its initial
+ * position.
  */
 public class BackgroundPositionProperty extends
     AbstractCssProperty<BackgroundPositionProperty.BackgroundPosition> {
 
+  /**
+   * Value for <i>background-position</i> property.
+   * 
+   * @author Julien Dramaix (julien.dramaix@gmail.com)
+   * 
+   */
   public static class BackgroundPosition implements HasCssName {
+
+    /**
+     * Equivalent to {@link BackgroundPosition#CENTER_BOTTOM}
+     */
+    public static BackgroundPosition BOTTOM;
+
+    /**
+     * Equivalent to {@link BackgroundPosition#CENTER_CENTER}
+     */
     public static BackgroundPosition CENTER;
+
+    /**
+     * Equivalent to '50%' for the horizontal position and '100%' for the
+     * vertical position.
+     */
     public static BackgroundPosition CENTER_BOTTOM;
+
+    /**
+     * Equivalent to '50%' for the horizontal position and '50%' for the
+     * vertical position.
+     */
     public static BackgroundPosition CENTER_CENTER;
+
+    /**
+     * Equivalent to '50%' for the horizontal position and '0%' for the vertical
+     * position.
+     */
     public static BackgroundPosition CENTER_TOP;
-    public static BackgroundPosition INHERIT;
+
+    /**
+     * Equivalent to {@link BackgroundPosition#LEFT_CENTER}
+     */
     public static BackgroundPosition LEFT;
+
+    /**
+     * Equivalent to '0%' for the horizontal position and '100%' for the
+     * vertical position.
+     */
     public static BackgroundPosition LEFT_BOTTOM;
+
+    /**
+     * Equivalent to '0%' for the horizontal position and '50%' for the vertical
+     * position.
+     */
     public static BackgroundPosition LEFT_CENTER;
+
+    /**
+     * Equivalent to '0%' for the horizontal position and '0%' for the vertical
+     * position.
+     */
     public static BackgroundPosition LEFT_TOP;
+
+    /**
+     * Equivalent to {@link BackgroundPosition#RIGHT_CENTER}
+     */
     public static BackgroundPosition RIGHT;
+
+    /**
+     * Equivalent to '100%' for the horizontal position and '100%' for the
+     * vertical position.
+     */
     public static BackgroundPosition RIGHT_BOTTOM;
+
+    /**
+     * Equivalent to '100%' for the horizontal position and '50%' for the
+     * vertical position.
+     */
     public static BackgroundPosition RIGHT_CENTER;
+
+    /**
+     * Equivalent to '100%' for the horizontal position and '0%' for the
+     * vertical position.
+     */
     public static BackgroundPosition RIGHT_TOP;
+
+    /**
+     * Equivalent to {@link BackgroundPosition#CENTER_TOP}
+     */
+    public static BackgroundPosition TOP;
 
     private static final String BOTTOM_VALUE = "bottom";
     private static final String CENTER_VALUE = "center";
@@ -62,9 +132,15 @@ public class BackgroundPositionProperty extends
       RIGHT_CENTER = new BackgroundPosition(RIGHT_VALUE + " " + CENTER_VALUE);
       RIGHT = new BackgroundPosition(RIGHT_VALUE);
       RIGHT_TOP = new BackgroundPosition(RIGHT_VALUE + " " + TOP_VALUE);
-      INHERIT = new BackgroundPosition(INHERIT_VALUE);
+      TOP = new BackgroundPosition(TOP_VALUE);
+      BOTTOM = new BackgroundPosition(BOTTOM_VALUE);
+
     }
 
+    /**
+     * Return a {@link BackgroundPosition} by specifying the horizontal and
+     * vertical position.
+     */
     public static BackgroundPosition position(int xpos, int ypos, Unit unit) {
       if (unit == null) {
         unit = Unit.PX;

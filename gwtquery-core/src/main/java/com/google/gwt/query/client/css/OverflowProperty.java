@@ -18,10 +18,11 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.Overflow;
 
 /**
- * This property specifies what happens if content overflows an element's box..
+ * The <i>overflow</i> property specifies whether the content of a block-level
+ * element is clipped when it overflows the element's box (which is acting as a
+ * containing block for the content).
  */
-public class OverflowProperty extends
-    AbstractCssProperty<Overflow> {
+public class OverflowProperty extends AbstractCssProperty<Overflow> {
 
   private static final String CSS_PROPERTY = "overflow";
 

@@ -18,71 +18,46 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The background-repeat property sets if/how a background image will be
- * repeated. By default, a background-image is repeated both vertically and
- * horizontally.
+ * If a background image is specified, this property specifies whether the image
+ * is repeated (tiled), and how. All tiling covers the content and padding areas
+ * of a box
  */
 public class BackgroundRepeatProperty extends
     AbstractCssProperty<BackgroundRepeatProperty.BackgroundRepeat> {
 
+  /**
+   * Define possible values for <i>backgroung-repeat</i> property.
+   *
+   */
   public static enum BackgroundRepeat implements HasCssName {
     /**
-     * Specifies that the setting of the background-repeat property should be
-     * inherited from the parent element
+     * The image is not repeated: only one copy of the image is drawn.
      */
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return INHERIT_VALUE;
-      }
-    },
+    NO_REPEAT,
     /**
-     * The background-image will not be repeated
+     * The image is repeated both horizontally and vertically.
      */
-    NO_REPEAT {
-      @Override
-      public String getCssName() {
-        return NO_REPEAT_VALUE;
-      }
-    },
+    REPEAT,
     /**
-     * The background image will be repeated both vertically and horizontally.
+     * The image is repeated horizontally only.
      */
-    REPEAT {
-      @Override
-      public String getCssName() {
-        return REPEAT_VALUE;
-      }
-    },
+    REPEAT_X,
     /**
-     * The background image will be repeated only horizontally
+     * The image is repeated vertically only.
      */
-    REPEAT_X {
-      @Override
-      public String getCssName() {
-        return REPEAT_X_VALUE;
-      }
-    },
-    /**
-     * The background image will be repeated only vertically
-     */
-    REPEAT_Y {
-      @Override
-      public String getCssName() {
-        return REPEAT_Y_VALUE;
-      }
-    };
+    REPEAT_Y;
 
-    public abstract String getCssName();
+    public String getCssName(){
+      return name().toLowerCase().replace('_', '-');
+    }
   }
 
   private static final String CSS_PROPERTY = "backgroundRepeat";
-  private static final String INHERIT_VALUE = "inherit";
-  private static final String NO_REPEAT_VALUE = "no-repeat";
+  /*private static final String NO_REPEAT_VALUE = "no-repeat";
   private static final String REPEAT_VALUE = "repeat";
   private static final String REPEAT_X_VALUE = "repeat-x";
 
-  private static final String REPEAT_Y_VALUE = "repeat-y";
+  private static final String REPEAT_Y_VALUE = "repeat-y";*/
 
   public static void init() {
     CSS.BACKGROUND_REPEAT = new BackgroundRepeatProperty();

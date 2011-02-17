@@ -18,12 +18,16 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property describes how inline content of a block is aligned.
+ * The <i>text-transform</i> property controls capitalization effects of an
+ * element's text.
  */
 public class TextTransformProperty extends
     AbstractCssProperty<TextTransformProperty.TextTransform> {
 
-  public enum TextTransform implements HasCssName{
+  /**
+   * Possible values for <i>text-transform</i> property.
+   */
+  public enum TextTransform implements HasCssName {
     /**
      * Transforms the first character of each word to uppercase
      */
@@ -33,20 +37,19 @@ public class TextTransformProperty extends
      */
     UPPERCASE,
     /**
-     *  Transforms all characters to lowercase
+     * Transforms all characters to lowercase
      */
     LOWERCASE;
-    
+
     public String getCssName() {
       return name().toLowerCase();
     };
   }
-  
+
   private static final String CSS_PROPERTY = "textTransform";
- 
 
   public static void init() {
-    CSS.TEXT_TRANSFORM= new TextTransformProperty();
+    CSS.TEXT_TRANSFORM = new TextTransformProperty();
   }
 
   private TextTransformProperty() {

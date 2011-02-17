@@ -18,7 +18,8 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.FontStyle;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * The <i>font-style</i> property requests normal (sometimes referred to as
+ * "roman" or "upright"), italic, and oblique faces within a font family.
  */
 public class FontStyleProperty extends AbstractCssProperty<FontStyle> {
 

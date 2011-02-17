@@ -24,19 +24,26 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class CaptionSideProperty extends
     AbstractCssProperty<CaptionSideProperty.CaptionSide> {
 
+  /**
+   * Possible values for <i>caption-side</i> property.
+   * 
+   */
   public enum CaptionSide implements HasCssName {
     /**
      * Positions the caption box above the table box.
      */
     TOP,
+
     /**
      * Positions the caption box below the table box.
      */
     BOTTOM,
+
     /**
      * Positions the caption box to the left of the table box.
      */
     LEFT,
+
     /**
      * Positions the caption box to the right of the table box.
      */

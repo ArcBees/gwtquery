@@ -23,60 +23,35 @@ import com.google.gwt.dom.client.Style.HasCssName;
  */
 public class ClearProperty extends AbstractCssProperty<ClearProperty.Clear> {
 
+  /**
+   * Possible values for <i>clear</i> property.
+   * 
+   */
   public static enum Clear implements HasCssName {
+
     /**
      * No floating elements allowed on either the left or the right side
      */
-    BOTH {
-      @Override
-      public String getCssName() {
-        return "both";
-      }
+    BOTH,
 
-    },
-    /**
-     * Specifies that the value of the clear property should be inherited from
-     * the parent element
-     */
-    INHERIT {
-      @Override
-      public String getCssName() {
-        return CSS.INHERIT_VALUE;
-      }
-
-    },
     /**
      * No floating elements allowed on the left side
      */
-    LEFT {
-      @Override
-      public String getCssName() {
-        return "left";
-      }
+    LEFT,
 
-    },
     /**
      * Allows floating elements on both sides
      */
-    NONE {
-      @Override
-      public String getCssName() {
-        return "none";
-      }
+    NONE,
 
-    },
     /**
      * No floating elements allowed on the right side
      */
-    RIGHT {
-      @Override
-      public String getCssName() {
-        return "right";
-      }
+    RIGHT;
 
-    };
-
-    public abstract String getCssName();
+    public String getCssName() {
+      return name().toLowerCase();
+    }
 
   }
 

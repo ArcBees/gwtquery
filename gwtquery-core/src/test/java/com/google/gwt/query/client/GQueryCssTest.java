@@ -51,6 +51,7 @@ import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
 import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
 import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
+import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
 import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -440,9 +441,6 @@ public class GQueryCssTest extends GWTTestCase {
 
     $("#test").css(CSS.COLOR, RGBColor.GREEN);
     assertEquals("green", $("#test").css(CSS.COLOR));
-
-    $("#test").css(CSS.COLOR, RGBColor.INHERIT);
-    assertEquals("inherit", $("#test").css(CSS.COLOR));
 
     $("#test").css(CSS.COLOR, RGBColor.LIME);
     assertEquals("lime", $("#test").css(CSS.COLOR));
@@ -935,6 +933,21 @@ public class GQueryCssTest extends GWTTestCase {
     
     $("#test").css(CSS.TEXT_TRANSFORM, TextTransform.CAPITALIZE);
     assertEquals("capitalize", $("#test").css("textTransform"));
+  }
+  
+  public void testUnicodeBidiProperty() {
+
+    $(e).html("<div id='test'>Content</div>");
+
+    $("#test").css(CSS.UNICODE_BIDI, UnicodeBidi.BIDI_OVERRIDE);
+    assertEquals("bidi-override", $("#test").css("unicode-bidi"));
+    assertEquals("bidi-override", $("#test").css(CSS.UNICODE_BIDI));
+
+    $("#test").css(CSS.UNICODE_BIDI, UnicodeBidi.EMBED);
+    assertEquals("embed", $("#test").css(CSS.UNICODE_BIDI));
+
+    $("#test").css(CSS.UNICODE_BIDI, UnicodeBidi.NORMAL);
+    assertEquals("normal", $("#test").css(CSS.UNICODE_BIDI));
   }
   
   public void testVerticalAlignProperty() {

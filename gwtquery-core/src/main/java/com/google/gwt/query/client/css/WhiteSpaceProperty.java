@@ -18,34 +18,40 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property declares how white space inside the element is handled
+ * The <i>white-space</i> property declares how white space inside the element
+ * is handled
  */
 public class WhiteSpaceProperty extends
     AbstractCssProperty<WhiteSpaceProperty.WhiteSpace> {
 
   public enum WhiteSpace implements HasCssName {
+
     /**
      * This value directs user agents to collapse sequences of white space, and
      * break lines as necessary to fill line boxes.
      */
     NORMAL,
+
     /**
      * This value collapses white space as for 'normal', but suppresses line
      * breaks within text.
      */
     NOWRAP,
+
     /**
      * This value prevents user agents from collapsing sequences of white space.
      * Lines are only broken at newlines in the source, or at occurrences of
      * "\A" in generated content.
      */
     PRE,
+
     /**
      * This value directs user agents to collapse sequences of white space.
      * Lines are broken at newlines in the source, at occurrences of "\A" in
      * generated content, and as necessary to fill line boxes.
      */
     PRE_LINE,
+
     /**
      * This value prevents user agents from collapsing sequences of white space.
      * Lines are broken at newlines in the source, at occurrences of "\A" in

@@ -18,18 +18,32 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property defines the text direction/writing direction
+ * The <i>direction</i> specifies the base writing direction of blocks and the
+ * direction of embeddings and overrides (see 'unicode-bidi') for the Unicode
+ * bidirectional algorithm. In addition, it specifies the direction of table
+ * column layout, the direction of horizontal overflow, and the position of an
+ * incomplete last line in a block in case of 'text-align: justify'.
  */
 public class DirectionProperty extends
     AbstractCssProperty<DirectionProperty.Direction> {
 
+  /**
+   * Possible values for <i>direction</i> property.
+   * 
+   */
   public static enum Direction implements HasCssName {
 
-    LTR ,
-    RTL,
-    INHERIT;
+    /**
+     * Left-to-right direction.
+     */
+    LTR,
 
-    public String getCssName(){
+    /**
+     * Right-to-left direction.
+     */
+    RTL;
+
+    public String getCssName() {
       return name().toLowerCase();
     }
 

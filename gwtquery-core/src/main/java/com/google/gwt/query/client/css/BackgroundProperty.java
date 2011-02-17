@@ -21,6 +21,14 @@ import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAt
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
 
+/**
+ * The <i>'background'</i> property is a shorthand property for setting the
+ * individual background properties (i.e., <i>'background-color'</i>,
+ * <i>'background-image'</i>, <i>'background-repeat'</i>,
+ * <i>'background-attachment'</i> and <i>'background-position'</i>) at the same
+ * place in the style sheet.
+ * 
+ */
 public class BackgroundProperty
     implements
     CssShorthandProperty5<RGBColor, ImageValue, BackgroundRepeat, BackgroundAttachment, BackgroundPosition> {

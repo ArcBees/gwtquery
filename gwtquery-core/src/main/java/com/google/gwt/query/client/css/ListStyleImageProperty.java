@@ -16,7 +16,9 @@
 package com.google.gwt.query.client.css;
 
 /**
- * This property sets an image as the list-item marker.
+ * The <i>list-style-image</i> property sets the image that will be used as the
+ * list item marker. When the image is available, it will replace the marker set
+ * with the <i>list-style-type</i> marker.
  */
 public class ListStyleImageProperty extends AbstractCssProperty<ImageValue> {
 

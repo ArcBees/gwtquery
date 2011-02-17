@@ -23,13 +23,44 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class UnicodeBidiProperty extends
     AbstractCssProperty<UnicodeBidiProperty.UnicodeBidi> {
 
+  /**
+   * Define possible values for <i>unicode-bidi</i> property
+   * 
+   */
   public static enum UnicodeBidi implements HasCssName {
 
-    NORMAL,
-    EMBED ,
-    BIDI_OVERRIDE;
+    /**
+     * For inline-level elements this creates an override. For block container
+     * elements this creates an override for inline-level descendants not within
+     * another block-level, table-cell, table-caption, or inline-block element.
+     * This means that inside the element, reordering is strictly in sequence
+     * according to the <i>direction</i> property; the implicit part of the
+     * bidirectional algorithm is ignored. This corresponds to adding a LRO
+     * (U+202D; for <i>direction: ltr</i>) or RLO (U+202E; for <i>direction:
+     * rtl</i>) at the start of the element or at the start of each anonymous
+     * child block box, if any, and a PDF (U+202C) at the end of the element.
+     */
+    BIDI_OVERRIDE,
 
-    public String getCssName(){
+    /**
+     * If the element is inline, this value opens an additional level of
+     * embedding with respect to the bidirectional algorithm. The direction of
+     * this embedding level is given by the <i>direction</i> property. Inside
+     * the element, reordering is done implicitly. This corresponds to adding a
+     * LRE (U+202A; for <i>direction: ltr</i>) or RLE (U+202B; for <i>direction:
+     * rtl</i>) at the start of the element and a PDF (U+202C) at the end of the
+     * element.
+     */
+    EMBED,
+
+    /**
+     * The element does not open an additional level of embedding with respect
+     * to the bidirectional algorithm. For inline-level elements, implicit
+     * reordering works across element boundaries.
+     */
+    NORMAL;
+
+    public String getCssName() {
       return name().toLowerCase().replace('_', '-');
     }
 

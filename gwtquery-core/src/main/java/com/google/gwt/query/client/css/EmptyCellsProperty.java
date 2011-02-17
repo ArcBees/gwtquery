@@ -27,6 +27,10 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class EmptyCellsProperty extends
     AbstractCssProperty<EmptyCellsProperty.EmptyCells> {
 
+  /**
+   * Possible values for <i>empty-cells</i> property.)
+   * 
+   */
   public enum EmptyCells implements HasCssName {
     /**
      * No background or borders are shown on empty cells

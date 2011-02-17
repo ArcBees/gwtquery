@@ -18,7 +18,7 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.FontWeight;
 
 /**
- * This property specifies the mechanism by which elements are rendered.
+ * The <i>font-weight</i> property specifies the weight of the font.
  */
 public class FontWeightProperty extends AbstractCssProperty<FontWeight> {
 

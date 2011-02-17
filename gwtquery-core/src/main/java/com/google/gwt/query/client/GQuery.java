@@ -1010,6 +1010,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
+  
+  /**
+   * Set CSS a single style property on every matched element using type-safe
+   * enumerations. This method allows you to set manually the value or set
+   * <i>inherit</i> value
+   * 
+   * ex :
+   * <pre class="code">
+   * $(#myId).css(CSS.TEXT_DECORATION, CSS.INHERIT);
+   * </pre>
+   */
+  public GQuery css(TakeCssValue<?> cssProperty, String value) {
+    return css(cssProperty.getCssName(), value);
+  }
 
   /**
    * Set CSS a single style property on every matched element using type-safe
