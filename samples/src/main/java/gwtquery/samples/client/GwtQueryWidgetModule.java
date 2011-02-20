@@ -16,21 +16,18 @@
 package gwtquery.samples.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.plugins.widgets.Widgets.Widgets;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.plugins.Widgets;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.query.client.plugins.widgets.widgetfactory.ButtonWidgetFactory.ButtonOptions;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 public class GwtQueryWidgetModule implements EntryPoint {
 
-  public void onModuleLoad() {
+/*  public void onModuleLoad() {
     $("<button>Enhance</button>").appendTo(".outer").one(Event.ONCLICK, null, new Function() {
       public boolean f(Event e) {
         $(".btn:nth-child(odd)").each(new Function(){
@@ -52,5 +49,30 @@ public class GwtQueryWidgetModule implements EntryPoint {
         return true;
       }
     });
+  }*/
+  
+  public void onModuleLoad() {
+   
+    
+    $(".btn").as(Widgets).buttons(createButtonOptions());
+    $("#tabs").as(Widgets).tabPanel();
+    
+  }
+  
+  private ButtonOptions createButtonOptions(){
+    ButtonOptions options = new ButtonOptions();
+    options.addClickHandler(new ClickHandler() {
+      
+      public void onClick(ClickEvent event) {
+        Label l = new Label("You click on a GWT Button !");
+        PopupPanel panel = new PopupPanel(true, true);
+        panel.setGlassEnabled(true);
+        panel.add(l);
+        panel.center();
+        
+      }
+    });
+    
+    return options;
   }
 }
