@@ -26,15 +26,24 @@ import com.google.gwt.core.client.JsArrayString;
 public class Properties extends JavaScriptObject {
   
   public static Properties create(String properties) {
-    return (Properties) createImpl(wrapPropertiesString(properties));
+    String p = wrapPropertiesString(properties);
+    try {
+      return (Properties) createImpl(p);
+    } catch (Exception e) {
+      System.err.println("Error creating Properties: \n" + properties  + "\n" + p + "\n" + e.getMessage());
+      return (Properties) createImpl("({})");
+    }
   }
 
   public static final native JavaScriptObject createImpl(String properties) /*-{
-      return eval(properties);
-    }-*/;
+     return eval(properties);
+  }-*/;
 
-  protected static String wrapPropertiesString(String s) {
-    return "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "") + "})";
+  public static String wrapPropertiesString(String s) {
+    String ret = "({"
+        + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "")
+        .replaceAll(":\\s*([^\"'\\s])([^,}]+)\\s*", ":\"$1$2\"") + "})";
+    return ret;
   }
 
   protected Properties() {
@@ -99,6 +108,6 @@ public class Properties extends JavaScriptObject {
     for (String k : keys()){
       ret += k + ": '" + get(k) + "', ";
     }
-    return "({" + ret.replaceAll("[, ]+","") + "})";
+    return "({" + ret.replaceAll("[, ]+$","") + "})";
   }
 }
