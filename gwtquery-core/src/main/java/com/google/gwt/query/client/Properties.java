@@ -34,9 +34,7 @@ public class Properties extends JavaScriptObject {
     }-*/;
 
   protected static String wrapPropertiesString(String s) {
-    String ret = "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "") + "})";
-    System.out.println("\n" + s + "\n" + ret);
-    return ret;
+    return "({" + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "") + "})";
   }
 
   protected Properties() {
