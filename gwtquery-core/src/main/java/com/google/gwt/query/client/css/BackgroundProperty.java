@@ -17,6 +17,7 @@ package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
@@ -69,6 +70,17 @@ public class BackgroundProperty
 
   private String notNull(HasCssName value) {
     return value != null ? value.getCssName() + " " : "";
+  }
+  
+  public Properties with(RGBColor backgroundColor,
+      ImageValue backgroundImage, BackgroundRepeat backgroundRepeat,
+      BackgroundAttachment backgroundAttachment,
+      BackgroundPosition backgroundPosition) {
+    String s = getCssName() + ": \""  
+      + notNull(backgroundColor) + notNull(backgroundImage)
+      + notNull(backgroundRepeat) + notNull(backgroundAttachment)
+      + notNull(backgroundPosition).trim() +  "\"";
+    return Properties.create(s);
   }
 
 }

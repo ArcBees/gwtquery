@@ -141,14 +141,16 @@ public class Widgets extends GQueryQueue<Widgets> {
 
   /**
    * Try to create a widget using the given factory and the given options for
-   * each element of the query
+   * each element of the query.
+   * Returns a new gquery set of elements with the new widgets created.
    */
   public <W extends Widget, O extends WidgetOptions> Widgets widgets(
       WidgetFactory<W, O> factory, O options) {
+    JSArray result = JSArray.create();
     for (Element e : elements()) {
-      widget(e, factory, options);
+      result.addNode(widget(e, factory, options).getElement());
     }
-    return this;
+    return new Widgets(result);
   }
 
   /**

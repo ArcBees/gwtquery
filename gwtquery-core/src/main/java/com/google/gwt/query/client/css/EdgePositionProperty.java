@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.css;
 
+import com.google.gwt.query.client.Properties;
+
 /**
  * Specify position of element's edges.
  */
@@ -29,5 +31,9 @@ public class EdgePositionProperty extends AbstractCssProperty<Length> {
 
   private EdgePositionProperty(String value) {
     super(value);
+  }
+  
+  public Properties with(Length value) {
+    return Properties.create(getCssName() + ":'" + value.getCssName() + "'");
   }
 }

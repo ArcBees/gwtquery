@@ -19,9 +19,21 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.plugins.widgets.Widgets.Widgets;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
+import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
+import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.ImageValue;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.widgets.widgetfactory.ButtonWidgetFactory.ButtonOptions;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -52,11 +64,38 @@ public class GwtQueryWidgetModule implements EntryPoint {
   }*/
   
   public void onModuleLoad() {
-   
     
-    $(".btn").as(Widgets).buttons(createButtonOptions());
+    
+    // Let gquery syntax to help gwt developers. 
+    GQuery buttons = $(".btn").as(Widgets).buttons().click(new Function() {
+      public void f() {
+        Label l = new Label("You click on a GWT Button !");
+        PopupPanel panel = new PopupPanel(true, true);
+        panel.setGlassEnabled(true);
+        panel.add(l);
+        panel.center();
+      }
+    });
+    
+    // The user use a widget in the traditional way
+    buttons.eq(0).<Button>widget().addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        Window.alert("You clicked in the first button");
+      }
+    });
+    
     $("#tabs").as(Widgets).tabPanel();
     
+    // IDE suggestions are not available with this syntax. 
+    // Also it implies that the css method in GQuery needs more overloads
+    $("#aaa").css(CSS.POSITION, Position.ABSOLUTE);
+    $("#aaa").css(CSS.TOP, Length.cm(15));
+    $("#aaa").css(CSS.BACKGROUND, RGBColor.RED, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER);
+    
+    // With this syntax IDE gives more help
+    // We could overload the with method in each CssProperty without adding more methods to GQuery
+    $("#aaa").css(CSS.TOP.with(Length.cm(15)));
+    $("#aaa").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
   }
   
   private ButtonOptions createButtonOptions(){
