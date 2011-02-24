@@ -741,7 +741,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(Properties properties) {
     for (Element e : elements()) {
       for (String name : properties.keys()) {
-        e.setAttribute(styleImpl.fixPropertyName(name), properties.get(name));
+        e.setAttribute(name, properties.get(name));
       }
     }
     return this;
@@ -754,7 +754,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attributes include title, alt, src, href, width, style, etc.
    */
   public String attr(String name) {
-    return elements.getItem(0).getAttribute(styleImpl.fixPropertyName(name));
+    return elements.getItem(0).getAttribute(name);
   }
 
   /**
@@ -763,7 +763,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(String key, Function closure) {
     for (int i = 0; i < elements.getLength(); i++) {
       Element e = elements.getItem(i);
-      e.setAttribute(styleImpl.fixPropertyName(key), String.valueOf(closure.f(e, i)));
+      e.setAttribute(key, String.valueOf(closure.f(e, i)));
     }
     return this;
   }
@@ -772,7 +772,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, String value) {
-    key = styleImpl.fixPropertyName(key);
     for (Element e : elements()) {
       e.setAttribute(key, value);
     }
