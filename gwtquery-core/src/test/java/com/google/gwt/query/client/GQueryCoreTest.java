@@ -21,6 +21,8 @@ import static com.google.gwt.query.client.GQuery.document;
 
 import java.util.ArrayList;
 
+import junit.framework.Assert;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +34,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.dom.client.Node;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -832,6 +835,15 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(3, a.size());
     assertEquals(3, $(a).size());
     
+  }
+  
+  public void testNulls() {
+    Assert.assertEquals(0, $((Node)null).size());
+    Assert.assertEquals(0, $((Element)null).size());
+    Assert.assertEquals(0, $((String)null).size());
+    Assert.assertNull($((String)null).get(0));
+    Assert.assertNull($((String)null).get(-1));
+    Assert.assertEquals(0, $((String)null).eq(0).size());
   }
 
 }

@@ -214,21 +214,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing element.
    */
   public static GQuery $(Element element) {
-    return new GQuery(JSArray.create(element));
+    return new GQuery(element);
   }
 
   /**
    * Wrap a GQuery around an event's target element.
    */
   public static GQuery $(Event event) {
-    return $((Element) event.getCurrentEventTarget().cast());
+    return event == null ? $() : $((Element) event.getCurrentEventTarget().cast());
   }
 
   /**
    * Wrap a GQuery around an existing node.
    */
   public static GQuery $(Node n) {
-    return new GQuery(JSArray.create(n));
+    return n == null ? $() : new GQuery(JSArray.create(n));
   }
 
   /**
@@ -244,11 +244,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static GQuery $(@SuppressWarnings("rawtypes") ArrayList a) {
     JSArray elements = JSArray.create();
-    for (Object o : a ) {
-      if (o instanceof Node) {
-        elements.addNode((Node)o);
-      } else if (o instanceof Widget) {
-        elements.addNode(((Widget)o).getElement());
+    if (a != null) {
+      for (Object o : a ) {
+        if (o instanceof Node) {
+          elements.addNode((Node)o);
+        } else if (o instanceof Widget) {
+          elements.addNode(((Widget)o).getElement());
+        }
       }
     }
     return new GQuery(elements);
@@ -347,7 +349,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing widget.
    */
   public static GQuery $(Widget w){
-    return $(w.getElement());
+    return w == null ? $() : $(w.getElement());
   }
 
   /**
@@ -544,30 +546,35 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $wnd;
   }-*/;
 
-  protected NodeList<Element> elements = null;
+  protected NodeList<Element> elements = JavaScriptObject.createArray().cast();
 
   private String currentSelector;
 
   private GQuery previousObject;
 
   public GQuery() {
-    elements = JavaScriptObject.createArray().cast();
   }
 
   public GQuery(Element element) {
-    elements = JSArray.create(element);
+    if (element != null) {
+      elements =  JSArray.create(element);
+    }
   }
 
   public GQuery(GQuery gq) {
-    this(gq.get());
+    this(gq == null ? null : gq.get());
   }
 
   public GQuery(JSArray elements) {
-    this.elements = elements;
+    if (elements != null) {
+      this.elements = elements;
+    }
   }
 
   public GQuery(NodeList<Element> list) {
-    elements = list;
+    if (list != null) {
+      elements = list;
+    }
   }
 
   /**
@@ -1190,7 +1197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Reduce GQuery to element in the specified position.
    */
   public GQuery eq(int pos) {
-    return $(elements.getItem(pos));
+    return $(get(pos));
   }
 
   /**
@@ -1316,7 +1323,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return the ith element matched.
    */
   public Element get(int i) {
-    return elements.getItem(i);
+    int l = elements.getLength();
+    return i >= 0 && i < l? elements.getItem(i) : null;
   }
 
   /**
