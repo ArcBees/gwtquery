@@ -86,16 +86,15 @@ public class GwtQueryWidgetModule implements EntryPoint {
     
     $("#tabs").as(Widgets).tabPanel();
     
-    // IDE suggestions are not available with this syntax. 
+    // IDE suggestions are not available with this syntax. -> I agree
     // Also it implies that the css method in GQuery needs more overloads
-    $("#aaa").css(CSS.POSITION, Position.ABSOLUTE);
-    $("#aaa").css(CSS.TOP, Length.cm(15));
-    $("#aaa").css(CSS.BACKGROUND, RGBColor.RED, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER);
+    // $("#aaa").css(CSS.POSITION, Position.ABSOLUTE);
+    // $("#aaa").css(CSS.TOP, Length.cm(15));
+    // $("#aaa").css(CSS.BACKGROUND, RGBColor.RED, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER);
     
-    // With this syntax IDE gives more help
-    // We could overload the with method in each CssProperty without adding more methods to GQuery
-    $("#aaa").css(CSS.TOP.with(Length.cm(15)));
-    $("#aaa").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
+    $("#aaa").setCss(CSS.TOP.with(Length.cm(15)));
+    $("#aaa").setCss(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
+    $("#aaa").setCss(CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
   }
   
   private ButtonOptions createButtonOptions(){
