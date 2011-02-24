@@ -33,13 +33,11 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.CssProperty;
-import com.google.gwt.query.client.css.CssShorthandProperty3;
-import com.google.gwt.query.client.css.CssShorthandProperty4;
-import com.google.gwt.query.client.css.CssShorthandProperty5;
-import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.TakeCssValue;
-import com.google.gwt.query.client.css.TakesLength;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -327,11 +325,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    */
   LazyGQuery<T> css(String prop, String val);
 
-  /**
-   * Set CSS a single style property on every matched element using type-safe
-   * enumerations.
-   */
-  <S, T extends TakeCssValue<S>> LazyGQuery<T> css(T cssProperty, S value);
+  // <S, T extends TakeCssValue<S>> LazyGQuery<T> css(T cssProperty, S value);
 
   /**
    * Set CSS a single style property on every matched element using type-safe
@@ -345,33 +339,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    */
   LazyGQuery<T> css(TakeCssValue<?> cssProperty, String value);
 
-  /**
-   * Set CSS a single style property on every matched element using type-safe
-   * enumerations.
-   */
-  LazyGQuery<T> css(TakesLength cssProperty, Length value);
+  // LazyGQuery<T> css(TakesLength cssProperty, Length value);
 
-  /**
-   * Set a shorthand style property taking 3 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
-   * BorderStyle.DASHED, RGBColor.BLACK);
-   */
-  <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> LazyGQuery<T> css( T cssProperty, X value1, Y value2, Z value3);
+  // <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> LazyGQuery<T> css( // T cssProperty, X value1, Y value2, Z value3);
 
-  /**
-   * Set a shorthand style property taking 3 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
-   * BorderStyle.DASHED, RGBColor.BLACK);
-   */
-  <W, X, Y, Z, T extends CssShorthandProperty4<W, X, Y, Z>> LazyGQuery<T> css( T cssProperty, W value0, X value1, Y value2, Z value3);
+  // <W, X, Y, Z, T extends CssShorthandProperty4<W, X, Y, Z>> LazyGQuery<T> css( // T cssProperty, W value0, X value1, Y value2, Z value3);
 
-  /**
-   * Set a shorthand style property taking 5 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
-   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
-   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
-   */
-  <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> LazyGQuery<T> css( T cssProperty, V value1, W value2, X value3, Y value4, Z value5);
+  // <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> LazyGQuery<T> css( // T cssProperty, V value1, W value2, X value3, Y value4, Z value5);
 
   /**
    * Returns the numeric value of a css property.
@@ -1058,33 +1032,29 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> setArray(NodeList<Element> nodes);
 
   /**
-   * Set CSS property on the first element.
-   */
-  <S, T extends TakeCssValue<S>> LazyGQuery<T> setCss(T cssProperty, S value);
-
-  /**
-   * Set CSS property on first matched element using type-safe enumerations.
-   */
-  LazyGQuery<T> setCss(TakesLength cssProperty, Length value);
-
-  /**
-   * Set a multiple style property on first matched element using type-safe
+   * Set CSS a single style property on every matched element using type-safe
    * enumerations.
    * 
-   * ex : $("#id").css(CSS.BORDER, BorderWidth.thick(), BorderStyle.DASHED,
-   * RGBColor.BLACK);
-   */
-  <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> LazyGQuery<T> setCss( T cssProperty, X value1, Y value2, Z value3);
-
-  /**
-   * Set a multiple style property on first matched element using type-safe
-   * enumerations.
+   * The best way to use this method (i.e. to generate a CssSetter) is to take
+   * the desired css property defined in {@link CSS} class and call the
+   * {@link TakeCssValue#with(HasCssName)} method on it.
    * 
-   * ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
-   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
-   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+   *  ex :
+   *  
+   *  $("#myDiv").css(CSS.TOP.with(Length.cm(15)));
+   *  $("#myDiv").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
+   *  $("#myDiv").css(CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
+   * 
    */
-  <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> LazyGQuery<T> setCss( T cssProperty, V value1, W value2, X value3, Y value4, Z value5);
+  LazyGQuery<T> setCss(CssSetter cssSetter);
+
+  // <S, T extends TakeCssValue<S>> LazyGQuery<T> setCss(T cssProperty, S value);
+
+  // LazyGQuery<T> setCss(TakesLength cssProperty, Length value);
+
+  // <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> LazyGQuery<T> setCss( // T cssProperty, X value1, Y value2, Z value3);
+
+  // <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> LazyGQuery<T> setCss( // T cssProperty, V value1, W value2, X value3, Y value4, Z value5);
 
   void setPreviousObject(GQuery previousObject);
 

@@ -16,18 +16,17 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
  * The margin property sets the margins of an element.
  */
 public class MarginProperty extends AbstractCssProperty<Length> {
 
-  public static class ShorthandMarginProperty implements CssShorthandProperty4<Length, Length, Length, Length>{
+  public static class ShorthandMarginProperty implements CssProperty {
 
-    private  ShorthandMarginProperty() {
+    private ShorthandMarginProperty() {
     }
-    
+
     public String get(Style s) {
       return s.getMargin();
     }
@@ -36,18 +35,15 @@ public class MarginProperty extends AbstractCssProperty<Length> {
       return MARGIN_PROPERTY;
     }
 
-    public void set(Style s, Length margin1, Length margin2, Length margin3,
+    public CssSetter with(Length margin1, Length margin2, Length margin3,
         Length margin4) {
-      String margin = notNull(margin1)+notNull(margin2)+notNull(margin3)+notNull(margin4);
-      s.setProperty(MARGIN_PROPERTY, margin.trim());
-      
+      return new MultipleValueCssSetter(getCssName(), margin1, margin2,
+          margin3, margin4);
+
     }
-    
-    private String notNull(HasCssName value) {
-      return value != null ? value.getCssName() + " " : "";
-    }
-    
+
   }
+
   private static String MARGIN_BOTTOM_PROPERTY = "marginBottom";
   private static String MARGIN_LEFT_PROPERTY = "marginLeft";
   private static String MARGIN_PROPERTY = "margin";

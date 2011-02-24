@@ -15,9 +15,7 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * The <i>border-width</i> property specifies the width of the border of a box.
@@ -28,52 +26,26 @@ public class BorderWidthProperty extends
   /**
    * Object allowing to specify a width of a line
    */
-  public static class LineWidth implements HasCssName {
+  public static enum LineWidth implements HasCssName {
 
     /**
      * Define a medium border.
      */
-    public static LineWidth MEDIUM;
+    MEDIUM,
 
     /**
      * Define a thick border.
      */
-    public static LineWidth THICK;
+    THICK,
 
     /**
      * Define a thin border.
      */
-    public static LineWidth THIN;
+    THIN;
 
-    static {
-      MEDIUM = new LineWidth("medium");
-      THICK = new LineWidth("thick");
-      THIN = new LineWidth("thin");
-
-    }
-
-    /**
-     * Return a {@link LineWidth} defining by an explicit value.
-     */
-    public static LineWidth length(int l, Unit unit) {
-      return new LineWidth("" + l + (unit != null ? unit.getType() : ""));
-    }
-
-    /**
-     * Return a {@link LineWidth} defining by a {@link Length}
-     */
-    public static LineWidth length(Length l) {
-      return new LineWidth(l.getCssName());
-    }
-
-    private String cssValue;
-
-    private LineWidth(String value) {
-      cssValue = value;
-    }
 
     public String getCssName() {
-      return cssValue;
+      return name().toLowerCase();
     }
 
   }
@@ -98,8 +70,7 @@ public class BorderWidthProperty extends
     super(value);
   }
 
-  public void set(Style s, Length p) {
-    s.setProperty(getCssName(), p.getCssName());
-
+  public CssSetter with(Length value) {
+    return new LengthCssSetter(value);
   }
 }

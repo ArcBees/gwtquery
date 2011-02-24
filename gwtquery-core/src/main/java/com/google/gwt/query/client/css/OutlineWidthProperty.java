@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
 
 /**
@@ -35,9 +34,8 @@ public class OutlineWidthProperty extends AbstractCssProperty<LineWidth>
   private OutlineWidthProperty() {
     super(CSS_PROPERTY);
   }
-
-  public void set(Style s, Length p) {
-    s.setProperty(CSS_PROPERTY, p.getCssName());
-
+  
+  public CssSetter with(Length value) {
+    return new LengthCssSetter(value);
   }
 }

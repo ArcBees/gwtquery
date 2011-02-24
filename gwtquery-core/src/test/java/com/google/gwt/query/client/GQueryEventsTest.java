@@ -192,7 +192,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $(e).click();
     assertEquals("red", $(e).css("color"));
 
-    $(e).click(lazy().css(CSS.COLOR, RGBColor.BLACK).done());
+    $(e).click(lazy().setCss(CSS.COLOR.with(RGBColor.BLACK)).done());
     $(e).click();
     assertEquals("black", $(e).css("color"));
   }

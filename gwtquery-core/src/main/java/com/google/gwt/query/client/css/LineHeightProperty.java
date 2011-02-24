@@ -48,5 +48,9 @@ public class LineHeightProperty extends AbstractCssProperty<CssNumber>
     s.setProperty(CSS_PROPERTY, p.getCssName());
 
   }
+  
+  public CssSetter with(Length value) {
+    return new LengthCssSetter(value);
+  }
 
 }

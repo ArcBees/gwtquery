@@ -33,7 +33,4 @@ public class EdgePositionProperty extends AbstractCssProperty<Length> {
     super(value);
   }
   
-  public Properties with(Length value) {
-    return Properties.create(getCssName() + ":'" + value.getCssName() + "'");
-  }
 }

@@ -16,9 +16,9 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 
 /**
  * The <i>border</i> property is a shorthand property for setting the same
@@ -29,8 +29,7 @@ import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
  * 
  * 
  */
-public class BorderProperty implements
-    CssShorthandProperty3<LineWidth, LineStyle, RGBColor> {
+public class BorderProperty implements CssProperty {
 
   private static final String BORDER_BOTTOM_PROPERTY = "borderBottom";
   private static final String BORDER_LEFT_PROPERTY = "borderLeft";
@@ -64,15 +63,14 @@ public class BorderProperty implements
     return cssProperty;
   }
 
-  public void set(Style s, LineWidth borderWidth, LineStyle borderStyle,
+  public CssSetter with(LineWidth borderWidth, LineStyle borderStyle,
       RGBColor borderColor) {
-    String value = notNull(borderWidth) + notNull(borderStyle)
-        + notNull(borderColor).trim();
-    s.setProperty(cssProperty, value);
+    return new MultipleValueCssSetter(getCssName(), borderWidth, borderStyle, borderColor);
   }
-
-  private String notNull(HasCssName value) {
-    return value != null ? value.getCssName() + " " : "";
+  
+  public CssSetter with(Length borderWidth, LineStyle borderStyle,
+      RGBColor borderColor) {
+    return new MultipleValueCssSetter(getCssName(), borderWidth, borderStyle, borderColor);
   }
 
 }

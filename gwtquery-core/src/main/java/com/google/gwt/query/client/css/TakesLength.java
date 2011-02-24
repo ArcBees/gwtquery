@@ -15,7 +15,7 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 
 /**
  * Interface to be implemented by properties which take length units in addition
@@ -24,5 +24,5 @@ import com.google.gwt.dom.client.Style;
  */
 public interface TakesLength {
 
-  void set(Style s, Length p);
+  CssSetter with(Length value);
 }

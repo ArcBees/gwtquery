@@ -16,11 +16,10 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 
 /**
  * The <i>'background'</i> property is a shorthand property for setting the
@@ -30,9 +29,7 @@ import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat
  * place in the style sheet.
  * 
  */
-public class BackgroundProperty
-    implements
-    CssShorthandProperty5<RGBColor, ImageValue, BackgroundRepeat, BackgroundAttachment, BackgroundPosition> {
+public class BackgroundProperty implements CssProperty {
 
   private static final String CSS_PROPERTY = "background";
 
@@ -56,31 +53,13 @@ public class BackgroundProperty
     return CSS_PROPERTY;
   }
 
-  public void set(Style s, RGBColor backgroundColor,
+  public CssSetter with(final RGBColor backgroundColor,
       ImageValue backgroundImage, BackgroundRepeat backgroundRepeat,
       BackgroundAttachment backgroundAttachment,
       BackgroundPosition backgroundPosition) {
 
-    String value = notNull(backgroundColor) + notNull(backgroundImage)
-        + notNull(backgroundRepeat) + notNull(backgroundAttachment)
-        + notNull(backgroundPosition).trim();
-    s.setProperty(CSS_PROPERTY, value);
-
+    return new MultipleValueCssSetter(CSS_PROPERTY, backgroundColor,
+        backgroundImage, backgroundRepeat, backgroundAttachment,
+        backgroundPosition);
   }
-
-  private String notNull(HasCssName value) {
-    return value != null ? value.getCssName() + " " : "";
-  }
-  
-  public Properties with(RGBColor backgroundColor,
-      ImageValue backgroundImage, BackgroundRepeat backgroundRepeat,
-      BackgroundAttachment backgroundAttachment,
-      BackgroundPosition backgroundPosition) {
-    String s = getCssName() + ": \""  
-      + notNull(backgroundColor) + notNull(backgroundImage)
-      + notNull(backgroundRepeat) + notNull(backgroundAttachment)
-      + notNull(backgroundPosition).trim() +  "\"";
-    return Properties.create(s);
-  }
-
 }

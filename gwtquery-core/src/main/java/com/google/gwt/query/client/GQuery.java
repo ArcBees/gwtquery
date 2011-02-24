@@ -35,13 +35,11 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.CssProperty;
-import com.google.gwt.query.client.css.CssShorthandProperty3;
-import com.google.gwt.query.client.css.CssShorthandProperty4;
-import com.google.gwt.query.client.css.CssShorthandProperty5;
-import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.TakeCssValue;
-import com.google.gwt.query.client.css.TakesLength;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.plugins.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -1006,16 +1004,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  /**
-   * Set CSS a single style property on every matched element using type-safe
-   * enumerations.
-   */
-  public <S, T extends TakeCssValue<S>> GQuery css(T cssProperty, S value) {
-    for (Element e : elements()) {
-      cssProperty.set(e.getStyle(), value);
-    }
-    return this;
-  }
+//  /**
+//   * Set CSS a single style property on every matched element using type-safe
+//   * enumerations.
+//   */
+//  public <S, T extends TakeCssValue<S>> GQuery css(T cssProperty, S value) {
+//    for (Element e : elements()) {
+//      cssProperty.set(e.getStyle(), value);
+//    }
+//    return this;
+//  }
   
   /**
    * Set CSS a single style property on every matched element using type-safe
@@ -1031,56 +1029,57 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return css(cssProperty.getCssName(), value);
   }
 
-  /**
-   * Set CSS a single style property on every matched element using type-safe
-   * enumerations.
-   */
-  public GQuery css(TakesLength cssProperty, Length value) {
-    for (Element e : elements()) {
-      cssProperty.set(e.getStyle(), value);
-    }
-    return this;
-  }
-
-  /**
-   * Set a shorthand style property taking 3 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
-   * BorderStyle.DASHED, RGBColor.BLACK);
-   */
-  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery css(
-      T cssProperty, X value1, Y value2, Z value3) {
-    for (Element e : elements()) {
-      cssProperty.set(e.getStyle(), value1, value2, value3);
-    }
-    return this;
-  }
-  
-  /**
-   * Set a shorthand style property taking 3 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
-   * BorderStyle.DASHED, RGBColor.BLACK);
-   */
-  public <W, X, Y, Z, T extends CssShorthandProperty4<W, X, Y, Z>> GQuery css(
-      T cssProperty, W value0, X value1, Y value2, Z value3) {
-    for (Element e : elements()) {
-      cssProperty.set(e.getStyle(), value0, value1, value2, value3);
-    }
-    return this;
-  }
-
-  /**
-   * Set a shorthand style property taking 5 values on every matched element using type-safe
-   * enumerations. ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
-   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
-   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
-   */
-  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery css(
-      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
-    for (Element e : elements()) {
-      cssProperty.set(e.getStyle(), value1, value2, value3, value4, value5);
-    }
-    return this;
-  }
+//  /**
+//   * Set CSS a single style property on every matched element using type-safe
+//   * enumerations.
+//   * 
+//   */
+//  public GQuery css(TakesLength cssProperty, Length value) {
+//    for (Element e : elements()) {
+//      cssProperty.set(e.getStyle(), value);
+//    }
+//    return this;
+//  }
+//
+//  /**
+//   * Set a shorthand style property taking 3 values on every matched element using type-safe
+//   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
+//   * BorderStyle.DASHED, RGBColor.BLACK);
+//   */
+//  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery css(
+//      T cssProperty, X value1, Y value2, Z value3) {
+//    for (Element e : elements()) {
+//      cssProperty.set(e.getStyle(), value1, value2, value3);
+//    }
+//    return this;
+//  }
+//  
+//  /**
+//   * Set a shorthand style property taking 3 values on every matched element using type-safe
+//   * enumerations. ex : $("#id").css(CSS.BORDER, BorderWidth.thick(),
+//   * BorderStyle.DASHED, RGBColor.BLACK);
+//   */
+//  public <W, X, Y, Z, T extends CssShorthandProperty4<W, X, Y, Z>> GQuery css(
+//      T cssProperty, W value0, X value1, Y value2, Z value3) {
+//    for (Element e : elements()) {
+//      cssProperty.set(e.getStyle(), value0, value1, value2, value3);
+//    }
+//    return this;
+//  }
+//
+//  /**
+//   * Set a shorthand style property taking 5 values on every matched element using type-safe
+//   * enumerations. ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
+//   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
+//   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+//   */
+//  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery css(
+//      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
+//    for (Element e : elements()) {
+//      cssProperty.set(e.getStyle(), value1, value2, value3, value4, value5);
+//    }
+//    return this;
+//  }
 
   /**
    * Returns the numeric value of a css property.
@@ -2251,49 +2250,67 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Set CSS property on the first element.
-   */
-  public <S, T extends TakeCssValue<S>> GQuery setCss(T cssProperty, S value) {
-    cssProperty.set(elements.getItem(0).getStyle(), value);
-    return this;
-  }
-
-  /**
-   * Set CSS property on first matched element using type-safe enumerations.
-   */
-  public GQuery setCss(TakesLength cssProperty, Length value) {
-    cssProperty.set(elements.getItem(0).getStyle(), value);
-    return this;
-  }
-
-  /**
-   * Set a multiple style property on first matched element using type-safe
+   * Set CSS a single style property on every matched element using type-safe
    * enumerations.
    * 
-   * ex : $("#id").css(CSS.BORDER, BorderWidth.thick(), BorderStyle.DASHED,
-   * RGBColor.BLACK);
-   */
-  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery setCss(
-      T cssProperty, X value1, Y value2, Z value3) {
-    cssProperty.set(get(0).getStyle(), value1, value2, value3);
-
-    return this;
-  }
-
-  /**
-   * Set a multiple style property on first matched element using type-safe
-   * enumerations.
+   * The best way to use this method (i.e. to generate a CssSetter) is to take
+   * the desired css property defined in {@link CSS} class and call the
+   * {@link TakeCssValue#with(HasCssName)} method on it.
    * 
-   * ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
-   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
-   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+   *  ex :
+   *  
+   *  $("#myDiv").css(CSS.TOP.with(Length.cm(15)));
+   *  $("#myDiv").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
+   *  $("#myDiv").css(CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
+   * 
    */
-  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery setCss(
-      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
-    cssProperty.set(get(0).getStyle(), value1, value2, value3, value4, value5);
-
+  public GQuery setCss(CssSetter cssSetter) {
+    for (Element e : elements()) {
+      cssSetter.applyCss(e);
+    }
     return this;
   }
+//  public <S, T extends TakeCssValue<S>> GQuery setCss(T cssProperty, S value) {
+//    cssProperty.set(elements.getItem(0).getStyle(), value);
+//    return this;
+//  }
+//
+//  /**
+//   * Set CSS property on first matched element using type-safe enumerations.
+//   */
+//  public GQuery setCss(TakesLength cssProperty, Length value) {
+//    cssProperty.set(elements.getItem(0).getStyle(), value);
+//    return this;
+//  }
+//
+//  /**
+//   * Set a multiple style property on first matched element using type-safe
+//   * enumerations.
+//   * 
+//   * ex : $("#id").css(CSS.BORDER, BorderWidth.thick(), BorderStyle.DASHED,
+//   * RGBColor.BLACK);
+//   */
+//  public <X, Y, Z, T extends CssShorthandProperty3<X, Y, Z>> GQuery setCss(
+//      T cssProperty, X value1, Y value2, Z value3) {
+//    cssProperty.set(get(0).getStyle(), value1, value2, value3);
+//
+//    return this;
+//  }
+//
+//  /**
+//   * Set a multiple style property on first matched element using type-safe
+//   * enumerations.
+//   * 
+//   * ex : $("#id").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
+//   * BackgroundImage.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
+//   * BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);
+//   */
+//  public <V, W, X, Y, Z, T extends CssShorthandProperty5<V, W, X, Y, Z>> GQuery setCss(
+//      T cssProperty, V value1, W value2, X value3, Y value4, Z value5) {
+//    cssProperty.set(get(0).getStyle(), value1, value2, value3, value4, value5);
+//
+//    return this;
+//  }
 
   public void setPreviousObject(GQuery previousObject) {
     this.previousObject = previousObject;

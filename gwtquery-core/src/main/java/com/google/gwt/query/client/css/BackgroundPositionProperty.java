@@ -136,6 +136,14 @@ public class BackgroundPositionProperty extends
       BOTTOM = new BackgroundPosition(BOTTOM_VALUE);
 
     }
+    
+    /**
+     * Return a {@link BackgroundPosition} by specifying the horizontal and
+     * vertical position. Pixel will be used as Unit
+     */
+    public static BackgroundPosition position(int xpos, int ypos) {
+      return position(xpos, ypos, Unit.PX);
+    }
 
     /**
      * Return a {@link BackgroundPosition} by specifying the horizontal and

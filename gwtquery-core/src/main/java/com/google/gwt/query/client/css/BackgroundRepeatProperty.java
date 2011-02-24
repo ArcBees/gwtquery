@@ -53,11 +53,7 @@ public class BackgroundRepeatProperty extends
   }
 
   private static final String CSS_PROPERTY = "backgroundRepeat";
-  /*private static final String NO_REPEAT_VALUE = "no-repeat";
-  private static final String REPEAT_VALUE = "repeat";
-  private static final String REPEAT_X_VALUE = "repeat-x";
 
-  private static final String REPEAT_Y_VALUE = "repeat-y";*/
 
   public static void init() {
     CSS.BACKGROUND_REPEAT = new BackgroundRepeatProperty();

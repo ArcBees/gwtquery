@@ -16,17 +16,16 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.Style.ListStyleType;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 
 /**
  * The <i>list-style</i> property is a shorthand notation for setting the three
  * properties <i>list-style-type</i>, <i>list-style-image</i>, and
  * <i>list-style-position</i> at the same place in the style sheet.
  */
-public class ListStyleProperty implements
-    CssShorthandProperty3<ListStyleType, ListStylePosition, ImageValue> {
+public class ListStyleProperty implements CssProperty {
 
   private static final String CSS_PROPERTY = "listStyle";
 
@@ -48,15 +47,10 @@ public class ListStyleProperty implements
     return CSS_PROPERTY;
   }
 
-  public void set(Style s, ListStyleType listStyleType,
+  public CssSetter with(ListStyleType listStyleType,
       ListStylePosition listStylePosition, ImageValue listStyleImage) {
-    String value = notNull(listStyleType) + notNull(listStylePosition)
-        + notNull(listStyleImage).trim();
-    s.setProperty(CSS_PROPERTY, value);
-  }
-
-  private String notNull(HasCssName value) {
-    return value != null ? value.getCssName() + " " : "";
+    return new MultipleValueCssSetter(CSS_PROPERTY, listStyleType,
+        listStylePosition, listStyleImage);
   }
 
 }

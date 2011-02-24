@@ -16,7 +16,6 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
  * The padding properties define the space between the element border and the
@@ -24,16 +23,16 @@ import com.google.gwt.dom.client.Style.HasCssName;
  */
 public class PaddingProperty extends AbstractCssProperty<Length> {
 
-  public static class ShorthandPaddingProperty implements CssShorthandProperty4<Length, Length, Length, Length>{
+  public static class ShorthandPaddingProperty implements CssProperty {
 
-    private  ShorthandPaddingProperty() {
+    private ShorthandPaddingProperty() {
     }
-    
-    public void set(Style s, Length margin1, Length margin2, Length margin3,
-        Length margin4) {
-      String margin = notNull(margin1)+notNull(margin2)+notNull(margin3)+notNull(margin4);
-      s.setProperty(PADDING_PROPERTY, margin.trim());
-      
+
+    public CssSetter with(Length padding1, Length padding2, Length padding3,
+        Length padding4) {
+      return new MultipleValueCssSetter(getCssName(), padding1, padding2,
+          padding3, padding4);
+
     }
 
     public String get(Style s) {
@@ -43,13 +42,9 @@ public class PaddingProperty extends AbstractCssProperty<Length> {
     public String getCssName() {
       return PADDING_PROPERTY;
     }
-    
-    private String notNull(HasCssName value) {
-      return value != null ? value.getCssName() + " " : "";
-    }
-    
+
   }
-  
+
   private static String PADDING_BOTTOM_PROPERTY = "paddingBottom";
   private static String PADDING_LEFT_PROPERTY = "paddingLeft";
   private static String PADDING_PROPERTY = "padding";

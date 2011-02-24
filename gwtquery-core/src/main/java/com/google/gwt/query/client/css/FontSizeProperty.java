@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
@@ -88,11 +87,7 @@ public class FontSizeProperty extends
     super(CSS_PROPERTY);
   }
 
-  /**
-   * Sets the font-size to a fixed size in px, cm,..
-   */
-  public void set(Style s, Length p) {
-    s.setProperty(CSS_PROPERTY, p.getCssName());
-
+  public CssSetter with(Length value) {
+    return new LengthCssSetter(value);
   }
 }

@@ -16,9 +16,9 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
 
 /**
  * An outline is a line that is drawn around elements (outside the borders) to
@@ -28,7 +28,7 @@ import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
  * declaration.
  */
 public class OutlineProperty implements
-    CssShorthandProperty3<RGBColor, LineStyle, LineWidth> {
+    CssProperty{
 
   private static final String CSS_PROPERTY = "outline";
 
@@ -50,15 +50,15 @@ public class OutlineProperty implements
     return CSS_PROPERTY;
   }
 
-  public void set(Style s, RGBColor outlineColor, LineStyle outlineStyle,
+  public CssSetter with(RGBColor outlineColor, LineStyle outlineStyle,
       LineWidth outlineWidth) {
-    String value = notNull(outlineColor) + notNull(outlineStyle)
-        + notNull(outlineWidth).trim();
-    s.setProperty(CSS_PROPERTY, value);
+    return new MultipleValueCssSetter(CSS_PROPERTY, outlineColor, outlineStyle, outlineWidth);
   }
 
-  private String notNull(HasCssName value) {
-    return value != null ? value.getCssName() + " " : "";
+  public CssSetter with(RGBColor outlineColor, LineStyle outlineStyle,
+      Length outlineWidth) {
+    return new MultipleValueCssSetter(CSS_PROPERTY, outlineColor, outlineStyle, outlineWidth);
   }
+
 
 }

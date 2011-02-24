@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.css;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
 
@@ -25,9 +26,39 @@ import com.google.gwt.dom.client.Style.HasCssName;
  */
 public abstract class AbstractCssProperty<T extends HasCssName> implements
     TakeCssValue<T> {
-  private String cssName;
+
+  protected class CssSetterImpl implements CssSetter {
+
+    private T cssValue;
+
+    public CssSetterImpl(T cssValue) {
+
+      this.cssValue = cssValue;
+    }
+
+    public void applyCss(Element e) {
+      assert e != null : "Impossible to apply css to a null object";
+      set(e.getStyle(), cssValue);
+    }
+  }
   
-  protected AbstractCssProperty(String cssName){
+  protected class LengthCssSetter implements CssSetter{
+    
+    private Length length;
+    
+    public LengthCssSetter(Length length) {
+      this.length = length;
+    }
+      
+    public void applyCss(Element e) {
+      assert e != null : "Impossible to apply css to a null object";
+      e.getStyle().setProperty(getCssName(), length.getCssName());   
+    }
+  }
+
+  private String cssName;
+
+  protected AbstractCssProperty(String cssName) {
     this.cssName = cssName;
   }
 
@@ -35,11 +66,15 @@ public abstract class AbstractCssProperty<T extends HasCssName> implements
     return s.getProperty(getCssName());
   }
 
-  public String getCssName(){
+  public String getCssName() {
     return cssName;
   }
 
   public void set(Style s, T value) {
     s.setProperty(getCssName(), value.getCssName());
+  }
+
+  public CssSetter with(T value) {
+    return new CssSetterImpl(value);
   }
 }

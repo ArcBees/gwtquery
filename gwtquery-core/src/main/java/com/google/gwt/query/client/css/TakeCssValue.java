@@ -15,18 +15,19 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
  * An CSS property with values of type T.
  */
-public interface TakeCssValue<T> extends CssProperty {
+public interface TakeCssValue<T extends HasCssName> extends CssProperty {
 
-  /**
-   * Set the style to the given value.
-   * 
-   * @param value a value from the enumerated type T
-   */
-  void set(Style s, T value);
+  public interface CssSetter {
+    public void applyCss(Element e);
+  }
+
+
+  CssSetter with(T value);
 
 }
