@@ -526,6 +526,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
     return array;
   }-*/;
+  
+  private static native void scrollIntoViewImpl(Node n) /*-{
+    if (n) n.scrollIntoView()
+  }-*/;
 
   private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
     return nl;
@@ -2173,6 +2177,31 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery scroll(Function...f) {
     return bindOrFire(Event.ONSCROLL, null, f);
   }
+  
+  /**
+   * Scrolls the first matched element into view.
+   */
+  public GQuery scrollIntoView() {
+    scrollIntoViewImpl(get(0));
+    return this;
+  }
+
+  /**
+   * Scrolls the first matched element into view.
+   * 
+   * If ensure == true, it crawls up the DOM hierarchy, adjusting the scrollLeft and
+   * scrollTop properties of each scroll-able element to ensure that the
+   * specified element is completely in view. It adjusts each scroll position by
+   * the minimum amount necessary. 
+   */
+  public GQuery scrollIntoView(boolean ensure) {
+    if (ensure) {
+      DOM.scrollIntoView((com.google.gwt.user.client.Element)get(0));
+    } else {
+      scrollIntoView();
+    }
+    return this;
+  }
 
   /**
    * Gets the scroll left offset of the first matched element. This method works
@@ -2190,7 +2219,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * When a value is passed in, the scroll left offset is set to that value on
+   * The scroll left offset is set to the passed value on
    * all matched elements. This method works for both visible and hidden
    * elements.
    */
@@ -2202,6 +2231,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         e.setPropertyInt("scrollLeft", left);
       }
     }
+    return this;
+  }
+  
+  /**
+   * 
+   * Scrolls the contents of all matched elements to the specified co-ordinate 
+   * becoming the top left corner of the viewable area. 
+   * 
+   * This method is only useful where there are areas of the document not viewable within 
+   * the current viewable area of the window and the visible property 
+   * of the window's scrollbar must be set to true. 
+   * 
+   */
+  public GQuery scrollTo(int left, int top) {
+    scrollLeft(left).scrollTop(top);
     return this;
   }
 
@@ -2221,7 +2265,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * When a value is passed in, the scroll top offset is set to that value on
+   * The scroll top offset is set to the passed value on
    * all matched elements. This method works for both visible and hidden
    * elements.
    */

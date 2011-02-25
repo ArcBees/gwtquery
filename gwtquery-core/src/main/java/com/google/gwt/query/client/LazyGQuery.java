@@ -998,17 +998,44 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> scroll(Function...f);
 
   /**
+   * Scrolls the first matched element into view.
+   */
+  LazyGQuery<T> scrollIntoView();
+
+  /**
+   * Scrolls the first matched element into view.
+   * 
+   * If ensure == true, it crawls up the DOM hierarchy, adjusting the scrollLeft and
+   * scrollTop properties of each scroll-able element to ensure that the
+   * specified element is completely in view. It adjusts each scroll position by
+   * the minimum amount necessary. 
+   */
+  LazyGQuery<T> scrollIntoView(boolean ensure);
+
+  /**
    * Gets the scroll left offset of the first matched element. This method works
    * for both visible and hidden elements.
    */
   int scrollLeft();
 
   /**
-   * When a value is passed in, the scroll left offset is set to that value on
+   * The scroll left offset is set to the passed value on
    * all matched elements. This method works for both visible and hidden
    * elements.
    */
   LazyGQuery<T> scrollLeft(int left);
+
+  /**
+   * 
+   * Scrolls the contents of all matched elements to the specified co-ordinate 
+   * becoming the top left corner of the viewable area. 
+   * 
+   * This method is only useful where there are areas of the document not viewable within 
+   * the current viewable area of the window and the visible property 
+   * of the window's scrollbar must be set to true. 
+   * 
+   */
+  LazyGQuery<T> scrollTo(int left, int top);
 
   /**
    * Gets the scroll top offset of the first matched element. This method works
@@ -1017,7 +1044,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   int scrollTop();
 
   /**
-   * When a value is passed in, the scroll top offset is set to that value on
+   * The scroll top offset is set to the passed value on
    * all matched elements. This method works for both visible and hidden
    * elements.
    */
