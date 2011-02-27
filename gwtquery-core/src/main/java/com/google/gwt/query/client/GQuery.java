@@ -19,6 +19,12 @@ import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -33,9 +39,9 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.CssProperty;
 import com.google.gwt.query.client.css.TakeCssValue;
@@ -47,11 +53,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -353,9 +354,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Wrap a GQuery around a array of existing widget.
    */
-  public static GQuery $(Widget... widgetArray){
+  public static <T extends Widget> GQuery $(T... widgets){
+    return $(Arrays.asList(widgets));
+  }
+
+  /**
+   * Wrap a GQuery around a List of existing widget.
+   */
+  public static <T extends Widget> GQuery $(List<T> widgets){
     JSArray elements = JSArray.create();
-    for (Widget w : widgetArray){
+    for (Widget w : widgets){
       elements.addNode(w.getElement());
     }
     return $(elements);
@@ -1008,16 +1016,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-//  /**
-//   * Set CSS a single style property on every matched element using type-safe
-//   * enumerations.
-//   */
-//  public <S, T extends TakeCssValue<S>> GQuery css(T cssProperty, S value) {
-//    for (Element e : elements()) {
-//      cssProperty.set(e.getStyle(), value);
-//    }
-//    return this;
-//  }
+  /**
+   * Set CSS a single style property on every matched element using type-safe
+   * enumerations.
+   * 
+   * @deprecated use css(TakeCssValue.with(...)) instead
+   */
+  @Deprecated
+  public <S extends HasCssName, T extends TakeCssValue<S>> GQuery css(T cssProperty, S value) {
+    return setCss(cssProperty.with(value));
+  }
   
   /**
    * Set CSS a single style property on every matched element using type-safe
@@ -2722,6 +2730,30 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
    return widgets;
+  }
+
+  /**
+   * Return the list of attached widgets instance of the provided class matching the query.
+   * 
+   * This method is very useful for decoupled views, so as we can access widgets from other
+   * views without maintaining methods which export them.
+   *  
+   */
+  @SuppressWarnings("unchecked")
+  public <W extends Widget> List<W> widgets(Class<W> clazz) {
+    List<W> ret = new ArrayList<W>();
+    for (Widget w: widgets()) {
+      // isAssignableFrom does not work in gwt.
+      Class<?> c = w.getClass();
+      do {
+        if (c.equals(clazz)) {
+          ret.add((W)w);
+          break;
+        }
+        c = c.getSuperclass();
+      } while (c != null);
+    }
+   return ret;
   }
 
   /**

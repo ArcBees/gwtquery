@@ -25,6 +25,7 @@ import junit.framework.Assert;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -33,8 +34,9 @@ import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.dom.client.Node;
+import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -784,9 +786,11 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(true, isAttachedToTheDOM);
   }
   
+  @SuppressWarnings("unchecked")
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);
+    
     GQuery g = $(b1);
     Button b2 = (Button) g.asWidget();
     assertEquals(b1, b2);
@@ -800,6 +804,13 @@ public class GQueryCoreTest extends GWTTestCase {
     
     (b2).click();
     assertEquals("red", $(b1).css("color"));
+    
+    $("<button>Click-me</button>").appendTo(document);
+    assertEquals(3, $("button").size());
+    assertEquals(2, $("button").widgets(Button.class).size());
+    assertEquals(2, $($("button").widgets(Button.class)).size());
+    
+    assertEquals(2, $(new Label(""), new TextArea()).size());
   }
   
   public void testGQueryMap() {
