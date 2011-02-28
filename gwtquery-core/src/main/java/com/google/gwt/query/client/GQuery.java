@@ -344,17 +344,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return gq;
   }
 
-  /**
-   * Wrap a GQuery around an existing widget.
-   */
-  public static GQuery $(Widget w){
-    return w == null ? $() : $(w.getElement());
-  }
 
   /**
-   * Wrap a GQuery around a array of existing widget.
+   * Wrap a GQuery around one widget or an array of existing ones.
    */
-  public static <T extends Widget> GQuery $(T... widgets){
+  public static GQuery $(Widget... widgets){
     return $(Arrays.asList(widgets));
   }
 
