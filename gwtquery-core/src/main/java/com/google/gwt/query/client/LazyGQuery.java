@@ -47,7 +47,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import com.google.gwt.query.client.LazyBase;
@@ -715,7 +714,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Pass each element in the current matched set through a function, producing
    * a new array containing the return values.
    */
-  <W> ArrayList<W> map(Function f);
+  <W> List<W> map(Function f);
 
   /**
    * Bind a set of functions to the mousedown event of each matched element. Or

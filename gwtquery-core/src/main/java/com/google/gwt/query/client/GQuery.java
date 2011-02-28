@@ -50,7 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -198,35 +197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(JSArray.create());
   }
 
-  /**
-   * Create a new GQuery given a list of objects. Only node objects will be
-   * added;
-   */
-  public static GQuery $(@SuppressWarnings("rawtypes") ArrayList a) {
-    JSArray elements = JSArray.create();
-    if (a != null) {
-      for (Object o : a) {
-        if (o instanceof Node) {
-          elements.addNode((Node) o);
-        } else if (o instanceof Widget) {
-          elements.addNode(((Widget) o).getElement());
-        }
-      }
-    }
-    return new GQuery(elements);
-  }
-
-  /**
-   * Wrap a GQuery around a collection of existing widget.
-   */
-  public static GQuery $(Collection<Widget> widgetList) {
-    JSArray elements = JSArray.create();
-    for (Widget w : widgetList) {
-      elements.addNode(w.getElement());
-    }
-    return $(elements);
-  }
-
+ 
   /**
    * Wrap a GQuery around an existing element.
    */
@@ -255,6 +226,24 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static GQuery $(NodeList<Element> elements) {
     return new GQuery(elements);
   }
+  
+  /**
+   * Create a new GQuery given a list of nodes, elements or widgets 
+   */
+  public static GQuery $(List<?> nodesOrWidgets) {
+    JSArray elements = JSArray.create();
+    if (nodesOrWidgets != null) {
+      for (Object o : nodesOrWidgets ) {
+        if (o instanceof Node) {
+          elements.addNode((Node)o);
+        } else if (o instanceof Widget) {
+          elements.addNode(((Widget)o).getElement());
+        }
+      }
+    }
+    return new GQuery(elements);
+  }
+
 
   /**
    * This function accepts a string containing a CSS selector which is then used
@@ -348,28 +337,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around an existing widget.
+   * Wrap a GQuery around one widget or an array of existing ones.
    */
-  public static GQuery $(Widget w) {
-    return w == null ? $() : $(w.getElement());
-  }
-
-  /**
-   * Wrap a GQuery around a array of existing widget.
-   */
-  public static <T extends Widget> GQuery $(T... widgets) {
+  public static GQuery $(Widget... widgets){
     return $(Arrays.asList(widgets));
-  }
-
-  /**
-   * Wrap a GQuery around a List of existing widget.
-   */
-  public static <T extends Widget> GQuery $(List<T> widgets) {
-    JSArray elements = JSArray.create();
-    for (Widget w : widgets) {
-      elements.addNode(w.getElement());
-    }
-    return $(elements);
   }
 
   /**
@@ -1628,7 +1599,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * a new array containing the return values.
    */
   @SuppressWarnings("unchecked")
-  public <W> ArrayList<W> map(Function f) {
+  public <W> List<W> map(Function f) {
     @SuppressWarnings("rawtypes")
     ArrayList ret = new ArrayList();
     for (int i = 0; i < elements().length; i++) {
