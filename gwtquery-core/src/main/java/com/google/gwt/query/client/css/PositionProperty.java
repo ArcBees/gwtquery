@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.Position;
  * The <i>position</i> property determines which of the CSS2 positioning
  * algorithms is used to calculate the position of a box.
  */
-public class PositionProperty extends AbstractCssProperty<Position> {
+public class PositionProperty extends CssProperty<Position> {
 
   private static final String CSS_PROPERTY = "position";
 

@@ -22,9 +22,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * (solid, double, dashed, etc.).
  */
 public class BorderStyleProperty extends
-    AbstractCssProperty<BorderStyleProperty.LineStyle> {
+    CssProperty<BorderStyleProperty.BorderStyle> {
 
-  public static enum LineStyle implements HasCssName {
+  public static enum BorderStyle implements HasCssName {
     /**
      * The border is a series of short line segments.
      */

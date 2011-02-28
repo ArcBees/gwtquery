@@ -20,7 +20,7 @@ package com.google.gwt.query.client.css;
  * value or the keyword 'transparent', to make the underlying colors shine
  * through.
  */
-public class BackgroundColorProperty extends AbstractCssProperty<RGBColor> {
+public class BackgroundColorProperty extends CssProperty<RGBColor> {
 
   private static final String CSS_PROPERTY = "backgroundColor";
 

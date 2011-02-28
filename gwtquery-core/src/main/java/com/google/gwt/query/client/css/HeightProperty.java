@@ -19,7 +19,7 @@ package com.google.gwt.query.client.css;
  * All height css properties : <i>max-height</i>, <i>min-height</i>,
  * <i>height</i>
  */
-public class HeightProperty extends AbstractCssProperty<Length> {
+public class HeightProperty extends CssProperty<Length> {
 
   private static final String HEIGHT_PROPERTY = "height";
   private static final String MAX_HEIGHT_PROPERTY = "maxHeight";

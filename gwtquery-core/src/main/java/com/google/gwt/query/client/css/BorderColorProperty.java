@@ -19,7 +19,7 @@ package com.google.gwt.query.client.css;
  * The <i>border-color</i> property specifies the color of a border of a
  * box.
  */
-public class BorderColorProperty extends AbstractCssProperty<RGBColor> {
+public class BorderColorProperty extends CssProperty<RGBColor> {
 
   private static final String BORDER_BOTTOM_COLOR_PROPERTY = "borderBottomColor";
   private static final String BORDER_COLOR_PROPERTY = "borderColor";

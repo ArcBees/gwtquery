@@ -15,37 +15,17 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.Element;
 
 /**
- * Image as css value
+ * An CSS property with values of type T.
  */
-public class ImageValue implements HasCssName {
+public interface TakesCssValue<T> extends HasCssValue {
 
-  /**
-   * Specify that no image is used
-   */
-  public static final ImageValue NONE;
-
-  static {
-    NONE = new ImageValue("none");
+  public interface CssSetter {
+    public void applyCss(Element e);
   }
 
-  /**
-   * Define an image by its url
-   */
-  public static ImageValue url(String url) {
-    return new ImageValue("url('" + url + "')");
-  }
-
-  private String value;
-
-  private ImageValue(String value) {
-    this.value = value;
-  }
-
-  public String getCssName() {
-    return value;
-  }
+  CssSetter with(T value);
 
 }

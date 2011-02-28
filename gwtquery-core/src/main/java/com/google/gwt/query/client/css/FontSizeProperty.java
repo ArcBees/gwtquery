@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * This property specifies the size of a font.
  */
 public class FontSizeProperty extends
-    AbstractCssProperty<FontSizeProperty.FontSize> implements TakesLength {
+    CssProperty<FontSizeProperty.FontSize> implements TakesLength {
 
   /**
    * Possible values for the <i>font-size</i> property.
@@ -88,6 +88,6 @@ public class FontSizeProperty extends
   }
 
   public CssSetter with(Length value) {
-    return new LengthCssSetter(value);
+    return new SimpleCssSetter(this, value);
   }
 }

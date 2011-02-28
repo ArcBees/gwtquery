@@ -30,8 +30,8 @@ import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosi
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
 import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
 import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
-import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
-import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
+import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
 import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
 import com.google.gwt.query.client.css.ClearProperty.Clear;
 import com.google.gwt.query.client.css.ClipProperty.Shape;
@@ -65,13 +65,6 @@ public class CSS {
    * properties to their initial values, then assigns explicit values given in
    * the declaration.
    * </p>
-   * <h3>Example :</h3>
-   * 
-   * <pre class="code">$("#myId").css(CSS.BACKGROUND, RGBColor.TRANSPARENT,
-   *     ImageValue.url("back.jpg"), BackgroundRepeat.NO_REPEAT,
-   *     BackgroundAttachment.SCROLL, BackgroundPosition.CENTER);</code>
-   *
-   * </pre>
    */
   public static BackgroundProperty BACKGROUND;
 
@@ -85,11 +78,6 @@ public class CSS {
    * <p>
    * This property can only take a {@link BackgroundAttachment} object as value.
    * </p>
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BACKGROUND_ATTACHMENT, BackgroundAttachment.FIXED);
-   * </pre>
    */
   public static BackgroundAttachmentProperty BACKGROUND_ATTACHMENT;
 
@@ -123,7 +111,7 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link ImageValue} object as value.
+   * This property takes a {@link UriValue} object as value.
    * </p>
    * 
    * <h3>Examples:</h3>
@@ -146,13 +134,6 @@ public class CSS {
    * This property takes a {@link BackgroundPosition} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BACKGROUND_POSITION, BackgroundPosition.CENTER_TOP);
-   * $("#myId2").css(CSS.BACKGROUND_POSITION,BackgroundPosition.position(25, 25, Unit.PCT));
-   * </pre>
-   * 
    */
   public static BackgroundPositionProperty BACKGROUND_POSITION;
 
@@ -167,11 +148,6 @@ public class CSS {
    * This property takes a {@link BackgroundRepeat} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BACKGROUND_REPEAT, BackgroundRepeat.REPEAT_X);
-   * </pre>
    */
   public static BackgroundRepeatProperty BACKGROUND_REPEAT;
 
@@ -184,12 +160,6 @@ public class CSS {
    * the other border properties must be used.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER, LineWidth.THICK, LineStyle.DASHED,RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderProperty BORDER;
 
@@ -199,12 +169,6 @@ public class CSS {
    * width, style, and color of the bottom border of a box.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM, LineWidth.THICK,LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_BOTTOM, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderProperty BORDER_BOTTOM;
 
@@ -218,12 +182,6 @@ public class CSS {
    * This property takes a {@link RGBColor} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM_COLOR, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_BOTTOM_COLOR, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderColorProperty BORDER_BOTTOM_COLOR;
 
@@ -234,14 +192,8 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM_STYLE, LineStyle.DASHED);
-   * </pre>
    */
   public static BorderStyleProperty BORDER_BOTTOM_STYLE;
 
@@ -252,16 +204,10 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineWidth} or a {@link Length} object as
+   * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM_WIDTH, LineWidth.THICK);
-   * $("#myId2").css(CSS.BORDER_BOTTOM_WIDTH, Length.px(2));
-   * </pre>
    */
   public static BorderWidthProperty BORDER_BOTTOM_WIDTH;
 
@@ -274,11 +220,6 @@ public class CSS {
    * This property takes a {@link BorderCollapse} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_COLLAPSE, BorderCollapse.COLLAPSE);
-   * </pre>
    */
   public static BorderCollapseProperty BORDER_COLLAPSE;
 
@@ -292,12 +233,6 @@ public class CSS {
    * This property takes a {@link RGBColor} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_COLOR, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_COLOR, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderColorProperty BORDER_COLOR;
 
@@ -306,13 +241,6 @@ public class CSS {
    * The <i>border-left</i> property is a shorthand property for setting the
    * width, style, and color of the left border of a box.
    * </p>
-   * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_LEFT, LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_LEFT, LineWidth.length(3, Unit.PX), LineStyle.SOLID, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderProperty BORDER_LEFT;
 
@@ -326,12 +254,6 @@ public class CSS {
    * This property takes a {@link RGBColor} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_LEFT_COLOR, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_LEFT_COLOR, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderColorProperty BORDER_LEFT_COLOR;
 
@@ -342,14 +264,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_LEFT_STYLE, LineStyle.DASHED);
-   * </pre>
    */
   public static BorderStyleProperty BORDER_LEFT_STYLE;
 
@@ -360,16 +277,10 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineWidth} or a {@link Length} object as
+   * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_BOTTOM_WIDTH, LineWidth.THICK);
-   * $("#myId2").css(CSS.BORDER_BOTTOM_WIDTH, Length.px(2));
-   * </pre>
    */
   public static BorderWidthProperty BORDER_LEFT_WIDTH;
 
@@ -379,12 +290,6 @@ public class CSS {
    * width, style, and color of the right border of a box.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_RIGHT, LineWidth.THICK,LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_RIGHT, LineWidth.length(3, Unit.PX),LineStyle.SOLID, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderProperty BORDER_RIGHT;
 
@@ -398,12 +303,6 @@ public class CSS {
    * This property takes a {@link RGBColor} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_RIGHT_COLOR, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_RIGHT_COLOR, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderColorProperty BORDER_RIGHT_COLOR;
 
@@ -414,14 +313,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_RIGHT_STYLE, LineStyle.DASHED);
-   * </pre>
    */
   public static BorderStyleProperty BORDER_RIGHT_STYLE;
 
@@ -432,16 +326,10 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineWidth} or a {@link Length} object as
+   * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_RIGHT_WIDTH, LineWidth.THICK);
-   * $("#myId2").css(CSS.BORDER_RIGHT_WIDTH, Length.px(2));
-   * </pre>
    */
   public static BorderWidthProperty BORDER_RIGHT_WIDTH;
 
@@ -458,15 +346,6 @@ public class CSS {
    * This property takes a {@link BorderSpacing} object as value.
    * </p>
    * 
-   * <h3>Exampls:</h3>
-   * 
-   * <pre class="code">
-   * // specify a horizontal and vertical spacing of 15px
-   * $("#myId").css(CSS.BORDER_SPACING, new BorderSpacing(Length.px(15)));
-   *
-   * // specify a horizontal spacing of 10px and a vertical spacing of 20em
-   * $("#myId2").css(CSS.BORDER_SPACING, new BorderSpacing(Length.px(10), Length.em(20)));
-   * </pre>
    */
   public static BorderSpacingProperty BORDER_SPACING;
 
@@ -477,14 +356,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_STYLE, LineStyle.DASHED);
-   * </pre>
    */
   public static BorderStyleProperty BORDER_STYLE;
 
@@ -494,12 +368,6 @@ public class CSS {
    * width, style, and color of the top border of a box.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_TOP, LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_TOP, LineWidth.length(3, Unit.PX), LineStyle.SOLID, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderProperty BORDER_TOP;
 
@@ -513,12 +381,6 @@ public class CSS {
    * This property takes a {@link RGBColor} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_TOP_COLOR, RGBColor.BLACK);
-   * $("#myId2").css(CSS.BORDER_TOP_COLOR, RGBColor.rgb("#000000"));
-   * </pre>
    */
   public static BorderColorProperty BORDER_TOP_COLOR;
 
@@ -529,14 +391,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_TOP_STYLE, LineStyle.DASHED);
-   * </pre>
    */
   public static BorderStyleProperty BORDER_TOP_STYLE;
 
@@ -547,16 +404,10 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineWidth} or a {@link Length} object as
+   * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_TOP_WIDTH, LineWidth.THICK);
-   * $("#myId2").css(CSS.BORDER_TOP_WIDTH, Length.px(2));
-   * </pre>
    */
   public static BorderWidthProperty BORDER_TOP_WIDTH;
 
@@ -567,16 +418,10 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link LineWidth} or a {@link Length} object as
+   * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BORDER_WIDTH, LineWidth.THICK);
-   * $("#myId2").css(CSS.BORDER_WIDTH, Length.px(2));
-   * </pre>
    */
   public static BorderWidthProperty BORDER_WIDTH;
 
@@ -602,11 +447,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BOTTOM,Length.px(20));
-   * </pre>
    */
   public static EdgePositionProperty BOTTOM;
 
@@ -620,11 +460,6 @@ public class CSS {
    * This property takes a {@link CaptionSide} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.CAPTION_SIDE, CaptionSide.BOTTOM);
-   * </pre>
    */
   public static CaptionSideProperty CAPTION_SIDE;
 
@@ -640,11 +475,6 @@ public class CSS {
    * This property takes a {@link Clear} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.CLEAR, Clear.BOTH);
-   * </pre>
    */
   public static ClearProperty CLEAR;
 
@@ -663,11 +493,6 @@ public class CSS {
    * This property takes a {@link Shape} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.CLIP, Shape.rect(0, 10, 10, 0));
-   * </pre>
    */
   public static ClipProperty CLIP;
 
@@ -679,18 +504,6 @@ public class CSS {
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // Three different ways to specify red as text color for the element with id 'myId'
-   * $("#myId").css(CSS.COLOR, RGBColor.RED);
-   * $("#myId").css(CSS.COLOR, RGBColor.rgb(255,0,0));
-   * $("#myId").css(CSS.COLOR, RGBColor.rgb("#FF0000"));
-   *
-   * String color =  $("#myId").css(CSS.COLOR); 
-   * // retrieve the color of the element with id 'myId'
-   * </pre>
    */
   public static ColorProperty COLOR;
 
@@ -703,15 +516,6 @@ public class CSS {
    * This property takes a {@link Cursor} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set a cursor to the element with id 'myId'
-   * $("#myId").css(CSS.CURSOR, Cursor.WAIT);
-   * // retrieve the cursor of the element with id 'myId'
-   * String cursor = $("#myId").css(CSS.CURSOR);
-   *
-   * </pre>
    */
   public static CursorProperty CURSOR;
 
@@ -932,8 +736,7 @@ public class CSS {
    * CSS value specifying that the setting of the related property should be
    * inherited from the parent element
    */
-  public static final String INHERIT= "inherit";
- 
+  public static final String INHERIT = "inherit";
 
   /**
    * <p>
@@ -1034,7 +837,7 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link ImageValue} object as value.
+   * This property takes a {@link UriValue} object as value.
    * </p>
    * 
    * <h3>Example:</h3>
@@ -1300,7 +1103,7 @@ public class CSS {
    * style of an outline.
    * </p>
    * <p>
-   * This property takes a {@link LineStyle} object as value.
+   * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
    * <h3>Example:</h3>
@@ -1318,7 +1121,7 @@ public class CSS {
    * outline
    * </p>
    * <p>
-   * This property takes a {@link LineWidth} object as value.
+   * This property takes a {@link BorderWidth} object as value.
    * </p>
    * 
    * <h3>Example:</h3>

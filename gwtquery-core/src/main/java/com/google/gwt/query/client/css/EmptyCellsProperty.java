@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * ("\09"), and space ("\20").
  */
 public class EmptyCellsProperty extends
-    AbstractCssProperty<EmptyCellsProperty.EmptyCells> {
+    CssProperty<EmptyCellsProperty.EmptyCells> {
 
   /**
    * Possible values for <i>empty-cells</i> property.)

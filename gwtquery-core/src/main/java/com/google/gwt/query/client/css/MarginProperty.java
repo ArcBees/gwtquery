@@ -20,14 +20,14 @@ import com.google.gwt.dom.client.Style;
 /**
  * The margin property sets the margins of an element.
  */
-public class MarginProperty extends AbstractCssProperty<Length> {
+public class MarginProperty extends CssProperty<Length> {
 
-  public static class ShorthandMarginProperty implements CssProperty {
+  public static class ShorthandMarginProperty implements HasCssValue {
 
     private ShorthandMarginProperty() {
     }
 
-    public String get(Style s) {
+    public String getCssValue(Style s) {
       return s.getMargin();
     }
 

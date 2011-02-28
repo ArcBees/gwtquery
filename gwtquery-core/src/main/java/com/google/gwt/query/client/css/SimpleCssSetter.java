@@ -17,17 +17,31 @@ package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
- * An CSS property with values of type T.
+ * Simple implementation of {@link CssSetter} interface. It does its job for the
+ * most CSS property
+ *
  */
-public interface TakeCssValue<T extends HasCssName> extends CssProperty {
+public class SimpleCssSetter implements CssSetter {
 
-  public interface CssSetter {
-    public void applyCss(Element e);
+  private String property;
+  private String value;
+  
+  public SimpleCssSetter(HasCssValue property, HasCssName value) {
+    this(property.getCssName(), value != null ? value.getCssName() : null);
   }
 
+  public SimpleCssSetter(String property, String value) {
+    this.property = property;
+    this.value = value;
+  }
 
-  CssSetter with(T value);
+  public void applyCss(Element e) {
+    assert e != null : "Impossible to apply css to a null object";
+    e.getStyle().setProperty(property, value != null ? value : "");
+
+  }
 
 }

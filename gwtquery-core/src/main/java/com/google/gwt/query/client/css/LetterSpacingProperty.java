@@ -19,7 +19,7 @@ package com.google.gwt.query.client.css;
  * The <i>letter-spacing</i> property specifies spacing behavior between text
  * characters.
  */
-public class LetterSpacingProperty extends AbstractCssProperty<Length> {
+public class LetterSpacingProperty extends CssProperty<Length> {
 
   private static final String CSS_PROPERTY = "letterSpacing";
 

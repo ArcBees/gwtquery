@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.Overflow;
  * element is clipped when it overflows the element's box (which is acting as a
  * containing block for the content).
  */
-public class OverflowProperty extends AbstractCssProperty<Overflow> {
+public class OverflowProperty extends CssProperty<Overflow> {
 
   private static final String CSS_PROPERTY = "overflow";
 

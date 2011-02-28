@@ -26,6 +26,7 @@ import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.EventsListener;
@@ -67,10 +68,10 @@ public class GQueryEventsTest extends GWTTestCase {
   @DoNotRunWith({Platform.HtmlUnitBug, Platform.HtmlUnitLayout, Platform.HtmlUnitUnknown})
   public void testEventsDblClick() {
     $(e).html("<p>Content</p>");
-    $("p", e).css("color", "white");
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
     $("p", e).dblclick(new Function() {
       public void f(Element elem) {
-        $(elem).css("color", "yellow");
+        $(elem).css(CSS.COLOR.with(RGBColor.YELLOW));
       }
     });
     $("p", e).dblclick();
@@ -83,11 +84,11 @@ public class GQueryEventsTest extends GWTTestCase {
     // click
     $("p", e).click(new Function() {
       public void f(Element elem) {
-        $(elem).css("color", "red");
+        $(elem).css(CSS.COLOR.with(RGBColor.RED));
       }
     }, new Function() {
       public void f(Element elem) {
-        $(elem).css("background", "green");
+        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.GREEN));
       }
     });
     $("p", e, Events.Events).trigger(Event.ONCLICK);
@@ -95,7 +96,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("green", $("p", e).css("background-color"));
 
     // unbind
-    $("p", e).css("color", "white");
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).click();
     assertEquals("white", $("p", e).css("color"));
@@ -104,11 +105,11 @@ public class GQueryEventsTest extends GWTTestCase {
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).toggle(new Function() {
       public void f(Element elem) {
-        $(elem).css("color", "red");
+        $(elem).css(CSS.COLOR.with(RGBColor.RED));
       }
     }, new Function() {
       public void f(Element elem) {
-        $(elem).css("color", "blue");
+        $(elem).css(CSS.COLOR.with(RGBColor.BLUE));
       }
     });
     $("p", e).click();
@@ -120,23 +121,23 @@ public class GQueryEventsTest extends GWTTestCase {
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).one(Event.ONCLICK, null, new Function() {
       public void f(Element elem) {
-        $(elem).css("color", "red");
+        $(elem).css(CSS.COLOR.with(RGBColor.RED));
       }
     });
     $("p", e).click();
     assertEquals("red", $("p", e).css("color"));
-    $("p", e).css("color", "white");
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
     $("p", e).click();
     assertEquals("white", $("p", e).css("color"));
 
     // hover (mouseover, mouseout)
     $("p", e).hover(new Function() {
       public void f(Element elem) {
-        $(elem).css("background-color", "yellow");
+        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
       }
     }, new Function() {
       public void f(Element elem) {
-        $(elem).css("background-color", "white");
+        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
       }
     });
     $("p", e).trigger(Event.ONMOUSEOVER);
@@ -185,14 +186,14 @@ public class GQueryEventsTest extends GWTTestCase {
   }
 
   public void testLazyMethods() {
-    $(e).css("color", "white");
+    $(e).css(CSS.COLOR.with(RGBColor.WHITE));
     assertEquals("white", $(e).css("color"));
 
-    $(e).one(Event.ONCLICK, null, lazy().css("color", "red").done());
+    $(e).one(Event.ONCLICK, null, lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
     $(e).click();
     assertEquals("red", $(e).css("color"));
 
-    $(e).click(lazy().setCss(CSS.COLOR.with(RGBColor.BLACK)).done());
+    $(e).click(lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done());
     $(e).click();
     assertEquals("black", $(e).css("color"));
   }
@@ -202,17 +203,17 @@ public class GQueryEventsTest extends GWTTestCase {
 
     $("p", e, Events.Events).bind("click.first.namespace", null, new Function() {; 
       public void f(Element elem) {
-        $(elem).css("color", "red");
+        $(elem).css(CSS.COLOR.with(RGBColor.RED));
       }
     });
     $("p", e, Events.Events).bind("click.second.namespace", null, new Function() {; 
       public void f(Element elem) {
-        $(elem).css("background", "green");
+        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.GREEN));
       }
     });
     $("p", e, Events.Events).bind("click", null, new Function() {; 
       public void f(Element elem) {
-        $(elem).css("fontSize", "24px");
+        $(elem).css(CSS.FONT_SIZE.with(Length.px(24)));
       }
     });
     $("p", e, Events.Events).trigger(Event.ONCLICK);
@@ -220,7 +221,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("green", $("p", e).css("background-color"));
     assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
-    $("p", e).css("color","").css("background","").css("fontSize", "12px");
+    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR,"").css(CSS.FONT_SIZE.with(Length.px(12)));
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
@@ -232,7 +233,7 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
     
-    $("p", e).css("color","").css("background","").css("fontSize", "12px");
+    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR,"").css(CSS.FONT_SIZE.with(Length.px(12)));
     assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
     assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
@@ -286,7 +287,7 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     RootPanel.get().add(b);
-    $("button").click(lazy().css("color", "red").done());
+    $("button").click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
 
     $("button").click();
     assertEquals("red", $("button").css("color"));
@@ -299,19 +300,19 @@ public class GQueryEventsTest extends GWTTestCase {
     $(e).html(content);
     $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
       public void f(Element e){
-        $("p").css("color", "red");
+        $("p").css(CSS.COLOR.with(RGBColor.RED));
       }
     });
     $(document).bind(Event.ONMOUSEUP, null, new Function(){
       public void f(Element e){
-        $("p").css("color", "yellow");
+        $("p").css(CSS.COLOR.with(RGBColor.YELLOW));
       }
     });
     $(document).trigger(Event.ONMOUSEMOVE);
     assertEquals("red", $("p").css("color"));
     $(document).trigger(Event.ONMOUSEUP);
     assertEquals("yellow", $("p").css("color"));
-    $("p").css("color", "black");
+    $("p").css(CSS.COLOR.with(RGBColor.BLACK));
     $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
     $(document).trigger(Event.ONMOUSEMOVE);
     assertEquals("black", $("p").css("color"));

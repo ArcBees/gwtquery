@@ -15,22 +15,52 @@
  */
 package com.google.gwt.query.client.css;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Minimal contract for an object defining a css property
+ * Base class for Css property
  * 
+ * @param <T> Class of the value associated with the css property
  */
-public interface CssProperty {
+public class CssProperty<T extends HasCssName> implements
+    TakesCssValue<T> {
 
-  /**
-   * Return the value of the property as an enumerated type, or null, if the
-   * value falls outside the enumerated set.
-   */
-  String get(Style s);
+  protected class CssSetterImpl implements CssSetter {
 
-  /**
-   * Return the css name of this property
-   */
-  String getCssName();
+    private T cssValue;
+
+    public CssSetterImpl(T cssValue) {
+
+      this.cssValue = cssValue;
+    }
+
+    public void applyCss(Element e) {
+      assert e != null : "Impossible to apply css to a null object";
+      set(e.getStyle(), cssValue);
+    }
+  }
+  
+  private String cssName;
+
+  protected CssProperty(String cssName) {
+    this.cssName = cssName;
+  }
+
+  public String getCssName() {
+    return cssName;
+  }
+
+  public String getCssValue(Style s) {
+    return s.getProperty(getCssName());
+  }
+
+  public CssSetter with(T value) {
+    return new CssSetterImpl(value);
+  }
+
+  protected void set(Style s, T value) {
+    s.setProperty(getCssName(), value != null ? value.getCssName() : "");
+  }
 }

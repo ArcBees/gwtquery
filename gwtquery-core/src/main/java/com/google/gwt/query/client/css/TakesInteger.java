@@ -15,20 +15,15 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
- * The <i>font-weight</i> property specifies the weight of the font.
+ * Interface to be implemented by properties which take a integer as defined in
+ * css2 specification
+ * 
+ * @see http://www.w3.org/TR/CSS21/syndata.html#value-def-number
  */
-public class FontWeightProperty extends CssProperty<FontWeight> {
+public interface TakesInteger extends HasCssValue {
 
-  private static final String CSS_PROPERTY = "fontWeight";
-
-  public static void init() {
-    CSS.FONT_WEIGHT = new FontWeightProperty();
-  }
-
-  private FontWeightProperty() {
-    super(CSS_PROPERTY);
-  }
+  CssSetter with(Integer value);
 }

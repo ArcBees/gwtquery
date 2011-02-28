@@ -21,9 +21,9 @@ import com.google.gwt.dom.client.Style;
  * The padding properties define the space between the element border and the
  * element content.
  */
-public class PaddingProperty extends AbstractCssProperty<Length> {
+public class PaddingProperty extends CssProperty<Length> {
 
-  public static class ShorthandPaddingProperty implements CssProperty {
+  public static class ShorthandPaddingProperty implements HasCssValue {
 
     private ShorthandPaddingProperty() {
     }
@@ -35,7 +35,7 @@ public class PaddingProperty extends AbstractCssProperty<Length> {
 
     }
 
-    public String get(Style s) {
+    public String getCssValue(Style s) {
       return s.getPadding();
     }
 

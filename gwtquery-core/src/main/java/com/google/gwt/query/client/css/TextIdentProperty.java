@@ -22,7 +22,7 @@ package com.google.gwt.query.client.css;
  * with respect to the left (or right, for right-to-left layout) edge of the
  * line box. User agents must render this indentation as blank space.
  */
-public class TextIdentProperty extends AbstractCssProperty<Length> {
+public class TextIdentProperty extends CssProperty<Length> {
 
   private static final String CSS_PROPERTY = "textIdent";
 

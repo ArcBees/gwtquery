@@ -21,12 +21,12 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * The <i>border-width</i> property specifies the width of the border of a box.
  */
 public class BorderWidthProperty extends
-    AbstractCssProperty<BorderWidthProperty.LineWidth> implements TakesLength {
+    CssProperty<BorderWidthProperty.BorderWidth> implements TakesLength {
 
   /**
    * Object allowing to specify a width of a line
    */
-  public static enum LineWidth implements HasCssName {
+  public static enum BorderWidth implements HasCssName {
 
     /**
      * Define a medium border.
@@ -71,6 +71,6 @@ public class BorderWidthProperty extends
   }
 
   public CssSetter with(Length value) {
-    return new LengthCssSetter(value);
+    return new SimpleCssSetter(this, value);
   }
 }

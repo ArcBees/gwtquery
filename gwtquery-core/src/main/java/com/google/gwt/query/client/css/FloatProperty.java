@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style.Float;
  * at all. It may be set for any element, but only applies to elements that
  * generate boxes that are not absolutely positioned.
  */
-public class FloatProperty extends AbstractCssProperty<Float> {
+public class FloatProperty extends CssProperty<Float> {
 
   private static final String CSS_PROPERTY = "float";
 
@@ -36,7 +36,7 @@ public class FloatProperty extends AbstractCssProperty<Float> {
   }
 
   @Override
-  public void set(Style s, Float value) {
+  protected void set(Style s, Float value) {
     s.setFloat(value);
   }
 }

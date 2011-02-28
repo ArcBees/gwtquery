@@ -15,12 +15,12 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * Interface to be implemented by properties which take length units in addition
  * to an other type. If the properties takes only length units, please use
- * {@link TakeCssValue} instead.
+ * {@link TakesCssValue} instead.
  */
 public interface TakesLength {
 

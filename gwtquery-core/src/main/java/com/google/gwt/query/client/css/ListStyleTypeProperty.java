@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Style.ListStyleType;
  * and alphabetic systems. Note. Numbered lists improve document accessibility
  * by making lists easier to navigate.
  */
-public class ListStyleTypeProperty extends AbstractCssProperty<ListStyleType> {
+public class ListStyleTypeProperty extends CssProperty<ListStyleType> {
 
   private static final String CSS_PROPERTY = "listStyleType";
 

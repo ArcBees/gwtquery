@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * is handled
  */
 public class WhiteSpaceProperty extends
-    AbstractCssProperty<WhiteSpaceProperty.WhiteSpace> {
+    CssProperty<WhiteSpaceProperty.WhiteSpace> {
 
   public enum WhiteSpace implements HasCssName {
 

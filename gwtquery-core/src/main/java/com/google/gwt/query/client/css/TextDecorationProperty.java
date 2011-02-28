@@ -30,7 +30,7 @@ import com.google.gwt.dom.client.Style.TextDecoration;
  * descendants, nor to the contents of atomic inline-level descendants such as
  * inline blocks and inline tables.
  */
-public class TextDecorationProperty extends AbstractCssProperty<TextDecoration> {
+public class TextDecorationProperty extends CssProperty<TextDecoration> {
 
   private static final String CSS_PROPERTY = "textDecoration";
 

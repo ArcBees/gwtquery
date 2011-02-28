@@ -15,14 +15,14 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
 
 /**
  * An outline is a line that is drawn around elements (outside the borders) to
  * make the element "stand out". The outline-width specifies the width of an
  * outline
  */
-public class OutlineWidthProperty extends AbstractCssProperty<LineWidth>
+public class OutlineWidthProperty extends CssProperty<BorderWidth>
     implements TakesLength {
 
   private static final String CSS_PROPERTY = "outlineWidth";
@@ -36,6 +36,6 @@ public class OutlineWidthProperty extends AbstractCssProperty<LineWidth>
   }
   
   public CssSetter with(Length value) {
-    return new LengthCssSetter(value);
+    return new SimpleCssSetter(this, value);
   }
 }

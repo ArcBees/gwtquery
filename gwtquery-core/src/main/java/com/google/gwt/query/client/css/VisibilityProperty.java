@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.Visibility;
  * element are rendered. Invisible boxes still affect layout (set the
  * <i>display<i> property to <i>none</i> to suppress box generation altogether).
  */
-public class VisibilityProperty extends AbstractCssProperty<Visibility> {
+public class VisibilityProperty extends CssProperty<Visibility> {
 
   private static final String CSS_PROPERTY = "visibility";
 

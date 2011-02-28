@@ -20,7 +20,7 @@ package com.google.gwt.query.client.css;
  * make the element "stand out". The outline-color property specifies the color
  * of an outline.
  */
-public class OutlineColorProperty extends AbstractCssProperty<RGBColor> {
+public class OutlineColorProperty extends CssProperty<RGBColor> {
 
   private static final String CSS_PROPERTY = "outlineColor";
 

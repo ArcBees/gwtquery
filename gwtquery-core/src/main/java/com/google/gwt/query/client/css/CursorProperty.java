@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.Cursor;
  * The <i>cursor</i> property specifies the type of cursor to be displayed for
  * the pointing device
  */
-public class CursorProperty extends AbstractCssProperty<Cursor> {
+public class CursorProperty extends CssProperty<Cursor> {
 
   private static final String CSS_PROPERTY = "cursor";
 
@@ -31,5 +31,9 @@ public class CursorProperty extends AbstractCssProperty<Cursor> {
 
   private CursorProperty() {
     super(CSS_PROPERTY);
+  }
+  
+  public CssSetter with(UriValue url){
+    return new SimpleCssSetter(this, url);
   }
 }

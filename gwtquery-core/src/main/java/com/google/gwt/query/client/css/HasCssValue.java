@@ -15,20 +15,18 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The <i>font-weight</i> property specifies the weight of the font.
+ * Minimal contract for an object defining a css property
+ * 
  */
-public class FontWeightProperty extends CssProperty<FontWeight> {
+public interface HasCssValue extends HasCssName {
 
-  private static final String CSS_PROPERTY = "fontWeight";
-
-  public static void init() {
-    CSS.FONT_WEIGHT = new FontWeightProperty();
-  }
-
-  private FontWeightProperty() {
-    super(CSS_PROPERTY);
-  }
+  /**
+   * Return the value of the property as an enumerated type, or null, if the
+   * value falls outside the enumerated set.
+   */
+  String getCssValue(Style s);
 }

@@ -20,7 +20,7 @@ package com.google.gwt.query.client.css;
  * list item marker. When the image is available, it will replace the marker set
  * with the <i>list-style-type</i> marker.
  */
-public class ListStyleImageProperty extends AbstractCssProperty<ImageValue> {
+public class ListStyleImageProperty extends CssProperty<UriValue> {
 
   private static final String CSS_PROPERTY = "listStyleImage";
 

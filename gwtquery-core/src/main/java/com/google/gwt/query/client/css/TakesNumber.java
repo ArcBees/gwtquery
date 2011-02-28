@@ -15,25 +15,15 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
- * Some css property take simply number as value.
+ * Interface to be implemented by properties which take a number as defined in
+ * css2 specification
+ * 
+ * @see http://www.w3.org/TR/CSS21/syndata.html#value-def-number
  */
-public class CssNumber implements HasCssName {
+public interface TakesNumber extends TakesInteger {
 
-  private String value;
-
-  public CssNumber(String value) {
-    this.value = value;
-  }
-  
-  public CssNumber(int value) {
-    this(""+value);
-  }
-
-  public String getCssName() {
-    return value;
-  }
-
+  CssSetter with(Double value);
 }

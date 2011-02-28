@@ -18,7 +18,7 @@ package com.google.gwt.query.client.css;
 /**
  * All width css properties : <i>max-width</i>, <i>min-width</i>, <i>width</i>
  */
-public class WidthProperty extends AbstractCssProperty<Length> {
+public class WidthProperty extends CssProperty<Length> {
 
   private static final String WIDTH_PROPERTY = "width";
   private static final String MAX_WIDTH_PROPERTY = "maxWidth";

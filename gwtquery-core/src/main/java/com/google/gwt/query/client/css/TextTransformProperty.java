@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * element's text.
  */
 public class TextTransformProperty extends
-    AbstractCssProperty<TextTransformProperty.TextTransform> {
+    CssProperty<TextTransformProperty.TextTransform> {
 
   /**
    * Possible values for <i>text-transform</i> property.

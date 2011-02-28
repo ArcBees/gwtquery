@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * Lengths may not be negative.
  */
 public class BorderSpacingProperty extends
-    AbstractCssProperty<BorderSpacingProperty.BorderSpacing> {
+    CssProperty<BorderSpacingProperty.BorderSpacing> {
 
   /**
    * value for <i>border-spacing</i> property.

@@ -15,14 +15,14 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
+import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
 
 /**
  * An outline is a line that is drawn around elements (outside the borders) to
  * make the element "stand out". The outline-color property specifies the style
  * of an outline.
  */
-public class OutlineStyleProperty extends AbstractCssProperty<LineStyle> {
+public class OutlineStyleProperty extends CssProperty<BorderStyle> {
 
   private static final String CSS_PROPERTY = "outlineStyle";
 

@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * containing block (<i>'scroll'</i>).
  */
 public class BackgroundAttachmentProperty extends
-    AbstractCssProperty<BackgroundAttachmentProperty.BackgroundAttachment> {
+    CssProperty<BackgroundAttachmentProperty.BackgroundAttachment> {
 
   public static enum BackgroundAttachment implements HasCssName {
     /**

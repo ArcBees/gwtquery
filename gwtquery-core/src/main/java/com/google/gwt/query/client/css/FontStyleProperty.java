@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.FontStyle;
  * The <i>font-style</i> property requests normal (sometimes referred to as
  * "roman" or "upright"), italic, and oblique faces within a font family.
  */
-public class FontStyleProperty extends AbstractCssProperty<FontStyle> {
+public class FontStyleProperty extends CssProperty<FontStyle> {
 
   private static final String CSS_PROPERTY = "fontStyle";
 

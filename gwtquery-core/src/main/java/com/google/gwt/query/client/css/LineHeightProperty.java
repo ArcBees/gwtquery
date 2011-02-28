@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style;
-
 /**
  * <p>
  * If the property is set on a block-level element whose content is composed of
@@ -31,8 +29,8 @@ import com.google.gwt.dom.client.Style;
  * property.)
  * </p>
  */
-public class LineHeightProperty extends AbstractCssProperty<CssNumber>
-    implements TakesLength {
+public class LineHeightProperty extends CssProperty<Length> implements
+    TakesNumber {
 
   private static final String CSS_PROPERTY = "lineHeight";
 
@@ -44,13 +42,12 @@ public class LineHeightProperty extends AbstractCssProperty<CssNumber>
     super(CSS_PROPERTY);
   }
 
-  public void set(Style s, Length p) {
-    s.setProperty(CSS_PROPERTY, p.getCssName());
-
+  public CssSetter with(Integer value) {
+    return new SimpleCssSetter(CSS_PROPERTY, value != null ? "" + value : null);
   }
-  
-  public CssSetter with(Length value) {
-    return new LengthCssSetter(value);
+
+  public CssSetter with(Double value) {
+    return new SimpleCssSetter(CSS_PROPERTY, value != null ? "" + value : null);
   }
 
 }

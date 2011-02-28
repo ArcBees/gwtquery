@@ -26,7 +26,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * most of the world's writing systems).
  */
 public class FontVariantProperty extends
-    AbstractCssProperty<FontVariantProperty.FontVariant> {
+    CssProperty<FontVariantProperty.FontVariant> {
 
   /**
    * Possible values for the <i>font-variant</i> property.

@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * The clear property specifies which sides of an element where other floating
  * elements are not allowed.
  */
-public class ClearProperty extends AbstractCssProperty<ClearProperty.Clear> {
+public class ClearProperty extends CssProperty<ClearProperty.Clear> {
 
   /**
    * Possible values for <i>clear</i> property.

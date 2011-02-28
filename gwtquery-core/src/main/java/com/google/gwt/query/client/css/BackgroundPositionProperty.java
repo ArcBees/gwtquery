@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style.Unit;
  * position.
  */
 public class BackgroundPositionProperty extends
-    AbstractCssProperty<BackgroundPositionProperty.BackgroundPosition> {
+    CssProperty<BackgroundPositionProperty.BackgroundPosition> {
 
   /**
    * Value for <i>background-position</i> property.

@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * incomplete last line in a block in case of 'text-align: justify'.
  */
 public class DirectionProperty extends
-    AbstractCssProperty<DirectionProperty.Direction> {
+    CssProperty<DirectionProperty.Direction> {
 
   /**
    * Possible values for <i>direction</i> property.

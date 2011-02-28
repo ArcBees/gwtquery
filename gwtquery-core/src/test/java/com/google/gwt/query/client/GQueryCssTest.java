@@ -31,9 +31,8 @@ import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.CssNumber;
 import com.google.gwt.query.client.css.EmptyCellsProperty;
-import com.google.gwt.query.client.css.ImageValue;
+import com.google.gwt.query.client.css.UriValue;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
@@ -41,8 +40,8 @@ import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosi
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
 import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
 import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
-import com.google.gwt.query.client.css.BorderStyleProperty.LineStyle;
-import com.google.gwt.query.client.css.BorderWidthProperty.LineWidth;
+import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
+import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
 import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
 import com.google.gwt.query.client.css.ClearProperty.Clear;
 import com.google.gwt.query.client.css.ClipProperty.Shape;
@@ -84,13 +83,13 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
 
     assertEquals("fixed", $("#test").css("backgroundAttachment"));
     assertEquals("fixed", $("#test").css(CSS.BACKGROUND_ATTACHMENT));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.SCROLL));
 
     assertEquals("scroll", $("#test").css("backgroundAttachment"));
@@ -102,17 +101,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BACKGROUND_COLOR.with(RGBColor.AQUA));
+    $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.AQUA));
 
     assertEquals("aqua", $("#test").css("backgroundColor"));
     assertEquals("aqua", $("#test").css(CSS.BACKGROUND_COLOR));
 
-    $("#test").setCss(CSS.BACKGROUND_COLOR.with(RGBColor.rgb("#112233")));
+    $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.rgb("#112233")));
 
     assertEquals("#112233", $("#test").css("backgroundColor"));
     assertEquals("#112233", $("#test").css(CSS.BACKGROUND_COLOR));
 
-    $("#test").setCss(CSS.BACKGROUND_COLOR.with(RGBColor.rgb(35, 45, 55)));
+    $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.rgb(35, 45, 55)));
     assertEquals("rgb(35,45,55)", $("#test").css("backgroundColor"));
     assertEquals("rgb(35,45,55)", $("#test").css(CSS.BACKGROUND_COLOR));
 
@@ -122,7 +121,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BACKGROUND_IMAGE.with(ImageValue.url("image.jpg")));
+    $("#test").css(CSS.BACKGROUND_IMAGE.with(UriValue.url("image.jpg")));
 
     assertEquals("url('image.jpg')", $("#test").css("backgroundImage"));
     assertEquals("url('image.jpg')", $("#test").css(CSS.BACKGROUND_IMAGE));
@@ -132,57 +131,57 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BACKGROUND_POSITION.with(BackgroundPosition.CENTER));
+    $("#test").css(CSS.BACKGROUND_POSITION.with(BackgroundPosition.CENTER));
     assertEquals("center", $("#test").css("backgroundPosition"));
     assertEquals("center", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.CENTER_CENTER));
     assertEquals("center center", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.CENTER_TOP));
     assertEquals("center top", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.CENTER_BOTTOM));
     assertEquals("center bottom", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT));
+    $("#test").css(CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT));
     assertEquals("left", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT_TOP));
+    $("#test").css(CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT_TOP));
     assertEquals("left top", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT_CENTER));
     assertEquals("left center", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.LEFT_BOTTOM));
     assertEquals("left bottom", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(CSS.BACKGROUND_POSITION.with(BackgroundPosition.RIGHT));
+    $("#test").css(CSS.BACKGROUND_POSITION.with(BackgroundPosition.RIGHT));
     assertEquals("right", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.RIGHT_TOP));
     assertEquals("right top", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.RIGHT_CENTER));
     assertEquals("right center", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.RIGHT_BOTTOM));
     assertEquals("right bottom", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.position(12, 12,
             Unit.PX)));
     assertEquals("12px 12px", $("#test").css(CSS.BACKGROUND_POSITION));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BACKGROUND_POSITION.with(BackgroundPosition.position(12, 12,
             Unit.PCT)));
     assertEquals("12% 12%", $("#test").css(CSS.BACKGROUND_POSITION));
@@ -193,8 +192,8 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(
-        CSS.BACKGROUND.with(RGBColor.TRANSPARENT, ImageValue.url("back.jpg"),
+    $("#test").css(
+        CSS.BACKGROUND.with(RGBColor.TRANSPARENT, UriValue.url("back.jpg"),
             BackgroundRepeat.NO_REPEAT, BackgroundAttachment.SCROLL,
             BackgroundPosition.CENTER));
     assertEquals("transparent url('back.jpg') no-repeat scroll center", $(
@@ -208,7 +207,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BACKGROUND_REPEAT.with(BackgroundRepeat.REPEAT_X));
+    $("#test").css(CSS.BACKGROUND_REPEAT.with(BackgroundRepeat.REPEAT_X));
 
     assertEquals("repeat-x", $("#test").css("backgroundRepeat"));
     assertEquals("repeat-x", $("#test").css(CSS.BACKGROUND_REPEAT));
@@ -218,12 +217,12 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
 
-    $("#test").setCss(CSS.BORDER_COLLAPSE.with(BorderCollapse.COLLAPSE));
+    $("#test").css(CSS.BORDER_COLLAPSE.with(BorderCollapse.COLLAPSE));
 
     assertEquals("collapse", $("#test").css("borderCollapse"));
     assertEquals("collapse", $("#test").css(CSS.BORDER_COLLAPSE));
 
-    $("#test").setCss(CSS.BORDER_COLLAPSE.with(BorderCollapse.SEPARATE));
+    $("#test").css(CSS.BORDER_COLLAPSE.with(BorderCollapse.SEPARATE));
 
     assertEquals("separate", $("#test").css("borderCollapse"));
     assertEquals("separate", $("#test").css(CSS.BORDER_COLLAPSE));
@@ -233,7 +232,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
 
-    $("#test").setCss(CSS.CAPTION_SIDE.with(CaptionSide.BOTTOM));
+    $("#test").css(CSS.CAPTION_SIDE.with(CaptionSide.BOTTOM));
     assertEquals("bottom", $("#test").css("captionSide"));
     assertEquals("bottom", $("#test").css(CSS.CAPTION_SIDE));
 
@@ -243,7 +242,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
 
-    $("#test").setCss(CSS.EMPTY_CELLS.with(EmptyCellsProperty.EmptyCells.HIDE));
+    $("#test").css(CSS.EMPTY_CELLS.with(EmptyCellsProperty.EmptyCells.HIDE));
     assertEquals("hide", $("#test").css("emptyCells"));
     assertEquals("hide", $("#test").css(CSS.EMPTY_CELLS));
 
@@ -253,12 +252,12 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<table id='test'><tr><td>Content<td></tr></table>");
 
-    $("#test").setCss(CSS.BORDER_SPACING.with(new BorderSpacing(Length.px(15))));
+    $("#test").css(CSS.BORDER_SPACING.with(new BorderSpacing(Length.px(15))));
 
     assertEquals("15px 15px", $("#test").css("borderSpacing"));
     assertEquals("15px 15px", $("#test").css(CSS.BORDER_SPACING));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.BORDER_SPACING.with(new BorderSpacing(Length.px(10), Length.em(20))));
 
     assertEquals("10px 20em", $("#test").css("borderSpacing"));
@@ -269,23 +268,23 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BORDER_COLOR.with(RGBColor.AQUA));
+    $("#test").css(CSS.BORDER_COLOR.with(RGBColor.AQUA));
     assertEquals("aqua", $("#test").css("borderColor"));
     assertEquals("aqua", $("#test").css(CSS.BORDER_COLOR));
 
-    $("#test").setCss(CSS.BORDER_BOTTOM_COLOR.with(RGBColor.BLACK));
+    $("#test").css(CSS.BORDER_BOTTOM_COLOR.with(RGBColor.BLACK));
     assertEquals("black", $("#test").css("borderBottomColor"));
     assertEquals("black", $("#test").css(CSS.BORDER_BOTTOM_COLOR));
 
-    $("#test").setCss(CSS.BORDER_TOP_COLOR.with(RGBColor.FUSCHIA));
+    $("#test").css(CSS.BORDER_TOP_COLOR.with(RGBColor.FUSCHIA));
     assertEquals("fuschia", $("#test").css("borderTopColor"));
     assertEquals("fuschia", $("#test").css(CSS.BORDER_TOP_COLOR));
 
-    $("#test").setCss(CSS.BORDER_LEFT_COLOR.with(RGBColor.GRAY));
+    $("#test").css(CSS.BORDER_LEFT_COLOR.with(RGBColor.GRAY));
     assertEquals("gray", $("#test").css("borderLeftColor"));
     assertEquals("gray", $("#test").css(CSS.BORDER_LEFT_COLOR));
 
-    $("#test").setCss(CSS.BORDER_RIGHT_COLOR.with(RGBColor.WHITE));
+    $("#test").css(CSS.BORDER_RIGHT_COLOR.with(RGBColor.WHITE));
     assertEquals("white", $("#test").css("borderRightColor"));
     assertEquals("white", $("#test").css(CSS.BORDER_RIGHT_COLOR));
 
@@ -295,34 +294,34 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(
-        CSS.BORDER.with(LineWidth.THICK, LineStyle.DASHED, RGBColor.BLACK));
+    $("#test").css(
+        CSS.BORDER.with(BorderWidth.THICK, BorderStyle.DASHED, RGBColor.BLACK));
     assertEquals("thick dashed black", $("#test").css("border"));
     assertEquals("thick dashed black", $("#test").css(CSS.BORDER));
 
-    $("#test").setCss(
-        CSS.BORDER.with(Length.px(15), LineStyle.SOLID, RGBColor.rgb("#000000")));
+    $("#test").css(
+        CSS.BORDER.with(Length.px(15), BorderStyle.SOLID, RGBColor.rgb("#000000")));
     assertEquals("15px solid #000000", $("#test").css("border"));
     assertEquals("15px solid #000000", $("#test").css(CSS.BORDER));
 
-    $("#test").setCss(
-        CSS.BORDER_TOP.with(LineWidth.MEDIUM, LineStyle.SOLID, RGBColor.GRAY));
+    $("#test").css(
+        CSS.BORDER_TOP.with(BorderWidth.MEDIUM, BorderStyle.SOLID, RGBColor.GRAY));
     assertEquals("medium solid gray", $("#test").css("borderTop"));
     assertEquals("medium solid gray", $("#test").css(CSS.BORDER_TOP));
 
-    $("#test").setCss(
-        CSS.BORDER_BOTTOM.with(LineWidth.THIN, LineStyle.DOUBLE,
+    $("#test").css(
+        CSS.BORDER_BOTTOM.with(BorderWidth.THIN, BorderStyle.DOUBLE,
             RGBColor.FUSCHIA));
     assertEquals("thin double fuschia", $("#test").css("borderBottom"));
     assertEquals("thin double fuschia", $("#test").css(CSS.BORDER_BOTTOM));
 
-    $("#test").setCss(
-        CSS.BORDER_LEFT.with(LineWidth.THIN, LineStyle.SOLID, RGBColor.BLACK));
+    $("#test").css(
+        CSS.BORDER_LEFT.with(BorderWidth.THIN, BorderStyle.SOLID, RGBColor.BLACK));
     assertEquals("thin solid black", $("#test").css("borderLeft"));
     assertEquals("thin solid black", $("#test").css(CSS.BORDER_LEFT));
 
-    $("#test").setCss(
-        CSS.BORDER_RIGHT.with(LineWidth.MEDIUM, LineStyle.DASHED, RGBColor.GRAY));
+    $("#test").css(
+        CSS.BORDER_RIGHT.with(BorderWidth.MEDIUM, BorderStyle.DASHED, RGBColor.GRAY));
     assertEquals("medium dashed gray", $("#test").css("borderRight"));
     assertEquals("medium dashed gray", $("#test").css(CSS.BORDER_RIGHT));
 
@@ -332,23 +331,23 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BORDER_STYLE.with(LineStyle.DOTTED));
+    $("#test").css(CSS.BORDER_STYLE.with(BorderStyle.DOTTED));
     assertEquals("dotted", $("#test").css("borderStyle"));
     assertEquals("dotted", $("#test").css(CSS.BORDER_STYLE));
 
-    $("#test").setCss(CSS.BORDER_BOTTOM_STYLE.with(LineStyle.DASHED));
+    $("#test").css(CSS.BORDER_BOTTOM_STYLE.with(BorderStyle.DASHED));
     assertEquals("dashed", $("#test").css("borderBottomStyle"));
     assertEquals("dashed", $("#test").css(CSS.BORDER_BOTTOM_STYLE));
 
-    $("#test").setCss(CSS.BORDER_TOP_STYLE.with(LineStyle.DOUBLE));
+    $("#test").css(CSS.BORDER_TOP_STYLE.with(BorderStyle.DOUBLE));
     assertEquals("double", $("#test").css("borderTopStyle"));
     assertEquals("double", $("#test").css(CSS.BORDER_TOP_STYLE));
 
-    $("#test").setCss(CSS.BORDER_LEFT_STYLE.with(LineStyle.HIDDEN));
+    $("#test").css(CSS.BORDER_LEFT_STYLE.with(BorderStyle.HIDDEN));
     assertEquals("hidden", $("#test").css("borderLeftStyle"));
     assertEquals("hidden", $("#test").css(CSS.BORDER_LEFT_STYLE));
 
-    $("#test").setCss(CSS.BORDER_RIGHT_STYLE.with(LineStyle.SOLID));
+    $("#test").css(CSS.BORDER_RIGHT_STYLE.with(BorderStyle.SOLID));
     assertEquals("solid", $("#test").css("borderRightStyle"));
     assertEquals("solid", $("#test").css(CSS.BORDER_RIGHT_STYLE));
 
@@ -358,32 +357,32 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.BORDER_WIDTH.with(LineWidth.MEDIUM));
+    $("#test").css(CSS.BORDER_WIDTH.with(BorderWidth.MEDIUM));
     assertEquals("medium", $("#test").css("borderWidth"));
     assertEquals("medium", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_WIDTH.with(Length.px(15)));
+    $("#test").css(CSS.BORDER_WIDTH.with(Length.px(15)));
     assertEquals("15px", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_WIDTH.with(Length.px(20)));
+    $("#test").css(CSS.BORDER_WIDTH.with(Length.px(20)));
     assertEquals("20px", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_WIDTH.with(Length.mm(20)));
+    $("#test").css(CSS.BORDER_WIDTH.with(Length.mm(20)));
     assertEquals("20mm", $("#test").css(CSS.BORDER_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_BOTTOM_WIDTH.with(LineWidth.THICK));
+    $("#test").css(CSS.BORDER_BOTTOM_WIDTH.with(BorderWidth.THICK));
     assertEquals("thick", $("#test").css("borderBottomWidth"));
     assertEquals("thick", $("#test").css(CSS.BORDER_BOTTOM_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_TOP_WIDTH.with(LineWidth.THIN));
+    $("#test").css(CSS.BORDER_TOP_WIDTH.with(BorderWidth.THIN));
     assertEquals("thin", $("#test").css("borderTopWidth"));
     assertEquals("thin", $("#test").css(CSS.BORDER_TOP_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_LEFT_WIDTH.with(LineWidth.THIN));
+    $("#test").css(CSS.BORDER_LEFT_WIDTH.with(BorderWidth.THIN));
     assertEquals("thin", $("#test").css("borderLeftWidth"));
     assertEquals("thin", $("#test").css(CSS.BORDER_LEFT_WIDTH));
 
-    $("#test").setCss(CSS.BORDER_RIGHT_WIDTH.with(LineWidth.THICK));
+    $("#test").css(CSS.BORDER_RIGHT_WIDTH.with(BorderWidth.THICK));
     assertEquals("thick", $("#test").css("borderRightWidth"));
     assertEquals("thick", $("#test").css(CSS.BORDER_RIGHT_WIDTH));
 
@@ -393,17 +392,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.CLEAR.with(Clear.BOTH));
+    $("#test").css(CSS.CLEAR.with(Clear.BOTH));
     assertEquals("both", $("#test").css("clear"));
     assertEquals("both", $("#test").css(CSS.CLEAR));
 
-    $("#test").setCss(CSS.CLEAR.with(Clear.LEFT));
+    $("#test").css(CSS.CLEAR.with(Clear.LEFT));
     assertEquals("left", $("#test").css(CSS.CLEAR));
 
-    $("#test").setCss(CSS.CLEAR.with(Clear.RIGHT));
+    $("#test").css(CSS.CLEAR.with(Clear.RIGHT));
     assertEquals("right", $("#test").css(CSS.CLEAR));
 
-    $("#test").setCss(CSS.CLEAR.with(Clear.NONE));
+    $("#test").css(CSS.CLEAR.with(Clear.NONE));
     assertEquals("none", $("#test").css(CSS.CLEAR));
 
   }
@@ -412,7 +411,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.CLIP.with(Shape.rect(0, 10, 10, 0)));
+    $("#test").css(CSS.CLIP.with(Shape.rect(0, 10, 10, 0)));
     assertEquals("rect(0px,10px,10px,0px)", $("#test").css("clip"));
     assertEquals("rect(0px,10px,10px,0px)", $("#test").css(CSS.CLIP));
   }
@@ -421,17 +420,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.AQUA));
+    $("#test").css(CSS.COLOR.with(RGBColor.AQUA));
 
     assertEquals("aqua", $("#test").css("color"));
     assertEquals("aqua", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.rgb("#112233")));
+    $("#test").css(CSS.COLOR.with(RGBColor.rgb("#112233")));
 
     assertEquals("#112233", $("#test").css("color"));
     assertEquals("#112233", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.rgb(35, 45, 55)));
+    $("#test").css(CSS.COLOR.with(RGBColor.rgb(35, 45, 55)));
     assertEquals("rgb(35,45,55)", $("#test").css("color"));
     assertEquals("rgb(35,45,55)", $("#test").css(CSS.COLOR));
 
@@ -441,61 +440,67 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.AQUA));
+    $("#test").css(CSS.COLOR.with(RGBColor.AQUA));
     assertEquals("aqua", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.BLACK));
+    $("#test").css(CSS.COLOR.with(RGBColor.BLACK));
     assertEquals("black", $("#test").css(CSS.COLOR));
+    
+    $("#test").css(CSS.COLOR.with(RGBColor.BLUE));
+    assertEquals("blue", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.FUSCHIA));
+    $("#test").css(CSS.COLOR.with(RGBColor.FUSCHIA));
     assertEquals("fuschia", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.GRAY));
+    $("#test").css(CSS.COLOR.with(RGBColor.GRAY));
     assertEquals("gray", $("#test").css(CSS.COLOR));
+    
+    $("#test").css(CSS.COLOR.with(RGBColor.GREY));
+    assertEquals("grey", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.GREEN));
+    $("#test").css(CSS.COLOR.with(RGBColor.GREEN));
     assertEquals("green", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.LIME));
+    $("#test").css(CSS.COLOR.with(RGBColor.LIME));
     assertEquals("lime", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.MAROON));
+    $("#test").css(CSS.COLOR.with(RGBColor.MAROON));
     assertEquals("maroon", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.NAVY));
+    $("#test").css(CSS.COLOR.with(RGBColor.NAVY));
     assertEquals("navy", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.OLIVE));
+    $("#test").css(CSS.COLOR.with(RGBColor.OLIVE));
     assertEquals("olive", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.ORANGE));
+    $("#test").css(CSS.COLOR.with(RGBColor.ORANGE));
     assertEquals("orange", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.PURPLE));
+    $("#test").css(CSS.COLOR.with(RGBColor.PURPLE));
     assertEquals("purple", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.RED));
+    $("#test").css(CSS.COLOR.with(RGBColor.RED));
     assertEquals("red", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.SILVER));
+    $("#test").css(CSS.COLOR.with(RGBColor.SILVER));
     assertEquals("silver", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.TEAL));
+    $("#test").css(CSS.COLOR.with(RGBColor.TEAL));
     assertEquals("teal", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.TRANSPARENT));
+    $("#test").css(CSS.COLOR.with(RGBColor.TRANSPARENT));
     assertEquals("transparent", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.WHITE));
+    $("#test").css(CSS.COLOR.with(RGBColor.WHITE));
     assertEquals("white", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.YELLOW));
+    $("#test").css(CSS.COLOR.with(RGBColor.YELLOW));
     assertEquals("yellow", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.rgb("#112233")));
+    $("#test").css(CSS.COLOR.with(RGBColor.rgb("#112233")));
     assertEquals("#112233", $("#test").css(CSS.COLOR));
 
-    $("#test").setCss(CSS.COLOR.with(RGBColor.rgb(35, 45, 55)));
+    $("#test").css(CSS.COLOR.with(RGBColor.rgb(35, 45, 55)));
     assertEquals("rgb(35,45,55)", $("#test").css(CSS.COLOR));
 
   }
@@ -504,7 +509,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.CURSOR.with(Cursor.WAIT));
+    $("#test").css(CSS.CURSOR.with(Cursor.WAIT));
 
     assertEquals("wait", $("#test").css("cursor"));
     assertEquals("wait", $("#test").css(CSS.CURSOR));
@@ -515,7 +520,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.DISPLAY.with(Display.INLINE));
+    $("#test").css(CSS.DISPLAY.with(Display.INLINE));
 
     assertEquals("inline", $("#test").css("display"));
     assertEquals("inline", $("#test").css(CSS.DISPLAY));
@@ -526,19 +531,19 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div><");
 
-    $("#test").setCss(CSS.LEFT.with(Length.px(10)));
+    $("#test").css(CSS.LEFT.with(Length.px(10)));
     assertEquals("10px", $("#test").css("left"));
     assertEquals("10px", $("#test").css(CSS.LEFT));
 
-    $("#test").setCss(CSS.TOP.with(Length.px(15)));
+    $("#test").css(CSS.TOP.with(Length.px(15)));
     assertEquals("15px", $("#test").css("top"));
     assertEquals("15px", $("#test").css(CSS.TOP));
 
-    $("#test").setCss(CSS.RIGHT.with(Length.px(0)));
+    $("#test").css(CSS.RIGHT.with(Length.px(0)));
     assertEquals("0px", $("#test").css("right"));
     assertEquals("0px", $("#test").css(CSS.RIGHT));
 
-    $("#test").setCss(CSS.BOTTOM.with(Length.px(20)));
+    $("#test").css(CSS.BOTTOM.with(Length.px(20)));
     assertEquals("20px", $("#test").css("bottom"));
     assertEquals("20px", $("#test").css(CSS.BOTTOM));
 
@@ -548,7 +553,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div><div id='test'>Content</div></div>");
 
-    $("#test").setCss(CSS.FLOAT.with(Float.LEFT));
+    $("#test").css(CSS.FLOAT.with(Float.LEFT));
 
     assertEquals("left", $("#test").css("float"));
     assertEquals("left", $("#test").css(CSS.FLOAT));
@@ -559,35 +564,35 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.LARGER));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.LARGER));
     assertEquals("larger", $("#test").css("fontSize"));
     assertEquals("larger", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.LARGE));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.LARGE));
     assertEquals("large", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.MEDIUM));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.MEDIUM));
     assertEquals("medium", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.SMALL));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.SMALL));
     assertEquals("small", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.SMALLER));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.SMALLER));
     assertEquals("smaller", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.X_LARGE));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.X_LARGE));
     assertEquals("x-large", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.X_SMALL));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.X_SMALL));
     assertEquals("x-small", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.XX_LARGE));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.XX_LARGE));
     assertEquals("xx-large", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(FontSize.XX_SMALL));
+    $("#test").css(CSS.FONT_SIZE.with(FontSize.XX_SMALL));
     assertEquals("xx-small", $("#test").css(CSS.FONT_SIZE));
 
-    $("#test").setCss(CSS.FONT_SIZE.with(Length.px(16)));
+    $("#test").css(CSS.FONT_SIZE.with(Length.px(16)));
     assertEquals("16px", $("#test").css(CSS.FONT_SIZE));
   }
 
@@ -595,7 +600,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.FONT_STYLE.with(FontStyle.ITALIC));
+    $("#test").css(CSS.FONT_STYLE.with(FontStyle.ITALIC));
     assertEquals("italic", $("#test").css("fontStyle"));
     assertEquals("italic", $("#test").css(CSS.FONT_STYLE));
 
@@ -605,7 +610,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.FONT_VARIANT.with(FontVariant.SMALL_CAPS));
+    $("#test").css(CSS.FONT_VARIANT.with(FontVariant.SMALL_CAPS));
     assertEquals("small-caps", $("#test").css("fontVariant"));
     assertEquals("small-caps", $("#test").css(CSS.FONT_VARIANT));
 
@@ -615,17 +620,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.px(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.px(10)));
 
     assertEquals("10px", $("#test").css("height"));
     assertEquals("10px", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.MAX_HEIGHT.with(Length.px(15)));
+    $("#test").css(CSS.MAX_HEIGHT.with(Length.px(15)));
 
     assertEquals("15px", $("#test").css("maxHeight"));
     assertEquals("15px", $("#test").css(CSS.MAX_HEIGHT));
 
-    $("#test").setCss(CSS.MIN_HEIGHT.with(Length.px(5)));
+    $("#test").css(CSS.MIN_HEIGHT.with(Length.px(5)));
 
     assertEquals("5px", $("#test").css("minHeight"));
     assertEquals("5px", $("#test").css(CSS.MIN_HEIGHT));
@@ -635,32 +640,59 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.px(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.px(10)));
     assertEquals("10px", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.cm(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.cm(10)));
     assertEquals("10cm", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.em(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.em(10)));
     assertEquals("10em", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.ex(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.ex(10)));
     assertEquals("10ex", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.in(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.in(10)));
     assertEquals("10in", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.mm(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.mm(10)));
     assertEquals("10mm", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.pc(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.pc(10)));
     assertEquals("10pc", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.pct(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.pct(10)));
     assertEquals("10%", $("#test").css(CSS.HEIGHT));
 
-    $("#test").setCss(CSS.HEIGHT.with(Length.pt(10)));
+    $("#test").css(CSS.HEIGHT.with(Length.pt(10)));
     assertEquals("10pt", $("#test").css(CSS.HEIGHT));
+    
+    $("#test").css(CSS.HEIGHT.with(Length.px(10.1)));
+    assertEquals("10.1px", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.cm(10.1)));
+    assertEquals("10.1cm", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.em(10.1)));
+    assertEquals("10.1em", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.ex(10.1)));
+    assertEquals("10.1ex", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.in(10.1)));
+    assertEquals("10.1in", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.mm(10.1)));
+    assertEquals("10.1mm", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.pc(10.1)));
+    assertEquals("10.1pc", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.pct(10.1)));
+    assertEquals("10.1%", $("#test").css(CSS.HEIGHT));
+
+    $("#test").css(CSS.HEIGHT.with(Length.pt(10.1)));
+    assertEquals("10.1pt", $("#test").css(CSS.HEIGHT));
 
   }
 
@@ -668,7 +700,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.LETTER_SPACING.with(Length.px(15)));
+    $("#test").css(CSS.LETTER_SPACING.with(Length.px(15)));
     assertEquals("15px", $("#test").css("letterSpacing"));
     assertEquals("15px", $("#test").css(CSS.LETTER_SPACING));
 
@@ -678,13 +710,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.LINE_HEIGHT.with(Length.px(15)));
+    $("#test").css(CSS.LINE_HEIGHT.with(Length.px(15)));
     assertEquals("15px", $("#test").css("lineHeight"));
     assertEquals("15px", $("#test").css(CSS.LINE_HEIGHT));
 
-    $("#test").setCss(CSS.LINE_HEIGHT.with(new CssNumber(2)));
+    $("#test").css(CSS.LINE_HEIGHT.with(2));
     assertEquals("2", $("#test").css("lineHeight"));
     assertEquals("2", $("#test").css(CSS.LINE_HEIGHT));
+    
+    $("#test").css(CSS.LINE_HEIGHT.with(2.5));
+    assertEquals("2.5", $("#test").css("lineHeight"));
+    assertEquals("2.5", $("#test").css(CSS.LINE_HEIGHT));
 
   }
 
@@ -692,7 +728,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
 
-    $("#test").setCss(CSS.LIST_STYLE_IMAGE.with(ImageValue.url("arrow.jpg")));
+    $("#test").css(CSS.LIST_STYLE_IMAGE.with(UriValue.url("arrow.jpg")));
     assertEquals("url('arrow.jpg')", $("#test").css("listStyleImage"));
     assertEquals("url('arrow.jpg')", $("#test").css(CSS.LIST_STYLE_IMAGE));
 
@@ -702,11 +738,11 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
 
-    $("#test").setCss(CSS.LIST_STYLE_POSITION.with(ListStylePosition.INSIDE));
+    $("#test").css(CSS.LIST_STYLE_POSITION.with(ListStylePosition.INSIDE));
     assertEquals("inside", $("#test").css("listStylePosition"));
     assertEquals("inside", $("#test").css(CSS.LIST_STYLE_POSITION));
 
-    $("#test").setCss(CSS.LIST_STYLE_POSITION.with(ListStylePosition.OUTSIDE));
+    $("#test").css(CSS.LIST_STYLE_POSITION.with(ListStylePosition.OUTSIDE));
     assertEquals("outside", $("#test").css("listStylePosition"));
     assertEquals("outside", $("#test").css(CSS.LIST_STYLE_POSITION));
 
@@ -716,21 +752,21 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.LIST_STYLE.with(ListStyleType.DISC, ListStylePosition.OUTSIDE,
-            ImageValue.NONE));
-    assertEquals("disc outside none", $("#test").css("listStyle"));
-    assertEquals("disc outside none", $("#test").css(CSS.LIST_STYLE));
+            null));
+    assertEquals("disc outside", $("#test").css("listStyle"));
+    assertEquals("disc outside", $("#test").css(CSS.LIST_STYLE));
 
-    $("#test").setCss(
-        CSS.LIST_STYLE.with(ListStyleType.DISC, null, ImageValue.NONE));
-    assertEquals("disc none", $("#test").css("listStyle"));
-    assertEquals("disc none", $("#test").css(CSS.LIST_STYLE));
+    $("#test").css(
+        CSS.LIST_STYLE.with(ListStyleType.DISC, null, UriValue.url("square.jpg")));
+    assertEquals("disc url('square.jpg')", $("#test").css("listStyle"));
+    assertEquals("disc url('square.jpg')", $("#test").css(CSS.LIST_STYLE));
 
-    $("#test").setCss(
-        CSS.LIST_STYLE.with(null, ListStylePosition.OUTSIDE, ImageValue.NONE));
-    assertEquals("outside none", $("#test").css("listStyle"));
-    assertEquals("outside none", $("#test").css(CSS.LIST_STYLE));
+    $("#test").css(
+        CSS.LIST_STYLE.with(null, ListStylePosition.OUTSIDE, UriValue.url("square.jpg")));
+    assertEquals("outside url('square.jpg')", $("#test").css("listStyle"));
+    assertEquals("outside url('square.jpg')", $("#test").css(CSS.LIST_STYLE));
 
   }
 
@@ -738,7 +774,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
 
-    $("#test").setCss(CSS.LIST_STYLE_TYPE.with(ListStyleType.DISC));
+    $("#test").css(CSS.LIST_STYLE_TYPE.with(ListStyleType.DISC));
     assertEquals("disc", $("#test").css("listStyleType"));
     assertEquals("disc", $("#test").css(CSS.LIST_STYLE_TYPE));
 
@@ -748,39 +784,39 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.MARGIN.with(Length.px(10), Length.px(20), null, null));
+    $("#test").css(CSS.MARGIN.with(Length.px(10), Length.px(20), null, null));
 
     assertEquals("10px 20px", $("#test").css("margin"));
     assertEquals("10px 20px", $("#test").css(CSS.MARGIN));
 
-    $("#test").setCss(CSS.MARGIN.with(Length.px(10), null, null, null));
+    $("#test").css(CSS.MARGIN.with(Length.px(10), null, null, null));
 
     assertEquals("10px", $("#test").css("margin"));
     assertEquals("10px", $("#test").css(CSS.MARGIN));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.MARGIN.with(Length.px(10), Length.px(20), Length.px(30),
             Length.px(40)));
 
     assertEquals("10px 20px 30px 40px", $("#test").css("margin"));
     assertEquals("10px 20px 30px 40px", $("#test").css(CSS.MARGIN));
 
-    $("#test").setCss(CSS.MARGIN_TOP.with(Length.px(20)));
+    $("#test").css(CSS.MARGIN_TOP.with(Length.px(20)));
 
     assertEquals("20px", $("#test").css("marginTop"));
     assertEquals("20px", $("#test").css(CSS.MARGIN_TOP));
 
-    $("#test").setCss(CSS.MARGIN_BOTTOM.with(Length.px(30)));
+    $("#test").css(CSS.MARGIN_BOTTOM.with(Length.px(30)));
 
     assertEquals("30px", $("#test").css("marginBottom"));
     assertEquals("30px", $("#test").css(CSS.MARGIN_BOTTOM));
 
-    $("#test").setCss(CSS.MARGIN_LEFT.with(Length.px(40)));
+    $("#test").css(CSS.MARGIN_LEFT.with(Length.px(40)));
 
     assertEquals("40px", $("#test").css("marginLeft"));
     assertEquals("40px", $("#test").css(CSS.MARGIN_LEFT));
 
-    $("#test").setCss(CSS.MARGIN_RIGHT.with(Length.px(50)));
+    $("#test").css(CSS.MARGIN_RIGHT.with(Length.px(50)));
 
     assertEquals("50px", $("#test").css("marginRight"));
     assertEquals("50px", $("#test").css(CSS.MARGIN_RIGHT));
@@ -789,29 +825,29 @@ public class GQueryCssTest extends GWTTestCase {
   public void testOutlineProperty() {
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.OUTLINE_WIDTH.with(Length.px(10)));
+    $("#test").css(CSS.OUTLINE_WIDTH.with(Length.px(10)));
     assertEquals("10px", $("#test").css("outlineWidth"));
     assertEquals("10px", $("#test").css(CSS.OUTLINE_WIDTH));
 
-    $("#test").setCss(CSS.OUTLINE_WIDTH.with(LineWidth.MEDIUM));
+    $("#test").css(CSS.OUTLINE_WIDTH.with(BorderWidth.MEDIUM));
     assertEquals("medium", $("#test").css("outlineWidth"));
     assertEquals("medium", $("#test").css(CSS.OUTLINE_WIDTH));
 
-    $("#test").setCss(CSS.OUTLINE_COLOR.with(RGBColor.GRAY));
+    $("#test").css(CSS.OUTLINE_COLOR.with(RGBColor.GRAY));
     assertEquals("gray", $("#test").css("outlineColor"));
     assertEquals("gray", $("#test").css(CSS.OUTLINE_COLOR));
 
-    $("#test").setCss(CSS.OUTLINE_STYLE.with(LineStyle.DOTTED));
+    $("#test").css(CSS.OUTLINE_STYLE.with(BorderStyle.DOTTED));
     assertEquals("dotted", $("#test").css("outlineStyle"));
     assertEquals("dotted", $("#test").css(CSS.OUTLINE_STYLE));
 
-    $("#test").setCss(
-        CSS.OUTLINE.with(RGBColor.BLACK, LineStyle.DASHED, LineWidth.MEDIUM));
+    $("#test").css(
+        CSS.OUTLINE.with(RGBColor.BLACK, BorderStyle.DASHED, BorderWidth.MEDIUM));
     assertEquals("black dashed medium", $("#test").css("outline"));
     assertEquals("black dashed medium", $("#test").css(CSS.OUTLINE));
 
-    $("#test").setCss(
-        CSS.OUTLINE.with(RGBColor.AQUA, LineStyle.DOUBLE, Length.px(15)));
+    $("#test").css(
+        CSS.OUTLINE.with(RGBColor.AQUA, BorderStyle.DOUBLE, Length.px(15)));
     assertEquals("aqua double 15px", $("#test").css("outline"));
     assertEquals("aqua double 15px", $("#test").css(CSS.OUTLINE));
 
@@ -820,15 +856,15 @@ public class GQueryCssTest extends GWTTestCase {
   public void testOverflowProperty() {
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.OVERFLOW.with(Overflow.HIDDEN));
+    $("#test").css(CSS.OVERFLOW.with(Overflow.HIDDEN));
     assertEquals("hidden", $("#test").css("overflow"));
     assertEquals("hidden", $("#test").css(CSS.OVERFLOW));
 
-    $("#test").setCss(CSS.OVERFLOW.with(Overflow.SCROLL));
+    $("#test").css(CSS.OVERFLOW.with(Overflow.SCROLL));
     assertEquals("scroll", $("#test").css("overflow"));
     assertEquals("scroll", $("#test").css(CSS.OVERFLOW));
 
-    $("#test").setCss(CSS.OVERFLOW.with(Overflow.VISIBLE));
+    $("#test").css(CSS.OVERFLOW.with(Overflow.VISIBLE));
     assertEquals("visible", $("#test").css("overflow"));
     assertEquals("visible", $("#test").css(CSS.OVERFLOW));
 
@@ -838,46 +874,46 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.PADDING.with(Length.px(10), null, null, null));
+    $("#test").css(CSS.PADDING.with(Length.px(10), null, null, null));
 
     assertEquals("10px", $("#test").css("padding"));
     assertEquals("10px", $("#test").css(CSS.PADDING));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.PADDING.with(Length.px(10), Length.px(20), null, null));
 
     assertEquals("10px 20px", $("#test").css("padding"));
     assertEquals("10px 20px", $("#test").css(CSS.PADDING));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.PADDING.with(Length.px(10), Length.px(20), Length.px(30), null));
 
     assertEquals("10px 20px 30px", $("#test").css("padding"));
     assertEquals("10px 20px 30px", $("#test").css(CSS.PADDING));
 
-    $("#test").setCss(
+    $("#test").css(
         CSS.PADDING.with(Length.px(10), Length.px(20), Length.px(30),
             Length.px(40)));
 
     assertEquals("10px 20px 30px 40px", $("#test").css("padding"));
     assertEquals("10px 20px 30px 40px", $("#test").css(CSS.PADDING));
 
-    $("#test").setCss(CSS.PADDING_TOP.with(Length.px(20)));
+    $("#test").css(CSS.PADDING_TOP.with(Length.px(20)));
 
     assertEquals("20px", $("#test").css("paddingTop"));
     assertEquals("20px", $("#test").css(CSS.PADDING_TOP));
 
-    $("#test").setCss(CSS.PADDING_BOTTOM.with(Length.px(30)));
+    $("#test").css(CSS.PADDING_BOTTOM.with(Length.px(30)));
 
     assertEquals("30px", $("#test").css("paddingBottom"));
     assertEquals("30px", $("#test").css(CSS.PADDING_BOTTOM));
 
-    $("#test").setCss(CSS.PADDING_LEFT.with(Length.px(40)));
+    $("#test").css(CSS.PADDING_LEFT.with(Length.px(40)));
 
     assertEquals("40px", $("#test").css("paddingLeft"));
     assertEquals("40px", $("#test").css(CSS.PADDING_LEFT));
 
-    $("#test").setCss(CSS.PADDING_RIGHT.with(Length.px(50)));
+    $("#test").css(CSS.PADDING_RIGHT.with(Length.px(50)));
 
     assertEquals("50px", $("#test").css("paddingRight"));
     assertEquals("50px", $("#test").css(CSS.PADDING_RIGHT));
@@ -887,19 +923,19 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.POSITION.with(Position.ABSOLUTE));
+    $("#test").css(CSS.POSITION.with(Position.ABSOLUTE));
     assertEquals("absolute", $("#test").css("position"));
     assertEquals("absolute", $("#test").css(CSS.POSITION));
 
-    $("#test").setCss(CSS.POSITION.with(Position.FIXED));
+    $("#test").css(CSS.POSITION.with(Position.FIXED));
     assertEquals("fixed", $("#test").css("position"));
     assertEquals("fixed", $("#test").css(CSS.POSITION));
 
-    $("#test").setCss(CSS.POSITION.with(Position.RELATIVE));
+    $("#test").css(CSS.POSITION.with(Position.RELATIVE));
     assertEquals("relative", $("#test").css("position"));
     assertEquals("relative", $("#test").css(CSS.POSITION));
 
-    $("#test").setCss(CSS.POSITION.with(Position.STATIC));
+    $("#test").css(CSS.POSITION.with(Position.STATIC));
     assertEquals("static", $("#test").css("position"));
     assertEquals("static", $("#test").css(CSS.POSITION));
 
@@ -909,19 +945,19 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.TEXT_ALIGN.with(TextAlign.CENTER));
+    $("#test").css(CSS.TEXT_ALIGN.with(TextAlign.CENTER));
     assertEquals("center", $("#test").css("textAlign"));
     assertEquals("center", $("#test").css(CSS.TEXT_ALIGN));
 
-    $("#test").setCss(CSS.TEXT_ALIGN.with(TextAlign.JUSTIFY));
+    $("#test").css(CSS.TEXT_ALIGN.with(TextAlign.JUSTIFY));
     assertEquals("justify", $("#test").css("textAlign"));
     assertEquals("justify", $("#test").css(CSS.TEXT_ALIGN));
 
-    $("#test").setCss(CSS.TEXT_ALIGN.with(TextAlign.LEFT));
+    $("#test").css(CSS.TEXT_ALIGN.with(TextAlign.LEFT));
     assertEquals("left", $("#test").css("textAlign"));
     assertEquals("left", $("#test").css(CSS.TEXT_ALIGN));
 
-    $("#test").setCss(CSS.TEXT_ALIGN.with(TextAlign.RIGHT));
+    $("#test").css(CSS.TEXT_ALIGN.with(TextAlign.RIGHT));
     assertEquals("right", $("#test").css("textAlign"));
     assertEquals("right", $("#test").css(CSS.TEXT_ALIGN));
 
@@ -931,7 +967,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.TEXT_DECORATION.with(TextDecoration.LINE_THROUGH));
+    $("#test").css(CSS.TEXT_DECORATION.with(TextDecoration.LINE_THROUGH));
     assertEquals("line-through", $("#test").css("textDecoration"));
     assertEquals("line-through", $("#test").css(CSS.TEXT_DECORATION));
 
@@ -941,7 +977,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.TEXT_IDENT.with(Length.px(15)));
+    $("#test").css(CSS.TEXT_IDENT.with(Length.px(15)));
     assertEquals("15px", $("#test").css("textIdent"));
     assertEquals("15px", $("#test").css(CSS.TEXT_IDENT));
 
@@ -951,14 +987,14 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.TEXT_TRANSFORM.with(TextTransform.UPPERCASE));
+    $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.UPPERCASE));
     assertEquals("uppercase", $("#test").css("textTransform"));
     assertEquals("uppercase", $("#test").css(CSS.TEXT_TRANSFORM));
 
-    $("#test").setCss(CSS.TEXT_TRANSFORM.with(TextTransform.LOWERCASE));
+    $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.LOWERCASE));
     assertEquals("lowercase", $("#test").css("textTransform"));
 
-    $("#test").setCss(CSS.TEXT_TRANSFORM.with(TextTransform.CAPITALIZE));
+    $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.CAPITALIZE));
     assertEquals("capitalize", $("#test").css("textTransform"));
   }
 
@@ -966,14 +1002,14 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.UNICODE_BIDI.with(UnicodeBidi.BIDI_OVERRIDE));
+    $("#test").css(CSS.UNICODE_BIDI.with(UnicodeBidi.BIDI_OVERRIDE));
     assertEquals("bidi-override", $("#test").css("unicode-bidi"));
     assertEquals("bidi-override", $("#test").css(CSS.UNICODE_BIDI));
 
-    $("#test").setCss(CSS.UNICODE_BIDI.with(UnicodeBidi.EMBED));
+    $("#test").css(CSS.UNICODE_BIDI.with(UnicodeBidi.EMBED));
     assertEquals("embed", $("#test").css(CSS.UNICODE_BIDI));
 
-    $("#test").setCss(CSS.UNICODE_BIDI.with(UnicodeBidi.NORMAL));
+    $("#test").css(CSS.UNICODE_BIDI.with(UnicodeBidi.NORMAL));
     assertEquals("normal", $("#test").css(CSS.UNICODE_BIDI));
   }
 
@@ -981,35 +1017,35 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.BASELINE));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.BASELINE));
     assertEquals("baseline", $("#test").css("verticalAlign"));
     assertEquals("baseline", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.BOTTOM));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.BOTTOM));
     assertEquals("bottom", $("#test").css("verticalAlign"));
     assertEquals("bottom", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.MIDDLE));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.MIDDLE));
     assertEquals("middle", $("#test").css("verticalAlign"));
     assertEquals("middle", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.SUB));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.SUB));
     assertEquals("sub", $("#test").css("verticalAlign"));
     assertEquals("sub", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.SUPER));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.SUPER));
     assertEquals("super", $("#test").css("verticalAlign"));
     assertEquals("super", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.TEXT_BOTTOM));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.TEXT_BOTTOM));
     assertEquals("text-bottom", $("#test").css("verticalAlign"));
     assertEquals("text-bottom", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.TEXT_TOP));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.TEXT_TOP));
     assertEquals("text-top", $("#test").css("verticalAlign"));
     assertEquals("text-top", $("#test").css(CSS.VERTICAL_ALIGN));
 
-    $("#test").setCss(CSS.VERTICAL_ALIGN.with(VerticalAlign.TOP));
+    $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.TOP));
     assertEquals("top", $("#test").css("verticalAlign"));
     assertEquals("top", $("#test").css(CSS.VERTICAL_ALIGN));
 
@@ -1019,11 +1055,11 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.VISIBILITY.with(Visibility.HIDDEN));
+    $("#test").css(CSS.VISIBILITY.with(Visibility.HIDDEN));
     assertEquals("hidden", $("#test").css("visibility"));
     assertEquals("hidden", $("#test").css(CSS.VISIBILITY));
 
-    $("#test").setCss(CSS.VISIBILITY.with(Visibility.VISIBLE));
+    $("#test").css(CSS.VISIBILITY.with(Visibility.VISIBLE));
     assertEquals("visible", $("#test").css("visibility"));
     assertEquals("visible", $("#test").css(CSS.VISIBILITY));
 
@@ -1033,20 +1069,20 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.WHITE_SPACE.with(WhiteSpace.NORMAL));
+    $("#test").css(CSS.WHITE_SPACE.with(WhiteSpace.NORMAL));
     assertEquals("normal", $("#test").css("whiteSpace"));
     assertEquals("normal", $("#test").css(CSS.WHITE_SPACE));
 
-    $("#test").setCss(CSS.WHITE_SPACE.with(WhiteSpace.NOWRAP));
+    $("#test").css(CSS.WHITE_SPACE.with(WhiteSpace.NOWRAP));
     assertEquals("nowrap", $("#test").css(CSS.WHITE_SPACE));
 
-    $("#test").setCss(CSS.WHITE_SPACE.with(WhiteSpace.PRE));
+    $("#test").css(CSS.WHITE_SPACE.with(WhiteSpace.PRE));
     assertEquals("pre", $("#test").css(CSS.WHITE_SPACE));
 
-    $("#test").setCss(CSS.WHITE_SPACE.with(WhiteSpace.PRE_LINE));
+    $("#test").css(CSS.WHITE_SPACE.with(WhiteSpace.PRE_LINE));
     assertEquals("pre-line", $("#test").css(CSS.WHITE_SPACE));
 
-    $("#test").setCss(CSS.WHITE_SPACE.with(WhiteSpace.PRE_WRAP));
+    $("#test").css(CSS.WHITE_SPACE.with(WhiteSpace.PRE_WRAP));
     assertEquals("pre-wrap", $("#test").css(CSS.WHITE_SPACE));
 
   }
@@ -1055,15 +1091,15 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.WIDTH.with(Length.px(20)));
+    $("#test").css(CSS.WIDTH.with(Length.px(20)));
     assertEquals("20px", $("#test").css("width"));
     assertEquals("20px", $("#test").css(CSS.WIDTH));
 
-    $("#test").setCss(CSS.MIN_WIDTH.with(Length.px(10)));
+    $("#test").css(CSS.MIN_WIDTH.with(Length.px(10)));
     assertEquals("10px", $("#test").css("minWidth"));
     assertEquals("10px", $("#test").css(CSS.MIN_WIDTH));
 
-    $("#test").setCss(CSS.MAX_WIDTH.with(Length.px(30)));
+    $("#test").css(CSS.MAX_WIDTH.with(Length.px(30)));
     assertEquals("30px", $("#test").css("maxWidth"));
     assertEquals("30px", $("#test").css(CSS.MAX_WIDTH));
 
@@ -1073,7 +1109,7 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.WORD_SPACING.with(Length.pt(2)));
+    $("#test").css(CSS.WORD_SPACING.with(Length.pt(2)));
     assertEquals("2pt", $("#test").css("wordSpacing"));
     assertEquals("2pt", $("#test").css(CSS.WORD_SPACING));
 
@@ -1083,9 +1119,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").setCss(CSS.ZINDEX.with(new CssNumber(1000)));
+    $("#test").css(CSS.ZINDEX.with(1000));
     assertEquals("1000", $("#test").css("zIndex"));
     assertEquals("1000", $("#test").css(CSS.ZINDEX));
+    
+    $("#test").css(CSS.ZINDEX.with(new Integer(200)));
+    assertEquals("200", $("#test").css("zIndex"));
+    assertEquals("200", $("#test").css(CSS.ZINDEX));
+    
+    $("#test").css(CSS.ZINDEX.with(null));
+    assertEquals("0", $("#test").css("zIndex"));
+    assertEquals("0", $("#test").css(CSS.ZINDEX));
 
   }
 }

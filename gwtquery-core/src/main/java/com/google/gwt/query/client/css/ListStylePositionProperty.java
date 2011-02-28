@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * box in the principal block box.
  */
 public class ListStylePositionProperty extends
-    AbstractCssProperty<ListStylePositionProperty.ListStylePosition> {
+    CssProperty<ListStylePositionProperty.ListStylePosition> {
 
   /**
    * Possible values for <i>list-style-position</i> property.

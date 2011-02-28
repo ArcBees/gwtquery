@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * element's box(es). The <i>clip</i> property allows you to modify this
  * clipping region by defining a shape.
  */
-public class ClipProperty extends AbstractCssProperty<ClipProperty.Shape> {
+public class ClipProperty extends CssProperty<ClipProperty.Shape> {
 
   /**
    * Object defining a clipping region used as value for <i>clip</i> property.

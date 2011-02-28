@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * The z-index property specifies the stack order of an element.
@@ -26,7 +27,7 @@ import com.google.gwt.dom.client.Style;
  * The z-index property only works on positioned elements (position:absolute,
  * position:relative, or position:fixed).
  */
-public class ZIndexProperty extends AbstractCssProperty<CssNumber> {
+public class ZIndexProperty implements TakesInteger {
 
   private static final String CSS_PROPERTY = "zIndex";
 
@@ -35,12 +36,27 @@ public class ZIndexProperty extends AbstractCssProperty<CssNumber> {
   }
 
   private ZIndexProperty() {
-    super(CSS_PROPERTY);
   }
 
-  @Override
-  public String get(Style s) {
+  
+  public String getCssName() {
+    return CSS_PROPERTY;
+  }
+
+  /**
+   * return a {@link String} containing the value of the <i>z-index</i>
+   * property.
+   */
+  public String getCssValue(Style s) {
     return getZIndex(s);
+  }
+
+  /**
+   * returns a {@link CssSetter} object setting <i>z-index</i> property to the
+   * specified <code>value</code>
+   */
+  public CssSetter with(Integer value) {
+    return new SimpleCssSetter(CSS_PROPERTY, value != null ? value.toString() : null);
   }
 
   /**
@@ -48,8 +64,8 @@ public class ZIndexProperty extends AbstractCssProperty<CssNumber> {
    * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
    */
   private native String getZIndex(Style s) /*-{
-    //force to return a string
-    return ""+s["zIndex"];
+		//force to return a string
+		return "" + s["zIndex"];
   }-*/;
 
 }

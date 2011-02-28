@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * table box.
  */
 public class CaptionSideProperty extends
-    AbstractCssProperty<CaptionSideProperty.CaptionSide> {
+    CssProperty<CaptionSideProperty.CaptionSide> {
 
   /**
    * Possible values for <i>caption-side</i> property.

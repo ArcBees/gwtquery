@@ -19,7 +19,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
-import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
+import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * The <i>'background'</i> property is a shorthand property for setting the
@@ -29,7 +29,7 @@ import com.google.gwt.query.client.css.TakeCssValue.CssSetter;
  * place in the style sheet.
  * 
  */
-public class BackgroundProperty implements CssProperty {
+public class BackgroundProperty implements HasCssValue {
 
   private static final String CSS_PROPERTY = "background";
 
@@ -45,7 +45,7 @@ public class BackgroundProperty implements CssProperty {
   private BackgroundProperty() {
   }
 
-  public String get(Style s) {
+  public String getCssValue(Style s) {
     return s.getProperty(CSS_PROPERTY);
   }
 
@@ -54,7 +54,7 @@ public class BackgroundProperty implements CssProperty {
   }
 
   public CssSetter with(final RGBColor backgroundColor,
-      ImageValue backgroundImage, BackgroundRepeat backgroundRepeat,
+      UriValue backgroundImage, BackgroundRepeat backgroundRepeat,
       BackgroundAttachment backgroundAttachment,
       BackgroundPosition backgroundPosition) {
 

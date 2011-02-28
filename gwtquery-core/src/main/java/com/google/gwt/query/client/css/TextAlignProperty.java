@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * container is aligned.
  */
 public class TextAlignProperty extends
-    AbstractCssProperty<TextAlignProperty.TextAlign> {
+    CssProperty<TextAlignProperty.TextAlign> {
 
   /**
    * Possible value for <i>text-align</i> property.
@@ -58,11 +58,6 @@ public class TextAlignProperty extends
   }
 
   private static final String CSS_PROPERTY = "textAlign";
-  /*private static final String TEXT_ALIGN_CENTER = "center";
-  private static final String TEXT_ALIGN_JUSTIFY = "justify";
-  private static final String TEXT_ALIGN_LEFT = "left";
-
-  private static final String TEXT_ALIGN_RIGHT = "right";*/
 
   public static void init() {
     CSS.TEXT_ALIGN = new TextAlignProperty();

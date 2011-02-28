@@ -15,12 +15,11 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.query.client.Properties;
 
 /**
  * Specify position of element's edges.
  */
-public class EdgePositionProperty extends AbstractCssProperty<Length> {
+public class EdgePositionProperty extends CssProperty<Length> {
 
   public static void init() {
     CSS.BOTTOM = new EdgePositionProperty("bottom");

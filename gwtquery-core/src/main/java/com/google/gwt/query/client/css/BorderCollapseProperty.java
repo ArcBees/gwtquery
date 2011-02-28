@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  *The <i>border-collapse</i> selects a table's border model.
  */
 public class BorderCollapseProperty extends
-    AbstractCssProperty<BorderCollapseProperty.BorderCollapse> {
+    CssProperty<BorderCollapseProperty.BorderCollapse> {
 
   public static enum BorderCollapse implements HasCssName {
     /**

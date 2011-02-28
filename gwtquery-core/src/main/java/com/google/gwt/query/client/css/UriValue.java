@@ -15,20 +15,28 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * The <i>font-weight</i> property specifies the weight of the font.
+ * Image as css value
  */
-public class FontWeightProperty extends CssProperty<FontWeight> {
+public class UriValue implements HasCssName {
 
-  private static final String CSS_PROPERTY = "fontWeight";
-
-  public static void init() {
-    CSS.FONT_WEIGHT = new FontWeightProperty();
+  /**
+   * Define an uri by an url
+   */
+  public static UriValue url(String url) {
+    return new UriValue("url('" + url + "')");
   }
 
-  private FontWeightProperty() {
-    super(CSS_PROPERTY);
+  private String value;
+
+  private UriValue(String value) {
+    this.value = value;
   }
+
+  public String getCssName() {
+    return value;
+  }
+
 }

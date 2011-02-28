@@ -21,7 +21,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * This property defines the text direction/writing direction
  */
 public class UnicodeBidiProperty extends
-    AbstractCssProperty<UnicodeBidiProperty.UnicodeBidi> {
+    CssProperty<UnicodeBidiProperty.UnicodeBidi> {
 
   /**
    * Define possible values for <i>unicode-bidi</i> property

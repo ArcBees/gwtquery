@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Style.HasCssName;
  * of a box
  */
 public class BackgroundRepeatProperty extends
-    AbstractCssProperty<BackgroundRepeatProperty.BackgroundRepeat> {
+    CssProperty<BackgroundRepeatProperty.BackgroundRepeat> {
 
   /**
    * Define possible values for <i>backgroung-repeat</i> property.

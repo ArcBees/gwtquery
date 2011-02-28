@@ -18,7 +18,7 @@ package com.google.gwt.query.client.css;
 /**
  * The <i>word-spacing</i> property specifies spacing behavior between words.
  */
-public class WordSpacingProperty extends AbstractCssProperty<Length> {
+public class WordSpacingProperty extends CssProperty<Length> {
 
   private static final String CSS_PROPERTY = "wordSpacing";
 

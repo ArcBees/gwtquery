@@ -24,8 +24,10 @@ public class RGBColor implements HasCssName {
 
   public static RGBColor AQUA;
   public static RGBColor BLACK;
+  public static RGBColor BLUE;
   public static RGBColor FUSCHIA;
   public static RGBColor GRAY;
+  public static RGBColor GREY;
   public static RGBColor GREEN;
   public static RGBColor LIME;
   public static RGBColor MAROON;
@@ -43,8 +45,10 @@ public class RGBColor implements HasCssName {
   static {
     AQUA = rgb("aqua");
     BLACK = rgb("black");
+    BLUE = rgb("blue");
     FUSCHIA = rgb("fuschia");
     GRAY = rgb("gray");
+    GREY = rgb("grey");
     GREEN = rgb("green");
     LIME = rgb("lime");
     MAROON = rgb("maroon");

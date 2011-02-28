@@ -20,7 +20,7 @@ import com.google.gwt.dom.client.Style.Display;
 /**
  * This property specifies the mechanism by which elements are rendered.
  */
-public class DisplayProperty extends AbstractCssProperty<Display> {
+public class DisplayProperty extends CssProperty<Display> {
 
   private static final String CSS_PROPERTY = "display";
 
