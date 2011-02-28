@@ -26,8 +26,23 @@ public class Length implements HasCssName {
   /**
    * Size in centimeters.
    */
-  public static Length cm(int amt) {
+  public static Length cm(double amt) {
     return new Length(amt + Unit.CM.getType());
+  }
+
+  /**
+   * Size in centimeters.
+   */
+  public static Length cm(int amt) {
+    px(1.2);
+    return new Length(amt + Unit.CM.getType());
+  }
+
+  /**
+   * Size as multiple of the 'font-size' of the relevant font.
+   */
+  public static Length em(double amt) {
+    return new Length(amt + Unit.EM.getType());
   }
 
   /**
@@ -40,8 +55,22 @@ public class Length implements HasCssName {
   /**
    * Size as multiple of the 'x-height' of the relevant font.
    */
+  public static Length ex(double amt) {
+    return new Length(amt + Unit.EX.getType());
+  }
+
+  /**
+   * Size as multiple of the 'x-height' of the relevant font.
+   */
   public static Length ex(int amt) {
     return new Length(amt + Unit.EX.getType());
+  }
+
+  /**
+   * Size in inches.
+   */
+  public static Length in(double amt) {
+    return new Length(amt + Unit.IN.getType());
   }
 
   /**
@@ -54,8 +83,22 @@ public class Length implements HasCssName {
   /**
    * Size in millimeters.
    */
+  public static Length mm(double amt) {
+    return new Length(amt + Unit.MM.getType());
+  }
+  
+  /**
+   * Size in millimeters.
+   */
   public static Length mm(int amt) {
     return new Length(amt + Unit.MM.getType());
+  }
+
+  /**
+   * Size in picas.
+   */
+  public static Length pc(double amt) {
+    return new Length(amt + Unit.PC.getType());
   }
 
   /**
@@ -68,6 +111,13 @@ public class Length implements HasCssName {
   /**
    * Size in percentage units.
    */
+  public static Length pct(double amt) {
+    return new Length(amt + Unit.PCT.getType());
+  }
+
+  /**
+   * Size in percentage units.
+   */
   public static Length pct(int amt) {
     return new Length(amt + Unit.PCT.getType());
   }
@@ -75,8 +125,22 @@ public class Length implements HasCssName {
   /**
    * Size in point.
    */
+  public static Length pt(double amt) {
+    return new Length(amt + Unit.PT.getType());
+  }
+
+  /**
+   * Size in point.
+   */
   public static Length pt(int amt) {
     return new Length(amt + Unit.PT.getType());
+  }
+
+  /**
+   * Size in pixels.
+   */
+  public static Length px(double amt) {
+    return new Length(amt + Unit.PX.getType());
   }
 
   /**
