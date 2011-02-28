@@ -21,9 +21,12 @@ import static com.google.gwt.query.client.GQuery.lazy;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Selector;
 import com.google.gwt.query.client.Selectors;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.user.client.Window;
 
 public class GwtQuerySampleModule implements EntryPoint {
@@ -39,10 +42,10 @@ public class GwtQuerySampleModule implements EntryPoint {
     
     // Just a simple usage of dom manipulation, events, and lazy usage
     s.allNotes().text("Hello Google I/O").
-      css("cursor", "pointer").
+      css(CSS.CURSOR.with(Cursor.POINTER)).
       toggle(
-        lazy().css("color", "red").done(),
-        lazy().css("color", "").done()
+        lazy().css(CSS.COLOR.with(RGBColor.RED)).done(),
+        lazy().css(CSS.COLOR.with(null)).done()
       );
     
     // Cascade effects

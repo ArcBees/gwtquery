@@ -21,7 +21,11 @@ import static com.google.gwt.query.client.GQuery.lazy;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
@@ -29,11 +33,11 @@ import com.google.gwt.user.client.Event;
 public class GwtQueryEffectsModule implements EntryPoint {
 
   public void onModuleLoad() {
-    $("div > div").css("color", "blue")
-    .hover(lazy().css("color", "red").done(),
-           lazy().css("color", "blue").done());
+    $("div > div").css(CSS.COLOR.with(RGBColor.BLUE))
+    .hover(lazy().css(CSS.COLOR.with(RGBColor.RED)).done(),
+           lazy().css(CSS.COLOR.with(RGBColor.BLUE)).done());
 
-    $("div.outer > div").css("position", "relative").dblclick(new Function() {
+    $("div.outer > div").css(CSS.POSITION.with(Position.RELATIVE)).dblclick(new Function() {
       public boolean f(Event e) {
          $("div.outer > div").as(Effects.Effects).
          animate($$("left: '+=100'"), 400, Easing.LINEAR).
@@ -49,7 +53,7 @@ public class GwtQueryEffectsModule implements EntryPoint {
     final Effects a = $(".a, .b > div:nth-child(2)").as(Effects.Effects);
     final Effects b = $(".b > div:nth-child(odd)").as(Effects.Effects);
     
-    $("#b0").width(150).css("font-size", "10px").toggle(new Function() {
+    $("#b0").width(150).css(CSS.FONT_SIZE.with(Length.px(10))).toggle(new Function() {
       public void f(Element e) {
         $("#b0").as(Effects.Effects).animate(" width: '400', opacity: '0.4', marginLeft: '0.6in', fontSize: '24px'");
       }

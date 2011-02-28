@@ -19,18 +19,17 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.plugins.widgets.Widgets.Widgets;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.UriValue;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.ImageValue;
-import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.widgets.widgetfactory.ButtonWidgetFactory.ButtonOptions;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -92,9 +91,9 @@ public class GwtQueryWidgetModule implements EntryPoint {
     // $("#aaa").css(CSS.TOP, Length.cm(15));
     // $("#aaa").css(CSS.BACKGROUND, RGBColor.RED, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER);
     
-    $("#aaa").setCss(CSS.TOP.with(Length.cm(15)));
-    $("#aaa").setCss(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
-    $("#aaa").setCss(CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
+    $("#aaa").css(CSS.TOP.with(Length.cm(15)));
+    $("#aaa").css(CSS.BACKGROUND.with(RGBColor.SILVER, UriValue.url(""), BackgroundRepeat.NO_REPEAT, BackgroundAttachment.FIXED, BackgroundPosition.CENTER)); 
+    $("#aaa").css(CSS.BACKGROUND_ATTACHMENT.with(BackgroundAttachment.FIXED));
   }
   
   private ButtonOptions createButtonOptions(){
