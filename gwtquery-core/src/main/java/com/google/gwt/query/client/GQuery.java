@@ -21,7 +21,6 @@ import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -199,17 +198,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around a collection of existing widget.
-   */
-  public static GQuery $(Collection<Widget> widgetList){
-    JSArray elements = JSArray.create();
-    for (Widget w : widgetList){
-      elements.addNode(w.getElement());
-    }
-    return $(elements);
-  }
-
-  /**
    * Wrap a GQuery around an existing element.
    */
   public static GQuery $(Element element) {
@@ -238,13 +226,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * Create a new GQuery given a list of objects. 
-   * Only node objects will be added;
+   * Create a new GQuery given a list of nodes, elements or widgets 
    */
-  public static GQuery $(@SuppressWarnings("rawtypes") ArrayList a) {
+  public static GQuery $(@SuppressWarnings("rawtypes")List nodesOrWidgets) {
     JSArray elements = JSArray.create();
-    if (a != null) {
-      for (Object o : a ) {
+    if (nodesOrWidgets != null) {
+      for (Object o : nodesOrWidgets ) {
         if (o instanceof Node) {
           elements.addNode((Node)o);
         } else if (o instanceof Widget) {
@@ -350,17 +337,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static GQuery $(Widget... widgets){
     return $(Arrays.asList(widgets));
-  }
-
-  /**
-   * Wrap a GQuery around a List of existing widget.
-   */
-  public static <T extends Widget> GQuery $(List<T> widgets){
-    JSArray elements = JSArray.create();
-    for (Widget w : widgets){
-      elements.addNode(w.getElement());
-    }
-    return $(elements);
   }
 
   /**
@@ -1631,7 +1607,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * producing a new array containing the return values.
    */
   @SuppressWarnings("unchecked")
-  public <W> ArrayList<W> map(Function f) {
+  public <W> List<W> map(Function f) {
     @SuppressWarnings("rawtypes")
     ArrayList ret = new ArrayList();
     for (int i = 0; i < elements().length; i++) {

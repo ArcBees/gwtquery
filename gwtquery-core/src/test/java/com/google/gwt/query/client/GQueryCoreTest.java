@@ -19,7 +19,7 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -786,7 +786,6 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(true, isAttachedToTheDOM);
   }
   
-  @SuppressWarnings("unchecked")
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);
@@ -817,7 +816,7 @@ public class GQueryCoreTest extends GWTTestCase {
     String content = "<p id='1'/><p/><p id='2'/><p id='4'/>";
     $(e).html(content);
     
-    ArrayList<String> s = $("p", e).map(new Function() {
+    List<String> s = $("p", e).map(new Function() {
       public Object f(Element e, int i) {
         return null;
       }
@@ -837,7 +836,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("4", s.get(2));
     
 
-    ArrayList<Element> a = $("p", e).map(new Function() {
+    List<Element> a = $("p", e).map(new Function() {
       public Object f(Element e, int i) {
         String id = $(e).attr("id");
         return id.isEmpty() ? null: e;
