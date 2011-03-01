@@ -28,19 +28,49 @@ public class PaddingProperty extends CssProperty<Length> {
     private ShorthandPaddingProperty() {
     }
 
-    public CssSetter with(Length padding1, Length padding2, Length padding3,
-        Length padding4) {
-      return new MultipleValueCssSetter(getCssName(), padding1, padding2,
-          padding3, padding4);
-
+    public String getCssName() {
+      return PADDING_PROPERTY;
     }
 
     public String getCssValue(Style s) {
       return s.getPadding();
     }
 
-    public String getCssName() {
-      return PADDING_PROPERTY;
+    /**
+     * Apply the same padding to all sides
+     */
+    public CssSetter with(Length padding) {
+      return new MultipleValueCssSetter(getCssName(), padding);
+
+    }
+
+    /**
+     * The top and bottom paddings are set to the first value and the right and
+     * left paddings are set to the second
+     */
+    public CssSetter with(Length topAndBottom, Length leftAndRight) {
+      return new MultipleValueCssSetter(getCssName(), topAndBottom,
+          leftAndRight);
+
+    }
+
+    /**
+     * The top padding is set to the first value, the left and right paddings
+     * are set to the second, and the bottom padding is set to the third
+     */
+    public CssSetter with(Length top, Length leftAndRight, Length bottom) {
+      return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
+
+    }
+
+    /**
+     * Apply padding to all sides.
+     */
+    public CssSetter with(Length padding1, Length padding2, Length padding3,
+        Length padding4) {
+      return new MultipleValueCssSetter(getCssName(), padding1, padding2,
+          padding3, padding4);
+
     }
 
   }

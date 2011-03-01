@@ -27,14 +27,43 @@ public class MarginProperty extends CssProperty<Length> {
     private ShorthandMarginProperty() {
     }
 
-    public String getCssValue(Style s) {
-      return s.getMargin();
-    }
-
     public String getCssName() {
       return MARGIN_PROPERTY;
     }
 
+    public String getCssValue(Style s) {
+      return s.getMargin();
+    }
+
+    /**
+     * Apply the same margin to all sides
+     */
+    public CssSetter with(Length margin) {
+      return new MultipleValueCssSetter(getCssName(), margin);
+
+    }
+
+    /**
+     * The top and bottom margins are set to the first value and the right and
+     * left margins are set to the second
+     */
+    public CssSetter with(Length topAndBottom, Length leftAndRight) {
+      return new MultipleValueCssSetter(getCssName(), topAndBottom, leftAndRight);
+
+    }
+
+    /**
+     * The top margin is set to the first value, the left and right margins are
+     * set to the second, and the bottom margin is set to the third
+     */
+    public CssSetter with(Length top, Length leftAndRight, Length bottom) {
+      return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
+
+    }
+
+    /**
+     * Apply the margin to all sides.
+     */
     public CssSetter with(Length margin1, Length margin2, Length margin3,
         Length margin4) {
       return new MultipleValueCssSetter(getCssName(), margin1, margin2,

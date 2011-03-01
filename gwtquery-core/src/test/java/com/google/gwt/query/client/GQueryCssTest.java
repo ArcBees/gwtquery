@@ -784,12 +784,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.MARGIN.with(Length.px(10), Length.px(20), null, null));
+    $("#test").css(CSS.MARGIN.with(Length.px(10), Length.px(20)));
 
     assertEquals("10px 20px", $("#test").css("margin"));
     assertEquals("10px 20px", $("#test").css(CSS.MARGIN));
+    
+    $("#test").css(CSS.MARGIN.with(Length.px(10), Length.px(20), Length.px(30)));
 
-    $("#test").css(CSS.MARGIN.with(Length.px(10), null, null, null));
+    assertEquals("10px 20px 30px", $("#test").css("margin"));
+    assertEquals("10px 20px 30px", $("#test").css(CSS.MARGIN));
+
+    $("#test").css(CSS.MARGIN.with(Length.px(10)));
 
     assertEquals("10px", $("#test").css("margin"));
     assertEquals("10px", $("#test").css(CSS.MARGIN));
@@ -874,19 +879,19 @@ public class GQueryCssTest extends GWTTestCase {
 
     $(e).html("<div id='test'>Content</div>");
 
-    $("#test").css(CSS.PADDING.with(Length.px(10), null, null, null));
+    $("#test").css(CSS.PADDING.with(Length.px(10)));
 
     assertEquals("10px", $("#test").css("padding"));
     assertEquals("10px", $("#test").css(CSS.PADDING));
 
     $("#test").css(
-        CSS.PADDING.with(Length.px(10), Length.px(20), null, null));
+        CSS.PADDING.with(Length.px(10), Length.px(20)));
 
     assertEquals("10px 20px", $("#test").css("padding"));
     assertEquals("10px 20px", $("#test").css(CSS.PADDING));
 
     $("#test").css(
-        CSS.PADDING.with(Length.px(10), Length.px(20), Length.px(30), null));
+        CSS.PADDING.with(Length.px(10), Length.px(20), Length.px(30)));
 
     assertEquals("10px 20px 30px", $("#test").css("padding"));
     assertEquals("10px 20px 30px", $("#test").css(CSS.PADDING));
@@ -1016,7 +1021,11 @@ public class GQueryCssTest extends GWTTestCase {
   public void testVerticalAlignProperty() {
 
     $(e).html("<div id='test'>Content</div>");
-
+       
+    $("#test").css(CSS.VERTICAL_ALIGN.with(Length.px(120)));
+    assertEquals("120px", $("#test").css("verticalAlign"));
+    assertEquals("120px", $("#test").css(CSS.VERTICAL_ALIGN));
+    
     $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.BASELINE));
     assertEquals("baseline", $("#test").css("verticalAlign"));
     assertEquals("baseline", $("#test").css(CSS.VERTICAL_ALIGN));
