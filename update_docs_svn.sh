@@ -2,11 +2,9 @@
 
 # Script to update javadoc deployed in svn
 
-p=`pwd`
-
-cd gwtquery-core
+pushd gwtquery-core
 mvn javadoc:javadoc
-cd $p
+popd
 
 cp -r gwtquery-core/target/site/apidocs/* gwtquery-core/javadoc/
 
@@ -23,4 +21,7 @@ done
 find gwtquery-core/javadoc/  | grep -v .svn | xargs svn add
 
 find gwtquery-core/javadoc/ -type f -name "*html" -exec svn propset svn:mime-type text/html '{}' ';'
+
+
+svn commit -m 'updated javadocs' gwtquery-core/javadoc/
 
