@@ -62,7 +62,7 @@ public class Widgets extends GQueryQueue<Widgets>  {
   public  <W extends Widget> W widget() {
     Widget w = super.widget();
     if (w == null) {
-      Element e = elements.getItem(0);
+      Element e = get(0);
       if ("div".equalsIgnoreCase(e.getTagName()) || "span".equalsIgnoreCase(e.getTagName())) {
         w = HTML.wrap(e); 
       } else  if ("button".equalsIgnoreCase(e.getTagName())) {

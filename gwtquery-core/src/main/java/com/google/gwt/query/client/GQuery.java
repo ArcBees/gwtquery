@@ -536,7 +536,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return $wnd;
   }-*/;
 
-  protected NodeList<Element> elements = JavaScriptObject.createArray().cast();
+  private NodeList<Element> elements = JavaScriptObject.createArray().cast();
 
   private String currentSelector;
 
