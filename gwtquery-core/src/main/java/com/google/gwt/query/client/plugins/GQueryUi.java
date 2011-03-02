@@ -17,12 +17,10 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Predicate;
 
 /**
@@ -162,8 +160,8 @@ public class GQueryUi extends GQuery {
           }
         });
       }
-      return scrollParent.length() > 0 ? new GQuery(scrollParent.get(0))
-          : GQuery.$(getViewportElement());
+      return scrollParent.length() > 0 ? $(scrollParent.get(0))
+          : $(getViewportElement());
 
     }
 
@@ -228,25 +226,10 @@ public class GQueryUi extends GQuery {
 
   private GQueryUiImpl impl = GWT.create(GQueryUiImpl.class);
 
-  public GQueryUi() {
-    super();
-  }
-
-  public GQueryUi(Element element) {
-    super(element);
-  }
-
-  public GQueryUi(GQuery gq) {
+  protected GQueryUi(GQuery gq) {
     super(gq);
   }
 
-  public GQueryUi(JSArray elements) {
-    super(elements);
-  }
-
-  public GQueryUi(NodeList<Element> list) {
-    super(list);
-  }
 
   /**
    * Return the immediate scrolling parent.

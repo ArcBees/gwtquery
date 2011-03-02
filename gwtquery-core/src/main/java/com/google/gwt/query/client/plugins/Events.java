@@ -17,10 +17,8 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -33,23 +31,14 @@ public class Events extends GQuery {
   static {
     GQuery.registerPlugin(Events.class, new Plugin<Events>() {
       public Events init(GQuery gq) {
-        return new Events(gq.get());
+        return new Events(gq);
       }
     });
   }
 
-  public Events(Element element) {
-    super(element);
+  public Events(GQuery gq) {
+    super(gq);
   }
-
-  public Events(JSArray elements) {
-    super(elements);
-  }
-
-  public Events(NodeList<Element> list) {
-    super(list);
-  }
-  
   /**
    * Binds a set of handlers to a particular Event for each matched element.
    * 

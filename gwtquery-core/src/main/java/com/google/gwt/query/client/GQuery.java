@@ -544,26 +544,26 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private GQuery previousObject;
 
-  public GQuery() {
+  private GQuery() {
   }
 
-  public GQuery(Element element) {
+  private GQuery(Element element) {
     if (element != null) {
       elements = JSArray.create(element);
     }
   }
 
-  public GQuery(GQuery gq) {
+  protected GQuery(GQuery gq) {
     this(gq == null ? null : gq.get());
   }
 
-  public GQuery(JSArray elements) {
+  private GQuery(JSArray elements) {
     if (elements != null) {
       this.elements = elements;
     }
   }
 
-  public GQuery(NodeList<Element> list) {
+  private GQuery(NodeList<Element> list) {
     if (list != null) {
       elements = list;
     }

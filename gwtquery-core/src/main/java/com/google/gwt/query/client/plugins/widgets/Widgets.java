@@ -16,9 +16,7 @@
 package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.plugins.GQueryQueue;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.widgets.widgetfactory.ButtonWidgetFactory;
@@ -30,6 +28,9 @@ import com.google.gwt.query.client.plugins.widgets.widgetfactory.TabPanelWidgetF
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Widgets plugin for Gwt Query.
@@ -46,22 +47,9 @@ public class Widgets extends GQueryQueue<Widgets> {
     });
   }
 
-  public Widgets(final Element element) {
-    super(element);
-  }
-
-  public Widgets(GQuery gq) {
+  protected Widgets(GQuery gq) {
     super(gq);
   }
-
-  public Widgets(final JSArray elements) {
-    super(elements);
-  }
-
-  public Widgets(final NodeList<Element> list) {
-    super(list);
-  }
-
 
   /**
    * Create an return a {@link TabPanel} widget with the first selected
@@ -141,16 +129,16 @@ public class Widgets extends GQueryQueue<Widgets> {
 
   /**
    * Try to create a widget using the given factory and the given options for
-   * each element of the query.
-   * Returns a new gquery set of elements with the new widgets created.
+   * each element of the query. Returns a new gquery set of elements with the
+   * new widgets created.
    */
   public <W extends Widget, O extends WidgetOptions> Widgets widgets(
       WidgetFactory<W, O> factory, O options) {
-    JSArray result = JSArray.create();
+    List<Element> result = new ArrayList<Element>();
     for (Element e : elements()) {
-      result.addNode(widget(e, factory, options).getElement());
+      result.add(widget(e, factory, options).getElement());
     }
-    return new Widgets(result);
+    return $(result).as(Widgets);
   }
 
   /**

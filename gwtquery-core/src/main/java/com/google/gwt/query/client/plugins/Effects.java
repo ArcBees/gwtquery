@@ -17,10 +17,8 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.ClipAnimation.Direction;
@@ -52,20 +50,8 @@ public class Effects extends GQueryQueue<Effects>  {
     });
   }
 
-  public Effects(final Element element) {
-    super(element);
-  }
-
-  public Effects(GQuery gq) {
+  protected Effects(GQuery gq) {
     super(gq);
-  }
-
-  public Effects(final JSArray elements) {
-    super(elements);
-  }
-
-  public Effects(final NodeList<Element> list) {
-    super(list);
   }
 
   /**

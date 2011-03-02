@@ -68,7 +68,7 @@ public class ClipAnimation extends Animation {
     this.direction = d;
     this.funcs = funcs;
     e = elem;
-    g = new Effects(e);
+    g = GQuery.$(e).as(Effects.Effects);
   }
 
   @Override

@@ -16,9 +16,7 @@
 package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
@@ -38,23 +36,11 @@ public class Widgets extends GQueryQueue<Widgets>  {
       }
     });
   }
-
-  public Widgets(final Element element) {
-    super(element);
-  }
-
-  public Widgets(GQuery gq) {
+  
+  protected Widgets(GQuery gq) {
     super(gq);
   }
 
-  public Widgets(final JSArray elements) {
-    super(elements);
-  }
-
-  public Widgets(final NodeList<Element> list) {
-    super(list);
-  }
-  
   @SuppressWarnings("unchecked")
   @Override
   // TODO: consider more widgets

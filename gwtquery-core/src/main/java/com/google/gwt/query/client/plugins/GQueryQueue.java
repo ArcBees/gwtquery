@@ -15,14 +15,12 @@
  */
 package com.google.gwt.query.client.plugins;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Class used in plugins which need a queue system.
@@ -31,20 +29,8 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
   
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
 
-  public GQueryQueue(Element element) {
-    super(element);
-  }
-
-  public GQueryQueue(GQuery gq) {
+  protected GQueryQueue(GQuery gq) {
     super(gq);
-  }
-
-  public GQueryQueue(JSArray elements) {
-    super(elements);
-  }
-
-  public GQueryQueue(NodeList<Element> list) {
-    super(list);
   }
 
   /**

@@ -18,11 +18,8 @@ package com.google.gwt.query.client.plugins;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.plugins.Events;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
@@ -36,20 +33,8 @@ public abstract class MousePlugin extends GQueryUi {
   private MouseOptions options;
   private boolean preventClickEvent = false;
 
-  public MousePlugin(Element element) {
-    super(element);
-  }
-
-  public MousePlugin(GQuery gq) {
+  protected MousePlugin(GQuery gq) {
     super(gq);
-  }
-
-  public MousePlugin(JSArray elements) {
-    super(elements);
-  }
-
-  public MousePlugin(NodeList<Element> list) {
-    super(list);
   }
 
   protected void destroyMouseHandler() {
