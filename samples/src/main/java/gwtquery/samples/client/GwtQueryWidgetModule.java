@@ -16,7 +16,7 @@
 package gwtquery.samples.client;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.plugins.widgets.Widgets.Widgets;
+import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,13 +24,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.UriValue;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.css.UriValue;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
-import com.google.gwt.query.client.plugins.widgets.widgetfactory.ButtonWidgetFactory.ButtonOptions;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory.ButtonOptions;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;

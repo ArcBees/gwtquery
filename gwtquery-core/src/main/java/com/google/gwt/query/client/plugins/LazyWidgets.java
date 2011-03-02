@@ -15,17 +15,84 @@
  */
 package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory.ButtonOptions;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.List;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
 
-  <W extends Widget> W widget();
+  /**
+   * Create an return a {@link TabPanel} widget with the first selected
+   * elements. Each div element will create a tab and the first h3 element
+   * inside the div will be used as title
+   */
+  TabPanel tabPanel();
+
+  /**
+   * Create an return a {@link TabPanel} widget with the first selected elements
+   * by using a {@link TabPanelOptions}
+   */
+  TabPanel tabPanel(TabPanelOptions o);
+
+  /**
+   * Create {@link TabPanel} widget for each selected elements. Each div element
+   * will create a tab and the first h3 element inside the div will be used as
+   * title
+   */
+  LazyWidgets<T> tabPanels();
+
+  /**
+   * Create a {@link TabPanel} widget for each selected elements. Each div
+   * element inside a selected element will create a tab and the first h3
+   * element inside the div will be used as title
+   */
+  LazyWidgets<T> tabPanels(TabPanelOptions o);
+
+  /**
+   * Create an return a {@link Button} widget with the first element of the
+   * query
+   */
+  Button button();
+
+  /**
+   * Create and return a {@link Button} widget with the first element of the
+   * query by using a {@link ButtonOptions}
+   */
+  Button button(ButtonOptions o);
+
+  /**
+   * Create a {@link Button} widget for each selected element.
+   * 
+   */
+  LazyWidgets<T> buttons();
+
+  /**
+   * Create a {@link Button} widget for each selected element by using a
+   * {@link ButtonOptions}
+   * 
+   */
+  LazyWidgets<T> buttons(ButtonOptions o);
+
+  /**
+   * Create and return a widget using the given factory and the given options
+   */
+  <W extends Widget, O extends WidgetOptions> W widget( WidgetFactory<W, O> factory, O options);
+
+  /**
+   * Try to create a widget using the given factory and the given options for
+   * each element of the query. Returns a new gquery set of elements with the
+   * new widgets created.
+   */
+  <W extends Widget, O extends WidgetOptions> LazyWidgets<T> widgets( WidgetFactory<W, O> factory, O options);
 
 }

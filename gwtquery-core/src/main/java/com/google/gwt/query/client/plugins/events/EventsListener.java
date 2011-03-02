@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.plugins;
+package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
@@ -97,7 +97,7 @@ public class EventsListener implements EventListener {
     elem.__gquerysubmit = true;
     
     var handle = function(event) {
-      elem.__gqueryevent.@com.google.gwt.query.client.plugins.EventsListener::dispatchEvent(Lcom/google/gwt/user/client/Event;)(event);
+      elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::dispatchEvent(Lcom/google/gwt/user/client/Event;)(event);
     };
     
     if (elem.addEventListener)

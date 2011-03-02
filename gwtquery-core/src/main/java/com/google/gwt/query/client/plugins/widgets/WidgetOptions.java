@@ -1,4 +1,4 @@
-package com.google.gwt.query.client.plugins.widgets.widgetfactory;
+package com.google.gwt.query.client.plugins.widgets;
 
 /**
  * Marker interface for factory options. All options should extend

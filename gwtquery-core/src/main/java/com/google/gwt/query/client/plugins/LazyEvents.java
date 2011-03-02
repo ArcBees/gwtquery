@@ -16,10 +16,9 @@
 package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
+import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.query.client.LazyBase;
 

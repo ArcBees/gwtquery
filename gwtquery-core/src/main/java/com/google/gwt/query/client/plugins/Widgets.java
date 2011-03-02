@@ -17,16 +17,25 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory.ButtonOptions;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *  Widgets plugin for Gwt Query. 
+ * Widgets plugin for Gwt Query.
+ * Be careful, this plugin is still experimental. The api can change in next releases.
  */
-public class Widgets extends GQueryQueue<Widgets>  {
-  
+public class Widgets extends QueuePlugin<Widgets> {
+
   public static final Class<Widgets> Widgets = Widgets.class;
 
   static {
@@ -36,29 +45,107 @@ public class Widgets extends GQueryQueue<Widgets>  {
       }
     });
   }
-  
+
   protected Widgets(GQuery gq) {
     super(gq);
   }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  // TODO: consider more widgets
-  public  <W extends Widget> W widget() {
-    Widget w = super.widget();
-    if (w == null) {
-      Element e = get(0);
-      if ("div".equalsIgnoreCase(e.getTagName()) || "span".equalsIgnoreCase(e.getTagName())) {
-        w = HTML.wrap(e); 
-      } else  if ("button".equalsIgnoreCase(e.getTagName())) {
-        w = Button.wrap(e);
-      } else  if ("text".equalsIgnoreCase(e.getTagName())) {
-        w = TextBox.wrap(e);
-      } else {
-        w = new HTML($(e).toString());
-      }
+  /**
+   * Create an return a {@link TabPanel} widget with the first selected
+   * elements. Each div element will create a tab and the first h3 element
+   * inside the div will be used as title
+   */
+  public TabPanel tabPanel() {
+    return tabPanel(new TabPanelOptions());
+  }
+
+  /**
+   * Create an return a {@link TabPanel} widget with the first selected elements
+   * by using a {@link TabPanelOptions}
+   */
+  public TabPanel tabPanel(TabPanelOptions o) {
+    return widget(new TabPanelWidgetFactory(), o);
+  }
+
+  /**
+   * Create {@link TabPanel} widget for each selected elements. Each div element
+   * will create a tab and the first h3 element inside the div will be used as
+   * title
+   */
+  public Widgets tabPanels() {
+    return tabPanels(new TabPanelOptions());
+  }
+
+  /**
+   * Create a {@link TabPanel} widget for each selected elements. Each div
+   * element inside a selected element will create a tab and the first h3
+   * element inside the div will be used as title
+   */
+  public Widgets tabPanels(TabPanelOptions o) {
+    return widgets(new TabPanelWidgetFactory(), o);
+  }
+
+  /**
+   * Create an return a {@link Button} widget with the first element of the
+   * query
+   */
+  public Button button() {
+    return button(new ButtonOptions());
+  }
+
+  /**
+   * Create and return a {@link Button} widget with the first element of the
+   * query by using a {@link ButtonOptions}
+   */
+  public Button button(ButtonOptions o) {
+    return widget(new ButtonWidgetFactory(), o);
+  }
+
+  /**
+   * Create a {@link Button} widget for each selected element.
+   * 
+   */
+  public Widgets buttons() {
+    return buttons(new ButtonOptions());
+  }
+
+  /**
+   * Create a {@link Button} widget for each selected element by using a
+   * {@link ButtonOptions}
+   * 
+   */
+  public Widgets buttons(ButtonOptions o) {
+    return widgets(new ButtonWidgetFactory(), o);
+  }
+
+  /**
+   * Create and return a widget using the given factory and the given options
+   */
+  public <W extends Widget, O extends WidgetOptions> W widget(
+      WidgetFactory<W, O> factory, O options) {
+    return widget(get(0), factory, options);
+  }
+
+  /**
+   * Try to create a widget using the given factory and the given options for
+   * each element of the query. Returns a new gquery set of elements with the
+   * new widgets created.
+   */
+  public <W extends Widget, O extends WidgetOptions> Widgets widgets(
+      WidgetFactory<W, O> factory, O options) {
+    List<Element> result = new ArrayList<Element>();
+    for (Element e : elements()) {
+      result.add(widget(e, factory, options).getElement());
     }
-    return (W)w;
+    return $(result).as(Widgets);
+  }
+
+  /**
+   * Create and return a widget using the given factory and the given options
+   */
+  protected <W extends Widget, O extends WidgetOptions> W widget(Element e,
+      WidgetFactory<W, O> factory, O options) {
+    return factory.create(e, options);
   }
 
 }

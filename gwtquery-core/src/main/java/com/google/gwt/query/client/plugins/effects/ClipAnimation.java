@@ -13,12 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.plugins;
+package com.google.gwt.query.client.plugins.effects;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.Effects;
 
 /**
  * Animation wich uses the css clip property to show/hide an element.

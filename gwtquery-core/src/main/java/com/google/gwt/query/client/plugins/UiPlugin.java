@@ -28,7 +28,7 @@ import com.google.gwt.query.client.Predicate;
  * jQuery-ui core and not directly in jQuery
  * 
  */
-public class GQueryUi extends GQuery {
+public class UiPlugin extends GQuery {
 
   /**
    * A POJO used to store dimension of an element
@@ -133,7 +133,7 @@ public class GQueryUi extends GQuery {
 
   private static class GQueryUiImpl {
 
-    public GQuery scrollParent(final GQueryUi gQueryUi) {
+    public GQuery scrollParent(final UiPlugin gQueryUi) {
       GQuery scrollParent;
 
       if ("fixed".equals(gQueryUi.css("position"))) {
@@ -165,7 +165,7 @@ public class GQueryUi extends GQuery {
 
     }
 
-    protected boolean scrollParentPositionTest(GQueryUi gQueryUi) {
+    protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
       return "absolute".equals(gQueryUi.css("position"));
     }
 
@@ -186,7 +186,7 @@ public class GQueryUi extends GQuery {
   private static class GQueryUiImplTrident extends GQueryUiImpl {
 
     @Override
-    protected boolean scrollParentPositionTest(GQueryUi gQueryUi) {
+    protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
       String position = gQueryUi.css("position");
       return ("absolute".equals(position) || "relative".equals(position) || "static"
           .equals(position));
@@ -194,13 +194,13 @@ public class GQueryUi extends GQuery {
 
   }
 
-  public static Class<GQueryUi> GQueryUi = GQueryUi.class;
+  public static Class<UiPlugin> GQueryUi = UiPlugin.class;
 
   // Register the plugin in GQuery
   static {
-    GQuery.registerPlugin(GQueryUi.class, new Plugin<GQueryUi>() {
-      public GQueryUi init(GQuery gq) {
-        return new GQueryUi(gq);
+    GQuery.registerPlugin(UiPlugin.class, new Plugin<UiPlugin>() {
+      public UiPlugin init(GQuery gq) {
+        return new UiPlugin(gq);
       }
     });
   }
@@ -226,7 +226,7 @@ public class GQueryUi extends GQuery {
 
   private GQueryUiImpl impl = GWT.create(GQueryUiImpl.class);
 
-  protected GQueryUi(GQuery gq) {
+  protected UiPlugin(GQuery gq) {
     super(gq);
   }
 

@@ -25,7 +25,7 @@ import com.google.gwt.query.client.GQuery;
  * Base class for all plug-in that need to handle some mouse interactions.
  * 
  */
-public abstract class MousePlugin extends GQueryUi {
+public abstract class MousePlugin extends UiPlugin {
 
   private Event mouseDownEvent;
   private boolean mouseStarted = false;

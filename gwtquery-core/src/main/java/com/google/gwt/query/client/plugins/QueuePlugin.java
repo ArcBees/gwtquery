@@ -25,11 +25,11 @@ import java.util.Queue;
 /**
  * Class used in plugins which need a queue system.
  */
-public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
+public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
 
-  protected GQueryQueue(GQuery gq) {
+  protected QueuePlugin(GQuery gq) {
     super(gq);
   }
 

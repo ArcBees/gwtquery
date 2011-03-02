@@ -16,14 +16,14 @@
 package com.google.gwt.query.client.plugins;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.plugins.ClipAnimation.Action;
-import com.google.gwt.query.client.plugins.ClipAnimation.Direction;
-import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyEffects<T> extends LazyBase<T>{

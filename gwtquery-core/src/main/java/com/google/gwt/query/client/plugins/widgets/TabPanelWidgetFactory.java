@@ -1,4 +1,4 @@
-package com.google.gwt.query.client.plugins.widgets.widgetfactory;
+package com.google.gwt.query.client.plugins.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 

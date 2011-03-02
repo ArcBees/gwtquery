@@ -20,14 +20,16 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.plugins.ClipAnimation.Action;
-import com.google.gwt.query.client.plugins.ClipAnimation.Direction;
-import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 
 /**
  *  Effects plugin for Gwt Query. 
  */
-public class Effects extends GQueryQueue<Effects>  {
+public class Effects extends QueuePlugin<Effects>  {
   
   /**
    * Just a class to store predefined speed constant values.

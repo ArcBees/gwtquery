@@ -27,7 +27,7 @@ import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
 
 public class GwtQueryEffectsModule implements EntryPoint {

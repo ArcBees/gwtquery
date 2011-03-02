@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.plugins;
+package com.google.gwt.query.client.plugins.effects;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.JSRegexp;
+import com.google.gwt.query.client.plugins.Effects;
 
 /**
  *  Animation effects on any numeric CSS property. 

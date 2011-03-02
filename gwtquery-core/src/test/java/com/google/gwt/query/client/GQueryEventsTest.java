@@ -29,7 +29,7 @@ import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.EventsListener;
+import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
