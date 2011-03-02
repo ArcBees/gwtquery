@@ -112,7 +112,7 @@ public class GQueryWidgetsTest extends GWTTestCase {
     assertEquals(b1, b2);
     
     
-    b2 = (Button)$("<button>Click-me</button>").appendTo(document).asWidget();
+    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets.Widgets).button();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");

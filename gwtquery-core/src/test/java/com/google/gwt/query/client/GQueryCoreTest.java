@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
+import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -791,10 +792,10 @@ public class GQueryCoreTest extends GWTTestCase {
     RootPanel.get().add(b1);
     
     GQuery g = $(b1);
-    Button b2 = (Button) g.asWidget();
+    Button b2 = (Button) g.widget();
     assertEquals(b1, b2);
     
-    b2 = (Button)$("<button>Click-me</button>").appendTo(document).asWidget();
+    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets.Widgets).button();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");

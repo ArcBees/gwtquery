@@ -163,7 +163,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * tagName.
    * 
    */
-  Widget asWidget();
+  // Widget asWidget();
 
   /**
    * Set a key/value object as properties to all matched elements.

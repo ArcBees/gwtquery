@@ -726,9 +726,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * tagName.
    * 
    */
-  public Widget asWidget() {
-    return as(Widgets).widget();
-  }
+//  public Widget asWidget() {
+//    return as(Widgets).widget();
+//  }
 
   /**
    * Set a key/value object as properties to all matched elements.
