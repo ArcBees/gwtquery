@@ -25,9 +25,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.DeferredGQuery;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Selectors.*;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineNative;
@@ -67,7 +67,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   public interface Benchmark {
     String getId();
     String getName();
-    int runSelector(DeferredGQuery dq);
+    int runSelector(DeferredSelector dq);
   }
   
   /**
@@ -92,7 +92,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       return name;
     }
 
-    public int runSelector(DeferredGQuery dq) {
+    public int runSelector(DeferredSelector dq) {
       return engine.select(dq.getSelector(), gwtiframe).getLength();
     }
   }
@@ -125,8 +125,8 @@ public class GwtQueryBenchModule implements EntryPoint {
       return name;
     }
 
-    public int runSelector(DeferredGQuery dq) {
-      return dq.array(gwtiframe).getLength();
+    public int runSelector(DeferredSelector dq) {
+      return dq.runSelector(gwtiframe).getLength();
     }
   }
   
@@ -148,7 +148,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       return id;
     }
 
-    public int runSelector(DeferredGQuery dq) {
+    public int runSelector(DeferredSelector dq) {
       return runSelector(id, dq.getSelector());
     }
 
@@ -200,7 +200,7 @@ public class GwtQueryBenchModule implements EntryPoint {
    */
   private String[] defaultBenchmarks = {"gwt_compiled", "gwt_dynamic", "jquery", "prototype", "dojo"};
 
-  private DeferredGQuery dg[];
+  private DeferredSelector ds[];
   
   private FlexTable grid = new FlexTable();
 
@@ -226,7 +226,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       $("#startrace").text("Stop Race");
       $("#results").show();
 
-      initResultsTable(dg, selectedBenchmarks);
+      initResultsTable(ds, selectedBenchmarks);
       initTrack(selectedBenchmarks);
       
       Scheduler.get().scheduleIncremental(new RepeatingCommand() {
@@ -255,7 +255,7 @@ public class GwtQueryBenchModule implements EntryPoint {
             selectorNumber++;
             winner = -1;
             winTime = Double.MAX_VALUE;
-            if (selectorNumber >= dg.length) {
+            if (selectorNumber >= ds.length) {
               double min = Double.MAX_VALUE;
               for (int i = 0; i < totalTimes.length; i++) {
                 if (totalTimes[i] < min) {
@@ -275,7 +275,7 @@ public class GwtQueryBenchModule implements EntryPoint {
               return false;
             }
           }
-          DeferredGQuery d = dg[selectorNumber];
+          DeferredSelector d = ds[selectorNumber];
           long start = System.currentTimeMillis();
           int num = 0;
           long end = start;
@@ -329,7 +329,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     
     final MySelectors m = GWT.create(MySelectors.class);
     
-    dg = m.getAllSelectors();
+    ds = m.getAllSelectors();
     
     String par = Window.Location.getParameter("min");
     if (par != null) {
@@ -393,7 +393,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   /**
    * Reset the result table
    */
-  private void initResultsTable(DeferredGQuery[] dg, Benchmark... benchs) {
+  private void initResultsTable(DeferredSelector[] dg, Benchmark... benchs) {
     int numRows = dg.length;
     grid = new FlexTable();
     grid.addStyleName("resultstable");
@@ -474,7 +474,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     for (double d : totalTimes) {
       winnerTime = Math.min(winnerTime, d);
     }
-    double winnerPos = row * (double) trackWidth / (double) dg.length;
+    double winnerPos = row * (double) trackWidth / (double) ds.length;
     for (int i = 0; i < b.length; i++) {
       GQuery g = $("#" + b[i].getId() + "horse");
       double pos =   winnerPos * winnerTime / totalTimes[i];

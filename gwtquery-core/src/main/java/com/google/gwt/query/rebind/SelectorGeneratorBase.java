@@ -137,11 +137,11 @@ public abstract class SelectorGeneratorBase extends Generator {
     }
     ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
         packageName, className);
-    composerFactory.setSuperclass("com.google.gwt.query.client.SelectorEngine");
-    composerFactory.addImport("com.google.gwt.core.client.GWT");
+    composerFactory.setSuperclass("com.google.gwt.query.client.impl.SelectorEngine");
+    composerFactory.addImport("com.google.gwt.query.client.impl.*");
+    composerFactory.addImport("com.google.gwt.query.client.Selectors.*");
     composerFactory.addImport("com.google.gwt.query.client.*");
-    // composerFactory.addImport("com.google.gwt.query.client.JSArray");
-
+    composerFactory.addImport("com.google.gwt.core.client.*");
     composerFactory.addImport("com.google.gwt.dom.client.*");
     for (String interfaceName : interfaceNames) {
       composerFactory.addImplementedInterface(interfaceName);
@@ -177,9 +177,9 @@ public abstract class SelectorGeneratorBase extends Generator {
   // used by benchmark harness
   private void genGetAllMethod(SourceWriter sw, JMethod[] methods,
       TreeLogger treeLogger) {
-    sw.println("public DeferredGQuery[] getAllSelectors() {");
+    sw.println("public DeferredSelector[] getAllSelectors() {");
     sw.indent();
-    sw.println("DeferredGQuery[] dg = new DeferredGQuery[" + (methods.length)
+    sw.println("DeferredSelector[] ds = new DeferredSelector[" + (methods.length)
         + "];");
     int i = 0;
     for (JMethod m : methods) {
@@ -189,16 +189,13 @@ public abstract class SelectorGeneratorBase extends Generator {
       }
       String selector = selectorAnnotation.value();
 
-      sw.println("dg[" + i + "]=new DeferredGQuery() {");
+      sw.println("ds[" + i + "]=new DeferredSelector() {");
       sw.indent();
       sw
           .println("public String getSelector() { return \"" + selector
               + "\"; }");
-      sw.println("public GQuery eval(Node ctx) { return "
-          + wrapJS(m, m.getName()
-              + (m.getParameters().length == 0 ? "()" : "(ctx)") + "") + " ;}");
       sw
-          .println("public NodeList<Element> array(Node ctx) { return "
+          .println("public NodeList<Element> runSelector(Node ctx) { return "
               + ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? (m
                   .getName() + (m.getParameters().length == 0 ? "(); "
                   : "(ctx); "))
@@ -210,7 +207,7 @@ public abstract class SelectorGeneratorBase extends Generator {
       sw.outdent();
       sw.println("};");
     }
-    sw.println("return dg;");
+    sw.println("return ds;");
     sw.outdent();
     sw.println("}");
   }

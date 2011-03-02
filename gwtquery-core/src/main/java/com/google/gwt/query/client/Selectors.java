@@ -15,18 +15,58 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 
 /**
  * Tagging interface used to generate compile time selectors.
  */
 public interface Selectors {
-
-  DeferredGQuery[] getAllSelectors();
   
+  /**
+   * A compiled selector that can be lazily turned into a GQuery.
+   */
+  public interface DeferredSelector {
+
+    /**
+     * Evaluate the compiled selector with the given DOM node as a context.
+     * 
+     * Returns a NodeList as a result which you could transform into a GQuery 
+     * object passing it as argument to the $() function.
+     */
+    NodeList<Element> runSelector(Node ctx);
+
+    /**
+     * The selector which was compiled.
+     */
+    String getSelector();
+  }
+
+  /**
+   * Return all the selectors defined for this interface, so as
+   * we can get the css representation of each one and lazily evaluate it
+   * in runtime.
+   */
+  DeferredSelector[] getAllSelectors();
+  
+  /**
+   * Set the context for all the selectors.
+   * By default they are evaluated in all the document. 
+   */
   public void setRoot(Node node);
   
+  /**
+   * Get the configured root context.
+   */
   public Node getRoot();
-  
+
+  /**
+   * Used for benchmarking purposes, it returns true if the selector engine
+   * for this browser is using a pure javascript implementation or a native
+   * one.
+   * 
+   * It is useful to check if IE8 native selectors are being used.    
+   */
   public boolean isDegradated();
 }

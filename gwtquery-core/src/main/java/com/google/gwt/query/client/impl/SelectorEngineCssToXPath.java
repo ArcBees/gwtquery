@@ -24,8 +24,7 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Regexp;
-import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.query.client.JSRegexp;
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath
@@ -150,7 +149,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   // when using this engine in generators and tests for the JVM
   private Replacer replacer = new Replacer() {
     public String replaceAll(String s, String r, Object o) {
-      Regexp p = new Regexp(r);
+      JSRegexp p = new JSRegexp(r);
       if (o instanceof ReplaceCallback) {
         ReplaceCallback callback = (ReplaceCallback) o;
         while (p.test(s)) {

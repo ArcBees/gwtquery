@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.impl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.JSArray;
 
 /**
  * Core Selector engine functions, and native JS utility functions.

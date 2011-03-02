@@ -23,7 +23,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.Regexp;
+import com.google.gwt.query.client.JSRegexp;
 
 /**
  *  Animation effects on any numeric CSS property. 
@@ -70,7 +70,7 @@ public class PropertiesAnimation extends Animation {
   private static final String[] attrsToSave = new String[] { "overflow",
       "visibility" };
 
-  private static Regexp nonPxRegExp = new Regexp(
+  private static JSRegexp nonPxRegExp = new JSRegexp(
       "z-?index|font-?weight|opacity|zoom|line-?height", "i");
   
   
@@ -103,7 +103,7 @@ public class PropertiesAnimation extends Animation {
       end = 0;
       unit = nonPxRegExp.test(key) ? "" : "px";
     } else {
-      JSArray parts = new Regexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
+      JSArray parts = new JSRegexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
 
       if (parts != null) {
         unit = nonPxRegExp.test(key) ? "" : parts.getStr(3) == null ? "px"

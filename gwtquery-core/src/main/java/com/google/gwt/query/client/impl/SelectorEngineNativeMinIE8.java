@@ -18,7 +18,6 @@ package com.google.gwt.query.client.impl;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.SelectorEngine;
 import com.google.gwt.user.client.Window;
 
 /**

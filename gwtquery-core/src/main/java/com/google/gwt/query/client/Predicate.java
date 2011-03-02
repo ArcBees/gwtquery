@@ -22,5 +22,14 @@ import com.google.gwt.dom.client.Element;
  */
 public interface Predicate {
 
+  /**
+   * Used by GQuery methods which loop over matched widgets and
+   * invoke a callback on each widget expecting a boolean value.
+   * 
+   * @param e 
+   *        the element for this call 
+   * @param index 
+   *        the element position in the gquery elements array. 
+   */
   boolean f(Element e, int index);
 }

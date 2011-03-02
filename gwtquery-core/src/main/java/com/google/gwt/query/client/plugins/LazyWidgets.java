@@ -18,7 +18,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Plugin;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;

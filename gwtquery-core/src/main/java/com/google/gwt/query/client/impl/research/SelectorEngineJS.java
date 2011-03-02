@@ -26,8 +26,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Regexp;
-import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.query.client.JSRegexp;
+import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 
 /**
@@ -90,7 +90,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   protected static Sequence getSequence(String expression) {
     int start = 0, add = 2, max = -1, modVal = -1;
-    Regexp expressionRegExp = new Regexp(
+    JSRegexp expressionRegExp = new JSRegexp(
         "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
     JSArray pseudoValue = expressionRegExp.exec(expression);
     if (!truth(pseudoValue)) {
@@ -212,7 +212,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
   }
 
   private static void getGeneralSiblingNodes(JSArray matchingElms,
-      JSArray nextTag, Regexp nextRegExp, Node prevRef) {
+      JSArray nextTag, JSRegexp nextRegExp, Node prevRef) {
     while (
         GQUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
             && !isAdded(prevRef)) {
@@ -225,7 +225,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
   }
 
   private static void getSiblingNodes(JSArray matchingElms, JSArray nextTag,
-      Regexp nextRegExp, Node prevRef) {
+      JSRegexp nextRegExp, Node prevRef) {
     while (
         GQUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
             && prevRef.getNodeType() != Node.ELEMENT_NODE) {
@@ -267,16 +267,16 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       return arr;
     }-*/;
 
-  private Regexp cssSelectorRegExp;
+  private JSRegexp cssSelectorRegExp;
 
-  private Regexp selectorSplitRegExp;
+  private JSRegexp selectorSplitRegExp;
 
-  private Regexp childOrSiblingRefRegExp;
+  private JSRegexp childOrSiblingRefRegExp;
 
   public SelectorEngineJS() {
-    selectorSplitRegExp = new Regexp("[^\\s]+", "g");
-    childOrSiblingRefRegExp = new Regexp("^(>|\\+|~)$");
-    cssSelectorRegExp = new Regexp(
+    selectorSplitRegExp = new JSRegexp("[^\\s]+", "g");
+    childOrSiblingRefRegExp = new JSRegexp("^(>|\\+|~)$");
+    cssSelectorRegExp = new JSRegexp(
         "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
   }
 
@@ -306,13 +306,13 @@ public class SelectorEngineJS extends SelectorEngineImpl {
         if (i > 0 && childOrSiblingRefRegExp.test(rule)) {
           JSArray childOrSiblingRef = childOrSiblingRefRegExp.exec(rule);
           if (GQUtils.truth(childOrSiblingRef)) {
-            JSArray nextTag = new Regexp("^\\w+")
+            JSArray nextTag = new JSRegexp("^\\w+")
                 .exec(cssSelectors.getStr(i + 1));
-            Regexp nextRegExp = null;
+            JSRegexp nextRegExp = null;
             String nextTagStr = null;
             if (GQUtils.truth(nextTag)) {
               nextTagStr = nextTag.getStr(0);
-              nextRegExp = new Regexp("(^|\\s)" + nextTagStr + "(\\s|$)", "i");
+              nextRegExp = new JSRegexp("(^|\\s)" + nextTagStr + "(\\s|$)", "i");
             }
             for (int j = 0, jlen = prevElem.size(); j < jlen; j++) {
               Node prevRef = prevElem.getNode(j);
@@ -329,7 +329,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             prevElem = matchingElms;
             clearAdded(prevElem);
             rule = cssSelectors.getStr(++i);
-            if (new Regexp("^\\w+$").test(rule)) {
+            if (new JSRegexp("^\\w+$").test(rule)) {
               continue;
             }
             setSkipTag(prevElem, true);
@@ -379,9 +379,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
           if (GQUtils.truth(splitRule.allClasses)) {
             String[] allClasses = splitRule.allClasses.replaceFirst("^\\.", "")
                 .split("\\.");
-            Regexp[] regExpClassNames = new Regexp[allClasses.length];
+            JSRegexp[] regExpClassNames = new JSRegexp[allClasses.length];
             for (int n = 0, nl = allClasses.length; n < nl; n++) {
-              regExpClassNames[n] = new Regexp(
+              regExpClassNames[n] = new JSRegexp(
                   "(^|\\s)" + allClasses[n] + "(\\s|$)");
             }
             JSArray matchingClassElms = JSArray.create();
@@ -406,11 +406,11 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             prevElem = matchingElms = matchingClassElms;
           }
           if (GQUtils.truth(splitRule.allAttr)) {
-            JSArray allAttr = Regexp
+            JSArray allAttr = JSRegexp
                 .match("\\[[^\\]]+\\]", "g", splitRule.allAttr);
-            Regexp[] regExpAttributes = new Regexp[allAttr.size()];
+            JSRegexp[] regExpAttributes = new JSRegexp[allAttr.size()];
             String[] regExpAttributesStr = new String[allAttr.size()];
-            Regexp attributeMatchRegExp = new Regexp(
+            JSRegexp attributeMatchRegExp = new JSRegexp(
                 "(\\w+)(\\^|\\$|\\*|\\||~)?=?[\"']?([\\w\u00C0-\uFFFF\\s\\-_\\.]+)?");
             for (int q = 0, ql = allAttr.size(); q < ql; q++) {
               JSArray attributeMatch = attributeMatchRegExp
@@ -421,7 +421,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
                       : null;
               String attrVal = attrToRegExp(attributeValue,
                   (GQUtils.or(attributeMatch.getStr(2), null)));
-              regExpAttributes[q] = (GQUtils.truth(attrVal) ? new Regexp(
+              regExpAttributes[q] = (GQUtils.truth(attrVal) ? new JSRegexp(
                   attrVal) : null);
               regExpAttributesStr[q] = attributeMatch.getStr(1);
             }
@@ -433,7 +433,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
               for (int s = 0, sl = regExpAttributes.length;
                   s < sl; s++) {
                 addElm = false;
-                Regexp attributeRegexp = regExpAttributes[s];
+                JSRegexp attributeRegexp = regExpAttributes[s];
                 String currentAttr = getAttr(current, regExpAttributesStr[s]);
                 if (GQUtils.truth(currentAttr)
                     && currentAttr.length() != 0) {
@@ -453,10 +453,10 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             prevElem = matchingElms = matchingAttributeElms;
           }
           if (GQUtils.truth(splitRule.allPseudos)) {
-            Regexp pseudoSplitRegExp = new Regexp(
+            JSRegexp pseudoSplitRegExp = new JSRegexp(
                 ":(\\w[\\w\\-]*)(\\(([^\\)]+)\\))?");
 
-            JSArray allPseudos = Regexp
+            JSArray allPseudos = JSRegexp
                 .match("(:\\w+[\\w\\-]*)(\\([^\\)]+\\))?", "g",
                     splitRule.allPseudos);
             for (int t = 0, tl = allPseudos.size(); t < tl; t++) {
@@ -638,19 +638,19 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   private JSArray getNotPseudo(JSArray previousMatch, String pseudoValue,
       JSArray matchingElms) {
-    if (new Regexp("(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
+    if (new JSRegexp("(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
       matchingElms = subtractArray(previousMatch,
           getElementsByPseudo(previousMatch, pseudoValue.substring(1), ""));
     } else {
       pseudoValue = pseudoValue
           .replace("^\\[#([\\w\\u00C0-\\uFFFF\\-\\_]+)\\]$", "[id=$1]");
-      JSArray notTag = new Regexp("^(\\w+)").exec(pseudoValue);
-      JSArray notClass = new Regexp("^\\.([\\w\u00C0-\uFFFF\\-_]+)")
+      JSArray notTag = new JSRegexp("^(\\w+)").exec(pseudoValue);
+      JSArray notClass = new JSRegexp("^\\.([\\w\u00C0-\uFFFF\\-_]+)")
           .exec(pseudoValue);
-      JSArray notAttr = new Regexp(
+      JSArray notAttr = new JSRegexp(
           "\\[(\\w+)(\\^|\\$|\\*|\\||~)?=?([\\w\\u00C0-\\uFFFF\\s\\-_\\.]+)?\\]")
           .exec(pseudoValue);
-      Regexp notRegExp = new Regexp("(^|\\s)"
+      JSRegexp notRegExp = new JSRegexp("(^|\\s)"
           + (GQUtils.truth(notTag) ? notTag.getStr(1)
           : GQUtils.truth(notClass) ? notClass.getStr(1) : "")
           + "(\\s|$)", "i");
@@ -659,7 +659,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             .getStr(3).replace("\\.", "\\.") : null;
         String notMatchingAttrVal = attrToRegExp(notAttribute,
             notAttr.getStr(2));
-        notRegExp = new Regexp(notMatchingAttrVal, "i");
+        notRegExp = new JSRegexp(notMatchingAttrVal, "i");
       }
       for (int v = 0, vlen = previousMatch.size(); v < vlen; v++) {
         Element notElm = previousMatch.getElement(v);

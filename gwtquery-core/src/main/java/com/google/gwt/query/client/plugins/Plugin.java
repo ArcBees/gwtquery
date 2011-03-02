@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.plugins;
+
+import com.google.gwt.query.client.GQuery;
 
 /**
  * A GQuery plugin. All GQuery plugins must implement this interface.

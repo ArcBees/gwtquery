@@ -24,8 +24,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Regexp;
-import com.google.gwt.query.client.SelectorEngine;
+import com.google.gwt.query.client.JSRegexp;
+import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS.Sequence;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS.SplitRule;
@@ -59,11 +59,11 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     return "@" + p1 + (truth(p3) ? "='" + p3 + "'" : "");
   }
 
-  private Regexp cssSelectorRegExp;
+  private JSRegexp cssSelectorRegExp;
 
-  private Regexp selectorSplitRegExp;
+  private JSRegexp selectorSplitRegExp;
 
-  private Regexp combinator;
+  private JSRegexp combinator;
   
   public SelectorEngineXPath() {
   }
@@ -125,9 +125,9 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
               GQUtils.or(splitRule.allAttr, ""));
         }
         if (truth(splitRule.allPseudos)) {
-          Regexp pseudoSplitRegExp = new Regexp(
+          JSRegexp pseudoSplitRegExp = new JSRegexp(
               ":(\\w[\\w\\-]*)(\\(([^\\)]+)\\))?");
-          Regexp pseudoMatchRegExp = new Regexp(
+          JSRegexp pseudoMatchRegExp = new JSRegexp(
               "(:\\w+[\\w\\-]*)(\\([^\\)]+\\))?", "g");
           JSArray allPseudos = pseudoMatchRegExp.match(splitRule.allPseudos);
           for (int k = 0, kl = allPseudos.size(); k < kl; k++) {
@@ -151,10 +151,10 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
 
   private void init() {
     if (cssSelectorRegExp == null) {
-      cssSelectorRegExp = new Regexp(
+      cssSelectorRegExp = new JSRegexp(
           "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?(>|\\+|~)?");
-      selectorSplitRegExp = new Regexp("[^\\s]+", "g");
-      combinator = new Regexp("(>|\\+|~)");
+      selectorSplitRegExp = new JSRegexp("[^\\s]+", "g");
+      combinator = new JSRegexp("(>|\\+|~)");
     }
   }
 
@@ -215,7 +215,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     } else if (eq("checked", pseudoClass)) {
       xpath = "@checked='checked'"; // Doesn't work in Opera 9.24
     } else if (eq("not", pseudoClass)) {
-      if (new Regexp("^(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
+      if (new JSRegexp("^(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
         xpath = "not(" + pseudoToXPath(tag, pseudoValue.substring(1), "") + ")";
       } else {
 

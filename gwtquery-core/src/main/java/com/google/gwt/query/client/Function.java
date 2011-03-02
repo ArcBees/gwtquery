@@ -25,14 +25,13 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class Function {
   
   /**
-   * Override this to define a cancel action.
+   * Override this for methods which invoke a cancel action.
    */
   public void cancel(Element e) {
   }
 
   /**
    * Override this to define a function which does not need any parameter.
-   * 
    */
   public void f() {
     throw new RuntimeException("You have to override the adequate method to handle this action, or you have to override 'public void f()' to avoid this error");
@@ -78,8 +77,10 @@ public abstract class Function {
   }
   
   /**
-   * Override this for GQuery methods which take a callback, but do not expect a
-   * return value, apply to a single element only.
+   * Override this for GQuery methods which take a callback and do not expect a
+   * return value.
+   * 
+   * @param e takes a com.google.gwt.dom.client.Element
    */
   public void f(Element e) {
     Widget w = GQuery.getAssociatedWidget(e);
@@ -90,7 +91,12 @@ public abstract class Function {
     }
   }
   
-
+  /**
+   * Override this for GQuery methods which take a callback and do not expect a
+   * return value.
+   * 
+   * @param e takes a com.google.gwt.user.client.Element
+   */
   public void f(com.google.gwt.user.client.Element e) {
    f((Element)e);
   }
@@ -100,9 +106,8 @@ public abstract class Function {
    * return value, apply to a single widget.
    * 
    * NOTE: If your query is returning non-widget elements you might need to override 
-   * 'public void f()' or 'public void f(Element e)' to handle these elements or to
+   * 'public void f()' or 'public void f(Element e)' to handle these elements and
    * avoid a runtime exception. 
-   * 
    */
   public void f(Widget w){
     f();

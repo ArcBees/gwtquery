@@ -19,7 +19,7 @@ import static com.google.gwt.query.client.GQUtils.truth;
 
 import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Regexp;
+import com.google.gwt.query.client.JSRegexp;
 
 /**
  * Base/Utility class for runtime selector engine implementations.

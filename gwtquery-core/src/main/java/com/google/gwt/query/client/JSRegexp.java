@@ -20,7 +20,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * A wrapper around Javascript Regexps.
  */
-public class Regexp {
+public class JSRegexp {
 
   public static native JavaScriptObject compile(String pat) /*-{
      return new RegExp(pat);
@@ -31,7 +31,7 @@ public class Regexp {
   }-*/;
 
   public static JSArray match(String regexp, String flags, String string) {
-    return new Regexp(regexp, flags).match(string);
+    return new JSRegexp(regexp, flags).match(string);
   }
 
   private static native JSArray exec0(JavaScriptObject regexp, String str) /*-{
@@ -40,11 +40,11 @@ public class Regexp {
 
   private final JavaScriptObject regexp;
 
-  public Regexp(String pattern) {
+  public JSRegexp(String pattern) {
     this.regexp = compile(pattern);
   }
 
-  public Regexp(String pat, String flags) {
+  public JSRegexp(String pat, String flags) {
     this.regexp = compileFlags(pat, flags);
   }
 

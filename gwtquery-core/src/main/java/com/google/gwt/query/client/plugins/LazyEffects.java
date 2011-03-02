@@ -20,7 +20,6 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.Plugin;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.ClipAnimation.Direction;
