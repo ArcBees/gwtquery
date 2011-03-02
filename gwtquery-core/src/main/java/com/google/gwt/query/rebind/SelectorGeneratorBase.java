@@ -73,7 +73,6 @@ public abstract class SelectorGeneratorBase extends Generator {
 
     JParameter[] params = method.getParameters();
 
-    sw.indent();
     String retType = method.getReturnType()
         .getParameterizedQualifiedSourceName();
     sw.print("public final " + retType + " " + method.getName());
@@ -113,7 +112,6 @@ public abstract class SelectorGeneratorBase extends Generator {
     }
     sw.outdent();
     sw.println("}");
-    sw.outdent();
   }
 
   protected void debug(String s) {
@@ -162,7 +160,7 @@ public abstract class SelectorGeneratorBase extends Generator {
     if ("NodeList".equals(method.getReturnType().getSimpleSourceName())) {
       return expr;
     } else {
-      return "new GQuery(" + expr + ")";
+      return "GQuery.$(" + expr + ")";
     }
   }
 
@@ -170,18 +168,16 @@ public abstract class SelectorGeneratorBase extends Generator {
     if ("GQuery".equals(method.getReturnType().getSimpleSourceName())) {
       return expr;
     } else {
-      return "new GQuery(" + expr + ")";
+      return "GQuery.$(" + expr + ")";
     }
   }
 
   // used by benchmark harness
   private void genGetAllMethod(SourceWriter sw, JMethod[] methods,
       TreeLogger treeLogger) {
-    sw.println("public DeferredSelector[] getAllSelectors() {");
+    sw.println("public DeferredSelector[] getAllSelectors() {return ds;}");
+    sw.println("private final DeferredSelector[] ds = new DeferredSelector[] {");
     sw.indent();
-    sw.println("DeferredSelector[] ds = new DeferredSelector[" + (methods.length)
-        + "];");
-    int i = 0;
     for (JMethod m : methods) {
       Selector selectorAnnotation = m.getAnnotation(Selector.class);
       if (selectorAnnotation == null) {
@@ -189,26 +185,20 @@ public abstract class SelectorGeneratorBase extends Generator {
       }
       String selector = selectorAnnotation.value();
 
-      sw.println("ds[" + i + "]=new DeferredSelector() {");
+      sw.println("new DeferredSelector() {");
       sw.indent();
       sw
           .println("public String getSelector() { return \"" + selector
               + "\"; }");
       sw
-          .println("public NodeList<Element> runSelector(Node ctx) { return "
-              + ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? (m
-                  .getName() + (m.getParameters().length == 0 ? "(); "
-                  : "(ctx); "))
-                  : "eval"
-                      + (m.getParameters().length == 0 ? "(null).get(); "
-                          : "(ctx).get(); ")) + "}");
-
-      i++;
+          .println("public NodeList<Element> runSelector(Node ctx) { return " + 
+                 (m.getName() + (m.getParameters().length == 0 ? "()" : "(ctx)")) + 
+                 ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? "" : ".get()") + ";}"
+              ) ;
       sw.outdent();
-      sw.println("};");
+      sw.println("},");
     }
-    sw.println("return ds;");
     sw.outdent();
-    sw.println("}");
+    sw.println("};");
   }
 }

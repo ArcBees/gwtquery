@@ -126,6 +126,7 @@ public class Events extends GQuery {
    * Example: fire(Event.ONCLICK | Event.ONFOCUS)
    * Example: fire(Event.ONKEYDOWN. 'a');
    */
+  @SuppressWarnings("deprecation")
   public Events trigger(int eventbits, int... keys) {
     if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
       dispatchEvent(document.createBlurEvent());

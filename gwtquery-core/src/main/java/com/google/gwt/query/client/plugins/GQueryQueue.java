@@ -135,7 +135,6 @@ public abstract class GQueryQueue<T extends GQueryQueue<?>> extends GQuery {
   }
   
   private void stop(Element elem, boolean clear) {
-    Function ff = null;
     Queue<?> q = queue(elem, null);
     if (q != null) {
       Object f = q.peek();
