@@ -93,19 +93,19 @@ public abstract class SelectorGeneratorBase extends Generator {
     if (sel != null && sel.value().matches("^#\\w+$")) {
       // short circuit #foo
       sw.println("return "
-          + wrap(method, "JSArray.create(((Document)root).getElementById(\""
+          + wrap(method, "JsNodeArray.create(((Document)root).getElementById(\""
               + sel.value().substring(1) + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\w+$")) {
       // short circuit FOO
       sw.println("return "
           + wrap(method,
-              "JSArray.create(((Element)root).getElementsByTagName(\""
+              "JsNodeArray.create(((Element)root).getElementsByTagName(\""
                   + sel.value() + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\.\\w+$")
         && hasGetElementsByClassName()) {
       // short circuit .foo for browsers with native getElementsByClassName
       sw.println("return "
-          + wrap(method, "JSArray.create(getElementsByClassName(\""
+          + wrap(method, "JsNodeArray.create(getElementsByClassName(\""
               + sel.value().substring(1) + "\", root))") + ";");
     } else {
       generateMethodBody(sw, method, logger, hasContext);
@@ -137,6 +137,7 @@ public abstract class SelectorGeneratorBase extends Generator {
         packageName, className);
     composerFactory.setSuperclass("com.google.gwt.query.client.impl.SelectorEngine");
     composerFactory.addImport("com.google.gwt.query.client.impl.*");
+    composerFactory.addImport("com.google.gwt.query.client.js.*");
     composerFactory.addImport("com.google.gwt.query.client.Selectors.*");
     composerFactory.addImport("com.google.gwt.query.client.*");
     composerFactory.addImport("com.google.gwt.core.client.*");
