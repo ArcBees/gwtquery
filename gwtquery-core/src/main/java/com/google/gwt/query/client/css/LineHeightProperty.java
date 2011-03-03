@@ -42,10 +42,18 @@ public class LineHeightProperty extends CssProperty<Length> implements
     super(CSS_PROPERTY);
   }
 
+  /**
+   * The used value of the property is this <code>value</code> multiplied by the
+   * element's font size. Negative values are illegal.
+   */
   public CssSetter with(Integer value) {
     return new SimpleCssSetter(CSS_PROPERTY, value != null ? "" + value : null);
   }
 
+  /**
+   * The used value of the property is this <code>value</code> multiplied by the
+   * element's font size. Negative values are illegal.
+   */
   public CssSetter with(Double value) {
     return new SimpleCssSetter(CSS_PROPERTY, value != null ? "" + value : null);
   }

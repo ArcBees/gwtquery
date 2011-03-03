@@ -90,14 +90,6 @@ public class CSS {
    * <p>
    * This property can only take a {@link RGBColor} object as value.
    * </p>
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BACKGROUND_COLOR, RGBColor.AQUA);
-   * $("#myId2").css(CSS.BACKGROUND_COLOR, RGBColor.rgb("#112233"));
-   * $("#myId3").css(CSS.BACKGROUND_COLOR, RGBColor.rgb((35, 45, 55));
-   * </pre>
-   * 
    */
   public static BackgroundColorProperty BACKGROUND_COLOR;
 
@@ -114,12 +106,6 @@ public class CSS {
    * This property takes a {@link UriValue} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.BACKGROUND_IMAGE, ImageValue.url("image.jpg"));
-   * $("#myId2").css(CSS.BACKGROUND_IMAGE, ImageValue.NONE);
-   * </pre>
    * 
    */
   public static BackgroundImageProperty BACKGROUND_IMAGE;
@@ -508,6 +494,7 @@ public class CSS {
   public static ColorProperty COLOR;
 
   /**
+   * @ *
    * <p>
    * The <i>cursor</i> property specifies the type of cursor to be displayed for
    * the pointing device
@@ -531,15 +518,6 @@ public class CSS {
    * This property takes a {@link Direction} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set the direction property to the element with id 'myId'
-   * $("#myId").css(CSS.DIRECTION, DIRECTION.RTL);
-   * // retrieve the direction property of the element with id 'myId'
-   * String direction = $("#myId").css(CSS.DIRECTION);
-   *
-   * </pre>
    */
   public static DirectionProperty DIRECTION;
 
@@ -548,15 +526,6 @@ public class CSS {
    * This property takes a {@link UnicodeBidi} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set the display property to the element with id 'myId'
-   * $("#myId").css(CSS.DISPLAY, Display.INLINE);
-   * // retrieve the display property of the element with id 'myId'
-   * String display = $("#myId").css(CSS.DISPLAY);
-   *
-   * </pre>
    */
   public static UnicodeBidiProperty UNICODE_BIDI;
 
@@ -569,15 +538,6 @@ public class CSS {
    * This property takes a {@link Display} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set the display property to the element with id 'myId'
-   * $("#myId").css(CSS.DISPLAY, Display.INLINE);
-   * // retrieve the display property of the element with id 'myId'
-   * String display = $("#myId").css(CSS.DISPLAY);
-   *
-   * </pre>
    */
   public static DisplayProperty DISPLAY;
 
@@ -605,12 +565,6 @@ public class CSS {
    * This property takes a {@link EmptyCells} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set the empty-cells property to the element with id 'myId'
-   * $("#myId").css(CSS.EMPTY_CELLS, EmptyCells.HIDE);
-   * </pre>
    */
   public static EmptyCellsProperty EMPTY_CELLS;
 
@@ -625,11 +579,6 @@ public class CSS {
    * This property takes a {@link Float} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.FLOAT, Float.LEFT);
-   * </pre>
    */
   public static FloatProperty FLOAT;
 
@@ -643,12 +592,6 @@ public class CSS {
    * This property takes a {@link FontSize} or a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Examples:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.FONT_SIZE, FontSize.X_LARGE);
-   * $("#myId").css(CSS.FONT_SIZE, Length.px(16));
-   * </pre>
    */
   public static FontSizeProperty FONT_SIZE;
 
@@ -661,12 +604,6 @@ public class CSS {
    * <p>
    * This property takes a {@link FontStyle} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.FONT_STYLE, FontStyle.ITALIC);
-   * </pre>
    */
   public static FontStyleProperty FONT_STYLE;
 
@@ -683,12 +620,6 @@ public class CSS {
    * <p>
    * This property takes a {@link FontVariant} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.FONT_VARIANT, FontVariant.SMALL_CAPS);
-   * </pre>
    */
   public static FontVariantProperty FONT_VARIANT;
 
@@ -701,11 +632,6 @@ public class CSS {
    * This property takes a {@link FontWeight} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.FONT_WEIGHT, FontWeight.BOLD);
-   * </pre>
    */
   public static FontWeightProperty FONT_WEIGHT;
 
@@ -724,11 +650,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.HEIGHT, Length.px(10))
-   * </pre>
    */
   public static HeightProperty HEIGHT;
 
@@ -760,11 +681,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LEFT,Length.px(20));
-   * </pre>
    */
   public static EdgePositionProperty LEFT;
 
@@ -778,11 +694,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LETTER_SPACING, Length.px(3));
-   * </pre>
    */
   public static LetterSpacingProperty LETTER_SPACING;
 
@@ -801,16 +712,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link Length} object or a {@link CssNumber} object
-   * as value.
+   * This property takes a {@link Length} object or a {@link Integer} object or
+   * a {@link Double} object as value as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LINE_HEIGHT, Length.px(15));
-   * $("#myId").css(CSS.LINE_HEIGHT, new CssNumber(2));
-   * </pre>
    */
   public static LineHeightProperty LINE_HEIGHT;
 
@@ -821,11 +725,6 @@ public class CSS {
    * <i>list-style-position</i> at the same place in the style sheet.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LIST_STYLE, ListStyleType.DISC,ListStylePosition.OUTSIDE, ImageValue.NONE);
-   * </pre>
    */
   public static ListStyleProperty LIST_STYLE;
 
@@ -840,11 +739,6 @@ public class CSS {
    * This property takes a {@link UriValue} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LIST_STYLE_IMAGE, ImageValue.url("arrow.jpg"));
-   * </pre>
    */
   public static ListStyleImageProperty LIST_STYLE_IMAGE;
 
@@ -858,11 +752,6 @@ public class CSS {
    * This property takes a {@link ListStylePosition} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LIST_STYLE_POSITION, ListStylePosition.OUTSIDE);
-   * </pre>
    */
   public static ListStylePositionProperty LIST_STYLE_POSITION;
 
@@ -884,12 +773,6 @@ public class CSS {
    * <p>
    * This property takes a {@link ListStyleType} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.LIST_STYLE_TYPE, ListStyleType.DISC);
-   * </pre>
    */
   public static ListStyleTypeProperty LIST_STYLE_TYPE;
 
@@ -908,15 +791,6 @@ public class CSS {
    * the bottom is set to the third. If there are four values, they apply to the
    * top, right, bottom, and left, respectively
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set margin-top and margin-bottom to 10px and margin-left and margin-right to 20px
-   * $("#myId").css(CSS.MARGIN, Length.px(10), Length.px(20), null, null);
-   * // set margin-top to 10px, margin-right to 20px and margin-bottom to 30px and margin-right to 40px
-   * $("#myId").css(CSS.MARGIN, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
-   * </pre>
    */
   public static ShorthandMarginProperty MARGIN;
 
@@ -930,11 +804,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MARGIN_BOTTOM, Length.px(30));
-   * </pre>
    */
   public static MarginProperty MARGIN_BOTTOM;
 
@@ -948,11 +817,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MARGIN_LEFT, Length.px(30));
-   * </pre>
    */
   public static MarginProperty MARGIN_LEFT;
 
@@ -966,11 +830,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MARGIN_RIGHT, Length.px(30));
-   * </pre>
    */
   public static MarginProperty MARGIN_RIGHT;
 
@@ -983,12 +842,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MARGIN_TOP, Length.px(30));
-   * </pre>
    */
   public static MarginProperty MARGIN_TOP;
 
@@ -1000,12 +853,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MAX_HEIGHT, Length.px(15));
-   * </pre>
    */
   public static HeightProperty MAX_HEIGHT;
 
@@ -1018,11 +865,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MAX_WIDTH, Length.px(100));
-   * </pre>
    */
   public static WidthProperty MAX_WIDTH;
 
@@ -1035,11 +877,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MIN_HEIGHT, Length.px(15));
-   * </pre>
    */
   public static HeightProperty MIN_HEIGHT;
 
@@ -1051,12 +888,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.MIN_WIDTH, Length.px(15));
-   * </pre>
    */
   public static WidthProperty MIN_WIDTH;
 
@@ -1068,12 +899,6 @@ public class CSS {
    * </p>
    * The outline shorthand property sets all the outline properties in one
    * declaration. </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.OUTLINE, RGBColor.BLACK, LineStyle.DASHED, LineWidth.length(15, Unit.PX));
-   * </pre>
    */
   public static OutlineProperty OUTLINE;
 
@@ -1087,12 +912,6 @@ public class CSS {
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.OUTLINE_COLOR, RGBColor.GRAY);
-   * </pre>
    */
   public static OutlineColorProperty OUTLINE_COLOR;
 
@@ -1106,11 +925,6 @@ public class CSS {
    * This property takes a {@link BorderStyle} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.OUTLINE_STYLE, LineStyle.DOTTED);
-   * </pre>
    */
   public static OutlineStyleProperty OUTLINE_STYLE;
 
@@ -1123,12 +937,6 @@ public class CSS {
    * <p>
    * This property takes a {@link BorderWidth} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.OUTLINE_WIDTH, LineWidth.MEDIUM);
-   * </pre>
    * 
    */
   public static OutlineWidthProperty OUTLINE_WIDTH;
@@ -1144,11 +952,6 @@ public class CSS {
    * This property takes a {@link Overflow} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-  * $("#myId").css(CSS.OVERFLOW, Overflow.HIDDEN);
-  * </pre>
    */
   public static OverflowProperty OVERFLOW;
 
@@ -1168,14 +971,6 @@ public class CSS {
    * apply to the top, right, bottom, and left, respectively.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * // set padding-top and padding-bottom to 10px and padding-left and padding-right to 20px
-   * $("#myId").css(CSS.PADDING, Length.px(10), Length.px(20), null, null);
-   * // set padding-top to 10px, padding-right to 20px and padding-bottom to 30px and padding-right to 40px
-   * $("#myId").css(CSS.PADDING, Length.px(10), Length.px(20), Length.px(30), Length.px(40));
-   * </pre>
    */
   public static ShorthandPaddingProperty PADDING;
 
@@ -1189,11 +984,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.PADDING_BOTTOM, Length.px(30));
-   * </pre>
    */
   public static PaddingProperty PADDING_BOTTOM;
 
@@ -1207,11 +997,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.PADDING_LEFT, Length.px(30));
-   * </pre>
    */
   public static PaddingProperty PADDING_LEFT;
 
@@ -1225,11 +1010,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.PADDING_RIGHT, Length.px(30));
-   * </pre>
    */
   public static PaddingProperty PADDING_RIGHT;
 
@@ -1243,11 +1023,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.PADDING_TOP, Length.px(30));
-   * </pre>
    */
   public static PaddingProperty PADDING_TOP;
 
@@ -1261,11 +1036,6 @@ public class CSS {
    * This property takes a {@link Position} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.POSITION, Position.ABSOLUTE);
-   * </pre>
    */
   public static PositionProperty POSITION;
 
@@ -1290,12 +1060,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.RIGHT,Length.px(20));
-   * </pre>
    */
   public static EdgePositionProperty RIGHT;
 
@@ -1309,11 +1073,6 @@ public class CSS {
    * This property takes a {@link TextAlign} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.TEXT_ALIGN, TextAlign.CENTER);
-   * </pre>
    */
   public static TextAlignProperty TEXT_ALIGN;
 
@@ -1342,12 +1101,6 @@ public class CSS {
    * <p>
    * This property takes a {@link TextDecoration} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.TEXT_DECORATION, TextDecoration.LINE_THROUGH);
-   * </pre>
    */
   public static TextDecorationProperty TEXT_DECORATION;
 
@@ -1369,12 +1122,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.TEXT_IDENT, Length.px(15));
-   * </pre>
    */
   public static TextIdentProperty TEXT_IDENT;
 
@@ -1387,11 +1134,6 @@ public class CSS {
    * This property takes a {@link TextTransform} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.TEXT_TRANSFORM, TextTransform.UPPERCASE);
-   * </pre>
    */
   public static TextTransformProperty TEXT_TRANSFORM;
 
@@ -1416,11 +1158,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-  * $("#myId").css(CSS.TOP,Length.px(20));
-  * </pre>
    */
   public static EdgePositionProperty TOP;
 
@@ -1434,11 +1171,6 @@ public class CSS {
    * This property takes a {@link VerticalAlign} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.VERTICAL_ALIGN, VerticalAlign.BOTTOM);
-   * </pre>
    */
   public static VerticalAlignProperty VERTICAL_ALIGN;
 
@@ -1454,11 +1186,6 @@ public class CSS {
    * This property takes a {@link Visibility} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.VISIBILITY, Visibility.HIDDEN);
-   * </pre>
    */
   public static VisibilityProperty VISIBILITY;
 
@@ -1484,11 +1211,6 @@ public class CSS {
    * This property takes a {@link WhiteSpace} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.WHITE_SPACE, WhiteSpace.NOWRAP);
-   * </pre>
    */
   public static WhiteSpaceProperty WHITE_SPACE;
 
@@ -1513,12 +1235,6 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.WIDTH, Length.px(100))
-   * </pre>
    */
   public static WidthProperty WIDTH;
 
@@ -1540,11 +1256,6 @@ public class CSS {
    * This property takes a {@link Length} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.WORD_SPACING, Length.pt(2));
-   * </pre>
    */
   public static WordSpacingProperty WORD_SPACING;
 
@@ -1559,14 +1270,9 @@ public class CSS {
    * </p>
    * 
    * <p>
-   * This property takes a {@link CssNumber} object as value.
+   * This property takes a {@link Integer} object as value.
    * </p>
    * 
-   * <h3>Example:</h3>
-   * 
-   * <pre class="code">
-   * $("#myId").css(CSS.ZINDEX, new CssNumber(1000));
-   * </pre>
    */
   public static ZIndexProperty ZINDEX;
 
