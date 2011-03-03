@@ -9,6 +9,6 @@ import com.google.gwt.user.client.ui.Widget;
    * @param <W>
    * @param <O>
    */
-  public interface WidgetFactory<W extends Widget, O extends WidgetOptions> {
-    public W create(Element e, O options);
+  public interface WidgetFactory<W extends Widget> {
+    public W create(Element e);
   }

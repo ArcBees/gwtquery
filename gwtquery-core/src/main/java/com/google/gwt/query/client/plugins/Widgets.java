@@ -16,23 +16,25 @@
 package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
-import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory.ButtonOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Widgets plugin for Gwt Query.
- * Be careful, this plugin is still experimental. The api can change in next releases.
+ * Widgets plugin for Gwt Query. Be careful, this plugin is still experimental.
+ * The api can change in next releases.
  */
 public class Widgets extends QueuePlugin<Widgets> {
 
@@ -53,18 +55,21 @@ public class Widgets extends QueuePlugin<Widgets> {
   /**
    * Create an return a {@link TabPanel} widget with the first selected
    * elements. Each div element will create a tab and the first h3 element
-   * inside the div will be used as title
+   * inside the div will be used as title. The <code>initFunctions</code> will
+   * be called on the new {@link TabPanel} created by passing it in parameter.
+   * 
    */
-  public TabPanel tabPanel() {
+  public TabPanel tabPanel(Function... initFunctions) {
     return tabPanel(new TabPanelOptions());
   }
 
   /**
    * Create an return a {@link TabPanel} widget with the first selected elements
-   * by using a {@link TabPanelOptions}
+   * by using a {@link TabPanelOptions}. The <code>initFunctions</code> will be
+   * called on each new {@link Button} created by passing them in parameter.
    */
-  public TabPanel tabPanel(TabPanelOptions o) {
-    return widget(new TabPanelWidgetFactory(), o);
+  public TabPanel tabPanel(TabPanelOptions o, Function... initFunctions) {
+    return widget(new TabPanelWidgetFactory(o), initFunctions);
   }
 
   /**
@@ -72,8 +77,8 @@ public class Widgets extends QueuePlugin<Widgets> {
    * will create a tab and the first h3 element inside the div will be used as
    * title
    */
-  public Widgets tabPanels() {
-    return tabPanels(new TabPanelOptions());
+  public Widgets tabPanels(Function... initFunctions) {
+    return tabPanels(new TabPanelOptions(), initFunctions);
   }
 
   /**
@@ -81,49 +86,61 @@ public class Widgets extends QueuePlugin<Widgets> {
    * element inside a selected element will create a tab and the first h3
    * element inside the div will be used as title
    */
-  public Widgets tabPanels(TabPanelOptions o) {
-    return widgets(new TabPanelWidgetFactory(), o);
+  public Widgets tabPanels(TabPanelOptions o, Function... initFunctions) {
+    return widgets(new TabPanelWidgetFactory(o), initFunctions);
   }
 
   /**
    * Create an return a {@link Button} widget with the first element of the
-   * query
-   */
-  public Button button() {
-    return button(new ButtonOptions());
-  }
-
-  /**
-   * Create and return a {@link Button} widget with the first element of the
-   * query by using a {@link ButtonOptions}
-   */
-  public Button button(ButtonOptions o) {
-    return widget(new ButtonWidgetFactory(), o);
-  }
-
-  /**
-   * Create a {@link Button} widget for each selected element.
+   * query.The <code>initFunctions</code> will be called on the new
+   * {@link Button} created by passing it in parameter.
    * 
    */
-  public Widgets buttons() {
-    return buttons(new ButtonOptions());
+  public Button button(Function... initFunctions) {
+    return widget(new ButtonWidgetFactory(), initFunctions);
   }
 
   /**
-   * Create a {@link Button} widget for each selected element by using a
-   * {@link ButtonOptions}
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link Button}
+   * created by passing them in parameter.
    * 
    */
-  public Widgets buttons(ButtonOptions o) {
-    return widgets(new ButtonWidgetFactory(), o);
+  public Widgets buttons(Function... initFunctions) {
+    return widgets(new ButtonWidgetFactory(), initFunctions);
+  }
+
+  /**
+   * Create an return a {@link TextBox} widget with the first element of the
+   * query.The <code>initFunctions</code> will be called on the new
+   * {@link TextBox} created by passing it in parameter.
+   * 
+   * A {@link TextBox} is created if the element is a <i>input</i> with type
+   * text, a <i>div</i> or a<i>span</i> element.
+   */
+  public TextBox textBox(Function... initFunctions) {
+    return widget(new TextBoxWidgetFactory(), initFunctions);
+  }
+
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   *
+   * A {@link TextBox} is created if the element is a <i>input</i> with type
+   * text, a <i>div</i> or a<i>span</i> element.
+   */
+  public Widgets textBoxes(Function... initFunctions) {
+    return widgets(new TextBoxWidgetFactory(), initFunctions);
   }
 
   /**
    * Create and return a widget using the given factory and the given options
    */
-  public <W extends Widget, O extends WidgetOptions> W widget(
-      WidgetFactory<W, O> factory, O options) {
-    return widget(get(0), factory, options);
+  public <W extends Widget> W widget(WidgetFactory<W> factory,
+      Function... initFunctions) {
+
+    return widget(get(0), factory, initFunctions);
   }
 
   /**
@@ -131,12 +148,15 @@ public class Widgets extends QueuePlugin<Widgets> {
    * each element of the query. Returns a new gquery set of elements with the
    * new widgets created.
    */
-  public <W extends Widget, O extends WidgetOptions> Widgets widgets(
-      WidgetFactory<W, O> factory, O options) {
+  public <W extends Widget> Widgets widgets(WidgetFactory<W> factory,
+      Function... initFunctions) {
+
     List<Element> result = new ArrayList<Element>();
+
     for (Element e : elements()) {
-      result.add(widget(e, factory, options).getElement());
+      result.add(widget(e, factory, initFunctions).getElement());
     }
+
     return $(result).as(Widgets);
   }
 
@@ -144,8 +164,18 @@ public class Widgets extends QueuePlugin<Widgets> {
    * Create and return a widget using the given factory and the given options
    */
   protected <W extends Widget, O extends WidgetOptions> W widget(Element e,
-      WidgetFactory<W, O> factory, O options) {
-    return factory.create(e, options);
+      WidgetFactory<W> factory, Function... initFunctions) {
+
+    W widget = factory.create(e);
+
+    if (initFunctions != null) {
+      for (Function initFunction : initFunctions) {
+        initFunction.f(widget);
+      }
+    }
+
+    return widget;
+
   }
 
 }

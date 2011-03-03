@@ -9,23 +9,13 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 
-
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created
  * if the element is a <i>button</i>, <i>div></i>, <i>span</i> or <i>a</i>
  * element (should be extends to other element).
  */
-public class TabPanelWidgetFactory extends
-    AbstractWidgetFactory<TabPanel, TabPanelWidgetFactory.TabPanelOptions> {
-  
-  public static class ExtendedTabPanel extends TabPanel{
-    
-    
-    void attach(){
-      onAttach();
-      RootPanel.detachOnWindowClose(this);
-    }
-  }
+public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
+
 
   /**
    * Options used to initialize new {@link Button}
@@ -61,8 +51,31 @@ public class TabPanelWidgetFactory extends
       titleSelector = "h3";
     }
   }
+  
+  private static class ExtendedTabPanel extends TabPanel {
 
-  protected void initialize(TabPanel tabPanel, TabPanelOptions options,
+    void attach() {
+      onAttach();
+      RootPanel.detachOnWindowClose(this);
+    }
+  }
+
+  private TabPanelOptions options;
+
+  public TabPanelWidgetFactory(TabPanelOptions o) {
+    this.options = o;
+  }
+
+  public TabPanel create(Element e) {
+    ExtendedTabPanel tabPanel = new ExtendedTabPanel();
+
+    initialize(tabPanel, options, e);
+
+    return tabPanel;
+  }
+
+
+  protected void initialize(ExtendedTabPanel tabPanel, TabPanelOptions options,
       Element e) {
 
     GQuery tabs = $(options.getTabSelector(), e);
@@ -74,24 +87,15 @@ public class TabPanelWidgetFactory extends
 
       tabPanel.add(new HTMLPanel(tab.getString()), title != null
           ? title.getInnerText() : "Tab " + (i + 1));
-      
-      
 
     }
-    
-    if (tabs.length() > 0){
+
+    if (tabs.length() > 0) {
       tabPanel.selectTab(0);
     }
 
-    // the tab panel is initialized, attach it to the dom ;
-    e.getParentElement().insertBefore(tabPanel.getElement(), e);
-    ((ExtendedTabPanel)tabPanel).attach();
+    WidgetsUtils.replace(e, tabPanel.getElement());
 
-    // detach the element as it is replaced by the tab panel !
-    e.removeFromParent();
-  }
-
-  protected TabPanel createWidget(Element e) {
-    return new ExtendedTabPanel();
+    tabPanel.attach();
   }
 }

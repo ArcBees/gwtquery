@@ -1,26 +1,9 @@
 package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.query.client.GQuery;
 
-/**
- * Abstract factory containing useful methods for widget creation
- * 
- */
-public abstract class AbstractWidgetFactory<W extends Widget, O extends WidgetOptions>
-    implements WidgetFactory<W, O> {
-
-  public W create(Element e, O options) {
-    W w = createWidget(e);
-
-    initialize(w, options, e);
-
-    return w;
-  }
-
-  protected abstract void initialize(W widget, O options, Element e);
-
-  protected abstract W createWidget(Element e);
+public class WidgetsUtils {
 
   /**
    * Test if the tag name of the element is one of tag names given in parameter
@@ -28,7 +11,7 @@ public abstract class AbstractWidgetFactory<W extends Widget, O extends WidgetOp
    * @param tagNames
    * @return
    */
-  protected boolean matchesTags(Element e, String... tagNames) {
+  static boolean matchesTags(Element e, String... tagNames) {
 
     assert e != null : "Element cannot be null";
 
@@ -46,4 +29,16 @@ public abstract class AbstractWidgetFactory<W extends Widget, O extends WidgetOp
 
   }
 
+  /**
+   * replace the <code>oldElement</code> by the <code>newElement</code>
+   * 
+   * @param oldElement
+   * @param newElement
+   */
+   static void replace(Element oldElement, Element newElement) {
+    assert oldElement != null && newElement != null;
+    
+    GQuery.$(oldElement).replaceWith(newElement);
+
+  }
 }
