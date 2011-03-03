@@ -16,29 +16,15 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.query.client.impl.SelectorEngineImpl;
-import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.Widgets;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -60,293 +46,99 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testEventsPlugin();
+      testPropertiesAnimationComputeEffects();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
   
-  public void testEventsPlugin() {
-    $(e).html("<p>Content</p>");
+  public void testPropertiesAnimationComputeEffects() {
+    $(e)
+        .html(
+            "<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px; margin: 0px'>Content 1</p></div>");
+    GQuery g = $("#child");
+    Properties prop1;
 
-    // click
-    $("p", e).click(new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    }, new Function() {
-      public void f(Element elem) {
-        $(elem).css("background", "green");
-      }
-    });
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
+            false).toString());
+    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
+            false).toString());
+    assertEquals("attr=top value=50% start=0 end=50 unit=%",
+        PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
+            .toString());
+    assertEquals("attr=left value=50% start=0 end=50 unit=%",
+        PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
+            .toString());
+    assertEquals("attr=width value=174px start=100 end=174 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
+            .toString());
+    assertEquals("attr=height value=174px start=100 end=174 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
+            .toString());
+    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
+            .toString());
 
-    // unbind
-    $("p", e).css("color", "white");
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).click();
-    assertEquals("white", $("p", e).css("color"));
+    prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
+    PropertiesAnimation an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
+    an.onStart();
+    an.onComplete();
 
-    // toggle
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).toggle(new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    }, new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "blue");
-      }
-    });
-    $("p", e).click();
-    assertEquals("red", $("p", e).css("color"));
-    $("p", e).click();
-    assertEquals("blue", $("p", e).css("color"));
+    assertEquals("attr=marginTop value=0 start=-110 end=0 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "0", false)
+            .toString());
+    assertEquals("attr=marginLeft value=0 start=-110 end=0 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "0", false)
+            .toString());
+    assertEquals("attr=top value=0% start=50 end=0 unit=%", PropertiesAnimation
+        .computeFxProp(g.get(0), "top", "0%", false).toString());
+    assertEquals("attr=left value=0% start=50 end=0 unit=%",
+        PropertiesAnimation.computeFxProp(g.get(0), "left", "0%", false)
+            .toString());
+    assertEquals("attr=width value=100px start=174 end=100 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "width", "100px", false)
+            .toString());
+    assertEquals("attr=height value=100px start=174 end=100 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "height", "100px", false)
+            .toString());
+    assertEquals("attr=padding value=5px start=20 end=5 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "padding", "5px", false)
+            .toString());
 
-    // one
-    $("p", e).unbind(Event.ONCLICK);
-    $("p", e).one(Event.ONCLICK, null, new Function() {
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    });
-    $("p", e).click();
-    assertEquals("red", $("p", e).css("color"));
-    $("p", e).css("color", "white");
-    $("p", e).click();
-    assertEquals("white", $("p", e).css("color"));
+    prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
+    an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
+    an.onStart();
+    an.onComplete();
 
-    // hover (mouseover, mouseout)
-    $("p", e).hover(new Function() {
-      public void f(Element elem) {
-        $(elem).css("background-color", "yellow");
-      }
-    }, new Function() {
-      public void f(Element elem) {
-        $(elem).css("background-color", "white");
-      }
-    });
-    $("p", e).trigger(Event.ONMOUSEOVER);
-    assertEquals("yellow", $("p", e).css("background-color"));
-    $("p", e).trigger(Event.ONMOUSEOUT);
-    assertEquals("white", $("p", e).css("background-color"));
-
-    // focus
-    $("p", e).focus(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "1px dotted black");
-      }
-    });
-    $("p", e).focus();
-    assertEquals("black", $("p", e).css("border-top-color"));
-    assertEquals("dotted", $("p", e).css("border-top-style"));
-    assertEquals("1px", $("p", e).css("border-top-width"));
-
-    // blur
-    $("p", e).blur(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "");
-      }
-    });
-    $("p", e).blur();
-    assertEquals("", $("p", e).css("border"));
-
-    // key events
-    $(e).html("<input type='text'/>");
-    Function keyEventAction = new Function() {
-      public boolean f(Event evnt) {
-        GQuery gq = $(evnt);
-        gq.val(gq.val() + Character.toString((char) evnt.getKeyCode()));
-        return false;
-      }
-    };
-    $("input", e).keypress(keyEventAction);
-    $("input", e).keydown(keyEventAction);
-    $("input", e).keyup(keyEventAction);
-    $("input", e).focus();
-    $("input", e).keydown('a');
-    $("input", e).keypress('b');
-    $("input", e).keyup('c');
-    assertEquals("abc", $("input", e).val());
+    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
+            false).toString());
+    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
+            false).toString());
+    assertEquals("attr=top value=50% start=0 end=50 unit=%",
+        PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
+            .toString());
+    assertEquals("attr=left value=50% start=0 end=50 unit=%",
+        PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
+            .toString());
+    assertEquals("attr=width value=174px start=100 end=174 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
+            .toString());
+    assertEquals("attr=height value=174px start=100 end=174 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
+            .toString());
+    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
+        PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
+            .toString());
   }
   
-  public void testUnbindMultipleEvents() {
-    String content = "<p>content</p>";
-    $(e).html(content);
-    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
-      public void f(Element e){
-        $("p").css("color", "red");
-      }
-    });
-    $(document).bind(Event.ONMOUSEUP, null, new Function(){
-      public void f(Element e){
-        $("p").css("color", "yellow");
-      }
-    });
-    $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("red", $("p").css("color"));
-    $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("yellow", $("p").css("color"));
-    $("p").css("color", "black");
-    $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
-    $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("black", $("p").css("color"));
-    $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("black", $("p").css("color"));
-  }
-  
-  public void testGWTQueryCoreWidgets() {
-    final FlowPanel p = new FlowPanel();
-    Button b = new Button("test");
-    RootPanel.get().add(b);
-    RootPanel.get().add(p);
-    
-    int nitems = 4;
-    final String label1 = "I'm the label ";
-    final String label2 = "Finally I'm just a simple label";
-    
-    for (int i = 0; i < nitems; i++) {
-      Label l = new Label(label1 + i);
-      p.add(l);
-    }
-    $("<div>whatever</div").appendTo($(p));
-    
-    b.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        $(".gwt-Label", p).each(new Function() {
-          @Override
-          public void f(Widget w) {
-            Label l = (Label) w;
-            l.setText(label2);
-          }
-        });
-      }
-    });
-    
-    $(".gwt-Label", p).each(new Function() {
-      @Override
-      public Object f(Widget w, int i) {
-        assertEquals(label1 + i, ((Label)w).getText());
-        return null;
-      }
-    });
-    
-    $(b).click();
-
-    $(".gwt-Label", p).each(new Function() {
-      public void f(Element e) {
-        assertEquals(label2, $(e).text());
-      }
-    });
-    
-    $("div", p).each(new Function() {
-      public void f(Element e) {
-        // Just to avoid the exception when non-widget elements match
-      }
-      public void f(Widget w) {
-        if (w instanceof Label) {
-          assertEquals(label2, $(e).text());
-        }
-      }
-    });
-    
-    p.removeFromParent();
-    b.removeFromParent();
-  }
-  
-  public void testGQueryWidgets() {
-    final Button b1 = new Button("click-me");
-    RootPanel.get().add(b1);
-    GQuery g = $(b1);
-    Button b2 = (Button) g.as(Widgets.Widgets).widget();
-    assertEquals(b1, b2);
-    
-    
-    b2 = (Button)$("<button>Click-me</button>").appendTo(document).asWidget();
-    b2.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        $(b1).css("color", "red");
-      }
-    });
-    
-    b2.click();
-    assertEquals("red", $(b1).css("color"));
-  }
-  
-  public void testSiblings() {
-    String content = "<table><tr ><td class='r1'>1</td><td>2</td></tr><tr><td>1</td><td>2</td></tr></table>";
-    $(e).html(content);
-    $(".r1").css("background", "red");
-    
-    $(".r1").hover(new Function() {
-      public void f(Element e) {
-        $(e).add($(e).siblings()).text("A");
-      }
-    },new Function() {
-      public void f(Element e) {
-        $(e).add($(e).siblings()).text("B");
-      }
-    });
-  }
-  
-  
-  public void testNamedBinding() {
-    $(e).html("<p>Content</p>");
-
-    $("p", e, Events.Events).bind("click.first.namespace", null, new Function() {; 
-      public void f(Element elem) {
-        $(elem).css("color", "red");
-      }
-    });
-    $("p", e, Events.Events).bind("click.second.namespace", null, new Function() {; 
-      public void f(Element elem) {
-        $(elem).css("background", "green");
-      }
-    });
-    $("p", e, Events.Events).bind("click", null, new Function() {; 
-      public void f(Element elem) {
-        $(elem).css("fontSize", "24px");
-      }
-    });
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    assertEquals("green", $("p", e).css("background-color"));
-    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
-    
-    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
-
-    $("p", e, Events.Events).unbind("click.first.namespace");
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertEquals("green", $("p", e).css("background-color"));
-    assertEquals(24.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
-    
-    
-    $("p", e).css("color","").css("background-color","").css("fontSize", "12px");
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
-
-    $("p", e, Events.Events).unbind("click");
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
-    assertEquals(12.0d, GQUtils.cur($("p", e).get(0), "fontSize", true));
-  }
-  
-  public void testSelectorEngineNative() {
-    SelectorEngineImpl selEng = GWT.create(SelectorEngineImpl.class);
-    executeSelectorEngineTests(selEng);
-  }
-  
+ 
   public void runTestJQuery() {
-    GQUtils.loadScript("jquery-1.3.1.js", "jq");
+    JsUtils.loadScript("jquery-1.3.1.js", "jq");
     new Timer(){
       private int cont = 0;
       private native boolean loaded(String func) /*-{
@@ -354,7 +146,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       }-*/;
       public void run() {
         if (cont++ > 10 || loaded("$")) {
-          testPropertiesAnimationComputeEffects();
+          testCompare();
         } else {
           schedule(100);
         }
@@ -382,202 +174,24 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   }
   public void validateCurBoth(String selector, String... attrs) {
     for (String attr: attrs) {
-      String gs = Double.toString(GQUtils.cur($(selector).get(0), attr, true)).replaceFirst("\\.\\d+$", "");
+      String gs = Double.toString($(selector).cur(attr, true)).replaceFirst("\\.\\d+$", "");
       String js = evalJQurey("$.cur($('" + selector + "').get(0), '" + attr + "', true)");
       System.out.println(selector + " " + attr + " " + gs + " " + js + " " + (gs.equals(js)));
       assertEquals(gs, js);
     }
   }
   
-  public void testPropertiesAnimationComputeEffects() {
+  public void testCompare() {
     $(e).html("<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px'>Content 1</p></div>");
-    
     GQuery g = $("#child");
     Properties prop1;
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
     g.css(prop1);
     validateCurBoth("#child", prop1.keys());
-    
   }
   
   
-  protected interface AllSelectors extends Selectors {
-    // @Selector("h1[id]:contains(Selectors)")
-    // NodeList<Element> h1IdContainsSelectors();
-    // @Selector("*:first")
-    // NodeList<Element> allFirst();
-    // @Selector("div[class!=madeup]")
-    // NodeList<Element> divWithClassNotContainsMadeup();
-    // @Selector("div, p a")
-    // NodeList<Element> divCommaPA();
-    // @Selector("p:contains(selectors)")
-    // NodeList<Element> pContainsSelectors();
-    @Selector("a[href][lang][class]")
-    NodeList<Element> aHrefLangClass();
-    @Selector("*:checked")
-    NodeList<Element> allChecked();
-    @Selector("body")
-    NodeList<Element> body();
-    @Selector("body div")
-    NodeList<Element> bodyDiv();
-    @Selector("div .example")
-    NodeList<Element> divExample();
-    @Selector("div > div")
-    NodeList<Element> divGtP();
-    @Selector("div:not(.example)")
-    NodeList<Element> divNotExample();
-    @Selector("div p")
-    NodeList<Element> divP();
-    @Selector("div p a")
-    NodeList<Element> divPA();
-    @Selector("div + p")
-    NodeList<Element> divPlusP();
-    @Selector("div[class^=exa][class$=mple]")
-    NodeList<Element> divPrefixExaSuffixMple();
-    @Selector("div #title")
-    NodeList<Element> divSpaceTitle();
-    @Selector("div ~ p")
-    NodeList<Element> divTildeP();
-    @Selector("div[class]")
-    NodeList<Element> divWithClass();
-    @Selector("div[class~=dialog]")
-    NodeList<Element> divWithClassContainsDialog();
-    @Selector("div[class*=e]")
-    NodeList<Element> divWithClassContainsE();
-    @Selector("div[class=example]")
-    NodeList<Element> divWithClassExample();
-    @Selector("div[class~=dialog]")
-    NodeList<Element> divWithClassListContainsDialog();
-    @Selector("div[class^=exa]")
-    NodeList<Element> divWithClassPrefixExa();
-    @Selector("div[class$=mple]")
-    NodeList<Element> divWithClassSuffixMple();
-    @Selector("p:first-child")
-    NodeList<Element> firstChild();
-    @Selector("h1#title")
-    NodeList<Element> h1Title();
-    @Selector("h1#title + em > span")
-    NodeList<Element> h1TitlePlusEmGtSpan();
-    @Selector("p:last-child")
-    NodeList<Element> lastChild();
-    @Selector(".note")
-    NodeList<Element> note();
-    @Selector("p:nth-child(n)")
-    NodeList<Element> nthChild();
-    @Selector("p:nth-child(2n)")
-    NodeList<Element> nThChild2n();
-    @Selector("p:nth-child(2n+1)")
-    NodeList<Element> nThChild2nPlus1();
-    @Selector("p:nth-child(even)")
-    NodeList<Element> nThChildEven();
-    @Selector("p:nth-child(odd)")
-    NodeList<Element> nThChildOdd();
-    @Selector("p:only-child")
-    NodeList<Element> onlyChild();
-    @Selector("#title")
-    NodeList<Element> title();
-    @Selector("#title,h1#title")
-    NodeList<Element> titleAndh1Title();
-    @Selector("ul .tocline2")
-    NodeList<Element> ulTocline2();
-    @Selector("ul.toc li.tocline2")
-    NodeList<Element> ulTocLiTocLine2();
-  }
-  
-  public void testCompiledSelectors() {
-    final AllSelectors sel = GWT.create(AllSelectors.class);
-    $(e).html(getTestContent());
-
-    // TODO: fix these selectors
-    // sel.h1IdContainsSelectors().getLength()
-    // sel.allFirst().getLength()
-    // sel.divWithClassNotContainsMadeup().getLength()
-    // sel.divCommaPA().getLength()
-    // sel.pContainsSelectors().getLength()
-    // assertArrayContains(sel.title().getLength(), 1);
-
-    assertEquals(1, sel.body().getLength());
-    assertArrayContains(sel.bodyDiv().getLength(), 53, 54, 55);
-    sel.setRoot(e);
-    assertArrayContains(sel.aHrefLangClass().getLength(), 0, 1);
-    assertArrayContains(sel.allChecked().getLength(), 1);
-    assertArrayContains(sel.divExample().getLength(), 43);
-    assertArrayContains(sel.divGtP().getLength(), 51, 52);
-    assertArrayContains(sel.divNotExample().getLength(), 9, 10);
-    assertArrayContains(sel.divP().getLength(), 324);
-    assertArrayContains(sel.divPA().getLength(), 84);
-    assertArrayContains(sel.divPlusP().getLength(), 22);
-    assertArrayContains(sel.divPrefixExaSuffixMple().getLength(), 43);
-    assertArrayContains(sel.divSpaceTitle().getLength(), 1);
-    assertArrayContains(sel.divTildeP().getLength(), 183);
-    assertArrayContains(sel.divWithClass().getLength(), 51, 52);
-    assertArrayContains(sel.divWithClassContainsDialog().getLength(), 1);
-    assertArrayContains(sel.divWithClassContainsE().getLength(), 50);
-    assertArrayContains(sel.divWithClassExample().getLength(), 43);
-    assertArrayContains(sel.divWithClassListContainsDialog().getLength(), 1);
-    assertArrayContains(sel.divWithClassPrefixExa().getLength(), 43);
-    assertArrayContains(sel.divWithClassSuffixMple().getLength(), 43);
-    assertArrayContains(sel.firstChild().getLength(), 54);
-    assertArrayContains(sel.h1Title().getLength(), 1);
-    assertArrayContains(sel.h1TitlePlusEmGtSpan().getLength(), 1);
-    assertArrayContains(sel.lastChild().getLength(), 19);
-    assertArrayContains(sel.note().getLength(), 14);
-    assertArrayContains(sel.nthChild().getLength(), 324);
-    assertArrayContains(sel.nThChild2n().getLength(), 159);
-    assertArrayContains(sel.nThChild2nPlus1().getLength(), 165);
-    assertArrayContains(sel.nThChildEven().getLength(), 159);
-    assertArrayContains(sel.nThChildOdd().getLength(), 165);
-    assertArrayContains(sel.onlyChild().getLength(), 3);
-    assertArrayContains(sel.titleAndh1Title().getLength(), 0, 1);
-    assertArrayContains(sel.ulTocline2().getLength(), 12);
-    assertArrayContains(sel.ulTocLiTocLine2().getLength(), 12);
-  }  
-  private void executeSelectorEngineTests(SelectorEngineImpl selEng) {
-    $(e).html(getTestContent());
-
-    assertArrayContains(selEng.select("body", Document.get()).getLength(), 1);
-    assertArrayContains(selEng.select("body div", Document.get()).getLength(), 53, 54, 55);
-
-    assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(), 1);
-    assertArrayContains(selEng.select("div[class!=madeup]", e).getLength(), 52, 53);
-    assertArrayContains(selEng.select("div, p a", e).getLength(), 136, 137, 138);
-    assertArrayContains(selEng.select("p:contains(selectors)", e).getLength(), 54, 55);
-    assertArrayContains(selEng.select("a[href][lang][class]", e).getLength(), 1);
-    assertArrayContains(selEng.select("*:checked", e).getLength(), 1);
-    assertArrayContains(selEng.select("div .example", e).getLength(), 43);
-    assertArrayContains(selEng.select("div > div", e).getLength(), 51, 52);
-    assertArrayContains(selEng.select("div:not(.example)", e).getLength(), 9, 10);
-    assertArrayContains(selEng.select("div p", e).getLength(), 324);
-    assertArrayContains(selEng.select("div p a", e).getLength(), 85, 84);
-    assertArrayContains(selEng.select("div + p", e).getLength(), 22);
-    assertArrayContains(selEng.select("div[class^=exa][class$=mple]", e).getLength(), 43);
-    assertArrayContains(selEng.select("div #title", e).getLength(), 1);
-    assertArrayContains(selEng.select("div ~ p", e).getLength(), 183);
-    assertArrayContains(selEng.select("div[class]", e).getLength(), 51, 52);
-    assertArrayContains(selEng.select("div[class~=dialog]", e).getLength(), 1);
-    assertArrayContains(selEng.select("div[class*=e]", e).getLength(), 50);
-    assertArrayContains(selEng.select("div[class=example]", e).getLength(), 43);
-    assertArrayContains(selEng.select("div[class~=dialog]", e).getLength(), 1);
-    assertArrayContains(selEng.select("div[class^=exa]", e).getLength(), 43);
-    assertArrayContains(selEng.select("div[class$=mple]", e).getLength(), 43);
-    assertArrayContains(selEng.select("p:first-child", e).getLength(), 54);
-    assertArrayContains(selEng.select("h1#title", e).getLength(), 1);
-    assertArrayContains(selEng.select("h1#title + em > span", e).getLength(), 1);
-    assertArrayContains(selEng.select("p:last-child", e).getLength(), 19, 22);
-    assertArrayContains(selEng.select(".note", e).getLength(), 14);
-    assertArrayContains(selEng.select("p:nth-child(n)", e).getLength(), 324);
-    assertArrayContains(selEng.select("p:nth-child(2n)", e).getLength(), 159);
-    assertArrayContains(selEng.select("p:nth-child(2n+1)", e).getLength(), 165);
-    assertArrayContains(selEng.select("p:nth-child(even)", e).getLength(), 159);
-    assertArrayContains(selEng.select("p:nth-child(odd)", e).getLength(), 165);
-    assertArrayContains(selEng.select("p:only-child", e).getLength(), 3);
-    assertArrayContains(selEng.select("#title", e).getLength(), 1);
-    assertArrayContains(selEng.select("#title, h1#title", e).getLength(), 1);
-    assertArrayContains(selEng.select("ul.toc li.tocline2", e).getLength(), 12);    
-    assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(),  1);
-  }
-
   // This method is used to initialize a huge html String, because
   // java 1.5 has a limitation in the size of static strings.
   private String getTestContent() {
