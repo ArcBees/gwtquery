@@ -15,22 +15,26 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.js.JsNodeArray;
 
 /**
+ * @deprecated use JsNodeArray
  */
-public class JSArray extends NodeList<Element> {
-
-  public static JSArray create() {
-    return (JSArray) JavaScriptObject.createArray();
+@Deprecated
+public final class JSArray extends JsNodeArray {
+  
+  protected JSArray() {
   }
 
-  public static native JSArray create(Node node) /*-{
-    return node ? [node] : [];
-  }-*/;
+  public static JSArray create() {
+    return JsNodeArray.create().cast();
+  }
+
+  public static JSArray create(Node node) {
+    return JsNodeArray.create(node).cast();
+  }
 
   public static JSArray create(NodeList<?> nl) {
     JSArray ret = create();
@@ -40,48 +44,4 @@ public class JSArray extends NodeList<Element> {
     return ret;
   }
 
-  protected JSArray() {
-  }
-
-  public final native void addInt(int i) /*-{
-    this[this.length]=i;
-  }-*/;
-
-  public final native void addNode(Node n) /*-{
-    if (n) this[this.length]=n;
-  }-*/;
-
-  public final native void addNode(Node n, int i) /*-{
-    if (n) this[i]=n;
-  }-*/;
-
-  public final native void concat(JSArray ary) /*-{
-    this.concat(ary);
-  }-*/;
-
-  public final native Element getElement(int i) /*-{
-    return this[i];
-  }-*/;
-
-  public final native int getInt(int i) /*-{
-    return this[i]  || 0;
-  }-*/;
-
-  public final native Node getNode(int i) /*-{
-    return this[i];
-  }-*/;
-
-  public final native String getStr(int i) /*-{
-    return this[i] || null;
-  }-*/;
-
-  public final void pushAll(JSArray prevElem) {
-    for (int i = 0, ilen = prevElem.size(); i < ilen; i++) {
-      addNode(prevElem.getNode(i));
-    }
-  }
-
-  public final native int size() /*-{
-     return this.length;
-  }-*/;
 }

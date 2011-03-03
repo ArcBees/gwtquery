@@ -21,9 +21,9 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.JSArray;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.JSRegexp;
+import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.plugins.Effects;
 
 /**
@@ -71,7 +71,7 @@ public class PropertiesAnimation extends Animation {
   private static final String[] attrsToSave = new String[] { "overflow",
       "visibility" };
 
-  private static JSRegexp nonPxRegExp = new JSRegexp(
+  private static JsRegexp nonPxRegExp = new JsRegexp(
       "z-?index|font-?weight|opacity|zoom|line-?height", "i");
   
   
@@ -104,20 +104,22 @@ public class PropertiesAnimation extends Animation {
       end = 0;
       unit = nonPxRegExp.test(key) ? "" : "px";
     } else {
-      JSArray parts = new JSRegexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
+      JsObjectArray<String> parts = new JsRegexp("^([+-]=)?([0-9+-.]+)(.*)?$").match(val);
 
       if (parts != null) {
-        unit = nonPxRegExp.test(key) ? "" : parts.getStr(3) == null ? "px"
-            : parts.getStr(3);
-        end = Double.parseDouble(parts.getStr(2));
+        String $1 = parts.get(1);
+        String $2 = parts.get(2);
+        String $3 = parts.get(3);
+        end = Double.parseDouble($2);
+        unit = nonPxRegExp.test(key) ? "" : $3 == null || $3.isEmpty() ? "px" : $3;
         if (!"px".equals(unit)) {
           double to = end == 0 ? 1 : end;
           g.css(key, to + unit);
           start = to * start / g.cur(key, true);
           g.css(key, start + unit);
         }
-        if (parts.getStr(1) != null) {
-          end = (("-=".equals(parts.getStr(1)) ? -1 : 1) * end) + start;
+        if ($1 != null && !$1.isEmpty()) {
+          end = (("-=".equals($1) ? -1 : 1) * end) + start;
         }
       }
     }

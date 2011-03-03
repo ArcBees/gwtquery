@@ -17,7 +17,11 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
-import static com.google.gwt.query.client.plugins.Widgets.Widgets;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -33,15 +37,19 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.impl.SelectorEngine;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsMap;
+import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -49,11 +57,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -82,82 +85,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * A class to store data in an element.
-   */
-  protected static final class DataCache extends JavaScriptObject {
-
-    protected DataCache() {
-    }
-
-    public native void delete(int name) /*-{
-			delete this[name];
-    }-*/;
-
-    public native void delete(String name) /*-{
-			delete this[name];
-    }-*/;
-
-    public native boolean exists(int id) /*-{
-			return !!this[id];
-    }-*/;
-
-    public native JavaScriptObject get(int id) /*-{
-			return this[id];
-    }-*/;
-
-    public native JavaScriptObject get(String id) /*-{
-			return this[id];
-    }-*/;
-
-    public DataCache getCache(int id) {
-      return get(id).cast();
-    }
-
-    public native double getDouble(int id) /*-{
-			return this[id];
-    }-*/;
-
-    public native double getDouble(String id) /*-{
-			return this[id];
-    }-*/;
-
-    public native int getInt(int id) /*-{
-			return this[id];
-    }-*/;
-
-    public native int getInt(String id) /*-{
-			return this[id];
-    }-*/;
-
-    public native Object getObject(String id) /*-{
-			return this[id];
-    }-*/;
-
-    public native String getString(int id) /*-{
-			return this[id];
-    }-*/;
-
-    public native String getString(String id) /*-{
-			return this[id];
-    }-*/;
-
-    public native boolean isEmpty() /*-{
-			var foo = "";
-			for (foo in this)
-				break;
-			return !foo;
-    }-*/;
-
-    public native void put(int id, Object obj) /*-{
-			this[id] = obj;
-    }-*/;
-
-    public native void put(String id, Object obj) /*-{
-			this[id] = obj;
-    }-*/;
-  }
-
-  /**
    * The body element in the current page.
    */
   public static final BodyElement body = Document.get().getBody();
@@ -177,7 +104,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static final Element window = window();
 
-  private static DataCache dataCache = null;
+  private static JsCache dataCache = null;
 
   private static SelectorEngine engine;
 
@@ -186,8 +113,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static final String OLD_DATA_PREFIX = "old-";
 
-  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;;
-
+  private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
+  
   private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
 
   private static Element windowData = null;
@@ -196,7 +123,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Create an empty GQuery object.
    */
   public static GQuery $() {
-    return new GQuery(JSArray.create());
+    return new GQuery(JsNodeArray.create());
   }
 
  
@@ -219,7 +146,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing node.
    */
   public static GQuery $(Node n) {
-    return n == null ? $() : new GQuery(JSArray.create(n));
+    return n == null ? $() : new GQuery(JsNodeArray.create(n));
   }
 
   /**
@@ -233,7 +160,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Create a new GQuery given a list of nodes, elements or widgets 
    */
   public static GQuery $(List<?> nodesOrWidgets) {
-    JSArray elements = JSArray.create();
+    JsNodeArray elements = JsNodeArray.create();
     if (nodesOrWidgets != null) {
       for (Object o : nodesOrWidgets ) {
         if (o instanceof Node) {
@@ -434,14 +361,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     int id = item.hashCode();
     if (name != null && !dataCache.exists(id)) {
-      dataCache.put(id, DataCache.createObject().cast());
+      dataCache.put(id, JsCache.createObject().cast());
     }
 
-    DataCache d = dataCache.get(id).cast();
+    JsCache d = dataCache.getCache(id);
     if (name != null && value != null) {
       d.put(name, value);
     }
-    return name != null ? d.getObject(name) : id;
+    return name != null ? d.get(name) : id;
   }
 
   /**
@@ -483,8 +410,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static JSArray copyNodeList(NodeList<? extends Node> n) {
-    JSArray res = JSArray.create();
+  private static JsNodeArray copyNodeList(NodeList<? extends Node> n) {
+    JsNodeArray res = JsNodeArray.create();
     for (int i = 0; i < n.getLength(); i++) {
       res.addNode(n.getItem(i));
     }
@@ -530,7 +457,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       engine = new SelectorEngine();
     }
     NodeList<Element> n = engine.select(selector, context);
-    JSArray res = copyNodeList(n);
+    JsNodeArray res = copyNodeList(n);
     return res;
   }
 
@@ -549,7 +476,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private GQuery(Element element) {
     if (element != null) {
-      elements = JSArray.create(element);
+      elements = JsNodeArray.create(element);
     }
   }
 
@@ -557,7 +484,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     this(gq == null ? null : gq.get());
   }
 
-  private GQuery(JSArray elements) {
+  private GQuery(JsNodeArray elements) {
     if (elements != null) {
       this.elements = elements;
     }
@@ -719,18 +646,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Return a GWT Widget containing the first matched element.
-   * 
-   * If the element is already associated to a widget it returns the original
-   * widget, otherwise a new GWT widget will be created depending on the
-   * tagName.
-   * 
-   */
-//  public Widget asWidget() {
-//    return as(Widgets).widget();
-//  }
-
-  /**
    * Set a key/value object as properties to all matched elements.
    * 
    * Example: $("img").attr(new
@@ -840,7 +755,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * at all ancestors, children() will only consider immediate child elements.
    */
   public GQuery children() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       allNextSiblingElements(e.getFirstChildElement(), result, null);
     }
@@ -885,7 +800,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * copies of the elements to another location in the DOM.
    */
   public GQuery clone() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       result.addNode(e.cloneNode(true));
     }
@@ -896,7 +811,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Filter the set of elements to those that contain the specified text.
    */
   public GQuery contains(String text) {
-    JSArray array = JSArray.create();
+    JsNodeArray array = JsNodeArray.create();
     for (Element e : elements()) {
       if ($(e).text().contains(text)) {
         array.addNode(e);
@@ -910,7 +825,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * nodes), or the content document, if the element is an iframe.
    */
   public GQuery contents() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       if (IFrameElement.is(e)) {
         result.addNode(getContentDocument(e));
@@ -1218,7 +1133,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * - anything else and the element is kept.
    */
   public GQuery filter(Predicate filterFn) {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (int i = 0; i < elements.getLength(); i++) {
       Element e = elements.getItem(i);
       if (filterFn.f(e, i)) {
@@ -1235,7 +1150,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * filters at once.
    */
   public GQuery filter(String... filters) {
-    JSArray array = JSArray.create();
+    JsNodeArray array = JsNodeArray.create();
     for (String f : filters) {
       for (Element e : elements()) {
         for (Element c : $(f, e.getParentNode()).elements()) {
@@ -1258,7 +1173,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * once.
    */
   public GQuery find(String... filters) {
-    JSArray array = JSArray.create();
+    JsNodeArray array = JsNodeArray.create();
     for (String selector : filters) {
       for (Element e : elements()) {
         for (Element c : $(selector, e).elements()) {
@@ -1659,7 +1574,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element, not all next siblings see {#nextAll}.
    */
   public GQuery next() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Element next = e.getNextSiblingElement();
       if (next != null) {
@@ -1676,7 +1591,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * {#nextAll}.
    */
   public GQuery next(String... selectors) {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Element next = e.getNextSiblingElement();
       if (next != null) {
@@ -1690,7 +1605,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Find all sibling elements after the current element.
    */
   public GQuery nextAll() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       allNextSiblingElements(e.getNextSiblingElement(), result, null);
     }
@@ -1702,7 +1617,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * is used to remove a single Element from a jQuery object.
    */
   public GQuery not(Element elem) {
-    JSArray array = JSArray.create();
+    JsNodeArray array = JsNodeArray.create();
     for (Element e : elements()) {
       if (e != elem) {
         array.addNode(e);
@@ -1750,7 +1665,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * relative or absolute). This method only works with visible elements.
    */
   public GQuery offsetParent() {
-    Element offParent = GQUtils.or(elements.getItem(0).getOffsetParent(), body);
+    Element offParent = JsUtils.or(elements.getItem(0).getOffsetParent(), body);
     while (offParent != null
         && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName())
@@ -1822,7 +1737,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements.
    */
   public GQuery parent() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Element p = e.getParentElement();
       if (p != null) {
@@ -1846,7 +1761,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements (except for the root element).
    */
   public GQuery parents() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Node par = e.getParentNode();
       while (par != null && par != document) {
@@ -1985,7 +1900,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * returned, not all previous siblings.
    */
   public GQuery prev() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Element next = getPreviousSiblingElement(e);
       if (next != null) {
@@ -2001,7 +1916,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * previous sibling is returned, not all previous siblings.
    */
   public GQuery prev(String... selectors) {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       Element next = getPreviousSiblingElement(e);
       if (next != null) {
@@ -2015,7 +1930,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Find all sibling elements in front of the current element.
    */
   public GQuery prevAll() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       allPreviousSiblingElements(getPreviousSiblingElement(e), result);
     }
@@ -2282,7 +2197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery show() {
     for (Element e : elements()) {
-      styleImpl.setStyleProperty(e, "display", GQUtils.or((String) data(e,
+      styleImpl.setStyleProperty(e, "display", JsUtils.or((String) data(e,
           "oldDisplay", null), ""));
       // When the display=none is in the stylesheet.
       if (!styleImpl.isVisible(e)) {
@@ -2297,7 +2212,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * matched set of elements.
    */
   public GQuery siblings() {
-    JSArray result = JSArray.create();
+    JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       allNextSiblingElements(e.getParentElement().getFirstChildElement(),
           result, e);
@@ -2324,7 +2239,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Selects a subset of the matched elements.
    */
   public GQuery slice(int start, int end) {
-    JSArray slice = JSArray.create();
+    JsNodeArray slice = JsNodeArray.create();
     if (end == -1 || end > elements.getLength()) {
       end = elements.getLength();
     }
@@ -2476,8 +2391,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove all duplicate elements from an array of elements. Note that this
    * only works on arrays of DOM elements, not strings or numbers.
    */
-  public JSArray unique(JSArray result) {
-    return GQUtils.unique(result.<JsArray<Element>> cast()).cast();
+  public JsNodeArray unique(JsNodeArray result) {
+    return JsUtils.unique(result.<JsArray<Element>> cast()).cast();
   }
 
   /**
@@ -2824,7 +2739,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return wrapInner($(html));
   }
 
-  protected GQuery pushStack(JSArray elts, String name, String selector) {
+  protected GQuery pushStack(JsNodeArray elts, String name, String selector) {
     GQuery g = new GQuery(elts);
     g.setPreviousObject(this);
     g.setSelector(selector);
@@ -2832,7 +2747,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allNextSiblingElements(Element firstChildElement,
-      JSArray result, Element elem) {
+      JsNodeArray result, Element elem) {
     while (firstChildElement != null) {
       if (firstChildElement != elem) {
         result.addNode(firstChildElement);
@@ -2842,7 +2757,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allPreviousSiblingElements(Element firstChildElement,
-      JSArray result) {
+      JsNodeArray result) {
     while (firstChildElement != null) {
       result.addNode(firstChildElement);
       firstChildElement = getPreviousSiblingElement(firstChildElement);
@@ -2862,7 +2777,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery domManip(GQuery g, int func, Element... elms) {
-    JSArray newNodes = JSArray.create();
+    JsNodeArray newNodes = JsNodeArray.create();
     if (elms.length == 0) {
       elms = elements();
     }
@@ -2921,8 +2836,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return sib;
   }-*/;
 
-  private JSArray merge(NodeList<Element> first, NodeList<Element> second) {
-    JSArray res = copyNodeList(first);
+  private JsNodeArray merge(NodeList<Element> first, NodeList<Element> second) {
+    JsNodeArray res = copyNodeList(first);
     for (int i = 0; i < second.getLength(); i++) {
       res.addNode(second.getItem(i));
     }

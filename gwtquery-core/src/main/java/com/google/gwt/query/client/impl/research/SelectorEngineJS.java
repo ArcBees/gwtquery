@@ -15,8 +15,8 @@
  */
 package com.google.gwt.query.client.impl.research;
 
-import static com.google.gwt.query.client.GQUtils.eq;
-import static com.google.gwt.query.client.GQUtils.truth;
+import static com.google.gwt.query.client.js.JsUtils.eq;
+import static com.google.gwt.query.client.js.JsUtils.truth;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -24,11 +24,12 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.GQUtils;
-import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.JSRegexp;
 import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsRegexp;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * Runtime selector engine implementation with no-XPath/native support based on
@@ -90,35 +91,35 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   protected static Sequence getSequence(String expression) {
     int start = 0, add = 2, max = -1, modVal = -1;
-    JSRegexp expressionRegExp = new JSRegexp(
+    JsRegexp expressionRegExp = new JsRegexp(
         "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
-    JSArray pseudoValue = expressionRegExp.exec(expression);
+    JsObjectArray<String> pseudoValue = expressionRegExp.exec(expression);
     if (!truth(pseudoValue)) {
       return null;
     } else {
-      if (truth(pseudoValue.getStr(2))) {        // odd or even
-        start = (eq(pseudoValue.getStr(2), "odd")) ? 1 : 2;
+      if (truth(pseudoValue.get(2))) {        // odd or even
+        start = (eq(pseudoValue.get(2), "odd")) ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
-      } else if (GQUtils
-          .truth(pseudoValue.getStr(3))) {        // single digit
-        start = Integer.parseInt(pseudoValue.getStr(3), 10);
+      } else if (JsUtils
+          .truth(pseudoValue.get(3))) {        // single digit
+        start = Integer.parseInt(pseudoValue.get(3), 10);
         add = 0;
         max = start;
-      } else if (truth(pseudoValue.getStr(4))) {        // an+b
-        add = truth(pseudoValue.getStr(6)) ? Integer
-            .parseInt(pseudoValue.getStr(6), 10) : 1;
-        start = truth(pseudoValue.getStr(7)) ? Integer.parseInt(
-            (pseudoValue.getStr(8).charAt(0) == '+' ? ""
-                : pseudoValue.getStr(8)) + pseudoValue.getStr(9), 10) : 0;
+      } else if (truth(pseudoValue.get(4))) {        // an+b
+        add = truth(pseudoValue.get(6)) ? Integer
+            .parseInt(pseudoValue.get(6), 10) : 1;
+        start = truth(pseudoValue.get(7)) ? Integer.parseInt(
+            (pseudoValue.get(8).charAt(0) == '+' ? ""
+                : pseudoValue.get(8)) + pseudoValue.get(9), 10) : 0;
         while (start < 1) {
           start += add;
         }
         modVal = (start > add) ? (start - add) % add
             : ((start == add) ? 0 : start);
-      } else if (truth(pseudoValue.getStr(10))) {        // -an+b
-        add = truth(pseudoValue.getStr(12)) ? Integer
-            .parseInt(pseudoValue.getStr(12), 10) : 1;
-        start = max = Integer.parseInt(pseudoValue.getStr(13), 10);
+      } else if (truth(pseudoValue.get(10))) {        // -an+b
+        add = truth(pseudoValue.get(12)) ? Integer
+            .parseInt(pseudoValue.get(12), 10) : 1;
+        start = max = Integer.parseInt(pseudoValue.get(13), 10);
         while (start > add) {
           start -= add;
         }
@@ -133,7 +134,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return s;
   }
 
-  public static void clearAdded(JSArray a) {
+  public static void clearAdded(JsNodeArray a) {
     for (int i = 0, len = a.size(); i < len; i++) {
       clearAdded(a.getNode(i));
     }
@@ -156,34 +157,34 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       prevRef.added = added;
     }-*/;
 
-  public static native void setSkipTag(JSArray prevElem, boolean skip) /*-{
+  public static native void setSkipTag(JsNodeArray prevElem, boolean skip) /*-{
       prevElem.skipTag = skip;
     }-*/;
 
   private static String attrToRegExp(String attrVal, String op) {
-    if (GQUtils.eq("^", op)) {
+    if (JsUtils.eq("^", op)) {
       return "^" + attrVal;
     }
-    if (GQUtils.eq("$", op)) {
+    if (JsUtils.eq("$", op)) {
       return attrVal + "$";
     }
-    if (GQUtils.eq("*", op)) {
+    if (JsUtils.eq("*", op)) {
       return attrVal;
     }
-    if (GQUtils.eq("|", op)) {
+    if (JsUtils.eq("|", op)) {
       return "(^" + attrVal + "(\\-\\w+)*$)";
     }
-    if (GQUtils.eq("~", op)) {
+    if (JsUtils.eq("~", op)) {
       return "\\b" + attrVal + "\\b";
     }
-    return GQUtils.truth(attrVal) ? "^" + attrVal + "$" : null;
+    return JsUtils.truth(attrVal) ? "^" + attrVal + "$" : null;
   }
 
   private static native boolean checked(Node previous) /*-{
     return previous.checked || false;
   }-*/;
 
-  private static void clearChildElms(JSArray prevParents) {
+  private static void clearChildElms(JsNodeArray prevParents) {
     for (int n = 0, nl = prevParents.size(); n < nl; n++) {
       setHasChildElms(prevParents.getNode(n), false);
     }
@@ -193,7 +194,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return !node.disabled;
   }-*/;
 
-  private static void getDescendantNodes(JSArray matchingElms,
+  private static void getDescendantNodes(JsNodeArray matchingElms,
       String nextTagStr, Node prevRef) {
     NodeList<Element> children = getElementsByTagName(nextTagStr, prevRef);
     for (int k = 0, klen = children.getLength(); k < klen; k++) {
@@ -211,12 +212,12 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return ((Element) ctx).getElementsByTagName(tag);
   }
 
-  private static void getGeneralSiblingNodes(JSArray matchingElms,
-      JSArray nextTag, JSRegexp nextRegExp, Node prevRef) {
+  private static void getGeneralSiblingNodes(JsNodeArray matchingElms,
+      JsObjectArray<String> nextTag, JsRegexp nextRegExp, Node prevRef) {
     while (
-        GQUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
+        JsUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
             && !isAdded(prevRef)) {
-      if (!GQUtils.truth(nextTag) || nextRegExp
+      if (!JsUtils.truth(nextTag) || nextRegExp
           .test(prevRef.getNodeName())) {
         setAdded(prevRef, true);
         matchingElms.addNode(prevRef);
@@ -224,14 +225,14 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private static void getSiblingNodes(JSArray matchingElms, JSArray nextTag,
-      JSRegexp nextRegExp, Node prevRef) {
+  private static void getSiblingNodes(JsNodeArray matchingElms, JsObjectArray<String> nextTag,
+      JsRegexp nextRegExp, Node prevRef) {
     while (
-        GQUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
+        JsUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
             && prevRef.getNodeType() != Node.ELEMENT_NODE) {
     }
-    if (GQUtils.truth(prevRef)) {
-      if (!GQUtils.truth(nextTag) || nextRegExp
+    if (JsUtils.truth(prevRef)) {
+      if (!JsUtils.truth(nextTag) || nextRegExp
           .test(prevRef.getNodeName())) {
         matchingElms.addNode(prevRef);
       }
@@ -242,7 +243,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       return prevParent.childElms || false;
     }-*/;
 
-  private static native boolean isSkipped(JSArray prevElem) /*-{
+  private static native boolean isSkipped(JsNodeArray prevElem) /*-{
        return prevElem.skipTag || false;
     }-*/;
 
@@ -250,8 +251,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       prevParent.childElms = bool ? bool : null;
     }-*/;
 
-  private static native JSArray subtractArray(JSArray previousMatch,
-      JSArray elementsByPseudo) /*-{
+  private static native JsNodeArray subtractArray(JsNodeArray previousMatch,
+      JsNodeArray elementsByPseudo) /*-{
       for (var i=0, src1; (src1=arr1[i]); i++) {
         var found = false;
         for (var j=0, src2; (src2=arr2[j]); j++) {
@@ -267,28 +268,28 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       return arr;
     }-*/;
 
-  private JSRegexp cssSelectorRegExp;
+  private JsRegexp cssSelectorRegExp;
 
-  private JSRegexp selectorSplitRegExp;
+  private JsRegexp selectorSplitRegExp;
 
-  private JSRegexp childOrSiblingRefRegExp;
+  private JsRegexp childOrSiblingRefRegExp;
 
   public SelectorEngineJS() {
-    selectorSplitRegExp = new JSRegexp("[^\\s]+", "g");
-    childOrSiblingRefRegExp = new JSRegexp("^(>|\\+|~)$");
-    cssSelectorRegExp = new JSRegexp(
+    selectorSplitRegExp = new JsRegexp("[^\\s]+", "g");
+    childOrSiblingRefRegExp = new JsRegexp("^(>|\\+|~)$");
+    cssSelectorRegExp = new JsRegexp(
         "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
   }
 
   public NodeList<Element> select(String sel, Node ctx) {
     String selectors[] = sel.replace("\\s*(,)\\s*", "$1").split(",");
     boolean identical = false;
-    JSArray elm = JSArray.create();
+    JsNodeArray elm = JsNodeArray.create();
     for (int a = 0, len = selectors.length; a < len; a++) {
       if (a > 0) {
         identical = false;
         for (int b = 0, bl = a; b < bl; b++) {
-          if (GQUtils.eq(selectors[a], selectors[b])) {
+          if (JsUtils.eq(selectors[a], selectors[b])) {
             identical = true;
             break;
           }
@@ -298,61 +299,61 @@ public class SelectorEngineJS extends SelectorEngineImpl {
         }
       }
       String currentRule = selectors[a];
-      JSArray cssSelectors = selectorSplitRegExp.match(currentRule);
-      JSArray prevElem = JSArray.create(ctx);
-      for (int i = 0, slen = cssSelectors.size(); i < slen; i++) {
-        JSArray matchingElms = JSArray.create();
-        String rule = cssSelectors.getStr(i);
+      JsObjectArray<String> cssSelectors = selectorSplitRegExp.match(currentRule);
+      JsNodeArray prevElem = JsNodeArray.create(ctx);
+      for (int i = 0, slen = cssSelectors.length(); i < slen; i++) {
+        JsNodeArray matchingElms = JsNodeArray.create();
+        String rule = cssSelectors.get(i);
         if (i > 0 && childOrSiblingRefRegExp.test(rule)) {
-          JSArray childOrSiblingRef = childOrSiblingRefRegExp.exec(rule);
-          if (GQUtils.truth(childOrSiblingRef)) {
-            JSArray nextTag = new JSRegexp("^\\w+")
-                .exec(cssSelectors.getStr(i + 1));
-            JSRegexp nextRegExp = null;
+          JsObjectArray<String> childOrSiblingRef = childOrSiblingRefRegExp.exec(rule);
+          if (JsUtils.truth(childOrSiblingRef)) {
+            JsObjectArray<String> nextTag = new JsRegexp("^\\w+")
+                .exec(cssSelectors.get(i + 1));
+            JsRegexp nextRegExp = null;
             String nextTagStr = null;
-            if (GQUtils.truth(nextTag)) {
-              nextTagStr = nextTag.getStr(0);
-              nextRegExp = new JSRegexp("(^|\\s)" + nextTagStr + "(\\s|$)", "i");
+            if (JsUtils.truth(nextTag)) {
+              nextTagStr = nextTag.get(0);
+              nextRegExp = new JsRegexp("(^|\\s)" + nextTagStr + "(\\s|$)", "i");
             }
             for (int j = 0, jlen = prevElem.size(); j < jlen; j++) {
               Node prevRef = prevElem.getNode(j);
-              String ref = childOrSiblingRef.getStr(0);
-              if (GQUtils.eq(">", ref)) {
+              String ref = childOrSiblingRef.get(0);
+              if (JsUtils.eq(">", ref)) {
                 getDescendantNodes(matchingElms, nextTagStr, prevRef);
-              } else if (GQUtils.eq("+", ref)) {
+              } else if (JsUtils.eq("+", ref)) {
                 getSiblingNodes(matchingElms, nextTag, nextRegExp, prevRef);
-              } else if (GQUtils.eq("~", ref)) {
+              } else if (JsUtils.eq("~", ref)) {
                 getGeneralSiblingNodes(matchingElms, nextTag, nextRegExp,
                     prevRef);
               }
             }
             prevElem = matchingElms;
             clearAdded(prevElem);
-            rule = cssSelectors.getStr(++i);
-            if (new JSRegexp("^\\w+$").test(rule)) {
+            rule = cssSelectors.get(++i);
+            if (new JsRegexp("^\\w+$").test(rule)) {
               continue;
             }
             setSkipTag(prevElem, true);
           }
         }
-        JSArray cssSelector = cssSelectorRegExp.exec(rule);
+        JsObjectArray<String> cssSelector = cssSelectorRegExp.exec(rule);
         SplitRule splitRule = new SplitRule(
-            !GQUtils.truth(cssSelector.getStr(1)) || GQUtils
-                .eq(cssSelector.getStr(3), "*") ? "*" : cssSelector.getStr(1),
-            !GQUtils.eq(cssSelector.getStr(3), "*") ? cssSelector
-                .getStr(2) : null, cssSelector.getStr(4), cssSelector.getStr(6),
-            cssSelector.getStr(10));
-        if (GQUtils.truth(splitRule.id)) {
+            !JsUtils.truth(cssSelector.get(1)) || JsUtils
+                .eq(cssSelector.get(3), "*") ? "*" : cssSelector.get(1),
+            !JsUtils.eq(cssSelector.get(3), "*") ? cssSelector
+                .get(2) : null, cssSelector.get(4), cssSelector.get(6),
+            cssSelector.get(10));
+        if (JsUtils.truth(splitRule.id)) {
           Element domelem = Document.get()
               .getElementById(splitRule.id.substring(1));
-          if (GQUtils.truth(domelem)) {
-            matchingElms = JSArray.create(domelem);
+          if (JsUtils.truth(domelem)) {
+            matchingElms = JsNodeArray.create(domelem);
           }
           prevElem = matchingElms;
-        } else if (GQUtils.truth(splitRule.tag) && !isSkipped(
+        } else if (JsUtils.truth(splitRule.tag) && !isSkipped(
             prevElem)) {
           if (i == 0 && matchingElms.size() == 0 && prevElem.size() == 1) {
-            prevElem = matchingElms = JSArray.create(
+            prevElem = matchingElms = JsNodeArray.create(
                 getElementsByTagName(splitRule.tag, prevElem.getNode(0)));
           } else {
             NodeList<Element> tagCollectionMatches;
@@ -376,20 +377,20 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             break;
           }
           setSkipTag(prevElem, false);
-          if (GQUtils.truth(splitRule.allClasses)) {
+          if (JsUtils.truth(splitRule.allClasses)) {
             String[] allClasses = splitRule.allClasses.replaceFirst("^\\.", "")
                 .split("\\.");
-            JSRegexp[] regExpClassNames = new JSRegexp[allClasses.length];
+            JsRegexp[] regExpClassNames = new JsRegexp[allClasses.length];
             for (int n = 0, nl = allClasses.length; n < nl; n++) {
-              regExpClassNames[n] = new JSRegexp(
+              regExpClassNames[n] = new JsRegexp(
                   "(^|\\s)" + allClasses[n] + "(\\s|$)");
             }
-            JSArray matchingClassElms = JSArray.create();
+            JsNodeArray matchingClassElms = JsNodeArray.create();
             for (int o = 0, olen = prevElem.size(); o < olen; o++) {
               Element current = prevElem.getElement(o);
               String elmClass = current.getClassName();
               boolean addElm = false;
-              if (GQUtils.truth(elmClass) && !isAdded(current)) {
+              if (JsUtils.truth(elmClass) && !isAdded(current)) {
                 for (int p = 0, pl = regExpClassNames.length; p < pl; p++) {
                   addElm = regExpClassNames[p].test(elmClass);
                   if (!addElm) {
@@ -405,27 +406,27 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             clearAdded(prevElem);
             prevElem = matchingElms = matchingClassElms;
           }
-          if (GQUtils.truth(splitRule.allAttr)) {
-            JSArray allAttr = JSRegexp
+          if (JsUtils.truth(splitRule.allAttr)) {
+            JsObjectArray<String> allAttr = JsRegexp
                 .match("\\[[^\\]]+\\]", "g", splitRule.allAttr);
-            JSRegexp[] regExpAttributes = new JSRegexp[allAttr.size()];
-            String[] regExpAttributesStr = new String[allAttr.size()];
-            JSRegexp attributeMatchRegExp = new JSRegexp(
+            JsRegexp[] regExpAttributes = new JsRegexp[allAttr.length()];
+            String[] regExpAttributesStr = new String[allAttr.length()];
+            JsRegexp attributeMatchRegExp = new JsRegexp(
                 "(\\w+)(\\^|\\$|\\*|\\||~)?=?[\"']?([\\w\u00C0-\uFFFF\\s\\-_\\.]+)?");
-            for (int q = 0, ql = allAttr.size(); q < ql; q++) {
-              JSArray attributeMatch = attributeMatchRegExp
-                  .exec(allAttr.getStr(q));
+            for (int q = 0, ql = allAttr.length(); q < ql; q++) {
+              JsObjectArray<String> attributeMatch = attributeMatchRegExp
+                  .exec(allAttr.get(q));
               String attributeValue =
-                  GQUtils.truth(attributeMatch.getStr(3))
-                      ? attributeMatch.getStr(3).replaceAll("\\.", "\\.")
+                  JsUtils.truth(attributeMatch.get(3))
+                      ? attributeMatch.get(3).replaceAll("\\.", "\\.")
                       : null;
               String attrVal = attrToRegExp(attributeValue,
-                  (GQUtils.or(attributeMatch.getStr(2), null)));
-              regExpAttributes[q] = (GQUtils.truth(attrVal) ? new JSRegexp(
+                  (JsUtils.or(attributeMatch.get(2), null)));
+              regExpAttributes[q] = (JsUtils.truth(attrVal) ? new JsRegexp(
                   attrVal) : null);
-              regExpAttributesStr[q] = attributeMatch.getStr(1);
+              regExpAttributesStr[q] = attributeMatch.get(1);
             }
-            JSArray matchingAttributeElms = JSArray.create();
+            JsNodeArray matchingAttributeElms = JsNodeArray.create();
 
             for (int r = 0, rlen = matchingElms.size(); r < rlen; r++) {
               Element current = matchingElms.getElement(r);
@@ -433,9 +434,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
               for (int s = 0, sl = regExpAttributes.length;
                   s < sl; s++) {
                 addElm = false;
-                JSRegexp attributeRegexp = regExpAttributes[s];
+                JsRegexp attributeRegexp = regExpAttributes[s];
                 String currentAttr = getAttr(current, regExpAttributesStr[s]);
-                if (GQUtils.truth(currentAttr)
+                if (JsUtils.truth(currentAttr)
                     && currentAttr.length() != 0) {
                   if (attributeRegexp == null || attributeRegexp
                       .test(currentAttr)) {
@@ -452,19 +453,19 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             }
             prevElem = matchingElms = matchingAttributeElms;
           }
-          if (GQUtils.truth(splitRule.allPseudos)) {
-            JSRegexp pseudoSplitRegExp = new JSRegexp(
+          if (JsUtils.truth(splitRule.allPseudos)) {
+            JsRegexp pseudoSplitRegExp = new JsRegexp(
                 ":(\\w[\\w\\-]*)(\\(([^\\)]+)\\))?");
 
-            JSArray allPseudos = JSRegexp
+            JsObjectArray<String> allPseudos = JsRegexp
                 .match("(:\\w+[\\w\\-]*)(\\([^\\)]+\\))?", "g",
                     splitRule.allPseudos);
-            for (int t = 0, tl = allPseudos.size(); t < tl; t++) {
-              JSArray pseudo = pseudoSplitRegExp.match(allPseudos.getStr(t));
-              String pseudoClass = GQUtils.truth(pseudo.getStr(1))
-                  ? pseudo.getStr(1).toLowerCase() : null;
-              String pseudoValue = GQUtils.truth(pseudo.getStr(3))
-                  ? pseudo.getStr(3) : null;
+            for (int t = 0, tl = allPseudos.length(); t < tl; t++) {
+              JsObjectArray<String> pseudo = pseudoSplitRegExp.match(allPseudos.get(t));
+              String pseudoClass = JsUtils.truth(pseudo.get(1))
+                  ? pseudo.get(1).toLowerCase() : null;
+              String pseudoValue = JsUtils.truth(pseudo.get(3))
+                  ? pseudo.get(3) : null;
               matchingElms = getElementsByPseudo(matchingElms, pseudoClass,
                   pseudoValue);
               clearAdded(matchingElms);
@@ -476,14 +477,14 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       elm.pushAll(prevElem);
     }
 
-    return GQUtils.unique(elm.<JsArray<Element>>cast()).cast();
+    return JsUtils.unique(elm.<JsArray<Element>>cast()).cast();
   }
 
   protected String getAttr(Element current, String name) {
     return current.getAttribute(name);
   }
 
-  private void getCheckedPseudo(JSArray previousMatch, JSArray matchingElms) {
+  private void getCheckedPseudo(JsNodeArray previousMatch, JsNodeArray matchingElms) {
     Node previous;
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
@@ -493,8 +494,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private void getContainsPseudo(JSArray previousMatch, String pseudoValue,
-      JSArray matchingElms) {
+  private void getContainsPseudo(JsNodeArray previousMatch, String pseudoValue,
+      JsNodeArray matchingElms) {
     Node previous;
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
@@ -507,19 +508,19 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private void getDefaultPseudo(JSArray previousMatch, String pseudoClass,
-      String pseudoValue, JSArray matchingElms) {
+  private void getDefaultPseudo(JsNodeArray previousMatch, String pseudoClass,
+      String pseudoValue, JsNodeArray matchingElms) {
     Node previous;
     for (int w = 0, wlen = previousMatch.size(); w < wlen; w++) {
       previous = previousMatch.getElement(w);
-      if (GQUtils
+      if (JsUtils
           .eq(((Element) previous).getAttribute(pseudoClass), pseudoValue)) {
         matchingElms.addNode(previous);
       }
     }
   }
 
-  private void getDisabledPseudo(JSArray previousMatch, JSArray matchingElms) {
+  private void getDisabledPseudo(JsNodeArray previousMatch, JsNodeArray matchingElms) {
     Node previous;
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
@@ -529,38 +530,38 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private JSArray getElementsByPseudo(JSArray previousMatch, String pseudoClass,
+  private JsNodeArray getElementsByPseudo(JsNodeArray previousMatch, String pseudoClass,
       String pseudoValue) {
-    JSArray prevParents = JSArray.create();
+    JsNodeArray prevParents = JsNodeArray.create();
     boolean previousDir = pseudoClass.startsWith("first") ? true : false;
-    JSArray matchingElms = JSArray.create();
-    if (GQUtils.eq("first-child", pseudoClass) || GQUtils
+    JsNodeArray matchingElms = JsNodeArray.create();
+    if (JsUtils.eq("first-child", pseudoClass) || JsUtils
         .eq("last-child", pseudoClass)) {
       getFirstChildPseudo(previousMatch, previousDir, matchingElms);
-    } else if (GQUtils.eq("only-child", pseudoClass)) {
+    } else if (JsUtils.eq("only-child", pseudoClass)) {
       getOnlyChildPseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("nth-child", pseudoClass)) {
+    } else if (JsUtils.eq("nth-child", pseudoClass)) {
       matchingElms = getNthChildPseudo(previousMatch, pseudoValue, prevParents,
           matchingElms);
-    } else if (GQUtils.eq("first-of-type", pseudoClass) || GQUtils
+    } else if (JsUtils.eq("first-of-type", pseudoClass) || JsUtils
         .eq("last-of-type", pseudoClass)) {
       getFirstOfTypePseudo(previousMatch, previousDir, matchingElms);
-    } else if (GQUtils.eq("only-of-type", pseudoClass)) {
+    } else if (JsUtils.eq("only-of-type", pseudoClass)) {
       getOnlyOfTypePseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("nth-of-type", pseudoClass)) {
+    } else if (JsUtils.eq("nth-of-type", pseudoClass)) {
       matchingElms = getNthOfTypePseudo(previousMatch, pseudoValue, prevParents,
           matchingElms);
-    } else if (GQUtils.eq("empty", pseudoClass)) {
+    } else if (JsUtils.eq("empty", pseudoClass)) {
       getEmptyPseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("enabled", pseudoClass)) {
+    } else if (JsUtils.eq("enabled", pseudoClass)) {
       getEnabledPseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("disabled", pseudoClass)) {
+    } else if (JsUtils.eq("disabled", pseudoClass)) {
       getDisabledPseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("checked", pseudoClass)) {
+    } else if (JsUtils.eq("checked", pseudoClass)) {
       getCheckedPseudo(previousMatch, matchingElms);
-    } else if (GQUtils.eq("contains", pseudoClass)) {
+    } else if (JsUtils.eq("contains", pseudoClass)) {
       getContainsPseudo(previousMatch, pseudoValue, matchingElms);
-    } else if (GQUtils.eq("not", pseudoClass)) {
+    } else if (JsUtils.eq("not", pseudoClass)) {
       matchingElms = getNotPseudo(previousMatch, pseudoValue, matchingElms);
     } else {
       getDefaultPseudo(previousMatch, pseudoClass, pseudoValue, matchingElms);
@@ -568,7 +569,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return matchingElms;
   }
 
-  private void getEmptyPseudo(JSArray previousMatch, JSArray matchingElms) {
+  private void getEmptyPseudo(JsNodeArray previousMatch, JsNodeArray matchingElms) {
     Node previous;
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
@@ -578,7 +579,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private void getEnabledPseudo(JSArray previousMatch, JSArray matchingElms) {
+  private void getEnabledPseudo(JsNodeArray previousMatch, JsNodeArray matchingElms) {
     Node previous;
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
@@ -588,31 +589,31 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private void getFirstChildPseudo(JSArray previousMatch, boolean previousDir,
-      JSArray matchingElms) {
+  private void getFirstChildPseudo(JsNodeArray previousMatch, boolean previousDir,
+      JsNodeArray matchingElms) {
     Node next;
     Node previous;
     for (int j = 0, jlen = previousMatch.size(); j < jlen; j++) {
       previous = next = previousMatch.getElement(j);
       if (previousDir) {
-        while (GQUtils
+        while (JsUtils
             .truth((next = SelectorEngine.getPreviousSibling(next)))
             && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       } else {
         while (
-            GQUtils.truth((next = SelectorEngine.getNextSibling(next)))
+            JsUtils.truth((next = SelectorEngine.getNextSibling(next)))
                 && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       }
-      if (!GQUtils.truth(next)) {
+      if (!JsUtils.truth(next)) {
         matchingElms.addNode(previous);
       }
     }
   }
 
-  private void getFirstOfTypePseudo(JSArray previousMatch, boolean previousDir,
-      JSArray matchingElms) {
+  private void getFirstOfTypePseudo(JsNodeArray previousMatch, boolean previousDir,
+      JsNodeArray matchingElms) {
     Node previous;
     Node next;
     for (int n = 0, nlen = previousMatch.size(); n < nlen; n++) {
@@ -620,63 +621,63 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
       if (previousDir) {
         while (
-            GQUtils.truth(next = SelectorEngine.getPreviousSibling(next))
-                && !GQUtils
+            JsUtils.truth(next = SelectorEngine.getPreviousSibling(next))
+                && !JsUtils
                 .eq(next.getNodeName(), previous.getNodeName())) {
         }
       } else {
-        while (GQUtils.truth(next = SelectorEngine.getNextSibling(next))
-            && !GQUtils.eq(next.getNodeName(), previous.getNodeName())) {
+        while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))
+            && !JsUtils.eq(next.getNodeName(), previous.getNodeName())) {
         }
       }
 
-      if (!GQUtils.truth(next)) {
+      if (!JsUtils.truth(next)) {
         matchingElms.addNode(previous);
       }
     }
   }
 
-  private JSArray getNotPseudo(JSArray previousMatch, String pseudoValue,
-      JSArray matchingElms) {
-    if (new JSRegexp("(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
+  private JsNodeArray getNotPseudo(JsNodeArray previousMatch, String pseudoValue,
+      JsNodeArray matchingElms) {
+    if (new JsRegexp("(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
       matchingElms = subtractArray(previousMatch,
           getElementsByPseudo(previousMatch, pseudoValue.substring(1), ""));
     } else {
       pseudoValue = pseudoValue
           .replace("^\\[#([\\w\\u00C0-\\uFFFF\\-\\_]+)\\]$", "[id=$1]");
-      JSArray notTag = new JSRegexp("^(\\w+)").exec(pseudoValue);
-      JSArray notClass = new JSRegexp("^\\.([\\w\u00C0-\uFFFF\\-_]+)")
+      JsObjectArray<String> notTag = new JsRegexp("^(\\w+)").exec(pseudoValue);
+      JsObjectArray<String> notClass = new JsRegexp("^\\.([\\w\u00C0-\uFFFF\\-_]+)")
           .exec(pseudoValue);
-      JSArray notAttr = new JSRegexp(
+      JsObjectArray<String> notAttr = new JsRegexp(
           "\\[(\\w+)(\\^|\\$|\\*|\\||~)?=?([\\w\\u00C0-\\uFFFF\\s\\-_\\.]+)?\\]")
           .exec(pseudoValue);
-      JSRegexp notRegExp = new JSRegexp("(^|\\s)"
-          + (GQUtils.truth(notTag) ? notTag.getStr(1)
-          : GQUtils.truth(notClass) ? notClass.getStr(1) : "")
+      JsRegexp notRegExp = new JsRegexp("(^|\\s)"
+          + (JsUtils.truth(notTag) ? notTag.get(1)
+          : JsUtils.truth(notClass) ? notClass.get(1) : "")
           + "(\\s|$)", "i");
-      if (GQUtils.truth(notAttr)) {
-        String notAttribute = GQUtils.truth(notAttr.getStr(3)) ? notAttr
-            .getStr(3).replace("\\.", "\\.") : null;
+      if (JsUtils.truth(notAttr)) {
+        String notAttribute = JsUtils.truth(notAttr.get(3)) ? notAttr
+            .get(3).replace("\\.", "\\.") : null;
         String notMatchingAttrVal = attrToRegExp(notAttribute,
-            notAttr.getStr(2));
-        notRegExp = new JSRegexp(notMatchingAttrVal, "i");
+            notAttr.get(2));
+        notRegExp = new JsRegexp(notMatchingAttrVal, "i");
       }
       for (int v = 0, vlen = previousMatch.size(); v < vlen; v++) {
         Element notElm = previousMatch.getElement(v);
         Element addElm = null;
-        if (GQUtils.truth(notTag) && !notRegExp
+        if (JsUtils.truth(notTag) && !notRegExp
             .test(notElm.getNodeName())) {
           addElm = notElm;
-        } else if (GQUtils.truth(notClass) && !notRegExp
+        } else if (JsUtils.truth(notClass) && !notRegExp
             .test(notElm.getClassName())) {
           addElm = notElm;
-        } else if (GQUtils.truth(notAttr)) {
-          String att = getAttr(notElm, notAttr.getStr(1));
-          if (!GQUtils.truth(att) || !notRegExp.test(att)) {
+        } else if (JsUtils.truth(notAttr)) {
+          String att = getAttr(notElm, notAttr.get(1));
+          if (!JsUtils.truth(att) || !notRegExp.test(att)) {
             addElm = notElm;
           }
         }
-        if (GQUtils.truth(addElm) && !isAdded(addElm)) {
+        if (JsUtils.truth(addElm) && !isAdded(addElm)) {
           setAdded(addElm, true);
           matchingElms.addNode(addElm);
         }
@@ -685,10 +686,10 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return matchingElms;
   }
 
-  private JSArray getNthChildPseudo(JSArray previousMatch, String pseudoValue,
-      JSArray prevParents, JSArray matchingElms) {
+  private JsNodeArray getNthChildPseudo(JsNodeArray previousMatch, String pseudoValue,
+      JsNodeArray prevParents, JsNodeArray matchingElms) {
     Node previous;
-    if (GQUtils.eq(pseudoValue, "n")) {
+    if (JsUtils.eq(pseudoValue, "n")) {
       matchingElms = previousMatch;
     } else {
       Sequence sequence = getSequence(pseudoValue);
@@ -704,7 +705,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
                 || iteratorNext <= sequence.max)) {
               if (childElm.getNodeType() == Node.ELEMENT_NODE) {
                 if (++childCount == iteratorNext) {
-                  if (GQUtils
+                  if (JsUtils
                       .eq(childElm.getNodeName(), previous.getNodeName())) {
                     matchingElms.addNode(childElm);
                   }
@@ -723,8 +724,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return matchingElms;
   }
 
-  private JSArray getNthOfTypePseudo(JSArray previousMatch, String pseudoValue,
-      JSArray prevParents, JSArray matchingElms) {
+  private JsNodeArray getNthOfTypePseudo(JsNodeArray previousMatch, String pseudoValue,
+      JsNodeArray prevParents, JsNodeArray matchingElms) {
     Node previous;
     if (pseudoValue.startsWith("n")) {
       matchingElms = previousMatch;
@@ -738,9 +739,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             int iteratorNext = sequence.start;
             int childCount = 0;
             Node childElm = prevParent.getFirstChild();
-            while (GQUtils.truth(childElm) && (sequence.max < 0
+            while (JsUtils.truth(childElm) && (sequence.max < 0
                 || iteratorNext <= sequence.max)) {
-              if (GQUtils
+              if (JsUtils
                   .eq(childElm.getNodeName(), previous.getNodeName())) {
                 if (++childCount == iteratorNext) {
                   matchingElms.addNode(childElm);
@@ -759,7 +760,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return matchingElms;
   }
 
-  private void getOnlyChildPseudo(JSArray previousMatch, JSArray matchingElms) {
+  private void getOnlyChildPseudo(JsNodeArray previousMatch, JsNodeArray matchingElms) {
     Node previous;
     Node next;
     Node prev;
@@ -769,13 +770,13 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       Node prevParent = previous.getParentNode();
       if (prevParent != kParent) {
         while (
-            GQUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
+            JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
                 && prev.getNodeType() != Node.ELEMENT_NODE) {
         }
-        while (GQUtils.truth(next = SelectorEngine.getNextSibling(next))
+        while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))
             && next.getNodeType() != Node.ELEMENT_NODE) {
         }
-        if (!GQUtils.truth(prev) && !GQUtils.truth(next)) {
+        if (!JsUtils.truth(prev) && !JsUtils.truth(next)) {
           matchingElms.addNode(previous);
         }
         kParent = prevParent;
@@ -783,8 +784,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private void getOnlyOfTypePseudo(JSArray previousMatch,
-      JSArray matchingElms) {
+  private void getOnlyOfTypePseudo(JsNodeArray previousMatch,
+      JsNodeArray matchingElms) {
     Node previous;
     Node next;
     Node prev;
@@ -794,14 +795,14 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       Node prevParent = previous.getParentNode();
       if (prevParent != oParent) {
         while (
-            GQUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
-                && !GQUtils
+            JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
+                && !JsUtils
                 .eq(prev.getNodeName(), previous.getNodeName())) {
         }
-        while (GQUtils.truth(next = SelectorEngine.getNextSibling(next))
-            && !GQUtils.eq(next.getNodeName(), previous.getNodeName())) {
+        while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))
+            && !JsUtils.eq(next.getNodeName(), previous.getNodeName())) {
         }
-        if (!GQUtils.truth(prev) && !GQUtils.truth(next)) {
+        if (!JsUtils.truth(prev) && !JsUtils.truth(next)) {
           matchingElms.addNode(previous);
         }
         oParent = prevParent;

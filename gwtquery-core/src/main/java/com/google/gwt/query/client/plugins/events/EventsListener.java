@@ -18,7 +18,7 @@ package com.google.gwt.query.client.plugins.events;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.JsObjectArray;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;

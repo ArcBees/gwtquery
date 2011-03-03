@@ -32,6 +32,7 @@ import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS;
 import com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt;
 import com.google.gwt.query.client.impl.research.SelectorEngineXPath;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -348,7 +349,7 @@ public class GQuerySelectorsTest extends GWTTestCase {
       a.push(a.get(i));
     }
     assertEquals(n * 2 , a.length());
-    a = GQUtils.unique(a);
+    a = JsUtils.unique(a);
     assertEquals(n, a.length());
   }
   

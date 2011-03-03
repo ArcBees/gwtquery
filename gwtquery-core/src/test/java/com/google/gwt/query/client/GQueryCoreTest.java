@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
 import java.util.List;
 
@@ -31,7 +32,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
-import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -688,7 +690,7 @@ public class GQueryCoreTest extends GWTTestCase {
   public void testUnique() {
     SelectorEngineImpl selSizz = new SelectorEngineSizzle();
     GQuery g = $(e).html("<div><p></p><p></p><span></span><p></p>");
-    JSArray a;
+    JsNodeArray a;
     a = selSizz.select("p", e).cast();
     assertEquals(3, a.getLength());
     a.addNode(a.getNode(0));
@@ -699,41 +701,41 @@ public class GQueryCoreTest extends GWTTestCase {
   }
   
   public void testUtilsEq() {
-    assertTrue(GQUtils.eq("a", "a"));
-    assertTrue(GQUtils.eq(true, true));
-    assertTrue(GQUtils.eq(45, 45));
-    assertTrue(GQUtils.eq(45d, 45f));
-    assertTrue(GQUtils.eq("", ""));
-    assertTrue(GQUtils.eq(0.45, 0.45));
-    assertTrue(GQUtils.eq(0.45d, 0.45d));
-    assertTrue(GQUtils.eq(0.45f, 0.45f));
+    assertTrue(JsUtils.eq("a", "a"));
+    assertTrue(JsUtils.eq(true, true));
+    assertTrue(JsUtils.eq(45, 45));
+    assertTrue(JsUtils.eq(45d, 45f));
+    assertTrue(JsUtils.eq("", ""));
+    assertTrue(JsUtils.eq(0.45, 0.45));
+    assertTrue(JsUtils.eq(0.45d, 0.45d));
+    assertTrue(JsUtils.eq(0.45f, 0.45f));
     
-    assertFalse(GQUtils.eq("a", ""));
-    assertFalse(GQUtils.eq(true, false));
-    assertFalse(GQUtils.eq(45, 42));
-    assertFalse(GQUtils.eq("", null));
-    assertFalse(GQUtils.eq(0.45, 0.451));
+    assertFalse(JsUtils.eq("a", ""));
+    assertFalse(JsUtils.eq(true, false));
+    assertFalse(JsUtils.eq(45, 42));
+    assertFalse(JsUtils.eq("", null));
+    assertFalse(JsUtils.eq(0.45, 0.451));
     
 //    assertEquals("a", GQUtils.or("a", ""));
   }
   
   public void testUtilsTruth() {
-    assertTrue(GQUtils.truth("a"));
-    assertTrue(GQUtils.truth(this));
-    assertTrue(GQUtils.truth(45));
-    assertTrue(GQUtils.truth(0.33));
-    assertTrue(GQUtils.truth(45l));
-    assertTrue(GQUtils.truth(45d));
-    assertTrue(GQUtils.truth(45f));
-    assertTrue(GQUtils.truth(0.33f));
+    assertTrue(JsUtils.truth("a"));
+    assertTrue(JsUtils.truth(this));
+    assertTrue(JsUtils.truth(45));
+    assertTrue(JsUtils.truth(0.33));
+    assertTrue(JsUtils.truth(45l));
+    assertTrue(JsUtils.truth(45d));
+    assertTrue(JsUtils.truth(45f));
+    assertTrue(JsUtils.truth(0.33f));
 
-    assertFalse(GQUtils.truth(0));
-    assertFalse(GQUtils.truth(0l));
-    assertFalse(GQUtils.truth(0d));
-    assertFalse(GQUtils.truth(00.00d));
-    assertFalse(GQUtils.truth(00.00f));
-    assertFalse(GQUtils.truth(null));
-    assertFalse(GQUtils.truth(""));
+    assertFalse(JsUtils.truth(0));
+    assertFalse(JsUtils.truth(0l));
+    assertFalse(JsUtils.truth(0d));
+    assertFalse(JsUtils.truth(00.00d));
+    assertFalse(JsUtils.truth(00.00f));
+    assertFalse(JsUtils.truth(null));
+    assertFalse(JsUtils.truth(""));
   }
   
   public void testWidthHeight() {
@@ -792,10 +794,10 @@ public class GQueryCoreTest extends GWTTestCase {
     RootPanel.get().add(b1);
     
     GQuery g = $(b1);
-    Button b2 = (Button) g.widget();
+    Button b2 = g.widget();
     assertEquals(b1, b2);
     
-    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets.Widgets).button();
+    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).button();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");

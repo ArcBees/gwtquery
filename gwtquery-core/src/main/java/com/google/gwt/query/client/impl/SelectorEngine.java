@@ -20,7 +20,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.JSArray;
+import com.google.gwt.query.client.js.JsNodeArray;
 
 /**
  * Core Selector engine functions, and native JS utility functions.
@@ -57,11 +57,11 @@ public class SelectorEngine {
   }-*/;
 
   public static NodeList<Element> xpathEvaluate(String selector, Node ctx) {
-    return xpathEvaluate(selector, ctx, JSArray.create());
+    return xpathEvaluate(selector, ctx, JsNodeArray.create());
   }
 
   public static native NodeList<Element> xpathEvaluate(String selector,
-      Node ctx, JSArray r) /*-{
+      Node ctx, JsNodeArray r) /*-{
       var node;
       var ownerDoc = ctx && (ctx.ownerDocument || ctx );
       var evalDoc = ownerDoc ? ownerDoc : $doc;
@@ -95,8 +95,8 @@ public class SelectorEngine {
     this.root = root;
   }
   
-  protected JSArray veryQuickId(Node context, String id) {
-    JSArray r = JSArray.create();
+  protected JsNodeArray veryQuickId(Node context, String id) {
+    JsNodeArray r = JsNodeArray.create();
     if (context.getNodeType() == Node.DOCUMENT_NODE) {
       r.addNode(((Document) context).getElementById(id));
       return r;

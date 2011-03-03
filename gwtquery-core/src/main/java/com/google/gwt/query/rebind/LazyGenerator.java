@@ -179,7 +179,7 @@ public class LazyGenerator extends Generator {
     composerFactory.addImport("com.google.gwt.dom.client.Element");
     composerFactory.addImport("com.google.gwt.user.client.Event");
     composerFactory.addImport("com.google.gwt.query.client.Function");
-    composerFactory.addImport("com.google.gwt.query.client.JsClosure");
+    composerFactory.addImport("com.google.gwt.query.client.js.JsClosure");
 
     for (String interfaceName : interfaceNames) {
       composerFactory.addImplementedInterface(interfaceName);

@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.GQUtils;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * A helper class to get computed CSS styles for elements.
@@ -118,7 +118,7 @@ public class DocumentStyleImpl {
   
   public double getOpacity(Element e) {
     String o = e.getStyle().getOpacity();
-    return GQUtils.truth(o) ? num(o) : 1;
+    return JsUtils.truth(o) ? num(o) : 1;
   }
   
   public int getWidth(Element e) {
@@ -134,7 +134,7 @@ public class DocumentStyleImpl {
 
   public double num(String val) {
     val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
-    return GQUtils.truth(val) ? Double.parseDouble(val) : 0;
+    return JsUtils.truth(val) ? Double.parseDouble(val) : 0;
   }
 
   /**

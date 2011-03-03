@@ -13,22 +13,38 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-/**
- * Overlay type representing a Javascript closure.
- */
-public class JsClosure extends JavaScriptObject {
 
-  protected JsClosure() {
+/**
+ * Lightweight JSO backed implemented of a Map, using Object.hashCode() as key.
+ */
+final public class JsMap<S, T> extends JavaScriptObject {
+  
+  protected JsMap() {
+  }
+  
+  private JsCache c() {
+    return cast();
   }
 
-  /**
-   * Invoke the closure with no arguments and expecting no return value.
-   */
-  public final native void invoke() /*-{
-     return this();
-  }-*/;
+  @SuppressWarnings("unchecked")
+  public T get(int hashCode) {
+    return (T)c().get(hashCode);
+  }
+
+  public T get(S key) {
+    return get(key.hashCode());
+  }
+
+  public int length() {
+    return c().length();
+  }
+  
+  public void put(S key, T val) {
+    c().put(key.hashCode(), val);
+  }
+
 }

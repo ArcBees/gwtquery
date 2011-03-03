@@ -21,8 +21,8 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.GQUtils;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * Pure Javascript Selector Engine Gwt Implementation based on
@@ -734,6 +734,6 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
   
   public NodeList<Element> select(String selector, Node context) {
     JsArray<Element> results = JavaScriptObject.createArray().cast();
-    return  GQUtils.unique(select(selector, context, results, null)).cast();
+    return  JsUtils.unique(select(selector, context, results, null)).cast();
   }
 }

@@ -14,44 +14,18 @@
  * the License.
  */
 package com.google.gwt.query.client;
-import static com.google.gwt.query.client.plugins.Effects.Effects;
-import static com.google.gwt.query.client.plugins.Events.Events;
-import static com.google.gwt.query.client.plugins.Widgets.Widgets;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
-import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.SelectorEngine;
-import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
 
@@ -154,16 +128,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Convert to Plugin interface provided by Class literal.
    */
   <T extends GQuery> T as(Class<T> plugin);
-
-  /**
-   * Return a GWT Widget containing the first matched element.
-   * 
-   * If the element is already associated to a widget it returns the original
-   * widget, otherwise a new GWT widget will be created depending on the
-   * tagName.
-   * 
-   */
-  // Widget asWidget();
 
   /**
    * Set a key/value object as properties to all matched elements.
@@ -1181,7 +1145,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Remove all duplicate elements from an array of elements. Note that this
    * only works on arrays of DOM elements, not strings or numbers.
    */
-  JSArray unique(JSArray result);
+  JsNodeArray unique(JsNodeArray result);
 
   /**
    * Gets the content of the value attribute of the first matched element,

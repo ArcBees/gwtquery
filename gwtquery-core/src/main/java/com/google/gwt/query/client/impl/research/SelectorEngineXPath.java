@@ -15,20 +15,21 @@
  */
 package com.google.gwt.query.client.impl.research;
 
-import static com.google.gwt.query.client.GQUtils.eq;
-import static com.google.gwt.query.client.GQUtils.truth;
+import static com.google.gwt.query.client.js.JsUtils.eq;
+import static com.google.gwt.query.client.js.JsUtils.truth;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.query.client.GQUtils;
-import com.google.gwt.query.client.JSArray;
-import com.google.gwt.query.client.JSRegexp;
 import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS.Sequence;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS.SplitRule;
+import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsRegexp;
+import com.google.gwt.query.client.js.JsUtils;
 
 
 /**
@@ -59,11 +60,11 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     return "@" + p1 + (truth(p3) ? "='" + p3 + "'" : "");
   }
 
-  private JSRegexp cssSelectorRegExp;
+  private JsRegexp cssSelectorRegExp;
 
-  private JSRegexp selectorSplitRegExp;
+  private JsRegexp selectorSplitRegExp;
 
-  private JSRegexp combinator;
+  private JsRegexp combinator;
   
   public SelectorEngineXPath() {
   }
@@ -72,7 +73,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     init();
     String selectors[] = sel.replaceAll("\\s*(,)\\s*", "$1").split(",");
     boolean identical = false;
-    JSArray elm = JSArray.create();
+    JsNodeArray elm = JsNodeArray.create();
     for (int a = 0, len = selectors.length; a < len; a++) {
       if (a > 0) {
         identical = false;
@@ -87,17 +88,17 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
         }
       }
       String currentRule = selectors[a];
-      JSArray cssSelectors = selectorSplitRegExp.match(currentRule);
+      JsObjectArray<String> cssSelectors = selectorSplitRegExp.match(currentRule);
       String xPathExpression = ".";
-      for (int i = 0, slen = cssSelectors.size(); i < slen; i++) {
-        String rule = cssSelectors.getStr(i);
-        JSArray cssSelector = cssSelectorRegExp.exec(rule);
+      for (int i = 0, slen = cssSelectors.length(); i < slen; i++) {
+        String rule = cssSelectors.get(i);
+        JsObjectArray<String> cssSelector = cssSelectorRegExp.exec(rule);
         SplitRule splitRule = new SplitRule(
-            !truth(cssSelector.getStr(1)) || eq(cssSelector.getStr(3), "*")
-                ? "*" : cssSelector.getStr(1),
-            !eq(cssSelector.getStr(3), "*") ? cssSelector.getStr(2) : null,
-            cssSelector.getStr(4), cssSelector.getStr(6),
-            cssSelector.getStr(10), cssSelector.getStr(22));
+            !truth(cssSelector.get(1)) || eq(cssSelector.get(3), "*")
+                ? "*" : cssSelector.get(1),
+            !eq(cssSelector.get(3), "*") ? cssSelector.get(2) : null,
+            cssSelector.get(4), cssSelector.get(6),
+            cssSelector.get(10), cssSelector.get(22));
         if (truth(splitRule.tagRelation)) {
           if (eq(">", splitRule.tagRelation)) {
             xPathExpression += "/child::";
@@ -108,7 +109,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
           }
         } else {
           xPathExpression +=
-              (i > 0 && combinator.test(cssSelectors.getStr(i - 1)))
+              (i > 0 && combinator.test(cssSelectors.get(i - 1)))
                   ? splitRule.tag : ("/descendant::" + splitRule.tag);
         }
         if (truth(splitRule.id)) {
@@ -122,19 +123,19 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
         }
         if (truth(splitRule.allAttr)) {
           xPathExpression += replaceAttr(
-              GQUtils.or(splitRule.allAttr, ""));
+              JsUtils.or(splitRule.allAttr, ""));
         }
         if (truth(splitRule.allPseudos)) {
-          JSRegexp pseudoSplitRegExp = new JSRegexp(
+          JsRegexp pseudoSplitRegExp = new JsRegexp(
               ":(\\w[\\w\\-]*)(\\(([^\\)]+)\\))?");
-          JSRegexp pseudoMatchRegExp = new JSRegexp(
+          JsRegexp pseudoMatchRegExp = new JsRegexp(
               "(:\\w+[\\w\\-]*)(\\([^\\)]+\\))?", "g");
-          JSArray allPseudos = pseudoMatchRegExp.match(splitRule.allPseudos);
-          for (int k = 0, kl = allPseudos.size(); k < kl; k++) {
-            JSArray pseudo = pseudoSplitRegExp.match(allPseudos.getStr(k));
-            String pseudoClass = truth(pseudo.getStr(1)) ? pseudo.getStr(1)
+          JsObjectArray<String> allPseudos = pseudoMatchRegExp.match(splitRule.allPseudos);
+          for (int k = 0, kl = allPseudos.length(); k < kl; k++) {
+            JsObjectArray<String> pseudo = pseudoSplitRegExp.match(allPseudos.get(k));
+            String pseudoClass = truth(pseudo.get(1)) ? pseudo.get(1)
                 .toLowerCase() : null;
-            String pseudoValue = truth(pseudo.getStr(3)) ? pseudo.getStr(3)
+            String pseudoValue = truth(pseudo.get(3)) ? pseudo.get(3)
                 : null;
             String xpath = pseudoToXPath(splitRule.tag, pseudoClass,
                 pseudoValue);
@@ -146,15 +147,15 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
       }
       SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm);
     }
-    return GQUtils.unique(elm.<JsArray<Element>>cast()).cast();
+    return JsUtils.unique(elm.<JsArray<Element>>cast()).cast();
   }
 
   private void init() {
     if (cssSelectorRegExp == null) {
-      cssSelectorRegExp = new JSRegexp(
+      cssSelectorRegExp = new JsRegexp(
           "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?(>|\\+|~)?");
-      selectorSplitRegExp = new JSRegexp("[^\\s]+", "g");
-      combinator = new JSRegexp("(>|\\+|~)");
+      selectorSplitRegExp = new JsRegexp("[^\\s]+", "g");
+      combinator = new JsRegexp("(>|\\+|~)");
     }
   }
 
@@ -215,7 +216,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     } else if (eq("checked", pseudoClass)) {
       xpath = "@checked='checked'"; // Doesn't work in Opera 9.24
     } else if (eq("not", pseudoClass)) {
-      if (new JSRegexp("^(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
+      if (new JsRegexp("^(:\\w+[\\w\\-]*)$").test(pseudoValue)) {
         xpath = "not(" + pseudoToXPath(tag, pseudoValue.substring(1), "") + ")";
       } else {
 

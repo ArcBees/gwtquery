@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * A wrapper around Javascript Regexps.
  */
-public class JSRegexp {
+public class JsRegexp {
 
   public static native JavaScriptObject compile(String pat) /*-{
      return new RegExp(pat);
@@ -30,29 +30,29 @@ public class JSRegexp {
      return new RegExp(pat, flags);
   }-*/;
 
-  public static JSArray match(String regexp, String flags, String string) {
-    return new JSRegexp(regexp, flags).match(string);
+  public static JsObjectArray<String> match(String regexp, String flags, String string) {
+    return new JsRegexp(regexp, flags).match(string);
   }
 
-  private static native JSArray exec0(JavaScriptObject regexp, String str) /*-{
+  private static native JsObjectArray<String> exec0(JavaScriptObject regexp, String str) /*-{
     return regexp.exec(str);
   }-*/;
 
   private final JavaScriptObject regexp;
 
-  public JSRegexp(String pattern) {
+  public JsRegexp(String pattern) {
     this.regexp = compile(pattern);
   }
 
-  public JSRegexp(String pat, String flags) {
+  public JsRegexp(String pat, String flags) {
     this.regexp = compileFlags(pat, flags);
   }
 
-  public JSArray exec(String str) {
+  public JsObjectArray<String> exec(String str) {
     return exec0(regexp, str);
   }
 
-  public JSArray match(String currentRule) {
+  public JsObjectArray<String> match(String currentRule) {
     return match0(regexp, currentRule);
   }
 
@@ -60,11 +60,15 @@ public class JSRegexp {
     return test0(regexp, rule);
   }
 
-  private native JSArray match0(JavaScriptObject regexp, String currentRule)/*-{
+  private native JsObjectArray<String> match0(JavaScriptObject regexp, String currentRule)/*-{
     return currentRule.match(regexp);
   }-*/;
 
   private native boolean test0(JavaScriptObject regexp, String rule) /*-{
     return regexp.test(rule);
   }-*/;
+  
+  public String getPattern(){
+    return regexp.toString();
+  };
 }

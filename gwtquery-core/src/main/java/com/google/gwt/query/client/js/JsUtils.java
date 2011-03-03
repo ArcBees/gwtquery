@@ -13,13 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client;
+package com.google.gwt.query.client.js;
 
 import java.util.HashSet;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 
 /**
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.DOM;
  * These methods could be moved to $ class, but the class
  * doesn't work right now.
  */
-public class GQUtils {
+public class JsUtils {
 
   /**
    * Use the method in the gquery class $(elem).cur(prop, force);
