@@ -14,18 +14,47 @@
  * the License.
  */
 package com.google.gwt.query.client;
+import static com.google.gwt.query.client.plugins.Effects.Effects;
+import static com.google.gwt.query.client.plugins.Events.Events;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
+import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.SelectorEngine;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
 
@@ -926,25 +955,25 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> removeData(String name);
 
   /**
-   * Replaces the elements matched by the specified selector with the matched
+   * Replaces the element <code>elem</code> by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
   LazyGQuery<T> replaceAll(Element elem);
 
   /**
-   * Replaces the elements matched by the specified selector with the matched
+   * Replaces the elements matched by the target with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
-  LazyGQuery<T> replaceAll(GQuery query);
+  LazyGQuery<T> replaceAll(GQuery target);
 
   /**
    * Replaces the elements matched by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
-  LazyGQuery<T> replaceAll(String html);
+  LazyGQuery<T> replaceAll(String selector);
 
   /**
    * Replaces all matched elements with the specified HTML or DOM elements. This

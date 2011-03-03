@@ -1984,7 +1984,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Replaces the elements matched by the specified selector with the matched
+   * Replaces the element <code>elem</code> by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
@@ -1993,13 +1993,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Replaces the elements matched by the specified selector with the matched
+   * Replaces the elements matched by the target with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
-  public GQuery replaceAll(GQuery query) {
-    for (Element e : elements()) {
-      $(e).replaceWith(query);
+  public GQuery replaceAll(GQuery target) {
+    for (Element e : target.elements()) {
+      $(e).replaceWith(this);
     }
     return this;
   }
@@ -2009,8 +2009,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
    */
-  public GQuery replaceAll(String html) {
-    return replaceAll($(html));
+  public GQuery replaceAll(String selector) {
+    return replaceAll($(selector));
   }
 
   /**
