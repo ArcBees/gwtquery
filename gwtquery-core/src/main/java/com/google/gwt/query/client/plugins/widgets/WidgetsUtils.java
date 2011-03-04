@@ -2,6 +2,7 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
 
@@ -37,8 +38,22 @@ public class WidgetsUtils {
    */
    static void replace(Element oldElement, Element newElement) {
     assert oldElement != null && newElement != null;
-    
     GQuery.$(oldElement).replaceWith(newElement);
 
-  }
+    String c = oldElement.getClassName();
+    if (!c.isEmpty()) {
+      newElement.addClassName(c);
+    }
+   }
+   
+   static void replace(Element e, Widget widget)  {
+     assert e != null && widget != null;
+     replace(e, widget.getElement());
+
+     if (widget instanceof Attachable) {
+       ((Attachable)widget).attach();
+     }
+   }
+
+   
 }

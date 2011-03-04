@@ -15,22 +15,25 @@
  */
 package com.google.gwt.query.client.plugins;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
-import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.datepicker.client.DateBox;
 
 /**
  * Widgets plugin for Gwt Query. Be careful, this plugin is still experimental.
@@ -111,6 +114,20 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
+   * Create a {@link DateBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link Button}
+   * created by passing them in parameter.
+   */
+  public Widgets datebox(Function... initFunctions) {
+    return widgets(new DateBoxWidgetFactory(), initFunctions);
+  }
+  
+  public Widgets richtext(Function... initFunctions) {
+    return widgets(new RichTextWidgetFactory(), initFunctions);
+  }
+
+
+  /**
    * Create an return a {@link TextBox} widget with the first element of the
    * query.The <code>initFunctions</code> will be called on the new
    * {@link TextBox} created by passing it in parameter.
@@ -150,13 +167,13 @@ public class Widgets extends QueuePlugin<Widgets> {
    */
   public <W extends Widget> Widgets widgets(WidgetFactory<W> factory,
       Function... initFunctions) {
-
     List<Element> result = new ArrayList<Element>();
-
     for (Element e : elements()) {
-      result.add(widget(e, factory, initFunctions).getElement());
+      W w = widget(e, factory, initFunctions);
+      if (w != null) {
+        result.add(w.getElement());
+      }
     }
-
     return $(result).as(Widgets);
   }
 
@@ -177,5 +194,6 @@ public class Widgets extends QueuePlugin<Widgets> {
     return widget;
 
   }
+
 
 }

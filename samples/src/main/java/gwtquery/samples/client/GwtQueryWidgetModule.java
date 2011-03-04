@@ -25,7 +25,9 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.DateBox;
 
 public class GwtQueryWidgetModule implements EntryPoint {
 
@@ -55,9 +57,13 @@ public class GwtQueryWidgetModule implements EntryPoint {
     });
 
     $("#tabs").as(Widgets).tabPanel();
-    
-    
 
+    DateBox b = $(".date").as(Widgets).datebox().widget();
+    System.out.println(b);
+    
+    RichTextArea a = $(".editable").as(Widgets).richtext().widget(0);
+    System.out.println(a);
+    
   }
 
 }
