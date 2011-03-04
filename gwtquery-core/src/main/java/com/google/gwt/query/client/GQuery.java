@@ -18,11 +18,6 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -37,9 +32,9 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -57,6 +52,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -114,7 +114,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static final String OLD_DATA_PREFIX = "old-";
 
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
-  
+
   private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
 
   private static Element windowData = null;
@@ -126,7 +126,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(JsNodeArray.create());
   }
 
- 
   /**
    * Wrap a GQuery around an existing element.
    */
@@ -155,24 +154,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static GQuery $(NodeList<Element> elements) {
     return new GQuery(elements);
   }
-  
+
   /**
-   * Create a new GQuery given a list of nodes, elements or widgets 
+   * Create a new GQuery given a list of nodes, elements or widgets
    */
   public static GQuery $(List<?> nodesOrWidgets) {
     JsNodeArray elements = JsNodeArray.create();
     if (nodesOrWidgets != null) {
-      for (Object o : nodesOrWidgets ) {
+      for (Object o : nodesOrWidgets) {
         if (o instanceof Node) {
-          elements.addNode((Node)o);
+          elements.addNode((Node) o);
         } else if (o instanceof Widget) {
-          elements.addNode(((Widget)o).getElement());
+          elements.addNode(((Widget) o).getElement());
         }
       }
     }
     return new GQuery(elements);
   }
-
 
   /**
    * This function accepts a string containing a CSS selector which is then used
@@ -268,7 +266,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Wrap a GQuery around one widget or an array of existing ones.
    */
-  public static GQuery $(Widget... widgets){
+  public static GQuery $(Widget... widgets) {
     return $(Arrays.asList(widgets));
   }
 
@@ -853,6 +851,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    * 
    * ex :
+   * 
    * <pre class="code">
    * $("#myDiv").css(CSS.TOP.with(Length.cm(15)));
    * $("#myDiv").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""),
@@ -878,6 +877,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * matched elements.
    * 
    * Example:
+   * 
    * <pre class="code">
    *  $(".item").css(Properties.create("color: 'red', background:'blue'"))
    * </pre>
@@ -1986,60 +1986,82 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Replaces the element <code>elem</code> by the specified selector with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
+   * Replaces the element <code>elem</code> by the specified selector with the
+   * matched elements. This function is the complement to replaceWith() which
+   * does the same task with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   public GQuery replaceAll(Element elem) {
     return replaceAll($(elem));
   }
 
   /**
-   * Replaces the elements matched by the target with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
+   * Replaces the elements matched by the target with the selected elements.
+   * This function is the complement to replaceWith() which does the same task
+   * with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   public GQuery replaceAll(GQuery target) {
-    for (Element e : target.elements()) {
-      $(e).replaceWith(this);
+    // if there is only one element and it is not attached to the dom, we have
+    // to clone it to be reused on each element of target (if target contains
+    // more than one element)
+    boolean mustBeCloned = length() == 1
+        && parents().filter("body").length() == 0;
+
+    List<Element> newElements = new ArrayList<Element>();
+    for (int i = 0; i < target.elements().length; i++) {
+      GQuery _this = (i > 0 && mustBeCloned) ? this.clone() : this;
+      $(target.get(i)).replaceWith(_this);
+
+      newElements.addAll(Arrays.asList(_this.elements()));
+
     }
-    return this;
+    return $(newElements);
   }
 
   /**
    * Replaces the elements matched by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   public GQuery replaceAll(String selector) {
     return replaceAll($(selector));
   }
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with the specified element.
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
   public GQuery replaceWith(Element elem) {
     return replaceWith($(elem));
   }
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with elements selected by <code>target</code>
+   * .
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
-  public GQuery replaceWith(GQuery query) {
-    return after(query).remove();
+  public GQuery replaceWith(GQuery target) {
+    return after(target).remove();
+
   }
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with the specified HTML.
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
   public GQuery replaceWith(String html) {
-    return replaceWith($(html));
+    return after(html).remove();
   }
 
   /**
@@ -2531,7 +2553,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <W extends Widget> W widget() {
-    return (W)widget(0);
+    return (W) widget(0);
   }
 
   /**
@@ -2796,7 +2818,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       elms = elements();
     }
     for (Element e : elms) {
-      e.getOwnerDocument();
+      // e.getOwnerDocument();
       if (e.getNodeType() == Node.DOCUMENT_NODE) {
         e = e.<Document> cast().getBody();
       }
@@ -2840,6 +2862,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
       domManip(g.clone(), func, e);
     }
+
     return this;
   }
 

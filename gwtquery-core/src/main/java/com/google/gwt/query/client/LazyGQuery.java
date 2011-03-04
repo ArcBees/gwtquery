@@ -16,10 +16,6 @@
 package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -34,9 +30,9 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -54,6 +50,10 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
@@ -277,6 +277,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * 
    * 
    * ex :
+   * 
    * <pre class="code">
    * $("#myDiv").css(CSS.TOP.with(Length.cm(15)));
    * $("#myDiv").css(CSS.BACKGROUND.with(RGBColor.SILVER, ImageValue.url(""),
@@ -295,6 +296,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * matched elements.
    * 
    * Example:
+   * 
    * <pre class="code">
    *  $(".item").css(Properties.create("color: 'red', background:'blue'"))
    * </pre>
@@ -955,16 +957,20 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> removeData(String name);
 
   /**
-   * Replaces the element <code>elem</code> by the specified selector with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
+   * Replaces the element <code>elem</code> by the specified selector with the
+   * matched elements. This function is the complement to replaceWith() which
+   * does the same task with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   LazyGQuery<T> replaceAll(Element elem);
 
   /**
-   * Replaces the elements matched by the target with the matched
-   * elements. This function is the complement to replaceWith() which does the
-   * same task with the parameters reversed.
+   * Replaces the elements matched by the target with the selected elements.
+   * This function is the complement to replaceWith() which does the same task
+   * with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   LazyGQuery<T> replaceAll(GQuery target);
 
@@ -972,27 +978,33 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Replaces the elements matched by the specified selector with the matched
    * elements. This function is the complement to replaceWith() which does the
    * same task with the parameters reversed.
+   * 
+   * @return a {@link GQuery} object containing the new elements.
    */
   LazyGQuery<T> replaceAll(String selector);
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with the specified element.
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
   LazyGQuery<T> replaceWith(Element elem);
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with elements selected by <code>target</code>
+   * .
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
-  LazyGQuery<T> replaceWith(GQuery query);
+  LazyGQuery<T> replaceWith(GQuery target);
 
   /**
-   * Replaces all matched elements with the specified HTML or DOM elements. This
-   * returns the GQuery element that was just replaced, which has been removed
-   * from the DOM.
+   * Replaces all matched elements with the specified HTML.
+   * 
+   * @return the GQuery element that was just replaced, which has been removed
+   *         from the DOM and not the new element that has replaced it.
    */
   LazyGQuery<T> replaceWith(String html);
 

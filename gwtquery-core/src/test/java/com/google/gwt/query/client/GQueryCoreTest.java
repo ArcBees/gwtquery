@@ -20,16 +20,14 @@ import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
-import java.util.List;
-
-import junit.framework.Assert;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.js.JsNodeArray;
@@ -40,6 +38,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
+
+import junit.framework.Assert;
+
+import java.util.List;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -56,19 +58,17 @@ public class GQueryCoreTest extends GWTTestCase {
 
   protected static String iExplorerFixHtml(Object s) {
     // IE shows all tags upper-case
-    // IE adds \r \n 
+    // IE adds \r \n
     // IE does not put quotes to some attributes
-    // Investigate: IE in method find puts the attribute $h="4" 
+    // Investigate: IE in method find puts the attribute $h="4"
     // Investigate: IE in method filter adds the attrib added="null"
-    return s.toString().trim().toLowerCase().replaceAll(
-            "[\r\n]", "").replaceAll(
-            " ([\\w]+)=[\"']([^\"']+)[\"']", " $1=$2").replaceAll(
-            "\\s+\\$h=\"[^\"]+\"", "").replaceAll(
-            " added=[^ >]+", "");
+    return s.toString().trim().toLowerCase().replaceAll("[\r\n]", "").replaceAll(
+        " ([\\w]+)=[\"']([^\"']+)[\"']", " $1=$2").replaceAll(
+        "\\s+\\$h=\"[^\"]+\"", "").replaceAll(" added=[^ >]+", "");
   }
 
   int done = 0;
-  
+
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
@@ -83,17 +83,17 @@ public class GQueryCoreTest extends GWTTestCase {
       e.setInnerHTML("");
     }
   }
-  
+
   public void testAttributeMethods() {
 
     $(e).html("<p class=\"a1\">Content</p>");
     GQuery gq = $("p", e);
-    
+
     // attr()
     gq.attr($$("attr1: 'a', attr2: 'b'"));
     assertEquals("a", gq.attr("attr1"));
     assertEquals("b", gq.attr("attr2"));
-    
+
     gq.attr("attr3", new Function() {
       public String f(Element e, int i) {
         return e.getInnerText();
@@ -121,7 +121,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertTrue(gq.hasClass("b2"));
     assertFalse(gq.hasClass("c1"));
     assertFalse(gq.hasClass("c2"));
-    
+
     // toggleClass()
     gq.toggleClass("b2");
     assertTrue(gq.hasClass("b1"));
@@ -133,7 +133,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertTrue(gq.hasClass("b2"));
     gq.toggleClass("b2", false);
     assertFalse(gq.hasClass("b2"));
-    
+
     // css()
     String content = "<p style='color:red;'>Test Paragraph.</p>";
     $(e).html(content);
@@ -143,8 +143,8 @@ public class GQueryCoreTest extends GWTTestCase {
 
     // css() properties
     $(e).html("<p>Test Paragraph.</p>");
-    $("p", e).css(Properties.create(
-        "color: 'red', 'font-weight': 'bold', background: 'blue'"));
+    $("p", e).css(
+        Properties.create("color: 'red', 'font-weight': 'bold', background: 'blue'"));
     assertEquals("red", $("p", e).css("color"));
     assertEquals("bold", $("p", e).css("font-weight"));
     assertEquals("blue", $("p", e).css("background-color"));
@@ -168,49 +168,50 @@ public class GQueryCoreTest extends GWTTestCase {
   public void testCleanMethod() {
     $(e).html("").append($("<tr/>"));
     assertHtmlEquals("<tr></tr>", $(e).html());
-    
+
     $(e).html("").append($("<td/>"));
     assertHtmlEquals("<td></td>", $(e).html());
 
     $(e).html("").append($("<th/>"));
     assertHtmlEquals("<th></th>", $(e).html());
   }
-  
+
   public void testDomManip() {
     String content = "<span class='branchA'><span class='target'>branchA target</span></span>"
-      + "<span class='branchB'><span class='target'>branchB target</span></span>";
-    
+        + "<span class='branchB'><span class='target'>branchB target</span></span>";
+
     $(e).html("");
     $(e).append(content);
     assertEquals(4, $("span", e).size());
     assertEquals(2, $("span.target", e).size());
     assertHtmlEquals(content, $(e).html());
-    
+
     $(e).html("<span>a</span><span>b</span>");
     $("span").append("<div>c</div>");
-    assertHtmlEquals("<span>a<div>c</div></span><span>b<div>c</div></span>", $(e).html());
+    assertHtmlEquals("<span>a<div>c</div></span><span>b<div>c</div></span>", $(
+        e).html());
   }
-  
+
   public void testEach() {
     $(e).html("<p>Content 1</p><p>Content 2</p><p>Content 3</p>");
     $("p", e).each(new Function() {
       public void f(Element e) {
         $(e).text(".");
-      }      
+      }
     });
     assertHtmlEquals("<p>.</p><p>.</p><p>.</p>", $("p", e));
     $("p", e).each(new Function() {
       public String f(Element e, int i) {
         $(e).text("" + i);
         return "";
-      }      
+      }
     });
     assertHtmlEquals("<p>0</p><p>1</p><p>2</p>", $("p", e));
   }
 
   public void testIFrameManipulation() {
     $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    // FF has to call empty to open and close the document before 
+    // FF has to call empty to open and close the document before
     // accessing the recently created iframe content
     Document d = $("#miframe").contents().empty().get(0).cast();
     assertNotNull(d);
@@ -276,7 +277,7 @@ public class GQueryCoreTest extends GWTTestCase {
     gq = $("select", e);
     assertEquals(0, gq.vals().length);
     assertEquals("", gq.val());
-    
+
     $(e).html(
         "<select name='n' multiple='multiple'><option value='v1'>1</option><option value='v2' selected='selected'>2</option><option value='v3'>3</option></select>");
     gq = $("select", e);
@@ -287,9 +288,9 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("v1", gq.vals()[0]);
     assertEquals("v3", gq.vals()[1]);
     // FIXME: fix in IE
-//    gq.val("v1");
-//    assertEquals(1, gq.vals().length);
-//    assertEquals("v1", gq.val());
+    // gq.val("v1");
+    // assertEquals(1, gq.vals().length);
+    // assertEquals("v1", gq.val());
 
     // input radio
     $(e).html(
@@ -309,12 +310,13 @@ public class GQueryCoreTest extends GWTTestCase {
     gq.val("v1");
     assertEquals("v1", gq.val());
   }
-  
+
   public void testIssue23() {
-    $(e).html("<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
+    $(e).html(
+        "<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
     $("button").click(new Function() {
       public boolean f(Event ev) {
-    	done = 0;
+        done = 0;
         $("table > tbody > tr > td > input:checked", e).each(new Function() {
           public void f(Element e) {
             done++;
@@ -336,7 +338,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(pTxt);
     $("p", e).append(bTxt);
     assertHtmlEquals(expected, $(e).html());
-    
+
     $(e).html(pTxt);
     $("p", e).append($(bTxt).get(0));
     assertHtmlEquals(expected, $(e).html());
@@ -424,40 +426,39 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(bTxt + pTxt);
     $("p", e).after($("b", e).clone().get(0));
     assertHtmlEquals(expected, $(e).html());
-    
-    // The set of elements should be the same after the manipulation 
-    String content = "<span>s</span>"; 
+
+    // The set of elements should be the same after the manipulation
+    String content = "<span>s</span>";
     expected = "<p>p</p>";
-    GQuery g1  = $(content);
-    GQuery g2  = $(expected);
+    GQuery g1 = $(content);
+    GQuery g2 = $(expected);
     $(e).html("").append(g1);
     assertEquals(1, g1.size());
     assertEquals(content, g1.toString());
-    
+
     $(g1).append(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
-    
+
     $(g1).prepend(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
-    
+
     $(g1).after(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
-    
+
     $(g1).before(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
-    assertEquals(expected, g2.toString());    
+    assertEquals(expected, g2.toString());
   }
-  
+
   public void testOpacity() {
-    $(e)
-    .html(
+    $(e).html(
         "<p id='id1' style='opacity: 0.6; filter: alpha(opacity=60)'>Content 1</p>");
     GQuery g = $("#id1");
     assertEquals("0.6", g.css("opacity", false));
@@ -469,26 +470,27 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("0.4", g.css("opacity", false));
     assertEquals("0.4", g.css("opacity", true));
   }
-  
-  public void testPosition(){
-    $(e).html("<div style='top:25px; left:25px; padding:20px; position:relative;'><div id='child' style='margin:30px'>test</div></div> ");
+
+  public void testPosition() {
+    $(e).html(
+        "<div style='top:25px; left:25px; padding:20px; position:relative;'><div id='child' style='margin:30px'>test</div></div> ");
     GQuery g = $("#child");
     assertEquals(20, g.position().left);
     assertEquals(20, g.position().top);
-    
-    $(e).html("<div style='top:25px; left:25px; position:relative;'><div id='child' style='position:relative; top:15px; left:35px;'>test</div></div> ");
+
+    $(e).html(
+        "<div style='top:25px; left:25px; position:relative;'><div id='child' style='position:relative; top:15px; left:35px;'>test</div></div> ");
     g = $("#child");
     assertEquals(35, g.position().left);
     assertEquals(15, g.position().top);
-    
 
   }
-  
+
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
     assertNotNull(p.get("border"));
-    
+
     p = $$("({border:'1px solid black'})");
     assertEquals(1, p.keys().length);
     assertNotNull(p.get("border"));
@@ -529,8 +531,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $("p", e).parent());
 
     // parent()
-    content
-        = "<div><p>Hello</p></div><div class=\"selected\"><p>Hello Again</p></div>";
+    content = "<div><p>Hello</p></div><div class=\"selected\"><p>Hello Again</p></div>";
     expected = "<div class=\"selected\"><p>Hello Again</p></div>";
     $(e).html(content);
     assertHtmlEquals(expected, $("p", e).parent(".selected"));
@@ -541,7 +542,8 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("span", e).size());
     assertTrue(3 < $("span", e).parents().size());
     assertEquals(1, $("span", e).parents().filter("body").size());
-    $("span", e).parents().filter("body").toString().trim().toLowerCase().contains(content.toLowerCase());
+    $("span", e).parents().filter("body").toString().trim().toLowerCase().contains(
+        content.toLowerCase());
 
     // is()
     content = "<form><input type=\"checkbox\"></form>";
@@ -563,20 +565,19 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(next2, $("p", e).next().get(1).getString());
 
     // next()
-    content
-        = "<p>Hello</p><p class=\"selected\">Hello Again</p><div><span>And Again</span></div>";
+    content = "<p>Hello</p><p class=\"selected\">Hello Again</p><div><span>And Again</span></div>";
     expected = "<p class=\"selected\">Hello Again</p>";
     $(e).html(content);
     assertEquals(1, $("p", e).next(".selected").size());
     assertHtmlEquals(expected, $("p", e).next(".selected").get(0).getString());
-    
+
     // nextAll()
     content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li>i5</li></ul>";
     expected = "<li>i4</li><li>i5</li>";
     $(e).html(content);
     assertEquals(2, $("li.third-item", e).nextAll().size());
     assertHtmlEquals(expected, $("li.third-item", e).nextAll());
-    
+
     // andSelf()
     content = "<ul><li>i1</li><li>i2</li><li class=\"third-item\">i3</li><li>i4</li><li>i5</li></ul>";
     expected = "<li>i4</li><li>i5</li><li class=\"third-item\">i3</li>";
@@ -592,8 +593,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $("p", e).prev().get(0).getString());
 
     // prev()
-    content
-        = "<div><span>Hello</span></div><p class=\"selected\">Hello Again</p><p>And Again</p>";
+    content = "<div><span>Hello</span></div><p class=\"selected\">Hello Again</p><p>And Again</p>";
     expected = "<p class=\"selected\">Hello Again</p>";
     $(e).html(content);
     assertEquals(2, $("p", e).prev().size());
@@ -610,12 +610,12 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(next2, $("#mdiv", e).siblings().get(1).getString());
 
     // siblings()
-    content
-        = "<div><span>Hello</span></div><p class=\"selected\">Hello Again</p><p>And Again</p>";
+    content = "<div><span>Hello</span></div><p class=\"selected\">Hello Again</p><p>And Again</p>";
     expected = "<p class=\"selected\">Hello Again</p>";
     $(e).html(content);
     assertEquals(1, $("p", e).siblings(".selected").size());
-    assertHtmlEquals(expected, $("p", e).siblings(".selected").get(0).getString());
+    assertHtmlEquals(expected,
+        $("p", e).siblings(".selected").get(0).getString());
 
     // children()
     content = "<p>Hello</p><div id='mdiv'><span>Hello Again</span></div><p>And Again</p>";
@@ -624,8 +624,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $("#mdiv", e).children());
 
     // children()
-    content
-        = "<div id='mdiv'><span>Hello</span><p class=\"selected\">Hello Again</p><p>And Again</p></div>";
+    content = "<div id='mdiv'><span>Hello</span><p class=\"selected\">Hello Again</p><p>And Again</p></div>";
     expected = "<p class=\"selected\">Hello Again</p>";
     $(e).html(content);
     assertHtmlEquals(expected, $("#mdiv", e).children(".selected"));
@@ -636,28 +635,64 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(content);
     assertHtmlEquals(expected, $("p", e).contains("test"));
   }
-  
+
+  public void testReplaceMethods() {
+    String content = "<div><div class='inner first'>Hello</div><div class='inner second'>And</div><div class='inner third'>Goodbye</div></div>";
+
+    $(e).html(content);
+    GQuery $inner = $(".inner").replaceWith("<h3>blop</h3>");
+    String expectedHtml = "<div><h3>blop</h3><h3>blop</h3><h3>blop</h3></div>";
+    assertEquals(expectedHtml, $(e).html());
+
+    // the returned gquery object should be the original with the div elements
+    // bug in filter method : wrap $inner in a div to use filter method on it
+    final GQuery outer = $("<div class=\"outer\"></div>");
+    for (Element e : $inner.elements()) {
+      outer.append(e);
+    }
+    assertEquals(3, $inner.filter("div.inner").length());
+
+    $(e).html(content);
+    // the css part below allows us to check if the objects returned by the
+    // replaceAll method are the new inserted elements
+    $("<h3>blop</h3>").replaceAll($(".inner")).css(CSS.COLOR.with(RGBColor.RED));
+    // $(e) must content 3 h3
+    assertEquals(3, $("h3", e).length());
+    // the objects returned by the replaceAll method should be the 3 inserted h3
+    assertEquals("red", $("h3", e).css(CSS.COLOR));
+
+
+    $(e).html(content);
+    $(".third").replaceWith($(".first"));
+    expectedHtml = "<div><div class=\"inner second\">And</div><div class=\"inner first\">Hello</div></div>";
+    assertEquals($(e).html(), expectedHtml);
+
+    $(e).html(content);
+    $(".first").replaceAll(".third");
+    assertEquals($(e).html(), expectedHtml);
+
+  }
+
   public void testShowHide() {
-    $(e)
-    .html(
+    $(e).html(
         "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
 
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
     final GQuery sectC = $("#id3");
-    
+
     // hide()
     sectA.hide();
     assertEquals("none", sectA.css("display"));
     sectB.hide();
     assertEquals("none", sectB.css("display"));
-    
+
     // show()
     sectA.show();
     assertEquals("inline", sectA.css("display"));
     sectB.show();
     assertEquals("", sectB.css("display"));
-    
+
     // toggle()
     assertEquals("", sectC.css("display"));
     sectC.toggle();
@@ -665,7 +700,7 @@ public class GQueryCoreTest extends GWTTestCase {
     sectC.toggle();
     assertEquals("block", sectC.css("display"));
   }
-  
+
   public void testSliceMethods() {
     String content = "<p>This is just a test.</p><p>So is this</p>";
     $(e).html(content);
@@ -686,7 +721,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("p", e).slice(0, -1).size());
     assertEquals(0, $("p", e).slice(3, 2).size());
   }
-  
+
   public void testUnique() {
     SelectorEngineImpl selSizz = new SelectorEngineSizzle();
     GQuery g = $(e).html("<div><p></p><p></p><span></span><p></p>");
@@ -695,11 +730,11 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(3, a.getLength());
     a.addNode(a.getNode(0));
     a.addNode(a.getNode(3));
-    assertEquals(5 , a.getLength());
+    assertEquals(5, a.getLength());
     a = g.unique(a);
     assertEquals(3, a.getLength());
   }
-  
+
   public void testUtilsEq() {
     assertTrue(JsUtils.eq("a", "a"));
     assertTrue(JsUtils.eq(true, true));
@@ -709,16 +744,16 @@ public class GQueryCoreTest extends GWTTestCase {
     assertTrue(JsUtils.eq(0.45, 0.45));
     assertTrue(JsUtils.eq(0.45d, 0.45d));
     assertTrue(JsUtils.eq(0.45f, 0.45f));
-    
+
     assertFalse(JsUtils.eq("a", ""));
     assertFalse(JsUtils.eq(true, false));
     assertFalse(JsUtils.eq(45, 42));
     assertFalse(JsUtils.eq("", null));
     assertFalse(JsUtils.eq(0.45, 0.451));
-    
-//    assertEquals("a", GQUtils.or("a", ""));
+
+    // assertEquals("a", GQUtils.or("a", ""));
   }
-  
+
   public void testUtilsTruth() {
     assertTrue(JsUtils.truth("a"));
     assertTrue(JsUtils.truth(this));
@@ -737,10 +772,9 @@ public class GQueryCoreTest extends GWTTestCase {
     assertFalse(JsUtils.truth(null));
     assertFalse(JsUtils.truth(""));
   }
-  
+
   public void testWidthHeight() {
-    $(e)
-    .html(
+    $(e).html(
         "<div style='border: 1px solid red; padding: 10px; margin:10px; width: 100px; height: 100px'>Content 1</div>");
     GQuery g = $("div", e);
     assertEquals(100, g.width());
@@ -759,10 +793,9 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(122, g.outerWidth());
     assertEquals(142, g.outerHeight(true));
     assertEquals(142, g.outerWidth(true));
-    
-    
+
   }
-  
+
   public void testWrapMethod() {
     String content = "<p>Test Paragraph.</p>";
     String wrapper = "<div id=\"content\">Content</div>";
@@ -778,47 +811,47 @@ public class GQueryCoreTest extends GWTTestCase {
     $("*", e).wrap("<b></b>");
     assertHtmlEquals(expected, $(e).html());
   }
-  
+
   public void testFilterBody() {
     GQuery myNewElement = $("<div>my new div</div>");
     boolean isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
     assertEquals(false, isAttachedToTheDOM);
-    
+
     myNewElement.appendTo(document);
     isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
     assertEquals(true, isAttachedToTheDOM);
   }
-  
+
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);
-    
+
     GQuery g = $(b1);
     Button b2 = g.widget();
     assertEquals(b1, b2);
-    
-    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).button();
+
+    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).button().widget();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");
       }
     });
-    
+
     (b2).click();
     assertEquals("red", $(b1).css("color"));
-    
+
     $("<button>Click-me</button>").appendTo(document);
     assertEquals(3, $("button").size());
     assertEquals(2, $("button").widgets(Button.class).size());
     assertEquals(2, $($("button").widgets(Button.class)).size());
-    
+
     assertEquals(2, $(new Label(""), new TextArea()).size());
   }
-  
+
   public void testGQueryMap() {
     String content = "<p id='1'/><p/><p id='2'/><p id='4'/>";
     $(e).html(content);
-    
+
     List<String> s = $("p", e).map(new Function() {
       public Object f(Element e, int i) {
         return null;
@@ -830,33 +863,32 @@ public class GQueryCoreTest extends GWTTestCase {
     s = $("p", e).map(new Function() {
       public Object f(Element e, int i) {
         String id = $(e).attr("id");
-        return id.isEmpty() ? null: id;
+        return id.isEmpty() ? null : id;
       }
     });
     assertEquals(3, s.size());
     assertEquals("1", s.get(0));
     assertEquals("2", s.get(1));
     assertEquals("4", s.get(2));
-    
 
     List<Element> a = $("p", e).map(new Function() {
       public Object f(Element e, int i) {
         String id = $(e).attr("id");
-        return id.isEmpty() ? null: e;
+        return id.isEmpty() ? null : e;
       }
     });
     assertEquals(3, a.size());
     assertEquals(3, $(a).size());
-    
+
   }
-  
+
   public void testNulls() {
-    Assert.assertEquals(0, $((Node)null).size());
-    Assert.assertEquals(0, $((Element)null).size());
-    Assert.assertEquals(0, $((String)null).size());
-    Assert.assertNull($((String)null).get(0));
-    Assert.assertNull($((String)null).get(-1));
-    Assert.assertEquals(0, $((String)null).eq(0).size());
+    Assert.assertEquals(0, $((Node) null).size());
+    Assert.assertEquals(0, $((Element) null).size());
+    Assert.assertEquals(0, $((String) null).size());
+    Assert.assertNull($((String) null).get(0));
+    Assert.assertNull($((String) null).get(-1));
+    Assert.assertEquals(0, $((String) null).eq(0).size());
   }
 
 }
