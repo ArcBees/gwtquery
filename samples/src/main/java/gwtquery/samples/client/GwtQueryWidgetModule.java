@@ -33,9 +33,9 @@ public class GwtQueryWidgetModule implements EntryPoint {
 
   public void onModuleLoad() {
 
-    $(".inputText").as(Widgets).textBoxes();
+    $(".inputText").as(Widgets).textBox();
     
-    $(".btn").as(Widgets).buttons(new Function() {
+    $(".btn").as(Widgets).button(new Function() {
       
       public void f(Widget w) {
         
