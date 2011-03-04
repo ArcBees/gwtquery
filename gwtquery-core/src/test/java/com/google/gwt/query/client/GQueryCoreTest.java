@@ -32,6 +32,7 @@ import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -645,11 +646,6 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(expectedHtml, $(e).html());
 
     // the returned gquery object should be the original with the div elements
-    // bug in filter method : wrap $inner in a div to use filter method on it
-    final GQuery outer = $("<div class=\"outer\"></div>");
-    for (Element e : $inner.elements()) {
-      outer.append(e);
-    }
     assertEquals(3, $inner.filter("div.inner").length());
 
     $(e).html(content);
@@ -812,6 +808,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertHtmlEquals(expected, $(e).html());
   }
 
+ 
   public void testFilterBody() {
     GQuery myNewElement = $("<div>my new div</div>");
     boolean isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
@@ -820,6 +817,36 @@ public class GQueryCoreTest extends GWTTestCase {
     myNewElement.appendTo(document);
     isAttachedToTheDOM = myNewElement.parents().filter("body").size() > 0;
     assertEquals(true, isAttachedToTheDOM);
+  }
+  
+  public void testFilterMethod(){
+    // first test filter on element attached to the DOM
+    String content = "<div class='outer'><div class='inner first'>Hello <span>blop</span></div><div class='inner second'>And</div><div class='inner third'>Goodbye</div></div>";
+
+    $(e).html(content);
+    
+    assertEquals(5, $("*", e).length());
+    assertEquals(4, $("*", e).filter("div").length());
+    assertEquals(1, $("*", e).filter("div.outer").length());
+    assertEquals(3, $("*", e).filter("div.inner").length());
+    assertEquals(1, $("*", e).filter("span").length());
+    
+    GQuery $html = $("<div>div1</div><div>div2</div><div>div3</div><span>span1</span>");
+    assertEquals(3, $html.filter("div").length());
+    assertEquals(1, $html.filter("span").length());
+    
+    JsNodeArray array = JsNodeArray.create();
+    for (int i = 0 ; i < 3; i++){
+          array.addNode(DOM.createDiv());
+     }
+     assertEquals(3, $(array).filter("div").length()); 
+     
+     
+     String content2 = "<div><div class='inner first'>Hello</div><div class='inner second'>And</div><div class='inner third'>Goodbye</div></div>";
+     $(e).html(content2);
+     //the inner object contains the 3 div that are detached from the dom
+     GQuery $inner = $(".inner").replaceWith("<h3>blop</h3>");
+     assertEquals(3, $inner.filter("div").length()); 
   }
 
   public void testGQueryWidgets() {

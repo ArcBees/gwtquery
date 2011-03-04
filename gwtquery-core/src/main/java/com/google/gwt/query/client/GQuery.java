@@ -1152,14 +1152,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * filters at once.
    */
   public GQuery filter(String... filters) {
+    
     JsNodeArray array = JsNodeArray.create();
+    
     for (String f : filters) {
       for (Element e : elements()) {
+        boolean ghostParent = false;
+        
+        if (e.getParentNode() == null){
+          DOM.createDiv().appendChild(e);
+          ghostParent = true;
+        }
+        
         for (Element c : $(f, e.getParentNode()).elements()) {
           if (c == e) {
             array.addNode(c);
             break;
           }
+        }
+        
+        if(ghostParent){
+          e.removeFromParent();
         }
       }
     }
