@@ -14,8 +14,6 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -23,56 +21,33 @@ import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
+import java.util.ArrayList;
+import java.util.List;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
-
-  /**
-   * Create an return a {@link TabPanel} widget with the first selected
-   * elements. Each div element will create a tab and the first h3 element
-   * inside the div will be used as title. The <code>initFunctions</code> will
-   * be called on the new {@link TabPanel} created by passing it in parameter.
-   * 
-   */
-  TabPanel tabPanel(Function... initFunctions);
-
-  /**
-   * Create an return a {@link TabPanel} widget with the first selected elements
-   * by using a {@link TabPanelOptions}. The <code>initFunctions</code> will be
-   * called on each new {@link Button} created by passing them in parameter.
-   */
-  TabPanel tabPanel(TabPanelOptions o, Function... initFunctions);
 
   /**
    * Create {@link TabPanel} widget for each selected elements. Each div element
    * will create a tab and the first h3 element inside the div will be used as
    * title
    */
-  LazyWidgets<T> tabPanels(Function... initFunctions);
+  LazyWidgets<T> tabPanel(Function... initFunctions);
 
   /**
    * Create a {@link TabPanel} widget for each selected elements. Each div
    * element inside a selected element will create a tab and the first h3
    * element inside the div will be used as title
    */
-  LazyWidgets<T> tabPanels(TabPanelOptions o, Function... initFunctions);
-
-  /**
-   * Create an return a {@link Button} widget with the first element of the
-   * query.The <code>initFunctions</code> will be called on the new
-   * {@link Button} created by passing it in parameter.
-   * 
-   */
-  Button button(Function... initFunctions);
+  LazyWidgets<T> tabPanel(TabPanelOptions o, Function... initFunctions);
 
   /**
    * Create a {@link Button} widget for each selected element. The
@@ -80,7 +55,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * created by passing them in parameter.
    * 
    */
-  LazyWidgets<T> buttons(Function... initFunctions);
+  LazyWidgets<T> button(Function... initFunctions);
 
   /**
    * Create a {@link DateBox} widget for each selected element. The
@@ -92,16 +67,6 @@ public interface LazyWidgets<T> extends LazyBase<T>{
   LazyWidgets<T> richtext(Function... initFunctions);
 
   /**
-   * Create an return a {@link TextBox} widget with the first element of the
-   * query.The <code>initFunctions</code> will be called on the new
-   * {@link TextBox} created by passing it in parameter.
-   * 
-   * A {@link TextBox} is created if the element is a <i>input</i> with type
-   * text, a <i>div</i> or a<i>span</i> element.
-   */
-  TextBox textBox(Function... initFunctions);
-
-  /**
    * Create a {@link TextBox} widget for each selected element. The
    * <code>initFunctions</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
@@ -109,12 +74,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * A {@link TextBox} is created if the element is a <i>input</i> with type
    * text, a <i>div</i> or a<i>span</i> element.
    */
-  LazyWidgets<T> textBoxes(Function... initFunctions);
-
-  /**
-   * Create and return a widget using the given factory and the given options
-   */
-  <W extends Widget> W widget(WidgetFactory<W> factory, Function... initFunctions);
+  LazyWidgets<T> textBox(Function... initFunctions);
 
   /**
    * Try to create a widget using the given factory and the given options for
