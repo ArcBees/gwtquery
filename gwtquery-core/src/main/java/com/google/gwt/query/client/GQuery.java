@@ -863,9 +863,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </pre>
    * 
    */
-  public GQuery css(CssSetter cssSetter) {
+  public GQuery css(CssSetter... cssSetter) {
     for (Element e : elements()) {
-      cssSetter.applyCss(e);
+      for (CssSetter s : cssSetter) {
+        s.applyCss(e);
+      }
     }
     return this;
   }
@@ -2528,11 +2530,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * if there isn't any.
    */
   public <W extends Widget> W widget() {
+    return widget(0);
+  }
+
+  /**
+   * Return the nth non null attached widget from the matched elements or null
+   * if there isn't any.
+   */
+  public <W extends Widget> W widget(int n) {
     for (Element e : elements()) {
       @SuppressWarnings("unchecked")
       W w = (W) getAssociatedWidget(e);
       if (w != null) {
-        return w;
+        if (n == 0) {
+          return w;
+        }
+        n--;
       }
     }
     return null;
