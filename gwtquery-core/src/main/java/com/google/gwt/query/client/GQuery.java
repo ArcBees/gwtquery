@@ -2529,8 +2529,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return the first non null attached widget from the matched elements or null
    * if there isn't any.
    */
+  @SuppressWarnings("unchecked")
   public <W extends Widget> W widget() {
-    return widget(0);
+    return (W)widget(0);
   }
 
   /**
