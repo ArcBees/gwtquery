@@ -14,21 +14,24 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
+import java.util.ArrayList;
+import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetOptions;
-import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
@@ -78,6 +81,15 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * 
    */
   LazyWidgets<T> buttons(Function... initFunctions);
+
+  /**
+   * Create a {@link DateBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link Button}
+   * created by passing them in parameter.
+   */
+  LazyWidgets<T> datebox(Function... initFunctions);
+
+  LazyWidgets<T> richtext(Function... initFunctions);
 
   /**
    * Create an return a {@link TextBox} widget with the first element of the

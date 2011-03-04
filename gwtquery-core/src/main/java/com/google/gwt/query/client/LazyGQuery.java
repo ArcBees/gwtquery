@@ -287,7 +287,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </pre>
    * 
    */
-  LazyGQuery<T> css(CssSetter cssSetter);
+  LazyGQuery<T> css(CssSetter... cssSetter);
 
   /**
    * Set a key/value object as style properties to all matched elements. This
@@ -1217,6 +1217,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * if there isn't any.
    */
   <W extends Widget> W widget();
+
+  /**
+   * Return the nth non null attached widget from the matched elements or null
+   * if there isn't any.
+   */
+  <W extends Widget> W widget(int n);
 
   /**
    * return the list of attached widgets matching the query
