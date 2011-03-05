@@ -157,7 +157,12 @@ public class Widgets extends QueuePlugin<Widgets> {
    */
   protected <W extends Widget> W widget(Element e,
       WidgetFactory<W> factory, Function... initFunctions) {
-
+    
+    if ($(e).widget() != null){
+      //a widget is already attached on this element !!
+      return null;
+    }
+    
     W widget = factory.create(e);
 
     if (initFunctions != null) {
