@@ -20,14 +20,18 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
+import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -88,6 +92,36 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * text, a <i>div</i> or a<i>span</i> element.
    */
   LazyWidgets<T> textBox(Function... initFunctions);
+
+  /**
+   * Create a {@link PasswordTextBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link PasswordTextBox}
+   * created by passing them in parameter.
+   *
+   * A {@link PasswordTextBox} is created if the element is a <i>input</i> with type
+   * <i>password</i>, a <i>div</i> or a<i>span</i> element.
+   */
+  LazyWidgets<T> passwordBox(Function... initFunctions);
+
+  /**
+   * Create a {@link ListBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link ListBox}
+   * created by passing them in parameter.
+   *
+   * A {@link ListBox} is created if the element is a <i>input</i> with type
+   * <i>password</i>, a <i>div</i> or a<i>span</i> element.
+   */
+  LazyWidgets<T> listBox(Function... initFunctions);
+
+  /**
+   * Create a {@link ListBox} widget for each selected element. The
+   * <code>initFunctions</code> will be called on each new {@link ListBox}
+   * created by passing them in parameter.
+   *
+   * A {@link ListBox} is created if the element is a <i>input</i> with type
+   * <i>password</i>, a <i>div</i> or a<i>span</i> element.
+   */
+  LazyWidgets<T> listBox(ListBoxOptions options, Function... initFunctions);
 
   /**
    * Try to create a widget using the given factory and the given options for

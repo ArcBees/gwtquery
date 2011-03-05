@@ -3,23 +3,39 @@
 <title>GQuery Demo</title>
 <script language="javascript"
     src="gwtquery.samples.GwtQueryWidgets.nocache.js"></script>
+<style type="text/css">
+    .outer{
+        margin : 5px;
+        }
+</style>
 </head>
 <body>
 
 <div class="outer">
 <div class="btn">Make me a button 1!</div>
-<a class="btn">Make me a button 2!</a> <span class="btn">Make me
-a button 3!</span>
+<a class="btn">Make me a button 2!</a> 
+<span class="btn">Make me a button 3!</span>
 <button class="btn">Make me a button 4!</button>
 <div class="btn">Make me a button 5!</div>
 <div class="btn">Make me a button 6!</div>
-<input type="text" class="date" value="dd/MM/yyyy"/>
+
 </div>
 
-<div class="inputText">I will be an Input</div>
-<span class="inputText">I will be an Input</span>
-<input class="inputText" type="text"></input>
+<input type="text" class="date" value="dd/MM/yyyy" />
 
+<div class="outer">
+<div class="inputText">I will be an Input</div>
+<span class="inputText">I will be an Input</span> 
+<input class="inputText" type="text"></input>
+</div>
+
+<div class="outer">
+<div class="inputPsw">I will be an password input</div>
+<span class="inputPsw">I will be an password input</span>
+<input class="inputPsw" type="password"></input>
+</div>
+
+<div class="outer">
 <div id="tabs">
 <h3>First tab</h3>
 <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
@@ -48,23 +64,24 @@ egestas, mi sapien ullamcorper diam, sit amet molestie mauris odio at
 lacus.</div>
 
 <h3>Third tab</h3>
-<div class='editable'>Vestibulum turpis eros, tempor et hendrerit sit amet,
-hendrerit ut urna. Integer aliquam, neque non sollicitudin pulvinar,
-orci neque faucibus mauris, a molestie massa ligula vitae eros. Proin
-egestas, purus in pharetra aliquam, dolor odio faucibus lorem, ac
-egestas mi orci ac est. Maecenas pellentesque dui id felis tempus
-vestibulum. Vestibulum vitae nisi tortor. Etiam risus arcu, gravida quis
-pellentesque non, sodales at felis. Cras eros diam, pretium ut
-sollicitudin ut, vulputate a ipsum. Curabitur quis leo urna, in bibendum
-nibh. Ut viverra convallis purus vitae eleifend. Cras bibendum nulla a
-felis vestibulum consequat. Aliquam erat volutpat.</div>
+<div class='editable'>Vestibulum turpis eros, tempor et hendrerit
+sit amet, hendrerit ut urna. Integer aliquam, neque non sollicitudin
+pulvinar, orci neque faucibus mauris, a molestie massa ligula vitae
+eros. Proin egestas, purus in pharetra aliquam, dolor odio faucibus
+lorem, ac egestas mi orci ac est. Maecenas pellentesque dui id felis
+tempus vestibulum. Vestibulum vitae nisi tortor. Etiam risus arcu,
+gravida quis pellentesque non, sodales at felis. Cras eros diam, pretium
+ut sollicitudin ut, vulputate a ipsum. Curabitur quis leo urna, in
+bibendum nibh. Ut viverra convallis purus vitae eleifend. Cras bibendum
+nulla a felis vestibulum consequat. Aliquam erat volutpat.</div>
 </div>
 </div>
 
+<div class="outer">
 <div id="disclosure">
 <h3>Show me</h3>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-mollis dignissim mattis. In hac habitasse platea dictumst. Cras gravida
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mollis
+dignissim mattis. In hac habitasse platea dictumst. Cras gravida
 pellentesque purus, ullamcorper euismod enim ornare ac. Suspendisse sed
 tortor diam. Cum sociis natoque penatibus et magnis dis parturient
 montes, nascetur ridiculus mus. Integer a cursus erat. Nam in molestie
@@ -75,7 +92,37 @@ velit ac nunc dapibus volutpat eget vel eros. Maecenas tincidunt, turpis
 vel placerat imperdiet, metus elit mollis sapien, et egestas felis felis
 vitae metus.</div>
 
+</div>
 
+<div class="outer">
+<select class="list">
+    <option>option 11</option>
+    <option>option 12</option>
+    <option>option 13</option>
+    <option>option 14</option>
+</select>
+
+<ul class="list">
+    <li>option 21</li>
+    <li>option 22</li>
+    <li>option 23</li>
+    <li>option 23</li>
+</ul>
+
+<div class="list">
+    <div>div 1</div>
+    <div>div 2</div>
+    <span>span 1</span>
+    <span>span 1</span>
+</div>
+
+<div id="multiSelect">
+    <div>div 1</div>
+    <div class="item">div 2</div>
+    <span>span 1</span>
+    <span class="item">span 1</span>
+</div>
+</div>
 
 </body>
 </html>

@@ -22,18 +22,18 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
 
 public class GwtQueryWidgetModule implements EntryPoint {
 
   public void onModuleLoad() {
 
     $(".inputText").as(Widgets).textBox();
+    $(".inputPsw").as(Widgets).passwordBox();
 
     $(".btn").as(Widgets).button(new Function() {
 
@@ -57,13 +57,11 @@ public class GwtQueryWidgetModule implements EntryPoint {
     });
 
     $("#tabs").as(Widgets).tabPanel();
-
     $(".date").as(Widgets).datebox();
-
-    $(".editable").as(Widgets).richtext();
-
-    
+    $(".editable").as(Widgets).richtext();  
     $("#disclosure").as(Widgets).disclosurePanel();
+    $(".list").as(Widgets).listBox();
+    $("#multiSelect").as(Widgets).listBox(new ListBoxOptions(".item", true));
   }
 
 }
