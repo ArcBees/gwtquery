@@ -17,7 +17,7 @@ public class PasswordTextBoxWidgetFactory implements WidgetFactory<PasswordTextB
 
   public PasswordTextBox create(Element e) {
 
-    GQuery input = $(e).filter("input[type='passowrd']");
+    GQuery input = $(e).filter("input[type='password']");
     
     if (input.get(0) != null) {
       return PasswordTextBox.wrap(e);
