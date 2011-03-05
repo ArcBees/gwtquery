@@ -19,6 +19,7 @@ public class DisclosurePanelWidgetFactory implements
 
     private String headerSelector;
     private String headerTitle;
+    boolean enableAnimation;
 
     public DisclosurePanelOptions() {
       initDefault();
@@ -31,7 +32,15 @@ public class DisclosurePanelWidgetFactory implements
     public String getHeaderTitle() {
       return headerTitle;
     }
+    
+    public boolean isEnableAnimation() {
+      return enableAnimation;
+    }
 
+    public void setEnableAnimation(boolean enableAnimation) {
+      this.enableAnimation = enableAnimation;
+    }
+    
     public void setHeaderSelector(String headerSelector) {
       this.headerSelector = headerSelector;
     }
@@ -43,6 +52,7 @@ public class DisclosurePanelWidgetFactory implements
     private void initDefault() {
       headerTitle = null;
       headerSelector = "h3";
+      enableAnimation = true;
     }
   }
 
@@ -63,8 +73,8 @@ public class DisclosurePanelWidgetFactory implements
 
   protected void initialize(AttachableComposite<DisclosurePanel> widget,
       Element e) {
-    String headerValue = "";
     
+    String headerValue = "";
     if (options.getHeaderTitle() != null){
       headerValue = options.getHeaderTitle();
     }else{
@@ -75,6 +85,7 @@ public class DisclosurePanelWidgetFactory implements
    
     disclosurePanel.setHeader(new Label(headerValue));
     disclosurePanel.add(new HTMLPanel(e.getString()));
+    disclosurePanel.setAnimationEnabled(options.isEnableAnimation());
     WidgetsUtils.replace(e, widget);
 
   }
