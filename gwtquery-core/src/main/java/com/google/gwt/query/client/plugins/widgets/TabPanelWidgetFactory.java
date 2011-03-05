@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created
@@ -85,7 +86,12 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
       Element tab = tabs.get(i);
       Element title = titles.get(i);
 
-      tabPanel.add(new HTMLPanel(tab.getString()), title != null
+      Widget tabWidget = $(tab).widget();
+      if (tabWidget == null){
+        tabWidget = new HTMLPanel(tab.getString());
+      }
+      
+      tabPanel.add(tabWidget, title != null
           ? title.getInnerText() : "Tab " + (i + 1));
 
     }
