@@ -34,11 +34,11 @@ public class GwtQueryWidgetModule implements EntryPoint {
   public void onModuleLoad() {
 
     $(".inputText").as(Widgets).textBox();
-    
+
     $(".btn").as(Widgets).button(new Function() {
-      
+
       public void f(Widget w) {
-        
+
         Button button = (Button) w;
         button.addClickHandler(new ClickHandler() {
 
@@ -53,17 +53,17 @@ public class GwtQueryWidgetModule implements EntryPoint {
         });
 
       }
-      
+
     });
 
     $("#tabs").as(Widgets).tabPanel();
 
-    DateBox b = $(".date").as(Widgets).datebox().widget();
-    System.out.println(b);
+    $(".date").as(Widgets).datebox();
+
+    $(".editable").as(Widgets).richtext();
+
     
-    RichTextArea a = $(".editable").as(Widgets).richtext().widget(0);
-    System.out.println(a);
-    
+    $("#disclosure").as(Widgets).disclosurePanel();
   }
 
 }

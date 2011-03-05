@@ -20,12 +20,15 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,6 +65,20 @@ public class Widgets extends QueuePlugin<Widgets> {
    */
   public Widgets tabPanel(Function... initFunctions) {
     return tabPanel(new TabPanelOptions(), initFunctions);
+  }
+
+  /**
+   * Create a {@link DisclosurePanel} widget for each selected elements. 
+   */
+  public Widgets disclosurePanel(DisclosurePanelOptions o, Function... initFunctions) {
+    return widgets(new DisclosurePanelWidgetFactory(o), initFunctions);
+  }
+  
+  /**
+   * Create {@link DisclosurePanel} widget for each selected elements. 
+   */
+  public Widgets disclosurePanel(Function... initFunctions) {
+    return disclosurePanel(new DisclosurePanelOptions(), initFunctions);
   }
 
   /**

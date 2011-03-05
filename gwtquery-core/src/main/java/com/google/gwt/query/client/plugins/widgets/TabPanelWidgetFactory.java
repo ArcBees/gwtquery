@@ -52,9 +52,9 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
     }
   }
   
-  private static class ExtendedTabPanel extends TabPanel {
+  private static class ExtendedTabPanel extends TabPanel implements Attachable{
 
-    void attach() {
+    public void attach() {
       onAttach();
       RootPanel.detachOnWindowClose(this);
     }
@@ -94,8 +94,7 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
       tabPanel.selectTab(0);
     }
 
-    WidgetsUtils.replace(e, tabPanel.getElement());
+    WidgetsUtils.replace(e, tabPanel);
 
-    tabPanel.attach();
   }
 }
