@@ -68,7 +68,7 @@ public class DisclosurePanelWidgetFactory implements
     if (options.getHeaderTitle() != null){
       headerValue = options.getHeaderTitle();
     }else{
-      headerValue = $(options.getHeaderSelector()).first().remove().text();
+      headerValue = $(options.getHeaderSelector(), e).first().remove().text();
     }
     
     DisclosurePanel disclosurePanel = widget.getOriginalWidget();
