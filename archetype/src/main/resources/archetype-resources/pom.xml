@@ -13,6 +13,7 @@
       <maven.compiler.target>1.5</maven.compiler.target>
       <gQueryVersion>1.0.0-SNAPSHOT</gQueryVersion>
       <gwtversion>2.2.0</gwtversion>
+      <!-- change by 2.1.0-1 for gwt-2.1.1 or 2.1.0 for gwt-2.1.0 -->
       <gwtmaven>2.1.0-1</gwtmaven>
     </properties>
 
@@ -129,6 +130,23 @@
                 </filesets>
               </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-eclipse-plugin</artifactId>
+              <configuration>
+                 <downloadSources>true</downloadSources>
+                 <downloadJavadocs>false</downloadJavadocs>
+                 <additionalBuildcommands>
+                   <buildCommand>
+                     <name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
+                   </buildCommand>
+                 </additionalBuildcommands>
+                 <additionalProjectnatures>
+                   <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+                 </additionalProjectnatures>
+              </configuration>
+            </plugin>
         </plugins>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     </build>
 </project>
