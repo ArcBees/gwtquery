@@ -19,9 +19,10 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
@@ -35,15 +36,15 @@ public class GwtQueryWidgetModule implements EntryPoint {
     $(".inputText").as(Widgets).textBox();
     $(".inputPsw").as(Widgets).passwordBox();
 
-    $(".btn").as(Widgets).button(new Function() {
+    $(".btn").as(Widgets).button(new WidgetInitializer() {
 
-      public void f(Widget w) {
-
+      public void initialize(Widget w, Element e) {
+        final String tag = e.getTagName();
         Button button = (Button) w;
         button.addClickHandler(new ClickHandler() {
 
           public void onClick(ClickEvent event) {
-            Label l = new Label("You click on a GWT Button !");
+            Label l = new Label("You click on a GWT Button create from a "+tag);
             PopupPanel panel = new PopupPanel(true, true);
             panel.setGlassEnabled(true);
             panel.add(l);
