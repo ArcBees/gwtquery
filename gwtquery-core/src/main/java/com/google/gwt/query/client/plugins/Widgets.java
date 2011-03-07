@@ -220,17 +220,13 @@ public class Widgets extends QueuePlugin<Widgets> {
     }
 
     W widget = factory.create(e);
-
     if (initializers != null) {
       for (WidgetInitializer initializer : initializers) {
         initializer.initialize(widget, e);
       }
     }
-
     return widget;
-
   }
-
   /**
    * Create and return a widget using the given factory and the given options
    */

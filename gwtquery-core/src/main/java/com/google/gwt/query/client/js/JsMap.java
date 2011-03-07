@@ -39,10 +39,6 @@ final public class JsMap<S, T> extends JavaScriptObject {
     return get(key.hashCode());
   }
 
-  public int length() {
-    return c().length();
-  }
-  
   public void put(S key, T val) {
     c().put(key.hashCode(), val);
   }
