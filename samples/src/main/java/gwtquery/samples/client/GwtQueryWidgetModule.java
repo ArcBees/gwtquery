@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
+import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -63,6 +64,8 @@ public class GwtQueryWidgetModule implements EntryPoint {
     $("#disclosure").as(Widgets).disclosurePanel();
     $(".list").as(Widgets).listBox();
     $("#multiSelect").as(Widgets).listBox(new ListBoxOptions(".item", true));
+    $("#suggestBox1").as(Widgets).suggestBox(new SuggestBoxOptions("div"));
+    $("#suggestBox2").as(Widgets).suggestBox(new SuggestBoxOptions("li"));
   }
 
 }
