@@ -23,17 +23,20 @@ import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
+import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,7 +51,6 @@ import java.util.List;
  */
 public class Widgets extends QueuePlugin<Widgets> {
 
-  
   public static final Class<Widgets> Widgets = Widgets.class;
 
   static {
@@ -64,12 +66,22 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create {@link TabPanel} widget for each selected elements. Each div element
-   * will create a tab and the first h3 element inside the div will be used as
-   * title
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   * 
    */
-  public Widgets tabPanel(WidgetInitializer... initializers) {
-    return tabPanel(new TabPanelOptions(), initializers);
+  public Widgets button(WidgetInitializer... initializers) {
+    return widgets(new ButtonWidgetFactory(), initializers);
+  }
+
+  /**
+   * Create a {@link DateBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   */
+  public Widgets datebox(WidgetInitializer... initializers) {
+    return widgets(new DateBoxWidgetFactory(), initializers);
   }
 
   /**
@@ -88,59 +100,16 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create a {@link TabPanel} widget for each selected elements. Each div
-   * element inside a selected element will create a tab and the first h3
-   * element inside the div will be used as title
-   */
-  public Widgets tabPanel(TabPanelOptions o, WidgetInitializer... initializers) {
-    return widgets(new TabPanelWidgetFactory(o), initializers);
-  }
-
-  /**
-   * Create a {@link Button} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link Button}
+   * Create a {@link ListBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link ListBox}
    * created by passing them in parameter.
    * 
+   * A {@link ListBox} is created if the element is a <i>input</i> with type
+   * <i>password</i>, a <i>div</i> or a<i>span</i> element.
    */
-  public Widgets button(WidgetInitializer... initializers) {
-    return widgets(new ButtonWidgetFactory(), initializers);
-  }
-
-  /**
-   * Create a {@link DateBox} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link Button}
-   * created by passing them in parameter.
-   */
-  public Widgets datebox(WidgetInitializer... initializers) {
-    return widgets(new DateBoxWidgetFactory(), initializers);
-  }
-
-  public Widgets richtext(WidgetInitializer... initializers) {
-    return widgets(new RichTextWidgetFactory(), initializers);
-  }
-
-  /**
-   * Create a {@link TextBox} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link TextBox}
-   * created by passing them in parameter.
-   * 
-   * A {@link TextBox} is created if the element is a <i>input</i> with type
-   * text, a <i>div</i> or a<i>span</i> element.
-   */
-  public Widgets textBox(WidgetInitializer... initializers) {
-    return widgets(new TextBoxWidgetFactory(), initializers);
-  }
-
-  /**
-   * Create a {@link PasswordTextBox} widget for each selected element. The
-   * <code>initializers</code> will be called on each new
-   * {@link PasswordTextBox} created by passing them in parameter.
-   * 
-   * A {@link PasswordTextBox} is created if the element is a <i>input</i> with
-   * type <i>password</i>, a <i>div</i> or a<i>span</i> element.
-   */
-  public Widgets passwordBox(WidgetInitializer... initializers) {
-    return widgets(new PasswordTextBoxWidgetFactory(), initializers);
+  public Widgets listBox(ListBoxOptions options,
+      WidgetInitializer... initializers) {
+    return widgets(new ListBoxWidgetFactory(options), initializers);
   }
 
   /**
@@ -156,24 +125,70 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create a {@link ListBox} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link ListBox}
-   * created by passing them in parameter.
+   * Create a {@link PasswordTextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new
+   * {@link PasswordTextBox} created by passing them in parameter.
    * 
-   * A {@link ListBox} is created if the element is a <i>input</i> with type
-   * <i>password</i>, a <i>div</i> or a<i>span</i> element.
+   * A {@link PasswordTextBox} is created if the element is a <i>input</i> with
+   * type <i>password</i>, a <i>div</i> or a<i>span</i> element.
    */
-  public Widgets listBox(ListBoxOptions options, WidgetInitializer... initializers) {
-    return widgets(new ListBoxWidgetFactory(options), initializers);
+  public Widgets passwordBox(WidgetInitializer... initializers) {
+    return widgets(new PasswordTextBoxWidgetFactory(), initializers);
+  }
+
+  public Widgets richtext(WidgetInitializer... initializers) {
+    return widgets(new RichTextWidgetFactory(), initializers);
   }
 
   /**
-   * Create and return a widget using the given factory and the given options
+   * Create a {@link SuggestBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link SuggestBox}
+   * created by passing them in parameter.
+   * 
    */
-  protected <W extends Widget> W widget(WidgetFactory<W> factory,
+  public Widgets suggestBox(SuggestBoxOptions options,
       WidgetInitializer... initializers) {
+    return widgets(new SuggestBoxWidgetFactory(options), initializers);
+  }
 
-    return widget(get(0), factory, initializers);
+  /**
+   * Create a {@link SuggestBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link SuggestBox}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets suggestBox(WidgetInitializer... initializers) {
+    return suggestBox(new SuggestBoxOptions(), initializers);
+  }
+
+  /**
+   * Create a {@link TabPanel} widget for each selected elements. Each div
+   * element inside a selected element will create a tab and the first h3
+   * element inside the div will be used as title
+   */
+  public Widgets tabPanel(TabPanelOptions o, WidgetInitializer... initializers) {
+    return widgets(new TabPanelWidgetFactory(o), initializers);
+  }
+
+  /**
+   * Create {@link TabPanel} widget for each selected elements. Each div element
+   * will create a tab and the first h3 element inside the div will be used as
+   * title
+   */
+  public Widgets tabPanel(WidgetInitializer... initializers) {
+    return tabPanel(new TabPanelOptions(), initializers);
+  }
+
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   * A {@link TextBox} is created if the element is a <i>input</i> with type
+   * text, a <i>div</i> or a<i>span</i> element.
+   */
+  public Widgets textBox(WidgetInitializer... initializers) {
+    return widgets(new TextBoxWidgetFactory(), initializers);
   }
 
   /**
@@ -214,6 +229,15 @@ public class Widgets extends QueuePlugin<Widgets> {
 
     return widget;
 
+  }
+
+  /**
+   * Create and return a widget using the given factory and the given options
+   */
+  protected <W extends Widget> W widget(WidgetFactory<W> factory,
+      WidgetInitializer... initializers) {
+
+    return widget(get(0), factory, initializers);
   }
 
 }
