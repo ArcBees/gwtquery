@@ -12,7 +12,7 @@ public class WidgetsUtils {
    * @param tagNames
    * @return
    */
-  static boolean matchesTags(Element e, String... tagNames) {
+  public static boolean matchesTags(Element e, String... tagNames) {
 
     assert e != null : "Element cannot be null";
 
@@ -32,11 +32,9 @@ public class WidgetsUtils {
 
   /**
    * replace the <code>oldElement</code> by the <code>newElement</code>
-   * 
-   * @param oldElement
-   * @param newElement
+   * Old element classes will be copied to the new widget.
    */
-   static void replace(Element oldElement, Element newElement) {
+   public static void replace(Element oldElement, Element newElement) {
     assert oldElement != null && newElement != null;
     GQuery.$(oldElement).replaceWith(newElement);
 
@@ -46,7 +44,12 @@ public class WidgetsUtils {
     }
    }
    
-   static void replace(Element e, Widget widget)  {
+   /**
+    * Replace a dom element by a widget.
+    * If the widget implements Attachable the method attach will be called.
+    * Old element classes will be copied to the new widget.
+    */
+   public static void replace(Element e, Widget widget)  {
      assert e != null && widget != null;
      replace(e, widget.getElement());
 
