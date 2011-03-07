@@ -825,7 +825,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery contents() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
-      if (IFrameElement.is(e)) {
+      if ("iframe".equalsIgnoreCase(e.getTagName())) {
         result.addNode(getContentDocument(e));
       } else {
         NodeList<Node> children = e.getChildNodes();
