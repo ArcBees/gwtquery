@@ -87,7 +87,7 @@ public class SuggestBoxWidgetFactory implements WidgetFactory<SuggestBox> {
 
     InputElement inputElement = Document.get().createTextInputElement();
 
-    WidgetsUtils.replace(e, inputElement);
+    WidgetsUtils.replaceOrAppend(e, inputElement);
 
     return SuggestBox.wrap(suggestOracle, inputElement);
 

@@ -100,7 +100,7 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
       tabPanel.selectTab(0);
     }
 
-    WidgetsUtils.replace(e, tabPanel);
+    WidgetsUtils.replaceOrAppend(e, tabPanel);
 
   }
 }

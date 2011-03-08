@@ -9,32 +9,30 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 
 /**
- * Factory used to create a {@link PasswordTextBox} widget. A {@link PasswordTextBox} is created
- * if the element is a <i>input</i> with type <i>password</i>, a <i>div</i> or a<i>span</i> element.
+ * Factory used to create a {@link PasswordTextBox} widget. A
+ * {@link PasswordTextBox} is created if the element is a <i>input</i> with type
+ * <i>password</i>, a <i>div</i> or a<i>span</i> element.
  * 
  */
-public class PasswordTextBoxWidgetFactory implements WidgetFactory<PasswordTextBox> {
+public class PasswordTextBoxWidgetFactory implements
+    WidgetFactory<PasswordTextBox> {
 
   public PasswordTextBox create(Element e) {
 
     GQuery input = $(e).filter("input[type='password']");
-    
+
     if (input.get(0) != null) {
       return PasswordTextBox.wrap(e);
     }
 
-    if (WidgetsUtils.matchesTags(e, "div", "span")) {
-      InputElement inputElement = Document.get().createPasswordInputElement();
-      
-      WidgetsUtils.replace(e, inputElement);
-      
+    InputElement inputElement = Document.get().createPasswordInputElement();
+    inputElement.setValue(e.getInnerText());
 
-      PasswordTextBox textBox = PasswordTextBox.wrap(inputElement);
-      textBox.setValue(e.getInnerText()); // maybe use setText and getInnerText
+    WidgetsUtils.replaceOrAppend(e, inputElement);
 
-      return textBox;
-    }
+    PasswordTextBox textBox = PasswordTextBox.wrap(inputElement);
 
-    return null;
+    return textBox;
+
   }
 }

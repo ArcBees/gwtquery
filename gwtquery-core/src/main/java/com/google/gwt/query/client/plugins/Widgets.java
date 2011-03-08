@@ -28,6 +28,7 @@ import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
@@ -52,6 +53,12 @@ import java.util.List;
 public class Widgets extends QueuePlugin<Widgets> {
 
   public static final Class<Widgets> Widgets = Widgets.class;
+  
+  // list of html tags that cannot be replaced by a widget, in order to avoid to
+  // break the html structure
+  private static final String[] excludedTags = {
+      "html", "body", "head", "tr", "thead", "tfoot", "options", "script",
+      "noscript", "style", "title"};
 
   static {
     GQuery.registerPlugin(Widgets.class, new Plugin<Widgets>() {
@@ -214,8 +221,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   protected <W extends Widget> W widget(Element e, WidgetFactory<W> factory,
       WidgetInitializer... initializers) {
 
-    if ($(e).widget() != null) {
-      // a widget is already attached on this element !!
+    if (!isWidgetCreationAuthorizedFrom(e)) {
       return null;
     }
 
@@ -236,4 +242,7 @@ public class Widgets extends QueuePlugin<Widgets> {
     return widget(get(0), factory, initializers);
   }
 
+  protected boolean isWidgetCreationAuthorizedFrom(Element e) {
+    return $(e).widget() == null && !WidgetsUtils.matchesTags(e, excludedTags);
+  }
 }

@@ -18,17 +18,11 @@ public class ButtonWidgetFactory implements WidgetFactory<Button> {
       return Button.wrap(e);
     }
 
-    if (WidgetsUtils.matchesTags(e, "div", "span", "a")) {
-      ButtonElement buttonElement = Document.get().createPushButtonElement();
-      
-      WidgetsUtils.replace(e, buttonElement);
+    ButtonElement buttonElement = Document.get().createPushButtonElement();
+    buttonElement.setInnerText(e.getInnerText());
+    WidgetsUtils.replaceOrAppend(e, buttonElement);
 
-      Button b = Button.wrap(buttonElement);
-      b.setHTML(e.getInnerHTML()); // maybe use setText and getInnerText
+    return Button.wrap(buttonElement);
 
-      return b;
-    }
-
-    return null;
   }
 }

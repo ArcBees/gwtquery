@@ -9,11 +9,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
- * Factory used to create a {@link ListBox} widget. A {@link ListBox} is created
- * if the element is a <i>select</i>, a <i>ul</i>, a <i>ol</i>, a <i>div</i> or
- * a<i>span</i> element. In case of <i>ul</i>, <i>ol</i>, <i>div</i> and
- * <i>span</i>, inner text of direct children will be composed the elements of
- * the list
+ * Factory used to create a {@link ListBox} widget.
  * 
  */
 public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
@@ -89,24 +85,21 @@ public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
       return ListBox.wrap(e);
     }
 
-    if (WidgetsUtils.matchesTags(e, "ul", "ol", "div", "span")) {
-      SelectElement selectElement = Document.get().createSelectElement(
-          options.isMultipleSelect());
+    SelectElement selectElement = Document.get().createSelectElement(
+        options.isMultipleSelect());
+    
+    GQuery itemsList = getItemsList(e);
 
-      WidgetsUtils.replace(e, selectElement);
+    WidgetsUtils.replaceOrAppend(e, selectElement);
 
-      ListBox listBox = ListBox.wrap(selectElement);
+    ListBox listBox = ListBox.wrap(selectElement);
 
-      GQuery itemsList = getItemsList(e);
-
-      for (Element item : itemsList.elements()) {
-        listBox.addItem(item.getInnerText());
-      }
-
-      return listBox;
+    for (Element item : itemsList.elements()) {
+      listBox.addItem(item.getInnerText());
     }
 
-    return null;
+    return listBox;
+
   }
 
   private GQuery getItemsList(Element e) {

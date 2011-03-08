@@ -12,8 +12,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 
 /**
- * Factory used to create a {@link DateBox} widget. A {@link DateBox} is created
- * if the element is a <i>input</i> with type text, a <i>div</i> or a<i>span</i> element.
+ * Factory used to create a {@link DateBox} widget.
  * 
  * The content of the element has to be empty, a valid date or a valid date-format string.
  */
@@ -31,12 +30,12 @@ public class DateBoxWidgetFactory implements WidgetFactory<DateBox> {
     String v = null;
     if ($(e).filter("input[type='text']").size() == 1) {
       v = GQuery.$(e).val();
-    } else if (WidgetsUtils.matchesTags(e, "div", "span")) {
+    } else {
       v = GQuery.$(e).text();
     }
     if (v!=null) {
       DateBox w = create(v);
-      WidgetsUtils.replace(e, w);
+      WidgetsUtils.replaceOrAppend(e, w);
       return w;
     }
     return null;

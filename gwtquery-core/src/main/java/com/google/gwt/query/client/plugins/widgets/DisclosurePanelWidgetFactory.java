@@ -75,7 +75,7 @@ public class DisclosurePanelWidgetFactory implements
    
     disclosurePanel.setHeader(new Label(headerValue));
     disclosurePanel.add(new HTMLPanel(e.getString()));
-    WidgetsUtils.replace(e, widget);
+    WidgetsUtils.replaceOrAppend(e, widget);
 
   }
 

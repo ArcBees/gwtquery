@@ -57,7 +57,7 @@ public class GwtQueryWidgetModule implements EntryPoint {
       }
 
     });
-
+    
     $("#tabs").as(Widgets).tabPanel();
     $(".date").as(Widgets).datebox();
     $(".editable").as(Widgets).richtext();  

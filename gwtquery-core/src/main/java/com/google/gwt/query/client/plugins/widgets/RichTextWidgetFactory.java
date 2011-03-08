@@ -32,7 +32,7 @@ public class RichTextWidgetFactory implements WidgetFactory<RichTextArea> {
     }
     if (v != null) {
       RichTextArea w = create(v);
-      WidgetsUtils.replace(e, w);
+      WidgetsUtils.replaceOrAppend(e, w);
       return w;
     }
     return null;

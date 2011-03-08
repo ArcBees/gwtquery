@@ -6,6 +6,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
 
+  private static final String[] appendingTags = {
+    "td", "th", "li"};
+
+  
   /**
    * Test if the tag name of the element is one of tag names given in parameter
    * 
@@ -31,16 +35,22 @@ public class WidgetsUtils {
   }
 
   /**
-   * replace the <code>oldElement</code> by the <code>newElement</code>
-   * Old element classes will be copied to the new widget.
+   * If the <code>oldElement</code> is a td, th, li tags, the new element will replaced its content.
+   * In other cases, the <code>oldElement</code> will be replaced by the <code>newElement</code>
+   *  and the old element classes will be copied to the new element.
    */
-   public static void replace(Element oldElement, Element newElement) {
+   public static void replaceOrAppend(Element oldElement, Element newElement) {
     assert oldElement != null && newElement != null;
-    GQuery.$(oldElement).replaceWith(newElement);
-
-    String c = oldElement.getClassName();
-    if (!c.isEmpty()) {
-      newElement.addClassName(c);
+    
+    if(matchesTags(oldElement, appendingTags)){
+      GQuery.$(oldElement).html("").append(newElement);
+    }else{
+      GQuery.$(oldElement).replaceWith(newElement);
+  
+      String c = oldElement.getClassName();
+      if (!c.isEmpty()) {
+        newElement.addClassName(c);
+      }
     }
    }
    
@@ -49,9 +59,9 @@ public class WidgetsUtils {
     * If the widget implements Attachable the method attach will be called.
     * Old element classes will be copied to the new widget.
     */
-   public static void replace(Element e, Widget widget)  {
+   public static void replaceOrAppend(Element e, Widget widget)  {
      assert e != null && widget != null;
-     replace(e, widget.getElement());
+     replaceOrAppend(e, widget.getElement());
 
      if (widget instanceof Attachable) {
        ((Attachable)widget).attach();
