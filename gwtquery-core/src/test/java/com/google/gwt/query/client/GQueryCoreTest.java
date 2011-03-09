@@ -885,11 +885,12 @@ public class GQueryCoreTest extends GWTTestCase {
     $("button").remove();
     assertFalse(b.isAttached());
     
-    Button b2 = new Button("b");
-    $(e).append($(b2));
-    assertTrue(b2.isAttached());
-    
+    RootPanel.get().add(b);
+    assertTrue(b.isAttached());
+    $(e).append($(b));
+    assertTrue(b.isAttached());
     $(e).empty();
+    // FIXME: assertFalse(b.isAttached());
     
   }
 

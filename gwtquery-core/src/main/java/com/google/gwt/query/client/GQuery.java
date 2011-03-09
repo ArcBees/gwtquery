@@ -26,7 +26,6 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -377,7 +376,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   protected static Widget getAssociatedWidget(Element e) {
     EventListener listener = DOM.getEventListener((com.google.gwt.user.client.Element) e);
-
     // No listener attached to the element, so no widget exist for this element
     if (listener == null) {
       return null;
@@ -386,15 +384,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       // GWT uses the widget as event listener
       return (Widget) listener;
     } else if (listener instanceof EventsListener) {
+      // GQuery replaces the gwt event listener and save it
       EventsListener gQueryListener = (EventsListener) listener;
       if (gQueryListener.getOriginalEventListener() != null
           && gQueryListener.getOriginalEventListener() instanceof Widget) {
         return (Widget) gQueryListener.getOriginalEventListener();
       }
     }
-    // I think it's not a good idea to generate ourself a new widget wrapping
-    // the element...
-    // To be discussed
     return null;
   }
 
@@ -1072,13 +1068,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         while (c != null) {
           $(c).unbind(0);
           removeData(c.<Element>cast(), null);
+          GqUi.detachWidget(getAssociatedWidget(e));
           Widget w = getAssociatedWidget(e);
-          if (w != null) {
-            w.removeFromParent();
-          } else {
-            e.removeChild(c);
-            c = e.getFirstChild();
-          }
+          e.removeChild(c);
+          c = e.getFirstChild();
         }
       }
     }
