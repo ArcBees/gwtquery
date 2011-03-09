@@ -1,9 +1,8 @@
 package com.google.gwt.query.client.plugins.widgets;
 
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created
@@ -18,11 +17,11 @@ public class ButtonWidgetFactory implements WidgetFactory<Button> {
       return Button.wrap(e);
     }
 
-    ButtonElement buttonElement = Document.get().createPushButtonElement();
-    buttonElement.setInnerText(e.getInnerText());
-    WidgetsUtils.replaceOrAppend(e, buttonElement);
-
-    return Button.wrap(buttonElement);
-
+    
+    Button button = new Button();
+    button.getElement().setInnerText(e.getInnerText());
+    
+    WidgetsUtils.replaceOrAppend(e, button);
+    return button;
   }
 }

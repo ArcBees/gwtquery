@@ -7,7 +7,7 @@ import java.util.Date;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 
@@ -17,14 +17,6 @@ import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
  * The content of the element has to be empty, a valid date or a valid date-format string.
  */
 public class DateBoxWidgetFactory implements WidgetFactory<DateBox> {
-  
-  // DateBox needs to call the onAttach method
-  public static class AttachableDateBox extends DateBox implements Attachable {
-    public void attach(){
-      onAttach();
-      RootPanel.detachOnWindowClose(this);
-    }
-  }
   
   public DateBox create(Element e) {
     String v = null;
@@ -55,7 +47,7 @@ public class DateBoxWidgetFactory implements WidgetFactory<DateBox> {
         }
       }
     }
-    DateBox b = new AttachableDateBox();
+    DateBox b = new DateBox();
     b.setValue(d);
     if (f != null) {
       b.setFormat(new DefaultFormat(f));

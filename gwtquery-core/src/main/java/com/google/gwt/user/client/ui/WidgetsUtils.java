@@ -1,8 +1,7 @@
-package com.google.gwt.query.client.plugins.widgets;
+package com.google.gwt.user.client.ui;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
 
@@ -39,7 +38,7 @@ public class WidgetsUtils {
    * In other cases, the <code>oldElement</code> will be replaced by the <code>newElement</code>
    *  and the old element classes will be copied to the new element.
    */
-   public static void replaceOrAppend(Element oldElement, Element newElement) {
+   private static void replaceOrAppend(Element oldElement, Element newElement) {
     assert oldElement != null && newElement != null;
     
     if(matchesTags(oldElement, appendingTags)){
@@ -61,12 +60,18 @@ public class WidgetsUtils {
     */
    public static void replaceOrAppend(Element e, Widget widget)  {
      assert e != null && widget != null;
-     replaceOrAppend(e, widget.getElement());
+     
+     if (widget.isAttached()) {
+       widget.removeFromParent();
+     }
 
-     if (widget instanceof Attachable) {
-       ((Attachable)widget).attach();
+     replaceOrAppend(e, widget.getElement());
+     
+     widget.onAttach();
+     
+     if (widget instanceof RichTextArea != true) {
+       RootPanel.detachOnWindowClose(widget);
      }
    }
-
    
 }

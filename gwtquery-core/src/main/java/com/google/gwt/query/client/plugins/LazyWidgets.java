@@ -14,24 +14,13 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.RichTextWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.query.client.LazyBase;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
+import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -41,9 +30,6 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import java.util.ArrayList;
-import java.util.List;
-import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
 

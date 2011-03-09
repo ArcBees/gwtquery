@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 
 public class DisclosurePanelWidgetFactory implements
     WidgetFactory<DisclosurePanel> {
@@ -53,16 +54,6 @@ public class DisclosurePanelWidgetFactory implements
   }
 
   public DisclosurePanel create(Element e) {
-    AttachableComposite<DisclosurePanel> attachableDisclosurePanel = new AttachableComposite<DisclosurePanel>(
-        new DisclosurePanel());
-
-    initialize(attachableDisclosurePanel, e);
-
-    return attachableDisclosurePanel.getOriginalWidget();
-  }
-
-  protected void initialize(AttachableComposite<DisclosurePanel> widget,
-      Element e) {
     
     String headerValue = "";
     if (options.getHeaderTitle() != null){
@@ -71,12 +62,12 @@ public class DisclosurePanelWidgetFactory implements
       headerValue = $(options.getHeaderSelector(), e).first().remove().text();
     }
     
-    DisclosurePanel disclosurePanel = widget.getOriginalWidget();
-   
+    DisclosurePanel disclosurePanel = new DisclosurePanel();
     disclosurePanel.setHeader(new Label(headerValue));
     disclosurePanel.add(new HTMLPanel(e.getString()));
-    WidgetsUtils.replaceOrAppend(e, widget);
-
+    
+    WidgetsUtils.replaceOrAppend(e, disclosurePanel);
+    return disclosurePanel;
   }
 
 }

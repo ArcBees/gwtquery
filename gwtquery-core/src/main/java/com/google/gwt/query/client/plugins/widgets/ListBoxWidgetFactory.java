@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link ListBox} widget.
@@ -77,36 +78,27 @@ public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
     if (WidgetsUtils.matchesTags(e, "select")) {
 
       SelectElement selectElement = e.cast();
-
       if (selectElement.isMultiple() != options.isMultipleSelect()) {
         selectElement.setMultiple(options.isMultipleSelect());
       }
-
       return ListBox.wrap(e);
     }
 
-    SelectElement selectElement = Document.get().createSelectElement(
-        options.isMultipleSelect());
+    ListBox listBox = new ListBox(options.isMultipleSelect());
     
     GQuery itemsList = getItemsList(e);
-
-    WidgetsUtils.replaceOrAppend(e, selectElement);
-
-    ListBox listBox = ListBox.wrap(selectElement);
-
     for (Element item : itemsList.elements()) {
       listBox.addItem(item.getInnerText());
     }
 
+    WidgetsUtils.replaceOrAppend(e, listBox);
     return listBox;
-
   }
 
   private GQuery getItemsList(Element e) {
     if (options.getOptionsSelector() != null) {
       return $(options.getOptionsSelector(), e);
     }
-
     return $(e).children();
   }
 }

@@ -6,9 +6,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created
@@ -53,14 +53,6 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
     }
   }
   
-  private static class ExtendedTabPanel extends TabPanel implements Attachable{
-
-    public void attach() {
-      onAttach();
-      RootPanel.detachOnWindowClose(this);
-    }
-  }
-
   private TabPanelOptions options;
 
   public TabPanelWidgetFactory(TabPanelOptions o) {
@@ -68,16 +60,7 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
   }
 
   public TabPanel create(Element e) {
-    ExtendedTabPanel tabPanel = new ExtendedTabPanel();
-
-    initialize(tabPanel, options, e);
-
-    return tabPanel;
-  }
-
-
-  protected void initialize(ExtendedTabPanel tabPanel, TabPanelOptions options,
-      Element e) {
+    TabPanel tabPanel = new TabPanel();
 
     GQuery tabs = $(options.getTabSelector(), e);
     GQuery titles = $(options.getTitleSelector(), e);
@@ -95,12 +78,11 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
           ? title.getInnerText() : "Tab " + (i + 1));
 
     }
-
     if (tabs.length() > 0) {
       tabPanel.selectTab(0);
     }
 
     WidgetsUtils.replaceOrAppend(e, tabPanel);
-
+    return tabPanel;
   }
 }

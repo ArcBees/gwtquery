@@ -9,6 +9,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
+import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link SuggestBox} widget.
@@ -85,12 +86,10 @@ public class SuggestBoxWidgetFactory implements WidgetFactory<SuggestBox> {
       return SuggestBox.wrap(suggestOracle, e);
     }
 
-    InputElement inputElement = Document.get().createTextInputElement();
+    SuggestBox sbox = new SuggestBox(suggestOracle);
+    WidgetsUtils.replaceOrAppend(e, sbox);
 
-    WidgetsUtils.replaceOrAppend(e, inputElement);
-
-    return SuggestBox.wrap(suggestOracle, inputElement);
-
+    return sbox;
   }
 
   private SuggestOracle createOracle(Element e) {
@@ -108,7 +107,6 @@ public class SuggestBoxWidgetFactory implements WidgetFactory<SuggestBox> {
     }
 
     return oracle;
-
   }
 
 }
