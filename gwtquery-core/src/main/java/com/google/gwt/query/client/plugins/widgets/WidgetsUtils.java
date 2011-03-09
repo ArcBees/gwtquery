@@ -1,7 +1,9 @@
-package com.google.gwt.user.client.ui;
+package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.ui.GqUi;
+import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
 
@@ -60,18 +62,8 @@ public class WidgetsUtils {
     */
    public static void replaceOrAppend(Element e, Widget widget)  {
      assert e != null && widget != null;
-     
-     if (widget.isAttached()) {
-       widget.removeFromParent();
-     }
-
+     GqUi.detachWidget(widget);
      replaceOrAppend(e, widget.getElement());
-     
-     widget.onAttach();
-     
-     if (widget instanceof RichTextArea != true) {
-       RootPanel.detachOnWindowClose(widget);
-     }
+     GqUi.attachWidget(widget);
    }
-   
 }

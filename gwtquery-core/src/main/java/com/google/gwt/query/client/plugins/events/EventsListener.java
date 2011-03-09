@@ -223,10 +223,12 @@ public class EventsListener implements EventListener {
         .createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
-      
-      if (!listener.hasEventType(eventbits) || (namespace != null && namespace.length() != 0 && !listener.nameSpace.equals(namespace))) {
-        newList.add(listener);
+      boolean matchNS = namespace == null || namespace.isEmpty() || listener.nameSpace.equals(namespace);
+      boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
+      if (matchNS && matchEV) {
+        continue;
       }
+      newList.add(listener);
     }
     elementEvents = newList;
   }

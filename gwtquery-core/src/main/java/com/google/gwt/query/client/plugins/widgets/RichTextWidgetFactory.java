@@ -5,7 +5,6 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link RichTextArea} widget. 

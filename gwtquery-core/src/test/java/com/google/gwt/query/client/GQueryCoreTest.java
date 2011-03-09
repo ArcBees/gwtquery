@@ -874,6 +874,24 @@ public class GQueryCoreTest extends GWTTestCase {
 
     assertEquals(2, $(new Label(""), new TextArea()).size());
   }
+  
+  public void testGQueryWidgetManipulation() {
+    
+    String content = "<div class='outer'></div>";
+    $(e).html(content);
+    Button b = new Button("b");
+    RootPanel.get().add(b);
+    assertTrue(b.isAttached());
+    $("button").remove();
+    assertFalse(b.isAttached());
+    
+    Button b2 = new Button("b");
+    $(e).append($(b2));
+    assertTrue(b2.isAttached());
+    
+    $(e).empty();
+    
+  }
 
   public void testGQueryMap() {
     String content = "<p id='1'/><p/><p id='2'/><p id='4'/>";

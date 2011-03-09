@@ -9,7 +9,6 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link SuggestBox} widget.

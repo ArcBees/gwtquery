@@ -7,7 +7,6 @@ import java.util.Date;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 

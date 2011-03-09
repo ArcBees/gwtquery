@@ -23,6 +23,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
@@ -43,7 +44,6 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 /**

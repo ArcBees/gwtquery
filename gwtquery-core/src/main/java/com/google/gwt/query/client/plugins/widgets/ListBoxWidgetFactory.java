@@ -7,7 +7,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link ListBox} widget.

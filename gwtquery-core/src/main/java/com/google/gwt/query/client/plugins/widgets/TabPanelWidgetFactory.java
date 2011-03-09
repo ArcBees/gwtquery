@@ -8,7 +8,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created

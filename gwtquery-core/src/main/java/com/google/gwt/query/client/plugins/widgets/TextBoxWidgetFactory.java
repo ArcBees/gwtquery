@@ -5,7 +5,6 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link TextBox} widget. A {@link TextBox} is created

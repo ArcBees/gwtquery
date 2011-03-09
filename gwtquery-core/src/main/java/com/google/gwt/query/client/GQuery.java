@@ -47,10 +47,12 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -1061,14 +1063,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * whenever you create a new iframe and you want to add dynamic content to it.
    */
   public GQuery empty() {
-    // TODO: add memory leak cleanup, remove event handlers, and
-    // data caches
+    // TODO: add memory leak cleanup, remove event handlers
     for (Element e : elements()) {
       if (e.getNodeType() == Element.DOCUMENT_NODE) {
         emptyDocument(e.<Document> cast());
       } else {
-        while (e.getFirstChild() != null) {
-          e.removeChild(e.getFirstChild());
+        Node c = e.getFirstChild();
+        while (c != null) {
+          $(c).unbind(0);
+          removeData(c.<Element>cast(), null);
+          Widget w = getAssociatedWidget(e);
+          if (w != null) {
+            w.removeFromParent();
+          } else {
+            e.removeChild(c);
+            c = e.getFirstChild();
+          }
         }
       }
     }
@@ -1957,9 +1967,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery remove() {
     for (Element e : elements()) {
-      // TODO: cleanup event bindings
+      $(e).unbind(0);
       removeData(e, null);
-      if (e.getParentNode() != null) {
+      Widget w = getAssociatedWidget(e);
+      if (w != null && w.isAttached()) {
+        w.removeFromParent();
+      } else if (e.getParentNode() != null) {
         e.getParentNode().removeChild(e);
       }
     }
@@ -2834,8 +2847,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       // e.getOwnerDocument();
       if (e.getNodeType() == Node.DOCUMENT_NODE) {
         e = e.<Document> cast().getBody();
-      }
+      }  
       for (int j = 0; j < g.size(); j++) {
+        Widget w = getAssociatedWidget(g.get(j));
+        GqUi.detachWidget(w);
         Node n = g.get(j);
         if (g.size() > 1) {
           n = n.cloneNode(true);
@@ -2855,6 +2870,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
+        GqUi.attachWidget(w);
       }
     }
     if (newNodes.size() > g.size()) {

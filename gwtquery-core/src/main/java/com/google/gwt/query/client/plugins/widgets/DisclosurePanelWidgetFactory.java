@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 public class DisclosurePanelWidgetFactory implements
     WidgetFactory<DisclosurePanel> {

@@ -2,7 +2,6 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.WidgetsUtils;
 
 /**
  * Factory used to create a {@link Button} widget. A {@link Button} is created
