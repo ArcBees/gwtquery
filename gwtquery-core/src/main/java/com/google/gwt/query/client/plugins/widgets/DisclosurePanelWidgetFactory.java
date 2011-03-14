@@ -29,7 +29,7 @@ public class DisclosurePanelWidgetFactory implements
    * Options used to initialize new {@link Button}
    * 
    */
-  public static class DisclosurePanelOptions implements WidgetOptions {
+  public static class DisclosurePanelOptions {
 
     private String headerSelector;
     //private String headerTitle;

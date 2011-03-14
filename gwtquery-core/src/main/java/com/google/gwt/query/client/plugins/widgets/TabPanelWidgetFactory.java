@@ -35,7 +35,7 @@ public class TabPanelWidgetFactory implements WidgetFactory<TabPanel> {
    * Options used to initialize new {@link Button}
    * 
    */
-  public static class TabPanelOptions implements WidgetOptions {
+  public static class TabPanelOptions {
 
     private String tabSelector;
     private String titleSelector;

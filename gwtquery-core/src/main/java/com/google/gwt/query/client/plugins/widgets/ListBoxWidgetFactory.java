@@ -32,7 +32,7 @@ public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
    * Options used to create a {@link ListBox}
    * 
    */
-  public static class ListBoxOptions implements WidgetOptions {
+  public static class ListBoxOptions {
 
     private String optionsSelector;
     private boolean multipleSelect;

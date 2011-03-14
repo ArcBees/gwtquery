@@ -17,10 +17,12 @@ package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.CheckBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.RadioButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.StackPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
@@ -31,13 +33,16 @@ import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
+import com.google.gwt.query.client.plugins.widgets.RadioButtonWidgetFactory.RadioButtonOption;
 import com.google.gwt.query.client.plugins.widgets.StackPanelWidgetFactory.StackPanelOptions;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -135,6 +140,16 @@ public interface LazyWidgets<T> extends LazyBase<T>{
   LazyWidgets<T> passwordBox();
 
   /**
+   * Create a {@link CheckBox} widget for each selected element.
+   */
+  LazyWidgets<T> checkBox(WidgetInitializer<CheckBox> initializers);
+
+  /**
+   * Create a {@link CheckBox} widget for each selected element.
+   */
+  LazyWidgets<T> checkBox();
+
+  /**
    * Create a {@link PasswordTextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new
    * {@link PasswordTextBox} created by passing them in parameter.
@@ -169,6 +184,32 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * title
    */
   LazyWidgets<T> stackPanel();
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name specified in
+   * the {@link RadioButtonOption o}
+   */
+  LazyWidgets<T> radioButton(RadioButtonOption o, WidgetInitializer<RadioButton> initializers);
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name specified in
+   * the {@link RadioButtonOption o}
+   */
+  LazyWidgets<T> radioButton(RadioButtonOption o);
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name
+   */
+  LazyWidgets<T> radioButton(WidgetInitializer<RadioButton> initializers);
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name
+   */
+  LazyWidgets<T> radioButton();
 
   /**
    * Create a {@link SuggestBox} widget for each selected element. The

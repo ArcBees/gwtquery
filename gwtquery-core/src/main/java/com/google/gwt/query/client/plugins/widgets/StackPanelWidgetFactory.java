@@ -30,7 +30,7 @@ public class StackPanelWidgetFactory implements WidgetFactory<StackPanel> {
    * Options used to initialize new {@link Button}
    * 
    */
-  public static class StackPanelOptions implements WidgetOptions {
+  public static class StackPanelOptions {
 
     private String headerSelector;
     private String contentSelector;

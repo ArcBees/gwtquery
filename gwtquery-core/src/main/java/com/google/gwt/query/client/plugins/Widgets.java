@@ -18,10 +18,12 @@ package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.CheckBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.RadioButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.StackPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory;
@@ -32,13 +34,16 @@ import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory.DisclosurePanelOptions;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory.ListBoxOptions;
+import com.google.gwt.query.client.plugins.widgets.RadioButtonWidgetFactory.RadioButtonOption;
 import com.google.gwt.query.client.plugins.widgets.StackPanelWidgetFactory.StackPanelOptions;
 import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.SuggestBoxOptions;
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -128,7 +133,7 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<DisclosurePanel> initializers) {
     return widgets(new DisclosurePanelWidgetFactory(o), initializers);
   }
-  
+
   /**
    * Create a {@link DisclosurePanel} widget for each selected elements.
    */
@@ -153,7 +158,7 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<ListBox> initializers) {
     return widgets(new ListBoxWidgetFactory(options), initializers);
   }
-  
+
   /**
    * Create a {@link ListBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link ListBox}
@@ -188,6 +193,20 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
+   * Create a {@link CheckBox} widget for each selected element.
+   */
+  public Widgets checkBox(WidgetInitializer<CheckBox> initializers) {
+    return widgets(new CheckBoxWidgetFactory(), initializers);
+  }
+
+  /**
+   * Create a {@link CheckBox} widget for each selected element.
+   */
+  public Widgets checkBox() {
+    return widgets(new CheckBoxWidgetFactory(), null);
+  }
+
+  /**
    * Create a {@link PasswordTextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new
    * {@link PasswordTextBox} created by passing them in parameter.
@@ -211,7 +230,7 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<StackPanel> initializers) {
     return widgets(new StackPanelWidgetFactory(o), initializers);
   }
-  
+
   /**
    * Create a {@link StackPanel} widget for each selected elements. Each div
    * element inside a selected element will create a tab and the first h3
@@ -240,6 +259,41 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name specified in
+   * the {@link RadioButtonOption o}
+   */
+  public Widgets radioButton(RadioButtonOption o,
+      WidgetInitializer<RadioButton> initializers) {
+    return widgets(new RadioButtonWidgetFactory(o), initializers);
+  }
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name specified in
+   * the {@link RadioButtonOption o}
+   */
+  public Widgets radioButton(RadioButtonOption o) {
+    return widgets(new RadioButtonWidgetFactory(o), null);
+  }
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name
+   */
+  public Widgets radioButton(WidgetInitializer<RadioButton> initializers) {
+    return radioButton(new RadioButtonOption(), initializers);
+  }
+
+  /**
+   * Create {@link RadioButton} widget for each selected elements. All
+   * {@link RadioButton} created will be group under the same name
+   */
+  public Widgets radioButton() {
+    return radioButton(new RadioButtonOption(), null);
+  }
+
+  /**
    * Create a {@link SuggestBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link SuggestBox}
    * created by passing them in parameter.
@@ -249,7 +303,7 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<SuggestBox> initializers) {
     return widgets(new SuggestBoxWidgetFactory(options), initializers);
   }
-  
+
   /**
    * Create a {@link SuggestBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link SuggestBox}
@@ -286,7 +340,7 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<TabPanel> initializers) {
     return widgets(new TabPanelWidgetFactory(o), initializers);
   }
-  
+
   /**
    * Create a {@link TabPanel} widget for each selected elements. Each div
    * element inside a selected element will create a tab and the first h3

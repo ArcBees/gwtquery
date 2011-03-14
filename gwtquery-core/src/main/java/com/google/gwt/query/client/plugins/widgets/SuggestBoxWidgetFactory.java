@@ -33,7 +33,7 @@ public class SuggestBoxWidgetFactory implements WidgetFactory<SuggestBox> {
    * Options used to create a {@link SuggestBox}
    * 
    */
-  public static class SuggestBoxOptions implements WidgetOptions {
+  public static class SuggestBoxOptions {
 
     private String suggestionsSelector;
     private SuggestOracle suggestOracle;
