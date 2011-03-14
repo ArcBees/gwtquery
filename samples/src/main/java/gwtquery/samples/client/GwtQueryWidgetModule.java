@@ -84,6 +84,8 @@ public class GwtQueryWidgetModule implements EntryPoint {
     $(".stack").as(Widgets).stackPanel();
     $(".checkBox").as(Widgets).checkBox();
     $(".radio").as(Widgets).radioButton();
+    
+    $("body > div").as(Widgets).decoratorPanel();
 
     GWT.log("Found " + $(".btn").widgets().size() + " buttons widget");
 

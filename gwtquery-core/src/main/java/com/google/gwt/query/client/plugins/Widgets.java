@@ -20,6 +20,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.CheckBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DateBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.DecoratorPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.DisclosurePanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.ListBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
@@ -40,6 +41,7 @@ import com.google.gwt.query.client.plugins.widgets.SuggestBoxWidgetFactory.Sugge
 import com.google.gwt.query.client.plugins.widgets.TabPanelWidgetFactory.TabPanelOptions;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -408,6 +410,24 @@ public class Widgets extends QueuePlugin<Widgets> {
     return widgets(new TextAreaWidgetFactory(), initializers);
   }
 
+  /**
+   * Create a {@link DecoratorPanel} widget for each selected element. 
+   */
+  public Widgets decoratorPanel() {
+    return widgets(new DecoratorPanelWidgetFactory(), null);
+  }
+
+  /**
+   * Create a {@link DecoratorPanel} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link DecoratorPanel}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets decoratorPanel(WidgetInitializer<DecoratorPanel> initializers) {
+    return widgets(new DecoratorPanelWidgetFactory(), initializers);
+  }
+
+  
   /**
    * Try to create a widget using the given factory and the given options for
    * each element of the query. Returns a new gquery set of elements with the

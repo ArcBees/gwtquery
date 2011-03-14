@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
 
-  private static final String[] appendingTags = {
+  static final String[] appendingTags = {
     "td", "th", "li"};
 
   
