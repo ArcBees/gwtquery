@@ -1,9 +1,20 @@
+/*
+ * Copyright 2011, The gwtquery team.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.widgets;
 
-import static com.google.gwt.query.client.GQuery.$;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -12,20 +23,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * element.
  * 
  */
-public class TextBoxWidgetFactory implements WidgetFactory<TextBox> {
+public class TextBoxWidgetFactory extends TextBoxBaseWidgetFactory<TextBox> {
 
-  public TextBox create(Element e) {
-
-    GQuery input = $(e).filter("input[type='text']");
-
-    if (input.get(0) != null) {
-      return TextBox.wrap(e);
-    }
-
-    TextBox textBox = new TextBox();
-    textBox.setValue(e.getInnerText());
-    WidgetsUtils.replaceOrAppend(e, textBox);
-
-    return textBox;
+  protected TextBox createWidget() {
+    return new TextBox();
   }
 }

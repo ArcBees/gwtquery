@@ -2,7 +2,7 @@
 <head>
 <title>GQuery Demo</title>
 <script language="javascript"
-    src="gwtquery.samples.GwtQueryWidgets.nocache.js"></script>
+    src="gwtquery.samples.GwtQueryWidgets.nocache.js" ></script>
 <style type="text/css">
 .outer {
     margin: 5px;
@@ -12,174 +12,176 @@
 <body>
 
 <div class="outer">
-<div class="btn">Make me a button 1!</div>
-<a class="btn">Make me a button 2!</a> <span class="btn">Make me
-a button 3!</span>
-<button class="btn">Make me a button 4!</button>
-<div class="btn">Make me a button 5!</div>
-<div class="btn">Make me a button 6!</div>
-
-</div>
-
-<input type="text" class="date" value="dd/MM/yyyy" />
-
-<div class="outer">
-<div class="inputText">I will be an Input</div>
-<span class="inputText">I will be an Input</span> <input
-    class="inputText" type="text"></input></div>
-
-<div class="outer">
-<div class="inputPsw">I will be an password input</div>
-<span class="inputPsw">I will be an password input</span> <input
-    class="inputPsw" type="password"></input></div>
-
-<div class="outer">
-<div id="tabs">
-<h3>First tab</h3>
-<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-mollis dignissim mattis. In hac habitasse platea dictumst. Cras gravida
-pellentesque purus, ullamcorper euismod enim ornare ac. Suspendisse sed
-tortor diam. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Integer a cursus erat. Nam in molestie
-lacus. Nullam adipiscing fermentum magna vel sagittis. Pellentesque et
-nisi orci. Nunc volutpat ornare malesuada. Aliquam erat volutpat. Duis
-hendrerit adipiscing mauris, vitae tincidunt dui sodales eget. Nulla ac
-velit ac nunc dapibus volutpat eget vel eros. Maecenas tincidunt, turpis
-vel placerat imperdiet, metus elit mollis sapien, et egestas felis felis
-vitae metus.</div>
-
-<h3>Second tab</h3>
-<div>Pellentesque habitant morbi tristique senectus et netus et
-malesuada fames ac turpis egestas. Duis feugiat dapibus nunc, sit amet
-sodales dolor bibendum eget. Pellentesque ac libero et nibh ultrices
-vehicula. Morbi convallis auctor ultricies. Class aptent taciti sociosqu
-ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean
-gravida eros at massa fringilla vestibulum. Sed justo dui, euismod et
-venenatis in, vehicula ut nisi. Sed sodales lorem vel est luctus vitae
-ornare erat pulvinar. Maecenas lacus sem, ultrices vitae tincidunt in,
-gravida eget quam. Vestibulum condimentum, augue nec consectetur
-egestas, mi sapien ullamcorper diam, sit amet molestie mauris odio at
-lacus.</div>
-
-<h3>Third tab</h3>
-<div class='editable'>Vestibulum turpis eros, tempor et hendrerit
-sit amet, hendrerit ut urna. Integer aliquam, neque non sollicitudin
-pulvinar, orci neque faucibus mauris, a molestie massa ligula vitae
-eros. Proin egestas, purus in pharetra aliquam, dolor odio faucibus
-lorem, ac egestas mi orci ac est. Maecenas pellentesque dui id felis
-tempus vestibulum. Vestibulum vitae nisi tortor. Etiam risus arcu,
-gravida quis pellentesque non, sodales at felis. Cras eros diam, pretium
-ut sollicitudin ut, vulputate a ipsum. Curabitur quis leo urna, in
-bibendum nibh. Ut viverra convallis purus vitae eleifend. Cras bibendum
-nulla a felis vestibulum consequat. Aliquam erat volutpat.</div>
-</div>
-</div>
-
-<div class="outer">
 <div id="disclosure">
-<h3>Show me</h3>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mollis
-dignissim mattis. In hac habitasse platea dictumst. Cras gravida
-pellentesque purus, ullamcorper euismod enim ornare ac. Suspendisse sed
-tortor diam. Cum sociis natoque penatibus et magnis dis parturient
-montes, nascetur ridiculus mus. Integer a cursus erat. Nam in molestie
-lacus. Nullam adipiscing fermentum magna vel sagittis. Pellentesque et
-nisi orci. Nunc volutpat ornare malesuada. Aliquam erat volutpat. Duis
-hendrerit adipiscing mauris, vitae tincidunt dui sodales eget. Nulla ac
-velit ac nunc dapibus volutpat eget vel eros. Maecenas tincidunt, turpis
-vel placerat imperdiet, metus elit mollis sapien, et egestas felis felis
-vitae metus.</div>
+<h3>Show the widgets</h3>
+<div>
+    <div id="tabs">
+    
+        <h3 class="tabTitle">Buttons</h3>
+        <div class="tab">
+            <div class="outer">
+                <div class="btn">Make me a button 1!</div>
+                <a class="btn">Make me a button 2!</a> 
+                <span class="btn">Make me a button 3!</span>
+                <button class="btn">Make me a button 4!</button>
+                <div class="btn">Make me a button 5!</div>
+                <div class="btn">Make me a button 6!</div>
+            </div>
+        </div>
+    
+        <h3 class="tabTitle">Inputs</h3>
+        
+        <div class="tab">
+            <input type="text" class="date"
+                value="dd/MM/yyyy" />
+            
+            <div class="outer">
+                <div class="inputText">I will be a text input</div>
+                <span class="inputText">I will be a text input</span> 
+                <input
+                    class="inputText" type="text" value="I will be a text input"></input>
+             </div>
+            
+            <div class="outer">
+                <div class="inputPsw">I will be an password input</div>
+                <span class="inputPsw">I will be an password input</span> 
+                <input
+                    class="inputPsw" type="password" value="I will be an password input"></input>
+            </div>
+            <input type="text" class="date" value="dd/MM/yyyy" />
+            
+            <div class="outer">
+                <div class="textArea">I will be a text area</div>
+                <span class="textArea">I will be a text area</span> 
+                <textarea class="textArea">I will be a text area</textarea>
+             </div>
+             
+             <div class="outer">
+                <div id="suggestBox1">
+                    <div>suggestion a</div>
+                    <div>suggestion b</div>
+                    <div>suggestion c</div>
+                    <div>suggestion d</div>
+                    <div>suggestion e</div>
+                    <div>suggestion f</div>
+                    <div>suggestion g</div>
+                    <div>suggestion h</div>
+                    <div>suggestion i</div>
+                    <div>suggestion j</div>
+                    <div>suggestion k</div>
+                    <div>suggestion l</div>
+                    <div>suggestion m</div>
+                    <div>suggestion n</div>
+                    <div>suggestion o</div>
+                    <div>suggestion p</div>
+                    <div>suggestion q</div>
+                    <div>suggestion r</div>
+                    <div>suggestion s</div>
+                    <div>suggestion t</div>
+                    <div>suggestion u</div>
+                    <div>suggestion v</div>
+                    <div>suggestion w</div>
+                    <div>suggestion x</div>
+                    <div>suggestion y</div>
+                    <div>suggestion z</div>
+                </div>
 
+                <ul id="suggestBox2">
+                    <li>suggestion a</li>
+                    <li>suggestion b</li>
+                    <li>suggestion c</li>
+                    <li>suggestion d</li>
+                    <li>suggestion e</li>
+                    <li>suggestion f</li>
+                    <li>suggestion g</li>
+                    <li>suggestion h</li>
+                    <li>suggestion i</li>
+                    <li>suggestion j</li>
+                    <li>suggestion k</li>
+                    <li>suggestion l</li>
+                    <li>suggestion m</li>
+                    <li>suggestion n</li>
+                    <li>suggestion o</li>
+                    <li>suggestion p</li>
+                    <li>suggestion q</li>
+                    <li>suggestion r</li>
+                    <li>suggestion s</li>
+                    <li>suggestion t</li>
+                    <li>suggestion u</li>
+                    <li>suggestion v</li>
+                    <li>suggestion w</li>
+                    <li>suggestion x</li>
+                    <li>suggestion y</li>
+                    <li>suggestion z</li>
+                </ul>
+        </div>
+            
+            
+        </div>
+    
+        <h3 class="tabTitle">Normal Tab</h3>
+        <div class="tab">Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. Duis feugiat dapibus nunc, sit amet
+        sodales dolor bibendum eget. Pellentesque ac libero et nibh ultrices
+        vehicula. Morbi convallis auctor ultricies. Class aptent taciti sociosqu
+        ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean
+        gravida eros at massa fringilla vestibulum. Sed justo dui, euismod et
+        venenatis in, vehicula ut nisi. Sed sodales lorem vel est luctus vitae
+        ornare erat pulvinar. Maecenas lacus sem, ultrices vitae tincidunt in,
+        gravida eget quam. Vestibulum condimentum, augue nec consectetur
+        egestas, mi sapien ullamcorper diam, sit amet molestie mauris odio at
+        lacus.</div>
+    
+        <h3 class="tabTitle">SelectBoxes</h3>
+        <div class="tab">
+            <div class="outer">
+                <select class="list">
+                    <option>option 11</option>
+                    <option>option 12</option>
+                    <option>option 13</option>
+                    <option>option 14</option>
+                </select>
+                
+                <ul class="list">
+                    <li>option 21</li>
+                    <li>option 22</li>
+                    <li>option 23</li>
+                    <li>option 23</li>
+                </ul>
+                
+                <div class="list">
+                    <div>div 1</div>
+                    <div>div 2</div>
+                    <span>span 1</span> 
+                    <span>span 1</span>
+                </div>
+            
+                <div id="multiSelect">
+                    <div>div 1</div>
+                    <div class="item">div 2</div>
+                    <span>span 1</span> 
+                    <span class="item">span 1</span>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="tabTitle">StackPanel</h3>
+        <div class="tab">
+            <div class="stack">
+                <h3>header 1</h3>
+                <div> content 1</div>
+                
+                <h3>header 2</h3>
+                <div> content 2</div>
+                
+                <h3>header 3</h3>
+                <div> content 3</div>
+            </div>
+        </div>
+    </div>      
+ </div>
+</div>
 </div>
 
-<div class="outer"><select class="list">
-    <option>option 11</option>
-    <option>option 12</option>
-    <option>option 13</option>
-    <option>option 14</option>
-</select>
-
-<ul class="list">
-    <li>option 21</li>
-    <li>option 22</li>
-    <li>option 23</li>
-    <li>option 23</li>
-</ul>
-
-<div class="list">
-<div>div 1</div>
-<div>div 2</div>
-<span>span 1</span> <span>span 1</span></div>
-
-<div id="multiSelect">
-<div>div 1</div>
-<div class="item">div 2</div>
-<span>span 1</span> <span class="item">span 1</span></div>
-</div>
-
-<div class="outer">
-<div  id="suggestBox1">
-    <div>suggestion a</div>
-    <div>suggestion b</div>
-    <div>suggestion c</div>
-    <div>suggestion d</div>
-    <div>suggestion e</div>
-    <div>suggestion f</div>
-    <div>suggestion g</div>
-    <div>suggestion h</div>
-    <div>suggestion i</div>
-    <div>suggestion j</div>
-    <div>suggestion k</div>
-    <div>suggestion l</div>
-    <div>suggestion m</div>
-    <div>suggestion n</div>
-    <div>suggestion o</div>
-    <div>suggestion p</div>
-    <div>suggestion q</div>
-    <div>suggestion r</div>
-    <div>suggestion s</div>
-    <div>suggestion t</div>
-    <div>suggestion u</div>
-    <div>suggestion v</div>
-    <div>suggestion w</div>
-    <div>suggestion x</div>
-    <div>suggestion y</div>
-    <div>suggestion z</div>
-</div>
-
-<ul id="suggestBox2">
-    <li>suggestion a</li>
-    <li>suggestion b</li>
-    <li>suggestion c</li>
-    <li>suggestion d</li>
-    <li>suggestion e</li>
-    <li>suggestion f</li>
-    <li>suggestion g</li>
-    <li>suggestion h</li>
-    <li>suggestion i</li>
-    <li>suggestion j</li>
-    <li>suggestion k</li>
-    <li>suggestion l</li>
-    <li>suggestion m</li>
-    <li>suggestion n</li>
-    <li>suggestion o</li>
-    <li>suggestion p</li>
-    <li>suggestion q</li>
-    <li>suggestion r</li>
-    <li>suggestion s</li>
-    <li>suggestion t</li>
-    <li>suggestion u</li>
-    <li>suggestion v</li>
-    <li>suggestion w</li>
-    <li>suggestion x</li>
-    <li>suggestion y</li>
-    <li>suggestion z</li>
-</ul>
-</div>
-
-<ul>
-<li class="btn">Append a button here</li>
-<li class="inputText">Append a textbox here</li>
-<li class="list"><div>item1</div><div>item2</div></li>
-</ul>
+</body>
 </html>

@@ -1,8 +1,22 @@
+/*
+ * Copyright 2011, The gwtquery team.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.query.client.GQuery;
@@ -73,18 +87,12 @@ public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
   }
 
   public ListBox create(Element e) {
-
+    
+    ListBox listBox = new ListBox(options.isMultipleSelect());
     if (WidgetsUtils.matchesTags(e, "select")) {
-
-      SelectElement selectElement = e.cast();
-      if (selectElement.isMultiple() != options.isMultipleSelect()) {
-        selectElement.setMultiple(options.isMultipleSelect());
-      }
-      return ListBox.wrap(e);
+      copyAttributes((SelectElement)e.cast(),(SelectElement)listBox.getElement().cast());
     }
 
-    ListBox listBox = new ListBox(options.isMultipleSelect());
-    
     GQuery itemsList = getItemsList(e);
     for (Element item : itemsList.elements()) {
       listBox.addItem(item.getInnerText());
@@ -94,7 +102,18 @@ public class ListBoxWidgetFactory implements WidgetFactory<ListBox> {
     return listBox;
   }
 
-  private GQuery getItemsList(Element e) {
+  protected void copyAttributes(SelectElement source, SelectElement destination) {
+    destination.setDisabled(source.isDisabled());
+    destination.setName(source.getName());
+    destination.setSelectedIndex(source.getSelectedIndex());
+    destination.setSize(source.getSize());
+    
+  }
+
+  protected GQuery getItemsList(Element e) {
+    if ("select".equalsIgnoreCase(e.getTagName())){
+      return $("option", e);
+    }
     if (options.getOptionsSelector() != null) {
       return $(options.getOptionsSelector(), e);
     }

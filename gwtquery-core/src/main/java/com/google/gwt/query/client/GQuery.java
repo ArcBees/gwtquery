@@ -46,7 +46,6 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -2842,8 +2841,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         e = e.<Document> cast().getBody();
       }  
       for (int j = 0; j < g.size(); j++) {
-        Widget w = getAssociatedWidget(g.get(j));
-        GqUi.detachWidget(w);
+        /*Widget w = getAssociatedWidget(g.get(j));
+        GqUi.detachWidget(w);*/
         Node n = g.get(j);
         if (g.size() > 1) {
           n = n.cloneNode(true);
@@ -2863,7 +2862,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
-        GqUi.attachWidget(w);
+        //GqUi.attachWidget(w);
       }
     }
     if (newNodes.size() > g.size()) {
