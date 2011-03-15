@@ -41,14 +41,14 @@
         <artifactId>maven-deploy-plugin</artifactId>
         <executions>
           <execution>
-            <phase>install</phase>
+            <phase>deploy</phase>
             <goals>
               <goal>deploy-file</goal>
             </goals>
             <configuration>
               <file>${project.build.directory}/gwtquery-${version}-${artifactId}.jar</file>
-              <repositoryId>sonatype-nexus-snapshots</repositoryId>
-              <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+              <repositoryId>${repoId}</repositoryId>
+              <url>${repoUrl}</url>
               <packaging>jar</packaging>
               <artifactId>gwtquery</artifactId>
               <groupId>${groupId}</groupId>

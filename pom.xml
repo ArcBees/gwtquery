@@ -166,6 +166,8 @@
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix></gwt.modulesuffix>
         <gwtmaven>2.1.0-1</gwtmaven>
+        <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
+        <repoId>sonatype-nexus-snapshots</repoId>
     </properties>
 
     <profiles>
@@ -189,6 +191,20 @@
                     <url>svn:https://timefire-repository.googlecode.com/svn/mavenrepo/</url>
                 </snapshotRepository>
            </distributionManagement>
+        </profile>
+        <profile>
+          <id>local</id>
+          <properties>
+            <repoId>local mavenrepo</repoId>
+            <repoUrl>file://mavenrepo</repoUrl>
+          </properties>
+          <distributionManagement>
+            <snapshotRepository>
+              <uniqueVersion>false</uniqueVersion>
+              <id>local mavenrepo</id>
+              <url>file://mavenrepo</url>
+            </snapshotRepository>
+          </distributionManagement>
         </profile>
     </profiles>
 </project>
