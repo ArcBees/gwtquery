@@ -76,6 +76,16 @@ public class WidgetsUtils {
     }
    }
    
+   private static void hideAndAppend(Element oldElement, Element newElement) {
+     assert oldElement != null && newElement != null;
+     GQuery.$(oldElement).hide().after(newElement);
+     String c = oldElement.getClassName();
+     if (!c.isEmpty()) {
+       newElement.addClassName(c);
+     }
+    }
+
+   
    /**
     * Replace a dom element by a widget.
     * Old element classes will be copied to the new widget.
@@ -84,6 +94,17 @@ public class WidgetsUtils {
      assert e != null && widget != null;
      GqUi.detachWidget(widget);
      replaceOrAppend(e, widget.getElement());
+     GqUi.attachWidget(widget);
+   }
+
+   /**
+    * Append a widget to a dom element, and hide it.
+    * Element classes will be copied to the new widget.
+    */
+   public static void hideAndAppend(Element e, Widget widget)  {
+     assert e != null && widget != null;
+     GqUi.detachWidget(widget);
+     hideAndAppend(e, widget.getElement());
      GqUi.attachWidget(widget);
    }
   
