@@ -93,9 +93,14 @@ public class WidgetsUtils {
    
    private static void replaceWidget(Widget oldWidget, Widget newWidget, boolean remove) {
      Widget parent = oldWidget.getParent();
+     boolean removed = false;
      // TODO: handle tables
      if (parent instanceof HTMLPanel) {
        ((HTMLPanel) parent).addAndReplaceElement(newWidget, oldWidget.getElement().<com.google.gwt.dom.client.Element>cast());
+       if (!remove) {
+         $(newWidget).before($(oldWidget));
+       }
+       removed = true;
      } else if (parent instanceof ComplexPanel) {
        ((ComplexPanel) parent).add(newWidget);
      } else if (parent instanceof SimplePanel) {
@@ -105,7 +110,7 @@ public class WidgetsUtils {
      } else {
        assert false : "Can not replace an attached widget whose parent is a " + parent.getClass().getName();
      }
-     if (remove) {
+     if (remove && !removed && oldWidget.isAttached()) {
        oldWidget.removeFromParent();
      } else {
        oldWidget.setVisible(false);
@@ -118,7 +123,7 @@ public class WidgetsUtils {
     */
    public static void replaceOrAppend(Element e, Widget widget)  {
      assert e != null && widget != null;
-     if ($(e).widget() != null) {
+     if ($(e).widget() != null && $(e).widget().isAttached()) {
        replaceWidget($(e).widget(), widget, true);
      } else {
        GqUi.detachWidget(widget);
@@ -133,7 +138,7 @@ public class WidgetsUtils {
     */
    public static void hideAndAfter(Element e, Widget widget)  {
      assert e != null && widget != null;
-     if ($(e).widget() != null) {
+     if ($(e).widget() != null && $(e).widget().isAttached()) {
        replaceWidget($(e).widget(), widget, false);
      } else {
        GqUi.detachWidget(widget);
