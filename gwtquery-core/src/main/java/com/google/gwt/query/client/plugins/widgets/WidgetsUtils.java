@@ -15,9 +15,15 @@
  */
 package com.google.gwt.query.client.plugins.widgets;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.GqUi;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class WidgetsUtils {
@@ -76,15 +82,35 @@ public class WidgetsUtils {
     }
    }
    
-   private static void hideAndAppend(Element oldElement, Element newElement) {
+   private static void hideAndAfter(Element oldElement, Element newElement) {
      assert oldElement != null && newElement != null;
      GQuery.$(oldElement).hide().after(newElement);
      String c = oldElement.getClassName();
      if (!c.isEmpty()) {
        newElement.addClassName(c);
      }
-    }
-
+   }
+   
+   private static void replaceWidget(Widget oldWidget, Widget newWidget, boolean remove) {
+     Widget parent = oldWidget.getParent();
+     // TODO: handle tables
+     if (parent instanceof HTMLPanel) {
+       ((HTMLPanel) parent).addAndReplaceElement(newWidget, oldWidget.getElement().<com.google.gwt.dom.client.Element>cast());
+     } else if (parent instanceof ComplexPanel) {
+       ((ComplexPanel) parent).add(newWidget);
+     } else if (parent instanceof SimplePanel) {
+       ((SimplePanel) parent).setWidget(newWidget);
+     } else if (parent instanceof Panel) {
+       ((Panel) parent).add(newWidget);
+     } else {
+       assert false : "Can not replace an attached widget whose parent is a " + parent.getClass().getName();
+     }
+     if (remove) {
+       oldWidget.removeFromParent();
+     } else {
+       oldWidget.setVisible(false);
+     }
+   }
    
    /**
     * Replace a dom element by a widget.
@@ -92,20 +118,27 @@ public class WidgetsUtils {
     */
    public static void replaceOrAppend(Element e, Widget widget)  {
      assert e != null && widget != null;
-     GqUi.detachWidget(widget);
-     replaceOrAppend(e, widget.getElement());
-     GqUi.attachWidget(widget);
+     if ($(e).widget() != null) {
+       replaceWidget($(e).widget(), widget, true);
+     } else {
+       GqUi.detachWidget(widget);
+       replaceOrAppend(e, widget.getElement());
+       GqUi.attachWidget(widget);
+     }
    }
 
    /**
     * Append a widget to a dom element, and hide it.
     * Element classes will be copied to the new widget.
     */
-   public static void hideAndAppend(Element e, Widget widget)  {
+   public static void hideAndAfter(Element e, Widget widget)  {
      assert e != null && widget != null;
-     GqUi.detachWidget(widget);
-     hideAndAppend(e, widget.getElement());
-     GqUi.attachWidget(widget);
+     if ($(e).widget() != null) {
+       replaceWidget($(e).widget(), widget, false);
+     } else {
+       GqUi.detachWidget(widget);
+       hideAndAfter(e, widget.getElement());
+       GqUi.attachWidget(widget);
+     }
    }
-  
 }

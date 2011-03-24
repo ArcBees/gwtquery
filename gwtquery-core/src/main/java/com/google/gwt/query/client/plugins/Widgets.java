@@ -446,7 +446,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   protected boolean isWidgetCreationAuthorizedFrom(Element e) {
-    return $(e).widget() == null && !WidgetsUtils.matchesTags(e, excludedTags);
+    return !WidgetsUtils.matchesTags(e, excludedTags);
   }
 
   /**
@@ -461,9 +461,7 @@ public class Widgets extends QueuePlugin<Widgets> {
 
     W widget = factory.create(e);
     if (initializer != null) {
-
       initializer.initialize(widget, e);
-
     }
     return widget;
   }
