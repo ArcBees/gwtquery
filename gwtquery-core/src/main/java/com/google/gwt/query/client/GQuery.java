@@ -1086,7 +1086,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Reduce GQuery to element in the specified position.
+   * Reduce GQuery to element in the specified position. This method accept
+   * negative index. A negative index is counted from the end of the matched
+   * set:
+   * 
+   * Example:
+   * 
+   * <pre>
+   *  $("div").eq(0) will reduce the matched set to the first matched div
+   *  $("div").eq(1) will reduce the matched set to the second matched div
+   *  
+   *  $("div").eq(-1) will reduce the matched set to the last matched div
+   *  $("div").eq(-2) will reduce the matched set to the second-to-last matched div
+   *  ...
+   * </pre>
    */
   public GQuery eq(int pos) {
     return $(get(pos));
@@ -1225,11 +1238,28 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Return the ith element matched.
+   * Return the ith element matched. This method accept negative index. A
+   * negative index is counted from the end of the matched set.
+   * 
+   * Example:
+   * <pre>
+   *  $("div").get(0) will return the first matched div
+   *  $("div").get(1) will return the second matched div
+   *  
+   *  $("div").get(-1) will return the last matched div
+   *  $("div").get(-2) will return the secont-to-last matched div
+   *  ...
+   * </pre>
    */
   public Element get(int i) {
     int l = elements.getLength();
-    return i >= 0 && i < l ? elements.getItem(i) : null;
+    if (i >= 0 && i < l) {
+      return elements.getItem(i);
+    }
+    if (i < 0 && l + i >= 0) {
+      return elements.getItem(l + i);
+    }
+    return null;
   }
 
   /**

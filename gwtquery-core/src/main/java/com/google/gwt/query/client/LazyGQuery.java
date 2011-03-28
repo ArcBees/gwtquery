@@ -24,7 +24,6 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -49,6 +48,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -430,7 +430,20 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> end();
 
   /**
-   * Reduce GQuery to element in the specified position.
+   * Reduce GQuery to element in the specified position. This method accept
+   * negative index. A negative index is counted from the end of the matched
+   * set:
+   * 
+   * Example:
+   * 
+   * <pre>
+   *  $("div").eq(0) will reduce the matched set to the first matched div
+   *  $("div").eq(1) will reduce the matched set to the second matched div
+   *  
+   *  $("div").eq(-1) will reduce the matched set to the last matched div
+   *  $("div").eq(-2) will reduce the matched set to the second-to-last matched div
+   *  ...
+   * </pre>
    */
   LazyGQuery<T> eq(int pos);
 
@@ -506,7 +519,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   NodeList<Element> get();
 
   /**
-   * Return the ith element matched.
+   * Return the ith element matched. This method accept negative index. A
+   * negative index is counted from the end of the matched set.
+   * 
+   * Example:
+   * <pre>
+   *  $("div").get(0) will return the first matched div
+   *  $("div").get(1) will return the second matched div
+   *  
+   *  $("div").get(-1) will return the last matched div
+   *  $("div").get(-2) will return the secont-to-last matched div
+   *  ...
+   * </pre>
    */
   Element get(int i);
 

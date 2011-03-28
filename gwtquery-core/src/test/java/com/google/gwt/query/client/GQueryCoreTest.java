@@ -717,6 +717,48 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("p", e).slice(0, -1).size());
     assertEquals(0, $("p", e).slice(3, 2).size());
   }
+  
+  public void testGetEqLastFirstMethods(){
+    String content = "<div id='1'>blop1</div><div id='2'>blop2</div><div id='3'>blop3</div><div id='4'>blop4</div>";
+    $(e).html(content);
+    
+    GQuery divs =$("div",e);
+    assertEquals(4, divs.size());
+    assertEquals("1", divs.get(0).getId());
+    assertEquals("2", divs.get(1).getId());
+    assertEquals("3", divs.get(2).getId());
+    assertEquals("4", divs.get(3).getId());
+    assertEquals("1", divs.get(-4).getId());
+    assertEquals("2", divs.get(-3).getId());
+    assertEquals("3", divs.get(-2).getId());
+    assertEquals("4", divs.get(-1).getId());
+    
+    assertEquals(1, divs.first().size());
+    assertEquals("1", divs.first().get(0).getId());
+    
+    assertEquals(1, divs.last().size());
+    assertEquals("4", divs.last().get(0).getId());
+    
+    assertEquals(1, divs.eq(0).size());
+    assertEquals("1", divs.eq(0).get(0).getId());
+    assertEquals(1, divs.eq(1).size());
+    assertEquals("2", divs.eq(1).get(0).getId());
+    assertEquals(1, divs.eq(2).size());
+    assertEquals("3", divs.eq(2).get(0).getId());
+    assertEquals(1, divs.eq(3).size());
+    assertEquals("4", divs.eq(3).get(0).getId());
+    
+    assertEquals(1, divs.eq(-4).size());
+    assertEquals("1", divs.eq(-4).get(0).getId());
+    assertEquals(1, divs.eq(-3).size());
+    assertEquals("2", divs.eq(-3).get(0).getId());
+    assertEquals(1, divs.eq(-2).size());
+    assertEquals("3", divs.eq(-2).get(0).getId());
+    assertEquals(1, divs.eq(-1).size());
+    assertEquals("4", divs.eq(-1).get(0).getId());
+    
+    
+  }
 
   public void testUnique() {
     SelectorEngineImpl selSizz = new SelectorEngineSizzle();
