@@ -1064,9 +1064,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       } else {
         Node c = e.getFirstChild();
         while (c != null) {
-          removeData(c.<Element>cast(), null);
+          removeData(c.<Element> cast(), null);
           GqUi.detachWidget(getAssociatedWidget(e));
-          EventsListener.getInstance(c.<Element>cast()).clean();
+          EventsListener.clean(c.<Element> cast());
           e.removeChild(c);
           c = e.getFirstChild();
         }
@@ -1165,26 +1165,26 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * filters at once.
    */
   public GQuery filter(String... filters) {
-    
+
     JsNodeArray array = JsNodeArray.create();
-    
+
     for (String f : filters) {
       for (Element e : elements()) {
         boolean ghostParent = false;
-        
-        if (e.getParentNode() == null){
+
+        if (e.getParentNode() == null) {
           DOM.createDiv().appendChild(e);
           ghostParent = true;
         }
-        
+
         for (Element c : $(f, e.getParentNode()).elements()) {
           if (c == e) {
             array.addNode(c);
             break;
           }
         }
-        
-        if(ghostParent){
+
+        if (ghostParent) {
           e.removeFromParent();
         }
       }
@@ -1240,6 +1240,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * negative index is counted from the end of the matched set.
    * 
    * Example:
+   * 
    * <pre>
    *  $("div").get(0) will return the first matched div
    *  $("div").get(1) will return the second matched div
@@ -1562,7 +1563,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <W> List<W> map(Function f) {
-    @SuppressWarnings("rawtypes")
     ArrayList ret = new ArrayList();
     for (int i = 0; i < elements().length; i++) {
       Object o = f.f(elements()[i], i);
@@ -1986,26 +1986,62 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Removes all matched elements from the DOM.
    */
   public GQuery remove() {
-    for (Element e : elements()) {
-      Widget w = getAssociatedWidget(e);
-      if (w != null) {
-        w.removeFromParent();
-      } else {
-        e.removeFromParent();
-      }
-    }
-    return this;
+    return remove(null, true);
   }
 
   /**
-   * Removes all matched elements from the DOM and cleans their data and bound events.
+   * Removes from the DOM all matched elements filtered by the
+   * <code>filter</code>.
    */
-  public GQuery remove(boolean clean) {
+  public GQuery remove(String filter) {
+    return remove(filter, true);
+  }
+
+  /**
+   * Detach all matched elements from the DOM. This method is the same than
+   * {@link #remove()} method except all data and event handlers are not remove
+   * from the element. This method is useful when removed elements are to be
+   * reinserted into the DOM at a later time.
+   */
+  public GQuery detach() {
+    return remove(null, false);
+  }
+
+  /**
+   * Detach from the DOM all matched elements filtered by the
+   * <code>filter</code>.. This method is the same than {@link #remove(String)}
+   * method except all data and event handlers are not remove from the element.
+   * This method is useful when removed elements are to be reinserted into the
+   * DOM at a later time.
+   */
+  public GQuery detach(String filter) {
+    return remove(filter, false);
+  }
+
+  /**
+   * Removes all matched elements from the DOM and cleans their data and bound
+   * events if the value of <code>clean</code> parameter is set to true. The
+   * <code> filter</code> parameter allows to filter the matched set to remove.
+   */
+  protected GQuery remove(String filter, boolean clean) {
+     
     for (Element e : elements()) {
-      EventsListener.getInstance(e).clean();
-      removeData(e, null);
+      if (filter == null || $(e).filter(filter).length() == 1) {
+        if (clean) {
+          //clean data linked to the children
+          cleanGQData($(e.getElementsByTagName("*")).elements());
+          //clean data linked to the element itself
+          cleanGQData(e);
+        }
+        Widget w = getAssociatedWidget(e);
+        if (w != null) {
+          w.removeFromParent();
+        } else {
+          e.removeFromParent();
+        }
+      }
     }
-    remove();
+
     return this;
   }
 
@@ -2877,10 +2913,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       // e.getOwnerDocument();
       if (e.getNodeType() == Node.DOCUMENT_NODE) {
         e = e.<Document> cast().getBody();
-      }  
+      }
       for (int j = 0; j < g.size(); j++) {
-//        Widget w = getAssociatedWidget(g.get(j));
-//        GqUi.detachWidget(w);
+        // Widget w = getAssociatedWidget(g.get(j));
+        // GqUi.detachWidget(w);
         Node n = g.get(j);
         if (g.size() > 1) {
           n = n.cloneNode(true);
@@ -2900,8 +2936,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
-        EventsListener.getInstance(n.<Element>cast()).rebind();
-//        GqUi.attachWidget(w);
+        EventsListener.getInstance(n.<Element> cast()).rebind();
+        // GqUi.attachWidget(w);
       }
     }
     if (newNodes.size() > g.size()) {
@@ -2957,6 +2993,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     } else {
       dataCache.delete(id);
+    }
+  }
+  
+  private void cleanGQData(Element... elements){
+    for (Element el : elements){
+      EventsListener.clean(el);
+      removeData(el, null);
     }
   }
 }

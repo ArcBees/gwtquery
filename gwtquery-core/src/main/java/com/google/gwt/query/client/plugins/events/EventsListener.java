@@ -73,25 +73,35 @@ public class EventsListener implements EventListener {
   // Gwt Events class has not this event defined
   public static int ONSUBMIT = 0x08000;
 
+  public static void clean(Element e) {
+    EventsListener ret = getGQueryEventListener(e);
+    if (ret != null){
+      ret.clean();
+    } 
+  }
+
   public static EventsListener getInstance(Element e) {
     EventsListener ret = getGQueryEventListener(e);
     return ret != null ? ret : new EventsListener(e);
   }
 
+  private static native void cleanGQListeners(Element elem) /*-{
+		if (elem.__gwtlistener) {
+			elem.__listener = elem.__gwtlistener;
+		}
+		elem.__gquerysubmit = null;
+		elem.__gqueryevent = null
+
+  }-*/;
+  
   private static native EventsListener getGQueryEventListener(Element elem) /*-{
     return elem.__gqueryevent;
   }-*/;
-
+  
   private static native EventListener getGwtEventListener(Element elem) /*-{
     return elem.__gwtlistener;
   }-*/;
-  
-  private static native void cleanGQListeners() /*-{
-    elem.__listener = elem.__gwtlistener;
-    elem.__gquerysubmit = null;
-    elem.__gqueryevent = null;
-  }-*/;
-  
+
   private static native void setGQueryEventListener(Element elem,
       EventsListener gqevent) /*-{
     if (elem.__gqueryevent) {
@@ -116,16 +126,16 @@ public class EventsListener implements EventListener {
     else
       elem.attachEvent("onsubmit", handle);
   }-*/;
-
-  double lastEvnt = 0;
-  int lastType = 0;
   int eventBits = 0;
+  double lastEvnt = 0;
+
+  int lastType = 0;
 
   private Element element;
 
   private JsObjectArray<BindFunction> elementEvents = JsObjectArray
       .createArray().cast();
-
+  
   private EventsListener(Element element) {
     this.element = element;
   }
@@ -133,12 +143,12 @@ public class EventsListener implements EventListener {
   public void bind(int eventbits, final Object data, Function...funcs) {
     bind(eventbits, null, data, funcs);
   }
-  
+
   public void bind(int eventbits, final Object data, final Function function,
       int times) {
     bind(eventbits, null, data, function, times);
   }
-
+  
   public void bind(int eventbits, String name, final Object data, Function...funcs) {
     for (Function function: funcs) {
       bind(eventbits, name, data, function, -1);
@@ -167,21 +177,6 @@ public class EventsListener implements EventListener {
     }
     for (Function function: funcs) {
       bind(b, nameSpace, data, function, -1);
-    }
-  }
-  
-  private void sink() {
-    setGQueryEventListener(element, this);
-    DOM.setEventListener((com.google.gwt.user.client.Element)element, this);
-    if (eventBits == ONSUBMIT) {
-      sinkSubmitEvent(element);
-    } else {
-      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS && element.getAttribute("tabIndex").length() == 0) {
-        element.setAttribute("tabIndex", "0");
-      }
-      DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
-          | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-      
     }
   }
   
@@ -226,6 +221,10 @@ public class EventsListener implements EventListener {
     dispatchEvent(event);
   }
   
+  public void rebind() {
+    sink();
+  }
+  
   public void unbind(int eventbits) {
     unbind(eventbits, null);
   }
@@ -257,12 +256,23 @@ public class EventsListener implements EventListener {
     unbind(b, nameSpace);
   }
   
-  public void rebind() {
-    sink();
-  }
-
-  public void clean() {
-    cleanGQListeners();
+  private void clean(){
+    cleanGQListeners(element);
     elementEvents =  JsObjectArray.createArray().cast();
+  }
+  
+  private void sink() {
+    setGQueryEventListener(element, this);
+    DOM.setEventListener((com.google.gwt.user.client.Element)element, this);
+    if (eventBits == ONSUBMIT) {
+      sinkSubmitEvent(element);
+    } else {
+      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS && element.getAttribute("tabIndex").length() == 0) {
+        element.setAttribute("tabIndex", "0");
+      }
+      DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
+          | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
+      
+    }
   }
 }

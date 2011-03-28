@@ -978,5 +978,115 @@ public class GQueryCoreTest extends GWTTestCase {
     Assert.assertNull($((String) null).get(-1));
     Assert.assertEquals(0, $((String) null).eq(0).size());
   }
+  
+  public void testRemoveMethod(){
+    String html = "<div id='parent'>parent<div id='child'>child</div></div>";
+    $(e).html(html);
+    
+    Function failCallback = new Function(){
+      @Override
+      public void f() {
+        fail("Event binding not removed");
+      }
+    };
+    
+    Element parent = $("#parent", e).get(0);
+    Element child = $("#child", e).get(0);
+    
+    $("#child", e).data("key", "child");
+    $("#child", e).click(failCallback);
+    $("#parent", e).data("key", "parent");
+    $("#parent", e).click(failCallback);
+    
+    $("#parent", e).remove();
+    
+    assertNull($(child).data("key"));
+    assertNull($(parent).data("key"));
+    //if failCallback is always binded, test fails...
+    $(child).click();
+    $(parent).click();
+    
+    
+    
+  }
+
+  public void testRemoveMethodWithFilter(){
+    String html = "<div id='parent'>parent<div id='child'>child</div></div>";
+    $(e).html(html);
+    
+    Function failCallback = new Function(){
+      @Override
+      public void f() {
+        fail("Event binding not removed");
+      }
+    };
+    
+    Function noFailCallback = new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+      }
+    };
+    
+    Element parent = $("#parent", e).get(0);
+    Element child = $("#child", e).get(0);
+    
+    $("#child", e).data("key", "child");
+    $("#child", e).click(failCallback);
+    $("#parent", e).data("key", "parent");
+    $("#parent", e).click(noFailCallback);
+    
+    $("div", e).remove("#child");
+    
+    assertNull($(child).data("key"));
+    assertEquals("parent",$(parent).data("key"));
+    
+    //if failCallback is always binded, test fails...
+    $(child).click();
+    
+    
+    $(parent).click();
+    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR));
+    
+    
+  }
+  
+  public void testDetachMethod(){
+    String html = "<div id='parent'>parent<div id='child'>child</div></div>";
+    $(e).html(html);
+    
+    Function noFailCallback = new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+      }
+    };
+    
+    Element parent = $("#parent", e).get(0);
+    Element child = $("#child", e).get(0);
+    
+    $("#child", e).data("key", "child");
+    $("#child", e).click(noFailCallback);
+    $("#parent", e).data("key", "parent");
+    $("#parent", e).click(noFailCallback);
+    
+    GQuery $parent = $("#parent", e).detach();
+    
+    assertEquals("child",$(child).data("key"));
+    assertEquals("parent",$(parent).data("key"));
+    
+    $(e).append($parent);
+    
+    assertEquals("child",$("#child", e).data("key"));
+    assertEquals("parent",$("#parent", e).data("key"));
+    
+    $("#child", e).click();
+    assertEquals("red", $(child).css(CSS.BACKGROUND_COLOR));
+    $("#parent", e).click();
+    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR));
+    
+    
+    
+  }
 
 }

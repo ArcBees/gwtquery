@@ -523,6 +523,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * negative index is counted from the end of the matched set.
    * 
    * Example:
+   * 
    * <pre>
    *  $("div").get(0) will return the first matched div
    *  $("div").get(1) will return the second matched div
@@ -964,6 +965,29 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Removes all matched elements from the DOM.
    */
   LazyGQuery<T> remove();
+
+  /**
+   * Removes from the DOM all matched elements filtered by the
+   * <code>filter</code>.
+   */
+  LazyGQuery<T> remove(String filter);
+
+  /**
+   * Detach all matched elements from the DOM. This method is the same than
+   * {@link #remove()} method except all data and event handlers are not remove
+   * from the element. This method is useful when removed elements are to be
+   * reinserted into the DOM at a later time.
+   */
+  LazyGQuery<T> detach();
+
+  /**
+   * Detach from the DOM all matched elements filtered by the
+   * <code>filter</code>.. This method is the same than {@link #remove(String)}
+   * method except all data and event handlers are not remove from the element.
+   * This method is useful when removed elements are to be reinserted into the
+   * DOM at a later time.
+   */
+  LazyGQuery<T> detach(String filter);
 
   /**
    * Remove the named attribute from every element in the matched set.
