@@ -287,12 +287,30 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     RootPanel.get().add(b);
-    $("button").click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
+    $(b).click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
 
-    $("button").click();
+    $(b).click();
     assertEquals("red", $("button").css("color"));
     assertEquals("black", $("button").css("background-color"));
     RootPanel.get().remove(b);
+    
+    $(e).append($(b));
+    $(b).css(CSS.COLOR.with(RGBColor.YELLOW), CSS.BACKGROUND_COLOR.with(RGBColor.BLUE));
+    $(b).click();
+    assertEquals("red", $("button").css("color"));
+    assertEquals("black", $("button").css("background-color"));
+  }
+
+  public void testRebind() {
+    final GQuery b = $("<p>content</p>");
+    b.click(new Function() {
+      public void f(Element e){
+        b.css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    $(e).append(b);
+    b.click();
+    assertEquals("red", $(b).css("color"));
   }
   
   public void testUnbindMultipleEvents() {

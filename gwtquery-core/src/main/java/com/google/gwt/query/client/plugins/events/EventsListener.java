@@ -74,21 +74,32 @@ public class EventsListener implements EventListener {
   public static int ONSUBMIT = 0x08000;
 
   public static EventsListener getInstance(Element e) {
-    EventsListener ret = getGQueryEventLinstener(e);
+    EventsListener ret = getGQueryEventListener(e);
     return ret != null ? ret : new EventsListener(e);
   }
 
-  private static native EventsListener getGQueryEventLinstener(Element elem) /*-{
+  private static native EventsListener getGQueryEventListener(Element elem) /*-{
     return elem.__gqueryevent;
   }-*/;
 
-  private static native EventListener getOriginalEventListener(Element elem) /*-{
-    return elem.__listener;
+  private static native EventListener getGwtEventListener(Element elem) /*-{
+    return elem.__gwtlistener;
+  }-*/;
+  
+  private static native void cleanGQListeners() /*-{
+    elem.__listener = elem.__gwtlistener;
+    elem.__gquerysubmit = null;
+    elem.__gqueryevent = null;
   }-*/;
   
   private static native void setGQueryEventListener(Element elem,
       EventsListener gqevent) /*-{
-    elem.__gqueryevent = gqevent;
+    if (elem.__gqueryevent) {
+      elem.__listener = elem.__gqueryevent;
+    } else {
+      elem.__gwtlistener = elem.__listener;
+      elem.__gqueryevent = gqevent;
+    }  
   }-*/;
 
   // Gwt does't handle submit events in DOM.sinkEvents
@@ -106,22 +117,17 @@ public class EventsListener implements EventListener {
       elem.attachEvent("onsubmit", handle);
   }-*/;
 
-  double lastEvnt=0;
-  int lastType=0;
-  
+  double lastEvnt = 0;
+  int lastType = 0;
+  int eventBits = 0;
 
   private Element element;
 
   private JsObjectArray<BindFunction> elementEvents = JsObjectArray
       .createArray().cast();
 
-  private EventListener originalEventListener;
-  
   private EventsListener(Element element) {
     this.element = element;
-    originalEventListener = getOriginalEventListener(element);
-    setGQueryEventListener(element, this);
-    DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
   }
   
   public void bind(int eventbits, final Object data, Function...funcs) {
@@ -145,17 +151,8 @@ public class EventsListener implements EventListener {
       unbind(eventbits, namespace);
       return;
     }
-    
-    if (eventbits == ONSUBMIT) {
-      sinkSubmitEvent(element);
-    } else {
-      if ((eventbits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS && element.getAttribute("tabIndex").length() == 0) {
-        element.setAttribute("tabIndex", "0");
-      }
-      DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventbits
-          | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-      
-    }
+    eventBits |= eventbits;
+    sink();
     elementEvents.add(new BindFunction(eventbits, namespace, function, data, times));
   }
   
@@ -170,6 +167,21 @@ public class EventsListener implements EventListener {
     }
     for (Function function: funcs) {
       bind(b, nameSpace, data, function, -1);
+    }
+  }
+  
+  private void sink() {
+    setGQueryEventListener(element, this);
+    DOM.setEventListener((com.google.gwt.user.client.Element)element, this);
+    if (eventBits == ONSUBMIT) {
+      sinkSubmitEvent(element);
+    } else {
+      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS && element.getAttribute("tabIndex").length() == 0) {
+        element.setAttribute("tabIndex", "0");
+      }
+      DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
+          | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
+      
     }
   }
   
@@ -193,10 +205,11 @@ public class EventsListener implements EventListener {
    * own event handler.
    */
   public EventListener getOriginalEventListener() {
-    return originalEventListener;
+    return getGwtEventListener(element);
   }
   
   public void onBrowserEvent(Event event) {
+    System.out.println(event.getType() + " " + element.getTagName());
     // Workaround for Issue_20
     if (lastType == event.getTypeInt()
         && lastEvnt - Duration.currentTimeMillis() < 10
@@ -207,8 +220,9 @@ public class EventsListener implements EventListener {
     lastType = event.getTypeInt();
 
     // Execute the original Gwt listener
-    if (originalEventListener != null) {
-      originalEventListener.onBrowserEvent(event);
+    if (getOriginalEventListener() != null) {
+      System.out.println("original");
+      getOriginalEventListener().onBrowserEvent(event);
     }
     
     dispatchEvent(event);
@@ -243,5 +257,14 @@ public class EventsListener implements EventListener {
       b = Event.getTypeInt(eventName);
     }
     unbind(b, nameSpace);
+  }
+  
+  public void rebind() {
+    sink();
+  }
+
+  public void clean() {
+    cleanGQListeners();
+    elementEvents =  JsObjectArray.createArray().cast();
   }
 }

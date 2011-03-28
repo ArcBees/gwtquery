@@ -1058,17 +1058,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * whenever you create a new iframe and you want to add dynamic content to it.
    */
   public GQuery empty() {
-    // TODO: add memory leak cleanup, remove event handlers
     for (Element e : elements()) {
       if (e.getNodeType() == Element.DOCUMENT_NODE) {
         emptyDocument(e.<Document> cast());
       } else {
         Node c = e.getFirstChild();
         while (c != null) {
-          $(c).unbind(0);
           removeData(c.<Element>cast(), null);
           GqUi.detachWidget(getAssociatedWidget(e));
-          Widget w = getAssociatedWidget(e);
+          EventsListener.getInstance(c.<Element>cast()).clean();
           e.removeChild(c);
           c = e.getFirstChild();
         }
@@ -1989,15 +1987,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery remove() {
     for (Element e : elements()) {
-      $(e).unbind(0);
-      removeData(e, null);
       Widget w = getAssociatedWidget(e);
-      if (w != null && w.isAttached()) {
+      if (w != null) {
         w.removeFromParent();
-      } else if (e.getParentNode() != null) {
-        e.getParentNode().removeChild(e);
+      } else {
+        e.removeFromParent();
       }
     }
+    return this;
+  }
+
+  /**
+   * Removes all matched elements from the DOM and cleans their data and bound events.
+   */
+  public GQuery remove(boolean clean) {
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).clean();
+      removeData(e, null);
+    }
+    remove();
     return this;
   }
 
@@ -2871,8 +2879,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         e = e.<Document> cast().getBody();
       }  
       for (int j = 0; j < g.size(); j++) {
-        /*Widget w = getAssociatedWidget(g.get(j));
-        GqUi.detachWidget(w);*/
+//        Widget w = getAssociatedWidget(g.get(j));
+//        GqUi.detachWidget(w);
         Node n = g.get(j);
         if (g.size() > 1) {
           n = n.cloneNode(true);
@@ -2892,7 +2900,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
-        //GqUi.attachWidget(w);
+        EventsListener.getInstance(n.<Element>cast()).rebind();
+//        GqUi.attachWidget(w);
       }
     }
     if (newNodes.size() > g.size()) {
