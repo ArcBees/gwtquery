@@ -209,7 +209,6 @@ public class EventsListener implements EventListener {
   }
   
   public void onBrowserEvent(Event event) {
-    System.out.println(event.getType() + " " + element.getTagName());
     // Workaround for Issue_20
     if (lastType == event.getTypeInt()
         && lastEvnt - Duration.currentTimeMillis() < 10
@@ -221,7 +220,6 @@ public class EventsListener implements EventListener {
 
     // Execute the original Gwt listener
     if (getOriginalEventListener() != null) {
-      System.out.println("original");
       getOriginalEventListener().onBrowserEvent(event);
     }
     
