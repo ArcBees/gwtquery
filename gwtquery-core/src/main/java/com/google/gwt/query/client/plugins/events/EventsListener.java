@@ -79,10 +79,17 @@ public class EventsListener implements EventListener {
       ret.clean();
     } 
   }
-
+  
   public static EventsListener getInstance(Element e) {
     EventsListener ret = getGQueryEventListener(e);
     return ret != null ? ret : new EventsListener(e);
+  }
+
+  public static void rebind(Element e) {
+    EventsListener ret = getGQueryEventListener(e);
+    if (ret != null && ret.eventBits != 0){
+      ret.sink();
+    } 
   }
 
   private static native void cleanGQListeners(Element elem) /*-{
@@ -219,10 +226,6 @@ public class EventsListener implements EventListener {
     }
     
     dispatchEvent(event);
-  }
-  
-  public void rebind() {
-    sink();
   }
   
   public void unbind(int eventbits) {
