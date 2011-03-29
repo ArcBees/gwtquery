@@ -2029,7 +2029,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (filter == null || $(e).filter(filter).length() == 1) {
         if (clean) {
           //clean data linked to the children
-          cleanGQData($(e.getElementsByTagName("*")).elements());
+          cleanGQData($("*", e).elements());
           //clean data linked to the element itself
           cleanGQData(e);
         }
