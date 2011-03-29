@@ -1000,6 +1000,10 @@ public class GQueryCoreTest extends GWTTestCase {
     
     $("#parent", e).remove();
     
+    //child and the parent was removed
+    assertEquals(0,$("#child", e).length());
+    assertEquals(0,$("#parent", e).length());
+    
     assertNull($(child).data("key"));
     assertNull($(parent).data("key"));
     //if failCallback is always binded, test fails...
@@ -1038,6 +1042,10 @@ public class GQueryCoreTest extends GWTTestCase {
     
     $("div", e).remove("#child");
     
+    //child was removed but not the parent
+    assertEquals(0,$("#child", e).length());
+    assertEquals(1,$("#parent", e).length());
+    
     assertNull($(child).data("key"));
     assertEquals("parent",$(parent).data("key"));
     
@@ -1072,11 +1080,17 @@ public class GQueryCoreTest extends GWTTestCase {
     
     GQuery $parent = $("#parent", e).detach();
     
+    //test parent an child well detached
+    assertEquals(0,$("#parent", e).length());
+    assertEquals(0,$("#child", e).length());
+    //test that data was not cleaned
     assertEquals("child",$(child).data("key"));
     assertEquals("parent",$(parent).data("key"));
     
     $(e).append($parent);
-    
+ 
+    assertEquals(1,$("#parent", e).length());
+    assertEquals(1,$("#child", e).length());
     assertEquals("child",$("#child", e).data("key"));
     assertEquals("parent",$("#parent", e).data("key"));
     
@@ -1085,6 +1099,49 @@ public class GQueryCoreTest extends GWTTestCase {
     $("#parent", e).click();
     assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR));
     
+    
+    
+  }
+  
+  public void testDetachMethodWithFilter(){
+    String html = "<div id='parent'>parent<div id='child'>child</div></div>";
+    $(e).html(html);
+   
+    Function noFailCallback = new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+      }
+    };
+    
+    Element parent = $("#parent", e).get(0);
+    Element child = $("#child", e).get(0);
+    
+    $("#child", e).data("key", "child");
+    $("#child", e).click(noFailCallback);
+    $("#parent", e).data("key", "parent");
+    $("#parent", e).click(noFailCallback);
+    
+    GQuery $parent = $("div", e).detach("#child");
+    
+    //child was removed but not the parent
+    assertEquals(0,$("#child", e).length());
+    assertEquals(1,$("#parent", e).length());
+    
+    //data must always exist
+    assertEquals("child", $(child).data("key"));
+    assertEquals("parent",$(parent).data("key"));
+    
+    $(e).append($parent.filter("#child"));
+    
+    assertEquals(1,$("#child", e).length());
+    assertEquals(1,$("#parent", e).length());
+    
+    $(child).click();
+    assertEquals("red", $("#child", e).css(CSS.BACKGROUND_COLOR));
+  
+    $(parent).click();
+    assertEquals("red", $("#parent", e).css(CSS.BACKGROUND_COLOR));
     
     
   }
