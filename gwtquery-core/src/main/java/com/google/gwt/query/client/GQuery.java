@@ -2936,7 +2936,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             newNodes.addNode(e.getParentNode().insertBefore(n, e));
             break;
         }
-        EventsListener.getInstance(n.<Element> cast()).rebind();
+        EventsListener.rebind(n.<Element> cast());
         // GqUi.attachWidget(w);
       }
     }
