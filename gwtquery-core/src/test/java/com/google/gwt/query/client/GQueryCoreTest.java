@@ -1145,5 +1145,24 @@ public class GQueryCoreTest extends GWTTestCase {
     
     
   }
+  
+  public void testUnwrapMethod(){
+    String html = "<div class='parent'><div class='child'>child1</div><span>other child</span></div><div class='parent'><div class='child'>child2</div></div><div class='parent'><div class='child'>child3</div></div>";
+    $(e).html(html);
+    
+    assertEquals(3, $(".parent", e).length());
+    assertEquals(3, $(".child", e).length());
+System.err.println("before" +$(e));
+    
+    $(".child",e).unwrap();
+    System.err.println("after" +$(e));    
+    assertEquals(0, $(".parent",e).length());
+    assertEquals(3, $(".child",e).length());
+    
+    String expectedHtml = "<div class=\"child\">child1</div><span>other child</span><div class=\"child\">child2</div><div class=\"child\">child3</div>";
+    
+    assertEquals(expectedHtml, $(e).html());
+    
+  }
 
 }
