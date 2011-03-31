@@ -1152,10 +1152,9 @@ public class GQueryCoreTest extends GWTTestCase {
     
     assertEquals(3, $(".parent", e).length());
     assertEquals(3, $(".child", e).length());
-System.err.println("before" +$(e));
     
     $(".child",e).unwrap();
-    System.err.println("after" +$(e));    
+       
     assertEquals(0, $(".parent",e).length());
     assertEquals(3, $(".child",e).length());
     
