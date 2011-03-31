@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
+import static com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -44,7 +45,9 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -142,20 +145,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around an existing node.
-   */
-  public static GQuery $(Node n) {
-    return n == null ? $() : new GQuery(JsNodeArray.create(n));
-  }
-
-  /**
-   * Wrap a GQuery around existing Elements.
-   */
-  public static GQuery $(NodeList<Element> elements) {
-    return new GQuery(elements);
-  }
-
-  /**
    * Create a new GQuery given a list of nodes, elements or widgets
    */
   public static GQuery $(List<?> nodesOrWidgets) {
@@ -169,6 +158,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         }
       }
     }
+    return new GQuery(elements);
+  }
+
+  /**
+   * Wrap a GQuery around an existing node.
+   */
+  public static GQuery $(Node n) {
+    return n == null ? $() : new GQuery(JsNodeArray.create(n));
+  }
+
+  /**
+   * Wrap a GQuery around existing Elements.
+   */
+  public static GQuery $(NodeList<Element> elements) {
     return new GQuery(elements);
   }
 
@@ -460,11 +463,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return $wnd;
   }-*/;
 
-  private NodeList<Element> elements = JavaScriptObject.createArray().cast();
-
   private String currentSelector;
 
+  private NodeList<Element> elements = JavaScriptObject.createArray().cast();
+
   private GQuery previousObject;
+
+  protected GQuery(GQuery gq) {
+    this(gq == null ? null : gq.get());
+  }
 
   private GQuery() {
   }
@@ -473,10 +480,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (element != null) {
       elements = JsNodeArray.create(element);
     }
-  }
-
-  protected GQuery(GQuery gq) {
-    this(gq == null ? null : gq.get());
   }
 
   private GQuery(JsNodeArray elements) {
@@ -554,6 +557,142 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery andSelf() {
     return add(previousObject);
+  }
+
+  /**
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property. All animated properties should be numeric, non-numeric cannot
+   * be animated using basic functionality. (For example, width, height, or left
+   * can be animated but background-color cannot be.) Property values are
+   * treated as a number of pixels unless otherwise specified. The units em and
+   * % can be specified where applicable.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * @param p a {@link Properties} object containing css properties to animate.
+   * @param funcs an array of {@link Function} called once the animation is
+   *          complete
+   * @param duration the duration in milliseconds of the animation
+   * @param easing the easing function to use for the transition
+   */
+  public GQuery animate(Properties p, int duration,
+      Easing easing, Function... funcs){
+    return as(Effects).animate(p, duration, easing, funcs);
+  }
+
+  /**
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property. All animated properties should be numeric, non-numeric cannot
+   * be animated using basic functionality. (For example, width, height, or left
+   * can be animated but background-color cannot be.) Property values are
+   * treated as a number of pixels unless otherwise specified. The units em and
+   * % can be specified where applicable.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to left:500px for 500ms
+   *  $("#foo").animate("left:'500'");
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left for 500ms and
+   *  // change the background color of the element at the end of the animation
+   *  $("#foo").animate("left:'+=500'", new Function(){
+   *                  
+   *                 public void f(Element e){
+   *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
+   *                 }
+   *                 
+   *              });
+   * </pre>
+   * 
+   * The duration of the animation is 500ms.
+   *    
+   * @param prop the property to animate : "cssName:'value'"
+   * @param funcs an array of {@link Function} called once the animation is
+   *          complete
+   * @param duration the duration in milliseconds of the animation
+   */
+  public GQuery animate(String prop, Function... funcs){
+    return as(Effects).animate(prop, funcs);
+  }
+
+  /**
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property. All animated properties should be numeric, non-numeric cannot
+   * be animated using basic functionality. (For example, width, height, or left
+   * can be animated but background-color cannot be.) Property values are
+   * treated as a number of pixels unless otherwise specified. The units em and
+   * % can be specified where applicable.
+   *
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to left:500px for 2s
+   *  $("#foo").animate("left:'500px'", 2000);
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left for 1000ms and
+   *  // change the background color of the element at the end of the animation
+   *  $("#foo").animate("left:'+=500'", 1000, new Function(){
+   *                  
+   *                 public void f(Element e){
+   *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
+   *                 }
+   *                 
+   *              });
+   * </pre>
+   * 
+   * 
+   * @param prop the property to animate : "cssName:'value'"
+   * @param funcs an array of {@link Function} called once the animation is
+   *          complete
+   * @param duration the duration in milliseconds of the animation
+   */
+  public GQuery animate(String prop, int duration, Function... funcs) {
+    return as(Effects).animate(prop, duration, funcs);
   }
 
   /**
@@ -767,6 +906,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Remove from the Effects queue all {@link Function} that have not yet been
+   * run.
+   */
+  public GQuery clearQueue() {
+    return as(Effects).clearQueue();
+  }
+
+  /**
+   * Remove from the queue all {@link Function} that have not yet been run.
+   */
+  public GQuery clearQueue(String queueName) {
+    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
+      return as(Effects).clearQueue();
+    }
+
+    return as(SimpleNamedQueue).clearQueue(queueName);
+  }
+
+  /**
    * Bind a set of functions to the click event of each matched element. Or
    * trigger the event if no functions are provided.
    */
@@ -869,6 +1027,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Return a style property on the first matched element using type-safe
+   * enumerations.
+   * 
+   * Ex : $("#myId").css(CSS.BACKGROUND_COLOR);
+   */
+  public String css(HasCssValue property) {
+    return css(property, false);
+  }
+
+  /**
+   * Return a style property on the first matched element using type-safe
+   * enumerations.
+   * 
+   * The parameter force has a special meaning here: - When force is false,
+   * returns the value of the css property defined in the style attribute of the
+   * element. - Otherwise it returns the real computed value.
+   * 
+   * For instance if you define 'display=none' not in the element style but in
+   * the css stylesheet, it returns an empty string unless you pass the
+   * parameter force=true.
+   * 
+   * Ex : $("#myId").css(CSS.WIDTH, true);
+   */
+  public String css(HasCssValue property, boolean force) {
+    return css(property.getCssName(), force);
+  }
+
+  /**
    * Set a key/value object as style properties to all matched elements. This
    * serves as the best way to set a large number of style properties on all
    * matched elements.
@@ -931,34 +1117,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Return a style property on the first matched element using type-safe
-   * enumerations.
-   * 
-   * Ex : $("#myId").css(CSS.BACKGROUND_COLOR);
-   */
-  public String css(HasCssValue property) {
-    return css(property, false);
-  }
-
-  /**
-   * Return a style property on the first matched element using type-safe
-   * enumerations.
-   * 
-   * The parameter force has a special meaning here: - When force is false,
-   * returns the value of the css property defined in the style attribute of the
-   * element. - Otherwise it returns the real computed value.
-   * 
-   * For instance if you define 'display=none' not in the element style but in
-   * the css stylesheet, it returns an empty string unless you pass the
-   * parameter force=true.
-   * 
-   * Ex : $("#myId").css(CSS.WIDTH, true);
-   */
-  public String css(HasCssValue property, boolean force) {
-    return css(property.getCssName(), force);
-  }
-
-  /**
    * Set CSS a single style property on every matched element using type-safe
    * enumerations. This method allows you to set manually the value or set
    * <i>inherit</i> value
@@ -972,14 +1130,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery css(TakesCssValue<?> cssProperty, String value) {
     return css(cssProperty.getCssName(), value);
   }
-
+  
   /**
    * Returns the numeric value of a css property.
    */
   public double cur(String prop) {
     return cur(prop, false);
   }
-
+  
   /**
    * Returns the numeric value of a css property.
    * 
@@ -990,7 +1148,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public double cur(String prop, boolean force) {
     return size() == 0 ? 0 : styleImpl.cur(get(0), prop, force);
   }
-
+  
   /**
    * Returns value at named data store for the element, as set by data(name,
    * value).
@@ -998,7 +1156,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public Object data(String name) {
     return data(elements.getItem(0), name, null);
   }
-
+  
   /**
    * Returns value at named data store for the element, as set by data(name,
    * value) with desired return type.
@@ -1009,7 +1167,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public <T> T data(String name, Class<T> clz) {
     return (T) data(elements.getItem(0), name, null);
   }
-
+  
   /**
    * Stores the value in the named spot with desired return type.
    */
@@ -1019,7 +1177,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
    * Bind a set of functions to the dblclick event of each matched element. Or
    * trigger the event if no functions are provided.
@@ -1028,6 +1186,103 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return bindOrFire(Event.ONDBLCLICK, null, f);
   }
 
+  /**
+   * Insert a delay (in ms) in the Effects queue.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   * $('#foo').slideUp(300).delay(800).fadeIn(400); 
+   * </pre>
+   * 
+   * When this statement is executed, the element slides up for 300 milliseconds
+   * and then pauses for 800 milliseconds before fading in for 400 milliseconds.
+   * 
+   * Please note that this methods affects only the Effects queue. So the
+   * following example is wrong:
+   * 
+   * <pre>
+   * $('#foo').css(CSS.COLOR.with(RGBColor.RED)).delay(800).css(CSS.COLOR.with(RGBColor.BLACK)); 
+   * </pre>
+   * 
+   * The code above will not insert a delay of 800 ms between the css() calls !
+   * For this kind of behavior, please check {@link #delay(int, String)}
+   */
+  public GQuery delay(int milliseconds) {
+    return as(Effects).delay(milliseconds);
+  }
+
+  /**
+   * Insert a delay (in ms) in the queue identified by the
+   * <code>queueName</code> parameter. if <code>queueName</code> is null or
+   * equats to 'fx', the delay will be inserted to the Effects queue.
+   * 
+   * Example :
+   * 
+   * <pre class="code">
+   * $('#foo').queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.RED)).done())
+   *          .delay(800, "colorQueue")
+   *          .queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done()); 
+   * </pre>
+   * 
+   * When this statement is executed, the text color of the element changes to
+   * red and then wait for 800 milliseconds before changes the text color to
+   * black.
+   * 
+   */
+  public GQuery delay(int milliseconds, String queueName) {
+    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
+      return as(Effects).delay(milliseconds);
+    }
+
+    return as(SimpleNamedQueue).delay(milliseconds, queueName);
+  }
+  
+  /**
+   * Execute the next function on the Effects queue for the matched elements.
+   * This method is usefull to tell when a function you add in the Effects queue
+   * is ended and so the next function in the queue can start.
+   */
+  public GQuery dequeue(){
+    return as(Effects).dequeue();
+  }
+  
+  /**
+   * Execute the next function on the queue for the matched elements.
+   * This method is usefull to tell when a function you add in the Effects queue
+   * is ended and so the next function in the queue can start.
+   */
+  public GQuery dequeue(String queueName){
+    if (queueName == null || "fx".equalsIgnoreCase(queueName)){
+      return as(Effects).dequeue();
+    }
+    
+    return as(SimpleNamedQueue).dequeue(queueName);
+  }
+  
+  /**
+   * Detach all matched elements from the DOM. This method is the same than
+   * {@link #remove()} method except all data and event handlers are not remove
+   * from the element. This method is useful when removed elements are to be
+   * reinserted into the DOM at a later time.
+   */
+  public GQuery detach() {
+    return remove(null, false);
+  }
+  
+
+  
+  /**
+   * Detach from the DOM all matched elements filtered by the
+   * <code>filter</code>.. This method is the same than {@link #remove(String)}
+   * method except all data and event handlers are not remove from the element.
+   * This method is useful when removed elements are to be reinserted into the
+   * DOM at a later time.
+   */
+  public GQuery detach(String filter) {
+    return remove(filter, false);
+  }
+  
   /**
    * Run one or more Functions over each element of the GQuery. You have to
    * override one of these funcions: public void f(Element e) public String
@@ -1043,7 +1298,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
    * Returns the working set of nodes as a Java array. <b>Do NOT</b> attempt to
    * modify this array, e.g. assign to its elements, or call Arrays.sort()
@@ -1074,7 +1329,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return this;
   }
-
+  
   /**
    * Revert the most recent 'destructive' operation, changing the set of matched
    * elements to its previous state (right before the destructive operation).
@@ -1983,6 +2238,66 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Put a {@link Function} at the end of the Effects queue.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   * $("#foo").animate("left:'+=500'", 400)
+   *      .queue(new Function(){
+   *          public void f(Element e){
+   *             $(e).css(CSS.BACKGROUNG_COLOR.with(RGBColor.RED));
+   *             $(e).dequeue();     
+   *          }
+   *        }).animate("left:'-=500'", 400)
+   * </pre>
+   * 
+   * When this statement is executed, the element move to 500 px to left for 400
+   * ms, then its background color is changed to red and then move to 500px to
+   * right for 400ms.
+   * 
+   * Please note that {@link #dequeue()} function is needed at the end of your
+   * function to start the next function in the queue. {@see #dequeue()}
+   */
+  public GQuery queue(Function f) {
+    return as(Effects).queue(f);
+  }
+
+  /**
+   * Put a {@link Function} at the end of a queue.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   * $("#foo").queue("myQueue", new Function(){
+   *          public void f(Element e){
+   *             $(e).css(CSS.BACKGROUNG_COLOR.with(RGBColor.RED));
+   *             $(e).dequeue();     
+   *          }
+   *        }).delay(500, "myQueue")
+   *        .queue("myQueue", new Function(){
+   *          public void f(Element e){
+   *             $(e).css(CSS.COLOR.with(RGBColor.YELLOW));
+   *             $(e).dequeue();     
+   *          }
+   *         });
+   * </pre>
+   * 
+   * When this statement is executed, the background color of the element is set
+   * to red, then wait 500ms before to set the text color of the element to
+   * yellow. right for 400ms.
+   * 
+   * Please note that {@link #dequeue()} function is needed at the end of your
+   * function to start the next function in the queue. {@see #dequeue()}
+   */
+  public GQuery queue(String queueName, Function f){
+    if (queueName == null || "fx".equalsIgnoreCase(queueName)){
+      return as(Effects).queue(f);
+    }
+    return as(SimpleNamedQueue).queue(queueName,f);
+  }
+
+  /**
    * Removes all matched elements from the DOM.
    */
   public GQuery remove() {
@@ -1995,54 +2310,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery remove(String filter) {
     return remove(filter, true);
-  }
-
-  /**
-   * Detach all matched elements from the DOM. This method is the same than
-   * {@link #remove()} method except all data and event handlers are not remove
-   * from the element. This method is useful when removed elements are to be
-   * reinserted into the DOM at a later time.
-   */
-  public GQuery detach() {
-    return remove(null, false);
-  }
-
-  /**
-   * Detach from the DOM all matched elements filtered by the
-   * <code>filter</code>.. This method is the same than {@link #remove(String)}
-   * method except all data and event handlers are not remove from the element.
-   * This method is useful when removed elements are to be reinserted into the
-   * DOM at a later time.
-   */
-  public GQuery detach(String filter) {
-    return remove(filter, false);
-  }
-
-  /**
-   * Removes all matched elements from the DOM and cleans their data and bound
-   * events if the value of <code>clean</code> parameter is set to true. The
-   * <code> filter</code> parameter allows to filter the matched set to remove.
-   */
-  protected GQuery remove(String filter, boolean clean) {
-     
-    for (Element e : elements()) {
-      if (filter == null || $(e).filter(filter).length() == 1) {
-        if (clean) {
-          //clean data linked to the children
-          cleanGQData($("*", e).elements());
-          //clean data linked to the element itself
-          cleanGQData(e);
-        }
-        Widget w = getAssociatedWidget(e);
-        if (w != null) {
-          w.removeFromParent();
-        } else {
-          e.removeFromParent();
-        }
-      }
-    }
-
-    return this;
   }
 
   /**
@@ -2142,7 +2409,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *         from the DOM and not the new element that has replaced it.
    */
   public GQuery replaceWith(GQuery target) {
-    return after(target).remove();
+    for (Element el : elements()){
+      Element nextSibling = el.getNextSiblingElement();
+      
+      if (nextSibling != null){
+        $(nextSibling).before(target);
+      }else{
+        Element parent = el.getParentElement();
+        $(parent).append(target);
+      }
+      $(el).remove();
+    }
+    return this;
 
   }
 
@@ -2153,7 +2431,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *         from the DOM and not the new element that has replaced it.
    */
   public GQuery replaceWith(String html) {
-    return after(html).remove();
+    for (Element el : elements()){
+      Element nextSibling = el.getNextSiblingElement();
+      
+      if (nextSibling != null){
+        $(nextSibling).before(html);
+      }else{
+        Element parent = el.getParentElement();
+        $(parent).append(html);
+      }
+      $(el).remove();
+    }
+    return this;
+
   }
 
   /**
@@ -2365,9 +2655,70 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new GQuery(slice);
   }
 
+  /**
+   * Reveal all matched elements by adjusting their height and firing an
+   * optional callback after completion.
+   */
+  public Effects slideDown(Function... f) {
+    return as(Effects).slideDown(f);
+  }
+
+  /**
+   * Reveal all matched elements by adjusting their height and firing an
+   * optional callback after completion.
+   */
+  public Effects slideDown(int millisecs, Function... f) {
+    return as(Effects).slideDown(millisecs, f);
+  }
+
+  /**
+   * Toggle the visibility of all matched elements by adjusting their height and
+   * firing an optional callback after completion. Only the height is adjusted
+   * for this animation, causing all matched elements to be hidden or shown in a
+   * "sliding" manner
+   */
+  public Effects slideToggle(int millisecs, Function... f) {
+     return as(Effects).slideToggle(millisecs, f);
+  }
+  
+  
+  /**
+   * Hide all matched elements by adjusting their height and firing an optional
+   * callback after completion.
+   */
+  public Effects slideUp(Function... f) {
+    return as(Effects).slideUp(f);
+  }
+
+  /**
+   * Hide all matched elements by adjusting their height and firing an optional
+   * callback after completion.
+   */
+  public Effects slideUp(int millisecs, Function... f) {
+    return as(Effects).slideUp(millisecs, f);
+  }
+  
+  /**
+   * Stop the animation currently running.
+   */
+  public GQuery stop(){
+    return stop(false);
+  }
+
+  /**
+   * Stop the animation currently running.
+   */
+  //TODO: implements jumpToEnd
+  public GQuery stop(boolean clearQueue){
+    return as(Effects).stop(clearQueue);
+  }
+
   public GQuery submit() {
     return as(Events).trigger(EventsListener.ONSUBMIT);
   }
+
+
+  
 
   /**
    * Return the text contained in the first matched element.
@@ -2511,6 +2862,24 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return JsUtils.unique(result.<JsArray<Element>> cast()).cast();
   }
 
+  /**
+   * This method removes the element's parent. The matched elements replaces
+   * their parents within the DOM structure. It is the inverse of
+   * {@link GQuery#wrap(GQuery)} method
+   * 
+   * @return
+   */
+  public GQuery unwrap() {
+
+    for (Element parent : parent().elements()){
+      if (!"body".equalsIgnoreCase(parent.getTagName())){
+        GQuery $parent = $(parent);
+        $parent.replaceWith($parent.children());
+      }
+    }
+    return this;
+  }
+  
   /**
    * Gets the content of the value attribute of the first matched element,
    * returns only the first value even if it is a multivalued element. To get an
@@ -2874,6 +3243,33 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return g;
   }
 
+  /**
+   * Removes all matched elements from the DOM and cleans their data and bound
+   * events if the value of <code>clean</code> parameter is set to true. The
+   * <code> filter</code> parameter allows to filter the matched set to remove.
+   */
+  protected GQuery remove(String filter, boolean clean) {
+     
+    for (Element e : elements()) {
+      if (filter == null || $(e).filter(filter).length() == 1) {
+        if (clean) {
+          //clean data linked to the children
+          cleanGQData($("*", e).elements());
+          //clean data linked to the element itself
+          cleanGQData(e);
+        }
+        Widget w = getAssociatedWidget(e);
+        if (w != null) {
+          w.removeFromParent();
+        } else {
+          e.removeFromParent();
+        }
+      }
+    }
+
+    return this;
+  }
+
   private void allNextSiblingElements(Element firstChildElement,
       JsNodeArray result, Element elem) {
     while (firstChildElement != null) {
@@ -2901,6 +3297,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return trigger(eventbits);
     } else {
       return bind(eventbits, data, funcs);
+    }
+  }
+
+  private void cleanGQData(Element... elements){
+    for (Element el : elements){
+      EventsListener.clean(el);
+      removeData(el, null);
     }
   }
 
@@ -2976,7 +3379,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return res;
   }
-
+  
   private void removeData(Element item, String name) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
@@ -2993,13 +3396,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     } else {
       dataCache.delete(id);
-    }
-  }
-  
-  private void cleanGQData(Element... elements){
-    for (Element el : elements){
-      EventsListener.clean(el);
-      removeData(el, null);
     }
   }
 }

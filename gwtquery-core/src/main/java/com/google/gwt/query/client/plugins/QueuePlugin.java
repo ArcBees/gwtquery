@@ -18,6 +18,7 @@ package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.Timer;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -26,11 +27,55 @@ import java.util.Queue;
  * Class used in plugins which need a queue system.
  */
 public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
-  
+
+  protected class DelayFunction extends Function {
+
+    private class SimpleTimer extends Timer {
+      @Override
+      public void run() {
+        dequeue();
+      }
+
+    }
+
+    private int delay;
+
+    public DelayFunction(int delayInMilliseconds) {
+      this.delay = delayInMilliseconds;
+    }
+
+    @Override
+    public void f() {
+      new SimpleTimer().schedule(delay);
+
+    }
+  }
+
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
 
   protected QueuePlugin(GQuery gq) {
     super(gq);
+  }
+  
+  /**
+   * 
+   */
+  @SuppressWarnings("unchecked")
+  public T clearQueue() {
+    for (Element e : elements()) {
+      queue(e, null).clear();
+    }
+    return (T) this;
+  }
+  
+  
+  /**
+   * Add a delay in the queue
+   */
+  @SuppressWarnings("unchecked")
+  public T delay(int milliseconds) {
+    queue(new DelayFunction(milliseconds));
+    return (T) this;
   }
 
   /**
@@ -41,7 +86,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     for (Element e : elements()) {
       dequeueCurrentAndRunNext(e);
     }
-    return (T)this;
+    return (T) this;
   }
 
   /**
@@ -53,7 +98,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     for (Element e : elements()) {
       queue(e, func);
     }
-    return (T)this;
+    return (T) this;
   }
 
   /**
@@ -64,33 +109,32 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     for (Element e : elements()) {
       replacequeue(e, queue);
     }
-    return (T)this;
+    return (T) this;
   }
-  
+
   /**
-   * Stop the function which is currently in execution, remove it
-   * from the queue and start the next one.  
+   * Stop the function which is currently in execution, remove it from the queue
+   * and start the next one.
    */
   public T stop() {
     return stop(false);
   }
-  
+
   /**
-   * Stop the function which is currently in execution and depending
-   * on the value of the parameter:
-   * - remove it from the queue and start the next one.
-   * - or remove all functions in the queue.  
+   * Stop the function which is currently in execution and depending on the
+   * value of the parameter: - remove it from the queue and start the next one.
+   * - or remove all functions in the queue.
    */
   @SuppressWarnings("unchecked")
   public T stop(boolean clearQueue) {
     for (Element e : elements()) {
       stop(e, clearQueue);
     }
-    return (T)this;
+    return (T) this;
   }
 
   protected String getQueueType() {
-    return QUEUE_DATA_PREFIX + this.getClass().getName(); 
+    return QUEUE_DATA_PREFIX + this.getClass().getName();
   }
 
   private void dequeueCurrentAndRunNext(Element elem) {
@@ -107,7 +151,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       }
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   private <S> Queue<S> queue(Element elem, S func) {
     if (elem != null) {
@@ -133,7 +177,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       data(elem, getQueueType(), queue);
     }
   }
-  
+
   private void stop(Element elem, boolean clear) {
     Queue<?> q = queue(elem, null);
     if (q != null) {
