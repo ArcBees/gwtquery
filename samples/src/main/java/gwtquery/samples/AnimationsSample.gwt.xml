@@ -1,0 +1,8 @@
+<module  rename-to='AnimationsSample'>
+	<inherits name='com.google.gwt.query.Query' />
+	<inherits name='com.google.gwt.user.theme.chrome.Chrome' />
+	<entry-point
+		class="gwtquery.samples.client.AnimationsSample">
+	</entry-point>
+</module>
+
