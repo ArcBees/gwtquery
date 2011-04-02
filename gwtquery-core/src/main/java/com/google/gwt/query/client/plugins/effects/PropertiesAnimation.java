@@ -34,8 +34,20 @@ public class PropertiesAnimation extends Animation {
   /**
    * Easing method to use.
    */
-  public enum Easing {
-    LINEAR, SWING
+  public static interface Easing {
+    public double interpolate(double progress);
+    
+    public Easing LINEAR = new Easing() {     
+      public double interpolate(double progress) {
+        return progress;
+      }
+    };
+    
+    public Easing SWING = new Easing() {     
+      public double interpolate(double progress) {
+       return (1 + Math.cos(Math.PI + progress * Math.PI)) / 2;
+      }
+    };
   }
   
   /**
@@ -202,11 +214,11 @@ public class PropertiesAnimation extends Animation {
 
   @Override
   protected double interpolate(double progress) {
-    if (easing == Easing.SWING) {
-      return super.interpolate(progress);
-    } else {
-      return progress;
+    if (easing != null){
+      return easing.interpolate(progress);
     }
+    //maybe return super.interpolate() instead ?
+    return progress;
   }
 
 }
