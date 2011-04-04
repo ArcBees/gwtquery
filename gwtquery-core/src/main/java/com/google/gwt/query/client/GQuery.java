@@ -1076,7 +1076,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return a style property on the first matched element.
    */
   public String css(String name) {
-    return styleImpl.curCSS(get(0), name, false);
+    return css(name, false);
   }
 
   /**
@@ -1091,7 +1091,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * parameter force=true.
    */
   public String css(String name, boolean force) {
-    return styleImpl.curCSS(get(0), name, force);
+    return size() == 0 ? "" : styleImpl.curCSS(get(0), name, force);
   }
 
   /**
@@ -1165,7 +1165,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(String name, Class<T> clz) {
-    return (T) data(elements.getItem(0), name, null);
+    return size() == 0 ? null: (T)data(elements.getItem(0), name, null);
   }
   
   /**
@@ -1622,7 +1622,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get the innerHTML of the first matched element.
    */
   public String html() {
-    return get(0).getInnerHTML();
+    return size() == 0 ? "" : get(0).getInnerHTML();
   }
 
   /**
@@ -1655,7 +1655,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * but not the vertical scrollbar height, border, or margin.
    */
   public int innerHeight() {
-    return get(0).getClientHeight();
+    return size() == 0 ? 0 : get(0).getClientHeight();
   }
 
   /**
@@ -1663,7 +1663,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * not the vertical scrollbar width, border, or margin.
    */
   public int innerWidth() {
-    return get(0).getClientWidth();
+    return size() == 0 ? 0 : get(0).getClientWidth();
   }
 
   /**
@@ -1974,7 +1974,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * left. The method works only with visible elements.
    */
   public com.google.gwt.query.client.GQuery.Offset offset() {
-    return new Offset(get(0).getAbsoluteLeft(), get(0).getAbsoluteTop());
+    return size() == 0 ? new Offset(0, 0) : new Offset(get(0).getAbsoluteLeft(), get(0).getAbsoluteTop());
   }
 
   /**
@@ -2021,6 +2021,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements, including padding, border, and optionally margin.
    */
   public int outerHeight(boolean includeMargin) {
+    if (size() == 0) {
+      return 0;
+    }
     int outerHeight = get(0).getOffsetHeight(); // height including padding and
     // border
     if (includeMargin) {
@@ -2042,6 +2045,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements, including padding and border and optionally margin.
    */
   public int outerWidth(boolean includeMargin) {
+    if (size() == 0) {
+      return 0;
+    }
     int outerWidth = get(0).getOffsetWidth(); // width including padding and
     // border
     if (includeMargin) {
@@ -2512,7 +2518,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * the minimum amount necessary.
    */
   public GQuery scrollIntoView(boolean ensure) {
-    if (ensure) {
+    if (size() > 0 && ensure) {
       DOM.scrollIntoView((com.google.gwt.user.client.Element) get(0));
     } else {
       scrollIntoView();
@@ -2526,6 +2532,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public int scrollLeft() {
     Element e = get(0);
+    if (e == null) {
+      return 0;
+    }
     if (e == window || e.getNodeName() == null) {
       return Window.getScrollLeft();
     } else if (e == (Node) document) {
@@ -2570,6 +2579,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * for both visible and hidden elements.
    */
   public int scrollTop() {
+    if (e == null) {
+      return 0;
+    }
     Element e = get(0);
     if (e == window || e.getNodeName() == null) {
       return Window.getScrollTop();
@@ -3024,7 +3036,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.
    */
   public boolean visible() {
-    return styleImpl.isVisible(get(0));
+    return size() == 0 ? false : styleImpl.isVisible(get(0));
   }
 
   /**

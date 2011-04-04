@@ -80,6 +80,9 @@ public class DocumentStyleImpl {
    * parameter force=true.
    */
   public String curCSS(Element elem, String name, boolean force) {
+    if (elem == null) {
+      return "";
+    }
     name = fixPropertyName(name);
     //value defined in the element style
     String ret = elem.getStyle().getProperty(name);
