@@ -490,11 +490,11 @@ public class GQueryCoreTest extends GWTTestCase {
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
-    assertNotNull(p.get("border"));
+    assertNotNull(p.getStr("border"));
 
     p = $$("({border:'1px solid black'})");
     assertEquals(1, p.keys().length);
-    assertNotNull(p.get("border"));
+    assertNotNull(p.getStr("border"));
   }
 
   public void testRelativeMethods() {
@@ -1163,5 +1163,5 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(expectedHtml, $(e).html());
     
   }
-
+ 
 }

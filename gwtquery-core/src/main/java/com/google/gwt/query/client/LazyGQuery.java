@@ -622,6 +622,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> detach(String filter);
 
   /**
+   * Remove all event handlers previously attached using live()
+   * The selector used with it must match exactly the selector initially
+   * used with live().
+   */
+  LazyGQuery<T> die(int eventbits);
+
+  /**
    * Run one or more Functions over each element of the GQuery. You have to
    * override one of these funcions: public void f(Element e) public String
    * f(Element e, int i)
@@ -937,6 +944,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * return the same value.
    */
   int length();
+
+  /**
+   * Add events to all elements which match the current selector,
+   * now and in the future.
+   */
+  LazyGQuery<T> live(int eventBits, Function... funcs);
 
   /**
    * Bind a function to the load event of each matched element.
@@ -1387,7 +1400,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   void setPreviousObject(GQuery previousObject);
 
-  void setSelector(String selector);
+  LazyGQuery<T> setSelector(String selector);
 
   /**
    * Make all matched elements visible

@@ -107,7 +107,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static final Element window = window();
 
-  private static JsCache dataCache = null;
+  protected static JsCache dataCache = null;
 
   private static SelectorEngine engine;
 
@@ -115,7 +115,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       FUNC_BEFORE = 3;
 
   private static final String OLD_DATA_PREFIX = "old-";
-
+  
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
   private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
@@ -216,7 +216,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
           : ctx.getOwnerDocument();
       return $(cleanHtmlString(selectorOrHtml, doc));
     }
-    return new GQuery(select(selectorOrHtml, ctx));
+    return new GQuery(select(selectorOrHtml, ctx)).setSelector(selectorOrHtml);
   }
 
   /**
@@ -231,7 +231,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     try {
       if (plugins != null) {
         T gquery = (T) plugins.get(plugin).init(
-            new GQuery(select(selector, context)));
+            new GQuery(select(selector, context))).setSelector(selector);
         return gquery;
       }
       throw new RuntimeException("No plugin for class " + plugin);
@@ -348,7 +348,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>) n.getChildNodes().cast());
+    return $((NodeList<Element>) n.getChildNodes().cast()).as(Events).addLiveEvents();
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -463,7 +463,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return $wnd;
   }-*/;
 
-  private String currentSelector;
+  protected String currentSelector;
 
   private NodeList<Element> elements = JavaScriptObject.createArray().cast();
 
@@ -772,7 +772,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     } else if (plugins != null) {
       Plugin<?> p = plugins.get(plugin);
       if (p != null) {
-        return (T) p.init(this);
+        return (T) p.init(this).setSelector(currentSelector);
       }
     }
     throw new RuntimeException("No plugin registered for class "
@@ -788,7 +788,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(Properties properties) {
     for (Element e : elements()) {
       for (String name : properties.keys()) {
-        e.setAttribute(name, properties.get(name));
+        e.setAttribute(name, properties.getStr(name));
       }
     }
     return this;
@@ -957,7 +957,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       result.addNode(e.cloneNode(true));
     }
-    return new GQuery(result);
+    return new GQuery(result).as(Events).addLiveEvents();
   }
 
   /**
@@ -1067,7 +1067,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery css(Properties properties) {
     for (String property : properties.keys()) {
-      css(property, properties.get(property));
+      css(property, properties.getStr(property));
     }
     return this;
   }
@@ -1281,6 +1281,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery detach(String filter) {
     return remove(filter, false);
+  }
+  
+  /**
+   * Remove all event handlers previously attached using live()
+   * The selector used with it must match exactly the selector initially
+   * used with live().
+   */
+  public GQuery die(int eventbits) {
+    return as(Events).die(eventbits);
   }
   
   /**
@@ -1626,7 +1635,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
       e.setInnerHTML(html);
     }
-    return this;
+    return as(Events).addLiveEvents();
   }
 
   /**
@@ -1795,6 +1804,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int length() {
     return size();
   }
+  
+  /**
+   * Add events to all elements which match the current selector,
+   * now and in the future.
+   */
+  public GQuery live(int eventBits, Function... funcs) {
+    return as(Events).live(eventBits, funcs);
+  }
 
   /**
    * Bind a function to the load event of each matched element.
@@ -1818,6 +1835,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <W> List<W> map(Function f) {
+    @SuppressWarnings("rawtypes")
     ArrayList ret = new ArrayList();
     for (int i = 0; i < elements().length; i++) {
       Object o = f.f(elements()[i], i);
@@ -2594,8 +2612,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     this.previousObject = previousObject;
   }
 
-  public void setSelector(String selector) {
+  public GQuery setSelector(String selector) {
     this.currentSelector = selector;
+    return this;
   }
 
   /**
@@ -3398,4 +3417,5 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache.delete(id);
     }
   }
+
 }

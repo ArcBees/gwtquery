@@ -185,6 +185,30 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals("abc", $("input", e).val());
   }
 
+  public void testLive() {
+    $(e).html("<div class='clickMe'>Content 1</div>");
+    $(".clickMe").live(Event.ONCLICK, new Function(){
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+    $(e).append("<p class='clickMe'>Content 2</p>");
+    assertEquals("", $("#d1").css("color"));
+    
+    $(".clickMe", e).click();
+    assertEquals("red", $("div", e).css("color"));
+    assertEquals("red", $("p", e).css("color"));
+    
+    $(".clickMe", e).css("color", "yellow");
+    $(".clickMe").die(Event.ONCLICK);
+    $(e).append("<span class='clickMe'>Content 3</span>");
+    
+    $(".clickMe", e).click();
+    assertEquals("yellow", $("div", e).css("color"));
+    assertEquals("yellow", $("p", e).css("color"));
+    assertEquals("", $("span", e).css("color"));
+  }
+  
   public void testLazyMethods() {
     $(e).css(CSS.COLOR.with(RGBColor.WHITE));
     assertEquals("white", $(e).css("color"));
@@ -354,6 +378,6 @@ public class GQueryEventsTest extends GWTTestCase {
     $("#test").focus(new Function(){});
     
     assertEquals($("#test").attr("tabIndex"), "2");
-    
   }
+
 }

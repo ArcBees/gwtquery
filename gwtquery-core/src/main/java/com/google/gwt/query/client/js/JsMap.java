@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 
 
 /**
@@ -41,6 +42,10 @@ final public class JsMap<S, T> extends JavaScriptObject {
 
   public void put(S key, T val) {
     c().put(key.hashCode(), val);
+  }
+  
+  public final String[] keys() {
+    return c().keys();
   }
 
 }

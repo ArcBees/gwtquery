@@ -15,6 +15,9 @@
  */
 package com.google.gwt.query.client.js;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -33,8 +36,10 @@ public final class JsObjectArray<T> extends JavaScriptObject {
     return cast();
   }
 
-  public void add(T val) {
-    c().put(length(), val);
+  public void add(T...vals) {
+    for (T t: vals) {
+      c().put(length(), t);
+    }
   }
 
   public void add(int i, T val) {
@@ -61,4 +66,5 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public void pushAll(JavaScriptObject prevElem) {
     c().pushAll(prevElem);
   }
+
 }

@@ -34,6 +34,10 @@ public class Properties extends JavaScriptObject {
       return (Properties) createImpl("({})");
     }
   }
+  
+  public static Properties create() {
+    return (Properties) createImpl("({})");
+  }
 
   public static final native JavaScriptObject createImpl(String properties) /*-{
      return eval(properties);
@@ -66,8 +70,12 @@ public class Properties extends JavaScriptObject {
     return this[name] != undefined;  
   }-*/;
 
-  public final native String get(String name) /*-{
+  public final native <T> T get(String name) /*-{
     return this[name];
+  }-*/;
+
+  public final native String getStr(String name) /*-{
+    return String(this[name]);
   }-*/;
 
   public final native float getFloat(String name) /*-{
@@ -99,14 +107,14 @@ public class Properties extends JavaScriptObject {
     return keys;
   }-*/;
 
-  public final native void set(String key, String val) /*-{
+  public final native void set(String key, Object val) /*-{
     this[key]=val;
   }-*/;
   
   public final String tostring() {
     String ret = "";
     for (String k : keys()){
-      ret += k + ": '" + get(k) + "', ";
+      ret += k + ": '" + getStr(k) + "', ";
     }
     return "({" + ret.replaceAll("[, ]+$","") + "})";
   }

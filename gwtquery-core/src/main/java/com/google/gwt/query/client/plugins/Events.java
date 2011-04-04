@@ -19,6 +19,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 
@@ -28,6 +30,8 @@ import com.google.gwt.user.client.Event;
 public class Events extends GQuery {
 
   public static final Class<Events> Events = Events.class;
+  
+  protected static final String LIVE_ID_DATA = "_lid_";
 
   static {
     GQuery.registerPlugin(Events.class, new Plugin<Events>() {
@@ -95,6 +99,53 @@ public class Events extends GQuery {
     for (Element e : elements()) {
       EventsListener.getInstance(e).bind(event, data, funcs);
     }
+    return this;
+  }
+  
+  /**
+   * Remove all event handlers previously attached using live()
+   * The selector used with it must match exactly the selector initially
+   * used with live().
+   */
+  public GQuery die(int eventbits) {
+    JsCache d = dataCache.get(LIVE_ID_DATA);
+    if (d != null) {
+      JsCache cache = d.get(currentSelector);
+      if (cache != null) {
+        cache.delete(eventbits);
+      }
+    }
+    unbind(eventbits);
+    return this;
+  }
+  
+  /**
+   * Add events to all elements which match the current selector,
+   * now and in the future.
+   */
+  public GQuery live(int eventBits, Function... funcs) {
+    if (currentSelector == null || currentSelector.isEmpty()) {
+      return this;
+    }
+    JsCache d = dataCache.get(LIVE_ID_DATA);
+    if (d == null) {
+      d = JsCache.create();
+      dataCache.put(LIVE_ID_DATA, d);
+    }
+
+    JsCache cache = d.get(currentSelector);
+    if (cache == null) {
+      cache = JsCache.create();
+      d.put(currentSelector, cache);
+    }
+    
+    JsObjectArray<Function> functions = cache.get(eventBits);
+    if (functions == null) {
+      functions = JsObjectArray.create().cast();
+      cache.put(eventBits, functions);
+    }
+    functions.add(funcs);
+    bind(eventBits, null, funcs);
     return this;
   }
   
@@ -167,7 +218,6 @@ public class Events extends GQuery {
       triggerHtmlEvent("submit");
     return this;
   }
-  
 
   /**
    * Trigger a html event in all matched elements.
@@ -223,5 +273,24 @@ public class Events extends GQuery {
     for (Element e : elements()) {
       e.dispatchEvent(evt);
     }
+  }
+  
+  public GQuery addLiveEvents() {
+    if (dataCache.exists(LIVE_ID_DATA)) {
+      JsCache d = dataCache.get(LIVE_ID_DATA);
+      for (String selector : d.keys()) {
+        GQuery g = find(selector).add(filter(selector));
+        if (g.size() > 0) {
+          JsCache cache = d.get(selector);
+          for (int eventBits : cache.indexes()) {
+            JsObjectArray<Function> functions = cache.get(eventBits);
+            for (int j = 0; j<functions.length(); j++) {
+              g.bind(eventBits, null, functions.get(j));
+            }
+          }
+        }
+      }
+    }
+    return this;
   }
 }

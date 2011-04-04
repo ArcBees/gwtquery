@@ -1,6 +1,7 @@
 package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 
  /**
    * A Lightweight JSO class to store data.
@@ -8,6 +9,10 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class JsCache extends JavaScriptObject {
 
   protected JsCache() {
+  }
+  
+  public static JsCache create() {
+    return createObject().cast();
   }
 
   public final native void concat(Object ary) /*-{
@@ -29,15 +34,19 @@ public class JsCache extends JavaScriptObject {
 		delete this[name];
   }-*/;
 
+  public final native boolean exists(String name) /*-{
+    return !!this[name];
+  }-*/;
+  
   public final native boolean exists(int id) /*-{
 		return !!this[id];
   }-*/;
 
-  public final native Object get(int id) /*-{
+  public final native <T> T get(int id) /*-{
 		return this[id] || null;
   }-*/;
 
-  public final native Object get(String id) /*-{
+  public final native <T> T get(String id) /*-{
 		return this[id] || null;
   }-*/;
 
@@ -86,5 +95,50 @@ public class JsCache extends JavaScriptObject {
   
   public final native int length() /*-{
     return this.length;
+  }-*/;
+  
+  public final int[] indexes() {
+    JsArrayString a = keysImpl();
+    int[] ret = new int[a.length()];
+    for (int i = 0; i < a.length(); i++) {
+      try {
+        ret[i] = Integer.valueOf(a.get(i));
+      } catch (Exception e) {
+        ret[i] = i;
+      }
+    }
+    return ret;
+  }
+  
+  public final String[] keys() {
+    JsArrayString a = keysImpl();
+    String[] ret = new String[a.length()];
+    for (int i = 0; i < a.length(); i++) {
+      ret[i] = a.get(i);
+    }
+    return ret;
+  }
+  
+  public final Object[] elements() {
+    String[] keys = keys();
+    Object[] ret = new Object[keys.length];
+    int i=0;
+    for (String s: keys) {
+      ret[i++] = get(s);
+    }
+    return ret;
+  }
+  
+  public final native Object[] elemImpl() /*-{
+    var key, ret=[];
+    for(key in this) ret.push(this[key]);
+    return ret;
+  }-*/;
+
+
+  public final native JsArrayString keysImpl() /*-{
+    var key, keys=[];
+    for(key in this) keys.push("" + key);
+    return keys;
   }-*/;
 }

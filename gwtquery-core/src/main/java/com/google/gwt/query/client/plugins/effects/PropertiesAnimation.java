@@ -187,7 +187,7 @@ public class PropertiesAnimation extends Animation {
     Effect fx;
     //g.show();
     for (String key : prps.keys()) {
-      String val = prps.get(key);
+      String val = prps.getStr(key);
       if ((fx = computeFxProp(e, key, val, hidden)) != null) {
         effects.add(fx);
         resize = resize || "height".equals(key) || "width".equals(key);

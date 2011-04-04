@@ -18,6 +18,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.query.client.LazyBase;
@@ -66,6 +68,19 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * 
    */  
   LazyEvents<T> bind(String event, Object data, Function...funcs);
+
+  /**
+   * Remove all event handlers previously attached using live()
+   * The selector used with it must match exactly the selector initially
+   * used with live().
+   */
+  GQuery die(int eventbits);
+
+  /**
+   * Add events to all elements which match the current selector,
+   * now and in the future.
+   */
+  GQuery live(int eventBits, Function... funcs);
 
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
