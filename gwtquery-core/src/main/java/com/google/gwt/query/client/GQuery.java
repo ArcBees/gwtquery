@@ -2579,10 +2579,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * for both visible and hidden elements.
    */
   public int scrollTop() {
+    Element e = get(0);
     if (e == null) {
       return 0;
     }
-    Element e = get(0);
     if (e == window || e.getNodeName() == null) {
       return Window.getScrollTop();
     } else if (e == (Node) document) {
