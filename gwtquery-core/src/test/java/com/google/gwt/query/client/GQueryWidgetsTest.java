@@ -18,11 +18,14 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -104,6 +107,15 @@ public class GQueryWidgetsTest extends GWTTestCase {
     b.removeFromParent();
   }
   
+  class TestButtonWidgetFactory implements WidgetFactory<Button> {
+    public Button create(Element e) {
+      Button button = new Button();
+      button.getElement().setInnerText(e.getInnerText());
+      WidgetsUtils.replaceOrAppend(e, button);
+      return button;
+    }
+  }
+  
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);
@@ -111,8 +123,8 @@ public class GQueryWidgetsTest extends GWTTestCase {
     Button b2 = (Button) g.as(Widgets.Widgets).widget();
     assertEquals(b1, b2);
     
-    
-    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets.Widgets).button().widget();
+    b2 = $("<button>Click-me</button>").appendTo(document)
+       .as(Widgets.Widgets).widgets(new TestButtonWidgetFactory(), null).widget();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");
