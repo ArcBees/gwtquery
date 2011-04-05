@@ -18,12 +18,15 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -46,12 +49,43 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testPropertiesAnimationComputeEffects();
+      testLive();
+//      testPropertiesAnimationComputeEffects();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
+  
+  public void testAttrSelectors() {
+    System.out.println($("script:not([src])"));
+//    System.out.println($("iframe:not([language])"));
+    
+  }
+  
+  public void testLive() {
+    $(e).html("<div id=d1 class='clickMe'>Content 1</div>");
+    GQuery q = $(".clickMe").live(Event.ONCLICK, new Function(){
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+    $(e).append("<div id=d2 class='clickMe'>Content 2</div>");
+    assertEquals("", $("#d1").css("color"));
+    
+    $(".clickMe", e).click();
+    assertEquals("red", $("#d1").css("color"));
+    assertEquals("red", $("#d2").css("color"));
+    
+    $(".clickMe", e).css("color", "yellow");
+    $(".clickMe").die(Event.ONCLICK);
+    $(e).append("<div id=d3 class='clickMe'>Content 3</div>");
+    $(".clickMe", e).click();
+    assertEquals("yellow", $("#d1").css("color"));
+    assertEquals("yellow", $("#d2").css("color"));
+    assertEquals("", $("#d3").css("color"));
+  }
+  
   
   public void testPropertiesAnimationComputeEffects() {
     $(e)

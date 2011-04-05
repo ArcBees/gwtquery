@@ -52,8 +52,7 @@
         </testResources>
 
         <plugins>
-
-        <plugin>
+          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <version>${gwtmaven}</version>
@@ -67,8 +66,23 @@
                 <hostedWebapp>target/www</hostedWebapp>
                 <soyc>true</soyc>
             </configuration>
-        </plugin>
-
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-eclipse-plugin</artifactId>
+              <configuration>
+                 <downloadSources>true</downloadSources>
+                 <downloadJavadocs>false</downloadJavadocs>
+                 <additionalBuildcommands>
+                   <buildCommand>
+                     <name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
+                   </buildCommand>
+                 </additionalBuildcommands>
+                 <additionalProjectnatures>
+                   <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+                 </additionalProjectnatures>
+              </configuration>
+          </plugin>
         </plugins>
     </build>
 </project>
