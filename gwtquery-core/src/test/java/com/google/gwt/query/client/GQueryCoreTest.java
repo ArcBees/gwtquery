@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import junit.framework.Assert;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -899,7 +900,7 @@ public class GQueryCoreTest extends GWTTestCase {
     Button b2 = g.widget();
     assertEquals(b1, b2);
 
-    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).button().widget();
+    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).widget();
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");
@@ -1161,6 +1162,58 @@ public class GQueryCoreTest extends GWTTestCase {
     String expectedHtml = "<div class=\"child\">child1</div><span>other child</span><div class=\"child\">child2</div><div class=\"child\">child3</div>";
     
     assertEquals(expectedHtml, $(e).html());
+    
+  }
+  
+  public void testClosestMethod(){
+    String html = "<div><p><div id='firstDiv'><p id='firstP'><span><input id='firstInput' type='text'></input></span></p></div></p></div>";
+    $(e).html(html);
+    
+    GQuery closeP = $("input", e).closest("p,div");
+    
+    assertEquals(1, closeP.length());
+    assertEquals("firstP", closeP.get(0).getId());
+    
+    GQuery closeDiv = $("input", e).closest("div");
+    
+    assertEquals(1, closeDiv.length());
+    assertEquals("firstDiv", closeDiv.get(0).getId());
+    
+    GQuery closeInput = $("input", e).closest("input");
+    
+    assertEquals(1, closeInput.length());
+    assertEquals("firstInput", closeInput.get(0).getId());
+    
+    GQuery closeUnknown = $("input", e).closest("h1");
+    
+    assertEquals(0, closeUnknown.length());
+    
+    GQuery closePWithContext = $("input", e).closest("p,div",$("#firstDiv").get(0));
+    
+    assertEquals(1, closePWithContext.length());
+    assertEquals("firstP", closePWithContext.get(0).getId());
+    
+    GQuery closeDivWithContext = $("input", e).closest("div",$("#firstP").get(0));
+    
+    assertEquals(0, closeDivWithContext.length()); 
+    
+  }
+  
+  public void testClosestMethodWithArrayOfString(){
+    
+    String html = "<div id='mainDiv' class='test'><p><div id='firstDiv'><p id='firstP'><span><input id='firstInput' type='text'></input></span></p></div></p></div>";
+    $(e).html(html);
+    
+    Map<String, Element> close = $("input", e).closest(new String[]{"p","div", ".test", "#unknown"});
+    
+    assertEquals(3, close.size());
+    assertNotNull(close.get("p"));
+    assertEquals("firstP", close.get("p").getId());
+    assertNotNull(close.get("div"));
+    assertEquals("firstDiv", close.get("div").getId());
+    assertNotNull(close.get(".test"));
+    assertEquals("mainDiv", close.get(".test").getId());
+    assertNull(close.get("#unknown"));
     
   }
  

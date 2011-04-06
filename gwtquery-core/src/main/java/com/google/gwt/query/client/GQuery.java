@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -121,6 +122,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
 
   private static Element windowData = null;
+  
+  //Sizzle POS regex : usefull in some methods
+  private static final String POS_REGEX = ":(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)";
 
   /**
    * Create an empty GQuery object.
@@ -197,7 +201,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * reference to a plugin to be used.
    */
   public static <T extends GQuery> T $(String selector, Class<T> plugin) {
-    return $(selector, (Node) null, plugin);
+    return $(selector, document, plugin);
   }
 
   /**
@@ -216,7 +220,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
           : ctx.getOwnerDocument();
       return $(cleanHtmlString(selectorOrHtml, doc));
     }
-    return new GQuery(select(selectorOrHtml, ctx)).setSelector(selectorOrHtml);
+    return new GQuery().select(selectorOrHtml, ctx);
   }
 
   /**
@@ -231,7 +235,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     try {
       if (plugins != null) {
         T gquery = (T) plugins.get(plugin).init(
-            new GQuery(select(selector, context))).setSelector(selector);
+            new GQuery().select(selector, context));
         return gquery;
       }
       throw new RuntimeException("No plugin for class " + plugin);
@@ -348,7 +352,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>) n.getChildNodes().cast()).as(Events).addLiveEvents();
+    return $((NodeList<Element>) n.getChildNodes().cast());
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -450,13 +454,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 			n.scrollIntoView()
   }-*/;
 
-  private static NodeList<Element> select(String selector, Node context) {
+  private GQuery select(String selector, Node context) {
     if (engine == null) {
       engine = new SelectorEngine();
     }
     NodeList<Element> n = engine.select(selector, context);
     JsNodeArray res = copyNodeList(n);
-    return res;
+    
+    currentSelector = selector;
+    currentContext = context != null ? context  : document;
+    
+    return setArray(res);
+
   }
 
   private static native Element window() /*-{
@@ -464,6 +473,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }-*/;
 
   protected String currentSelector;
+  protected Node currentContext;
 
   private NodeList<Element> elements = JavaScriptObject.createArray().cast();
 
@@ -471,6 +481,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   protected GQuery(GQuery gq) {
     this(gq == null ? null : gq.get());
+    currentSelector = gq.getSelector();
+    currentContext = gq.getContext();
   }
 
   private GQuery() {
@@ -772,7 +784,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     } else if (plugins != null) {
       Plugin<?> p = plugins.get(plugin);
       if (p != null) {
-        return (T) p.init(this).setSelector(currentSelector);
+        return (T) p.init(this);
       }
     }
     throw new RuntimeException("No plugin registered for class "
@@ -957,8 +969,120 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements()) {
       result.addNode(e.cloneNode(true));
     }
-    return new GQuery(result).as(Events).addLiveEvents();
+    GQuery ret = new GQuery(result);
+    ret.currentContext = currentContext;
+    ret.currentSelector = currentSelector;
+    return ret;
   }
+  
+  /**
+   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
+   * current element and progressing up through the DOM tree.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery closest(String selector){
+    return closest(selector, null);
+  }
+  
+  /**
+   * Returns a {@link Map} object as key a selector and as value the first ancestor elements matching this selectors, beginning at the
+   * first matched element and progressing up through the DOM. This method allows retrieving the list of closest ancestors matching 
+   * many selectors and by reducing the number of DOM traversing.
+   * 
+   * @param selector
+   * @return
+   */
+  public Map<String, Element> closest(String[] selectors){
+    return closest(selectors, null);
+  }
+  
+  /**
+   * Returns a GQuery object containing the first ancestor elements matching each selectors, beginning at the
+   * first matched element and progressing up through the DOM tree until reach the <code>context</code> node..
+   * This method allows retrieving the list of closest ancestors matching many selectors and by reducing the number of DOM traversing.
+   * 
+   * @param selector
+   * @return
+   */
+  public Map<String, Element> closest(String[] selectors, Node context){
+    Map<String, Element> results = new HashMap<String, Element>();
+    
+    if (context == null){
+      context = currentContext;
+    }
+    
+    Element first = get(0);
+    
+    if (first != null && selectors != null && selectors.length > 0){
+      
+      Map<String, GQuery> matches = new HashMap<String, GQuery>();
+      
+      for (String selector : selectors){
+        if (!matches.containsKey(selector)){
+          matches.put(selector, selector.matches(POS_REGEX) ? $(selector, context) : null);
+        }
+      }
+      
+      Element current = first;
+      
+      while (current != null && current.getOwnerDocument() != null && current != context){
+        //for each selector, check if the current element match it.
+        for (String selector : matches.keySet()){
+          if (results.containsKey(selector)){
+            //first ancestors already found for this selector
+            continue;
+          }
+          GQuery pos = matches.get(selector);
+          boolean match = pos != null ? pos.index(current) > -1 : $(current).is(selector);
+          if (match){
+            results.put(selector, current);
+          }
+        }
+        
+        current = current.getParentElement();  
+      }
+      
+      
+    }
+    
+      return results;
+  }
+  
+  /**
+   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
+   * current element and progressing up through the DOM tree until reach the <code>context</code> node.
+   * 
+   * If no context is passed in then the context of the gQuery object will be used instead.
+   *
+   */
+  public GQuery closest(String selector, Node context){
+    assert selector != null;
+    
+    if (context == null){
+      context = currentContext;
+    }
+    
+    GQuery pos = selector.matches(POS_REGEX) ? $(selector, context) : null;
+    JsNodeArray result = JsNodeArray.create();
+    
+    for (Element e : elements()){
+      Element current = e;
+      while (current != null && current.getOwnerDocument() != null && current != context){
+        boolean match = pos != null ? pos.index(current) > -1 : $(current).is(selector);
+        if (match){
+          result.addNode(current);
+          break;
+        }else{
+          current = current.getParentElement();
+        }       
+      }
+    }
+    
+    return $(unique(result));
+    
+  } 
 
   /**
    * Filter the set of elements to those that contain the specified text.
@@ -1523,6 +1647,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return elements.getItem(l + i);
     }
     return null;
+  }
+  
+  public Node getContext() {
+    return currentContext;
   }
 
   /**
@@ -3277,6 +3405,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     GQuery g = new GQuery(elts);
     g.setPreviousObject(this);
     g.setSelector(selector);
+    g.currentContext = currentContext;
     return g;
   }
 
