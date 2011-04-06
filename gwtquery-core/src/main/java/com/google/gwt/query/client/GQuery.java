@@ -801,7 +801,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attributes include title, alt, src, href, width, style, etc.
    */
   public String attr(String name) {
-    return elements.getItem(0).getAttribute(name);
+    return size() == 0 ? "" : get(0).getAttribute(name);
   }
 
   /**
@@ -1154,7 +1154,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * value).
    */
   public Object data(String name) {
-    return data(elements.getItem(0), name, null);
+    return size() == 0 ? null : data(get(0), name, null);
   }
   
   /**
@@ -1165,7 +1165,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(String name, Class<T> clz) {
-    return size() == 0 ? null: (T)data(elements.getItem(0), name, null);
+    return size() == 0 ? null: (T)data(get(0), name, null);
   }
   
   /**
@@ -1974,7 +1974,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * left. The method works only with visible elements.
    */
   public com.google.gwt.query.client.GQuery.Offset offset() {
-    return size() == 0 ? new Offset(0, 0) : new Offset(get(0).getAbsoluteLeft(), get(0).getAbsoluteTop());
+    Element e = get(0);
+    return e == null ? new Offset(0, 0) : new Offset(e.getAbsoluteLeft(), e.getAbsoluteTop());
   }
 
   /**
@@ -1983,6 +1984,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * relative or absolute). This method only works with visible elements.
    */
   public GQuery offsetParent() {
+    if (size() == 0) {
+      return $();
+    }
     Element offParent = JsUtils.or(elements.getItem(0).getOffsetParent(), body);
     while (offParent != null
         && !"body".equalsIgnoreCase(offParent.getTagName())
@@ -2024,8 +2028,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (size() == 0) {
       return 0;
     }
-    int outerHeight = get(0).getOffsetHeight(); // height including padding and
-    // border
+    //  height including padding and  border
+    int outerHeight = get(0).getOffsetHeight(); 
     if (includeMargin) {
       outerHeight += cur("marginTop", true) + cur("marginBottom", true);
     }
@@ -2048,8 +2052,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (size() == 0) {
       return 0;
     }
-    int outerWidth = get(0).getOffsetWidth(); // width including padding and
-    // border
+    // width including padding and border
+    int outerWidth = get(0).getOffsetWidth(); 
     if (includeMargin) {
       outerWidth += cur("marginRight", true) + cur("marginLeft", true);
     }
@@ -2112,12 +2116,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * and padding. This method only works with visible elements.
    */
   public com.google.gwt.query.client.GQuery.Offset position() {
-    Element element = get(0);
-    if (element == null) {
-      return null;
+    if (size() == 0) {
+      return new Offset(0, 0);
     }
+    Element element = get(0);
     // Get *real* offsetParent
-    Element offsetParent = element.getOffsetParent();
+    Element offsetParent = get(0).getOffsetParent();
     // Get correct offsets
     Offset offset = offset();
     Offset parentOffset = null;
@@ -2505,7 +2509,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Scrolls the first matched element into view.
    */
   public GQuery scrollIntoView() {
-    scrollIntoViewImpl(get(0));
+    if (size() > 0) scrollIntoViewImpl(get(0));
     return this;
   }
 
@@ -3194,17 +3198,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * everything else.
    */
   public GQuery wrapAll(GQuery query) {
-    GQuery wrap = query.clone();
-    if (elements.getItem(0).getParentNode() != null) {
-      wrap.insertBefore(elements.getItem(0));
-    }
-    for (Element e : wrap.elements()) {
-      Node n = e;
-      while (n.getFirstChild() != null
-          && n.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
-        n = n.getFirstChild();
+    if (size() > 0) {
+      GQuery wrap = query.clone();
+      if (elements.getItem(0).getParentNode() != null) {
+        wrap.insertBefore(elements.getItem(0));
       }
-      $((Element) n).append(this);
+      for (Element e : wrap.elements()) {
+        Node n = e;
+        while (n.getFirstChild() != null
+            && n.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
+          n = n.getFirstChild();
+        }
+        $((Element) n).append(this);
+      }
     }
     return this;
   }
