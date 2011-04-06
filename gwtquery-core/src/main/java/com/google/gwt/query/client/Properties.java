@@ -46,7 +46,10 @@ public class Properties extends JavaScriptObject {
   public static String wrapPropertiesString(String s) {
     String ret = "({"
         + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "")
-        .replaceAll(":\\s*([^\"'\\s])([^,}]+)\\s*", ":\"$1$2\"") + "})";
+        .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "")
+        .replaceAll(":\\s*[\"']?([^;,]+)([,;]|$)[\"']?\\s*", ":'$1',")
+        .replaceFirst("[;,]$", "").replaceAll("\\s*[']+\\s*", "'")
+        + "})";
     return ret;
   }
 
