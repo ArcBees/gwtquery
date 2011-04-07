@@ -18,7 +18,6 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.plugins.Widgets.Widgets;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -900,7 +899,8 @@ public class GQueryCoreTest extends GWTTestCase {
     Button b2 = g.widget();
     assertEquals(b1, b2);
 
-    b2 = $("<button>Click-me</button>").appendTo(document).as(Widgets).widget();
+    b2 = new Button("click-me");
+    RootPanel.get().add(b2);
     b2.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(b1).css("color", "red");
@@ -1188,12 +1188,12 @@ public class GQueryCoreTest extends GWTTestCase {
     
     assertEquals(0, closeUnknown.length());
     
-    GQuery closePWithContext = $("input", e).closest("p,div",$("#firstDiv").get(0));
+    GQuery closePWithContext = $("input", e).closest("p,div",$("#firstDiv",e).get(0));
     
     assertEquals(1, closePWithContext.length());
     assertEquals("firstP", closePWithContext.get(0).getId());
     
-    GQuery closeDivWithContext = $("input", e).closest("div",$("#firstP").get(0));
+    GQuery closeDivWithContext = $("input", e).closest("div",$("#firstP",e).get(0));
     
     assertEquals(0, closeDivWithContext.length()); 
     
