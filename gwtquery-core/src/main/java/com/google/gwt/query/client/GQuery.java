@@ -352,7 +352,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>) n.getChildNodes().cast());
+    return $((NodeList<Element>) n.getChildNodes().cast()).as(Events).addLiveEvents();
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -972,7 +972,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     GQuery ret = new GQuery(result);
     ret.currentContext = currentContext;
     ret.currentSelector = currentSelector;
-    return ret;
+    return ret.as(Events).addLiveEvents();
   }
   
   /**
