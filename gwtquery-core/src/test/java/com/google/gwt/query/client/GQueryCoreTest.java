@@ -1201,18 +1201,28 @@ public class GQueryCoreTest extends GWTTestCase {
   
   public void testClosestMethodWithArrayOfString(){
     
-    String html = "<div id='mainDiv' class='test'><p><div id='firstDiv'><p id='firstP'><span><input id='firstInput' type='text'></input></span></p></div></p></div>";
+    String html = "<div id='mainDiv'><div id='subDiv' class='test'><div id='subSubDiv'><p id='mainP'><span id='testSpan' class='test'><input id='firstInput' type='text'></input></span></p></div></div></div>";
     $(e).html(html);
     
-    Map<String, Element> close = $("input", e).closest(new String[]{"p","div", ".test", "#unknown"});
+    Map<String, List<Element>> close = $("input", e).closest(new String[]{"p","div", ".test", "#unknown"});
     
     assertEquals(3, close.size());
+    
     assertNotNull(close.get("p"));
-    assertEquals("firstP", close.get("p").getId());
+    assertEquals(1,close.get("p").size());
+    assertEquals("mainP", close.get("p").get(0).getId());
+    
     assertNotNull(close.get("div"));
-    assertEquals("firstDiv", close.get("div").getId());
+    assertEquals(3,close.get("div").size());
+    assertEquals("subSubDiv", close.get("div").get(0).getId());
+    assertEquals("subDiv", close.get("div").get(1).getId());
+    assertEquals("mainDiv", close.get("div").get(2).getId());
+    
     assertNotNull(close.get(".test"));
-    assertEquals("mainDiv", close.get(".test").getId());
+    assertEquals(2,close.get(".test").size());
+    assertEquals("testSpan", close.get(".test").get(0).getId());
+    assertEquals("subDiv", close.get(".test").get(1).getId());
+    
     assertNull(close.get("#unknown"));
     
   }

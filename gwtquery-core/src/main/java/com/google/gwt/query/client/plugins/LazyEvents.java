@@ -18,8 +18,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.query.client.LazyBase;
@@ -37,13 +35,13 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * parameter
    * 
    */
-  LazyEvents<T> bind(int eventbits, Object data, Function...funcs);
+  LazyEvents<T> bind(int eventbits, Object data, Function... funcs);
 
   /**
    * Binds a set of handlers to a particular Event for each matched element.
    * 
-   * The namespace is a way to group events of the same type, making easier unbind
-   * specific handlers.
+   * The namespace is a way to group events of the same type, making easier
+   * unbind specific handlers.
    * 
    * The event handlers are passed as Functions that you can use to prevent
    * default behavior. To stop both default action and event bubbling, the
@@ -51,14 +49,14 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * 
    * You can pass an additional Object data to your Function
    * 
-   */  
-  LazyEvents<T> bind(int eventbits, String namespace, Object data, Function...funcs);
+   */
+  LazyEvents<T> bind(int eventbits, String namespace, Object data, Function... funcs);
 
   /**
    * Binds a set of handlers to a particular Event for each matched element.
    * 
-   * The name could contain a namespace which is a way to group events of the same type, 
-   * making easier unbind specific handlers.
+   * The name could contain a namespace which is a way to group events of the
+   * same type, making easier unbind specific handlers.
    * 
    * The event handlers are passed as Functions that you can use to prevent
    * default behavior. To stop both default action and event bubbling, the
@@ -66,53 +64,51 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * 
    * You can pass an additional Object data to your Function
    * 
-   */  
-  LazyEvents<T> bind(String event, Object data, Function...funcs);
+   */
+  LazyEvents<T> bind(String event, Object data, Function... funcs);
 
   /**
-   * Remove all event handlers previously attached using live()
-   * The selector used with it must match exactly the selector initially
-   * used with live().
+   * Remove an event handlers previously attached using live() The selector used
+   * with it must match exactly the selector initially used with live(). if
+   * <code>eventName</code> is null, all event handlers corresponding of the
+   * GQuery selector will be removed
    */
-  GQuery die(int eventbits);
+  GQuery die(String eventName);
 
-  /**
-   * Add events to all elements which match the current selector,
-   * now and in the future.
-   */
-  GQuery live(int eventBits, Function... funcs);
+  GQuery live(String eventName, Object data, Function func);
 
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
    * element. The handler is executed only once for each element.
-   *
+   * 
    * The event handler is passed as a Function that you can use to prevent
    * default behavior. To stop both default action and event bubbling, the
    * function event handler has to return false.
-   *
+   * 
    * You can pass an additional Object data to your Function as the second
    * parameter
-   */  
+   */
   LazyEvents<T> one(int eventbits, Object data, Function f);
 
   /**
-   * Execute all handlers and behaviors attached to the matched elements for the given event types.
+   * Execute all handlers and behaviors attached to the matched elements for the
+   * given event types.
    * 
-   * Different event types can be passed joining these using the or bit wise operator.
+   * Different event types can be passed joining these using the or bit wise
+   * operator.
    * 
-   * For keyboard events you can pass a second parameter which represents 
-   * the key-code of the pushed key. 
+   * For keyboard events you can pass a second parameter which represents the
+   * key-code of the pushed key.
    * 
-   * Example: fire(Event.ONCLICK | Event.ONFOCUS)
-   * Example: fire(Event.ONKEYDOWN. 'a');
+   * Example: fire(Event.ONCLICK | Event.ONFOCUS) Example: fire(Event.ONKEYDOWN.
+   * 'a');
    */
   LazyEvents<T> trigger(int eventbits, int... keys);
 
   /**
    * Trigger a html event in all matched elements.
    * 
-   * @param htmlEvent
-   *    An string representing the html event desired 
+   * @param htmlEvent An string representing the html event desired
    */
   LazyEvents<T> triggerHtmlEvent(String htmlEvent);
 
@@ -133,8 +129,8 @@ public interface LazyEvents<T> extends LazyBase<T>{
   LazyEvents<T> unbind(int eventbits, String name);
 
   /**
-   * Removes all handlers, that matches event name passed. This name
-   * could contain a namespace.
+   * Removes all handlers, that matches event name passed. This name could
+   * contain a namespace.
    * 
    * Example: unbind("click.my.namespace")
    */

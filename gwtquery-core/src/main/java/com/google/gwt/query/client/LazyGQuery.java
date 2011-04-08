@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
@@ -400,6 +401,48 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> clone();
 
   /**
+   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
+   * current element and progressing up through the DOM tree.
+   * 
+   * @param selector
+   * @return
+   */
+  LazyGQuery<T> closest(String selector);
+
+  /**
+   * Returns a {@link Map} object as key a selector and as value the list of
+   * ancestor elements matching this selectors, beginning at the first matched
+   * element and progressing up through the DOM. This method allows retrieving
+   * the list of ancestors matching many selectors by traversing the DOM only
+   * one time.
+   * 
+   * @param selector
+   * @return
+   */
+  Map<String, List<Element>> closest(String[] selectors);
+
+  /**
+   * Returns a {@link Map} object as key a selector and as value the list of
+   * ancestor elements matching this selectors, beginning at the first matched
+   * element and progressing up through the DOM until reach the
+   * <code>context</code> node.. This method allows retrieving the list of
+   * ancestors matching many selectors by traversing the DOM only one time.
+   * 
+   * @param selector
+   * @return
+   */
+  Map<String, List<Element>> closest(String[] selectors, Node context);
+
+  /**
+   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
+   * current element and progressing up through the DOM tree until reach the <code>context</code> node.
+   * 
+   * If no context is passed in then the context of the gQuery object will be used instead.
+   *
+   */
+  LazyGQuery<T> closest(String selector, Node context);
+
+  /**
    * Filter the set of elements to those that contain the specified text.
    */
   LazyGQuery<T> contains(String text);
@@ -622,11 +665,20 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> detach(String filter);
 
   /**
-   * Remove all event handlers previously attached using live()
-   * The selector used with it must match exactly the selector initially
-   * used with live().
+   * Remove all event handlers previously attached using
+   * {@link #live(String, Function)}. In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(String, Function)}
    */
-  LazyGQuery<T> die(int eventbits);
+  LazyGQuery<T> die();
+
+  /**
+   * Remove an event handlers previously attached using
+   * {@link #live(String, Function)} In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(String, Function)}
+   */
+  LazyGQuery<T> die(String eventName);
 
   /**
    * Run one or more Functions over each element of the GQuery. You have to
@@ -759,6 +811,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </pre>
    */
   Element get(int i);
+
+  Node getContext();
 
   /**
    * Return the previous set of matched elements prior to the last destructive
@@ -946,10 +1000,111 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   int length();
 
   /**
-   * Add events to all elements which match the current selector,
-   * now and in the future.
+   * <p>
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   * <p>
+   * <p>
+   * Ex :
+   * 
+   * <pre>
+   * $(".clickable").live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   *  </pre>
+   * 
+   * With this code, all elements with class "clickable" present in the DOM or
+   * added to the DOM in the future will be clickable. The text color will be
+   * changed to red when they will be clicked. So if after in the code, you add
+   * another element :
+   * 
+   * <pre>
+   * $("body").append("<div class='clickable'>Click me and I will be red</div>");
+   * </pre>
+   * 
+   * The click on this new element will also trigger the handler.
+   * </p>
+   * <p>
+   * In the same way, if you add "clickable" class on some existing element,
+   * these elements will be clickable also.
+   * </p>
+   * <p>
+   * <h3>important remarks</h3>
+   * <ul>
+   * <li>
+   * The live method should be always called after a selector</li>
+   * <li>
+   * Live events are bound to the context of the {@link GQuery} object :
+   * 
+   * <pre>
+   * $(".clickable", myElement).live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * The {@link Function} will be called only on elements having the class
+   * "clickable" and being descendant of myElement.</li>
+   * </ul>
+   * </p>
    */
-  LazyGQuery<T> live(int eventBits, Function... funcs);
+  LazyGQuery<T> live(String eventName, Function func);
+
+  /**
+   * <p>
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   * The <code>data</code> parameter allows us to pass data to the handler.
+   * <p>
+   * <p>
+   * Ex :
+   * 
+   * <pre>
+   * $(".clickable").live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   *  </pre>
+   * 
+   * With this code, all elements with class "clickable" present in the DOM or
+   * added to the DOM in the future will be clickable. The text color will be
+   * changed to red when they will be clicked. So if after in the code, you add
+   * another element :
+   * 
+   * <pre>
+   * $("body").append("<div class='clickable'>Click me and I will be red</div>");
+   * </pre>
+   * 
+   * The click on this new element will also trigger the handler.
+   * </p>
+   * <p>
+   * In the same way, if you add "clickable" class on some existing element,
+   * these elements will be clickable also.
+   * </p>
+   * <p>
+   * <h3>important remarks</h3>
+   * <ul>
+   * <li>
+   * The live method should be always called after a selector</li>
+   * <li>
+   * Live events are bound to the context of the {@link GQuery} object :
+   * 
+   * <pre>
+   * $(".clickable", myElement).live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * The {@link Function} will be called only on elements having the class
+   * "clickable" and being descendant of myElement.</li>
+   * </ul>
+   * </p>
+   */
+  LazyGQuery<T> live(String eventName, Object data, Function func);
 
   /**
    * Bind a function to the load event of each matched element.

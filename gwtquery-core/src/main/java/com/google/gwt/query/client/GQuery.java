@@ -352,7 +352,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>) n.getChildNodes().cast()).as(Events).addLiveEvents();
+    return $((NodeList<Element>) n.getChildNodes().cast());
   }
 
   protected static <S> Object data(Element item, String name, S value) {
@@ -972,7 +972,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     GQuery ret = new GQuery(result);
     ret.currentContext = currentContext;
     ret.currentSelector = currentSelector;
-    return ret.as(Events).addLiveEvents();
+    return ret;
   }
   
   /**
@@ -987,67 +987,80 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * Returns a {@link Map} object as key a selector and as value the first ancestor elements matching this selectors, beginning at the
-   * first matched element and progressing up through the DOM. This method allows retrieving the list of closest ancestors matching 
-   * many selectors and by reducing the number of DOM traversing.
+   * Returns a {@link Map} object as key a selector and as value the list of
+   * ancestor elements matching this selectors, beginning at the first matched
+   * element and progressing up through the DOM. This method allows retrieving
+   * the list of ancestors matching many selectors by traversing the DOM only
+   * one time.
    * 
    * @param selector
    * @return
    */
-  public Map<String, Element> closest(String[] selectors){
+  public Map<String, List<Element>> closest(String[] selectors) {
     return closest(selectors, null);
   }
-  
+
   /**
-   * Returns a GQuery object containing the first ancestor elements matching each selectors, beginning at the
-   * first matched element and progressing up through the DOM tree until reach the <code>context</code> node..
-   * This method allows retrieving the list of closest ancestors matching many selectors and by reducing the number of DOM traversing.
+   * Returns a {@link Map} object as key a selector and as value the list of
+   * ancestor elements matching this selectors, beginning at the first matched
+   * element and progressing up through the DOM until reach the
+   * <code>context</code> node.. This method allows retrieving the list of
+   * ancestors matching many selectors by traversing the DOM only one time.
    * 
    * @param selector
    * @return
    */
-  public Map<String, Element> closest(String[] selectors, Node context){
-    Map<String, Element> results = new HashMap<String, Element>();
-    
-    if (context == null){
+  public Map<String, List<Element>> closest(String[] selectors, Node context) {
+    Map<String, List<Element>> results = new HashMap<String, List<Element>>();
+
+    if (context == null) {
       context = currentContext;
     }
-    
+
     Element first = get(0);
-    
-    if (first != null && selectors != null && selectors.length > 0){
-      
+
+    if (first != null && selectors != null && selectors.length > 0) {
+
       Map<String, GQuery> matches = new HashMap<String, GQuery>();
-      
-      for (String selector : selectors){
-        if (!matches.containsKey(selector)){
-          matches.put(selector, selector.matches(POS_REGEX) ? $(selector, context) : null);
+
+      for (String selector : selectors) {
+        if (!matches.containsKey(selector)) {
+          matches.put(selector, selector.matches(POS_REGEX) ? $(selector,
+              context) : null);
         }
       }
-      
+
       Element current = first;
-      
-      while (current != null && current.getOwnerDocument() != null && current != context){
-        //for each selector, check if the current element match it.
-        for (String selector : matches.keySet()){
-          if (results.containsKey(selector)){
-            //first ancestors already found for this selector
-            continue;
-          }
+
+      while (current != null && current.getOwnerDocument() != null
+          && current != context) {
+        // for each selector, check if the current element match it.
+        for (String selector : matches.keySet()) {
+          
           GQuery pos = matches.get(selector);
-          boolean match = pos != null ? pos.index(current) > -1 : $(current).is(selector);
-          if (match){
-            results.put(selector, current);
+         
+          boolean match = pos != null ? pos.index(current) > -1
+              : $(current).is(selector);
+          
+          if (match) {
+            
+            List<Element> elementsMatchingSelector = results.get(selector);
+            
+            if (elementsMatchingSelector == null) {
+              elementsMatchingSelector = new ArrayList<Element>();
+              results.put(selector, elementsMatchingSelector);
+            }
+            
+            elementsMatchingSelector.add(current);
           }
         }
-        
-        current = current.getParentElement();  
+
+        current = current.getParentElement();
       }
-      
-      
+
     }
-    
-      return results;
+
+    return results;
   }
   
   /**
@@ -1406,16 +1419,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery detach(String filter) {
     return remove(filter, false);
   }
-  
+
   /**
-   * Remove all event handlers previously attached using live()
-   * The selector used with it must match exactly the selector initially
-   * used with live().
+   * Remove all event handlers previously attached using
+   * {@link #live(String, Function)}. In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(String, Function)}
    */
-  public GQuery die(int eventbits) {
-    return as(Events).die(eventbits);
+  public GQuery die() {
+    return as(Events).die(null);
   }
-  
+
+  /**
+   * Remove an event handlers previously attached using
+   * {@link #live(String, Function)} In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(String, Function)}
+   */
+  public GQuery die(String eventName) {
+    return as(Events).die(eventName);
+  }
+
   /**
    * Run one or more Functions over each element of the GQuery. You have to
    * override one of these funcions: public void f(Element e) public String
@@ -1763,7 +1787,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
       e.setInnerHTML(html);
     }
-    return as(Events).addLiveEvents();
+    return this;
   }
 
   /**
@@ -1932,13 +1956,117 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public int length() {
     return size();
   }
-  
+
   /**
-   * Add events to all elements which match the current selector,
-   * now and in the future.
+   * <p>
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   * <p>
+   * <p>
+   * Ex :
+   * 
+   * <pre>
+   * $(".clickable").live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   *  </pre>
+   * 
+   * With this code, all elements with class "clickable" present in the DOM or
+   * added to the DOM in the future will be clickable. The text color will be
+   * changed to red when they will be clicked. So if after in the code, you add
+   * another element :
+   * 
+   * <pre>
+   * $("body").append("<div class='clickable'>Click me and I will be red</div>");
+   * </pre>
+   * 
+   * The click on this new element will also trigger the handler.
+   * </p>
+   * <p>
+   * In the same way, if you add "clickable" class on some existing element,
+   * these elements will be clickable also.
+   * </p>
+   * <p>
+   * <h3>important remarks</h3>
+   * <ul>
+   * <li>
+   * The live method should be always called after a selector</li>
+   * <li>
+   * Live events are bound to the context of the {@link GQuery} object :
+   * 
+   * <pre>
+   * $(".clickable", myElement).live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * The {@link Function} will be called only on elements having the class
+   * "clickable" and being descendant of myElement.</li>
+   * </ul>
+   * </p>
    */
-  public GQuery live(int eventBits, Function... funcs) {
-    return as(Events).live(eventBits, funcs);
+  public GQuery live(String eventName, Function func) {
+    return as(Events).live(eventName, null, func);
+  }
+  
+
+  /**
+   * <p>
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   * The <code>data</code> parameter allows us to pass data to the handler.
+   * <p>
+   * <p>
+   * Ex :
+   * 
+   * <pre>
+   * $(".clickable").live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   *  </pre>
+   * 
+   * With this code, all elements with class "clickable" present in the DOM or
+   * added to the DOM in the future will be clickable. The text color will be
+   * changed to red when they will be clicked. So if after in the code, you add
+   * another element :
+   * 
+   * <pre>
+   * $("body").append("<div class='clickable'>Click me and I will be red</div>");
+   * </pre>
+   * 
+   * The click on this new element will also trigger the handler.
+   * </p>
+   * <p>
+   * In the same way, if you add "clickable" class on some existing element,
+   * these elements will be clickable also.
+   * </p>
+   * <p>
+   * <h3>important remarks</h3>
+   * <ul>
+   * <li>
+   * The live method should be always called after a selector</li>
+   * <li>
+   * Live events are bound to the context of the {@link GQuery} object :
+   * 
+   * <pre>
+   * $(".clickable", myElement).live("click", new Function(){
+   *  public void f(Element e){
+   *    $(e).css(CSS.COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * The {@link Function} will be called only on elements having the class
+   * "clickable" and being descendant of myElement.</li>
+   * </ul>
+   * </p>
+   */
+  public GQuery live(String eventName, Object data, Function func) {
+    return as(Events).live(eventName, data, func);
   }
 
   /**

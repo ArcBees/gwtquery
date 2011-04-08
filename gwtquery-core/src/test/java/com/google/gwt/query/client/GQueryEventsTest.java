@@ -58,10 +58,90 @@ public class GQueryEventsTest extends GWTTestCase {
       e = testPanel.getElement();
       e.setId("evnt-tst");
     } else {
+      EventsListener.clean(e);
       e.setInnerHTML("");
     }
   } 
   
+ 
+  
+  public void testDie() {
+    $(e).html("<div id='div1'>content</div>");
+    $(".clickMe", e).live("click", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".clickMe", e).live("dblclick", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.BLUE));
+      }
+    });
+    
+    $("#div1",e).addClass("clickMe");
+    
+    $("#div1",e).click();
+    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    $("#div1",e).dblclick();
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    //reset
+    $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $(".clickMe", e).die("click");
+    $("#div1",e).click();
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    $("#div1",e).dblclick();
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    //reset
+    $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $(".clickMe", e).die("dblclick");
+    
+    $("#div1",e).dblclick();
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+  }
+  
+  public void testDie2() {
+    $(e).html("<div id='div1'>content</div>");
+    $(".clickMe", e).live("click", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".clickMe", e).live("dblclick", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.BLUE));
+      }
+    });
+    
+    $("#div1",e).addClass("clickMe");
+    
+    $("#div1",e).click();
+    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    $("#div1",e).dblclick();
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+    //reset
+    $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $(".clickMe", e).die();
+
+    $("#div1",e).click();
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+
+    $("#div1",e).dblclick();
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    
+  }
+
   /**
    * TODO: DblClick doesn't work with HtmlUnit, investigate and report.
    */
@@ -77,7 +157,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $("p", e).dblclick();
     assertEquals("yellow", $("p", e).css("color"));
   }
-
+  
   public void testEventsPlugin() {
     $(e).html("<p>Content</p>");
 
@@ -184,30 +264,6 @@ public class GQueryEventsTest extends GWTTestCase {
     $("input", e).keyup('c');
     assertEquals("abc", $("input", e).val());
   }
-
-  public void testLive() {
-    $(e).html("<div class='clickMe'>Content 1</div>");
-    $(".clickMe").live(Event.ONCLICK, new Function(){
-      public void f(Element e) {
-        $(e).css("color", "red");
-      }
-    });
-    $(e).append("<p class='clickMe'>Content 2</p>");
-    assertEquals("", $("#d1").css("color"));
-    
-    $(".clickMe", e).click();
-    assertEquals("red", $("div", e).css("color"));
-    assertEquals("red", $("p", e).css("color"));
-    
-    $(".clickMe", e).css("color", "yellow");
-    $(".clickMe").die(Event.ONCLICK);
-    $(e).append("<span class='clickMe'>Content 3</span>");
-    
-    $(".clickMe", e).click();
-    assertEquals("yellow", $("div", e).css("color"));
-    assertEquals("yellow", $("p", e).css("color"));
-    assertEquals("", $("span", e).css("color"));
-  }
   
   public void testLazyMethods() {
     $(e).css(CSS.COLOR.with(RGBColor.WHITE));
@@ -220,6 +276,92 @@ public class GQueryEventsTest extends GWTTestCase {
     $(e).click(lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done());
     $(e).click();
     assertEquals("black", $(e).css("color"));
+  }
+
+  public void testLive() {
+    $(e).html("<div id='div1' class='clickMe'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+    $(".clickMe", e).live("click", new Function(){
+      public void f(Element el) {
+        $(el).css("color", "red");
+      }
+    });
+    
+    $(e).append("<div id='div3' class='clickMe'>Content 2 <div id='div4'><span id='span2'>blop</span></div></div>");
+
+    $(".clickMe", e).click();
+    assertEquals("red", $("#div1", e).css("color"));
+    assertEquals("red", $("#div3", e).css("color"));
+    
+    //reset
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    assertEquals("black", $("div", e).css("color"));
+    assertEquals("black", $("span", e).css("color"));
+
+    $("#span1", e).click();
+    assertEquals("red", $("#div1", e).css("color"));
+    assertEquals("black", $("#div3", e).css("color"));
+    
+     //reset
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $("#span2", e).click();
+    assertEquals("black", $("#div1", e).css("color"));
+    assertEquals("red", $("#div3", e).css("color"));
+    
+    //reset
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $("#div2, #div4", e).addClass("clickMe");
+    
+    $("#span1", e).click();
+    assertEquals("red", $("#div1", e).css("color"));
+    assertEquals("red", $("#div2", e).css("color"));
+    assertEquals("black", $("#div3", e).css("color"));
+    assertEquals("black", $("#div4", e).css("color"));
+
+  //reset
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+          
+    $("#span2", e).click();
+    assertEquals("black", $("#div1", e).css("color"));
+    assertEquals("black", $("#div2", e).css("color"));
+    assertEquals("red", $("#div3", e).css("color"));
+    assertEquals("red", $("#div4", e).css("color"));
+
+  }
+
+  public void testLive2() {
+    
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+    
+    $(".clickable", e).live("click", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".clickable2", e).live("click", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.BLUE));
+      }
+    });
+    
+    $(".hover", e).live("mouseover", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    
+    $("#div1", e).addClass("clickable");
+    $("#div2", e).addClass("clickable2", "hover");
+    
+    $("#span1", e).click();
+    
+    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    assertEquals("blue", $("#div2", e).css(CSS.COLOR));
+    assertNotSame("yellow", $("#div2", e).css(CSS.BACKGROUND_COLOR));
+    
+    
   }
 
   public void testNamedBinding() {
@@ -269,6 +411,18 @@ public class GQueryEventsTest extends GWTTestCase {
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
   }
 
+  public void testRebind() {
+    final GQuery b = $("<p>content</p>");
+    b.click(new Function() {
+      public void f(Element e){
+        b.css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    $(e).append(b);
+    b.click();
+    assertEquals("red", $(b).css("color"));
+  }
+  
   public void testSubmitEvent() {
     // Add a form and an iframe to the dom. The form target is the iframe
     $(e).html("<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
@@ -302,39 +456,23 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     }.schedule(500);
   }
-
-  public void testWidgetEvents() {
-    final Button b = new Button("click-me");
-    b.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        b.getElement().getStyle().setBackgroundColor("black");
-      }
-    });
-    RootPanel.get().add(b);
-    $(b).click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
-
-    $(b).click();
-    assertEquals("red", $("button").css("color"));
-    assertEquals("black", $("button").css("background-color"));
-    RootPanel.get().remove(b);
+  
+  /**
+   * Test for issue 62
+   * http://code.google.com/p/gwtquery/issues/detail?id=62
+   */
+  public void testTabInbexInFocusEventBinding(){
+    String content="<div id='test'>test content</div>";
+    $(e).html(content);
+    $("#test").focus(new Function(){});
     
-    $(e).append($(b));
-    $(b).css(CSS.COLOR.with(RGBColor.YELLOW), CSS.BACKGROUND_COLOR.with(RGBColor.BLUE));
-    $(b).click();
-    assertEquals("red", $("button").css("color"));
-    assertEquals("black", $("button").css("background-color"));
-  }
-
-  public void testRebind() {
-    final GQuery b = $("<p>content</p>");
-    b.click(new Function() {
-      public void f(Element e){
-        b.css(CSS.COLOR.with(RGBColor.RED));
-      }
-    });
-    $(e).append(b);
-    b.click();
-    assertEquals("red", $(b).css("color"));
+    assertEquals($("#test").attr("tabIndex"), "0");
+    
+    content="<div id='test' tabIndex='2'>test content</div>";
+    $(e).html(content);
+    $("#test").focus(new Function(){});
+    
+    assertEquals($("#test").attr("tabIndex"), "2");
   }
   
   public void testUnbindMultipleEvents() {
@@ -361,23 +499,27 @@ public class GQueryEventsTest extends GWTTestCase {
     $(document).trigger(Event.ONMOUSEUP);
     assertEquals("black", $("p").css("color"));
   }
-  
-  /**
-   * Test for issue 62
-   * http://code.google.com/p/gwtquery/issues/detail?id=62
-   */
-  public void testTabInbexInFocusEventBinding(){
-    String content="<div id='test'>test content</div>";
-    $(e).html(content);
-    $("#test").focus(new Function(){});
+
+  public void testWidgetEvents() {
+    final Button b = new Button("click-me");
+    b.addClickHandler(new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        b.getElement().getStyle().setBackgroundColor("black");
+      }
+    });
+    RootPanel.get().add(b);
+    $(b).click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
+
+    $(b).click();
+    assertEquals("red", $("button").css("color"));
+    assertEquals("black", $("button").css("background-color"));
+    RootPanel.get().remove(b);
     
-    assertEquals($("#test").attr("tabIndex"), "0");
-    
-    content="<div id='test' tabIndex='2'>test content</div>";
-    $(e).html(content);
-    $("#test").focus(new Function(){});
-    
-    assertEquals($("#test").attr("tabIndex"), "2");
+    $(e).append($(b));
+    $(b).css(CSS.COLOR.with(RGBColor.YELLOW), CSS.BACKGROUND_COLOR.with(RGBColor.BLUE));
+    $(b).click();
+    assertEquals("red", $("button").css("color"));
+    assertEquals("black", $("button").css("background-color"));
   }
 
 }

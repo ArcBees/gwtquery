@@ -62,14 +62,14 @@ public abstract class MousePlugin extends UiPlugin {
           (Object) null, new Function() {
             @Override
             public boolean f(com.google.gwt.user.client.Event event) {
-              return mouseDown(e, Event.create(event));
+              return mouseDown(e, (Event)Event.create(event));
 
             }
           }).bind(Event.ONCLICK, getPluginName(), (Object) null,
           new Function() {
             @Override
             public boolean f(com.google.gwt.user.client.Event event) {
-              preventClickEvent |= !mouseClick(e, Event.create(event));
+              preventClickEvent |= !mouseClick(e, (Event)Event.create(event));
 
               if (preventClickEvent) {
 
@@ -212,14 +212,14 @@ public abstract class MousePlugin extends UiPlugin {
         (Object) null, new Function() {
           @Override
           public boolean f(com.google.gwt.user.client.Event e) {
-            mouseMove(element, Event.create(e));
+            mouseMove(element, (Event) Event.create(e));
             return false;
           }
         }).bind(Event.ONMOUSEUP, getPluginName(), (Object) null,
         new Function() {
           @Override
           public boolean f(com.google.gwt.user.client.Event e) {
-            mouseUp(element, Event.create(e));
+            mouseUp(element, (Event) Event.create(e));
             return false;
           }
         });
