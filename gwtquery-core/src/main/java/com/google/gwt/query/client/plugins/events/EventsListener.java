@@ -342,9 +342,10 @@ public class EventsListener implements EventListener {
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
-      liveBindFunction.removeBindFunctionForSelector(cssSelector);
+      if (liveBindFunction != null) {
+        liveBindFunction.removeBindFunctionForSelector(cssSelector);
+      }
     }
-
   }
 
   public void dispatchEvent(Event event) {
@@ -395,13 +396,14 @@ public class EventsListener implements EventListener {
   }
 
   public void onBrowserEvent(Event event) {
+    double now = Duration.currentTimeMillis();
     // Workaround for Issue_20
     if (lastType == event.getTypeInt()
-        && lastEvnt - Duration.currentTimeMillis() < 10
+        && now - lastEvnt < 10
         && "body".equalsIgnoreCase(element.getTagName())) {
       return;
     }
-    lastEvnt = Duration.currentTimeMillis();
+    lastEvnt = now;
     lastType = event.getTypeInt();
 
     // Execute the original Gwt listener
