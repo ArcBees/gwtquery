@@ -15,9 +15,6 @@
  */
 package com.google.gwt.query.client.js;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
