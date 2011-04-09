@@ -1,0 +1,7 @@
+<module  rename-to='JsCollectionVsJavaCollection'>
+	<inherits name='com.google.gwt.query.Query' />
+	<entry-point
+		class="gwtquery.samples.client.JsCollectionVsJavaCollection">
+	</entry-point>
+</module>
+
