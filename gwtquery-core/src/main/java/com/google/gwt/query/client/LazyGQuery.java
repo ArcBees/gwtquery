@@ -681,6 +681,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> die(String eventName);
 
   /**
+   * Remove an event handlers previously attached using
+   * {@link #live(int, Function)} In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(int, Function)}
+   */
+  LazyGQuery<T> die(int eventbits);
+
+  /**
    * Run one or more Functions over each element of the GQuery. You have to
    * override one of these funcions: public void f(Element e) public String
    * f(Element e, int i)
@@ -1050,7 +1058,19 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </ul>
    * </p>
    */
-  LazyGQuery<T> live(String eventName, Function func);
+  LazyGQuery<T> live(String eventName, Function... funcs);
+
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  LazyGQuery<T> live(int eventbits, Function...funcs);
+
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  LazyGQuery<T> live(int eventbits, Object data, Function...funcs);
 
   /**
    * <p>

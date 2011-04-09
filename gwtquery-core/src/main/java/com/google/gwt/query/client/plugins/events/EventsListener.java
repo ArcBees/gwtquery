@@ -281,7 +281,7 @@ public class EventsListener implements EventListener {
   private Element element;
 
   private JsObjectArray<BindFunction> elementEvents = JsObjectArray.createArray().cast();
-  private Map<String, LiveBindFunction> liveBindFunctionByEventType = new HashMap<String, LiveBindFunction>();
+  private Map<Integer, LiveBindFunction> liveBindFunctionByEventType = new HashMap<Integer, LiveBindFunction>();
 
   private EventsListener(Element element) {
     this.element = element;
@@ -328,21 +328,26 @@ public class EventsListener implements EventListener {
       bind(b, nameSpace, data, function, -1);
     }
   }
-
+  
   public void die(String eventName, String cssSelector) {
-    if (eventName == null) {
+    int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
+        : Event.getTypeInt(eventName);
+    die(eventType, cssSelector);
+  }
+
+  public void die(int eventbits, String cssSelector) {
+    if (eventbits == 0) {
       for (LiveBindFunction liveBindFunction : liveBindFunctionByEventType.values()) {
         liveBindFunction.removeBindFunctionForSelector(cssSelector);
       }
     } else {
-      LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventName);
+      LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
       liveBindFunction.removeBindFunctionForSelector(cssSelector);
     }
 
   }
 
   public void dispatchEvent(Event event) {
-
     int etype = "submit".equalsIgnoreCase(event.getType()) ? ONSUBMIT
         : DOM.eventGetType(event);
     for (int i = 0; i < elementEvents.length(); i++) {
@@ -364,26 +369,28 @@ public class EventsListener implements EventListener {
     return getGwtEventListener(element);
   }
 
-  public void live(String eventName, String cssSelector, Object data, Function f) {
-    int eventType = 0;
-    if ("submit".equals(eventName)) {
-      eventType = ONSUBMIT;
-    } else {
-      eventType = Event.getTypeInt(eventName);
-    }
+  public void live(String eventName, String cssSelector, Object data, Function... f) {
+    int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
+        : Event.getTypeInt(eventName);
+    live(eventType, cssSelector, data, f);
+  }
+  
+  public void live(int eventbits, String cssSelector, Object data, Function... funcs) {
 
     // is a LiveBindFunction already attached for this kind of event
-    LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventName);
+    LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
     if (liveBindFunction == null) {
-      liveBindFunction = new LiveBindFunction(eventType, "live");
-      eventBits |= eventType;
+      liveBindFunction = new LiveBindFunction(eventbits, "live");
+      eventBits |= eventbits;
       sink();
       elementEvents.add(liveBindFunction);
-      liveBindFunctionByEventType.put(eventName, liveBindFunction);
+      liveBindFunctionByEventType.put(eventbits, liveBindFunction);
     }
 
-    liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(
-        eventType, "live", f, data));
+    for (Function f: funcs) {
+      liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(
+          eventbits, "live", f, data));
+    }
 
   }
 
@@ -439,7 +446,7 @@ public class EventsListener implements EventListener {
   private void clean() {
     cleanGQListeners(element);
     elementEvents = JsObjectArray.createArray().cast();
-    liveBindFunctionByEventType = new HashMap<String, LiveBindFunction>();
+    liveBindFunctionByEventType = new HashMap<Integer, LiveBindFunction>();
   }
 
   private void sink() {

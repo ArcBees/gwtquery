@@ -109,20 +109,32 @@ public class Events extends GQuery {
   public GQuery die(String eventName) {
     EventsListener.getInstance(
         Element.is(currentContext) ? (Element) currentContext : body).die(
-        eventName, currentSelector);
+            eventName, currentSelector);
     return this;
   }
 
-  public GQuery live(String eventName, final Object data, Function func) {
+  public GQuery die(int eventbits) {
+    EventsListener.getInstance(
+        Element.is(currentContext) ? (Element) currentContext : body).die(
+            eventbits, currentSelector);
+    return this;
+  }
 
-    // bind live delegating event to the current context
+  public GQuery live(String eventName, final Object data, Function... funcs) {
     EventsListener.getInstance(
         Element.is(currentContext) ? (Element) currentContext : body).live(
-        eventName, currentSelector, data, func);
-
+        eventName, currentSelector, data, funcs);
+    return this;
+  }
+  
+  public GQuery live(int eventbits, final Object data, Function... funcs) {
+    EventsListener.getInstance(
+        Element.is(currentContext) ? (Element) currentContext : body).live(
+            eventbits, currentSelector, data, funcs);
     return this;
 
   }
+
 
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched

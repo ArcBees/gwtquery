@@ -880,6 +880,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function as the second
+   * parameter
+   * 
+   */
+  public GQuery bind(String eventType, final Object data, final Function... funcs) {
+    return as(Events).bind(eventType, data, funcs);
+  }
+
+  /**
    * Bind a set of functions to the blur event of each matched element. Or
    * trigger the event if no functions are provided.
    */
@@ -1427,7 +1442,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * initially used with {@link #live(String, Function)}
    */
   public GQuery die() {
-    return as(Events).die(null);
+    return die(0);
   }
 
   /**
@@ -1438,6 +1453,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery die(String eventName) {
     return as(Events).die(eventName);
+  }
+  
+  /**
+   * Remove an event handlers previously attached using
+   * {@link #live(int, Function)} In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(int, Function)}
+   */
+  public GQuery die(int eventbits) {
+    return as(Events).die(eventbits);
   }
 
   /**
@@ -2008,10 +2033,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </ul>
    * </p>
    */
-  public GQuery live(String eventName, Function func) {
-    return as(Events).live(eventName, null, func);
+  public GQuery live(String eventName, Function... funcs) {
+    return as(Events).live(eventName, null, funcs);
   }
   
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  public GQuery live(int eventbits, Function...funcs){
+    return as(Events).live(eventbits, null, funcs);
+  }
+
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  public GQuery live(int eventbits, Object data, Function...funcs){
+    return as(Events).live(eventbits, data, funcs);
+  }
 
   /**
    * <p>

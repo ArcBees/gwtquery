@@ -75,7 +75,11 @@ public interface LazyEvents<T> extends LazyBase<T>{
    */
   GQuery die(String eventName);
 
-  GQuery live(String eventName, Object data, Function func);
+  GQuery die(int eventbits);
+
+  GQuery live(String eventName, Object data, Function... funcs);
+
+  GQuery live(int eventbits, Object data, Function... funcs);
 
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched
