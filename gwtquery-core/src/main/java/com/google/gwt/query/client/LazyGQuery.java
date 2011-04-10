@@ -352,6 +352,19 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> bind(int eventbits, Object data, Function... funcs);
 
   /**
+   * Binds a set of handlers to a particular Event for each matched element.
+   * 
+   * The event handlers are passed as Functions that you can use to prevent
+   * default behavior. To stop both default action and event bubbling, the
+   * function event handler has to return false.
+   * 
+   * You can pass an additional Object data to your Function as the second
+   * parameter
+   * 
+   */
+  LazyGQuery<T> bind(String eventType, Object data, Function... funcs);
+
+  /**
    * Bind a set of functions to the blur event of each matched element. Or
    * trigger the event if no functions are provided.
    */
@@ -1124,7 +1137,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </ul>
    * </p>
    */
-  LazyGQuery<T> live(String eventName, Object data, Function func);
+  LazyGQuery<T> live(String eventName, Object data, Function... funcs);
 
   /**
    * Bind a function to the load event of each matched element.

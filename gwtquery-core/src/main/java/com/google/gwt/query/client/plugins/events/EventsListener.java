@@ -26,6 +26,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,19 +91,25 @@ public class EventsListener implements EventListener {
   private static class LiveBindFunction extends BindFunction {
 
     // TODO can be a list of BindFunction
-    Map<String, BindFunction> bindFunctionBySelector;
+    Map<String, List<BindFunction>> bindFunctionBySelector;
 
     LiveBindFunction(int type, String namespace) {
 
       super(type, namespace, null, null, -1);
-      bindFunctionBySelector = new HashMap<String, BindFunction>();
+      bindFunctionBySelector = new HashMap<String, List<BindFunction>>();
     }
 
     /**
      * Add a {@link BindFunction} for a specific css selector
      */
     public void addBindFunctionForSelector(String cssSelector, BindFunction f) {
-      bindFunctionBySelector.put(cssSelector, f);
+      List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+      if (bindFunctions == null) {
+        bindFunctions = new ArrayList<BindFunction>();
+        bindFunctionBySelector.put(cssSelector, bindFunctions);
+      }
+
+      bindFunctions.add(f);
     }
 
     @Override
@@ -137,14 +144,21 @@ public class EventsListener implements EventListener {
       com.google.gwt.query.client.plugins.events.Event gqEvent = com.google.gwt.query.client.plugins.events.Event.create(event);
 
       for (String cssSelector : realCurrentTargetBySelector.keySet()) {
-        BindFunction f = bindFunctionBySelector.get(cssSelector);
-        for (Element element : realCurrentTargetBySelector.get(cssSelector)) {
-          gqEvent.setCurrentElementTarget(element);
-          boolean subResult = f.fire(gqEvent);
-          result &= subResult;
-          if (!subResult) {
-            // Event should not continue to be bubbled, break the second for
-            break;
+        List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+        
+        if (bindFunctions == null){
+          continue;
+        }
+        
+        for (BindFunction f : bindFunctions) {
+          for (Element element : realCurrentTargetBySelector.get(cssSelector)) {
+            gqEvent.setCurrentElementTarget(element);
+            boolean subResult = f.fire(gqEvent);
+            result &= subResult;
+            if (!subResult) {
+              // Event should not continue to be bubbled, break the second for
+              break;
+            }
           }
         }
       }
@@ -159,8 +173,8 @@ public class EventsListener implements EventListener {
     /**
      * Remove the BindFunction associated to this cssSelector
      */
-    public BindFunction removeBindFunctionForSelector(String cssSelector) {
-      return bindFunctionBySelector.remove(cssSelector);
+    public void removeBindFunctionForSelector(String cssSelector) {
+       bindFunctionBySelector.remove(cssSelector);
     }
 
     /**
@@ -328,7 +342,7 @@ public class EventsListener implements EventListener {
       bind(b, nameSpace, data, function, -1);
     }
   }
-  
+
   public void die(String eventName, String cssSelector) {
     int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
         : Event.getTypeInt(eventName);
@@ -370,13 +384,15 @@ public class EventsListener implements EventListener {
     return getGwtEventListener(element);
   }
 
-  public void live(String eventName, String cssSelector, Object data, Function... f) {
+  public void live(String eventName, String cssSelector, Object data,
+      Function... f) {
     int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
         : Event.getTypeInt(eventName);
     live(eventType, cssSelector, data, f);
   }
-  
-  public void live(int eventbits, String cssSelector, Object data, Function... funcs) {
+
+  public void live(int eventbits, String cssSelector, Object data,
+      Function... funcs) {
 
     // is a LiveBindFunction already attached for this kind of event
     LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
@@ -388,9 +404,9 @@ public class EventsListener implements EventListener {
       liveBindFunctionByEventType.put(eventbits, liveBindFunction);
     }
 
-    for (Function f: funcs) {
-      liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(
-          eventbits, "live", f, data));
+    for (Function f : funcs) {
+      liveBindFunction.addBindFunctionForSelector(cssSelector,
+          new BindFunction(eventbits, "live", f, data));
     }
 
   }
@@ -398,8 +414,7 @@ public class EventsListener implements EventListener {
   public void onBrowserEvent(Event event) {
     double now = Duration.currentTimeMillis();
     // Workaround for Issue_20
-    if (lastType == event.getTypeInt()
-        && now - lastEvnt < 10
+    if (lastType == event.getTypeInt() && now - lastEvnt < 10
         && "body".equalsIgnoreCase(element.getTagName())) {
       return;
     }

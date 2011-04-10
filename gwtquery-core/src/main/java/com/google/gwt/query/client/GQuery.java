@@ -2105,8 +2105,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </ul>
    * </p>
    */
-  public GQuery live(String eventName, Object data, Function func) {
-    return as(Events).live(eventName, data, func);
+  public GQuery live(String eventName, Object data, Function... funcs) {
+    return as(Events).live(eventName, data, funcs);
   }
 
   /**
