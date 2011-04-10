@@ -30,8 +30,9 @@ final public class JsNamedArray<T> extends JavaScriptObject {
     return cast();
   }
 
+  @SuppressWarnings("unchecked")
   public T get(String key) {
-    return c().get(key);
+    return (T)c().get(key);
   }
 
   public void put(String key, T val) {
