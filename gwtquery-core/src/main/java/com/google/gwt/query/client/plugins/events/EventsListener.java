@@ -17,6 +17,11 @@ package com.google.gwt.query.client.plugins.events;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -25,11 +30,6 @@ import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class implements an event queue instance for one Element. The queue
@@ -108,7 +108,7 @@ public class EventsListener implements EventListener {
         bindFunctions = new ArrayList<BindFunction>();
         bindFunctionBySelector.put(cssSelector, bindFunctions);
       }
-
+      
       bindFunctions.add(f);
     }
 
@@ -145,14 +145,13 @@ public class EventsListener implements EventListener {
 
       for (String cssSelector : realCurrentTargetBySelector.keySet()) {
         List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
-        
+
         if (bindFunctions == null){
           continue;
         }
         
         for (BindFunction f : bindFunctions) {
           for (Element element : realCurrentTargetBySelector.get(cssSelector)) {
-            gqEvent.setCurrentElementTarget(element);
             boolean subResult = f.fire(gqEvent);
             result &= subResult;
             if (!subResult) {
@@ -174,7 +173,7 @@ public class EventsListener implements EventListener {
      * Remove the BindFunction associated to this cssSelector
      */
     public void removeBindFunctionForSelector(String cssSelector) {
-       bindFunctionBySelector.remove(cssSelector);
+      bindFunctionBySelector.remove(cssSelector);
     }
 
     /**
@@ -222,8 +221,8 @@ public class EventsListener implements EventListener {
 
   }
 
-  // Gwt Events class has not this event defined
-  public static int ONSUBMIT = 0x08000;
+  // Gwt Events class has not this event defined, so we have to select ane available power of 2 
+  public static int ONSUBMIT = 0x800000;
 
   public static void clean(Element e) {
     EventsListener ret = getGQueryEventListener(e);
@@ -330,23 +329,17 @@ public class EventsListener implements EventListener {
   }
 
   public void bind(String event, final Object data, Function... funcs) {
+    // TODO: nameSpaces in event lists
     String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
     String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
-    int b = 0;
-    if ("submit".equals(eventName)) {
-      b = ONSUBMIT;
-    } else {
-      b = Event.getTypeInt(eventName);
-    }
+    int b = getEventBits(eventName);
     for (Function function : funcs) {
       bind(b, nameSpace, data, function, -1);
     }
   }
-
-  public void die(String eventName, String cssSelector) {
-    int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
-        : Event.getTypeInt(eventName);
-    die(eventType, cssSelector);
+  
+  public void die(String eventNames, String cssSelector) {
+    die(getEventBits(eventNames), cssSelector);
   }
 
   public void die(int eventbits, String cssSelector) {
@@ -363,8 +356,7 @@ public class EventsListener implements EventListener {
   }
 
   public void dispatchEvent(Event event) {
-    int etype = "submit".equalsIgnoreCase(event.getType()) ? ONSUBMIT
-        : DOM.eventGetType(event);
+    int etype = getTypeInt(event.getType());
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)) {
@@ -384,31 +376,33 @@ public class EventsListener implements EventListener {
     return getGwtEventListener(element);
   }
 
-  public void live(String eventName, String cssSelector, Object data,
+  public void live(String eventNames, String cssSelector, Object data, 
       Function... f) {
-    int eventType = "submit".equals(eventName) ? eventType = ONSUBMIT
-        : Event.getTypeInt(eventName);
-    live(eventType, cssSelector, data, f);
+    live(getEventBits(eventNames), cssSelector, data, f);
   }
-
-  public void live(int eventbits, String cssSelector, Object data,
+  
+  public void live(int eventbits, String cssSelector, Object data, 
       Function... funcs) {
+    for (int i = 0; i < 28; i++) {
+      int event = (int)Math.pow(2,i);
+      if ((eventbits & event) == event) {
 
-    // is a LiveBindFunction already attached for this kind of event
-    LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
-    if (liveBindFunction == null) {
-      liveBindFunction = new LiveBindFunction(eventbits, "live");
-      eventBits |= eventbits;
-      sink();
-      elementEvents.add(liveBindFunction);
-      liveBindFunctionByEventType.put(eventbits, liveBindFunction);
+        // is a LiveBindFunction already attached for this kind of event
+        LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(event);
+        if (liveBindFunction == null) {
+          liveBindFunction = new LiveBindFunction(event, "live");
+          eventBits |= event;
+          sink();
+          elementEvents.add(liveBindFunction);
+          liveBindFunctionByEventType.put(event, liveBindFunction);
+        }
+
+        for (Function f: funcs) {
+          liveBindFunction.addBindFunctionForSelector(cssSelector, 
+              new BindFunction(event, "live", f, data));
+        }
+      }
     }
-
-    for (Function f : funcs) {
-      liveBindFunction.addBindFunctionForSelector(cssSelector,
-          new BindFunction(eventbits, "live", f, data));
-    }
-
   }
 
   public void onBrowserEvent(Event event) {
@@ -449,14 +443,10 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(String event) {
+    // TODO: nameSpaces in event lists
     String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
     String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
-    int b = 0;
-    if ("submit".equals(eventName)) {
-      b = ONSUBMIT;
-    } else {
-      b = Event.getTypeInt(eventName);
-    }
+    int b = getEventBits(eventName);
     unbind(b, nameSpace);
   }
 
@@ -480,5 +470,27 @@ public class EventsListener implements EventListener {
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
 
     }
+  }
+  
+  private int getEventBits(String... events) {
+    int ret = 0;
+    for (String e: events) {
+      String[] parts = e.split("[\\s,]+");
+      for (String s : parts) {
+        if ("submit".equals(s)) {
+          ret |= ONSUBMIT;
+        } else {
+          int event = Event.getTypeInt(s);
+          if (event > 0) {
+            ret |= event;
+          }
+        }
+      }
+    }
+    return ret;
+  }
+  
+  private int getTypeInt(String eventName) {
+    return "submit".equals(eventName) ? ONSUBMIT : Event.getTypeInt(eventName);
   }
 }
