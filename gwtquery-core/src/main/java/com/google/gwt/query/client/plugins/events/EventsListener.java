@@ -152,6 +152,7 @@ public class EventsListener implements EventListener {
         
         for (BindFunction f : bindFunctions) {
           for (Element element : realCurrentTargetBySelector.get(cssSelector)) {
+            gqEvent.setCurrentElementTarget(element);
             boolean subResult = f.fire(gqEvent);
             result &= subResult;
             if (!subResult) {
