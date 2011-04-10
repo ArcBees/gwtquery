@@ -388,28 +388,7 @@ public void testLiveWithMultipleFunction() {
     
   }
 
-public void testLiveWithMultipleEvent() {
-  
-  $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
-  
-  $(".clickable", e).live(Event.ONCLICK | Event.ONMOUSEMOVE, new Function(){
-    public void f(Element e) {
-      $(e).css(CSS.COLOR.with(RGBColor.RED));
-    }
-  });
-  
-  $("#div1", e).addClass("clickable");
-  
-  $("#span1", e).click();
-  
-  assertEquals("red", $("#div1", e).css(CSS.COLOR));
- 
-  //reset
-  $("#div1", e).css(CSS.COLOR.with(RGBColor.BLACK));
-  
-  
-  
-}
+
 
 
   public void testNamedBinding() {
@@ -523,7 +502,30 @@ public void testLiveWithMultipleEvent() {
     assertEquals($("#test").attr("tabIndex"), "2");
   }
   
-  
+  public void testUnbindMultipleEvents() {
+    String content = "<p>content</p>";
+    $(e).html(content);
+    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
+      public void f(Element e){
+        $("p").css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    $(document).bind(Event.ONMOUSEUP, null, new Function(){
+      public void f(Element e){
+        $("p").css(CSS.COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("red", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("yellow", $("p").css("color"));
+    $("p").css(CSS.COLOR.with(RGBColor.BLACK));
+    $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("black", $("p").css("color"));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("black", $("p").css("color"));
+  }
 
   public void testWidgetEvents() {
     final Button b = new Button("click-me");
