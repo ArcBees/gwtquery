@@ -359,12 +359,29 @@ public class GQueryEventsTest extends GWTTestCase {
     
     assertEquals("red", $("#div1", e).css(CSS.COLOR));
     assertEquals("blue", $("#div2", e).css(CSS.COLOR));
+    //ensure taht handler related to mouseover event was not called
     assertNotSame("yellow", $("#div2", e).css(CSS.BACKGROUND_COLOR));
     
     
   }
   
-public void testLiveWithMultipleFunction() {
+  public void testLiveWithEventBit() {
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+    
+    $(".clickable", e).live(Event.ONCLICK, new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $("#div1", e).addClass("clickable");
+    $("#span1", e).click();
+    
+    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    
+  }
+  
+  public void testLiveWithMultipleFunction() {
     
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
     
@@ -388,7 +405,47 @@ public void testLiveWithMultipleFunction() {
     
   }
 
-
+  public void testLiveWithMultipleEvent() {
+    
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+    
+    $(".myClass", e).live("click mouseover", new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $("#div1", e).addClass("myClass");
+    
+    $("#div1", e).click();
+    
+    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    
+    $("#div1", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $("#div1", e).trigger(Event.ONMOUSEOVER);
+    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    
+    $(".myClass2", e).live(Event.ONCLICK|Event.ONMOUSEDOWN, new Function(){
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    
+    $("#div2", e).addClass("myClass2");
+    
+    $("#div2", e).click();
+    
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR));
+    
+    $("#div2", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    
+    $("#div2", e).trigger(Event.ONMOUSEDOWN);
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR));
+    
+    
+    
+  }
 
 
   public void testNamedBinding() {
