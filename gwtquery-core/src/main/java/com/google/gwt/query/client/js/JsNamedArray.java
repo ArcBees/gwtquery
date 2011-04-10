@@ -17,51 +17,44 @@ package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+
 /**
- * Lightweight JSO based array class that can store objects.
+ * Lightweight JSO backed implemented of a named array
  */
-public final class JsObjectArray<T> extends JavaScriptObject {
+final public class JsNamedArray<T> extends JavaScriptObject {
   
-  public static <T> JsObjectArray<T> create() {
-    return JavaScriptObject.createArray().cast();
-  }
-  
-  protected JsObjectArray() {
+  protected JsNamedArray() {
   }
   
   private JsCache c() {
     return cast();
   }
 
-  public void add(T...vals) {
-    for (T t: vals) {
-      c().put(length(), t);
-    }
+  public T get(String key) {
+    return c().get(key);
   }
 
-  public void add(int i, T val) {
-    c().put(i, val);
+  public void put(String key, T val) {
+    c().put(key, val);
   }
-
-  @SuppressWarnings("unchecked")
-  public T get(int hashCode) {
-    return (T)c().get(hashCode);
+  
+  public final String[] keys() {
+    return c().keys();
   }
-
+  
   public int length() {
     return c().length();
   }
 
-  public void set(int i, T val) {
-    c().put(i, val);
+  public final Object[] values() {
+    return c().elements();
   }
   
-  public void concat(JsObjectArray<T> ary) {
-    c().concat(ary);
+  public final boolean exists(String key){
+    return c().exists(key);
   }
 
-  public void pushAll(JavaScriptObject prevElem) {
-    c().pushAll(prevElem);
+  public final static <T> JsNamedArray<T> create() {
+    return createObject().cast();
   }
-
 }

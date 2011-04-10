@@ -94,7 +94,10 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final native int length() /*-{
-    return this.length;
+    if (this.length) return this.lenght;
+    var ret = 0; 
+    for (k in this) ret ++;
+    return ret; 
   }-*/;
   
   public final int[] indexes() {

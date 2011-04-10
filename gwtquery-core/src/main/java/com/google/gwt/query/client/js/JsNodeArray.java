@@ -53,6 +53,10 @@ public class JsNodeArray extends NodeList<Element> {
   public final void concat(JsNodeArray ary) {
     c().concat(ary.c());
   }
+  
+  public final Element get(int i) {
+    return getElement(i);
+  }
 
   public final Element getElement(int i) {
     return c().get(i).cast();
@@ -72,5 +76,13 @@ public class JsNodeArray extends NodeList<Element> {
   
   public final void pushAll(JavaScriptObject prevElem) {
     c().pushAll(prevElem);
+  }
+  
+  public final Element[] elements() {
+    Element[] ret = new Element[size()];
+    for (int i=0 ; i<size(); i++) {
+      ret[i] = getElement(i);
+    }
+    return ret;
   }
 }
