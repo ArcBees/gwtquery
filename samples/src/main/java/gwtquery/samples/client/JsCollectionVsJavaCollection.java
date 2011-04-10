@@ -2,17 +2,19 @@ package gwtquery.samples.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.HashMap;
+
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-
-import java.util.HashMap;
 
 public class JsCollectionVsJavaCollection implements EntryPoint{
   
@@ -42,106 +44,100 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     for (int i = 0; i < MAX_ITEMS; i++){
       new String(""+i);
     }
+    double ellapsedTime, totalTime; 
     
     JsCache cache = JsCache.create();
-    JsMap<String, Object> jsMap = cache.cast();
     
-    log("Testing jsMap : put "+MAX_ITEMS+" items in the map :");
-
-    long ellapsedTime = System.currentTimeMillis();
+    log("Testing cache : put "+MAX_ITEMS+" items in the cache :");
+    totalTime = ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0; i < MAX_ITEMS; i++){
-      jsMap.put(new String(""+i), new Object());
+      cache.put(new String(""+i), new Object());
     }
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing jsMap : do "+MAX_ITEMS+" get in the map :");
-    long totalTime = 0;
-    
+    log("Testing cache : do "+MAX_ITEMS+" get in the cache :");
+    ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
-      ellapsedTime = System.currentTimeMillis();
-      jsMap.get(new String(""+random));
-      totalTime += (System.currentTimeMillis() - ellapsedTime);
+      cache.get(new String(""+random));
     }
-    log(" ellapsed Time : "+totalTime);
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
+    log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing jsMap : do "+MAX_ITEMS+" exist (JsCache.exists() ) in the cache :");
-    totalTime = 0;
-    
+    log("Testing cache : do "+MAX_ITEMS+" exist (JsCache.exists() ) in the cache :");
+    ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
-      ellapsedTime = System.currentTimeMillis();
       cache.exists(new String(""+random));
-      totalTime += (System.currentTimeMillis() - ellapsedTime);
     }
-    log(" ellapsed Time : "+totalTime);
-    
-    log("Testing jsMap : get all keys :");
-    
-    ellapsedTime = System.currentTimeMillis();
-    jsMap.keys();
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing jsMap : get all values (JsCache.elements() ) :");
-    
-    ellapsedTime = System.currentTimeMillis();
-    cache.elements();
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    log("Testing cache : get all keys :");
+    ellapsedTime = Duration.currentTimeMillis();
+    for (String s: cache.keys()) {
+    }
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
+    log("Testing cache : get all values (JsCache.elements() ) :");
+    ellapsedTime = Duration.currentTimeMillis();
+    for (Object o: cache.elements()) {
+    }
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
+    log(" ellapsed Time : "+ellapsedTime);
+    
+    totalTime = Duration.currentTimeMillis() - totalTime;
+    log(" Total : "+ totalTime);
     log("-------------");
     log("");
     
     HashMap<String, Object> hashMap = new HashMap<String, Object>();
     
     log("Testing hashMap : put "+MAX_ITEMS+" items in the map :");
-    ellapsedTime = System.currentTimeMillis();
+    totalTime = ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0; i < MAX_ITEMS; i++){
       hashMap.put(new String(""+i), new Object());
     }
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
     log("Testing hashMap : do "+MAX_ITEMS+" get in the map :");
-    totalTime = 0;
-    
+    ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
-      ellapsedTime = System.currentTimeMillis();
       hashMap.get(new String(""+random));
-      totalTime += (System.currentTimeMillis() - ellapsedTime);
     }
-    log(" ellapsed Time : "+totalTime);
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
+    log(" ellapsed Time : "+ellapsedTime);
     
     log("Testing hashMap : do "+MAX_ITEMS+" containsKey() :");
-    totalTime = 0;
-    
+    ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
-      ellapsedTime = System.currentTimeMillis();
       hashMap.containsKey(new String(""+random));
-      totalTime += (System.currentTimeMillis() - ellapsedTime);
     }
-    log(" ellapsed Time : "+totalTime);
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
+    log(" ellapsed Time : "+ellapsedTime);
     
     log("Testing hashMap : get all keys :");
-    
-    ellapsedTime = System.currentTimeMillis();
-    hashMap.keySet();
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    ellapsedTime = Duration.currentTimeMillis();
+    for (String s: hashMap.keySet()) {
+    }
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
     log("Testing hashMap : get all values :");
-    
-    ellapsedTime = System.currentTimeMillis();
-    hashMap.values();
-    ellapsedTime = System.currentTimeMillis() - ellapsedTime;
+    ellapsedTime = Duration.currentTimeMillis();
+    for (Object o : hashMap.values()) {
+    }
+    ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
+    totalTime = Duration.currentTimeMillis() - totalTime;
+    log(" Total : "+ totalTime);
     log("-------------");
-    
   }
 
 
