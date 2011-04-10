@@ -90,7 +90,6 @@ public class EventsListener implements EventListener {
    */
   private static class LiveBindFunction extends BindFunction {
 
-    // TODO can be a list of BindFunction
     Map<String, List<BindFunction>> bindFunctionBySelector;
 
     LiveBindFunction(int type, String namespace) {
@@ -223,7 +222,7 @@ public class EventsListener implements EventListener {
   }
 
   // Gwt Events class has not this event defined, so we have to select ane available power of 2 
-  public static int ONSUBMIT = 0x800000;
+  public static int ONSUBMIT = 0x8000000;
 
   public static void clean(Element e) {
     EventsListener ret = getGQueryEventListener(e);
