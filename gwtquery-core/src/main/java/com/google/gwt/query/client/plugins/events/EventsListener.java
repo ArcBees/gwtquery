@@ -110,6 +110,10 @@ public class EventsListener implements EventListener {
       
       bindFunctions.add(f);
     }
+    
+    public void clean(){
+      bindFunctionBySelector = new HashMap<String, List<BindFunction>>();
+    }
 
     @Override
     public boolean fire(Event event) {
@@ -492,5 +496,11 @@ public class EventsListener implements EventListener {
   
   private int getTypeInt(String eventName) {
     return "submit".equals(eventName) ? ONSUBMIT : Event.getTypeInt(eventName);
+  }
+
+  public void cleanEventDelegation() {
+    for (LiveBindFunction function : liveBindFunctionByEventType.values()){
+      function.clean();
+    }
   }
 }

@@ -3355,6 +3355,50 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery unbind(int eventbits) {
     return as(Events).unbind(eventbits);
   }
+  
+  /**
+   * Remove all event delegation that have been bound using
+   * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
+   */
+  public GQuery undelegate() {
+    return as(Events).undelegate();
+  }
+  
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  public GQuery undelegate(String selector) {
+      for (Element e : elements()){
+        $(selector, e).die();
+      }
+      
+      return this;
+  }
+
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  public GQuery undelegate(String selector, String eventName) {
+      for (Element e : elements()){
+        $(selector, e).die(eventName);
+      }
+      
+      return this;
+  }
+  
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  public GQuery undelegate(String selector, int eventBit) {
+      for (Element e : elements()){
+        $(selector, e).die(eventBit);
+      }
+      
+      return this;
+  }
 
   /**
    * Remove all duplicate elements from an array of elements. Note that this

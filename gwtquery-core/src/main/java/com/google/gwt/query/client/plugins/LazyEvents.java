@@ -140,4 +140,6 @@ public interface LazyEvents<T> extends LazyBase<T>{
    */
   LazyEvents<T> unbind(String name);
 
+  LazyEvents<T> undelegate();
+
 }

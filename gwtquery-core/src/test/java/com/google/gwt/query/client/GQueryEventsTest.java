@@ -443,6 +443,158 @@ public class GQueryEventsTest extends GWTTestCase {
     
   }
 
+  public void testUnDelegate(){
+    
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+    
+    $(".mainDiv",e).delegate(".subDiv", "click", new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".mainDiv",e).delegate(".subDiv", Event.ONMOUSEOVER, new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    
+    for (Element mainDiv : $(".mainDiv",e).elements()){
+      for (int i = 0; i < 3 ; i++){
+        String html = "<div class='subDiv'>Content "+i+"<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+   
+    assertEquals(8, $(".subDiv",e).length());
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("red", $(el).css(CSS.COLOR));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      //reset
+      $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
+    }
+    
+    $(".mainDiv", e).undelegate(".subDiv",Event.ONCLICK);
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("black", $(el).css(CSS.COLOR));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      //reset
+      $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
+    }
+    
+    $(".mainDiv", e).undelegate(".subDiv","mouseover");
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("black", $(el).css(CSS.COLOR));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+    }
+  }
+  
+  public void testUnDelegateAll(){
+    
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+    
+    $(".mainDiv",e).delegate(".subDiv", "click", new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".mainDiv",e).delegate(".subDiv", Event.ONMOUSEOVER, new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    
+    for (Element mainDiv : $(".mainDiv",e).elements()){
+      for (int i = 0; i < 3 ; i++){
+        String html = "<div class='subDiv'>Content "+i+"<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+   
+    assertEquals(8, $(".subDiv",e).length());
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("red", $(el).css(CSS.COLOR));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      //reset
+      $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
+    }
+    
+    $(".mainDiv", e).undelegate(".subDiv");
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("black", $(el).css(CSS.COLOR));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+    }
+  }
+
+public void testUnDelegateAll2(){
+    
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+    
+    $(".mainDiv",e).delegate(".subDiv", "click", new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    
+    $(".mainDiv",e).delegate(".subDiv", Event.ONMOUSEOVER, new Function(){
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    
+    for (Element mainDiv : $(".mainDiv",e).elements()){
+      for (int i = 0; i < 3 ; i++){
+        String html = "<div class='subDiv'>Content "+i+"<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+   
+    assertEquals(8, $(".subDiv",e).length());
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("red", $(el).css(CSS.COLOR));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      //reset
+      $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
+    }
+    
+    $(".mainDiv", e).undelegate();
+    
+    $("span",e).click().trigger(Event.ONMOUSEOVER);
+    
+    for (Element el : $(".subDiv",e).elements()){
+      assertEquals("black", $(el).css(CSS.COLOR));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+    }
+  }
+
+
+
+
   public void testLiveWithMultipleEvent() {
     
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");

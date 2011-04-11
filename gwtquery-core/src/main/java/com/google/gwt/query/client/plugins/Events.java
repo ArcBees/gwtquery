@@ -273,5 +273,12 @@ public class Events extends GQuery {
       e.dispatchEvent(evt);
     }
   }
+  
+  public Events undelegate(){
+    for (Element e : elements()) {
+      EventsListener.getInstance(e).cleanEventDelegation();
+    }
+    return this;
+  }
 
 }

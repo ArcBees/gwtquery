@@ -1881,6 +1881,30 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> unbind(int eventbits);
 
   /**
+   * Remove all event delegation that have been bound using
+   * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
+   */
+  LazyGQuery<T> undelegate();
+
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  LazyGQuery<T> undelegate(String selector);
+
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  LazyGQuery<T> undelegate(String selector, String eventName);
+
+  /**
+   * Undelegate is a way of removing event handlers that have been bound using
+   * {@link #delegate(String, int, Function...)} method
+   */
+  LazyGQuery<T> undelegate(String selector, int eventBit);
+
+  /**
    * Remove all duplicate elements from an array of elements. Note that this
    * only works on arrays of DOM elements, not strings or numbers.
    */
