@@ -182,7 +182,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </pre>
    * 
    * The duration of the animation is 500ms.
-   *    
+   * 
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -197,7 +197,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * can be animated but background-color cannot be.) Property values are
    * treated as a number of pixels unless otherwise specified. The units em and
    * % can be specified where applicable.
-   *
+   * 
    * 
    * Example:
    * 
@@ -414,8 +414,9 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> clone();
 
   /**
-   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
-   * current element and progressing up through the DOM tree.
+   * Get the first ancestor element that matches the selector (for each matched
+   * element), beginning at the current element and progressing up through the
+   * DOM tree.
    * 
    * @param selector
    * @return
@@ -447,11 +448,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   Map<String, List<Element>> closest(String[] selectors, Node context);
 
   /**
-   * Get the first ancestor element that matches the selector (for each matched element), beginning at the
-   * current element and progressing up through the DOM tree until reach the <code>context</code> node.
+   * Get the first ancestor element that matches the selector (for each matched
+   * element), beginning at the current element and progressing up through the
+   * DOM tree until reach the <code>context</code> node.
    * 
-   * If no context is passed in then the context of the gQuery object will be used instead.
-   *
+   * If no context is passed in then the context of the gQuery object will be
+   * used instead.
+   * 
    */
   LazyGQuery<T> closest(String selector, Node context);
 
@@ -647,6 +650,156 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> delay(int milliseconds, String queueName);
 
   /**
+   * Attach <code>handlers</code> to one or more events for all elements that
+   * match the <code>selector</code>, now or in the future, based on a specific
+   * set of root elements.
+   * 
+   * Example:
+   * 
+   * <pre>
+   * $("table").delegate("td", "click", new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * 
+   * This code above add an handler on click event on all cell (the existing
+   * oneand the future cell) of all table. This code is equivalent to :
+   * 
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live("click", new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * </pre>
+   * 
+   * You can pass attach the handlers to many events by specifying a String with espaced event type.
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", "click dblclick", new Function(){...});
+   * </pre>
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, String eventType, Function... handlers);
+
+  /**
+   * Attach <code>handlers</code> to one or more events for all elements that
+   * match the <code>selector</code>, now or in the future, based on a specific
+   * set of root elements.
+   * 
+   * Example:
+   * 
+   * <pre>
+   * $("table").delegate("td", "click", new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * 
+   * This code above add an handler on click event on all cell (the existing
+   * oneand the future cell) of all table. This code is equivalent to :
+   * 
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live("click", new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * You can pass attach the handlers to many events by specifying a String with espaced event type.
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", "click dblclick", new Function(){...});
+   * </pre>
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, String eventType, Object data, Function... handlers);
+
+  /**
+   * Attach <code>handlers</code> to one or more events for all elements that
+   * match the <code>selector</code>, now or in the future, based on a specific
+   * set of root elements. 
+   * 
+   * Example:
+   * 
+   * <pre>
+   * $("table").delegate("td", Event.ONCLICK, new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * 
+   * This code above add an handler on click event on all cell (the existing
+   * oneand the future cell) of all table. This code is equivalent to :
+   * 
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live(Event.ONCLICK, new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * </pre>
+   * 
+   * You can attach the handlers to many events by using the '|' operator
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, int eventbits, Function... handlers);
+
+  /**
+   * Attach <code>handlers</code> to one or more events for all elements that match the <code>selector</code>, 
+   * now or in the future, based on a specific set of root elements.
+   * The <code>data</code> parameter allows us
+   * to pass data to the handler.
+   *
+   * Example:
+   * <pre>
+   * $("table").delegate("td", "click", new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * This code above add an handler on click event on all cell (the existing oneand the future cell) of all table.
+   * This code is equivalent to :
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live("click", new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * </pre>
+   * 
+   * You can pass attach the handlers to many events by using the '|' operator
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, int eventbits, Object data, Function... handlers);
+
+  /**
    * Execute the next function on the Effects queue for the matched elements.
    * This method is usefull to tell when a function you add in the Effects queue
    * is ended and so the next function in the queue can start.
@@ -654,9 +807,9 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> dequeue();
 
   /**
-   * Execute the next function on the queue for the matched elements.
-   * This method is usefull to tell when a function you add in the Effects queue
-   * is ended and so the next function in the queue can start.
+   * Execute the next function on the queue for the matched elements. This
+   * method is usefull to tell when a function you add in the Effects queue is
+   * ended and so the next function in the queue can start.
    */
   LazyGQuery<T> dequeue(String queueName);
 
@@ -1077,19 +1230,19 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Attach a handler for this event to all elements which match the current
    * selector, now and in the future.
    */
-  LazyGQuery<T> live(int eventbits, Function...funcs);
+  LazyGQuery<T> live(int eventbits, Function... funcs);
 
   /**
    * Attach a handler for this event to all elements which match the current
    * selector, now and in the future.
    */
-  LazyGQuery<T> live(int eventbits, Object data, Function...funcs);
+  LazyGQuery<T> live(int eventbits, Object data, Function... funcs);
 
   /**
    * <p>
    * Attach a handler for this event to all elements which match the current
-   * selector, now and in the future.
-   * The <code>data</code> parameter allows us to pass data to the handler.
+   * selector, now and in the future. The <code>data</code> parameter allows us
+   * to pass data to the handler.
    * <p>
    * <p>
    * Ex :
