@@ -22,6 +22,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
@@ -49,8 +52,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testLive();
-//      testPropertiesAnimationComputeEffects();
+      testJsCache();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
@@ -63,10 +65,51 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     
   }
   
+  public void testJsCache() {
+    String[] slist = new String[]{"A", "B", "C"};
+    
+    JsCache c = JsCache.create();
+    assertTrue(c.isEmpty());
+    for (int i=0; i < slist.length; i++) {
+      c.put(i, slist[i]);
+    }
+    assertFalse(c.isEmpty());
+    assertEquals(3, c.length());
+    assertEquals(slist[1], c.get(1));
+    for (int i=0; i < slist.length; i++) {
+      c.put(slist[i], slist[i]);
+    }
+    assertEquals(6, c.length());
+    assertEquals(slist[1], c.get(1));
+    assertEquals(slist[1], c.get(slist[1]));
+    c.put(1, null);
+    c.put("X", "X");
+    assertNull(c.get(1));
+    assertEquals(slist[2], c.get(2));
+    assertEquals(7, c.length());
+    assertEquals(7, c.keys().length);
+    assertEquals(7, c.elements().length);
+    
+    assertTrue(c.exists(2));
+    assertFalse(c.exists(3));
+    assertTrue(c.exists("X"));
+    assertFalse(c.exists("V"));
+    
+    c.delete(2);
+    c.delete("C");
+    assertEquals(5, c.length());
+
+    c.put(-1, "N");
+    assertEquals(6, c.length());
+    assertEquals("N", c.get(-1));
+    System.out.println(c.tostring());
+  }
+  
   public void testLive() {
     $(e).html("<div id=d1 class='clickMe'>Content 1</div>");
-    GQuery q = $(".clickMe").live(Event.ONCLICK, new Function(){
+    final GQuery q = $(".clickMe").live(Event.ONCLICK, new Function(){
       public void f(Element e) {
+        System.out.println($(e));
         $(e).css("color", "red");
       }
     });
@@ -74,6 +117,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     assertEquals("", $("#d1").css("color"));
     
     $(".clickMe", e).click();
+    
     assertEquals("red", $("#d1").css("color"));
     assertEquals("red", $("#d2").css("color"));
     

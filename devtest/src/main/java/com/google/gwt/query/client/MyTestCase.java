@@ -36,8 +36,16 @@ public class MyTestCase {
     check(!b, "assertTrue: actual should be false but is true");
   }
 
+  public static void assertFalse(String msg, boolean b) {
+    check(!b, msg);
+  }
+
   public static void assertNotNull(Object a) {
     check(a != null, "assertNotNull: actual object is null");
+  }
+
+  public static void assertNull(Object a) {
+    check(a == null, "assertNull: actual object is not null");
   }
 
   public static void assertTrue(boolean b) {
