@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.js.JsCache;
@@ -18,29 +19,23 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class JsCollectionVsJavaCollection implements EntryPoint{
   
-  public static final int MAX_ITEMS = 100000;
+  public static final int MAX_ITEMS = GWT.isScript() ? 100000 : 100;
   
   
   public void onModuleLoad() {
-    
     Button b = new Button("run test");
     b.addClickHandler(new ClickHandler() {
-      
       public void onClick(ClickEvent event) {
         $(".gwt-label").remove();
         testJsMapVsHashMap();       
       }
     });
-    
     RootPanel.get().add(b);
-    
   }
   
 
   public void testJsMapVsHashMap() {
-    log("Testing jsMap");
-    
-    log("init phase");
+    log("-------------");
     for (int i = 0; i < MAX_ITEMS; i++){
       new String(""+i);
     }
@@ -56,7 +51,7 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing cache : do "+MAX_ITEMS+" get in the cache :");
+    log("Testing cache : get "+MAX_ITEMS+" from the cache :");
     ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
@@ -65,7 +60,7 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing cache : do "+MAX_ITEMS+" exist (JsCache.exists() ) in the cache :");
+    log("Testing cache : run "+MAX_ITEMS+" exist() in the cache :");
     ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
@@ -74,14 +69,14 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing cache : get all keys :");
+    log("Testing cache : visit all keys() :");
     ellapsedTime = Duration.currentTimeMillis();
     for (String s: cache.keys()) {
     }
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing cache : get all values (JsCache.elements() ) :");
+    log("Testing cache : visit all values() :");
     ellapsedTime = Duration.currentTimeMillis();
     for (Object o: cache.elements()) {
     }
@@ -89,7 +84,7 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     log(" ellapsed Time : "+ellapsedTime);
     
     totalTime = Duration.currentTimeMillis() - totalTime;
-    log(" Total : "+ totalTime);
+    log(" Total : "+ totalTime + " ms.");
     log("-------------");
     log("");
     
@@ -103,7 +98,7 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing hashMap : do "+MAX_ITEMS+" get in the map :");
+    log("Testing hashMap : get "+MAX_ITEMS+" from the map :");
     ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
@@ -112,7 +107,7 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing hashMap : do "+MAX_ITEMS+" containsKey() :");
+    log("Testing hashMap : run "+MAX_ITEMS+" containsKey() in the map :");
     ellapsedTime = Duration.currentTimeMillis();
     for (int i = 0 ; i < MAX_ITEMS; i++){
       int random = Random.nextInt(MAX_ITEMS);
@@ -121,14 +116,14 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing hashMap : get all keys :");
+    log("Testing hashMap : visit all keySet() :");
     ellapsedTime = Duration.currentTimeMillis();
     for (String s: hashMap.keySet()) {
     }
     ellapsedTime = Duration.currentTimeMillis() - ellapsedTime;
     log(" ellapsed Time : "+ellapsedTime);
     
-    log("Testing hashMap : get all values :");
+    log("Testing hashMap : visit all values() :");
     ellapsedTime = Duration.currentTimeMillis();
     for (Object o : hashMap.values()) {
     }
@@ -136,16 +131,12 @@ public class JsCollectionVsJavaCollection implements EntryPoint{
     log(" ellapsed Time : "+ellapsedTime);
     
     totalTime = Duration.currentTimeMillis() - totalTime;
-    log(" Total : "+ totalTime);
+    log(" Total : "+ totalTime + " ms.");
     log("-------------");
   }
-
-
-
 
   public void log(String msg) {
     RootPanel.get().add(new Label(msg));
   }
-
 
 }
