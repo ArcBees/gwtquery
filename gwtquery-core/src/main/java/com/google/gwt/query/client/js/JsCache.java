@@ -27,11 +27,11 @@ public class JsCache extends JavaScriptObject {
   }
   
   public final native void delete(int name) /*-{
-		delete this[name];
+    delete this[name];
   }-*/;
 
   public final native void delete(String name) /*-{
-		delete this[name];
+    delete this[name];
   }-*/;
 
   public final native boolean exists(String name) /*-{
@@ -39,15 +39,15 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final native boolean exists(int id) /*-{
-		return !!this[id];
+    return !!this[id];
   }-*/;
 
   public final native <T> T get(int id) /*-{
-		return this[id] || null;
+    return this[id] || null;
   }-*/;
 
   public final native <T> T get(String id) /*-{
-		return this[id] || null;
+    return this[id] || null;
   }-*/;
 
   public final JsCache getCache(int id) {
@@ -55,48 +55,47 @@ public class JsCache extends JavaScriptObject {
   }
 
   public final native double getDouble(int id) /*-{
-		return this[id] || 0;
+    return this[id] || 0;
   }-*/;
 
   public final native double getDouble(String id) /*-{
-		return this[id] || 0;
+    return this[id] || 0;
   }-*/;
 
   public final native int getInt(int id) /*-{
-		return this[id] || 0;
+    return this[id] || 0;
   }-*/;
 
   public final native int getInt(String id) /*-{
-		return this[id] || 0;
+    return this[id] || 0;
   }-*/;
 
   public final native String getString(int id) /*-{
-		return this[id];
+    return this[id];
   }-*/;
 
   public final native String getString(String id) /*-{
-		return this[id] || null;
+    return this[id] || null;
   }-*/;
 
   public final native boolean isEmpty() /*-{
-		var foo = "";
-		for (foo in this)
-			break;
-		return !foo;
+    var foo = "";
+    for (foo in this) break;
+    return !foo;
   }-*/;
 
   public final native void put(int id, Object obj) /*-{
-		if (obj && id >=0 ) this[id] = obj;
+    this[id] = obj;
   }-*/;
 
   public final native void put(String id, Object obj) /*-{
-		if (obj && id) this[id] = obj;
+    this[id] = obj;
   }-*/;
   
   public final native int length() /*-{
-    if (this.length) return this.lenght;
-    var ret = 0; 
-    for (k in this) ret ++;
+    if (this.length) return this.length;
+    var key, ret = 0; 
+    for (key in this) ret ++;
     return ret; 
   }-*/;
   
@@ -132,16 +131,17 @@ public class JsCache extends JavaScriptObject {
     return ret;
   }
   
-  public final native Object[] elemImpl() /*-{
-    var key, ret=[];
-    for(key in this) ret.push(this[key]);
-    return ret;
-  }-*/;
-
-
-  public final native JsArrayString keysImpl() /*-{
+  public final String tostring() {
+    String ret = getClass().getName() + "{ ";
+    for (String k: keys()){
+      ret += k + "=" + get(k) + " ";
+    }
+    return ret + "}";
+  }
+  
+  private final native JsArrayString keysImpl() /*-{
     var key, keys=[];
-    for(key in this) keys.push("" + key);
+    for(key in this) keys.push(String(key));
     return keys;
   }-*/;
 }
