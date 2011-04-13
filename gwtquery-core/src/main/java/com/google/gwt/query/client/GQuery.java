@@ -1742,6 +1742,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Toggle the visibility of all matched elements by adjusting their opacity and
+   * firing an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public Effects fadeToggle(int millisecs, Function... f) {
+    return as(Effects).fadeToggle(millisecs, f);
+  }
+  
+  
+  /**
    * Removes all elements from the set of matched elements that do not match the
    * specified function. The function is called with a context equal to the
    * current element. If the function returns false, then the element is removed
