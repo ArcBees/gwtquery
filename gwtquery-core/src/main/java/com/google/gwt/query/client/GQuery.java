@@ -19,6 +19,10 @@ import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -32,9 +36,9 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -43,6 +47,7 @@ import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
@@ -55,12 +60,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -1013,7 +1012,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @param selector
    * @return
    */
-  public Map<String, List<Element>> closest(String[] selectors) {
+  public JsNamedArray<NodeList<Element>> closest(String[] selectors) {
     return closest(selectors, null);
   }
 
@@ -1027,56 +1026,46 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @param selector
    * @return
    */
-  public Map<String, List<Element>> closest(String[] selectors, Node context) {
-    Map<String, List<Element>> results = new HashMap<String, List<Element>>();
+  public JsNamedArray<NodeList<Element>> closest(String[] selectors, Node context) {
+    JsNamedArray<NodeList<Element>> results = JsNamedArray.create();
 
     if (context == null) {
       context = currentContext;
     }
 
     Element first = get(0);
-
     if (first != null && selectors != null && selectors.length > 0) {
-
-      Map<String, GQuery> matches = new HashMap<String, GQuery>();
-
+      JsNamedArray<GQuery> matches = JsNamedArray.create();
       for (String selector : selectors) {
-        if (!matches.containsKey(selector)) {
+        if (!matches.exists(selector)) {
           matches.put(selector, selector.matches(POS_REGEX) ? $(selector,
               context) : null);
         }
       }
 
       Element current = first;
-
       while (current != null && current.getOwnerDocument() != null
           && current != context) {
         // for each selector, check if the current element match it.
-        for (String selector : matches.keySet()) {
+        for (String selector : matches.keys()) {
 
           GQuery pos = matches.get(selector);
-
           boolean match = pos != null ? pos.index(current) > -1
               : $(current).is(selector);
 
           if (match) {
-
-            List<Element> elementsMatchingSelector = results.get(selector);
-
+            JsNodeArray elementsMatchingSelector = results.get(selector).cast();
             if (elementsMatchingSelector == null) {
-              elementsMatchingSelector = new ArrayList<Element>();
+              elementsMatchingSelector = JsNodeArray.create();
               results.put(selector, elementsMatchingSelector);
             }
-
-            elementsMatchingSelector.add(current);
+            elementsMatchingSelector.addNode(current);
           }
         }
 
         current = current.getParentElement();
       }
-
     }
-
     return results;
   }
 
@@ -2305,6 +2294,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <W> List<W> map(Function f) {
+    @SuppressWarnings("rawtypes")
     ArrayList ret = new ArrayList();
     for (int i = 0; i < elements().length; i++) {
       Object o = f.f(elements()[i], i);
@@ -3899,7 +3889,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery domManip(String htmlString, int func) {
-    HashMap<Document, GQuery> cache = new HashMap<Document, GQuery>();
+    JsMap<Document, GQuery> cache = JsMap.createObject().cast();
     for (Element e : elements()) {
       Document d = e.getNodeType() == Node.DOCUMENT_NODE ? e.<Document> cast()
           : e.getOwnerDocument();
@@ -3910,7 +3900,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
       domManip(g.clone(), func, e);
     }
-
     return this;
   }
 

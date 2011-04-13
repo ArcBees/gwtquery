@@ -17,6 +17,9 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.plugins.Effects.Effects;
 import static com.google.gwt.query.client.plugins.Events.Events;
 import static com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -30,9 +33,9 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -41,6 +44,7 @@ import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
@@ -53,11 +57,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
@@ -433,7 +432,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * @param selector
    * @return
    */
-  Map<String, List<Element>> closest(String[] selectors);
+  JsNamedArray<NodeList<Element>> closest(String[] selectors);
 
   /**
    * Returns a {@link Map} object as key a selector and as value the list of
@@ -445,7 +444,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * @param selector
    * @return
    */
-  Map<String, List<Element>> closest(String[] selectors, Node context);
+  JsNamedArray<NodeList<Element>> closest(String[] selectors, Node context);
 
   /**
    * Get the first ancestor element that matches the selector (for each matched

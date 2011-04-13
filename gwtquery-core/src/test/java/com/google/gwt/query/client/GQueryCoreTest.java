@@ -19,9 +19,14 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import java.util.List;
+
+import junit.framework.Assert;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -29,6 +34,7 @@ import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
@@ -38,11 +44,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
-
-import junit.framework.Assert;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -1204,24 +1205,24 @@ public class GQueryCoreTest extends GWTTestCase {
     String html = "<div id='mainDiv'><div id='subDiv' class='test'><div id='subSubDiv'><p id='mainP'><span id='testSpan' class='test'><input id='firstInput' type='text'></input></span></p></div></div></div>";
     $(e).html(html);
     
-    Map<String, List<Element>> close = $("input", e).closest(new String[]{"p","div", ".test", "#unknown"});
+    JsNamedArray<NodeList<Element>> close = $("input", e).closest(new String[]{"p","div", ".test", "#unknown"});
     
-    assertEquals(3, close.size());
+    assertEquals(3, close.length());
     
     assertNotNull(close.get("p"));
-    assertEquals(1,close.get("p").size());
-    assertEquals("mainP", close.get("p").get(0).getId());
+    assertEquals(1,close.get("p").getLength());
+    assertEquals("mainP", close.get("p").getItem(0).getId());
     
     assertNotNull(close.get("div"));
-    assertEquals(3,close.get("div").size());
-    assertEquals("subSubDiv", close.get("div").get(0).getId());
-    assertEquals("subDiv", close.get("div").get(1).getId());
-    assertEquals("mainDiv", close.get("div").get(2).getId());
+    assertEquals(3,close.get("div").getLength());
+    assertEquals("subSubDiv", close.get("div").getItem(0).getId());
+    assertEquals("subDiv", close.get("div").getItem(1).getId());
+    assertEquals("mainDiv", close.get("div").getItem(2).getId());
     
     assertNotNull(close.get(".test"));
-    assertEquals(2,close.get(".test").size());
-    assertEquals("testSpan", close.get(".test").get(0).getId());
-    assertEquals("subDiv", close.get(".test").get(1).getId());
+    assertEquals(2,close.get(".test").getLength());
+    assertEquals("testSpan", close.get(".test").getItem(0).getId());
+    assertEquals("subDiv", close.get(".test").getItem(1).getId());
     
     assertNull(close.get("#unknown"));
     

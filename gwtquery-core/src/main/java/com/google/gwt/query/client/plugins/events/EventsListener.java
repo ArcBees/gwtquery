@@ -25,7 +25,9 @@ import java.util.Map;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -117,7 +119,6 @@ public class EventsListener implements EventListener {
 
     @Override
     public boolean fire(Event event) {
-
       if (isEmpty()) {
         return true;
       }
@@ -134,11 +135,11 @@ public class EventsListener implements EventListener {
         return true;
       }
 
-      Map<String, List<Element>> realCurrentTargetBySelector = $(eventTarget).closest(
+      JsNamedArray<NodeList<Element>> realCurrentTargetBySelector = $(eventTarget).closest(
           selectors, liveContextElement);
 
       // nothing match the selectors
-      if (realCurrentTargetBySelector.isEmpty()) {
+      if (realCurrentTargetBySelector.length() == 0) {
         return true;
       }
 
@@ -146,15 +147,16 @@ public class EventsListener implements EventListener {
 
       com.google.gwt.query.client.plugins.events.Event gqEvent = com.google.gwt.query.client.plugins.events.Event.create(event);
 
-      for (String cssSelector : realCurrentTargetBySelector.keySet()) {
+      for (String cssSelector : realCurrentTargetBySelector.keys()) {
         List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
-
         if (bindFunctions == null){
           continue;
         }
         
         for (BindFunction f : bindFunctions) {
-          for (Element element : realCurrentTargetBySelector.get(cssSelector)) {
+          NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
+          if (n != null ) for (int i = 0; i < n.getLength(); i++) {
+            Element element = n.getItem(i);
             gqEvent.setCurrentElementTarget(element);
             boolean subResult = f.fire(gqEvent);
             result &= subResult;
@@ -168,9 +170,7 @@ public class EventsListener implements EventListener {
 
       // trick to reset the right currentTarget on the original event on ie
       gqEvent.setCurrentElementTarget(liveContextElement);
-
       return result;
-
     }
 
     /**
