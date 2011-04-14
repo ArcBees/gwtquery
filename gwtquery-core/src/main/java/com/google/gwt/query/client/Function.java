@@ -41,23 +41,23 @@ public abstract class Function {
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
    */
-  public Object f(Element e, int i) {
+  public <W> W f(Element e, int i) {
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
-      return f(w, i);
+      f(w, i);
     } else {
       f((com.google.gwt.user.client.Element)e);
-      return "";
     }
+    return null;
   }
 
   /**
    * Override this for GQuery methods which loop over matched widgets and
    * invoke a callback on each widget.
    */
-  public Object f(Widget w, int i) {
+  public <W> W f(Widget w, int i) {
     f(w.getElement());
-    return "";
+    return null;
   }
   
   /**

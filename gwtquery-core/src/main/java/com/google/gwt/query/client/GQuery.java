@@ -22,6 +22,7 @@ import static com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQu
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -2303,12 +2304,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Pass each element in the current matched set through a function, producing
    * a new array containing the return values.
    */
-  @SuppressWarnings("unchecked")
   public <W> List<W> map(Function f) {
-    @SuppressWarnings("rawtypes")
-    ArrayList ret = new ArrayList();
+    ArrayList<W> ret = new ArrayList<W>();
     for (int i = 0; i < elements().length; i++) {
-      Object o = f.f(elements()[i], i);
+      @SuppressWarnings("unchecked")
+      W o = (W)f.f(elements()[i], i);
       if (o != null) {
         ret.add(o);
       }
