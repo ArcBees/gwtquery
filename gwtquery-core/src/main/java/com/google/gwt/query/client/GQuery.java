@@ -918,7 +918,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery children() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
-      allNextSiblingElements(e.getFirstChildElement(), result, null);
+      allNextSiblingElements(e.getFirstChildElement(), result, null, null);
     }
     return new GQuery(unique(result));
   }
@@ -2387,15 +2387,31 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return pushStack(result, "next", selectors[0]).filter(selectors);
   }
 
+  
   /**
    * Find all sibling elements after the current element.
    */
   public GQuery nextAll() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
-      allNextSiblingElements(e.getNextSiblingElement(), result, null);
+      allNextSiblingElements(e.getNextSiblingElement(), result, null, null);
     }
     return pushStack(unique(result), "nextAll", getSelector());
+  }
+  
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the selector.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(String selector) {
+    JsNodeArray result = JsNodeArray.create();
+    for (Element e : elements()) {
+      allNextSiblingElements(e.getNextSiblingElement(), result, null, selector);
+    }
+    return pushStack(unique(result), "nextUntil", getSelector());
   }
 
   /**
@@ -2558,15 +2574,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements (except for the root element).
    */
   public GQuery parents() {
-    JsNodeArray result = JsNodeArray.create();
-    for (Element e : elements()) {
-      Node par = e.getParentNode();
-      while (par != null && par != document) {
-        result.addNode(par);
-        par = par.getParentNode();
-      }
-    }
-    return new GQuery(unique(result));
+    return parentsUntil(null);
   }
 
   /**
@@ -2577,6 +2585,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery parents(String... filters) {
     return parents().filter(filters);
   }
+  
+  /**
+   * Get the ancestors of each element in the current set of matched elements,
+   * up to but not including the element matched by the selector.
+   *
+   */
+  public GQuery parentsUntil(String selector) {
+    JsNodeArray result = JsNodeArray.create();
+    for (Element e : elements()) {
+      Node par = e.getParentNode();
+      while (par != null && par != document) {
+        if (selector != null && $(par).is(selector)) {
+          break;
+        }
+        result.addNode(par);
+        par = par.getParentNode();
+      }
+    }
+    return new GQuery(unique(result));
+  }
+ 
 
   /**
    * Gets the top and left position of an element relative to its offset parent.
@@ -2729,9 +2758,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery prevAll() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
-      allPreviousSiblingElements(getPreviousSiblingElement(e), result);
+      allPreviousSiblingElements(getPreviousSiblingElement(e), result, null);
     }
     return pushStack(unique(result), "prevAll", getSelector());
+  }
+  
+  /**
+   * Find all sibling elements in front of the current element.
+   */
+  public GQuery prevUntil(String selector) {
+    JsNodeArray result = JsNodeArray.create();
+    for (Element e : elements()) {
+      allPreviousSiblingElements(getPreviousSiblingElement(e), result, selector);
+    }
+    return pushStack(unique(result), "prevUntil", getSelector());
   }
 
   /**
@@ -3126,7 +3166,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements()) {
       allNextSiblingElements(e.getParentElement().getFirstChildElement(),
-          result, e);
+          result, e, null);
     }
     return new GQuery(unique(result));
   }
@@ -3819,8 +3859,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allNextSiblingElements(Element firstChildElement,
-      JsNodeArray result, Element elem) {
+      JsNodeArray result, Element elem, String untilSelector) {
     while (firstChildElement != null) {
+      
+      if (untilSelector != null && $(firstChildElement).is(untilSelector)){
+        return;
+      }
+      
       if (firstChildElement != elem) {
         result.addNode(firstChildElement);
       }
@@ -3829,8 +3874,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allPreviousSiblingElements(Element firstChildElement,
-      JsNodeArray result) {
+      JsNodeArray result, String untilSelector) {
     while (firstChildElement != null) {
+      if (untilSelector != null && $(firstChildElement).is(untilSelector)){
+        return;
+      }
       result.addNode(firstChildElement);
       firstChildElement = getPreviousSiblingElement(firstChildElement);
     }

@@ -1368,6 +1368,15 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> nextAll();
 
   /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the selector.
+   * 
+   * @param selector
+   * @return
+   */
+  LazyGQuery<T> nextUntil(String selector);
+
+  /**
    * Removes the specified Element from the set of matched elements. This method
    * is used to remove a single Element from a jQuery object.
    */
@@ -1463,6 +1472,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> parents(String... filters);
 
   /**
+   * Get the ancestors of each element in the current set of matched elements,
+   * up to but not including the element matched by the selector.
+   *
+   */
+  LazyGQuery<T> parentsUntil(String selector);
+
+  /**
    * Gets the top and left position of an element relative to its offset parent.
    * The returned object contains two Integer properties, top and left. For
    * accurate calculations make sure to use pixel values for margins, borders
@@ -1539,6 +1555,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Find all sibling elements in front of the current element.
    */
   LazyGQuery<T> prevAll();
+
+  /**
+   * Find all sibling elements in front of the current element.
+   */
+  LazyGQuery<T> prevUntil(String selector);
 
   /**
    * Put a {@link Function} at the end of the Effects queue.

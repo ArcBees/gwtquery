@@ -546,6 +546,22 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(1, $("span", e).parents().filter("body").size());
     $("span", e).parents().filter("body").toString().trim().toLowerCase().contains(
         content.toLowerCase());
+    
+    //parentsUntil()
+    content = "<div id='mainDiv'><div id='subDiv1' class='subDiv'><div id='subSubDiv1'><p id='p1'>child1</p></div></div><div id='subDiv2' class='subDiv'><div id='subSubDiv2'><p id='p2'>child2</p></div></div></div>";
+    $(e).html(content);
+    $("p",e).parentsUntil("#mainDiv").css(CSS.COLOR.with(RGBColor.RED));
+    assertEquals("red", $("#subDiv1", e).css(CSS.COLOR));
+    assertEquals("red", $("#subSubDiv1", e).css(CSS.COLOR));
+    assertEquals("red", $("#subDiv2", e).css(CSS.COLOR));
+    assertEquals("red", $("#subSubDiv2", e).css(CSS.COLOR));
+    assertEquals("", $("#mainDiv", e).css(CSS.COLOR));
+    assertEquals("", $("#p1", e).css(CSS.COLOR));
+    assertEquals("", $("#p2", e).css(CSS.COLOR));
+    
+    $("#p1",e).parentsUntil(".subDiv").css(CSS.COLOR.with(RGBColor.YELLOW));
+    assertEquals("red", $("#subDiv1", e).css(CSS.COLOR));
+    assertEquals("yellow", $("#subSubDiv1", e).css(CSS.COLOR));
 
     // is()
     content = "<form><input type=\"checkbox\"></form>";
@@ -580,6 +596,14 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("li.third-item", e).nextAll().size());
     assertHtmlEquals(expected, $("li.third-item", e).nextAll());
 
+    // nextUntil()
+    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
+    expected = "<li>i4</li>";
+    $(e).html(content);
+    assertEquals(1, $("li.third-item", e).nextUntil(".five-item").size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextUntil(".five-item"));
+
+    
     // andSelf()
     content = "<ul><li>i1</li><li>i2</li><li class=\"third-item\">i3</li><li>i4</li><li>i5</li></ul>";
     expected = "<li>i4</li><li>i5</li><li class=\"third-item\">i3</li>";
@@ -601,6 +625,21 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(2, $("p", e).prev().size());
     assertEquals(1, $("p", e).prev(".selected").size());
     assertHtmlEquals(expected, $("p", e).prev(".selected").get(0).getString());
+    
+    // prevAll()
+    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
+    expected = "<li>i4</li><li class='third-item'>i3</li><li>i2</li><li>i1</li>";
+    $(e).html(content);
+    assertEquals(4, $("li.five-item", e).prevAll().size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevAll());
+
+    
+    // prevUntil()
+    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
+    expected = "<li>i4</li>";
+    $(e).html(content);
+    assertEquals(1, $("li.five-item", e).prevUntil(".third-item").size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil(".third-item"));
 
     // siblings()
     content = "<p>Hello</p><div id='mdiv'><span>Hello Again</span></div><p>And Again</p>";
