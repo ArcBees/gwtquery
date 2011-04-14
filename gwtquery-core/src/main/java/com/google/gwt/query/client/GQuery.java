@@ -2307,8 +2307,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public <W> List<W> map(Function f) {
     ArrayList<W> ret = new ArrayList<W>();
     for (int i = 0; i < elements().length; i++) {
-      @SuppressWarnings("unchecked")
-      W o = (W)f.f(elements()[i], i);
+      W o = f.<W>f(elements()[i], i);
       if (o != null) {
         ret.add(o);
       }
