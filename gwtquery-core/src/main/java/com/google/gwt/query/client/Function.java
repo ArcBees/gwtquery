@@ -90,7 +90,7 @@ public abstract class Function {
    *  avoid a runtime exception. 
    */
   public Object f(Widget w, int i) {
-    f(w);
+    f(w.getElement());//f(w) will be called later in f(Element)
     return null;
   }
   
