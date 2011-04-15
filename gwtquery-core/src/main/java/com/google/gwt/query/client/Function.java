@@ -31,6 +31,8 @@ public abstract class Function {
    * 
    */
   public void cancel(Element e) {
+   // This has to be the order of calls
+    cancel(e.<com.google.gwt.dom.client.Element>cast());
   }
 
   /**
@@ -40,7 +42,6 @@ public abstract class Function {
    * 
    */
   public void cancel(com.google.gwt.dom.client.Element e) {
-    cancel((Element)e);
   }
 
   /**
@@ -59,13 +60,8 @@ public abstract class Function {
    * 
    */
   public Object f(Element e, int i) {
-    Widget w = GQuery.getAssociatedWidget(e);
-    if (w != null){
-      f(w, i);
-    } else {
-      f(e);
-    }
-    return null;
+    // This has to be the order of calls
+    return f(e.<com.google.gwt.dom.client.Element>cast(), i); 
   }
 
   /**
@@ -76,7 +72,13 @@ public abstract class Function {
    * 
    */
   public Object f(com.google.gwt.dom.client.Element e, int i) {
-    return f(e.<Element>cast(), i); 
+    Widget w = GQuery.getAssociatedWidget(e);
+    if (w != null){
+      f(w, i);
+    } else {
+      f(e);
+    }
+    return null;
   }
 
   /**
@@ -115,12 +117,8 @@ public abstract class Function {
    * @param e takes a com.google.gwt.user.client.Element
    */
   public void f(Element e) {
-    Widget w = GQuery.getAssociatedWidget(e);
-    if (w != null){
-      f(w);
-    }else{
-      f();
-    }
+   // This has to be the order of calls
+    f(e.<com.google.gwt.dom.client.Element>cast());
   }
   
   /**
@@ -130,7 +128,12 @@ public abstract class Function {
    * @param e takes a com.google.gwt.dom.client.Element
    */
   public void f(com.google.gwt.dom.client.Element e) {
-   f((Element)e);
+    Widget w = GQuery.getAssociatedWidget(e);
+    if (w != null){
+      f(w);
+    }else{
+      f();
+    }
   }
   
   /**

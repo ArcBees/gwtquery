@@ -1271,15 +1271,20 @@ public class GQueryCoreTest extends GWTTestCase {
   }
   
   public void testMap() {
-    String html = "<div class='d' id='6'></div><span class='s' id='5'></span><p class='p' id='4'></p><em class='d' id='3'></em><b class='s' id='2'></b><i class='p' id='1'></i><strong></strong>";
+    String html = "<div class='d' id='6'></div>" +
+    		"<span class='s' id='5'></span>" +
+    		"<p class='p' id='4'></p>" +
+    		"<em class='d' id='3'></em>" +
+    		"<b class='s' id='2'></b>" +
+    		"<i class='p' id='1'></i>" +
+    		"<strong></strong>";
     $(e).html(html);
     
     GQuery c = $(e).children();
-    assertEquals(8, c.size());
+    assertEquals(7, c.size());
     
     // A list of lists containing tag,class,id, remove elements without id
     List<List<String>> m = $(e).children().map(new Function() {
-      @SuppressWarnings("unchecked")
       public List<String> f(Element e, int i) {
         // map does not add to the list null elements
         if ($(e).attr("id").isEmpty() || $(e).attr("class").isEmpty()) {
