@@ -15,7 +15,7 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,37 +26,69 @@ public abstract class Function {
   
   /**
    * Override this for methods which invoke a cancel action.
+   * 
+   * @param e takes a com.google.gwt.user.client.Element.
+   * 
    */
   public void cancel(Element e) {
+  }
+
+  /**
+   * Override this for methods which invoke a cancel action.
+   * 
+   * @param e takes a com.google.gwt.dom.client.Element.
+   * 
+   */
+  public void cancel(com.google.gwt.dom.client.Element e) {
+    cancel((Element)e);
   }
 
   /**
    * Override this to define a function which does not need any parameter.
    */
   public void f() {
-    throw new RuntimeException("You have to override the adequate method to handle this action, or you have to override 'public void f()' to avoid this error");
+    throw new RuntimeException("You have to override the adequate method to handle " +
+    		"this action, or you have to override 'public void f()' to avoid this error");
   }
 
   /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
+   * 
+   * @param e takes a com.google.gwt.user.client.Element.
+   * 
    */
-  public <W> W f(Element e, int i) {
+  public Object f(Element e, int i) {
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
       f(w, i);
     } else {
-      f((com.google.gwt.user.client.Element)e);
+      f(e);
     }
     return null;
   }
 
   /**
+   * Override this for GQuery methods which loop over matched elements and
+   * invoke a callback on each element.
+   * 
+   * @param e takes a com.google.gwt.dom.client.Element.
+   * 
+   */
+  public Object f(com.google.gwt.dom.client.Element e, int i) {
+    return f(e.<Element>cast(), i); 
+  }
+
+  /**
    * Override this for GQuery methods which loop over matched widgets and
    * invoke a callback on each widget.
+   * 
+   *  NOTE: If your query has non-widget elements you might need to override 
+   * 'public void f()' or 'public void f(Element e)' to handle these elements and
+   *  avoid a runtime exception. 
    */
-  public <W> W f(Widget w, int i) {
-    f(w.getElement());
+  public Object f(Widget w, int i) {
+    f(w);
     return null;
   }
   
@@ -72,7 +104,7 @@ public abstract class Function {
    * Override this method for bound event handlers.
    */
   public boolean f(Event e) {
-    f((com.google.gwt.user.client.Element)e.getCurrentEventTarget().cast());
+    f((Element)e.getCurrentEventTarget().cast());
     return true;
   }
   
@@ -80,7 +112,7 @@ public abstract class Function {
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
    * 
-   * @param e takes a com.google.gwt.dom.client.Element
+   * @param e takes a com.google.gwt.user.client.Element
    */
   public void f(Element e) {
     Widget w = GQuery.getAssociatedWidget(e);
@@ -95,9 +127,9 @@ public abstract class Function {
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
    * 
-   * @param e takes a com.google.gwt.user.client.Element
+   * @param e takes a com.google.gwt.dom.client.Element
    */
-  public void f(com.google.gwt.user.client.Element e) {
+  public void f(com.google.gwt.dom.client.Element e) {
    f((Element)e);
   }
   
@@ -105,11 +137,12 @@ public abstract class Function {
    * Override this for GQuery methods which take a callback, but do not expect a
    * return value, apply to a single widget.
    * 
-   * NOTE: If your query is returning non-widget elements you might need to override 
+   *  NOTE: If your query has non-widget elements you might need to override 
    * 'public void f()' or 'public void f(Element e)' to handle these elements and
-   * avoid a runtime exception. 
+   *  avoid a runtime exception. 
    */
   public void f(Widget w){
+    // Do not call f(e) here to avoid loop
     f();
   }
 

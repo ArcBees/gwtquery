@@ -19,6 +19,9 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -1265,6 +1268,42 @@ public class GQueryCoreTest extends GWTTestCase {
     
     assertNull(close.get("#unknown"));
     
+  }
+  
+  public void testMap() {
+    String html = "<div class='d' id='6'></div><span class='s' id='5'></span><p class='p' id='4'></p><em class='d' id='3'></em><b class='s' id='2'></b><i class='p' id='1'></i><strong></strong>";
+    $(e).html(html);
+    
+    GQuery c = $(e).children();
+    assertEquals(8, c.size());
+    
+    // A list of lists containing tag,class,id, remove elements without id
+    List<List<String>> m = $(e).children().map(new Function() {
+      @SuppressWarnings("unchecked")
+      public List<String> f(Element e, int i) {
+        // map does not add to the list null elements
+        if ($(e).attr("id").isEmpty() || $(e).attr("class").isEmpty()) {
+          return null;
+        }
+        List<String> attrs = new ArrayList<String>();
+        attrs.add(e.getTagName());
+        attrs.add($(e).attr("class"));
+        attrs.add($(e).attr("id"));
+        return attrs;
+      }
+    });
+    assertEquals(6, m.size());
+    
+    // Sort the list by id
+    assertEquals("div", m.get(0).get(0).toLowerCase());
+    assertEquals("i", m.get(5).get(0).toLowerCase());
+    Collections.sort(m, new Comparator<List<String>>() {
+      public int compare(List<String> o1, List<String> o2) {
+        return o1.get(2).compareTo(o2.get(2));
+      }
+    });
+    assertEquals("div", m.get(5).get(0).toLowerCase());
+    assertEquals("i", m.get(0).get(0).toLowerCase());
   }
  
 }

@@ -1063,6 +1063,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> html(String html);
 
   /**
+   * Get the id of the first matched element.
+   */
+  String id();
+
+  /**
+   * Set the id of the first matched element.
+   */
+  LazyGQuery<T> id(String id);
+
+  /**
    * Find the index of the specified Element.
    */
   int index(Element element);
@@ -1314,6 +1324,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Pass each element in the current matched set through a function, producing
    * a new array containing the return values.
+   * When the call to the function returns a null it is not added to the array.
    */
   <W> List<W> map(Function f);
 

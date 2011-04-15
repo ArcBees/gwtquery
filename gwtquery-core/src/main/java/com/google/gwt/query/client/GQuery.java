@@ -1990,6 +1990,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Get the id of the first matched element.
+   */
+  public String id() {
+    return attr("id");
+  }
+
+  /**
+   * Set the id of the first matched element.
+   */
+  public GQuery id(String id) {
+    return eq(0).attr("id", id);
+  }
+
+  /**
    * Find the index of the specified Element.
    */
   public int index(Element element) {
@@ -2302,11 +2316,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Pass each element in the current matched set through a function, producing
    * a new array containing the return values.
+   * When the call to the function returns a null it is not added to the array.
    */
   public <W> List<W> map(Function f) {
     ArrayList<W> ret = new ArrayList<W>();
     for (int i = 0; i < elements().length; i++) {
-      W o = f.<W>f(elements()[i], i);
+      @SuppressWarnings("unchecked")
+      W o = (W)f.f(elements()[i], i);
       if (o != null) {
         ret.add(o);
       }
