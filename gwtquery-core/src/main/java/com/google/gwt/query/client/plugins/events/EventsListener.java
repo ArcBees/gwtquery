@@ -17,16 +17,13 @@ package com.google.gwt.query.client.plugins.events;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.user.client.DOM;
@@ -92,21 +89,21 @@ public class EventsListener implements EventListener {
    */
   private static class LiveBindFunction extends BindFunction {
 
-    Map<String, List<BindFunction>> bindFunctionBySelector;
+    
+    JsNamedArray<JsObjectArray<BindFunction>> bindFunctionBySelector;
 
     LiveBindFunction(int type, String namespace) {
-
       super(type, namespace, null, null, -1);
-      bindFunctionBySelector = new HashMap<String, List<BindFunction>>();
+      clean();
     }
 
     /**
      * Add a {@link BindFunction} for a specific css selector
      */
     public void addBindFunctionForSelector(String cssSelector, BindFunction f) {
-      List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+      JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
       if (bindFunctions == null) {
-        bindFunctions = new ArrayList<BindFunction>();
+        bindFunctions = JsObjectArray.create();
         bindFunctionBySelector.put(cssSelector, bindFunctions);
       }
       
@@ -114,7 +111,7 @@ public class EventsListener implements EventListener {
     }
     
     public void clean(){
-      bindFunctionBySelector = new HashMap<String, List<BindFunction>>();
+      bindFunctionBySelector = JsNamedArray.create();
     }
 
     @Override
@@ -123,8 +120,7 @@ public class EventsListener implements EventListener {
         return true;
       }
 
-      String[] selectors = bindFunctionBySelector.keySet().toArray(
-          new String[0]);
+      String[] selectors = bindFunctionBySelector.keys();
 
       // first element where the event was fired
       Element eventTarget = getEventTarget(event);
@@ -148,15 +144,12 @@ public class EventsListener implements EventListener {
       com.google.gwt.query.client.plugins.events.Event gqEvent = com.google.gwt.query.client.plugins.events.Event.create(event);
 
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
-        List<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
-        if (bindFunctions == null){
-          continue;
-        }
-        
-        for (BindFunction f : bindFunctions) {
+        JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+        for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) { 
+          BindFunction f  = bindFunctions.get(i); 
           NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
-          if (n != null ) for (int i = 0; i < n.getLength(); i++) {
-            Element element = n.getItem(i);
+          for (int j = 0; n != null && j < n.getLength(); j++) {
+            Element element = n.getItem(j);
             gqEvent.setCurrentElementTarget(element);
             boolean subResult = f.fire(gqEvent);
             result &= subResult;
@@ -177,7 +170,7 @@ public class EventsListener implements EventListener {
      * Remove the BindFunction associated to this cssSelector
      */
     public void removeBindFunctionForSelector(String cssSelector) {
-      bindFunctionBySelector.remove(cssSelector);
+      bindFunctionBySelector.delete(cssSelector);
     }
 
     /**
@@ -186,13 +179,13 @@ public class EventsListener implements EventListener {
      * @return
      */
     public boolean isEmpty() {
-      return bindFunctionBySelector.isEmpty();
+      return bindFunctionBySelector.length() == 0;
     }
 
     @Override
     public String toString() {
-      return "live bind function for selector "
-          + bindFunctionBySelector.keySet();
+      return "live bind function for selector " 
+          + bindFunctionBySelector.<JsCache>cast().tostring();
     }
 
     /**
@@ -298,7 +291,8 @@ public class EventsListener implements EventListener {
   private Element element;
 
   private JsObjectArray<BindFunction> elementEvents = JsObjectArray.createArray().cast();
-  private Map<Integer, LiveBindFunction> liveBindFunctionByEventType = new HashMap<Integer, LiveBindFunction>();
+  
+  private JsMap<Integer, LiveBindFunction> liveBindFunctionByEventType = JsMap.create();
 
   private EventsListener(Element element) {
     this.element = element;
@@ -348,7 +342,8 @@ public class EventsListener implements EventListener {
 
   public void die(int eventbits, String cssSelector) {
     if (eventbits == 0) {
-      for (LiveBindFunction liveBindFunction : liveBindFunctionByEventType.values()) {
+      for (String k :liveBindFunctionByEventType.keys()) {
+        LiveBindFunction liveBindFunction = liveBindFunctionByEventType.<JsCache>cast().get(k);
         liveBindFunction.removeBindFunctionForSelector(cssSelector);
       }
     } else {
@@ -457,7 +452,7 @@ public class EventsListener implements EventListener {
   private void clean() {
     cleanGQListeners(element);
     elementEvents = JsObjectArray.createArray().cast();
-    liveBindFunctionByEventType = new HashMap<Integer, LiveBindFunction>();
+    liveBindFunctionByEventType = JsMap.create();
   }
 
   private void sink() {
@@ -499,7 +494,8 @@ public class EventsListener implements EventListener {
   }
 
   public void cleanEventDelegation() {
-    for (LiveBindFunction function : liveBindFunctionByEventType.values()){
+    for (String k :liveBindFunctionByEventType.keys()) {
+      LiveBindFunction function = liveBindFunctionByEventType.<JsCache>cast().get(k);
       function.clean();
     }
   }

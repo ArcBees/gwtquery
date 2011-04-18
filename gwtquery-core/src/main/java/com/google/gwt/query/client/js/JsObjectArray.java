@@ -44,8 +44,8 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   }
 
   @SuppressWarnings("unchecked")
-  public T get(int hashCode) {
-    return (T)c().get(hashCode);
+  public T get(int index) {
+    return (T)c().get(index);
   }
 
   public int length() {

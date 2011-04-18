@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client.js;
 
-import java.util.HashSet;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
@@ -101,11 +99,12 @@ public class JsUtils {
    */
   public static JsArray<Element> unique(JsArray<Element> a) {
     JsArray<Element> ret = JavaScriptObject.createArray().cast();
-    HashSet<Integer> f = new HashSet<Integer>();
+    JsCache cache = JsCache.create();
     for (int i = 0; i < a.length(); i++) {
       Element e = a.get(i);
-      if (!f.contains(e.hashCode())) {
-        f.add(e.hashCode());
+      int id = e.hashCode();
+      if (!cache.exists(id)) {
+        cache.put(id, true);
         ret.push(e);
       }
     }    

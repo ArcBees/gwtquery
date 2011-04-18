@@ -47,4 +47,7 @@ final public class JsMap<S, T> extends JavaScriptObject {
     return c().keys();
   }
 
+  public static <S, T> JsMap<S, T> create() {
+    return createObject().cast();
+  }
 }

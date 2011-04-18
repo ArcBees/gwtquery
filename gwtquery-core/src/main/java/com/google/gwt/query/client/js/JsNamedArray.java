@@ -55,6 +55,10 @@ final public class JsNamedArray<T> extends JavaScriptObject {
     return c().exists(key);
   }
 
+  public final void delete(String key){
+    c().delete(key);
+  }
+
   public final static <T> JsNamedArray<T> create() {
     return createObject().cast();
   }
