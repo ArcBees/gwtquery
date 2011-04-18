@@ -16,12 +16,12 @@
 package com.google.gwt.query.client.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
@@ -34,7 +34,7 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
-  HashMap<String, String> cache = new HashMap<String, String>();
+  JsNamedArray<String> cache = JsNamedArray.create();
   
   /**
    * Interface for callbacks in replaceAll operations.
