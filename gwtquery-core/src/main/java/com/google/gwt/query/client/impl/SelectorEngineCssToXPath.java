@@ -34,7 +34,7 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
-  JsNamedArray<String> cache = JsNamedArray.create();
+  JsNamedArray<String> cache;
   
   /**
    * Interface for callbacks in replaceAll operations.
@@ -187,6 +187,9 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   }
   
   public NodeList<Element> select(String sel, Node ctx) {
+    if (cache == null) {
+      JsNamedArray.create();
+    }
     JsNodeArray elm = JsNodeArray.create();
     String xsel = cache.get(sel);
     if (xsel == null) {

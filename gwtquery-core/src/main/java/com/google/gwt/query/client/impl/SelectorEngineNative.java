@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -30,20 +31,37 @@ public class SelectorEngineNative extends SelectorEngineImpl {
   
   private static HasSelector impl;
   
+  NodeList<Element> result = null;
+  
   public SelectorEngineNative() {
-    if (impl == null) {
-      impl = GWT.create(HasSelector.class);
+  }
+  
+  RunAsyncCallback callBack = new RunAsyncCallback() {
+    public void onSuccess() {
+      if (impl == null) {
+        impl=GWT.create(HasSelector.class);
+      }
     }
+    public void onFailure(Throwable reason) {
+    }
+  };
+  
+  private NodeList<Element> jsFallbackSelect (String selector, Node ctx) {
+    if (impl == null) {
+      GWT.runAsync(callBack);
+      while (impl == null);
+    } 
+    return impl.select(selector, ctx);
   }
   
   public NodeList<Element> select(String selector, Node ctx) {
     if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
-      return impl.select(selector, ctx); 
+      return jsFallbackSelect(selector, ctx);
     } else {
       try {
         return SelectorEngine.querySelectorAllImpl(selector, ctx);
       } catch (Exception e) {
-        return impl.select(selector, ctx); 
+        return jsFallbackSelect(selector, ctx);
       }
     }
   }

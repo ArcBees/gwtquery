@@ -518,12 +518,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Set a key/value object as style properties to all matched elements. This
    * serves as the best way to set a large number of style properties on all
-   * matched elements.
+   * matched elements. You can use either js maps or pure css syntax.
    * 
    * Example:
    * 
    * <pre class="code">
    *  $(".item").css(Properties.create("color: 'red', background:'blue'"))
+   *  $(".item").css(Properties.create("color: red; background: blue;"))
    * </pre>
    */
   LazyGQuery<T> css(Properties properties);

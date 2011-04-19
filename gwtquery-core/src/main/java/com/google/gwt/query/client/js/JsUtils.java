@@ -104,7 +104,7 @@ public class JsUtils {
       Element e = a.get(i);
       int id = e.hashCode();
       if (!cache.exists(id)) {
-        cache.put(id, true);
+        cache.put(id, 1);
         ret.push(e);
       }
     }    

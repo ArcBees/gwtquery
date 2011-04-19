@@ -18,9 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.LabelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TextAreaWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.query.client.LazyBase;
 
@@ -32,5 +42,70 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * new widgets created.
    */
   <W extends Widget> LazyWidgets<T> widgets(WidgetFactory<W> factory, WidgetInitializer<W> initializers);
+
+  /**
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> button();
+
+  /**
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> button(WidgetInitializer<Button> initializers);
+
+  LazyWidgets<T> label();
+
+  LazyWidgets<T> label(WidgetInitializer<Label> initializers);
+
+  /**
+   * Create a {@link PasswordTextBox} widget for each selected element.
+   */
+  LazyWidgets<T> passwordBox();
+
+  /**
+   * Create a {@link PasswordTextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new
+   * {@link PasswordTextBox} created by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> passwordBox(WidgetInitializer<PasswordTextBox> initializers);
+
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> textBox();
+
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> textBox(WidgetInitializer<TextBox> initializers);
+
+  /**
+   * Create a {@link TextArea} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> textArea();
+
+  /**
+   * Create a {@link TextArea} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  LazyWidgets<T> textArea(WidgetInitializer<TextArea> initializers);
 
 }

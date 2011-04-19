@@ -20,9 +20,19 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.LabelWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TextAreaWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -96,6 +106,92 @@ public class Widgets extends QueuePlugin<Widgets> {
   protected <W extends Widget> W widget(WidgetFactory<W> factory,
       WidgetInitializer<W> initializers) {
     return widget(get(0), factory, initializers);
+  }
+  
+  /**
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   * 
+   */
+  public Widgets button() {
+    return widgets(new ButtonWidgetFactory(), null);
+  }
+
+  /**
+   * Create a {@link Button} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Button} created
+   * by passing them in parameter.
+   * 
+   */
+  public Widgets button(WidgetInitializer<Button> initializers) {
+    return widgets(new ButtonWidgetFactory(), initializers);
+  }
+
+  public Widgets label() {
+    return widgets(new LabelWidgetFactory(), null);
+  }
+
+  public Widgets label(WidgetInitializer<Label> initializers) {
+    return widgets(new LabelWidgetFactory(), initializers);
+  }
+  
+  /**
+   * Create a {@link PasswordTextBox} widget for each selected element.
+   */
+  public Widgets passwordBox() {
+    return widgets(new PasswordTextBoxWidgetFactory(), null);
+  }
+  
+  /**
+   * Create a {@link PasswordTextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new
+   * {@link PasswordTextBox} created by passing them in parameter.
+   * 
+   */
+  public Widgets passwordBox(WidgetInitializer<PasswordTextBox> initializers) {
+    return widgets(new PasswordTextBoxWidgetFactory(), initializers);
+  }
+  
+  
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets textBox() {
+    return widgets(new TextBoxWidgetFactory(), null);
+  }
+
+  /**
+   * Create a {@link TextBox} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets textBox(WidgetInitializer<TextBox> initializers) {
+    return widgets(new TextBoxWidgetFactory(), initializers);
+  }
+
+  /**
+   * Create a {@link TextArea} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets textArea() {
+    return widgets(new TextAreaWidgetFactory(), null);
+  }
+
+  /**
+   * Create a {@link TextArea} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link TextBox}
+   * created by passing them in parameter.
+   * 
+   */
+  public Widgets textArea(WidgetInitializer<TextArea> initializers) {
+    return widgets(new TextAreaWidgetFactory(), initializers);
   }
 
 }
