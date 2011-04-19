@@ -17,20 +17,20 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -52,17 +52,11 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testJsCache();
+      testCompareJquery();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
-  }
-  
-  public void testAttrSelectors() {
-    System.out.println($("script:not([src])"));
-//    System.out.println($("iframe:not([language])"));
-    
   }
   
   public void testJsCache() {
@@ -98,11 +92,13 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     c.delete(2);
     c.delete("C");
     assertEquals(5, c.length());
-
+    
     c.put(-1, "N");
     assertEquals(6, c.length());
     assertEquals("N", c.get(-1));
-    System.out.println(c.tostring());
+    
+    c = JsCache.create();
+    c.put("whatever", new Date());
   }
   
   public void testLive() {
@@ -241,6 +237,18 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       return "";
     }
   }-*/;
+  
+  public void testCompareJquery() {
+    $(e).html("<div class='outer' style='border: 4px solid red; padding: 25px; width: auto; height: 150px'>");
+    int gqw = $(".outer").width();
+    String jqw = evalJQurey("$('.outer').width()");
+    
+    int gqh = $(".outer").height();
+    String jqh = evalJQurey("$('.outer').height()");
+    
+    String msg = ".outer size: GQuery: " + gqw + "x" + gqh + " jQuery: " + jqw + "x" + jqh;
+    Window.alert(msg);
+  }
   
   public void validateCssBoth(String selector, boolean force, String... attrs) {
     for (String attr: attrs) {
