@@ -26,44 +26,26 @@ import com.google.gwt.dom.client.NodeList;
  * querySelectorAll support.
  */
 public class SelectorEngineNative extends SelectorEngineImpl {
-  
+
   public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=).*";
   
   private static HasSelector impl;
   
-  NodeList<Element> result = null;
-  
   public SelectorEngineNative() {
-  }
-  
-  RunAsyncCallback callBack = new RunAsyncCallback() {
-    public void onSuccess() {
-      if (impl == null) {
-        impl=GWT.create(HasSelector.class);
-      }
-    }
-    public void onFailure(Throwable reason) {
-    }
-  };
-  
-  private NodeList<Element> jsFallbackSelect (String selector, Node ctx) {
     if (impl == null) {
-      GWT.runAsync(callBack);
-      while (impl == null);
-    } 
-    return impl.select(selector, ctx);
+      impl = GWT.create(HasSelector.class);
+    }
   }
   
   public NodeList<Element> select(String selector, Node ctx) {
     if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
-      return jsFallbackSelect(selector, ctx);
+      return impl.select(selector, ctx); 
     } else {
       try {
         return SelectorEngine.querySelectorAllImpl(selector, ctx);
       } catch (Exception e) {
-        return jsFallbackSelect(selector, ctx);
+        return impl.select(selector, ctx); 
       }
     }
   }
-  
 }
