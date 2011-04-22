@@ -1,0 +1,8 @@
+<module  rename-to='ColorEffectsSample'>
+	<inherits name='com.google.gwt.query.Query' />
+	<inherits name='com.google.gwt.user.theme.chrome.Chrome' />
+	<entry-point
+		class="gwtquery.samples.client.effects.ColorEffectsSample">
+	</entry-point>
+</module>
+
