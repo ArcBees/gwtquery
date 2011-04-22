@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.effects.ColorEffect;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
@@ -285,6 +286,35 @@ public class GQueryEffectsTest extends GWTTestCase {
             .toString());
   }
   
+  public void testColorEffectParsing(){
+    String html = "<div id='test' style='color: #112233'>Test</div>";
+    $(e).html(html);
+    
+    ColorEffect effect = (ColorEffect) PropertiesAnimation.computeFxProp($("#test",e).get(0), "color", "#ffffff", false);
+    assertEquals(17, effect.getStartColor()[0]); //#11
+    assertEquals(34, effect.getStartColor()[1]); //#22
+    assertEquals(51, effect.getStartColor()[2]); //#33
+    
+    assertEquals(255, effect.getEndColor()[0]);
+    assertEquals(255, effect.getEndColor()[1]);
+    assertEquals(255, effect.getEndColor()[2]);
+    
+    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "rgb(255,255,255)", false);
+    assertEquals(255, effect.getEndColor()[0]);
+    assertEquals(255, effect.getEndColor()[1]);
+    assertEquals(255, effect.getEndColor()[2]);
+    
+    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "rgb(100%, 100%, 100%)", false);
+    assertEquals(255, effect.getEndColor()[0]);
+    assertEquals(255, effect.getEndColor()[1]);
+    assertEquals(255, effect.getEndColor()[2]);
+    
+    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "white", false);
+    assertEquals(255, effect.getEndColor()[0]);
+    assertEquals(255, effect.getEndColor()[1]);
+    assertEquals(255, effect.getEndColor()[2]);
+  }
+  
   private void assertPosition(GQuery g, Offset min, Offset max) {
     int a = Math.min(min.top, max.top);
     int b = Math.max(min.top, max.top);
@@ -302,5 +332,5 @@ public class GQueryEffectsTest extends GWTTestCase {
         + " - " + b;
     assertTrue(msg, c);
   }
-
+  
 }

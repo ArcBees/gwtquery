@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import java.util.ArrayList;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -25,9 +23,12 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.effects.ColorEffect.BorderColorEffect;
+
+import java.util.ArrayList;
 
 /**
- *  Animation effects on any numeric CSS property. 
+ * Animation effects on any numeric CSS property.
  */
 public class PropertiesAnimation extends Animation {
 
@@ -36,20 +37,20 @@ public class PropertiesAnimation extends Animation {
    */
   public static interface Easing {
     public double interpolate(double progress);
-    
-    public Easing LINEAR = new Easing() {     
+
+    public Easing LINEAR = new Easing() {
       public double interpolate(double progress) {
         return progress;
       }
     };
-    
-    public Easing SWING = new Easing() {     
+
+    public Easing SWING = new Easing() {
       public double interpolate(double progress) {
-       return (1 + Math.cos(Math.PI + progress * Math.PI)) / 2;
+        return (1 + Math.cos(Math.PI + progress * Math.PI)) / 2;
       }
     };
   }
-  
+
   /**
    * A pojo to store effect values.
    */
@@ -61,8 +62,11 @@ public class PropertiesAnimation extends Animation {
     public String unit;
     public String value;
 
-    Effect(String attr, String value, double start, double end,
-        String unit) {
+    Effect() {
+      end = start = -1;
+    }
+
+    Effect(String attr, String value, double start, double end, String unit) {
       this.attr = attr;
       this.value = value;
       this.start = start;
@@ -70,40 +74,90 @@ public class PropertiesAnimation extends Animation {
       this.unit = unit;
     }
 
-    public String getVal(double progress) {
+    public void applyValue(GQuery g, double progress) {
+
       double ret = (start + ((end - start) * progress));
-      return ("px".equals(unit) ? ((int) ret) : ret) + unit;
+      String value = ("px".equals(unit) ? ((int) ret) : ret) + unit;
+
+      g.css(attr, value);
     }
-    
+
     public String toString() {
-      return ("attr=" + attr + " value=" + value + " start=" + start + " end=" + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
+      return ("attr=" + attr + " value=" + value + " start=" + start + " end="
+          + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
     }
   }
-  
-  private static final String[] attrsToSave = new String[] { "overflow",
-      "visibility" };
+
+  private static final String[] attrsToSave = new String[]{
+      "overflow", "visibility"};
 
   private static JsRegexp nonPxRegExp = new JsRegexp(
       "z-?index|font-?weight|opacity|zoom|line-?height", "i");
-  
-  
+
+  private static JsRegexp colorRegExp = new JsRegexp(".*color$", "i");
+  public static JsRegexp RGB_COLOR_PATTERN = new JsRegexp(
+      "rgb\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*\\)$");
+  public static JsRegexp HEXADECIMAL_COLOR_PATTERN = new JsRegexp(
+      "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$");
+
   public static Effect computeFxProp(Element e, String key, String val,
       boolean hidden) {
+
+    if (colorRegExp.test(key)) {
+      return computeFxColorProp(e, key, val);
+    }
+
+    return computeFxNumericProp(e, key, val, hidden);
+  }
+
+  private static Effect computeFxColorProp(Element e, String key, String val) {
+
+    if ("BORDERCOLOR".equals(key.toUpperCase())) {
+      return new BorderColorEffect(e, val);
+    }
+
+    String initialColor = null;
+
+    if ("BACKGROUNDCOLOR".equals(key.toUpperCase())) {
+      // find the first parent having a background-color value (other than
+      // transparent)
+      Element current = e;
+
+      while ((initialColor == null || initialColor.length() == 0 || initialColor.equals("transparent"))
+          && current != null) {
+        initialColor = GQuery.$(current).css(key);
+        current = !"body".equalsIgnoreCase(current.getTagName())
+            ? current.getParentElement() : null;
+      }
+      if (initialColor == null || initialColor.length() == 0
+          || initialColor.equals("transparent")) {
+        initialColor = "white";
+      }
+    } else {
+      initialColor = GQuery.$(e).css(key, true);
+    }
+
+    return new ColorEffect(key, initialColor, val);
+  }
+
+  public static Effect computeFxNumericProp(Element e, String key, String val,
+      boolean hidden) {
+
     GQuery g = Effects.$(e);
     String unit = "";
     if ("toggle".equals(val)) {
       val = hidden ? "show" : "hide";
     }
-    
-    if (("show".equals(val) && !hidden) || ("hide").equals(val) && hidden){
+
+    if (("show".equals(val) && !hidden) || ("hide").equals(val) && hidden) {
       return null;
     }
-    
-    if (hidden){
+
+    if (hidden) {
       g.show();
     }
     double start = g.cur(key, true), end = start;
-    
+
     if ("show".equals(val)) {
       g.saveCssAttrs(key);
       start = 0;
@@ -123,7 +177,8 @@ public class PropertiesAnimation extends Animation {
         String $2 = parts.get(2);
         String $3 = parts.get(3);
         end = Double.parseDouble($2);
-        unit = nonPxRegExp.test(key) ? "" : $3 == null || $3.isEmpty() ? "px" : $3;
+        unit = nonPxRegExp.test(key) ? "" : $3 == null || $3.isEmpty() ? "px"
+            : $3;
         if (!"px".equals(unit)) {
           double to = end == 0 ? 1 : end;
           g.css(key, to + unit);
@@ -135,10 +190,11 @@ public class PropertiesAnimation extends Animation {
         }
       }
     }
-    
+
     Effect fx = new Effect(key, val, start, end, unit);
     return fx;
   }
+
   private Element e;
   private Easing easing = Easing.SWING;
   private ArrayList<Effect> effects = new ArrayList<Effect>();
@@ -172,7 +228,7 @@ public class PropertiesAnimation extends Animation {
       } else if ("show".equals(l.value)) {
         g.show();
         g.restoreCssAttrs(l.attr);
-      }     
+      }
     }
     g.restoreCssAttrs(attrsToSave);
     g.each(funcs);
@@ -185,7 +241,7 @@ public class PropertiesAnimation extends Animation {
     boolean move = false;
     boolean hidden = !g.visible();
     Effect fx;
-    //g.show();
+    // g.show();
     for (String key : prps.keys()) {
       String val = prps.getStr(key);
       if ((fx = computeFxProp(e, key, val, hidden)) != null) {
@@ -199,7 +255,7 @@ public class PropertiesAnimation extends Animation {
       g.css("overflow", "hidden");
     }
     if (move && !g.css("position", true).matches("absolute|relative")) {
-      g.css("position", "relative");    
+      g.css("position", "relative");
     }
     g.css("visibility", "visible");
     super.onStart();
@@ -208,16 +264,17 @@ public class PropertiesAnimation extends Animation {
   @Override
   public void onUpdate(double progress) {
     for (Effect fx : effects) {
-      g.css(fx.attr, fx.getVal(progress));
+      fx.applyValue(g, progress);
+
     }
   }
 
   @Override
   protected double interpolate(double progress) {
-    if (easing != null){
+    if (easing != null) {
       return easing.interpolate(progress);
     }
-    //maybe return super.interpolate() instead ?
+    // maybe return super.interpolate() instead ?
     return progress;
   }
 
