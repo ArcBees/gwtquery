@@ -414,7 +414,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static JsNodeArray copyNodeList(NodeList<? extends Node> n) {
     JsNodeArray res = JsNodeArray.create();
     for (int i = 0; i < n.getLength(); i++) {
-      res.addNode(n.getItem(i));
+      res.addNode(n.getItem(i), i);
     }
     return res;
   }
@@ -572,11 +572,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -601,6 +601,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
    * </pre>
    * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   * </pre>
+   * 
    * @param p a {@link Properties} object containing css properties to animate.
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -613,12 +622,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * 
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -650,10 +660,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    * The duration of the animation is 500ms.
    * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
+   * </pre>
+   * 
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
-   * @param duration the duration in milliseconds of the animation
    */
   public GQuery animate(String prop, Function... funcs) {
     return as(Effects).animate(prop, funcs);
@@ -661,12 +679,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
    * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -694,6 +711,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *                 }
    *                 
    *              });
+   * </pre>
+   * 
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
    * 
    * 

@@ -29,64 +29,150 @@ import com.google.gwt.query.client.LazyBase;
 public interface LazyEffects<T> extends LazyBase<T>{
 
   /**
-   * The animate() method allows us to create animation effects on any numeric CSS property. 
-   * The only required parameter is a map of CSS properties. 
-   * This map is similar to the one that can be sent to the .css() method, 
-   * except that the range of properties is more restrictive.
-   * All animated properties should be numeric, non-numeric cannot be animated using basic functionality. 
-   * (For example, width, height, or left can be animated but background-color cannot be.) 
-   * Property values are treated as a number of pixels unless otherwise specified.
-   *  The units em and % can be specified where applicable.
-   *  
-   *  In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'. 
-   *  These shortcuts allow for custom hiding and showing animations that take into account the display type of the element.
-   *  Animated properties can also be relative. If a value is supplied with a leading += or -= 
-   *  sequence of characters, then the target value is computed by adding or subtracting the given number 
-   *  from the current value of the property.
-   */  
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   * </pre>
+   */
   LazyEffects<T> animate(Properties p, int duration, Easing easing, Function... funcs);
 
   /**
-   * The animate() method allows us to create animation effects on any numeric CSS property. 
-   * The only required parameter is a map of CSS properties. 
-   * This map is similar to the one that can be sent to the .css() method, 
-   * except that the range of properties is more restrictive.
-   * All animated properties should be numeric, non-numeric cannot be animated using basic functionality. 
-   * (For example, width, height, or left can be animated but background-color cannot be.) 
-   * Property values are treated as a number of pixels unless otherwise specified.
-   *  The units em and % can be specified where applicable.
-   *  
-   *  In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'. 
-   *  These shortcuts allow for custom hiding and showing animations that take into account the display type of the element.
-   *  Animated properties can also be relative. If a value is supplied with a leading += or -= 
-   *  sequence of characters, then the target value is computed by adding or subtracting the given number 
-   *  from the current value of the property.
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to left:500px for 500ms
+   *  $("#foo").animate("left:'500'");
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left for 500ms and
+   *  // change the background color of the element at the end of the animation
+   *  $("#foo").animate("left:'+=500'", new Function(){
+   *                  
+   *                 public void f(Element e){
+   *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
+   *                 }
+   *                 
+   *              });
+   * </pre>
+   * 
+   * The duration of the animation is 500ms.
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
+   * </pre>
    */
   LazyEffects<T> animate(String prop, Function... funcs);
 
   /**
-   * The animate() method allows us to create animation effects on any numeric CSS property. 
-   * The only required parameter is a map of CSS properties. 
-   * This map is similar to the one that can be sent to the .css() method, 
-   * except that the range of properties is more restrictive.
-   * All animated properties should be numeric, non-numeric cannot be animated using basic functionality. 
-   * (For example, width, height, or left can be animated but background-color cannot be.) 
-   * Property values are treated as a number of pixels unless otherwise specified.
-   *  The units em and % can be specified where applicable.
-   *  
-   *  In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'. 
-   *  These shortcuts allow for custom hiding and showing animations that take into account the display type of the element.
-   *  Animated properties can also be relative. If a value is supplied with a leading += or -= 
-   *  sequence of characters, then the target value is computed by adding or subtracting the given number 
-   *  from the current value of the property.
-   */  
+   * The animate() method allows you to create animation effects on any numeric
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to left:500px for 2s
+   *  $("#foo").animate("left:'500px'", 2000);
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left for 1000ms and
+   *  // change the background color of the element at the end of the animation
+   *  $("#foo").animate("left:'+=500'", 1000, new Function(){
+   *                  
+   *                 public void f(Element e){
+   *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
+   *                 }
+   *                 
+   *              });
+   * </pre>
+   * 
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
+   * </pre>
+   * 
+   */
   LazyEffects<T> animate(String prop, int duration, Function... funcs);
 
   /**
-   * Animate the set of matched elements using the clip property.
-   * It is possible to show or hide a set of elements, 
-   * specify the direction of the animation and the start corner of the effect.
-   * Finally it executes the set of functions passed as arguments.
+   * Animate the set of matched elements using the clip property. It is possible
+   * to show or hide a set of elements, specify the direction of the animation
+   * and the start corner of the effect. Finally it executes the set of
+   * functions passed as arguments.
    */
   LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, Function... f);
 
@@ -99,80 +185,78 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, int duration, Function... f);
 
   /**
-   * Animate the set of matched elements using the clip property.
-   * It is possible to show or hide a set of elements, 
-   * specify the direction of the animation and the start corner of the effect.
-   * Finally it executes the set of functions passed as arguments.
+   * Animate the set of matched elements using the clip property. It is possible
+   * to show or hide a set of elements, specify the direction of the animation
+   * and the start corner of the effect. Finally it executes the set of
+   * functions passed as arguments.
    */
   LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, Function... f);
 
   /**
    * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the center to the perimeter.
+   * optional callback after completion. The effect goes from the center to the
+   * perimeter.
    */
   LazyEffects<T> clipAppear(Function... f);
 
   /**
    * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the center to the perimeter.
+   * optional callback after completion. The effect goes from the center to the
+   * perimeter.
    */
   LazyEffects<T> clipAppear(int millisecs, Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the perimeter to the center.
+   * Hide all matched elements by adjusting the clip property firing an optional
+   * callback after completion. The effect goes from the perimeter to the
+   * center.
    */
   LazyEffects<T> clipDisappear(Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the perimeter to the center.
+   * Hide all matched elements by adjusting the clip property firing an optional
+   * callback after completion. The effect goes from the perimeter to the
+   * center.
    */
   LazyEffects<T> clipDisappear(int millisecs, Function... f);
 
   /**
    * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the top to the bottom.
+   * optional callback after completion. The effect goes from the top to the
+   * bottom.
    */
   LazyEffects<T> clipDown(Function... f);
 
   /**
    * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the top to the bottom.
+   * optional callback after completion. The effect goes from the top to the
+   * bottom.
    */
   LazyEffects<T> clipDown(int millisecs, Function... f);
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip property
-   * and firing an optional callback after completion.
-   * The effect goes from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip
+   * property and firing an optional callback after completion. The effect goes
+   * from the bottom to the top.
    */
   LazyEffects<T> clipToggle(Function... f);
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip property
-   * and firing an optional callback after completion.
-   * The effect goes from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip
+   * property and firing an optional callback after completion. The effect goes
+   * from the bottom to the top.
    */
   LazyEffects<T> clipToggle(int millisecs, Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip property firing an optional
+   * callback after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipUp(Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an
-   * optional callback after completion.
-   * The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip property firing an optional
+   * callback after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipUp(int millisecs, Function... f);
 
@@ -181,7 +265,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * optional callback after completion. Only the opacity is adjusted for this
    * animation, meaning that all of the matched elements should already have
    * some form of height and width associated with them.
-   */  
+   */
   LazyEffects<T> fadeIn(Function... f);
 
   /**
@@ -198,7 +282,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * the opacity is adjusted for this animation, meaning that all of the matched
    * elements should already have some form of height and width associated with
    * them.
-   */  
+   */
   LazyEffects<T> fadeOut(Function... f);
 
   /**
@@ -207,7 +291,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * the opacity is adjusted for this animation, meaning that all of the matched
    * elements should already have some form of height and width associated with
    * them.
-   */  
+   */
   LazyEffects<T> fadeOut(int millisecs, Function... f);
 
   /**
@@ -259,14 +343,14 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> slideLeft(int millisecs, Function... f);
 
   /**
-   * Reveal all matched elements by adjusting their width and firing an
-   * optional callback after completion.
+   * Reveal all matched elements by adjusting their width and firing an optional
+   * callback after completion.
    */
   LazyEffects<T> slideRight(Function... f);
 
   /**
-   * Reveal all matched elements by adjusting their width and firing an
-   * optional callback after completion.
+   * Reveal all matched elements by adjusting their width and firing an optional
+   * callback after completion.
    */
   LazyEffects<T> slideRight(int millisecs, Function... f);
 

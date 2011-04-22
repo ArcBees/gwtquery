@@ -107,11 +107,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -136,6 +136,15 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
    * </pre>
    * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   * </pre>
+   * 
    * @param p a {@link Properties} object containing css properties to animate.
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -145,12 +154,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> animate(Properties p, int duration, Easing easing, Function... funcs);
 
   /**
+   * 
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
+   * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -182,21 +192,28 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * 
    * The duration of the animation is 500ms.
    * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
+   * </pre>
+   * 
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
-   * @param duration the duration in milliseconds of the animation
    */
   LazyGQuery<T> animate(String prop, Function... funcs);
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property. All animated properties should be numeric, non-numeric cannot
-   * be animated using basic functionality. (For example, width, height, or left
-   * can be animated but background-color cannot be.) Property values are
-   * treated as a number of pixels unless otherwise specified. The units em and
-   * % can be specified where applicable.
+   * CSS property or any color CSS property.
    * 
+   * Concerning numeric property, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
    * 
    * Example:
    * 
@@ -224,6 +241,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *                 }
    *                 
    *              });
+   * </pre>
+   * 
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
    * 
    * 
