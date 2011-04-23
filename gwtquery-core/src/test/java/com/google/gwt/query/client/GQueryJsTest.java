@@ -15,9 +15,12 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -82,5 +85,27 @@ public class GQueryJsTest extends GWTTestCase {
     c.put(-1, "N");
     assertEquals(6, c.length());
     assertEquals("N", c.get(-1));
+  }
+  
+  public void testChrome__gwt_ObjectId() {
+    JsCache a = JsCache.create();
+    assertEquals(0, a.length());
+    assertEquals(0, a.keys().length);
+    assertEquals(0, a.elements().length);
+    
+    a.put("obj", new Long(21));
+    assertEquals(1, a.length());
+    assertEquals(1, a.keys().length);
+    assertEquals(1, a.elements().length);
+    
+    JsNodeArray n = JsNodeArray.create();
+    assertEquals(0, n.getLength());
+    assertEquals(0, n.<JsCache>cast().keys().length);
+    assertEquals(0, n.elements().length);
+    
+    n.addNode($("<hr/>").get(0));
+    assertEquals(1, n.getLength());
+    assertEquals(1, n.<JsCache>cast().keys().length);
+    assertEquals(1, n.elements().length);
   }
 }

@@ -15,10 +15,10 @@
  */
 package com.google.gwt.query.client;
 
-import java.util.ArrayList;
-
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
@@ -44,11 +44,16 @@ public class Properties extends JavaScriptObject {
   }-*/;
 
   public static String wrapPropertiesString(String s) {
-    String ret = "({"
-        + s.replaceFirst("^[({]+", "").replaceFirst("[})]+$", "")
-        .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "")
-        .replaceAll(":\\s*[\"']?([^;,]+)([,;]|$)[\"']?\\s*", ":'$1',")
-        .replaceFirst("[;,]$", "").replaceAll("\\s*[']+\\s*", "'")
+    String ret = "({" + s //
+        .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") //
+        .replaceAll("([:\\)\\(,;}{'\"])\\s+" , "$1") //
+        .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") //
+        .replaceFirst("^[{\\(]+(.+[^}\\)])[}\\)]+$", "$1") //
+        .replaceAll("\\('([^\\)]+)'\\)" , "($1)") //
+        .replaceAll(",([\\w-]+:+)" , ";$1") //
+        .replaceAll(":\\s*[\"']?([^;]+)([;]|$)[\"']?\\s*", ":'$1',") //
+        .replaceFirst("[;,]$", "") //
+        .replaceAll("\\s*[']+\\s*", "'") //
         + "})";
     return ret;
   }
@@ -90,25 +95,8 @@ public class Properties extends JavaScriptObject {
   }-*/;
 
   public final String[] keys() {
-    JsArrayString a = keysImpl();
-    ArrayList<String> list = new ArrayList<String>();
-    for (int i = 0; i < a.length(); i++) {
-      String key = a.get(i).toString();
-      // Chrome in DevMode injects a property to JS objects
-      if (!"__gwt_ObjectId".equals(key)) {
-        list.add(key);
-      }
-    }
-    return list.toArray(new String[list.size()]);
+    return this.<JsCache>cast().keys();
   }
-
-  public final native JsArrayString keysImpl() /*-{
-    var key, keys=[];
-    for(key in this) {
-      keys.push("" + key); 
-    }
-    return keys;
-  }-*/;
 
   public final native void set(String key, Object val) /*-{
     this[key]=val;

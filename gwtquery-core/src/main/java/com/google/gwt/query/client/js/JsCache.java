@@ -1,5 +1,6 @@
 package com.google.gwt.query.client.js;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -93,9 +94,12 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final native int length() /*-{
-    if (this.length) return this.length;
-    var key, ret = 0; 
-    for (key in this) ret ++;
+    if (typeof(this.length) == 'number') 
+     return this.length;
+     
+    var key, ret = 0;
+    // Chrome in DevMode injects a property to JS objects
+    for (key in this) if (key != "__gwt_ObjectId") ret ++;
     return ret; 
   }-*/;
   
@@ -116,7 +120,7 @@ public class JsCache extends JavaScriptObject {
     JsArrayString a = keysImpl();
     String[] ret = new String[a.length()];
     for (int i = 0; i < a.length(); i++) {
-      ret[i] = a.get(i);
+        ret[i] = a.get(i);
     }
     return ret;
   }
@@ -141,7 +145,8 @@ public class JsCache extends JavaScriptObject {
   
   private final native JsArrayString keysImpl() /*-{
     var key, keys=[];
-    for(key in this) keys.push(String(key));
+    // Chrome in DevMode injects a property to JS objects
+    for(key in this) if (key != '__gwt_ObjectId') keys.push(String(key));
     return keys;
   }-*/;
 }
