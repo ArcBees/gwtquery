@@ -15,7 +15,7 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.*;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -107,5 +107,15 @@ public class GQueryJsTest extends GWTTestCase {
     assertEquals(1, n.getLength());
     assertEquals(1, n.<JsCache>cast().keys().length);
     assertEquals(1, n.elements().length);
+  }
+  
+  public void testProperties() {
+    Properties p = $$("b: 'a'; c: 1, /*gg: aadf*/d: url('https://test.com');");
+    assertEquals(3, p.keys().length);
+    assertEquals("url(https://test.com)", p.getStr("d"));
+    
+    p = $$("color: 'rgb(0, 0,139)', background: red");
+    assertEquals(2, p.keys().length);
+    assertEquals("rgb(0,0,139)", p.getStr("color"));
   }
 }

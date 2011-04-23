@@ -44,8 +44,9 @@
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
                     <modules>
-                        <module>gwtquery.samples.JsCollectionVsJavaCollection</module>
                         <module>gwtquery.samples.GwtQueryBench</module>
+<!--
+                        <module>gwtquery.samples.JsCollectionVsJavaCollection</module>
                         <module>gwtquery.samples.GwtQuerySample</module>
                         <module>gwtquery.samples.GwtQueryDemo</module>
                         <module>gwtquery.samples.GwtQueryEffects</module>
@@ -53,6 +54,7 @@
                         <module>gwtquery.samples.GwtQueryImageZoom</module>
                         <module>gwtquery.samples.FadeEffectsSample</module>
                         <module>gwtquery.samples.SlideEffectsSample</module>
+-->
                     </modules>
                 </configuration>
                 <executions>

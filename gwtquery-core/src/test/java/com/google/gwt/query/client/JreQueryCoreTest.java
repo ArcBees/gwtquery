@@ -23,7 +23,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 public class JreQueryCoreTest extends GWTTestCase {
 
   public String getModuleName() {
-    return null;
+    return null; //"com.google.gwt.query.Query";
   }
 
   public void testAssertHtmlEquals() {

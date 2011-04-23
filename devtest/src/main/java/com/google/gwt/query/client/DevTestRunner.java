@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
@@ -52,11 +53,33 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testCompareJquery();
+      testChrome__gwt_ObjectId();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
+  }
+  
+  public void testChrome__gwt_ObjectId() {
+    JsCache a = JsCache.create();
+    assertEquals(0, a.length());
+    assertEquals(0, a.keys().length);
+    assertEquals(0, a.elements().length);
+    
+    a.put("obj", new Long(21));
+    assertEquals(1, a.length());
+    assertEquals(1, a.keys().length);
+    assertEquals(1, a.elements().length);
+    
+    JsNodeArray n = JsNodeArray.create();
+    assertEquals(0, n.getLength());
+    assertEquals(0, n.<JsCache>cast().keys().length);
+    assertEquals(0, n.elements().length);
+    
+    n.addNode($("<hr/>").get(0));
+    assertEquals(1, n.getLength());
+    assertEquals(1, n.<JsCache>cast().keys().length);
+    assertEquals(1, n.elements().length);
   }
   
   public void testJsCache() {

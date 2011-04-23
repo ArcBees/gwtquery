@@ -1,5 +1,6 @@
 <module>
     <inherits name='com.google.gwt.query.Query'/>
     <entry-point class='gwtquery.samples.client.GwtQueryBenchModule'/>
+    <inherits name="com.google.gwt.precompress.Precompress"/>
 </module>
     
