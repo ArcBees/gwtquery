@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.css.BorderColorProperty;
@@ -38,25 +37,23 @@ public class ColorEffect extends Effect {
         CSS.BORDER_BOTTOM_COLOR, CSS.BORDER_TOP_COLOR, CSS.BORDER_LEFT_COLOR,
         CSS.BORDER_RIGHT_COLOR};
     private JsNamedArray<int[]> startColors;
-    
 
     public BorderColorEffect(Element e, String endColorString) {
-      
+
       endColor = parseColor(endColorString);
       startColors = JsNamedArray.create();
-      
+
       GQuery $e = GQuery.$(e);
-      
-      for (BorderColorProperty border : borderColorProperties){
+
+      for (BorderColorProperty border : borderColorProperties) {
         int[] startColor = parseColor($e.css(border, true));
         startColors.put(border.getCssName(), startColor);
       }
     }
-    
-    
+
     @Override
     public void applyValue(GQuery g, double progress) {
-      for (BorderColorProperty border : borderColorProperties){
+      for (BorderColorProperty border : borderColorProperties) {
         startColor = startColors.get(border.getCssName());
         attr = border.getCssName();
         super.applyValue(g, progress);
@@ -124,16 +121,16 @@ public class ColorEffect extends Effect {
 
   protected int[] endColor;
   protected int[] startColor;
-  
+
   ColorEffect(String attr, String startColorString, String endColorString) {
     assert startColorString != null && endColorString != null;
     this.attr = attr;
     startColor = parseColor(startColorString);
     endColor = parseColor(endColorString);
-    GWT.log("startColorString" + startColorString);
-  };
+  }
 
-  private ColorEffect(){}
+  private ColorEffect() {
+  }
 
   @Override
   public void applyValue(GQuery g, double progress) {
@@ -155,7 +152,6 @@ public class ColorEffect extends Effect {
   public int[] getStartColor() {
     return startColor;
   }
- 
 
   protected int[] parseColor(String color) {
     JsObjectArray<String> matches = RGB_COLOR_PATTERN.exec(color);
