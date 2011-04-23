@@ -17,8 +17,6 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
