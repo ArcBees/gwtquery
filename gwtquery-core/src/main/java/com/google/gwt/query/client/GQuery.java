@@ -39,6 +39,8 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -3046,6 +3048,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
 
   }
+  
+  /**
+   * Bind a set of functions to the resize event of each matched element, or
+   * tigger the resize event if no functions are provided.
+   * 
+   * Note that although all elements can be configured to handle resize
+   * events, by default only window will trigger it when it is resized, 
+   * for an arbitrary element you have to trigger the event after resizing 
+   * the object. 
+   * 
+   */
+  public GQuery resize(Function... f) {
+    return bindOrFire(EventsListener.ONRESIZE, null, f);
+  }
 
   /**
    * Save a set of Css properties of every matched element.
@@ -3057,6 +3073,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             null));
       }
     }
+  }
+  
+  /**
+   * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element. 
+   */
+  public void resize(final Function f) {
+    
   }
 
   /**
@@ -3321,8 +3344,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return as(Effects).stop(clearQueue);
   }
 
-  public GQuery submit() {
-    return as(Events).trigger(EventsListener.ONSUBMIT);
+  /**
+   * Bind a set of functions to the submit event of each matched element. 
+   * Or submit a form if no functions are provided.
+   */
+  public GQuery submit(Function... funcs) {
+    return bindOrFire(EventsListener.ONSUBMIT, null, funcs);
   }
 
   /**

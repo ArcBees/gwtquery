@@ -36,6 +36,8 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -1750,9 +1752,26 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> replaceWith(String html);
 
   /**
+   * Bind a set of functions to the resize event of each matched element, or
+   * tigger the resize event if no functions are provided.
+   * 
+   * Note that although all elements can be configured to handle resize
+   * events, by default only window will trigger it when it is resized, 
+   * for an arbitrary element you have to trigger the event after resizing 
+   * the object. 
+   * 
+   */
+  LazyGQuery<T> resize(Function... f);
+
+  /**
    * Save a set of Css properties of every matched element.
    */
   void restoreCssAttrs(String... cssProps);
+
+  /**
+   * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element. 
+   */
+  void resize(Function f);
 
   /**
    * Restore a set of previously saved Css properties in every matched element.
@@ -1897,7 +1916,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    */
   LazyGQuery<T> stop(boolean clearQueue);
 
-  LazyGQuery<T> submit();
+  /**
+   * Bind a set of functions to the submit event of each matched element. 
+   * Or submit a form if no functions are provided.
+   */
+  LazyGQuery<T> submit(Function... funcs);
 
   /**
    * Return the text contained in the first matched element.

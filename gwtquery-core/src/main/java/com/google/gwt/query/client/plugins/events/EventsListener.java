@@ -220,6 +220,8 @@ public class EventsListener implements EventListener {
 
   // Gwt Events class has not this event defined, so we have to select ane available power of 2 
   public static int ONSUBMIT = 0x8000000;
+  public static int ONRESIZE = 0x4000000;
+
 
   public static void clean(Element e) {
     EventsListener ret = getGQueryEventListener(e);
@@ -244,8 +246,8 @@ public class EventsListener implements EventListener {
 		if (elem.__gwtlistener) {
 			elem.__listener = elem.__gwtlistener;
 		}
-		elem.__gquerysubmit = null;
 		elem.__gqueryevent = null
+		elem.__gquery = null;
 
   }-*/;
 
@@ -267,21 +269,22 @@ public class EventsListener implements EventListener {
 		}
   }-*/;
 
-  // Gwt does't handle submit events in DOM.sinkEvents
-  private static native void sinkSubmitEvent(Element elem) /*-{
-		if (elem.__gquerysubmit)
-			return;
-		elem.__gquerysubmit = true;
+  // Gwt does't handle submit nor resize events in DOM.sinkEvents
+  private static native void sinkEvent(Element elem, String name) /*-{
+    if (!elem.__gquery) elem.__gquery = [];
+		if (elem.__gquery[name]) return;
+		elem.__gquery[name] = true;
 
 		var handle = function(event) {
 			elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::dispatchEvent(Lcom/google/gwt/user/client/Event;)(event);
 		};
 
 		if (elem.addEventListener)
-			elem.addEventListener("submit", handle, true);
+			elem.addEventListener(name, handle, true);
 		else
-			elem.attachEvent("onsubmit", handle);
+			elem.attachEvent("on" + name, handle);
   }-*/;
+  
 
   int eventBits = 0;
   double lastEvnt = 0;
@@ -459,7 +462,9 @@ public class EventsListener implements EventListener {
     setGQueryEventListener(element, this);
     DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
     if (eventBits == ONSUBMIT) {
-      sinkSubmitEvent(element);
+      sinkEvent(element, "submit");
+    } else if (eventBits == ONRESIZE) {
+        sinkEvent(element, "resize");
     } else {
       if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS
           && element.getAttribute("tabIndex").length() == 0) {
@@ -478,6 +483,8 @@ public class EventsListener implements EventListener {
       for (String s : parts) {
         if ("submit".equals(s)) {
           ret |= ONSUBMIT;
+        } else if ("resize".equals(s)) {
+            ret |= ONRESIZE;
         } else {
           int event = Event.getTypeInt(s);
           if (event > 0) {
@@ -490,7 +497,7 @@ public class EventsListener implements EventListener {
   }
   
   private int getTypeInt(String eventName) {
-    return "submit".equals(eventName) ? ONSUBMIT : Event.getTypeInt(eventName);
+    return "submit".equals(eventName) ? ONSUBMIT : "resize".equals(eventName) ? ONRESIZE : Event.getTypeInt(eventName);
   }
 
   public void cleanEventDelegation() {

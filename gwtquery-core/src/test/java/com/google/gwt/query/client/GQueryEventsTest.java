@@ -32,6 +32,7 @@ import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -695,6 +696,35 @@ public void testUnDelegateAll2(){
     $(e).append(b);
     b.click();
     assertEquals("red", $(b).css("color"));
+  }
+  
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testResizeWindowEvent() {
+    GQuery w = $(GQuery.window);
+    
+    delayTestFinish(100);
+    w.bind("resize", null, new Function() {
+      public void f(Element e) {
+        finishTest();
+      }
+    });
+    
+    Window.resizeTo(w.width(), w.height() + 100);
+  }
+  
+  public void testResizeEvent() {
+    $(e).html("<div id=ra></div>");
+    GQuery g = $("#ra", e);
+    
+    delayTestFinish(100);
+    g.bind("resize", null, new Function() {
+      public void f(Element e) {
+        finishTest();
+      }
+    });
+    
+    g.width(400);
+    g.resize();
   }
   
   public void testSubmitEvent() {

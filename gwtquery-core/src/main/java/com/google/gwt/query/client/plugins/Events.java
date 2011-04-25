@@ -216,6 +216,8 @@ public class Events extends GQuery {
           0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
     if (eventbits == EventsListener.ONSUBMIT)
       triggerHtmlEvent("submit");
+    if (eventbits == EventsListener.ONRESIZE)
+      triggerHtmlEvent("resize");
     return this;
   }
 
