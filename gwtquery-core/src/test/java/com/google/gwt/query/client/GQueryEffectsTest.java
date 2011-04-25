@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.effects.ColorEffect;
+import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
@@ -97,7 +97,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     timer2.schedule(duration/2);
   }  
 
-  public void disable_testEffectsShouldBeQueued() {
+  public void testEffectsShouldBeQueued() {
     $(e).html("<p id='idtest'>Content 1</p></p>");
 
     final GQuery g = $("#idtest").css("position", "absolute");
@@ -143,7 +143,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     timer4.schedule(duration/2);
   }
   
-  public void disable_testFade() {
+  public void testFade() {
     $(e)
     .html(
         "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
@@ -210,25 +210,25 @@ public class GQueryEffectsTest extends GWTTestCase {
     GQuery g = $("#child");
     Properties prop1;
 
-    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
+    assertEquals("cssprop=marginTop value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
             false).toString());
-    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
+    assertEquals("cssprop=marginLeft value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
             false).toString());
-    assertEquals("attr=top value=50% start=0 end=50 unit=%",
+    assertEquals("cssprop=top value=50% start=0 end=50 unit=%",
         PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
             .toString());
-    assertEquals("attr=left value=50% start=0 end=50 unit=%",
+    assertEquals("cssprop=left value=50% start=0 end=50 unit=%",
         PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
             .toString());
-    assertEquals("attr=width value=174px start=100 end=174 unit=px",
+    assertEquals("cssprop=width value=174px start=100 end=174 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
             .toString());
-    assertEquals("attr=height value=174px start=100 end=174 unit=px",
+    assertEquals("cssprop=height value=174px start=100 end=174 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
             .toString());
-    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
+    assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
 
@@ -237,24 +237,24 @@ public class GQueryEffectsTest extends GWTTestCase {
     an.onStart();
     an.onComplete();
 
-    assertEquals("attr=marginTop value=0 start=-110 end=0 unit=px",
+    assertEquals("cssprop=marginTop value=0 start=-110 end=0 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "0", false)
             .toString());
-    assertEquals("attr=marginLeft value=0 start=-110 end=0 unit=px",
+    assertEquals("cssprop=marginLeft value=0 start=-110 end=0 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "0", false)
             .toString());
-    assertEquals("attr=top value=0% start=50 end=0 unit=%", PropertiesAnimation
+    assertEquals("cssprop=top value=0% start=50 end=0 unit=%", PropertiesAnimation
         .computeFxProp(g.get(0), "top", "0%", false).toString());
-    assertEquals("attr=left value=0% start=50 end=0 unit=%",
+    assertEquals("cssprop=left value=0% start=50 end=0 unit=%",
         PropertiesAnimation.computeFxProp(g.get(0), "left", "0%", false)
             .toString());
-    assertEquals("attr=width value=100px start=174 end=100 unit=px",
+    assertEquals("cssprop=width value=100px start=174 end=100 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "width", "100px", false)
             .toString());
-    assertEquals("attr=height value=100px start=174 end=100 unit=px",
+    assertEquals("cssprop=height value=100px start=174 end=100 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "height", "100px", false)
             .toString());
-    assertEquals("attr=padding value=5px start=20 end=5 unit=px",
+    assertEquals("cssprop=padding value=5px start=20 end=5 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "5px", false)
             .toString());
 
@@ -263,25 +263,25 @@ public class GQueryEffectsTest extends GWTTestCase {
     an.onStart();
     an.onComplete();
 
-    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
+    assertEquals("cssprop=marginTop value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
             false).toString());
-    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
+    assertEquals("cssprop=marginLeft value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
             false).toString());
-    assertEquals("attr=top value=50% start=0 end=50 unit=%",
+    assertEquals("cssprop=top value=50% start=0 end=50 unit=%",
         PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
             .toString());
-    assertEquals("attr=left value=50% start=0 end=50 unit=%",
+    assertEquals("cssprop=left value=50% start=0 end=50 unit=%",
         PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
             .toString());
-    assertEquals("attr=width value=174px start=100 end=174 unit=px",
+    assertEquals("cssprop=width value=174px start=100 end=174 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
             .toString());
-    assertEquals("attr=height value=174px start=100 end=174 unit=px",
+    assertEquals("cssprop=height value=174px start=100 end=174 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
             .toString());
-    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
+    assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
   }
@@ -290,7 +290,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     String html = "<div id='test' style='color: #112233'>Test</div>";
     $(e).html(html);
     
-    ColorEffect effect = (ColorEffect) PropertiesAnimation.computeFxProp($("#test",e).get(0), "color", "#ffffff", false);
+    ColorFx effect = (ColorFx) PropertiesAnimation.computeFxProp($("#test",e).get(0), "color", "#ffffff", false);
     assertEquals(17, effect.getStartColor()[0]); //#11
     assertEquals(34, effect.getStartColor()[1]); //#22
     assertEquals(51, effect.getStartColor()[2]); //#33
@@ -299,17 +299,17 @@ public class GQueryEffectsTest extends GWTTestCase {
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
     
-    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "rgb(255,255,255)", false);
+    effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "rgb(255,255,255)", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
     
-    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "rgb(100%, 100%, 100%)", false);
+    effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "rgb(100%, 100%, 100%)", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
     
-    effect = (ColorEffect) PropertiesAnimation.computeFxProp(e, "color", "white", false);
+    effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "white", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
@@ -331,6 +331,30 @@ public class GQueryEffectsTest extends GWTTestCase {
     msg = "Left has the value " + v + ", but should be in the range: " + a
         + " - " + b;
     assertTrue(msg, c);
+  }
+  
+  public void testAttrEffect() {
+    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A</td><td width=50%>B</td></tr></table>");
+
+    final GQuery g = $("#idtest").css("position", "absolute");
+    final int duration = 500;
+    
+    assertEquals("cssprop=$width attr=width value=+=100 start=440 end=540 unit=", 
+        PropertiesAnimation.computeFxProp(g.get(0), "$width", "+=100", false).toString());
+    
+    delayTestFinish(duration * 3);
+
+    g.as(Effects.Effects).
+        animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
+    
+    final Timer timer = new Timer() {
+      public void run() {
+        assertEquals(540.0, Double.parseDouble(g.attr("width")));
+        assertEquals(5.0, Double.parseDouble(g.attr("border")));
+        finishTest();
+      }
+    };
+    timer.schedule(duration * 2);
   }
   
 }

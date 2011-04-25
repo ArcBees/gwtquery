@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
 
 import java.util.Date;
 
@@ -24,9 +25,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
@@ -53,11 +56,35 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testChrome__gwt_ObjectId();
+      testAttrEffect();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
+  }
+  
+  public void testAttrEffect() {
+    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A</td><td width=50%>B</td></tr></table>");
+
+    final GQuery g = $("#idtest").css("position", "absolute");
+    final int duration = 2000;
+    
+    assertEquals("cssprop=$width attr=width value=+=100 start=440 end=540 unit=", 
+        PropertiesAnimation.computeFxProp(g.get(0), "$width", "+=100", false).toString());
+    
+    delayTestFinish(duration * 3);
+
+    g.as(Effects.Effects).
+        animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
+    
+    final Timer timer = new Timer() {
+      public void run() {
+        assertEquals(540.0, Double.parseDouble(g.attr("width")));
+        assertEquals(5.0, Double.parseDouble(g.attr("border")));
+        finishTest();
+      }
+    };
+    timer.schedule(duration * 2);
   }
   
   public void testChrome__gwt_ObjectId() {

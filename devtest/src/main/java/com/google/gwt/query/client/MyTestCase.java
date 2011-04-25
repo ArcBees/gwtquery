@@ -19,6 +19,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import static com.google.gwt.query.client.GQuery.*;
 
 /**
  * Just a simple class to emulate JUnit TestCase.
@@ -119,5 +120,21 @@ public class MyTestCase {
     testRunning = false;
   }
   
-  
+  protected void assertPosition(GQuery g, Offset min, Offset max) {
+    int a = Math.min(min.top, max.top);
+    int b = Math.max(min.top, max.top);
+    int v = g.offset().top;
+    boolean c = a <= v && v <= b;
+    String msg = "Top has the value " + v + ", but should be in the range: "
+        + a + " - " + b;
+    assertTrue(msg, c);
+
+    a = Math.min(min.left, max.left);
+    b = Math.max(min.left, max.left);
+    v = g.offset().left;
+    c = a <= v && v <= b;
+    msg = "Left has the value " + v + ", but should be in the range: " + a
+        + " - " + b;
+    assertTrue(msg, c);
+  }
 }
