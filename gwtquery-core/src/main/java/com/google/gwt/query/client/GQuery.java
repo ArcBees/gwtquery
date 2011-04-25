@@ -839,7 +839,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attributes include title, alt, src, href, width, style, etc.
    */
   public String attr(String name) {
-    return size() == 0 ? "" : get(0).getAttribute(name);
+    return isEmpty() ? "" : get(0).getAttribute(name);
   }
 
   /**
@@ -1266,7 +1266,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * parameter force=true.
    */
   public String css(String name, boolean force) {
-    return size() == 0 ? "" : styleImpl.curCSS(get(0), name, force);
+    return isEmpty() ? "" : styleImpl.curCSS(get(0), name, force);
   }
 
   /**
@@ -1321,7 +1321,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * When true returns the real computed value.
    */
   public double cur(String prop, boolean force) {
-    return size() == 0 ? 0 : styleImpl.cur(get(0), prop, force);
+    return isEmpty() ? 0 : styleImpl.cur(get(0), prop, force);
   }
 
   /**
@@ -1329,7 +1329,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * value).
    */
   public Object data(String name) {
-    return size() == 0 ? null : data(get(0), name, null);
+    return isEmpty() ? null : data(get(0), name, null);
   }
 
   /**
@@ -1340,7 +1340,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(String name, Class<T> clz) {
-    return size() == 0 ? null : (T) data(get(0), name, null);
+    return isEmpty() ? null : (T) data(get(0), name, null);
   }
 
   /**
@@ -2001,7 +2001,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get the innerHTML of the first matched element.
    */
   public String html() {
-    return size() == 0 ? "" : get(0).getInnerHTML();
+    return isEmpty() ? "" : get(0).getInnerHTML();
   }
 
   /**
@@ -2048,7 +2048,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * but not the vertical scrollbar height, border, or margin.
    */
   public int innerHeight() {
-    return size() == 0 ? 0 : get(0).getClientHeight();
+    return isEmpty() ? 0 : get(0).getClientHeight();
   }
 
   /**
@@ -2056,7 +2056,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * not the vertical scrollbar width, border, or margin.
    */
   public int innerWidth() {
-    return size() == 0 ? 0 : get(0).getClientWidth();
+    return isEmpty() ? 0 : get(0).getClientWidth();
   }
 
   /**
@@ -2128,7 +2128,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * false, if no element fits or the expression is not valid.
    */
   public boolean is(String... filters) {
-    return filter(filters).size() > 0;
+    return !filter(filters).isEmpty();
+  }
+  
+  /**
+   * Returns true if the number of matched elements is 0. 
+   */
+  public boolean isEmpty() {
+    return size() == 0;
   }
 
   /**
@@ -2513,7 +2520,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * relative or absolute). This method only works with visible elements.
    */
   public GQuery offsetParent() {
-    if (size() == 0) {
+    if (isEmpty()) {
       return $();
     }
     Element offParent = JsUtils.or(elements.getItem(0).getOffsetParent(), body);
@@ -2554,7 +2561,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements, including padding, border, and optionally margin.
    */
   public int outerHeight(boolean includeMargin) {
-    if (size() == 0) {
+    if (isEmpty()) {
       return 0;
     }
     // height including padding and border
@@ -2578,7 +2585,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * elements, including padding and border and optionally margin.
    */
   public int outerWidth(boolean includeMargin) {
-    if (size() == 0) {
+    if (isEmpty()) {
       return 0;
     }
     // width including padding and border
@@ -2658,7 +2665,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * and padding. This method only works with visible elements.
    */
   public com.google.gwt.query.client.GQuery.Offset position() {
-    if (size() == 0) {
+    if (isEmpty()) {
       return new Offset(0, 0);
     }
     Element element = get(0);
@@ -3062,7 +3069,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Scrolls the first matched element into view.
    */
   public GQuery scrollIntoView() {
-    if (size() > 0)
+    if (!isEmpty())
       scrollIntoViewImpl(get(0));
     return this;
   }
@@ -3076,7 +3083,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * the minimum amount necessary.
    */
   public GQuery scrollIntoView(boolean ensure) {
-    if (size() > 0 && ensure) {
+    if (!isEmpty() && ensure) {
       DOM.scrollIntoView((com.google.gwt.user.client.Element) get(0));
     } else {
       scrollIntoView();
@@ -3587,7 +3594,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * the array will be empty, otherwise it will contain one or more values.
    */
   public String[] vals() {
-    if (size() > 0) {
+    if (!isEmpty()) {
       Element e = get(0);
       if (e.getNodeName().equalsIgnoreCase("select")) {
         SelectElement se = SelectElement.as(e);
@@ -3634,7 +3641,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.
    */
   public boolean visible() {
-    return size() == 0 ? false : styleImpl.isVisible(get(0));
+    return isEmpty() ? false : styleImpl.isVisible(get(0));
   }
 
   /**
@@ -3792,7 +3799,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * everything else.
    */
   public GQuery wrapAll(GQuery query) {
-    if (size() > 0) {
+    if (!isEmpty()) {
       GQuery wrap = query.clone();
       if (elements.getItem(0).getParentNode() != null) {
         wrap.insertBefore(elements.getItem(0));

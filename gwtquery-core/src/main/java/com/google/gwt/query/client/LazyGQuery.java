@@ -1170,6 +1170,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   boolean is(String... filters);
 
   /**
+   * Returns true if the number of matched elements is 0. 
+   */
+  boolean isEmpty();
+
+  /**
    * Bind a set of functions to the keydown event of each matched element. Or
    * trigger the event if no functions are provided.
    */
