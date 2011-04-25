@@ -107,11 +107,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property or any color CSS property.
+   * Attribute, CSS property, or color CSS property.
    * 
-   * Concerning numeric property, values are treated as a number of pixels
+   * Concerning to numeric properties, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
+   * 
+   * By default animate considers css properties, if you wanted to animate element
+   * attributes you should to prepend the symbol dollar to the attribute name.
    * 
    * Example:
    * 
@@ -119,6 +122,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  //move the element from its original position to the position top:500px and left:500px for 400ms.
    *  //use a swing easing function for the transition
    *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
+   *  // Change the width and border attributes of a table
+   *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
    * </pre>
    * 
    * In addition to numeric values, each property can take the strings 'show',
@@ -156,17 +161,22 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * 
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property or any color CSS property.
+   * Attribute, CSS property, or color CSS property.
    * 
-   * Concerning numeric property, values are treated as a number of pixels
+   * Concerning to numeric properties, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
+   * 
+   * By default animate considers css properties, if you wanted to animate element
+   * attributes you should to prepend the symbol dollar to the attribute name.
    * 
    * Example:
    * 
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'");
+   *  // Change the width attribute of a table
+   *  $("table").animate("$width:'500'"), 400, Easing.LINEAR);
    * </pre>
    * 
    * In addition to numeric values, each property can take the strings 'show',
@@ -209,17 +219,22 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * The animate() method allows you to create animation effects on any numeric
-   * CSS property or any color CSS property.
+   * Attribute, CSS properties, or color CSS property.
    * 
-   * Concerning numeric property, values are treated as a number of pixels
+   * Concerning to numeric property, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
+   * 
+   * By default animate considers css properties, if you wanted to animate element
+   * attributes you should to prepend the symbol dollar to the attribute name.
    * 
    * Example:
    * 
    * <pre class="code">
    *  //move the element from its original position to left:500px for 2s
    *  $("#foo").animate("left:'500px'", 2000);
+   *  // Change the width attribute of a table
+   *  $("table").animate("$width:'500'"), 400);
    * </pre>
    * 
    * In addition to numeric values, each property can take the strings 'show',
@@ -235,12 +250,10 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  //move the element from its original position to 500px to the left for 1000ms and
    *  // change the background color of the element at the end of the animation
    *  $("#foo").animate("left:'+=500'", 1000, new Function(){
-   *                  
-   *                 public void f(Element e){
-   *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
-   *                 }
-   *                 
-   *              });
+   *     public void f(Element e){
+   *       $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
+   *     }
+   *  });
    * </pre>
    * 
    * 
