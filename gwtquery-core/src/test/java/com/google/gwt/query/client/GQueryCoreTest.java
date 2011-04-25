@@ -1310,5 +1310,10 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("div", m.get(5).get(0).toLowerCase());
     assertEquals("i", m.get(0).get(0).toLowerCase());
   }
- 
+  
+  public void testWindowSize() {
+    GQuery w = $(GQuery.window);
+    assertTrue(w.width() > 0);
+    assertTrue(w.height() > 0);
+  }
 }

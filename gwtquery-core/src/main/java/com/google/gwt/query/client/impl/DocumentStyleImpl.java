@@ -16,7 +16,9 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.Window;
 
 /**
  * A helper class to get computed CSS styles for elements.
@@ -48,6 +50,15 @@ public class DocumentStyleImpl {
    * - Otherwise it returns the real computed value.   
    */
   public double cur(Element elem, String prop, boolean force) {
+    if (elem.equals(GQuery.window)) {
+      if ("width".equals(prop)) {
+        return Window.getClientWidth();
+      }
+      if ("height".equals(prop)) {
+        return Window.getClientHeight();
+      }
+      elem = GQuery.body;
+    }
     if (elem.getPropertyString(prop) != null
         && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
       return elem.getPropertyDouble(prop);
