@@ -1320,7 +1320,7 @@ public class GQueryCoreTest extends GWTTestCase {
   
   public void testFunction() {
     $(e).html("<div id=fid>0</div>");
-    GQuery g = $("#fid");
+    GQuery g = $("#fid", e);
     assertEquals("0", g.text());
     
     // EACH
