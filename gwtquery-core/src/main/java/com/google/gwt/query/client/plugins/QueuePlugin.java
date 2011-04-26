@@ -35,7 +35,6 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       public void run() {
         dequeue();
       }
-
     }
 
     private int delay;
@@ -146,7 +145,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
-          ((Function) f).f(elem);
+          ((Function) f).f(elem.<com.google.gwt.dom.client.Element>cast());
         }
       }
     }
@@ -164,7 +163,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       }
       if (q.size() == 1 && func != null) {
         if (func instanceof Function) {
-          ((Function) func).f(elem);
+          ((Function) func).f(elem.<com.google.gwt.dom.client.Element>cast());
         }
       }
       return q;

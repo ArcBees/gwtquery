@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -213,7 +214,7 @@ public class GQueryCoreTest extends GWTTestCase {
     });
     assertHtmlEquals("<p>0</p><p>1</p><p>2</p>", $("p", e));
   }
-
+  
   public void testIFrameManipulation() {
     $(e).html("<iframe name='miframe' id='miframe' src=\"javascript:''\">");
     // FF has to call empty to open and close the document before
@@ -1315,5 +1316,190 @@ public class GQueryCoreTest extends GWTTestCase {
     GQuery w = $(GQuery.window);
     assertTrue(w.width() > 0);
     assertTrue(w.height() > 0);
+  }
+  
+  public void testFunction() {
+    $(e).html("<div id=fid>0</div>");
+    GQuery g = $("#fid");
+    assertEquals("0", g.text());
+    
+    // EACH
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.user.client.Element e) {
+        $(e).text("U");
+      }
+    });
+    assertEquals("U", g.text());
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.dom.client.Element e) {
+        $(e).text("D");
+      }
+    });
+    assertEquals("D", g.text());
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.user.client.Element e, int idx) {
+        $(e).text("U" + idx);
+        return "";
+      }
+    });
+    assertEquals("U0", g.text());
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.user.client.Element e, int idx) {
+        $(e).text("D" + idx);
+        return "";
+      }
+    });
+    assertEquals("D0", g.text());
+    
+    // EVENTS
+    g.unbind(Event.ONCLICK).click(new Function(){
+      @Override
+      public void f(com.google.gwt.user.client.Element e) {
+        $(e).text("U");
+      }
+    }).click();
+    assertEquals("U", g.text());
+    g.unbind(Event.ONCLICK).click(new Function(){
+      @Override
+      public void f(com.google.gwt.dom.client.Element e) {
+        $(e).text("D");
+      }
+    }).click();
+    assertEquals("D", g.text());
+    g.unbind(Event.ONCLICK).click(new Function(){
+      @Override
+      public boolean f(Event e) {
+        $(e).text("E");
+        return false;
+      }
+    }).click();
+    assertEquals("E", g.text());
+    g.unbind(Event.ONCLICK).bind(Event.ONCLICK, "D", new Function(){
+      @Override
+      public boolean f(Event e, Object o) {
+        $(e).text("E" + o);
+        return false;
+      }
+    }).click();
+    assertEquals("ED", g.text());
+    
+    // ELEMENTS AND WIDGETS
+    Label label = new Label("1");
+    RootPanel.get().add(label);
+    g = g.add($(label));
+    assertEquals(2, g.size());
+    
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.user.client.Element e) {
+        $(e).text("U");
+      }
+    });
+    assertEquals("UU", g.text());
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.dom.client.Element e) {
+        $(e).text("D");
+      }
+    });
+    assertEquals("DD", g.text());
+    
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.user.client.Element e) {
+        $(e).text("U");
+      }
+      @Override
+      public void f(Widget w) {
+        $(w).text("W");
+      }
+    });
+    assertEquals("UW", g.text());
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.dom.client.Element e) {
+        $(e).text("D");
+      }
+      @Override
+      public void f(Widget w) {
+        $(w).text("W");
+      }
+    });
+    assertEquals("DW", g.text());
+    
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.user.client.Element e, int idx) {
+        $(e).text("U" + idx);
+        return "";
+      }
+    });
+    assertEquals("U0U1", g.text());
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.user.client.Element e, int idx) {
+        $(e).text("D" + idx);
+        return "";
+      }
+    });
+    assertEquals("D0D1", g.text());
+
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.user.client.Element e, int idx) {
+        $(e).text("U" + idx);
+        return "";
+      }
+      @Override
+      public Object f(Widget w, int idx) {
+        $(w).text("W" + idx);
+        return "";
+      }
+    });
+    assertEquals("U0U1", g.text());
+    g.each(new Function() {
+      @Override
+      public Object f(com.google.gwt.dom.client.Element e, int idx) {
+        $(e).text("D" + idx);
+        return "";
+      }
+      @Override
+      public Object f(Widget w, int idx) {
+        $(w).text("W" + idx);
+        return "";
+      }
+    });
+    assertEquals("D0D1", g.text());
+
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.user.client.Element e) {
+        $(e).text("U");
+      }
+      @Override
+      public Object f(Widget w, int idx) {
+        $(w).text("W" + idx);
+        return "";
+      }
+    });
+    assertEquals("UW1", g.text());
+    g.each(new Function() {
+      @Override
+      public void f(com.google.gwt.dom.client.Element e) {
+        $(e).text("D");
+      }
+      @Override
+      public Object f(Widget w, int idx) {
+        $(w).text("W" + idx);
+        return "";
+      }
+    });
+    assertEquals("DW1", g.text());
+
+    label.removeFromParent();
   }
 }

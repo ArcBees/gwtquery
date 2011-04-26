@@ -39,8 +39,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -863,7 +861,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(String key, Function closure) {
     for (int i = 0; i < elements.getLength(); i++) {
       Element e = elements.getItem(i);
-      e.setAttribute(key, String.valueOf(closure.f(e, i)));
+      Object val = closure.f(e.<com.google.gwt.dom.client.Element>cast(), i);
+      if (val != null) {
+        e.setAttribute(key, String.valueOf(val));
+      }
     }
     return this;
   }
@@ -1680,7 +1681,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (f != null) {
       for (Function f1 : f) {
         for (int i = 0; i < elements.getLength(); i++) {
-          f1.f(elements.getItem(i), i);
+          f1.f(elements.getItem(i).<com.google.gwt.dom.client.Element>cast(), i);
         }
       }
     }
@@ -2372,7 +2373,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     ArrayList<W> ret = new ArrayList<W>();
     for (int i = 0; i < elements().length; i++) {
       @SuppressWarnings("unchecked")
-      W o = (W)f.f(elements()[i], i);
+      W o = (W)f.f(elements()[i].<com.google.gwt.dom.client.Element>cast(), i);
       if (o != null) {
         ret.add(o);
       }
@@ -3046,7 +3047,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       $(el).remove();
     }
     return this;
-
   }
   
   /**

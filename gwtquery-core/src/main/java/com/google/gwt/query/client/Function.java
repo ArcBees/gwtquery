@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,21 +26,21 @@ public abstract class Function {
   /**
    * Override this for methods which invoke a cancel action.
    * 
-   * @param e takes a com.google.gwt.user.client.Element.
+   * @param e takes a com.google.gwt.dom.client.Element.
    * 
    */
-  public void cancel(Element e) {
+  public void cancel(com.google.gwt.dom.client.Element e) {
    // This has to be the order of calls
-    cancel(e.<com.google.gwt.dom.client.Element>cast());
+    cancel(e.<com.google.gwt.user.client.Element>cast());
   }
 
   /**
    * Override this for methods which invoke a cancel action.
    * 
-   * @param e takes a com.google.gwt.dom.client.Element.
+   * @param e takes a com.google.gwt.user.client.Element.
    * 
    */
-  public void cancel(com.google.gwt.dom.client.Element e) {
+  public void cancel(com.google.gwt.user.client.Element e) {
   }
 
   /**
@@ -56,27 +55,27 @@ public abstract class Function {
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
    * 
-   * @param e takes a com.google.gwt.user.client.Element.
+   * @param e takes a com.google.gwt.dom.client.Element.
    * 
    */
-  public Object f(Element e, int i) {
+  public Object f(com.google.gwt.dom.client.Element e, int i) {
     // This has to be the order of calls
-    return f(e.<com.google.gwt.dom.client.Element>cast(), i); 
+    return f(e.<com.google.gwt.user.client.Element>cast(), i); 
   }
 
   /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
    * 
-   * @param e takes a com.google.gwt.dom.client.Element.
+   * @param e takes a com.google.gwt.user.client.Element.
    * 
    */
-  public Object f(com.google.gwt.dom.client.Element e, int i) {
+  public Object f(com.google.gwt.user.client.Element e, int i) {
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
       f(w, i);
     } else {
-      f(e);
+      f(e.<com.google.gwt.dom.client.Element>cast());
     }
     return null;
   }
@@ -90,7 +89,7 @@ public abstract class Function {
    *  avoid a runtime exception. 
    */
   public Object f(Widget w, int i) {
-    f(w.getElement());//f(w) will be called later in f(Element)
+    f(w);
     return null;
   }
   
@@ -106,19 +105,8 @@ public abstract class Function {
    * Override this method for bound event handlers.
    */
   public boolean f(Event e) {
-    f((Element)e.getCurrentEventTarget().cast());
+    f(e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast());
     return true;
-  }
-  
-  /**
-   * Override this for GQuery methods which take a callback and do not expect a
-   * return value.
-   * 
-   * @param e takes a com.google.gwt.user.client.Element
-   */
-  public void f(Element e) {
-   // This has to be the order of calls
-    f(e.<com.google.gwt.dom.client.Element>cast());
   }
   
   /**
@@ -128,10 +116,23 @@ public abstract class Function {
    * @param e takes a com.google.gwt.dom.client.Element
    */
   public void f(com.google.gwt.dom.client.Element e) {
+   // This has to be the order of calls
+    f(e.<com.google.gwt.user.client.Element>cast());
+  }
+  
+  /**
+   * Override this for GQuery methods which take a callback and do not expect a
+   * return value.
+   * 
+   * @param e takes a com.google.gwt.user.client.Element
+   */
+  private boolean loop = false;
+  public void f(com.google.gwt.user.client.Element e) {
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
+      loop = true;
       f(w);
-    }else{
+    } else {
       f();
     }
   }
@@ -145,8 +146,12 @@ public abstract class Function {
    *  avoid a runtime exception. 
    */
   public void f(Widget w){
-    // Do not call f(e) here to avoid loop
-    f();
+    if (loop) {
+      loop = false;
+      f();
+    } else {
+      f(w.getElement().<com.google.gwt.dom.client.Element>cast());
+    }
   }
 
 }

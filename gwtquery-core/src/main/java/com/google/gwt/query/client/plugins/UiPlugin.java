@@ -161,7 +161,7 @@ public class UiPlugin extends GQuery {
       handlerManager.fireEvent(e);
     }
     if (callback != null) {
-      callback.f(element);
+      callback.f(element.<com.google.gwt.dom.client.Element>cast());
     }
   }
 
