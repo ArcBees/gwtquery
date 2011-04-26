@@ -98,7 +98,7 @@ public class GQueryWidgetsTest extends GWTTestCase {
       }
       public void f(Widget w) {
         if (w instanceof Label) {
-          assertEquals(label2, $(e).text());
+          assertEquals(label2, $(w).text());
         }
       }
     });
