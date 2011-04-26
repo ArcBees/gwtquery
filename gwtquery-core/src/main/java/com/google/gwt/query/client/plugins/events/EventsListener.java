@@ -259,20 +259,17 @@ public class EventsListener implements EventListener {
 		return elem.__gwtlistener;
   }-*/;
 
-  private static native void setGQueryEventListener(Element elem,
-      EventsListener gqevent) /*-{
-		if (elem.__gqueryevent) {
-			elem.__listener = elem.__gqueryevent;
-		} else {
-			elem.__gwtlistener = elem.__listener;
-			elem.__gqueryevent = gqevent;
-		}
+  private static native void init(Element elem, EventsListener gqevent)/*-{
+		elem.__gwtlistener = elem.__listener;
+		elem.__gqueryevent = gqevent;
   }-*/;
-
+  
   // Gwt does't handle submit nor resize events in DOM.sinkEvents
   private static native void sinkEvent(Element elem, String name) /*-{
-    if (!elem.__gquery) elem.__gquery = [];
-		if (elem.__gquery[name]) return;
+		if (!elem.__gquery)
+			elem.__gquery = [];
+		if (elem.__gquery[name])
+			return;
 		elem.__gquery[name] = true;
 
 		var handle = function(event) {
@@ -299,6 +296,7 @@ public class EventsListener implements EventListener {
 
   private EventsListener(Element element) {
     this.element = element;
+    init(element, this);
   }
 
   public void bind(int eventbits, final Object data, Function... funcs) {
@@ -459,7 +457,7 @@ public class EventsListener implements EventListener {
   }
 
   private void sink() {
-    setGQueryEventListener(element, this);
+    //ensure that the gwtQuery's event listener is set as event listener of the element
     DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
     if (eventBits == ONSUBMIT) {
       sinkEvent(element, "submit");
