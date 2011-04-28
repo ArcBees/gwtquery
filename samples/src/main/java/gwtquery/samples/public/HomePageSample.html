@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<title>GQuery</title>
+<script language="javascript" src="HomePageSample.nocache.js"></script>
+<style type="text/css">
+.reset {
+    float: left;
+}
+
+.foo {
+    border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<p>Java Code :</p>
+<pre>
+  public void onModuleLoad() {
+    //Hide the text and set the width and append an h1 element
+    $("#text").hide().css(CSS.WIDTH.with(Length.px(400))).prepend("<h1>GwtQuery Rocks !</h1>");
+    
+    //add a click handler on the button
+    $("button").click(new Function(){
+      
+      public void f() {
+        $("#text").as(Effects)
+            .clipDown()
+            .animate("backgroundColor: 'yellow'", 500)
+            .delay(1000)
+            .animate("backgroundColor: '#fff'", 1500);
+      }
+    
+    });
+  }
+</pre>
+<button>Click Me</button>
+<div id="text">Lorem ipsum dolor sit amet, consectetur adipiscing
+elit. Maecenas ac ultricies lorem. Integer erat nibh, semper eget
+tincidunt non, egestas ac augue. Aliquam dapibus pharetra rhoncus.
+Integer adipiscing mauris ullamcorper mauris dictum eu luctus tortor
+consequat. Nam quis tortor diam, laoreet aliquam enim. Vivamus turpis
+arcu, varius eu consectetur vitae, luctus ut sapien. Donec vel sem
+metus, ac mattis est. Nulla facilisi. Etiam pharetra tortor aliquam eros
+sagittis sit amet dignissim diam pellentesque. Vivamus lobortis varius
+leo, eu pharetra sapien rhoncus vitae. Aliquam fermentum nulla et elit
+vestibulum et sagittis leo faucibus. Etiam gravida felis a sapien luctus
+tincidunt. Quisque non purus ut massa ultrices scelerisque. Donec vel
+risus est, quis tempus est. Integer commodo feugiat ornare. Pellentesque
+pretium eleifend dui sit amet accumsan. Mauris vulputate rhoncus turpis
+vitae scelerisque. Nulla lobortis, nulla ut porttitor condimentum, lacus
+ligula scelerisque tortor, et eleifend arcu risus non massa.</div>
+</body>
+</html>

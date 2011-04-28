@@ -1,0 +1,7 @@
+<module  rename-to='HomePageSample'>
+	<inherits name='com.google.gwt.query.Query' />
+	<entry-point
+		class="gwtquery.samples.client.HomePageSample">
+	</entry-point>
+</module>
+
