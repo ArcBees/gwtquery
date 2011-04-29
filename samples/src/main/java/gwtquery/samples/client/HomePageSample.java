@@ -34,9 +34,10 @@ public class HomePageSample implements EntryPoint {
     $("button").click(new Function(){
       
       public void f() {
+        //display the text with effects and animate its background color
         $("#text").as(Effects)
-            .clipDown()
-            .animate("backgroundColor: 'yellow'", 500)
+            .clipDown(1000)
+            .animate("backgroundColor: 'yellow'", 1000)
             .delay(1000)
             .animate("backgroundColor: '#fff'", 1500);
       }
