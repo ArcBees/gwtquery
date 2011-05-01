@@ -15,8 +15,8 @@ import com.google.gwt.user.client.Event;
  * 
  * 
  * 
- * TOBEFIXED : the method preventDefault() must be called directly on the
- * original event
+ * Be Careful : the methods preventDefault() and stopPropagation must be called directly on the
+ * original event.
  * 
  * 
  */
