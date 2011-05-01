@@ -1009,22 +1009,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return bindOrFire(Event.ONCLICK, null, f);
   }
 
-  /**
-   * @deprecated use innerHeight()
-   */
-  @Deprecated
-  public int clientHeight() {
-    return innerHeight();
-  }
-
-  /**
-   * @deprecated use innerWidth()
-   */
-  @Deprecated
-  public int clientWidth() {
-    return innerWidth();
-  }
-
+  
   /**
    * Clone matched DOM Elements and select the clones. This is useful for moving
    * copies of the elements to another location in the DOM.
@@ -1303,16 +1288,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  /**
-   * Set CSS a single style property on every matched element using type-safe
-   * enumerations.
-   * 
-   * @deprecated use {@link #css(CssSetter)}
-   */
-  @Deprecated
-  public <S, T extends TakesCssValue<S>> GQuery css(T cssProperty, S value) {
-    return css(cssProperty.with(value));
-  }
 
   /**
    * Set CSS a single style property on every matched element using type-safe
