@@ -20,6 +20,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.events.GqEvent;
+import com.google.gwt.user.client.Event;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
@@ -27,7 +29,7 @@ import com.google.gwt.query.client.GQuery;
  */
 public abstract class MousePlugin extends UiPlugin {
 
-  private Event mouseDownEvent;
+  private GqEvent mouseDownEvent;
   private boolean mouseStarted = false;
   private Duration mouseUpDuration;
   private MouseOptions options;
@@ -38,7 +40,7 @@ public abstract class MousePlugin extends UiPlugin {
   }
 
   protected void destroyMouseHandler() {
-    as(Events.Events)
+    as(Events)
         .unbind(Event.ONMOUSEDOWN | Event.ONCLICK, getPluginName());
   }
 
@@ -58,18 +60,18 @@ public abstract class MousePlugin extends UiPlugin {
 
     for (final Element e : elements()) {
 
-      $(e).as(Events.Events).bind(Event.ONMOUSEDOWN, getPluginName(),
+      $(e).as(Events).bind(Event.ONMOUSEDOWN, getPluginName(),
           (Object) null, new Function() {
             @Override
             public boolean f(com.google.gwt.user.client.Event event) {
-              return mouseDown(e, (Event)Event.create(event));
+              return mouseDown(e, GqEvent.create(event));
 
             }
           }).bind(Event.ONCLICK, getPluginName(), (Object) null,
           new Function() {
             @Override
             public boolean f(com.google.gwt.user.client.Event event) {
-              preventClickEvent |= !mouseClick(e, (Event)Event.create(event));
+              preventClickEvent |= !mouseClick(e, GqEvent.create(event));
 
               if (preventClickEvent) {
 
@@ -90,7 +92,7 @@ public abstract class MousePlugin extends UiPlugin {
    * Test if the mouse down event must be handled by the plugin or not.
    * 
    */
-  protected boolean mouseCapture(Element draggable, Event event) {
+  protected boolean mouseCapture(Element draggable, GqEvent event) {
     return true;
   }
 
@@ -98,7 +100,7 @@ public abstract class MousePlugin extends UiPlugin {
    * Method called when mouse click
    * 
    */
-  protected boolean mouseClick(Element element, Event event) {
+  protected boolean mouseClick(Element element, GqEvent event) {
     return true;
   }
 
@@ -106,10 +108,10 @@ public abstract class MousePlugin extends UiPlugin {
    * Method called when mouse down occur on the element.
    * 
    * You should not override this method. Instead, override
-   * {@link #mouseStart(Element, Event)} method
+   * {@link #mouseStart(Element, GqEvent)} method
    * 
    */
-  protected boolean mouseDown(Element element, Event event) {
+  protected boolean mouseDown(Element element, GqEvent event) {
 
     // test if an other plugin handle the mouseStart
     if (isEventAlreadyHandled(event)) {
@@ -147,16 +149,16 @@ public abstract class MousePlugin extends UiPlugin {
    * Method called when the mouse is dragging
    * 
    */
-  protected abstract boolean mouseDrag(Element element, Event event);
+  protected abstract boolean mouseDrag(Element element, GqEvent event);
 
   /**
    * Method called on MouseMove event.
    * 
    * You should not override this method. Instead, override
-   * {@link #mouseMove(Element, Event)} method
+   * {@link #mouseMove(Element, GqEvent)} method
    * 
    */
-  protected boolean mouseMove(Element element, Event event) {
+  protected boolean mouseMove(Element element, GqEvent event) {
     if (mouseStarted) {
       event.getOriginalEvent().preventDefault();
       return mouseDrag(element, event);
@@ -179,22 +181,22 @@ public abstract class MousePlugin extends UiPlugin {
    * plugin are met.
    * 
    */
-  protected abstract boolean mouseStart(Element element, Event event);
+  protected abstract boolean mouseStart(Element element, GqEvent event);
 
   /**
    * Method called when the mouse button is released
    * 
    */
-  protected abstract boolean mouseStop(Element element, Event event);
+  protected abstract boolean mouseStop(Element element, GqEvent event);
 
   /**
    * Method called when mouse is released..
    * 
    * You should not override this method. Instead, override
-   * {@link #mouseStop(Element, Event)} method
+   * {@link #mouseStop(Element, GqEvent)} method
    * 
    */
-  protected boolean mouseUp(Element element, Event event) {
+  protected boolean mouseUp(Element element, GqEvent event) {
     unbindOtherMouseEvent();
     if (mouseStarted) {
       mouseStarted = false;
@@ -208,18 +210,18 @@ public abstract class MousePlugin extends UiPlugin {
 
   private void bindOtherMouseEvent(final Element element) {
 
-    $(document).as(Events.Events).bind(Event.ONMOUSEMOVE, getPluginName(),
+    $(document).as(Events).bind(Event.ONMOUSEMOVE, getPluginName(),
         (Object) null, new Function() {
           @Override
           public boolean f(com.google.gwt.user.client.Event e) {
-            mouseMove(element, (Event) Event.create(e));
+            mouseMove(element, (GqEvent) GqEvent.create(e));
             return false;
           }
         }).bind(Event.ONMOUSEUP, getPluginName(), (Object) null,
         new Function() {
           @Override
           public boolean f(com.google.gwt.user.client.Event e) {
-            mouseUp(element, (Event) Event.create(e));
+            mouseUp(element, (GqEvent) GqEvent.create(e));
             return false;
           }
         });
@@ -234,7 +236,7 @@ public abstract class MousePlugin extends UiPlugin {
     return options.getDelay() <= mouseUpDuration.elapsedMillis();
   }
 
-  private boolean distanceConditionMet(Event event) {
+  private boolean distanceConditionMet(GqEvent event) {
     int neededDistance = options.getDistance();
     int mouseDownX = mouseDownEvent.getClientX();
     int mouseDownY = mouseDownEvent.getClientY();
@@ -249,16 +251,16 @@ public abstract class MousePlugin extends UiPlugin {
     return mouseDistance >= neededDistance;
   }
 
-  private native boolean isEventAlreadyHandled(Event event)/*-{
+  private native boolean isEventAlreadyHandled(GqEvent event)/*-{
     var result = event.mouseHandled ? event.mouseHandled : false;
     return result;
   }-*/;
 
-  private native void markEventAsHandled(Event event)/*-{
+  private native void markEventAsHandled(GqEvent event)/*-{
     event.mouseHandled = true;
   }-*/;
 
-  private boolean notHandleMouseDown(Element element, Event mouseDownEvent) {
+  private boolean notHandleMouseDown(Element element, GqEvent mouseDownEvent) {
     boolean isNotBoutonLeft = mouseDownEvent.getButton() != NativeEvent.BUTTON_LEFT;
     Element eventTarget = mouseDownEvent.getEventTarget().cast();
 
@@ -273,13 +275,13 @@ public abstract class MousePlugin extends UiPlugin {
 
   }
 
-  private void reset(Event mouseDownEvent) {
+  private void reset(GqEvent mouseDownEvent) {
     this.mouseDownEvent = mouseDownEvent;
     this.mouseUpDuration = new Duration();
   }
 
   private void unbindOtherMouseEvent() {
-    $(document).as(Events.Events).unbind((Event.ONMOUSEUP | Event.ONMOUSEMOVE),
+    $(document).as(Events).unbind((Event.ONMOUSEUP | Event.ONMOUSEMOVE),
         getPluginName());
   }
 

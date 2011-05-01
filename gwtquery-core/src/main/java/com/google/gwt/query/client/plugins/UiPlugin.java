@@ -63,17 +63,6 @@ public class UiPlugin extends GQuery {
     }
   }
 
-  /**
-   * 
-   *
-   * @deprecated use {@link com.google.gwt.query.client.plugins.events.Event} instead 
-   */
-  public static class Event extends com.google.gwt.query.client.plugins.events.Event {
-    protected Event() {
-    }
-  }
-  
-
   private static class GQueryUiImpl {
 
     public GQuery scrollParent(final UiPlugin gQueryUi) {

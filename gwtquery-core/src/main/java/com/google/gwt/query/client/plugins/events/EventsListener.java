@@ -141,7 +141,7 @@ public class EventsListener implements EventListener {
 
       boolean result = true;
 
-      com.google.gwt.query.client.plugins.events.Event gqEvent = com.google.gwt.query.client.plugins.events.Event.create(event);
+      GqEvent gqEvent = GqEvent.create(event);
 
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
@@ -218,10 +218,8 @@ public class EventsListener implements EventListener {
 
   }
 
-  // Gwt Events class has not this event defined, so we have to select ane available power of 2 
-  public static int ONSUBMIT = 0x8000000;
-  public static int ONRESIZE = 0x4000000;
-
+  public static int ONSUBMIT = GqEvent.ONSUBMIT;
+  public static int ONRESIZE = GqEvent.ONRESIZE;
 
   public static void clean(Element e) {
     EventsListener ret = getGQueryEventListener(e);

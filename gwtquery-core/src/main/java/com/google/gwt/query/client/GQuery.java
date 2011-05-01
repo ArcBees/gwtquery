@@ -15,13 +15,10 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.plugins.Effects.Effects;
-import static com.google.gwt.query.client.plugins.Events.Events;
-import static com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -51,7 +48,10 @@ import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.SimpleNamedQueue;
+import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -101,6 +101,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * A static reference to the GQuery class.
    */
   public static Class<GQuery> GQUERY = GQuery.class;
+
+  /**
+   * Static references to GQuery core plugins
+   */
+  public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
+  public static Class<Events> Events = com.google.gwt.query.client.plugins.Events.Events;
+  public static Class<Widgets> Widgets = com.google.gwt.query.client.plugins.Widgets.Widgets;
+  public static Class<SimpleNamedQueue> SimpleNamedQueue = com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
 
   /**
    * The window object.

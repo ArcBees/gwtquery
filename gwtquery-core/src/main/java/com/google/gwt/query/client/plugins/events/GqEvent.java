@@ -2,6 +2,7 @@ package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.Event;
 
 /**
  * This object allows you to have a full copy of the original Event and
@@ -19,38 +20,41 @@ import com.google.gwt.query.client.GQuery;
  * 
  * 
  */
-public class Event extends com.google.gwt.user.client.Event {
+public class GqEvent extends Event {
 
+  // Gwt Events class has not this event defined, 
+  // so we have to select one power of 2 which is unused in Event class 
+  public static int ONSUBMIT = 0x8000000;
+  public static int ONRESIZE = 0x4000000;
   
   /**
-   * Create a new {@link Event} by copying the <code>originalEvent</code>.
+   * Create a new {@link GqEvent} by copying the <code>originalEvent</code>.
    */
-  public static Event create(com.google.gwt.user.client.Event originalEvent) {
-    Event gQueryEvent = createObject().cast();
+  public static GqEvent create(Event originalEvent) {
+    GqEvent gQueryEvent = createObject().cast();
     copy(originalEvent, gQueryEvent);
     return gQueryEvent;
   }
 
   private static native void copy(
-      com.google.gwt.user.client.Event originalEvent, Event gQueryEvent) /*-{
+      Event originalEvent, GqEvent gQueryEvent) /*-{
 		for ( var field in originalEvent) {
 			gQueryEvent[field] = originalEvent[field];
 		}
 		gQueryEvent.originalEvent = originalEvent;
   }-*/;
 
-  protected Event() {
+  protected GqEvent() {
   }
 
   /**
    * Return the original event (the one created by the browser)
    */
-  public final native com.google.gwt.user.client.Event getOriginalEvent()/*-{
+  public final native Event getOriginalEvent()/*-{
 		return this.originalEvent;
   }-*/;
   
   public final native void setCurrentElementTarget(Element e)/*-{
-    
     this.currentTarget = e;
     
     //ie don't have a currentEventTarget field on event
@@ -82,7 +86,5 @@ public class Event extends com.google.gwt.user.client.Event {
   public final int pageY() {
     return getClientY() + GQuery.document.getScrollTop();
   }
- 
-  
 
 }
