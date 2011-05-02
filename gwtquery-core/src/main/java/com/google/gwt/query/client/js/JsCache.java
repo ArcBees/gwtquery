@@ -53,6 +53,22 @@ public class JsCache extends JavaScriptObject {
   public final JsCache getCache(int id) {
     return (JsCache)get(id);
   }
+  
+  public final native boolean getBoolean(int id) /*-{
+    return !!this[id];
+  }-*/;
+
+  public final native boolean getBoolean(String id) /*-{
+    return !!this[id];
+  }-*/;
+
+  public final native float getFloat(int id) /*-{
+    return this[id] || 0;
+  }-*/;
+
+  public final native float getFloat(String id) /*-{
+    return this[id] || 0;
+  }-*/;
 
   public final native double getDouble(int id) /*-{
     return this[id] || 0;
@@ -61,7 +77,7 @@ public class JsCache extends JavaScriptObject {
   public final native double getDouble(String id) /*-{
     return this[id] || 0;
   }-*/;
-
+  
   public final native int getInt(int id) /*-{
     return this[id] || 0;
   }-*/;
@@ -71,11 +87,11 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   public final native String getString(int id) /*-{
-    return this[id];
+    return this[id] == null ? null : String(this[id]);
   }-*/;
 
   public final native String getString(String id) /*-{
-    return this[id] || null;
+    return this[id] == null ? null : String(this[id]);
   }-*/;
 
   public final native boolean isEmpty() /*-{

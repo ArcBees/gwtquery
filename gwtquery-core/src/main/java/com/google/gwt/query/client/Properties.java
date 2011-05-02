@@ -23,35 +23,36 @@ import com.google.gwt.query.client.js.JsCache;
  */
 public class Properties extends JavaScriptObject {
   
+  public static Properties create() {
+    return (Properties) createImpl("({})");
+  }
+  
   public static Properties create(String properties) {
     String p = wrapPropertiesString(properties);
     try {
       return (Properties) createImpl(p);
     } catch (Exception e) {
-      System.err.println("Error creating Properties: \n" + properties  + "\n" + p + "\n" + e.getMessage());
-      return (Properties) createImpl("({})");
+      System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
+      return create();
     }
-  }
-  
-  public static Properties create() {
-    return (Properties) createImpl("({})");
   }
 
   public static final native JavaScriptObject createImpl(String properties) /*-{
-     return eval(properties);
+    return eval(properties);
   }-*/;
 
   public static String wrapPropertiesString(String s) {
     String ret = "({" + s //
-        .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") //
-        .replaceAll("([:\\)\\(,;}{'\"])\\s+" , "$1") //
-        .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") //
-        .replaceFirst("^[{\\(]+(.+[^}\\)])[}\\)]+$", "$1") //
-        .replaceAll("\\('([^\\)]+)'\\)" , "($1)") //
-        .replaceAll(",([\\w-]+:+)" , ";$1") //
-        .replaceAll(":\\s*[\"']?([^;]+)([;]|$)[\"']?\\s*", ":'$1',") //
-        .replaceFirst("[;,]$", "") //
-        .replaceAll("\\s*[']+\\s*", "'") //
+        .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") // Remove comments
+        .replaceAll("([:\\)\\(,;}{'\"])\\s+" , "$1") // Remove spaces
+        .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") // Remove spaces
+        .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
+        .replaceAll("\\('([^\\)]+)'\\)" , "($1)") // Remove quotes
+        .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
+        .replaceAll(":\\s*[\"']?([^;]+)([;]+|$)[\"']?\\s*", ":'$1',") // put quotes
+        .replaceAll(":'(-?[\\d\\.]+|null|false|true)',", ":$1,") // numbers do not need quote
+        .replaceFirst("[;,]$", "") // remove endings 
+        .replaceAll("\\s*[']+\\s*", "'") // remove duplicates
         + "})";
     return ret;
   }
@@ -64,6 +65,10 @@ public class Properties extends JavaScriptObject {
     return this;
   }
 
+  private JsCache c() {
+    return this.<JsCache>cast();
+  }
+
   public final native Properties cloneProps() /*-{
     var props = {};
     for(p in this) {
@@ -72,33 +77,41 @@ public class Properties extends JavaScriptObject {
     return props;
   }-*/;
 
-  public final native boolean defined(String name) /*-{
-    return this[name] != undefined;  
-  }-*/;
-
-  public final native <T> T get(String name) /*-{
-    return this[name];
-  }-*/;
-
-  public final native String getStr(String name) /*-{
-    return String(this[name]);
-  }-*/;
-
-  public final native float getFloat(String name) /*-{
-    return this[name];
-  }-*/;
-
-  public final native int getInt(String name) /*-{
-    return this[name];
-  }-*/;
-
-  public final String[] keys() {
-    return this.<JsCache>cast().keys();
+  public final boolean defined(Object name) {
+    return c().exists(String.valueOf(name));
   }
 
-  public final native void set(String key, Object val) /*-{
-    this[key]=val;
-  }-*/;
+  public final <T> T get(Object name) {
+    return c().get(String.valueOf(name));
+  }
+
+  public final boolean getBoolean(Object name) {
+    return c().getBoolean(String.valueOf(name));
+  }
+
+  public final float getFloat(Object name) {
+    return c().getFloat(String.valueOf(name));
+  }
+
+  public final int getInt(Object name) {
+    return c().getInt(String.valueOf(name));
+  }
+  
+  public final String getStr(Object name) {
+    return c().getString(String.valueOf(name));
+  }
+
+  public final String[] keys() {
+    return c().keys();
+  }
+  
+  public final <T> void remove(T name) {
+    c().delete(String.valueOf(name));
+  }
+  
+  public final <T> void set(T name, Object val) {
+    c().put(String.valueOf(name), val);
+  }
   
   public final String tostring() {
     String ret = "";

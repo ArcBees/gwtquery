@@ -34,6 +34,10 @@ public class JreQueryCoreTest extends GWTTestCase {
   }
 
   public void testWrapPropertiesString() {
+    assertEquals("({})", Properties
+        .wrapPropertiesString(""));
+    assertEquals("({})", Properties
+        .wrapPropertiesString("({})"));
     assertEquals("({border:'1px solid black'})", Properties
         .wrapPropertiesString("border:'1px solid black'"));
     assertEquals("({border:'1px solid black'})", Properties
@@ -48,8 +52,8 @@ public class JreQueryCoreTest extends GWTTestCase {
         .wrapPropertiesString("{(border:'1px solid black')}"));
     assertEquals("({border:'1px solid black'})", Properties
         .wrapPropertiesString("({border:'1px solid black'})"));
-    assertEquals("({b:'a',c:'1',d:'url(https://test.com)'})", Properties
-        .wrapPropertiesString("b: 'a'; c: 1, /*gg: aadf*/d: url('https://test.com');"));
+    assertEquals("({b:'a',c:1,d:'url(https://test.com)',e:null,f:false})", Properties
+        .wrapPropertiesString("b: 'a'; c: 1, /*gg: aadf*/d: url('https://test.com');,e:null,f:false"));
     assertEquals("({color:'rgb(0,0,139)',background:'red'})", Properties
         .wrapPropertiesString("color: 'rgb(0, 0,139)', background: red"));
   }
