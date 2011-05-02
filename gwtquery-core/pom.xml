@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-M1-SNAPSHOT</version>
     </parent>
 
     <artifactId>gwtquery</artifactId>
@@ -59,7 +59,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <skipTests>true</skipTests>
                     <additionalClasspathElements>
                         <additionalClasspathElement>
                             ${project.build.sourceDirectory}

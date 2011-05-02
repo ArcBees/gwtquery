@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-M1-SNAPSHOT</version>
   </parent>
 
   <description>Generates an artifact compiled with a concrete gwt version specified in the artifactId</description>
@@ -41,6 +41,7 @@
         <artifactId>maven-deploy-plugin</artifactId>
         <executions>
           <execution>
+            <id>deploy-jar</id>
             <phase>deploy</phase>
             <goals>
               <goal>deploy-file</goal>
@@ -55,12 +56,47 @@
               <version>${version}</version>
               <classifier>${artifactId}</classifier>
               <generatePom>true</generatePom>
-              <uniqueVersion>${repoUniqueVers}</uniqueVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy-src</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/gwtquery-${version}-${artifactId}-sources.jar</file>
+              <repositoryId>${repoId}</repositoryId>
+              <url>${repoUrl}</url>
+              <packaging>jar</packaging>
+              <artifactId>gwtquery</artifactId>
+              <groupId>${groupId}</groupId>
+              <version>${version}</version>
+              <classifier>${artifactId}-sources</classifier>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy-doc</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/gwtquery-${version}-${artifactId}-javadoc.jar</file>
+              <repositoryId>${repoId}</repositoryId>
+              <url>${repoUrl}</url>
+              <packaging>jar</packaging>
+              <artifactId>gwtquery</artifactId>
+              <groupId>${groupId}</groupId>
+              <version>${version}</version>
+              <classifier>${artifactId}-javadoc</classifier>
+              <generatePom>true</generatePom>
             </configuration>
           </execution>
         </executions>
         <configuration>
-        <skip>true  </skip>
+        <skip>true</skip>
         </configuration>
       </plugin>
 
@@ -83,6 +119,34 @@
       </plugin>
 
       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-javadoc-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>javadoc</id>
+             <phase>prepare-package</phase>
+             <goals>
+               <goal>jar</goal>
+             </goals>
+           </execution>
+         </executions>
+      </plugin>
+
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-source-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>source</id>
+             <phase>prepare-package</phase>
+             <goals>
+               <goal>jar</goal>
+             </goals>
+           </execution>
+         </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
@@ -100,6 +164,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
 
     <resources>

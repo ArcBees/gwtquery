@@ -3,7 +3,7 @@
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-M1-SNAPSHOT</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
     <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -165,18 +165,16 @@
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix />
         <gwtmaven>2.2.0</gwtmaven>
-        <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
-        <repoId>sonatype-nexus-snapshots</repoId>
-        <repoUniqueVers>false</repoUniqueVers>
+        <repoId>sonatype-nexus-staging</repoId>
+        <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
     </properties>
 
     <profiles>
         <profile>
-           <id>prod</id>
+           <id>snap</id>
            <properties>
-              <repoId>sonatype-nexus-staging</repoId>
-              <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
-              <repoUniqueVers>true</repoUniqueVers>
+             <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
+             <repoId>sonatype-nexus-snapshots</repoId>
            </properties>
         </profile>
         <profile>
