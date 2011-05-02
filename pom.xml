@@ -166,9 +166,18 @@
         <gwtmaven>2.1.0-1</gwtmaven>
         <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
         <repoId>sonatype-nexus-snapshots</repoId>
+        <repoUniqueVers>false</repoUniqueVers>
     </properties>
 
     <profiles>
+        <profile>
+           <id>prod</id>
+           <properties>
+              <repoId>sonatype-nexus-staging</repoId>
+              <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
+              <repoUniqueVers>true</repoUniqueVers>
+           </properties>
+        </profile>
         <profile>
             <id>dev</id>
             <properties>

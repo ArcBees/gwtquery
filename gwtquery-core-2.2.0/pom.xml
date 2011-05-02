@@ -55,7 +55,7 @@
               <version>${version}</version>
               <classifier>${artifactId}</classifier>
               <generatePom>true</generatePom>
-              <uniqueVersion>false</uniqueVersion>
+              <uniqueVersion>${repoUniqueVers}</uniqueVersion>
             </configuration>
           </execution>
         </executions>
