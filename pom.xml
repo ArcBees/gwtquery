@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
     <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -59,11 +57,11 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk
+        <connection>scm:svn:http://gwtquery.googlecode.com/svn/tags/gwtquery-project-1.0.0
         </connection>
-        <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/trunk
+        <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/tags/gwtquery-project-1.0.0
         </developerConnection>
-        <url>http://code.google.com/p/gwtquery/source/browse/trunk</url>
+        <url>http://code.google.com/p/gwtquery/source/browse/tags/gwtquery-project-1.0.0</url>
     </scm>
 
     <modules>
@@ -164,7 +162,7 @@
         <gwtversion>2.1.1</gwtversion>
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
-        <gwt.modulesuffix></gwt.modulesuffix>
+        <gwt.modulesuffix />
         <gwtmaven>2.1.0-1</gwtmaven>
         <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
         <repoId>sonatype-nexus-snapshots</repoId>
