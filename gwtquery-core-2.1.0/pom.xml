@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-M2-SNAPSHOT</version>
   </parent>
 
   <description>Generates an artifact compiled with a concrete gwt version specified in the artifactId</description>
@@ -115,7 +115,6 @@
               <includeArtifactIds>gwtquery</includeArtifactIds>
               <excludeTransitive>true</excludeTransitive>
               <includes>**/*.java,**/*.xml,**/*.html,**/*.css,**/*.jpg,**/*.png,**/*.gif</includes>
-              <excludes>**/IFrameWithDocTypeLinker.java</excludes>
               <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
             </configuration>
           </execution>
