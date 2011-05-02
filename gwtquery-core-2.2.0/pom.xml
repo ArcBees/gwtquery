@@ -4,13 +4,14 @@
   <parent>
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <description>Generates an artifact compiled with a concrete gwt version specified in the artifactId</description>
   <artifactId>2.2.0</artifactId>
   <packaging>jar</packaging>
   <name>Gwt Query Core API for gwt-${artifactId}</name>
+  <version>1.0.0-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
