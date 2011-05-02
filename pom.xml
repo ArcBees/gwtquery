@@ -66,7 +66,7 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <module>gwtquery-core-2.2.0</module>
+        <module>gwtquery-core-2.0.0</module>
         <!-- <module>samples</module> -->
         <!-- <module>devtest</module> -->
     </modules>
@@ -159,11 +159,11 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.1.1</gwtversion>
+        <gwtversion>2.2.0</gwtversion>
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix />
-        <gwtmaven>2.1.0-1</gwtmaven>
+        <gwtmaven>2.2.0</gwtmaven>
         <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
         <repoId>sonatype-nexus-snapshots</repoId>
         <repoUniqueVers>false</repoUniqueVers>
