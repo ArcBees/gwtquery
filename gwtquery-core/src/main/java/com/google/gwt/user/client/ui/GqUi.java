@@ -39,7 +39,8 @@ public class GqUi {
         widget.onAttach();
       } else if (parentWidget instanceof HTMLPanel) {
         ((HTMLPanel) parentWidget).add(widget,
-            widget.getElement().getParentElement());
+            widget.getElement().getParentElement()
+            .<com.google.gwt.user.client.Element>cast());
       } else {
         throw new RuntimeException(
             "No HTMLPanel available to attach the widget.");
