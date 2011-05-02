@@ -96,7 +96,7 @@ public class WidgetsUtils {
      boolean removed = false;
      // TODO: handle tables
      if (parent instanceof HTMLPanel) {
-       ((HTMLPanel) parent).addAndReplaceElement(newWidget, oldWidget.getElement().<com.google.gwt.dom.client.Element>cast());
+       ((HTMLPanel) parent).addAndReplaceElement(newWidget, oldWidget.getElement());
        if (!remove) {
          $(newWidget).before($(oldWidget));
        }

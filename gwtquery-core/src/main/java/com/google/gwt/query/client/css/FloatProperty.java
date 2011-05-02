@@ -16,7 +16,6 @@
 package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Float;
 
 /**
  * This property specifies whether a box should float to the left, right, or not
@@ -37,6 +36,6 @@ public class FloatProperty extends CssProperty<Float> {
 
   @Override
   protected void set(Style s, Float value) {
-    s.setFloat(value);
+    s.setProperty(CSS_PROPERTY, value.getCssName());
   }
 }

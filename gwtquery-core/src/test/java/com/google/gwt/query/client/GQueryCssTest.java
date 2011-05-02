@@ -20,7 +20,6 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.ListStyleType;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -30,11 +29,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.EmptyCellsProperty;
-import com.google.gwt.query.client.css.UriValue;
-import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
@@ -42,15 +36,22 @@ import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
 import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
 import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
+import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
 import com.google.gwt.query.client.css.ClearProperty.Clear;
 import com.google.gwt.query.client.css.ClipProperty.Shape;
+import com.google.gwt.query.client.css.EmptyCellsProperty;
 import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
 import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
+import com.google.gwt.query.client.css.Length;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
 import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
 import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
+import com.google.gwt.query.client.css.UriValue;
+import com.google.gwt.query.client.css.Float;
+
 import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -552,7 +553,6 @@ public class GQueryCssTest extends GWTTestCase {
   public void testFloatProperty() {
 
     $(e).html("<div><div id='test'>Content</div></div>");
-
     $("#test").css(CSS.FLOAT.with(Float.LEFT));
 
     assertEquals("left", $("#test").css("float"));
