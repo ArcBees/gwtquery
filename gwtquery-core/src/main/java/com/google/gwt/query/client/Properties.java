@@ -82,7 +82,7 @@ public class Properties extends JavaScriptObject {
   }
 
   public final <T> T get(Object name) {
-    return c().get(String.valueOf(name));
+    return c().<T>get(String.valueOf(name));
   }
 
   public final boolean getBoolean(Object name) {
