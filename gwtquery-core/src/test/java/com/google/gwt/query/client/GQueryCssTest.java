@@ -50,7 +50,7 @@ import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
 import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
 import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
 import com.google.gwt.query.client.css.UriValue;
-import com.google.gwt.query.client.css.Float;
+import com.google.gwt.dom.client.Style.Float;
 
 import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 import com.google.gwt.user.client.ui.HTML;
