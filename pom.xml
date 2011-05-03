@@ -161,15 +161,32 @@
 
     <properties>
         <gwtversion>2.2.0</gwtversion>
+        <gwtmaven>2.2.0</gwtmaven>
+        <gqueryclassifier></gqueryclassifier>
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
         <gwt.modulesuffix />
-        <gwtmaven>2.2.0</gwtmaven>
         <repoId>sonatype-nexus-staging</repoId>
         <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
     </properties>
 
     <profiles>
+        <profile>
+           <id>2.1.0</id>
+           <properties>
+             <gwtversion>2.1.0</gwtversion>
+             <gwtmaven>2.1.0</gwtmaven>
+             <gqueryclassifier>2.1.0</gqueryclassifier>
+           </properties>
+        </profile>
+        <profile>
+           <id>2.0.1</id>
+           <properties>
+             <gwtversion>2.0.1</gwtversion>
+             <gwtmaven>1.1</gwtmaven>
+             <gqueryclassifier>2.0.1</gqueryclassifier>
+           </properties>
+        </profile>
         <profile>
            <id>prod</id>
            <properties>
