@@ -171,6 +171,13 @@
 
     <profiles>
         <profile>
+           <id>prod</id>
+           <properties>
+             <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
+             <repoId>sonatype-nexus-staging</repoId>
+           </properties>
+        </profile>
+        <profile>
            <id>snap</id>
            <properties>
              <repoUrl>https://oss.sonatype.org/content/repositories/snapshots</repoUrl>
