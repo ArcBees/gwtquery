@@ -37,6 +37,6 @@ public class FloatProperty extends CssProperty<Float> {
 
   @Override
   protected void set(Style s, Float value) {
-    s.setProperty(CSS_PROPERTY, value.getCssName());
+    s.setFloat(value);
   }
 }
