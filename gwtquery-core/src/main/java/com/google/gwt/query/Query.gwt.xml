@@ -51,7 +51,7 @@
     </replace-with>
 
     <!-- Selector Engines -->
-    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineCssToXPath">
         <when-type-assignable class="com.google.gwt.query.client.impl.HasSelector"/>
     </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzleIE">
