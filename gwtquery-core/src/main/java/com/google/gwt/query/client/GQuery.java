@@ -290,19 +290,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return Properties.create(properties);
   }
 
-  @SuppressWarnings("unchecked")
-  public static <T extends Node> T[] asArray(NodeList<T> nl) {
-    if (GWT.isScript()) {
-      return reinterpretCast(nl);
-    } else {
-      Node[] elts = new Node[nl.getLength()];
-      for (int i = 0; i < elts.length; i++) {
-        elts[i] = nl.getItem(i);
-      }
-      return (T[]) elts;
-    }
-  }
-
   /**
    * Return a lazy version of the GQuery interface. Lazy function calls are
    * simply queued up and not executed immediately.
@@ -1675,7 +1662,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * modify this array, e.g. assign to its elements, or call Arrays.sort()
    */
   public Element[] elements() {
-    return asArray(elements);
+    Element[] elts = new Element[elements.getLength()];
+    for (int i = 0; i < elts.length; i++) {
+      elts[i] = elements.getItem(i);
+    }
+    return elts;
   }
 
   /**
@@ -3349,7 +3340,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set the innerText of every matched element.
    */
   public GQuery text(String txt) {
-    for (Element e : asArray(elements)) {
+    for (Element e : elements()) {
       e.setInnerText(txt);
     }
     return this;
@@ -3622,7 +3613,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         SelectElement se = SelectElement.as(e);
         if (se.isMultiple()) {
           JsArrayString result = JsArrayString.createArray().cast();
-          for (OptionElement oe : asArray(se.getOptions())) {
+          for (int i = 0 ; i< se.getOptions().getLength(); i++){
+            OptionElement oe = se.getOptions().getItem(i);
             if (oe.isSelected()) {
               result.set(result.length(), oe.getValue());
             }
