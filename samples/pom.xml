@@ -14,7 +14,7 @@
             <groupId>${groupId}</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${version}</version>
-            <classifier>${gqueryclassifier></classifier>
+            <classifier>${gqueryclassifier}</classifier>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
