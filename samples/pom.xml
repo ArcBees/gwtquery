@@ -16,7 +16,7 @@
             <groupId>${groupId}</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${version}</version>
-            <classifier>2.0.1</classifier>
+            <!-- <classifier>2.0.1</classifier> -->
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
