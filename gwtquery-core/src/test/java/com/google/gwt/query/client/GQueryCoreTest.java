@@ -80,7 +80,7 @@ public class GQueryCoreTest extends GWTTestCase {
   }
 
   public void gwtSetUp() {
-    if (e == null) {
+    if (e == null || DOM.getElementById("core-tst") == null) {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
       e = testPanel.getElement();
@@ -462,7 +462,25 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
   }
+  
+  public void testAppendTo() {
+    String txt = "<h2>Greetings</h2><div class='container'><div class='inner'>Hello</div><div class='inner'>Goodbye</div></div>";
+    String expected = "<h2>Greetings</h2><div class='container'><div class='inner'>Hello<p>Test</p></div><div class='inner'>Goodbye<p>Test</p></div></div>";
+    $(e).html(txt);
+    $("<p>Test</p>").appendTo(".inner");
+    assertHtmlEquals(expected, $(e).html());
+    
+    expected = "<div class='container'><div class='inner'>Hello</div><div class='inner'>Goodbye</div><h2>Greetings</h2></div>";
+    $(e).html(txt);
+    $("h2", e).appendTo($(".container"));
+    assertHtmlEquals(expected, $(e).html());
 
+    expected = "<div class='container'><div class='inner'>Hello<h2>Greetings</h2></div><div class='inner'>Goodbye<h2>Greetings</h2></div><h2>Greetings</h2></div><h2>Greetings</h2>";
+    $(e).html(txt);
+    $("h2", e).appendTo($("div"));
+    assertHtmlEquals(expected, $(e).html());
+  }
+  
   public void testOpacity() {
     $(e).html(
         "<p id='id1' style='opacity: 0.6; filter: alpha(opacity=60)'>Content 1</p>");
@@ -1502,4 +1520,5 @@ public class GQueryCoreTest extends GWTTestCase {
 
     label.removeFromParent();
   }
+
 }

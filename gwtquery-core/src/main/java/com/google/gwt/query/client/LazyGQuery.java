@@ -1839,7 +1839,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Force the current matched set of elements to become the specified array of
    * elements.
    */
-  LazyGQuery<T> setArray(NodeList<Element> nodes);
+  LazyGQuery<T> setArray(NodeList<Element> list);
 
   void setPreviousObject(GQuery previousObject);
 
