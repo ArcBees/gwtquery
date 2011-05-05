@@ -11,10 +11,13 @@
     <properties>
       <maven.compiler.source>1.5</maven.compiler.source>
       <maven.compiler.target>1.5</maven.compiler.target>
-      <gQueryVersion>1.0.0-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.2.0</gwtversion>
-      <!-- change by 2.1.0-1 for gwt-2.1.1 or 2.1.0 for gwt-2.1.0 -->
-      <gwtmaven>2.1.0-1</gwtmaven>
+      <gQueryVersion>1.0.0</gQueryVersion>
+      <!-- Options: 2.0.1, 2.1.0, 2.2.0, 2.3.0 -->
+      <gQueryClassifier>2.3.0</gQueryClassifier>
+      <!-- options: 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.3.0 -->
+      <gwtversion>2.3.0</gwtversion>
+      <!-- options: 1.1, 2.1.0, 2.1.0-1, 2.2.0 -->
+      <gwtmaven>2.2.0</gwtmaven>
     </properties>
 
     <repositories>
@@ -73,9 +76,20 @@
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
-            <!-- Put 2.2.0 for gwt-2.2.0 or leave empty for 2.1.x -->
-            <classifier>2.2.0</classifier>
+            <classifier>${gQueryClassifier}</classifier>
             <scope>provided</scope>
+        </dependency>
+        <!-- GWT 2.3.0 depends on these -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <classifier>sources</classifier>
         </dependency>
     </dependencies>
     <build>
