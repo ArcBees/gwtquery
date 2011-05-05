@@ -3,7 +3,7 @@
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-M4-SNAPSHOT</version>
+    <version>1.0.0-M3</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
     <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -65,10 +65,13 @@
     </scm>
 
     <modules>
+<!--
         <module>gwtquery-core</module>
         <module>gwtquery-core-2.3.0</module>
+        <module>gwtquery-core-2.2.0</module>
         <module>gwtquery-core-2.1.0</module>
         <module>gwtquery-core-2.0.1</module>
+-->
         <!-- <module>samples</module> -->
         <!-- <module>devtest</module> -->
     </modules>
