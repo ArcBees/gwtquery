@@ -8,7 +8,7 @@
   </parent>
 
   <description>Generates an artifact compiled with a concrete gwt version specified in the artifactId</description>
-  <artifactId>2.2.0</artifactId>
+  <artifactId>2.3.0</artifactId>
   <packaging>jar</packaging>
   <name>Gwt Query Core API for gwt-${artifactId}</name>
 
