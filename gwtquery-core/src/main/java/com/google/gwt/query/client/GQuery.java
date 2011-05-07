@@ -18,7 +18,6 @@ package com.google.gwt.query.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -194,6 +193,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements.
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   public static GQuery $(String selectorOrHtml) {
     return $(selectorOrHtml, document);
@@ -204,6 +204,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements. The second parameter is is a class
    * reference to a plugin to be used.
+   * 
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   public static <T extends GQuery> T $(String selector, Class<T> plugin) {
     return $(selector, document, plugin);
@@ -215,6 +217,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element containing those elements. The second parameter is the context to
    * use for the selector, or the document where the new elements will be
    * created.
+   * 
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   public static GQuery $(String selectorOrHtml, Node ctx) {
     String selector = null;
@@ -232,6 +236,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements. The second parameter is the context to
    * use for the selector. The third parameter is the class plugin to use.
+   * 
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   @SuppressWarnings("unchecked")
   public static <T extends GQuery> T $(String selector, Node context,
@@ -254,6 +260,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element containing those elements. The second parameter is the context to
    * use for the selector, or the document where the new elements will be
    * created.
+   * 
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   public static GQuery $(String selectorOrHtml, Widget context) {
     return $(selectorOrHtml, context.getElement());
@@ -264,6 +272,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements. The second parameter is the context to
    * use for the selector. The third parameter is the class plugin to use.
+   *
+   * Xpath selector is supported in browsers with native xpath engine.
    */
   public static <T extends GQuery> T $(String selector, Widget context,
       Class<T> plugin) {
