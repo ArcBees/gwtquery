@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -40,7 +41,9 @@ import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.HasSelector;
 import com.google.gwt.query.client.impl.SelectorEngine;
+import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
@@ -117,6 +120,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   protected static JsCache dataCache = null;
 
   private static SelectorEngine engine;
+  
+  private static HasSelector xpahtEngine;
 
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
@@ -191,12 +196,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element containing those elements.
    */
   public static GQuery $(String selectorOrHtml) {
-    if (selectorOrHtml == null || selectorOrHtml.trim().length() == 0) {
-      return $();
-    }
-    if (selectorOrHtml.trim().charAt(0) == '<') {
-      return innerHtml(selectorOrHtml);
-    }
     return $(selectorOrHtml, document);
   }
 
@@ -218,11 +217,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * created.
    */
   public static GQuery $(String selectorOrHtml, Node ctx) {
-    if (selectorOrHtml == null || selectorOrHtml.trim().length() == 0) {
+    String selector = null;
+    if (selectorOrHtml == null || (selector = selectorOrHtml.trim()).length() == 0) {
       return $();
     }
-    if (selectorOrHtml.trim().charAt(0) == '<') {
-      return $(cleanHtmlString(selectorOrHtml, getOwnerDocument(ctx)));
+    if (selector.startsWith("<")) {
+      return innerHtml(selectorOrHtml, getOwnerDocument(ctx));
     }
     return new GQuery().select(selectorOrHtml, ctx);
   }
@@ -433,8 +433,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return e.getClassName().matches("(^|.*\\s)" + clz + "(\\s.*|$)");
   }
 
-  private static GQuery innerHtml(String html) {
-    return $(cleanHtmlString(html, document));
+  private static GQuery innerHtml(String html, Document doc) {
+    return $(cleanHtmlString(html, doc));
   }
 
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
@@ -454,14 +454,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (engine == null) {
       engine = new SelectorEngine();
     }
-    NodeList<Element> n = engine.select(selector, context);
+    HasSelector impl = engine;
+    if (selector.startsWith("./") || selector.startsWith("/")) {
+      if (xpahtEngine == null) {
+        impl = xpahtEngine =  engine.impl instanceof SelectorEngineCssToXPath ? 
+            engine.impl : new SelectorEngineCssToXPath();
+      }
+    }
+    NodeList<Element> n = impl.select(selector, context);
     JsNodeArray res = copyNodeList(n);
 
     currentSelector = selector;
     currentContext = context != null ? context : document;
 
     return setArray(res);
-
   }
 
   private static native Element window() /*-{

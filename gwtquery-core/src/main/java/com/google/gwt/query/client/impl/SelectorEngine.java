@@ -25,7 +25,7 @@ import com.google.gwt.query.client.js.JsNodeArray;
 /**
  * Core Selector engine functions, and native JS utility functions.
  */
-public class SelectorEngine {
+public class SelectorEngine implements HasSelector {
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
@@ -72,7 +72,7 @@ public class SelectorEngine {
       return r;
   }-*/;
 
-  protected SelectorEngineImpl impl;
+  public final SelectorEngineImpl impl;
 
   protected Node root = Document.get();
   

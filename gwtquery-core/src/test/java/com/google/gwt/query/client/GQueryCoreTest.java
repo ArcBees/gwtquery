@@ -20,6 +20,7 @@ import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.js.JsNamedArray;
@@ -1519,6 +1521,15 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("DW1", g.text());
 
     label.removeFromParent();
+  }
+  
+  public void testXpathSelector() {
+    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A Text</td><td width=50%>B</td></tr></table>");
+    SelectorEngineCssToXPath s = new SelectorEngineCssToXPath();
+    for (String selector : Arrays.asList("td[width]", "table > td", "*[width!=440]")) {
+      String xselector = s.css2Xpath(selector);
+      assertEquals($(selector).toString(), $(xselector).toString());
+    }
   }
 
 }

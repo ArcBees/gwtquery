@@ -212,7 +212,14 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       xsel =  sel.startsWith("./") || sel.startsWith("/") ? sel : css2Xpath(sel);
       cache.put(sel, xsel);
     }
-    SelectorEngine.xpathEvaluate(xsel, ctx, elm);
+    try {
+      SelectorEngine.xpathEvaluate(xsel, ctx, elm);
+    } catch (Exception e) {
+      if (sel.startsWith("./") || sel.startsWith("/")) {
+        System.err.println("ERROR: xpathEvaluate: " + sel + " xpath: " + xsel + 
+            "\nIf the syntax of your css selector is correct, report the error to gquery team.\n\n" + e.getMessage());
+      }
+    }
     return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
   
