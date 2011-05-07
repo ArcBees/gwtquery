@@ -70,6 +70,11 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     assertEquals(".//*[@checked='checked']|*[not(@disabled)]|*[@disabled]", 
         sel.css2Xpath(":checked, :enabled, :disabled"));
     
+    assertEquals(".//table[contains(string(.),'String With | @ ~= Space Points.s and Hash#es')]", 
+        sel.css2Xpath("table:contains('String With | @ ~= Space Points.s and Hash#es')"));
+
+    assertEquals(".//a[starts-with(@href,'http') and (contains(@href,'youtube.com/'))]", 
+        sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
   }
 
   public void testReplaceAll() {

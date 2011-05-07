@@ -52,6 +52,14 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
   private static SelectorEngineCssToXPath instance;
   
+  private static ReplaceCallback rc_scp = new ReplaceCallback() {
+    public String foundMatch(ArrayList<String> s) {
+      return s.get(1) + s.get(2) + 
+        (s.get(3).startsWith(" ") ? "%S%" : s.get(3).startsWith("#") ? "%H%" : "%P%") +
+        s.get(4) + s.get(5);
+    }
+  };
+  
   private static ReplaceCallback rc_$Attr = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
       return "[substring(@" + s.get(1) +  ",string-length(@" + s.get(1) + ")-" + (s.get(2).replaceAll("'", "").length() - 1) +  ")=" + s.get(2) + "]";
@@ -86,6 +94,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   };
 
   private static Object[] regs = new Object[]{
+    // scape some dots and spaces
+    "(['\\[])([^'\\]]+)([\\s\\.#])([^'\\]]+)(['\\]])", rc_scp,
     // add @ for attrib
     "\\[([^@\\]~\\$\\*\\^\\|\\!]+)(=[^\\]]+)?\\]", "[@$1$2]",
     // multiple queries
@@ -136,7 +146,13 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     ":(checked)", "[@$1='$1']",
     ":(disabled)", "[@$1]",
     // put '*' when tag is omitted
-    "(^|\\|)(\\[)", "$1*$2"
+    "(^|\\|)(\\[)", "$1*$2",
+    // Replace escaped dots and spaces
+    "%S%"," ",
+    "%P%",".",
+    "%H%","#",
+    // Duplicated quotes
+    "'+","'",
     };
   
   public static SelectorEngineCssToXPath getInstance() {
