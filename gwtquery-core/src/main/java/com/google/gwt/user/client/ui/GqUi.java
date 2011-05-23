@@ -15,13 +15,6 @@
  */
 package com.google.gwt.user.client.ui;
 
-import static com.google.gwt.query.client.GQuery.$;
-
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Event;
-
 import java.util.Iterator;
 
 /**
@@ -29,16 +22,14 @@ import java.util.Iterator;
  */
 public class GqUi {
 
-  public static void attachWidget(Widget widget) {
+  public static void attachWidget(Widget widget, Widget firstParentWidget) {
     if (widget != null && widget.getParent() == null) {
 
-      Widget parentWidget = getFirstParentWidget(widget);
-
-      if (parentWidget == null) {
+      if (firstParentWidget == null) {
         RootPanel.detachOnWindowClose(widget);
         widget.onAttach();
-      } else if (parentWidget instanceof HTMLPanel) {
-        ((HTMLPanel) parentWidget).add(widget,
+      } else if (firstParentWidget instanceof HTMLPanel) {
+        ((HTMLPanel) firstParentWidget).add(widget,
             widget.getElement().getParentElement()
             .<com.google.gwt.user.client.Element>cast());
       } else {
@@ -54,20 +45,7 @@ public class GqUi {
     }
   }
 
-  private static Widget getFirstParentWidget(Widget w) {
-    Element e = w.getElement().getParentElement();
-    BodyElement body = Document.get().getBody();
-    while ((e != null) && (body != e)) {
-      if (Event.getEventListener(e) != null) {
-        Widget p = $(e).widget();
-        if (p != null){
-          return p;
-        }
-      }
-      e = e.getParentElement();
-    }
-    return null;
-  }
+ 
 
   /**
    * This method detach a widget of its parent without do a physical detach (DOM

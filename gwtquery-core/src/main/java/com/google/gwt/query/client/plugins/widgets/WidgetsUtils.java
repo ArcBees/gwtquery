@@ -17,8 +17,11 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -32,6 +35,21 @@ public class WidgetsUtils {
     "td", "th", "li"};
 
   
+  /**
+    * Append a widget to a dom element, and hide it.
+    * Element classes will be copied to the new widget.
+    */
+   public static void hideAndAfter(Element e, Widget widget)  {
+     assert e != null && widget != null;
+     if ($(e).widget() != null && $(e).widget().isAttached()) {
+       replaceWidget($(e).widget(), widget, false);
+     } else {
+       GqUi.detachWidget(widget);
+       hideAndAfter(e, widget.getElement());
+       GqUi.attachWidget(widget, getFirstParentWidget(widget));
+     }
+   }
+
   /**
    * Test if the tag name of the element is one of tag names given in parameter
    * 
@@ -55,8 +73,47 @@ public class WidgetsUtils {
     return e.getTagName().toUpperCase().matches(regExp.toString());
 
   }
+   
+   /**
+    * Replace a dom element by a widget.
+    * Old element classes will be copied to the new widget.
+    */
+   public static void replaceOrAppend(Element e, Widget widget)  {
+     assert e != null && widget != null;
+     if ($(e).widget() != null && $(e).widget().isAttached()) {
+       replaceWidget($(e).widget(), widget, true);
+     } else {
+       GqUi.detachWidget(widget);
+       replaceOrAppend(e, widget.getElement());
+       GqUi.attachWidget(widget, getFirstParentWidget(widget));
+     }
+   }
+   
+   private static Widget getFirstParentWidget(Widget w) {
+     Element e = w.getElement().getParentElement();
+     BodyElement body = Document.get().getBody();
+     while ((e != null) && (body != e)) {
+       if (Event.getEventListener(e) != null) {
+         Widget p = $(e).widget();
+         if (p != null){
+           return p;
+         }
+       }
+       e = e.getParentElement();
+     }
+     return null;
+   }
+   
+   private static void hideAndAfter(Element oldElement, Element newElement) {
+     assert oldElement != null && newElement != null;
+     GQuery.$(oldElement).hide().after(newElement);
+     String c = oldElement.getClassName();
+     if (!c.isEmpty()) {
+       newElement.addClassName(c);
+     }
+   }
 
-  /**
+   /**
    * If the <code>oldElement</code> is a td, th, li tags, the new element will replaced its content.
    * In other cases, the <code>oldElement</code> will be replaced by the <code>newElement</code>
    *  and the old element classes will be copied to the new element.
@@ -82,15 +139,6 @@ public class WidgetsUtils {
     }
    }
    
-   private static void hideAndAfter(Element oldElement, Element newElement) {
-     assert oldElement != null && newElement != null;
-     GQuery.$(oldElement).hide().after(newElement);
-     String c = oldElement.getClassName();
-     if (!c.isEmpty()) {
-       newElement.addClassName(c);
-     }
-   }
-   
    private static void replaceWidget(Widget oldWidget, Widget newWidget, boolean remove) {
      Widget parent = oldWidget.getParent();
      boolean removed = false;
@@ -114,36 +162,6 @@ public class WidgetsUtils {
        oldWidget.removeFromParent();
      } else {
        oldWidget.setVisible(false);
-     }
-   }
-   
-   /**
-    * Replace a dom element by a widget.
-    * Old element classes will be copied to the new widget.
-    */
-   public static void replaceOrAppend(Element e, Widget widget)  {
-     assert e != null && widget != null;
-     if ($(e).widget() != null && $(e).widget().isAttached()) {
-       replaceWidget($(e).widget(), widget, true);
-     } else {
-       GqUi.detachWidget(widget);
-       replaceOrAppend(e, widget.getElement());
-       GqUi.attachWidget(widget);
-     }
-   }
-
-   /**
-    * Append a widget to a dom element, and hide it.
-    * Element classes will be copied to the new widget.
-    */
-   public static void hideAndAfter(Element e, Widget widget)  {
-     assert e != null && widget != null;
-     if ($(e).widget() != null && $(e).widget().isAttached()) {
-       replaceWidget($(e).widget(), widget, false);
-     } else {
-       GqUi.detachWidget(widget);
-       hideAndAfter(e, widget.getElement());
-       GqUi.attachWidget(widget);
      }
    }
 }
