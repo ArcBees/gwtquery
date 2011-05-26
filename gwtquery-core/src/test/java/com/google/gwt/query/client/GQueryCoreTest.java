@@ -1035,6 +1035,95 @@ public class GQueryCoreTest extends GWTTestCase {
 
   }
 
+  public void testHtmlSnippet(){
+    
+    GQuery gq = $("<div>blop</div><p>test</p><span>test</span>");   
+    assertEquals(3, gq.size());
+    assertEquals("DIV", gq.get(0).getTagName().toUpperCase());
+    assertEquals("P", gq.get(1).getTagName().toUpperCase());
+    assertEquals("SPAN", gq.get(2).getTagName().toUpperCase());
+    
+    //xhtml tag
+    gq = $("<div/>");   
+    assertEquals(1, gq.size());
+    assertEquals("DIV", gq.get(0).getTagName().toUpperCase());
+    
+    gq = $("<a/>");   
+    assertEquals(1, gq.size());
+    assertEquals("A", gq.get(0).getTagName().toUpperCase());
+    
+    gq = $("<div>");   
+    assertEquals(1, gq.size());
+    assertEquals("DIV", gq.get(0).getTagName().toUpperCase());
+    
+    //issue 81 : trailing spaces
+    gq = $(" <div>blop</div><p>test</p><span>test</span> ");   
+    assertEquals(3, gq.size());
+    assertEquals("DIV", gq.get(0).getTagName().toUpperCase());
+    assertEquals("P", gq.get(1).getTagName().toUpperCase());
+    assertEquals("SPAN", gq.get(2).getTagName().toUpperCase());
+    
+    //wrapping
+    gq = $("<tr>blop</tr><tr>test</tr>");
+    assertEquals(2, gq.size());
+    assertEquals("TR", gq.get(0).getTagName().toUpperCase());
+    assertEquals("TR", gq.get(1).getTagName().toUpperCase());
+    //same in uppercase
+    gq = $("<TR>blop</TR><tr>test</tr>");
+    assertEquals(2, gq.size());
+    assertEquals("TR", gq.get(0).getTagName().toUpperCase());
+    assertEquals("TR", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<td>blop</td><td>test</td>");
+    assertEquals(2, gq.size());
+    assertEquals("TD", gq.get(0).getTagName().toUpperCase());
+    assertEquals("TD", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<th>blop</th><th>test</th>");
+    assertEquals(2, gq.size());
+    assertEquals("TH", gq.get(0).getTagName().toUpperCase());
+    assertEquals("TH", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<col/><col/>");
+    assertEquals(2, gq.size());
+    assertEquals("COL", gq.get(0).getTagName().toUpperCase());
+    assertEquals("COL", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<area/><area/>");
+    assertEquals(2, gq.size());
+    assertEquals("AREA", gq.get(0).getTagName().toUpperCase());
+    assertEquals("AREA", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<option>blop</option><option>test</option>");
+    assertEquals(2, gq.size());
+    assertEquals("OPTION", gq.get(0).getTagName().toUpperCase());
+    assertEquals("OPTION", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<legend>blop</legend><legend>test</legend>");
+    assertEquals(2, gq.size());
+    assertEquals("LEGEND", gq.get(0).getTagName().toUpperCase());
+    assertEquals("LEGEND", gq.get(1).getTagName().toUpperCase());
+    
+    gq = $("<thead>blop</thead><thead>test</thead>");
+    assertEquals(2, gq.size());
+    assertEquals("THEAD", gq.get(0).getTagName().toUpperCase());
+    assertEquals("THEAD", gq.get(1).getTagName().toUpperCase());
+    
+    //issue
+    gq = $("<select name=\"modificator\"><option value=\"work\" selected=\"selected"
+        +"\">Work</option><option value=\"work_fax\" >Work fax</option><option "
+        +"value=\"home\" >Home</option><option value=\"other\" >Other</"
+        +"option><option value=\"home_fax\" >Home fax</option><option value=\"main\" >Main</option></select>");
+
+    assertEquals(1, gq.size());
+
+    assertEquals("SELECT", gq.get(0).getTagName().toUpperCase());
+    assertEquals(6, gq.get(0).getChildCount());
+    
+    
+  }
+  
+  
   public void testNulls() {
     Assert.assertEquals(0, $((Node) null).size());
     Assert.assertEquals(0, $((Element) null).size());

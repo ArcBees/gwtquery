@@ -47,6 +47,7 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
@@ -85,6 +86,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
     public String toString() {
       return top + "+" + left;
+    }
+  }
+  
+  /**
+   * Class used internally to create DOM element  from html snippet
+   *
+   */
+  private static class TagWrapper {
+    public static final TagWrapper DEFAULT = new TagWrapper(0, "", "");
+    private int wrapDepth; 
+    private String preWrap;
+    private String postWrap;
+    
+    public TagWrapper(int wrapDepth, String preWrap, String postWrap) {
+      this.wrapDepth=wrapDepth;
+      this.postWrap = postWrap;
+      this.preWrap = preWrap;
     }
   }
 
@@ -136,6 +154,32 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   // Sizzle POS regex : usefull in some methods
   private static final String POS_REGEX = ":(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)";
 
+  private static JsRegexp tagNameRegex = new JsRegexp("<([\\w:]+)");
+  
+  private static final JsNamedArray<TagWrapper> wrapperMap;
+
+  static {
+    TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
+    TagWrapper selectWrapper =  new TagWrapper(1, "<select multiple=\"multiple\">", "</select>");
+    TagWrapper trWrapper = new TagWrapper(3, "<table><tbody><tr>", "</tr></tbody></table>");
+    
+    wrapperMap = JsNamedArray.create();
+    wrapperMap.put("option", selectWrapper);
+    wrapperMap.put("optgroup", selectWrapper);
+    wrapperMap.put("legend", new TagWrapper(1, "<fieldset>", "</fieldset>") );
+    wrapperMap.put("thead", tableWrapper);
+    wrapperMap.put("tbody", tableWrapper);
+    wrapperMap.put("tfoot", tableWrapper);
+    wrapperMap.put("colgroup", tableWrapper);
+    wrapperMap.put("caption", tableWrapper);
+    wrapperMap.put("tr",  new TagWrapper(2, "<table><tbody>", "</tbody></table>"));
+    wrapperMap.put("td", trWrapper);
+    wrapperMap.put("th", trWrapper); 
+    wrapperMap.put("col",  new TagWrapper(2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"));
+    wrapperMap.put("area",  new TagWrapper(1, "<map>", "</map>"));
+
+  }
+  
   /**
    * Create an empty GQuery object.
    */
@@ -314,42 +358,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     plugins.put(plugin, pluginFactory);
   }
 
+  
   @SuppressWarnings("unchecked")
   protected static GQuery cleanHtmlString(String elem, Document doc) {
-    String tags = elem.trim().toLowerCase();
-    String preWrap = "", postWrap = "";
-    int wrapPos = 0;
-    if (tags.contains("<opt")) {
-      wrapPos = 1;
-      preWrap = "<select multiple=\"multiple\">";
-      postWrap = "</select>";
-    } else if (tags.contains("<legend")) {
-      wrapPos = 1;
-      preWrap = "<fieldset>";
-      postWrap = "</fieldset>";
-    } else if (tags.matches("^<(thead|tbody|tfoot|colg|cap)")) {
-      wrapPos = 1;
-      preWrap = "<table>";
-      postWrap = "</table>";
-    } else if (tags.contains("<tr")) {
-      wrapPos = 2;
-      preWrap = "<table><tbody>";
-      postWrap = "</tbody></table>";
-    } else if (tags.contains("<td") || tags.contains("<th")) {
-      wrapPos = 3;
-      preWrap = "<table><tbody><tr>";
-      postWrap = "</tr></tbody></table>";
-    } else if (tags.contains("<col")) {
-      wrapPos = 2;
-      preWrap = "<table><tbody></tbody><colgroup>";
-      postWrap = "</colgroup></table>";
+    
+    String tag = tagNameRegex.exec(elem).get(1);
+    
+    if (tag == null){
+      throw new  RuntimeException("HTML snippet doesn't contain any tag");
     }
+    
+    TagWrapper wrapper = wrapperMap.get(tag.toLowerCase());
+    
+    if (wrapper == null){
+      wrapper = TagWrapper.DEFAULT;
+    }
+    
     // TODO: fix IE link tag serialization
     // TODO: fix IE <script> tag
     Element div = doc.createDivElement();
-    div.setInnerHTML(preWrap + elem + postWrap);
+    div.setInnerHTML(wrapper.preWrap + elem.trim() + wrapper.postWrap);
     Node n = div;
-    while (wrapPos-- != 0) {
+    int depth = wrapper.wrapDepth;
+    while (depth-- != 0) {
       n = n.getLastChild();
     }
     // TODO: add fixes for IE TBODY issue
@@ -449,10 +480,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
 		return array;
-  }-*/;
-
-  private static native <T extends Node> T[] reinterpretCast(NodeList<T> nl) /*-{
-		return nl;
   }-*/;
 
   private static native void scrollIntoViewImpl(Node n) /*-{
