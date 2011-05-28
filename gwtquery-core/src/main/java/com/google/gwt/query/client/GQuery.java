@@ -1899,13 +1899,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * trigger the event if no functions are provided.
    */
   public GQuery focus(Function... f) {
-    bindOrFire(Event.ONFOCUS, null, f);
-    
-    if (f.length == 0 && size() > 0){
-      //put the focus on the first element
-      get(0).focus();
-    }
-    return this;
+    return bindOrFire(Event.ONFOCUS, null, f);
   }
 
   /**
