@@ -1622,6 +1622,47 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prevUntil(String selector);
 
   /**
+   * Accesses a boolean property on the first matched element.
+   * 
+   * @param key the name of the boolean property to be accessed
+   * 
+   * @return <code>true</code> if at least one element is matched and the
+   *         specified boolean property is set to <code>true</code> on the first
+   *         matched element; <code>false</code> otherwise
+   * 
+   */
+  boolean prop(String key);
+
+  /**
+   * Sets a boolean property to a value on all matched elements.
+   * 
+   * @param key the name of the boolean property to be set
+   * @param value the value the specified boolean property should be set to
+   * 
+   * @return this <code>GQuery</code> object
+   * 
+   */
+  LazyGQuery<T> prop(String key, boolean value);
+
+  /**
+   * Sets a boolean property to a computed value on all matched elements.
+   * 
+   * @param key the name of the boolean property to be set
+   * @param closure the closure to be used to compute the value the specified
+   *          boolean property should be set to; the <code>closure</code> is
+   *          {@linkplain Function#f(com.google.gwt.dom.client.Element, int)
+   *          passed} the target element and its index as arguments and is
+   *          expected to return either a <code>Boolean</code> value or an
+   *          object whose textual representation is converted to a
+   *          <code>Boolean</code> value; <code>null</code> return values are
+   *          ignored
+   * 
+   * @return this <code>GQuery</code> object
+   * 
+   */
+  LazyGQuery<T> prop(String key, Function closure);
+
+  /**
    * Put a {@link Function} at the end of the Effects queue.
    * 
    * Example:

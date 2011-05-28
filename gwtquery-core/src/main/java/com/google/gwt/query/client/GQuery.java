@@ -1899,7 +1899,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * trigger the event if no functions are provided.
    */
   public GQuery focus(Function... f) {
-    return bindOrFire(Event.ONFOCUS, null, f);
+    bindOrFire(Event.ONFOCUS, null, f);
+    
+    if (f.length == 0 && size() > 0){
+      //put the focus on the first element
+      get(0).focus();
+    }
+    return this;
   }
 
   /**
@@ -2862,6 +2868,76 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       allPreviousSiblingElements(getPreviousSiblingElement(e), result, selector);
     }
     return pushStack(unique(result), "prevUntil", getSelector());
+  }
+  
+  /**
+   * Accesses a boolean property on the first matched element.
+   * 
+   * @param key the name of the boolean property to be accessed
+   * 
+   * @return <code>true</code> if at least one element is matched and the
+   *         specified boolean property is set to <code>true</code> on the first
+   *         matched element; <code>false</code> otherwise
+   * 
+   */
+  public boolean prop(String key) {
+    assert key != null : "Key is null";
+
+    return !isEmpty() && get(0).getPropertyBoolean(key);
+  }
+
+  /**
+   * Sets a boolean property to a value on all matched elements.
+   * 
+   * @param key the name of the boolean property to be set
+   * @param value the value the specified boolean property should be set to
+   * 
+   * @return this <code>GQuery</code> object
+   * 
+   */
+  public GQuery prop(String key, boolean value) {
+    assert key != null : "Key is null";
+
+    for (final Element element : elements) {
+      element.setPropertyBoolean(key, value);
+    }
+
+    return this;
+  }
+
+  /**
+   * Sets a boolean property to a computed value on all matched elements.
+   * 
+   * @param key the name of the boolean property to be set
+   * @param closure the closure to be used to compute the value the specified
+   *          boolean property should be set to; the <code>closure</code> is
+   *          {@linkplain Function#f(com.google.gwt.dom.client.Element, int)
+   *          passed} the target element and its index as arguments and is
+   *          expected to return either a <code>Boolean</code> value or an
+   *          object whose textual representation is converted to a
+   *          <code>Boolean</code> value; <code>null</code> return values are
+   *          ignored
+   * 
+   * @return this <code>GQuery</code> object
+   * 
+   */
+  public GQuery prop(String key, Function closure) {
+    assert key != null : "Key is null";
+    assert closure != null : "Closure is null";
+    
+    int i = 0;
+
+    for (Element e : elements) {
+
+      Object value = closure.f(e, i++);
+
+      if (value != null) {
+        e.setPropertyBoolean(key, value instanceof Boolean ? (Boolean) value
+            : Boolean.valueOf(value.toString()));
+      }
+    }
+
+    return this;
   }
 
   /**
@@ -4117,5 +4193,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache.delete(id);
     }
   }
+  
+  
 
 }

@@ -511,6 +511,25 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(15, g.position().top);
 
   }
+  
+  public void testPropMethod(){
+    $(e).html("<input id=\"checkBox1\" type=\"checkbox\" checked=\"checked\" /> <input id=\"checkBox2\" type=\"checkbox\" />");
+    
+    assertTrue($("#checkBox1",e).prop("checked"));
+    assertFalse($("#checkBox2",e).prop("checked"));
+    
+    $("#checkBox1",e).prop("checked", false);
+    $("#checkBox2",e).prop("checked", new Function() {
+      @Override
+      public Object f(Element e, int i) {
+        return Boolean.TRUE;
+      }
+    });
+    
+    assertTrue($("#checkBox2",e).prop("checked"));
+    assertFalse($("#checkBox1",e).prop("checked"));
+    
+  }
 
   public void testProperties() {
     Properties p = $$("border:'1px solid black'");
