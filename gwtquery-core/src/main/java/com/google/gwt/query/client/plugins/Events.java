@@ -17,6 +17,7 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.events.EventsListener;
@@ -36,6 +37,13 @@ public class Events extends GQuery {
       }
     });
   }
+  
+  /**
+   * Don't apply events on text and comment nodes !!
+   */
+  private static boolean isEventCapable(Node n){
+    return n.getNodeType() != 3 && n.getNodeType() != 8;
+  }
 
   public Events(GQuery gq) {
     super(gq);
@@ -54,7 +62,9 @@ public class Events extends GQuery {
    */
   public Events bind(int eventbits, Object data, Function... funcs) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(eventbits, data, funcs);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).bind(eventbits, data, funcs);
+      }
     }
     return this;
   }
@@ -75,7 +85,9 @@ public class Events extends GQuery {
   public Events bind(int eventbits, String namespace, Object data,
       Function... funcs) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(eventbits, namespace, data, funcs);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).bind(eventbits, namespace, data, funcs);
+      }
     }
     return this;
   }
@@ -95,7 +107,9 @@ public class Events extends GQuery {
    */
   public Events bind(String event, Object data, Function... funcs) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(event, data, funcs);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).bind(event, data, funcs);
+      }
     }
     return this;
   }
@@ -149,7 +163,9 @@ public class Events extends GQuery {
    */
   public Events one(int eventbits, final Object data, final Function f) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).bind(eventbits, data, f, 1);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).bind(eventbits, data, f, 1);
+      }
     }
     return this;
   }
@@ -239,7 +255,9 @@ public class Events extends GQuery {
    */
   public Events unbind(int eventbits) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).unbind(eventbits);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).unbind(eventbits);
+      }
     }
     return this;
   }
@@ -252,7 +270,9 @@ public class Events extends GQuery {
    */
   public Events unbind(int eventbits, String name) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).unbind(eventbits, name);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).unbind(eventbits, name);
+      }
     }
     return this;
   }
@@ -265,22 +285,30 @@ public class Events extends GQuery {
    */
   public Events unbind(String name) {
     for (Element e : elements()) {
-      EventsListener.getInstance(e).unbind(name);
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).unbind(name);
+      }
     }
     return this;
   }
 
   private void dispatchEvent(NativeEvent evt) {
     for (Element e : elements()) {
-      e.dispatchEvent(evt);
+      if (isEventCapable(e)){
+        e.dispatchEvent(evt);
+      }
     }
   }
   
   public Events undelegate(){
     for (Element e : elements()) {
-      EventsListener.getInstance(e).cleanEventDelegation();
+      if (isEventCapable(e)){
+        EventsListener.getInstance(e).cleanEventDelegation();
+      }
     }
     return this;
   }
+  
+  
 
 }
