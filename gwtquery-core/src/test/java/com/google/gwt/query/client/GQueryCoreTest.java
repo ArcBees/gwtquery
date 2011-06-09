@@ -1639,5 +1639,12 @@ public class GQueryCoreTest extends GWTTestCase {
       assertEquals($(selector).toString(), $(xselector).toString());
     }
   }
+  
+  public void testIssue81(){
+    GQuery test = $("     <div>blop</div><!-- comment --> <p>test2</p>    ");
+    test.addClass("test");
+    test.removeClass("test");
+    
+  }
 
 }

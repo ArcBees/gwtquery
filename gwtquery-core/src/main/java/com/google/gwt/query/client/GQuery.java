@@ -569,8 +569,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery addClass(String... classes) {
     for (Element e : elements) {
-      for (String clz : classes) {
-        e.addClassName(clz);
+      //issue 81 : ensure that the element is an Element node.
+      if (Element.is(e)){
+        for (String clz : classes) {
+          e.addClassName(clz);
+        }
       }
     }
     return this;
@@ -3024,8 +3027,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery removeClass(String... classes) {
     for (Element e : elements) {
-      for (String clz : classes) {
-        e.removeClassName(clz);
+      if (Element.is(e)){
+        for (String clz : classes) {
+          e.removeClassName(clz);
+        }
       }
     }
     return this;
