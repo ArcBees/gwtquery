@@ -50,7 +50,9 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
   }
 
+  public static final String STOP_DATA_KEY = "com.google.gwt.query.client.plugins.QueuePlugin.StopData";
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
+  
 
   protected QueuePlugin(GQuery gq) {
     super(gq);
@@ -124,10 +126,19 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * value of the parameter: - remove it from the queue and start the next one.
    * - or remove all functions in the queue.
    */
-  @SuppressWarnings("unchecked")
   public T stop(boolean clearQueue) {
+    return stop(clearQueue, null);
+  }
+  
+  /**
+   * Stop the function which is currently in execution and depending on the
+   * value of the parameter: - remove it from the queue and start the next one.
+   * - or remove all functions in the queue.
+   */
+  @SuppressWarnings("unchecked")
+  public T stop(boolean clearQueue, Object stopData) {
     for (Element e : elements()) {
-      stop(e, clearQueue);
+      stop(e, clearQueue, stopData);
     }
     return (T) this;
   }
@@ -177,13 +188,22 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
   }
 
-  private void stop(Element elem, boolean clear) {
+  private void stop(Element elem, boolean clear, Object data) {
     Queue<?> q = queue(elem, null);
     if (q != null) {
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
+          boolean putData = data != null;
+          if (putData){
+            $(elem).data(STOP_DATA_KEY, data);
+          }
+          
           ((Function) f).cancel(elem);
+          
+          if (putData){
+            $(elem).removeData(STOP_DATA_KEY);
+          }
         }
       }
       if (clear) {

@@ -277,7 +277,7 @@ public class Effects extends QueuePlugin<Effects> {
       public void f(Element e) {
         Animation anim = new ClipAnimation(e, a, c, d, f);
         anim.run(duration);
-        data(e, EFFECTS_RUNNNING, a);
+        data(e, EFFECTS_RUNNNING, anim);
       }
     });
     return this;
@@ -532,15 +532,7 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects slideUp(int millisecs, Function... f) {
     return animate("height: 'hide'", millisecs, f);
   }
-
-  /**
-   * Toggle displaying each of the set of matched elements.
-   */
-  /*
-   * -> already implemented in GQuery and this is the good one
-   * 
-   * @Override public Effects toggle() { return toogle(Speed.DEFAULT); }
-   */
+  
 
   /**
    * Toggle displaying each of the set of matched elements.

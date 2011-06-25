@@ -357,4 +357,66 @@ public class GQueryEffectsTest extends GWTTestCase {
     timer.schedule(duration * 2);
   }
   
+  public void testStop() {
+    $(e)
+    .html(
+        "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
+
+    final GQuery sectA = $("#id1");
+    final GQuery sectB = $("#id2");
+    final GQuery sectC = $("#id2");
+    
+    sectA.hide();
+    sectA.fadeIn(2000);
+    sectB.fadeOut(2000).delay(500).fadeIn(1000);
+    sectC.fadeOut(2000).delay(500).fadeIn(1000);
+
+    // Call stop 
+    Timer timerMidTime = new Timer() {
+      public void run() {
+        sectA.stop();
+        sectB.stop(true, true);
+        sectC.stop(false, false);
+        
+        Double o  = Double.valueOf(sectA.css("opacity"));
+        sectA.data("opacityA", o);
+        assertTrue(
+            "'sectA' opacity must be in the interval 0.5-1 but is: " + o,
+            o > 0.5 && o < 1);
+        
+        //animation should jump to the end
+        assertEquals("none", sectB.css("display"));
+        
+        o = Double.valueOf(sectC.css("opacity"));
+        sectC.data("opacityC", o);
+        assertTrue(
+            "'sectC' opacity must be in the interval 0-0.5 but is: " + o,
+            o > 0 && o < 0.5);
+      }
+    };
+    
+    
+    Timer timerLongTime = new Timer() {
+      public void run() {
+        Double midAOpacity = sectA.data("opacityA", Double.class);
+        //animation was stopped, opacity should not change
+        assertEquals(midAOpacity, Double.valueOf(sectA.css("opacity")));
+        //animation was stopped and jumped to the end, the queue was cleared so no change too.
+        assertEquals("none", sectB.css("display")); 
+        
+        //fadeOut was stopped but fadeIn should continue
+        Double midCOpacity = sectC.data("opacityC", Double.class);
+        Double laterCOpacity = Double.valueOf(sectC.css("opacity"));
+        assertTrue(laterCOpacity > midCOpacity);
+        // Last delayed assertion has to stop the test to avoid a timeout
+        // failure
+        finishTest();
+      }
+    };
+    // schedule timer
+    timerMidTime.schedule(1200);
+    // schedule timer
+    timerLongTime.schedule(2200);
+  
+  }
 }

@@ -47,8 +47,8 @@ public class ClipAnimation extends Animation {
     BIDIRECTIONAL, HORIZONTAL, VERTICAL
   }
 
-  private static final String[] attrsToSave = new String[] { "position",
-      "overflow", "visibility", "white-space", "top", "left" };
+  private static final String[] attrsToSave = new String[]{
+      "position", "overflow", "visibility", "white-space", "top", "left"};
 
   Action action;
   Corner corner;
@@ -61,8 +61,8 @@ public class ClipAnimation extends Animation {
 
   public ClipAnimation(Element elem, Action a, Corner c, Direction d,
       final Function... funcs) {
-    if  (a == Action.TOGGLE) {
-      a = GQuery.$(elem).visible() ? Action.HIDE : Action.SHOW; 
+    if (a == Action.TOGGLE) {
+      a = GQuery.$(elem).visible() ? Action.HIDE : Action.SHOW;
     }
     this.action = a;
     this.corner = c;
@@ -74,19 +74,16 @@ public class ClipAnimation extends Animation {
 
   @Override
   public void onCancel() {
-    onComplete();
+    Boolean jumpToEnd = Effects.$(e).data(Effects.STOP_DATA_KEY, Boolean.class);
+    
+    if (jumpToEnd != null && jumpToEnd) {
+      onCompleteImpl();
+    }
   }
 
   @Override
   public void onComplete() {
-    super.onComplete();
-    if (action == Action.HIDE) {
-      g.hide();
-    }
-    g.restoreCssAttrs(attrsToSave);
-    back.remove();
-    back = Effects.$();
-    g.css("clip", "");
+    onCompleteImpl();
     g.each(funcs);
     g.dequeue();
   }
@@ -138,5 +135,17 @@ public class ClipAnimation extends Animation {
     }
     String rect = top + "px " + right + "px " + bottom + "px  " + left + "px";
     g.css("clip", "rect(" + rect + ")");
+  }
+  
+  private void onCompleteImpl(){
+    
+    super.onComplete();
+    if (action == Action.HIDE) {
+      g.hide();
+    }
+    g.restoreCssAttrs(attrsToSave);
+    back.remove();
+    back = Effects.$();
+    g.css("clip", "");
   }
 }

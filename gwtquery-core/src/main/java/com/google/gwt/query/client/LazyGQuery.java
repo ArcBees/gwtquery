@@ -408,7 +408,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Bind a set of functions to the blur event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * trigger the blur event if no functions are provided.
    */
   LazyGQuery<T> blur(Function... f);
 
@@ -1957,6 +1957,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Stop the animation currently running.
    */
   LazyGQuery<T> stop(boolean clearQueue);
+
+  /**
+   * Stop the animation currently running.
+   */
+  LazyGQuery<T> stop(boolean clearQueue, boolean jumpToEnd);
 
   /**
    * Bind a set of functions to the submit event of each matched element. 

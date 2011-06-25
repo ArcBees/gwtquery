@@ -210,23 +210,15 @@ public class PropertiesAnimation extends Animation {
 
   @Override
   public void onCancel() {
-    onComplete();
+    Boolean jumpToEnd = Effects.$(e).data(Effects.STOP_DATA_KEY, Boolean.class);
+    if (jumpToEnd != null && jumpToEnd){
+      onCompleteImpl();
+    }
   }
 
   @Override
   public void onComplete() {
-    super.onComplete();
-    for (int i = 0; i < effects.length(); i++) {
-      Fx fx = effects.get(i);
-      if ("hide".equals(fx.value)) {
-        g.hide();
-        g.restoreCssAttrs(fx.cssprop);
-      } else if ("show".equals(fx.value)) {
-        g.show();
-        g.restoreCssAttrs(fx.cssprop);
-      }
-    }
-    g.restoreCssAttrs(ATTRS_TO_SAVE);
+    onCompleteImpl();
     g.each(funcs);
     g.dequeue();
   }
@@ -271,6 +263,21 @@ public class PropertiesAnimation extends Animation {
     }
     // maybe return super.interpolate() instead ?
     return progress;
+  }
+  
+  private void onCompleteImpl(){
+    super.onComplete();
+    for (int i = 0; i < effects.length(); i++) {
+      Fx fx = effects.get(i);
+      if ("hide".equals(fx.value)) {
+        g.hide();
+        g.restoreCssAttrs(fx.cssprop);
+      } else if ("show".equals(fx.value)) {
+        g.show();
+        g.restoreCssAttrs(fx.cssprop);
+      }
+    }
+    g.restoreCssAttrs(ATTRS_TO_SAVE);
   }
 
 }

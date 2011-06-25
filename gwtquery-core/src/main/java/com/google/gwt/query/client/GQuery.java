@@ -986,7 +986,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Bind a set of functions to the blur event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * trigger the blur event if no functions are provided.
    */
   public GQuery blur(Function... f) {
     return bindOrFire(Event.ONBLUR, null, f);
@@ -3443,9 +3443,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Stop the animation currently running.
    */
-  // TODO: implements jumpToEnd
   public GQuery stop(boolean clearQueue) {
-    return as(Effects).stop(clearQueue);
+    return stop(clearQueue, false);
+  }
+  
+  /**
+   * Stop the animation currently running.
+   */
+  public GQuery stop(boolean clearQueue, boolean jumpToEnd) {
+    return as(Effects).stop(clearQueue, (Object) jumpToEnd);
   }
 
   /**
