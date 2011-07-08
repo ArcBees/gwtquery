@@ -350,14 +350,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $().createLazy();
   }
 
-  public static void registerPlugin(Class<? extends GQuery> plugin,
-      Plugin<? extends GQuery> pluginFactory) {
+  public static <T extends GQuery> Class<T> registerPlugin(Class<T> plugin,
+      Plugin<T> pluginFactory) {
     if (plugins == null) {
       plugins = JsMap.createObject().cast();
     }
     plugins.put(plugin, pluginFactory);
+    return plugin;
   }
-
   
   @SuppressWarnings("unchecked")
   protected static GQuery cleanHtmlString(String elem, Document doc) {

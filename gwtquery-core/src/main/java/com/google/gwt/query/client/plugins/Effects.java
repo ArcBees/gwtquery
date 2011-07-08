@@ -40,17 +40,14 @@ public class Effects extends QueuePlugin<Effects> {
     public static final int SLOW = 600;
   }
 
-  public static final Class<Effects> Effects = Effects.class;
-
   private static final String EFFECTS_RUNNNING = "EffectsRunnning";
 
-  static {
-    GQuery.registerPlugin(Effects.class, new Plugin<Effects>() {
-      public Effects init(GQuery gq) {
-        return new Effects(gq);
-      }
-    });
-  }
+  public static final Class<Effects> Effects = GQuery.registerPlugin(
+      Effects.class, new Plugin<Effects>() {
+        public Effects init(GQuery gq) {
+          return new Effects(gq);
+        }
+      });
 
   protected Effects(GQuery gq) {
     super(gq);
