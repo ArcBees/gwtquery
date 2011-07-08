@@ -93,7 +93,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     }
   };
 
-  private static Object[] regs = new Object[]{
+  public static Object[] regs = new Object[]{
     // scape some dots and spaces
     "(['\\[])([^'\\]]+)([\\s\\.#])([^'\\]]+)(['\\]])", rc_scp,
     // add @ for attrib
@@ -204,23 +204,21 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
   public NodeList<Element> select(String sel, Node ctx) {
     if (cache == null) {
-      JsNamedArray.create();
+      cache = JsNamedArray.create();
     }
-    JsNodeArray elm = JsNodeArray.create();
     String xsel = cache.get(sel);
     if (xsel == null) {
       xsel =  sel.startsWith("./") || sel.startsWith("/") ? sel : css2Xpath(sel);
       cache.put(sel, xsel);
     }
+    
+    JsNodeArray elm = JsNodeArray.create();
     try {
       SelectorEngine.xpathEvaluate(xsel, ctx, elm);
+      return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();    
     } catch (Exception e) {
-      if (sel.startsWith("./") || sel.startsWith("/")) {
-        System.err.println("ERROR: xpathEvaluate: " + sel + " xpath: " + xsel + 
-            "\nIf the syntax of your css selector is correct, report the error to gquery team.\n\n" + e.getMessage());
-      }
+      System.err.println("ERROR: xpathEvaluate invalid xpath expression:" + xsel + " css-selector:" + sel + "\n\n" + e.getMessage());
+      return elm;
     }
-    return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
-  
 }

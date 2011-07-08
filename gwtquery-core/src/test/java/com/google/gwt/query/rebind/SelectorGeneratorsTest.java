@@ -17,7 +17,12 @@ package com.google.gwt.query.rebind;
 
 import java.util.ArrayList;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.ReplaceCallback;
 
 /**
@@ -26,10 +31,27 @@ import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.ReplaceCallback
 public class SelectorGeneratorsTest extends GWTTestCase {
 
   public String getModuleName() {
-    return   null; 
+    return null; 
   }
+  
+  public void assertReplacers(String s) {
+    Object[] regs = SelectorEngineCssToXPath.regs;
+    String r1 = s, r2 = s;
+    for (int i = 0; i < regs.length;) {
+      r1 = SelectorGeneratorCssToXPath.replacerJvm.replaceAll(r1, regs[i].toString(), regs[i+1]);
+      r2 = SelectorGeneratorCssToXPath.replacer.replaceAll(r2, regs[i].toString(), regs[i+1]);
+      i+=2;
+    }
+    assertEquals(r1, r2);
+  }
+  
+  public void testReplacers() {
+    assertReplacers("table:contains('String With | @ ~= Space Points.s and Hash#es')");
+  }
+  
 
-  public void testCss2Xpath() {
+  public void testCss2Xpath() throws Exception {
+    
     SelectorGeneratorCssToXPath sel = new SelectorGeneratorCssToXPath();
     
     assertEquals(".//div[starts-with(@class,'exa') and (substring(@class,string-length(@class)-3)='mple')]", 
@@ -73,15 +95,24 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     assertEquals(".//table[contains(string(.),'String With | @ ~= Space Points.s and Hash#es')]", 
         sel.css2Xpath("table:contains('String With | @ ~= Space Points.s and Hash#es')"));
 
-    assertEquals(".//a[starts-with(@href,'http') and (contains(@href,'youtube.com/'))]", 
-        sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
+    String xsel = sel.css2Xpath("div[@class='comment']:contains('John')");
+    sel.validateXpath(xsel);
+    assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", xsel);
   }
 
   public void testReplaceAll() {
-    assertEquals("<img src=\"thumbs/01\"/> <img src=\"thumbs/03\"/>", SelectorGeneratorCssToXPath.replacer.replaceAll("/[thumb01]/ /[thumb03]/", "/\\[thumb(\\d+)\\]/", new ReplaceCallback() {
+    assertEquals("<img src='thumbs/01'/> <img src='thumbs/03'/>", 
+        SelectorGeneratorCssToXPath.replacerGwt.replaceAll("/[thumb01]/ /[thumb03]/", "/\\[thumb(\\d+)\\]/", new ReplaceCallback() {
       public String foundMatch(ArrayList<String>s) {
-        return "<img src=\"thumbs/" + s.get(1) + "\"/>";
+        return "<img src='thumbs/" + s.get(1) + "'/>";
       }
     }));
+  }
+  
+  public void testValidation() throws XPathExpressionException {
+    SelectorGeneratorCssToXPath sel = new SelectorGeneratorCssToXPath();
+    XPathFactory factory = XPathFactory.newInstance();
+    XPath xpath = factory.newXPath();
+    xpath.compile(sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
   }
 }
