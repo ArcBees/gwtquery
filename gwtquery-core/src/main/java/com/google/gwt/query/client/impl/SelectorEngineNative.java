@@ -26,7 +26,7 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineNative extends SelectorEngineImpl {
 
-  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=).*";
+  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=|:first|:last|:even|:odd).*";
   
   private static HasSelector impl;
   

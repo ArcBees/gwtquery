@@ -99,7 +99,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     // add @ for attrib
     "\\[([^@\\]~\\$\\*\\^\\|\\!]+)(=[^\\]]+)?\\]", "[@$1$2]",
     // multiple queries
-    "\\s*,\\s*", "|",
+    "\\s*,\\s*", "|.//",
     // , + ~ >
     "\\s*(\\+|~|>)\\s*", "$1",
     //* ~ + >
@@ -120,7 +120,12 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     "([\\w\\-\\*]+):only-child", "*[last()=1]/self::$1",
     // :empty
     "([\\w\\-\\*]+):empty", "$1[not(*) and not(normalize-space())]",
+    // :odd :even, this is intentional since sizzle behaves so
+    ":odd" , ":nth-child(even)",
+    ":even" , ":nth-child(odd)",
+    // :not
     "(.+):not\\(([^\\)]*)\\)", rc_Not,
+    // :nth-child
     "([a-zA-Z0-9\\_\\-\\*]+):nth-child\\(([^\\)]*)\\)", rc_nth_child,
     // :contains(selectors)
     ":contains\\(([^\\)]*)\\)", "[contains(string(.),'$1')]",
@@ -145,6 +150,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     ":(enabled)", "[not(@disabled)]",
     ":(checked)", "[@$1='$1']",
     ":(disabled)", "[@$1]",
+    ":(first)", "[1]",
+    ":(last)", "[last()]",
     // put '*' when tag is omitted
     "(^|\\|)(\\[)", "$1*$2",
     // Replace escaped dots and spaces
