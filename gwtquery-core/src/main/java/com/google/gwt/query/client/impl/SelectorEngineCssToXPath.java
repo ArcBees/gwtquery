@@ -153,7 +153,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     ":(first)", "[1]",
     ":(last)", "[last()]",
     // put '*' when tag is omitted
-    "(^|\\|)(\\[)", "$1*$2",
+    "(^|\\|[\\./]*)(\\[)", "$1*$2",
     // Replace escaped dots and spaces
     "%S%"," ",
     "%P%",".",
