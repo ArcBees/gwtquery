@@ -33,7 +33,10 @@ public class SelectorGeneratorNative extends SelectorGeneratorCssToXPath {
       throws UnableToCompleteException {
 
     String selector = method.getAnnotation(Selector.class).value();
-    if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
+    if (selector.matches("#[\\w\\-]+")) {
+      sw.println("return "
+          + wrap(method, "veryQuickId(\"" + selector.substring(1) + "\", root)") + ";");
+    } else if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {
       sw.println("return "

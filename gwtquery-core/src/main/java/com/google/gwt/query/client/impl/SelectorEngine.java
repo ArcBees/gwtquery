@@ -55,6 +55,12 @@ public class SelectorEngine implements HasSelector {
       Node ctx) /*-{
       return ctx.querySelectorAll(selector);
   }-*/;
+  
+  public static NodeList<Element> veryQuickId(String id, Node ctx) {
+    Document d = ctx.getNodeType() == Node.DOCUMENT_NODE
+        ? ctx.<Document> cast() : ctx.getOwnerDocument();
+    return JsNodeArray.create(d.getElementById(id));
+  }
 
   public static NodeList<Element> xpathEvaluate(String selector, Node ctx) {
     return xpathEvaluate(selector, ctx, JsNodeArray.create());
@@ -93,17 +99,6 @@ public class SelectorEngine implements HasSelector {
   public void setRoot(Node root) {
     assert root != null;
     this.root = root;
-  }
-  
-  protected JsNodeArray veryQuickId(Node context, String id) {
-    JsNodeArray r = JsNodeArray.create();
-    if (context.getNodeType() == Node.DOCUMENT_NODE) {
-      r.addNode(((Document) context).getElementById(id));
-      return r;
-    } else {
-      r.addNode(context.getOwnerDocument().getElementById(id));
-      return r;
-    }
   }
   
   public String getName() {

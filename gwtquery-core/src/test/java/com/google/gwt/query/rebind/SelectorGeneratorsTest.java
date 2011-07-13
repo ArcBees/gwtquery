@@ -113,6 +113,8 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     SelectorGeneratorCssToXPath sel = new SelectorGeneratorCssToXPath();
     XPathFactory factory = XPathFactory.newInstance();
     XPath xpath = factory.newXPath();
+    System.out.println(sel.css2Xpath("path[to=1428],#from-1428"));
+    xpath.compile(sel.css2Xpath("path[to=1428],#from-1428"));
     xpath.compile(sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
   }
 }

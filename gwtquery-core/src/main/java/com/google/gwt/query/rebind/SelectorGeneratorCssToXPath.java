@@ -126,8 +126,7 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
     }
 
     sw.println("return "
-        + wrap(method, "SelectorEngine.xpathEvaluate(\"" + xselector
-            + "\", root)") + ";");
+        + wrap(method, "xpathEvaluate(\"" + xselector + "\", root)") + ";");
   }
   
   public void validateXpath(String xselector) throws XPathExpressionException {

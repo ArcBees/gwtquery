@@ -224,7 +224,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       SelectorEngine.xpathEvaluate(xsel, ctx, elm);
       return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();    
     } catch (Exception e) {
-      System.err.println("ERROR: xpathEvaluate invalid xpath expression:" + xsel + " css-selector:" + sel + "\n\n" + e.getMessage());
+      System.err.println("ERROR: xpathEvaluate invalid xpath expression:"
+          + xsel + " css-selector:" + sel + "\n\n" + e.getMessage());
       return elm;
     }
   }

@@ -37,12 +37,18 @@ public class SelectorEngineNative extends SelectorEngineImpl {
   }
   
   public NodeList<Element> select(String selector, Node ctx) {
-    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+    // querySelectorAllImpl does not support ids starting with a digit.
+    if (selector.matches("#[\\w\\-]+")) {
+      return SelectorEngine.veryQuickId(ctx, selector.substring(1));
+    } else if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return impl.select(selector, ctx); 
     } else {
       try {
         return SelectorEngine.querySelectorAllImpl(selector, ctx);
       } catch (Exception e) {
+        System.err.println("ERROR SelectorEngineNative " + e.getMessage()
+            + " " + selector + ", falling back to "
+            + impl.getClass().getName().replaceAll(".*\\.", ""));
         return impl.select(selector, ctx); 
       }
     }
