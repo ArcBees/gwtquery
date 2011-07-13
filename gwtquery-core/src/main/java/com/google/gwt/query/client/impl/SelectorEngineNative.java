@@ -39,7 +39,7 @@ public class SelectorEngineNative extends SelectorEngineImpl {
   public NodeList<Element> select(String selector, Node ctx) {
     // querySelectorAllImpl does not support ids starting with a digit.
     if (selector.matches("#[\\w\\-]+")) {
-      return SelectorEngine.veryQuickId(ctx, selector.substring(1));
+      return SelectorEngine.veryQuickId(selector.substring(1), ctx);
     } else if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return impl.select(selector, ctx); 
     } else {
