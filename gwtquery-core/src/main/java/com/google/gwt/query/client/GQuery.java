@@ -657,18 +657,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Example:
    * 
    * <pre class="code">
-   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'"), 400, Easing.SWING);
    * </pre>
    * 
-   * @param p a {@link Properties} object containing css properties to animate.
+   * @param stringOrProperties a String or a {@link Properties} object containing css properties to animate.
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
    * @param duration the duration in milliseconds of the animation
    * @param easing the easing function to use for the transition
    */
-  public GQuery animate(Properties p, int duration, Easing easing,
-      Function... funcs) {
-    return as(Effects).animate(p, duration, easing, funcs);
+  public GQuery animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
+    return as(Effects).animate(stringOrProperties, duration, easing, funcs);
   }
 
   /**

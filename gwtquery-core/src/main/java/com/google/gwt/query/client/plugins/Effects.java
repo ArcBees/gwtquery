@@ -95,7 +95,8 @@ public class Effects extends QueuePlugin<Effects> {
    * Example:
    * 
    * <pre class="code">
-   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'", 400, Easing.SWING);
+   *  $("#foo").animate($$("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
    * </pre>
    * 
    * @param p a {@link Properties} object containing css properties to animate.
@@ -104,8 +105,12 @@ public class Effects extends QueuePlugin<Effects> {
    * @param duration the duration in milliseconds of the animation
    * @param easing the easing function to use for the transition
    */
-  public Effects animate(final Properties p, final int duration,
+  public Effects animate(Object stringOrProperties, final int duration,
       final Easing easing, final Function... funcs) {
+
+    final Properties p = (stringOrProperties instanceof String)
+        ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
+    
     queue(new Function() {
       public void cancel(Element e) {
         Animation anim = (Animation) data(e, EFFECTS_RUNNNING, null);
