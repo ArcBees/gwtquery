@@ -28,7 +28,7 @@ public class Properties extends JavaScriptObject {
   }
   
   public static Properties create(String properties) {
-    String p = wrapPropertiesString(properties);
+    String p = camelizePropertiesKeys(wrapPropertiesString(properties));
     try {
       return (Properties) createImpl(p);
     } catch (Exception e) {
@@ -56,6 +56,12 @@ public class Properties extends JavaScriptObject {
         + "})";
     return ret;
   }
+  
+  public static native String camelizePropertiesKeys(String s)/*-{
+    return s.replace(/(\w+)\-(\w)(\w*:)/g, function(all, g1, letter, g2) {
+      return g1 + letter.toUpperCase() + g2;
+    });
+  }-*/;
 
   protected Properties() {
   }
