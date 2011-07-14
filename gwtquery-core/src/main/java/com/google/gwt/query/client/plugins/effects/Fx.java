@@ -226,13 +226,15 @@ public class Fx {
   public void applyValue(GQuery g, double progress) {
     double ret = (start + ((end - start) * progress));
     String value = ("px".equals(unit) ? ((int) ret) : ret) + unit;
-    
-    if (attribute != null) {
+    if ("scrollTop".equals(cssprop)) {
+      g.scrollTop((int)ret);
+    } else if ("scrollLeft".equals(cssprop)) {
+      g.scrollLeft((int)ret);
+    } else if (attribute != null) {
       g.attr(attribute, value);
     } else {
       g.css(cssprop, value);
     }
-
   }
 
   public String toString() {
