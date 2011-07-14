@@ -984,11 +984,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Bind a set of functions to the blur event of each matched element. Or
-   * trigger the blur event if no functions are provided.
+   * Bind a set of functions to the blur event of each matched element. 
+   * Or trigger the blur event if no functions are provided.
    */
   public GQuery blur(Function... f) {
-    return bindOrFire(Event.ONBLUR, null, f);
+    bindOrFire(Event.ONBLUR, null, f);
+    if (!isEmpty() && f.length == 0) {
+      get(0).blur();
+    }
+    return this;
   }
 
   /**
@@ -1920,10 +1924,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Bind a set of functions to the focus event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * trigger the event and move the input focus to the first element 
+   * if no functions are provided.
    */
   public GQuery focus(Function... f) {
-    return bindOrFire(Event.ONFOCUS, null, f);
+    bindOrFire(Event.ONFOCUS, null, f);
+    if (!isEmpty() && f.length == 0) {
+      get(0).focus();
+    }
+    return this;
   }
 
   /**
