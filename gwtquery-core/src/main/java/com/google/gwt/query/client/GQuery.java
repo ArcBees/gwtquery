@@ -498,7 +498,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             engine.impl : new SelectorEngineCssToXPath();
       }
     }
-    NodeList<Element> n = impl.select(selector, context);
+    NodeList<Element> n = impl.select(selector, context == null ? document : context);
     JsNodeArray res = copyNodeList(n);
 
     currentSelector = selector;
