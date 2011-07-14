@@ -34,13 +34,18 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       @Override
       public void run() {
         dequeue();
+        g.each(funcs);
       }
     }
 
     private int delay;
+    Function[] funcs;
+    GQuery g;
 
-    public DelayFunction(int delayInMilliseconds) {
+    public DelayFunction(GQuery gquery, int delayInMilliseconds, Function... f) {
+      this.g = gquery;
       this.delay = delayInMilliseconds;
+      this.funcs = f;
     }
 
     @Override
@@ -74,8 +79,8 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * Add a delay in the queue
    */
   @SuppressWarnings("unchecked")
-  public T delay(int milliseconds) {
-    queue(new DelayFunction(milliseconds));
+  public T delay(int milliseconds, Function... funcs) {
+    queue(new DelayFunction(this, milliseconds));
     return (T) this;
   }
 
@@ -180,6 +185,12 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       return q;
     }
     return null;
+  }
+  
+  public void dequeueIfNotDoneYet(Element elem, Object o) {
+    if (o.equals(queue(elem, null).peek())) {
+      dequeue();
+    }
   }
 
   private void replacequeue(Element elem, Queue<?> queue) {

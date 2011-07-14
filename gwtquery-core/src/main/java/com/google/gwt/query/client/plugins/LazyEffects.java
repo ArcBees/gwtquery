@@ -70,7 +70,8 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * Example:
    * 
    * <pre class="code">
-   *  $("#foo").animate(Properties.create("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'", 400, Easing.SWING);
+   *  $("#foo").animate($$("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
    * </pre>
    * 
    * @param p a {@link Properties} object containing css properties to animate.
@@ -79,7 +80,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * @param duration the duration in milliseconds of the animation
    * @param easing the easing function to use for the transition
    */
-  LazyEffects<T> animate(Properties p, int duration, Easing easing, Function... funcs);
+  LazyEffects<T> animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
 
   /**
    * 

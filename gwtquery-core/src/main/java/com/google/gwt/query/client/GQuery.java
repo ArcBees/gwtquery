@@ -1399,40 +1399,55 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Insert a delay (in ms) in the Effects queue.
+   * Insert a delay (in ms) in the GQuery queue, and optionally execute one o
+   * more functions if provided when the delay finishes.
+   * It uses the effects queue namespace, so you can stack any of the methods in the effects
+   * plugin.
    * 
    * Example:
    * 
    * <pre class="code">
-   * $('#foo').slideUp(300).delay(800).fadeIn(400); 
+   * $("#foo").slideUp(300)
+   *          .delay(800)
+   *          .fadeIn(400); 
    * </pre>
    * 
    * When this statement is executed, the element slides up for 300 milliseconds
    * and then pauses for 800 milliseconds before fading in for 400 milliseconds.
+   * Aditionally after those 800 milliseconds the element color is set to red.
    * 
-   * Please note that this methods affects only the Effects queue. So the
-   * following example is wrong:
+   * NOTE that this methods affects only methods which uses the queue like effects.
+   * So the following example is wrong:
    * 
    * <pre>
-   * $('#foo').css(CSS.COLOR.with(RGBColor.RED)).delay(800).css(CSS.COLOR.with(RGBColor.BLACK)); 
+   * $("#foo").css(CSS.COLOR.with(RGBColor.RED)).delay(800).css(CSS.COLOR.with(RGBColor.BLACK)); 
    * </pre>
    * 
    * The code above will not insert a delay of 800 ms between the css() calls !
-   * For this kind of behavior, please check {@link #delay(int, String)}
+   * For this kind of behavior, you should execute these methods puting them in inline 
+   * functions passed as argument to the delay() method, or adding them to the queue.
+   * 
+   * <pre>
+   * $("#foo").css(CSS.COLOR.with(RGBColor.RED)).delay(800, lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done()); 
+   * $("#foo").css(CSS.COLOR.with(RGBColor.RED)).delay(800).queue(lazy().css(CSS.COLOR.with(RGBColor.BLACK)).dequeue().done()); 
+   * </pre>
    */
-  public GQuery delay(int milliseconds) {
-    return as(Effects).delay(milliseconds);
+  public GQuery delay(int milliseconds, Function... f) {
+    return as(Effects).delay(milliseconds, f);
   }
 
   /**
    * Insert a delay (in ms) in the queue identified by the
-   * <code>queueName</code> parameter. if <code>queueName</code> is null or
+   * <code>queueName</code> parameter, and optionally execute one o
+   * more functions if provided when the delay finishes.
+   * 
+   * If <code>queueName</code> is null or
    * equats to 'fx', the delay will be inserted to the Effects queue.
    * 
    * Example :
    * 
    * <pre class="code">
-   * $('#foo').queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.RED)).done())
+   * $("#foo").queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.RED)).dequeue("colorQueue").done())
    *          .delay(800, "colorQueue")
    *          .queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done()); 
    * </pre>
@@ -1442,12 +1457,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * black.
    * 
    */
-  public GQuery delay(int milliseconds, String queueName) {
+  public GQuery delay(int milliseconds, String queueName, Function... f) {
     if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
-      return as(Effects).delay(milliseconds);
+      return as(Effects).delay(milliseconds, f);
     }
 
-    return as(SimpleNamedQueue).delay(milliseconds, queueName);
+    return as(SimpleNamedQueue).delay(milliseconds, queueName, f);
   }
 
   /**
@@ -1624,15 +1639,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Execute the next function on the Effects queue for the matched elements.
    * This method is usefull to tell when a function you add in the Effects queue
    * is ended and so the next function in the queue can start.
+   * 
+   * Note: you should be sure to call dequeue() in all functions of a queue chain,
+   * otherwise the queue execution will be stopped.
    */
   public GQuery dequeue() {
     return as(Effects).dequeue();
   }
 
   /**
-   * Execute the next function on the queue for the matched elements. This
-   * method is usefull to tell when a function you add in the Effects queue is
+   * Execute the next function on the queue named as queueName for the matched elements. 
+   * This method is usefull to tell when a function you add in the Effects queue is
    * ended and so the next function in the queue can start.
+   * 
+   * If you are queuing functions in a named queue (not the Effects one), 
+   * you do not need to call dequeue(queueName) since it is preformed automatically. 
+   * 
    */
   public GQuery dequeue(String queueName) {
     if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
@@ -2948,15 +2970,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *             $(e).css(CSS.BACKGROUNG_COLOR.with(RGBColor.RED));
    *             $(e).dequeue();     
    *          }
-   *        }).animate("left:'-=500'", 400)
+   *        })
+   *       .animate("left:'-=500'", 400)
+   *       .queue(lazy().css("color", "yellow");
+   *       
    * </pre>
    * 
    * When this statement is executed, the element move to 500 px to left for 400
    * ms, then its background color is changed to red and then move to 500px to
-   * right for 400ms.
+   * right for 400ms, and finally its color is set to yellow.
    * 
    * Please note that {@link #dequeue()} function is needed at the end of your
-   * function to start the next function in the queue. {@see #dequeue()}
+   * function to start the next function in the queue. In lazy() methods you should
+   * call dequeue() just before the done() call.
+   * {@see #dequeue()}
    */
   public GQuery queue(Function f) {
     return as(Effects).queue(f);
@@ -2971,23 +2998,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * $("#foo").queue("myQueue", new Function(){
    *          public void f(Element e){
    *             $(e).css(CSS.BACKGROUNG_COLOR.with(RGBColor.RED));
-   *             $(e).dequeue();     
    *          }
-   *        }).delay(500, "myQueue")
-   *        .queue("myQueue", new Function(){
-   *          public void f(Element e){
-   *             $(e).css(CSS.COLOR.with(RGBColor.YELLOW));
-   *             $(e).dequeue();     
-   *          }
-   *         });
+   *        })
+   *        .delay(500, "myQueue")
+   *        .queue("myQueue", lazy().css(CSS.COLOR.with(RGBColor.YELLOW)).done());
    * </pre>
    * 
    * When this statement is executed, the background color of the element is set
    * to red, then wait 500ms before to set the text color of the element to
    * yellow. right for 400ms.
    * 
-   * Please note that {@link #dequeue()} function is needed at the end of your
-   * function to start the next function in the queue. {@see #dequeue()}
+   * NOTE: {@link #dequeue()} function is not needed at the end of your
+   * function unless you use the Effects ('fx') namespace.
+   * {@see #dequeue()}
    */
   public GQuery queue(String queueName, Function f) {
     if (queueName == null || "fx".equalsIgnoreCase(queueName)) {

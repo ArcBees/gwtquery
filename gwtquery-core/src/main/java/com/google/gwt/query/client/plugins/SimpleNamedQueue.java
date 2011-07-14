@@ -2,6 +2,7 @@ package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.Element;
 
 public class SimpleNamedQueue extends QueuePlugin<SimpleNamedQueue>{
 
@@ -21,15 +22,21 @@ public class SimpleNamedQueue extends QueuePlugin<SimpleNamedQueue>{
   private String queueName;
   
   @Override
-  public SimpleNamedQueue delay(int milliseconds, String queueName) {
+  public SimpleNamedQueue delay(int milliseconds, String queueName, Function... f) {
     this.queueName = queueName;
-    return delay(milliseconds);
+    return delay(milliseconds, f);
   }
   
   @Override
-  public SimpleNamedQueue queue(String queueName, Function func) {
+  public SimpleNamedQueue queue(final String queueName, final Function func) {
     this.queueName = queueName;
-    return queue(func);
+    return queue(new Function(){
+      @Override
+      public void f(Element e) {
+        func.f(e.<com.google.gwt.dom.client.Element>cast());
+        dequeueIfNotDoneYet(e, this);
+      }
+    });
   }
   
   @Override
