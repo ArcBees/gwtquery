@@ -17,6 +17,9 @@ package com.google.gwt.query.client.plugins.events;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -120,8 +123,6 @@ public class EventsListener implements EventListener {
         return true;
       }
 
-      String[] selectors = bindFunctionBySelector.keys();
-
       // first element where the event was fired
       Element eventTarget = getEventTarget(event);
       // last element where the event was dispatched on
@@ -131,31 +132,44 @@ public class EventsListener implements EventListener {
         return true;
       }
 
-      JsNamedArray<NodeList<Element>> realCurrentTargetBySelector = $(eventTarget).closest(
-          selectors, liveContextElement);
-
-      // nothing match the selectors
+      // Compute the live selectors which respond to this event type 
+      List<String> validSelectors = new ArrayList<String>();
+      for (String cssSelector : bindFunctionBySelector.keys()) {
+        JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+        for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) { 
+          BindFunction f  = bindFunctions.get(i); 
+          if (f.hasEventType(event.getTypeInt())) {
+            validSelectors.add(cssSelector);
+            break;
+          }
+        }
+      }
+      
+      // Create a structure of elements which matches the selectors
+      JsNamedArray<NodeList<Element>> realCurrentTargetBySelector = 
+        $(eventTarget).closest(validSelectors.toArray(new String[0]), liveContextElement);
+      // nothing matches the selectors
       if (realCurrentTargetBySelector.length() == 0) {
         return true;
       }
 
       boolean result = true;
-
       GqEvent gqEvent = GqEvent.create(event);
-
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) { 
           BindFunction f  = bindFunctions.get(i); 
-          NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
-          for (int j = 0; n != null && j < n.getLength(); j++) {
-            Element element = n.getItem(j);
-            gqEvent.setCurrentElementTarget(element);
-            boolean subResult = f.fire(gqEvent);
-            result &= subResult;
-            if (!subResult) {
-              // Event should not continue to be bubbled, break the second for
-              break;
+          if (f.hasEventType(event.getTypeInt())) {
+            NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
+            for (int j = 0; n != null && j < n.getLength(); j++) {
+              Element element = n.getItem(i);
+              gqEvent.setCurrentElementTarget(element);
+              boolean subResult = f.fire(gqEvent);
+              result &= subResult;
+              if (!subResult) {
+                // Event should not continue to be bubbled, break the second for
+                break;
+              }
             }
           }
         }
