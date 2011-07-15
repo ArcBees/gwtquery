@@ -407,8 +407,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> bind(String eventType, Object data, Function... funcs);
 
   /**
-   * Bind a set of functions to the blur event of each matched element. Or
-   * trigger the blur event if no functions are provided.
+   * Bind a set of functions to the blur event of each matched element. 
+   * Or trigger the blur event if no functions are provided.
    */
   LazyGQuery<T> blur(Function... f);
 
@@ -1032,7 +1032,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Bind a set of functions to the focus event of each matched element. Or
-   * trigger the event if no functions are provided.
+   * trigger the event and move the input focus to the first element 
+   * if no functions are provided.
    */
   LazyGQuery<T> focus(Function... f);
 
@@ -1685,7 +1686,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prop(String key, Function closure);
 
   /**
-   * Put a {@link Function} at the end of the Effects queue.
+   * Put a set of {@link Function} at the end of the Effects queue.
    * 
    * Example:
    * 
@@ -1711,10 +1712,10 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * call dequeue() just before the done() call.
    * {@see #dequeue()}
    */
-  LazyGQuery<T> queue(Function f);
+  LazyGQuery<T> queue(Function... f);
 
   /**
-   * Put a {@link Function} at the end of a queue.
+   * Put a set of {@link Function} at the end of a queue.
    * 
    * Example:
    * 
@@ -1736,7 +1737,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * function unless you use the Effects ('fx') namespace.
    * {@see #dequeue()}
    */
-  LazyGQuery<T> queue(String queueName, Function f);
+  LazyGQuery<T> queue(String queueName, Function... f);
 
   /**
    * Removes all matched elements from the DOM.
@@ -1972,17 +1973,39 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   Effects slideUp(int millisecs, Function... f);
 
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
    */
   LazyGQuery<T> stop();
 
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
+   * 
+   * If the clearQueue parameter is provided with a value of true, then the rest of the 
+   * animations in the queue are removed and never run.
    */
   LazyGQuery<T> stop(boolean clearQueue);
 
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
+   * 
+   * If the clearQueue parameter is provided with a value of true, then the rest of the 
+   * animations in the queue are removed and never run.
+   * 
+   * If the jumpToEnd property is provided with a value of true, the current animation stops, 
+   * but the element is immediately given its target values for each CSS property.
+   * The callback functions are then immediately called, if provided.
    */
   LazyGQuery<T> stop(boolean clearQueue, boolean jumpToEnd);
 

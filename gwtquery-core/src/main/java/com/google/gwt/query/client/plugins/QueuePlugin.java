@@ -55,7 +55,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
   }
 
-  public static final String STOP_DATA_KEY = "com.google.gwt.query.client.plugins.QueuePlugin.StopData";
+  public static final String JUMP_TO_END = "com.google.gwt.query.client.plugins.QueuePlugin.StopData";
   private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
   
 
@@ -96,13 +96,15 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
-   * Adds a new function, to be executed, onto the end of the queue of all
+   * Adds new functions, to be executed, onto the end of the queue of all
    * matched elements.
    */
   @SuppressWarnings("unchecked")
-  public T queue(Function func) {
+  public T queue(Function... funcs) {
     for (Element e : elements()) {
-      queue(e, func);
+      for (Function f: funcs) {
+        queue(e, f);
+      }
     }
     return (T) this;
   }
@@ -132,7 +134,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * - or remove all functions in the queue.
    */
   public T stop(boolean clearQueue) {
-    return stop(clearQueue, null);
+    return stop(clearQueue, false);
   }
   
   /**
@@ -141,9 +143,9 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * - or remove all functions in the queue.
    */
   @SuppressWarnings("unchecked")
-  public T stop(boolean clearQueue, Object stopData) {
+  public T stop(boolean clearQueue, boolean jumpToEnd) {
     for (Element e : elements()) {
-      stop(e, clearQueue, stopData);
+      stop(e, clearQueue, jumpToEnd);
     }
     return (T) this;
   }
@@ -199,22 +201,16 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
   }
 
-  private void stop(Element elem, boolean clear, Object data) {
+  private void stop(Element elem, boolean clear, boolean jumpToEnd) {
     Queue<?> q = queue(elem, null);
     if (q != null) {
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
-          boolean putData = data != null;
-          if (putData){
-            $(elem).data(STOP_DATA_KEY, data);
-          }
-          
+          // pass jumpToEnd to Annimation.onCancel() via the element's data object
+          $(elem).data(JUMP_TO_END, new Boolean(jumpToEnd));
           ((Function) f).cancel(elem);
-          
-          if (putData){
-            $(elem).removeData(STOP_DATA_KEY);
-          }
+          $(elem).removeData(JUMP_TO_END);
         }
       }
       if (clear) {

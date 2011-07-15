@@ -17,9 +17,7 @@ package com.google.gwt.query.rebind;
 
 import java.util.ArrayList;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
@@ -94,10 +92,9 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     
     assertEquals(".//table[contains(string(.),'String With | @ ~= Space Points.s and Hash#es')]", 
         sel.css2Xpath("table:contains('String With | @ ~= Space Points.s and Hash#es')"));
-
-    String xsel = sel.css2Xpath("div[@class='comment']:contains('John')");
-    sel.validateXpath(xsel);
-    assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", xsel);
+    
+    assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", 
+        sel.css2Xpath("div[@class='comment']:contains('John')"));
   }
 
   public void testReplaceAll() {
@@ -111,10 +108,8 @@ public class SelectorGeneratorsTest extends GWTTestCase {
   
   public void testValidation() throws XPathExpressionException {
     SelectorGeneratorCssToXPath sel = new SelectorGeneratorCssToXPath();
-    XPathFactory factory = XPathFactory.newInstance();
-    XPath xpath = factory.newXPath();
-    System.out.println(sel.css2Xpath("path[to=1428],#from-1428"));
-    xpath.compile(sel.css2Xpath("path[to=1428],#from-1428"));
-    xpath.compile(sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
+    sel.validateXpath(sel.css2Xpath("path[to=1428],#from-1428"));
+    sel.validateXpath(sel.css2Xpath("a[href^=http][href*=youtube.com/]"));
+    sel.validateXpath(sel.css2Xpath("div[@class='comment']:contains('John')"));
   }
 }

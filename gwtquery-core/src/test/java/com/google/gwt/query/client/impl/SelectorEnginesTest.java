@@ -48,7 +48,13 @@ public class SelectorEnginesTest extends GWTTestCase {
     
     assertEquals(".//div[not(contains(concat(' ',normalize-space(@class),' '),' example '))]", 
         sel.css2Xpath("div:not(.example)"));
+
+    assertEquals(".//*", 
+        sel.css2Xpath("*"));
     
+    assertEquals(".//input[@checked='checked']", 
+        sel.css2Xpath("input:checked"));
+
     assertEquals(".//*[@myAttr]", 
         sel.css2Xpath("[myAttr]"));
 
@@ -56,12 +62,17 @@ public class SelectorEnginesTest extends GWTTestCase {
         sel.css2Xpath("tag[myAttr=abcd]"));
     
     assertEquals(".//a[@href and (@lang) and (@class)]", 
-        sel.css2Xpath("a[href][lang][class]"));    
+        sel.css2Xpath("a[href][lang][class]"));
     
-    assertEquals(".//*[@checked='checked']|*[not(@disabled)]|*[@disabled]", 
-        sel.css2Xpath(":checked, :enabled, :disabled"));    
+    assertEquals(".//*[@checked='checked']|.//*[not(@disabled)]|.//*[@disabled]", 
+        sel.css2Xpath(":checked, :enabled, :disabled"));
+    
+    assertEquals(".//table[contains(string(.),'String With | @ ~= Space Points.s and Hash#es')]", 
+        sel.css2Xpath("table:contains('String With | @ ~= Space Points.s and Hash#es')"));
+    
+    assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", 
+        sel.css2Xpath("div[@class='comment']:contains('John')")); 
     
   }
-
 
 }

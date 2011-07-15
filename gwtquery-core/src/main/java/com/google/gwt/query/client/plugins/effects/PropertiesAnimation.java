@@ -210,16 +210,16 @@ public class PropertiesAnimation extends Animation {
 
   @Override
   public void onCancel() {
-    Boolean jumpToEnd = Effects.$(e).data(Effects.STOP_DATA_KEY, Boolean.class);
+    Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
     if (jumpToEnd != null && jumpToEnd){
       onCompleteImpl();
     }
+    //Do not dequeue here, stop() will do
   }
 
   @Override
   public void onComplete() {
     onCompleteImpl();
-    g.each(funcs);
     g.dequeue();
   }
 
@@ -278,6 +278,7 @@ public class PropertiesAnimation extends Animation {
       }
     }
     g.restoreCssAttrs(ATTRS_TO_SAVE);
+    g.each(funcs);
   }
 
 }

@@ -28,15 +28,18 @@ public class SimpleNamedQueue extends QueuePlugin<SimpleNamedQueue>{
   }
   
   @Override
-  public SimpleNamedQueue queue(final String queueName, final Function func) {
+  public SimpleNamedQueue queue(final String queueName, Function... funcs) {
     this.queueName = queueName;
-    return queue(new Function(){
-      @Override
-      public void f(Element e) {
-        func.f(e.<com.google.gwt.dom.client.Element>cast());
-        dequeueIfNotDoneYet(e, this);
-      }
-    });
+    for (final Function f: funcs) {
+      queue(new Function(){
+        @Override
+        public void f(Element e) {
+          f.f(e.<com.google.gwt.dom.client.Element>cast());
+          dequeueIfNotDoneYet(e, this);
+        }
+      });
+    }
+    return this;
   }
   
   @Override

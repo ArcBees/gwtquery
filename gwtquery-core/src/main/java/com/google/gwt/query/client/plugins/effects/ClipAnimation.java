@@ -74,17 +74,16 @@ public class ClipAnimation extends Animation {
 
   @Override
   public void onCancel() {
-    Boolean jumpToEnd = Effects.$(e).data(Effects.STOP_DATA_KEY, Boolean.class);
-    
+    Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
     if (jumpToEnd != null && jumpToEnd) {
       onCompleteImpl();
     }
+    //Do not dequeue here, stop() will do
   }
 
   @Override
   public void onComplete() {
     onCompleteImpl();
-    g.each(funcs);
     g.dequeue();
   }
 
@@ -138,7 +137,6 @@ public class ClipAnimation extends Animation {
   }
   
   private void onCompleteImpl(){
-    
     super.onComplete();
     if (action == Action.HIDE) {
       g.hide();
@@ -147,5 +145,6 @@ public class ClipAnimation extends Animation {
     back.remove();
     back = Effects.$();
     g.css("clip", "");
+    g.each(funcs);
   }
 }

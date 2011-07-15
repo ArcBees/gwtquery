@@ -2968,7 +2968,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Put a {@link Function} at the end of the Effects queue.
+   * Put a set of {@link Function} at the end of the Effects queue.
    * 
    * Example:
    * 
@@ -2994,12 +2994,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * call dequeue() just before the done() call.
    * {@see #dequeue()}
    */
-  public GQuery queue(Function f) {
+  public GQuery queue(Function... f) {
     return as(Effects).queue(f);
   }
 
   /**
-   * Put a {@link Function} at the end of a queue.
+   * Put a set of {@link Function} at the end of a queue.
    * 
    * Example:
    * 
@@ -3021,7 +3021,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * function unless you use the Effects ('fx') namespace.
    * {@see #dequeue()}
    */
-  public GQuery queue(String queueName, Function f) {
+  public GQuery queue(String queueName, Function... f) {
     if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
       return as(Effects).queue(f);
     }
@@ -3465,24 +3465,46 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
    */
   public GQuery stop() {
     return stop(false);
   }
 
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
+   * 
+   * If the clearQueue parameter is provided with a value of true, then the rest of the 
+   * animations in the queue are removed and never run.
    */
   public GQuery stop(boolean clearQueue) {
     return stop(clearQueue, false);
   }
   
   /**
-   * Stop the animation currently running.
+   * When .stop() is called on an element, the currently-running animation (if any) 
+   * is immediately stopped. If, for instance, an element is being hidden with .slideUp() 
+   * when .stop() is called, the element will now still be displayed, but will be 
+   * a fraction of its previous height. Callback functions are not called but
+   * the next animation in the queue begins immediately. 
+   * 
+   * If the clearQueue parameter is provided with a value of true, then the rest of the 
+   * animations in the queue are removed and never run.
+   * 
+   * If the jumpToEnd property is provided with a value of true, the current animation stops, 
+   * but the element is immediately given its target values for each CSS property.
+   * The callback functions are then immediately called, if provided.
    */
   public GQuery stop(boolean clearQueue, boolean jumpToEnd) {
-    return as(Effects).stop(clearQueue, (Object) jumpToEnd);
+    return as(Effects).stop(clearQueue, jumpToEnd);
   }
 
   /**
@@ -4229,7 +4251,4 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       dataCache.delete(id);
     }
   }
-  
-  
-
 }

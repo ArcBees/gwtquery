@@ -1295,7 +1295,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $("#parent", e).data("key", "parent");
     $("#parent", e).click(noFailCallback);
     
-    GQuery $parent = $("div", e).detach("#child");
+    $("div", e).detach("#child");
     
     //child was removed but not the parent
     assertEquals(0,$("#child", e).length());
@@ -1305,7 +1305,7 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("child", $(child).data("key"));
     assertEquals("parent",$(parent).data("key"));
     
-    $(e).append($parent.filter("#child"));
+    $(e).append($(child));
     
     assertEquals(1,$("#child", e).length());
     assertEquals(1,$("#parent", e).length());
@@ -1634,9 +1634,9 @@ public class GQueryCoreTest extends GWTTestCase {
   public void testXpathSelector() {
     $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A Text</td><td width=50%>B</td></tr></table>");
     SelectorEngineCssToXPath s = new SelectorEngineCssToXPath();
-    for (String selector : Arrays.asList("td[width]", "table > td", "*[width!=440]")) {
+    for (String selector : Arrays.asList("td[width]", "table > tr > td", "*[width!='440']")) {
       String xselector = s.css2Xpath(selector);
-      assertEquals($(selector).toString(), $(xselector).toString());
+      assertEquals($(selector).size(), $(xselector).size());
     }
   }
   
@@ -1644,7 +1644,6 @@ public class GQueryCoreTest extends GWTTestCase {
     GQuery test = $("     <div>blop</div><!-- comment --> <p>test2</p>    ");
     test.addClass("test");
     test.removeClass("test");
-    
   }
 
 }
