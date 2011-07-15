@@ -20,7 +20,13 @@ public class SimpleNamedQueue extends QueuePlugin<SimpleNamedQueue>{
   }
   
   private String queueName;
-  
+
+  @Override
+  public int queue(String queueName) {
+    this.queueName = queueName;
+    return queue();
+  }
+
   @Override
   public SimpleNamedQueue delay(int milliseconds, String queueName, Function... f) {
     this.queueName = queueName;

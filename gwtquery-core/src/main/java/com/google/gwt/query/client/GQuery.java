@@ -2966,7 +2966,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
     return this;
   }
-
+  
+  /**
+   * Show the number of functions in the efects queue to be executed on the
+   * first matched element.
+   */
+  public int queue() {
+    return as(Effects).queue();
+  }
+  
+  /**
+   * Show the number of functions in the queued named as queueName to be
+   * executed on the first matched element.
+   */
+  public int queue(String queueName) {
+    return as(SimpleNamedQueue).queue();
+  }
   /**
    * Put a set of {@link Function} at the end of the Effects queue.
    * 

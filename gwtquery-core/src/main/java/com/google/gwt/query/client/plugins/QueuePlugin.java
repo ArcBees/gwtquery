@@ -94,6 +94,13 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
     return (T) this;
   }
+  
+  /**
+   * Show the number of functions to be executed on the first matched element.
+   */
+  public int queue() {
+    return isEmpty() ? 0 : queue(get(0), null).size();
+  }
 
   /**
    * Adds new functions, to be executed, onto the end of the queue of all

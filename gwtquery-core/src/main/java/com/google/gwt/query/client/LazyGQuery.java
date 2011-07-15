@@ -1686,6 +1686,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prop(String key, Function closure);
 
   /**
+   * Show the number of functions in the efects queue to be executed on the
+   * first matched element.
+   */
+  int queue();
+
+  /**
+   * Show the number of functions in the queued named as queueName to be
+   * executed on the first matched element.
+   */
+  int queue(String queueName);
+
+  /**
    * Put a set of {@link Function} at the end of the Effects queue.
    * 
    * Example:
