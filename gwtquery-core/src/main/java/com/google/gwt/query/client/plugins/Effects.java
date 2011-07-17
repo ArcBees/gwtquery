@@ -583,4 +583,9 @@ public class Effects extends QueuePlugin<Effects> {
     return animate("opacity: 'toggle', width : 'toggle', height : 'toggle'",
         millisecs, f);
   }
+  
+  @Override
+  protected String getQueueType() {
+    return super.getQueueType() + "fx";
+  }
 }

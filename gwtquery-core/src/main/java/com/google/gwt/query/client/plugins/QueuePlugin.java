@@ -55,9 +55,8 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
   }
 
-  public static final String JUMP_TO_END = "com.google.gwt.query.client.plugins.QueuePlugin.StopData";
-  private static final String QUEUE_DATA_PREFIX = "GQueryQueue_";
-  
+  public static final String JUMP_TO_END = QueuePlugin.class.getName() + ".StopData";
+  protected static final String QUEUE_DATA_PREFIX = QueuePlugin.class.getName() + ".Queue-";
 
   protected QueuePlugin(GQuery gq) {
     super(gq);
@@ -158,7 +157,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   protected String getQueueType() {
-    return QUEUE_DATA_PREFIX + this.getClass().getName();
+    return QUEUE_DATA_PREFIX;
   }
 
   private void dequeueCurrentAndRunNext(Element elem) {
@@ -185,10 +184,10 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       }
       if (func != null) {
         q.add(func);
-      }
-      if (q.size() == 1 && func != null) {
-        if (func instanceof Function) {
-          ((Function) func).f(elem.<com.google.gwt.dom.client.Element>cast());
+        if (q.size() == 1) {
+          if (func instanceof Function) {
+            ((Function) func).f(elem.<com.google.gwt.dom.client.Element>cast());
+          }
         }
       }
       return q;

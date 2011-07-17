@@ -1039,10 +1039,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove from the queue all {@link Function} that have not yet been run.
    */
   public GQuery clearQueue(String queueName) {
-    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
-      return as(Effects).clearQueue();
-    }
-
     return as(SimpleNamedQueue).clearQueue(queueName);
   }
 
@@ -1464,10 +1460,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    */
   public GQuery delay(int milliseconds, String queueName, Function... f) {
-    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
-      return as(Effects).delay(milliseconds, f);
-    }
-
     return as(SimpleNamedQueue).delay(milliseconds, queueName, f);
   }
 
@@ -1663,10 +1655,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    */
   public GQuery dequeue(String queueName) {
-    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
-      return as(Effects).dequeue();
-    }
-
     return as(SimpleNamedQueue).dequeue(queueName);
   }
 
@@ -2955,11 +2943,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     assert closure != null : "Closure is null";
     
     int i = 0;
-
     for (Element e : elements) {
-
       Object value = closure.f(e, i++);
-
       if (value != null) {
         e.setPropertyBoolean(key, value instanceof Boolean ? (Boolean) value
             : Boolean.valueOf(value.toString()));
@@ -3039,9 +3024,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * {@see #dequeue()}
    */
   public GQuery queue(String queueName, Function... f) {
-    if (queueName == null || "fx".equalsIgnoreCase(queueName)) {
-      return as(Effects).queue(f);
-    }
     return as(SimpleNamedQueue).queue(queueName, f);
   }
 
