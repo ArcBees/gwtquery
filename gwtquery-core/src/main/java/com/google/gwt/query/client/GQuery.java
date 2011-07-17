@@ -120,7 +120,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * A static reference to the GQuery class.
    */
   public static Class<GQuery> GQUERY = GQuery.class;
-
+  
   /**
    * Static references to GQuery core plugins
    */
@@ -355,6 +355,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (plugins == null) {
       plugins = JsMap.createObject().cast();
     }
+
     plugins.put(plugin, pluginFactory);
     return plugin;
   }
@@ -867,6 +868,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (plugin == GQUERY) {
       return (T) $(this);
     } else if (plugins != null) {
+
       Plugin<?> p = plugins.get(plugin);
       if (p != null) {
         return (T) p.init(this);

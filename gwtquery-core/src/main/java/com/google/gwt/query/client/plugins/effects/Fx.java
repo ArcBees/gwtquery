@@ -15,6 +15,11 @@ import com.google.gwt.query.client.js.JsRegexp;
 public class Fx {
   
   /**
+   * Public variable to enable/disable effects
+   */
+  public static boolean off = false;
+  
+  /**
    * A pojo to store color effect values.
    */
   public static class ColorFx extends Fx {

@@ -15,16 +15,16 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 
 /**
  * Animation wich uses the css clip property to show/hide an element.
  */
-public class ClipAnimation extends Animation {
+public class ClipAnimation extends GQAnimation {
 
   /**
    * Type of the effect action.
@@ -75,16 +75,25 @@ public class ClipAnimation extends Animation {
   @Override
   public void onCancel() {
     Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
-    if (jumpToEnd != null && jumpToEnd) {
-      onCompleteImpl();
+    if (jumpToEnd != null && jumpToEnd){
+      onComplete();
+    } else {
+      g.dequeueIfNotDoneYet(e, this);
     }
-    //Do not dequeue here, stop() will do
   }
 
   @Override
   public void onComplete() {
-    onCompleteImpl();
-    g.dequeue();
+    super.onComplete();
+    if (action == Action.HIDE) {
+      g.hide();
+    }
+    g.restoreCssAttrs(attrsToSave);
+    back.remove();
+    back = Effects.$();
+    g.css("clip", "");
+    g.each(funcs);
+    g.dequeueIfNotDoneYet(e, this);
   }
 
   @Override
@@ -134,17 +143,5 @@ public class ClipAnimation extends Animation {
     }
     String rect = top + "px " + right + "px " + bottom + "px  " + left + "px";
     g.css("clip", "rect(" + rect + ")");
-  }
-  
-  private void onCompleteImpl(){
-    super.onComplete();
-    if (action == Action.HIDE) {
-      g.hide();
-    }
-    g.restoreCssAttrs(attrsToSave);
-    back.remove();
-    back = Effects.$();
-    g.css("clip", "");
-    g.each(funcs);
   }
 }

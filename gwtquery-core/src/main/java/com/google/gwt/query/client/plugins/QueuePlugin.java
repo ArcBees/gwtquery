@@ -177,7 +177,7 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   @SuppressWarnings("unchecked")
-  private <S> Queue<S> queue(Element elem, S func) {
+  protected <S> Queue<S> queue(Element elem, S func) {
     if (elem != null) {
       Queue<S> q = (Queue<S>) data(elem, getQueueType(), null);
       if (q == null) {
@@ -196,13 +196,17 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     return null;
   }
   
-  public void dequeueIfNotDoneYet(Element elem, Object o) {
-    if (o.equals(queue(elem, null).peek())) {
+  /**
+   * Dequeue the object and run the next if it is the first
+   * in the queue.
+   */
+  public void dequeueIfNotDoneYet(Element elem, Object object) {
+    if (object.equals(queue(elem, null).peek())) {
       dequeue();
     }
   }
 
-  private void replacequeue(Element elem, Queue<?> queue) {
+  protected void replacequeue(Element elem, Queue<?> queue) {
     if (elem != null) {
       data(elem, getQueueType(), queue);
     }
@@ -212,18 +216,17 @@ public abstract class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     Queue<?> q = queue(elem, null);
     if (q != null) {
       Object f = q.peek();
+      if (clear) {
+        q.clear();
+      }
       if (f != null) {
         if (f instanceof Function) {
-          // pass jumpToEnd to Annimation.onCancel() via the element's data object
+          // pass jumpToEnd to Animation.onCancel() via the element's data object
           $(elem).data(JUMP_TO_END, new Boolean(jumpToEnd));
           ((Function) f).cancel(elem);
           $(elem).removeData(JUMP_TO_END);
         }
-      }
-      if (clear) {
-        q.clear();
-      } else {
-        dequeueCurrentAndRunNext(elem);
+        dequeueIfNotDoneYet(elem, f);
       }
     }
   }

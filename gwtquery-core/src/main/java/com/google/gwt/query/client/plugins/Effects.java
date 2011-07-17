@@ -30,7 +30,19 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
  * Effects plugin for Gwt Query.
  */
 public class Effects extends QueuePlugin<Effects> {
-
+  
+  /**
+   * Class to access protected methods in Animation. 
+   */
+  public static abstract class GQAnimation  extends Animation {
+    protected void onStart() {
+      super.onStart();
+    }
+    protected void onComplete() {
+      super.onComplete();
+    }
+  }
+  
   /**
    * Just a class to store predefined speed constant values.
    */
@@ -40,8 +52,8 @@ public class Effects extends QueuePlugin<Effects> {
     public static final int SLOW = 600;
   }
 
-  private static final String EFFECTS_RUNNNING = "EffectsRunnning";
-
+  private static final String ACTUAL_ANIMATION = "EffectsRunnning";
+  
   public static final Class<Effects> Effects = GQuery.registerPlugin(
       Effects.class, new Plugin<Effects>() {
         public Effects init(GQuery gq) {
@@ -110,22 +122,35 @@ public class Effects extends QueuePlugin<Effects> {
 
     final Properties p = (stringOrProperties instanceof String)
         ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
-    
-    queue(new Function() {
-      public void cancel(Element e) {
-        Animation anim = (Animation) data(e, EFFECTS_RUNNNING, null);
-        if (anim != null) {
-          anim.cancel();
-        }
-      }
-
-      public void f(Element e) {
-        Animation anim = new PropertiesAnimation(easing, e, p, funcs);
-        anim.run(duration);
-        data(e, EFFECTS_RUNNNING, anim);
-      }
-    });
+        
+    for (Element e: elements()) {
+      queueAnimation(e, new PropertiesAnimation(easing, e, p, funcs), duration);
+    }
     return this;
+  }
+  
+  private void queueAnimation(final Element e, final GQAnimation anim, final int duration) {
+    if (isOff()) {
+      anim.onStart();
+      anim.onComplete();
+    } else {
+      queue(e, new Function() {
+        public void cancel(Element e) {
+          Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
+          if (anim != null) {
+            anim.cancel();
+          }
+        }
+        public void f(Element e) {
+          anim.run(duration);
+          data(e, ACTUAL_ANIMATION, anim);
+        }
+      });
+    }
+  }
+  
+  protected boolean isOff() {
+    return true;
   }
 
   /**
@@ -268,20 +293,10 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects clip(final ClipAnimation.Action a,
       final ClipAnimation.Corner c, final ClipAnimation.Direction d,
       final int duration, final Function... f) {
-    queue(new Function() {
-      public void cancel(Element e) {
-        Animation anim = (Animation) data(e, EFFECTS_RUNNNING, null);
-        if (anim != null) {
-          anim.cancel();
-        }
-      }
-
-      public void f(Element e) {
-        Animation anim = new ClipAnimation(e, a, c, d, f);
-        anim.run(duration);
-        data(e, EFFECTS_RUNNNING, anim);
-      }
-    });
+    
+    for (Element e : elements()) {
+      queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
+    }
     return this;
   }
 

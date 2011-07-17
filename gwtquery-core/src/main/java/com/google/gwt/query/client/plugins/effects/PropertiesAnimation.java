@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -23,13 +22,14 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx.BorderColorFx;
 
 /**
  * Animation effects on any numeric CSS property.
  */
-public class PropertiesAnimation extends Animation {
+public class PropertiesAnimation extends GQAnimation {
 
   /**
    * Easing method to use.
@@ -207,20 +207,33 @@ public class PropertiesAnimation extends Animation {
     this.prps = p;
     g = Effects.$(e).as(Effects.Effects);
   }
-
+  
   @Override
   public void onCancel() {
     Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
     if (jumpToEnd != null && jumpToEnd){
-      onCompleteImpl();
+      onComplete();
+    } else {
+      g.dequeueIfNotDoneYet(e, this);
     }
-    //Do not dequeue here, stop() will do
   }
 
   @Override
   public void onComplete() {
-    onCompleteImpl();
-    g.dequeue();
+    super.onComplete();
+    for (int i = 0; i < effects.length(); i++) {
+      Fx fx = effects.get(i);
+      if ("hide".equals(fx.value)) {
+        g.hide();
+        g.restoreCssAttrs(fx.cssprop);
+      } else if ("show".equals(fx.value)) {
+        g.show();
+        g.restoreCssAttrs(fx.cssprop);
+      }
+    }
+    g.restoreCssAttrs(ATTRS_TO_SAVE);
+    g.each(funcs);
+    g.dequeueIfNotDoneYet(e, this);
   }
 
   @Override
@@ -263,22 +276,6 @@ public class PropertiesAnimation extends Animation {
     }
     // maybe return super.interpolate() instead ?
     return progress;
-  }
-  
-  private void onCompleteImpl(){
-    super.onComplete();
-    for (int i = 0; i < effects.length(); i++) {
-      Fx fx = effects.get(i);
-      if ("hide".equals(fx.value)) {
-        g.hide();
-        g.restoreCssAttrs(fx.cssprop);
-      } else if ("show".equals(fx.value)) {
-        g.show();
-        g.restoreCssAttrs(fx.cssprop);
-      }
-    }
-    g.restoreCssAttrs(ATTRS_TO_SAVE);
-    g.each(funcs);
   }
 
 }
