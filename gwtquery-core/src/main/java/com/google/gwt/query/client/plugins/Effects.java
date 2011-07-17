@@ -21,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation;
+import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
@@ -150,7 +151,7 @@ public class Effects extends QueuePlugin<Effects> {
   }
   
   protected boolean isOff() {
-    return true;
+    return Fx.off;
   }
 
   /**
