@@ -214,7 +214,7 @@ public class PropertiesAnimation extends GQAnimation {
     if (jumpToEnd != null && jumpToEnd){
       onComplete();
     } else {
-      g.dequeueIfNotDoneYet(e, this);
+      g.dequeue();
     }
   }
 
@@ -233,7 +233,7 @@ public class PropertiesAnimation extends GQAnimation {
     }
     g.restoreCssAttrs(ATTRS_TO_SAVE);
     g.each(funcs);
-    g.dequeueIfNotDoneYet(e, this);
+    g.dequeue();
   }
 
   @Override

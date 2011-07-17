@@ -143,8 +143,8 @@ public class Effects extends QueuePlugin<Effects> {
           }
         }
         public void f(Element e) {
-          anim.run(duration);
           data(e, ACTUAL_ANIMATION, anim);
+          anim.run(duration);
         }
       });
     }

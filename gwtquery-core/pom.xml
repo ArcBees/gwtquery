@@ -3,8 +3,10 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <!--<version>1.0.1-SNAPSHOT</version>-->
+        <version>1.0.1-M1</version>
     </parent>
+
 
     <artifactId>gwtquery</artifactId>
     <packaging>jar</packaging>

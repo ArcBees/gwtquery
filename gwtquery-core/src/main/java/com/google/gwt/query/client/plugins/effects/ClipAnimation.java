@@ -78,7 +78,7 @@ public class ClipAnimation extends GQAnimation {
     if (jumpToEnd != null && jumpToEnd){
       onComplete();
     } else {
-      g.dequeueIfNotDoneYet(e, this);
+      g.dequeue();
     }
   }
 
@@ -93,7 +93,7 @@ public class ClipAnimation extends GQAnimation {
     back = Effects.$();
     g.css("clip", "");
     g.each(funcs);
-    g.dequeueIfNotDoneYet(e, this);
+    g.dequeue();
   }
 
   @Override
