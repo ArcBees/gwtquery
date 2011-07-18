@@ -26,13 +26,15 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineNative extends SelectorEngineImpl {
 
-  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(\\.//|:contains|!=|:first([^-]|$)|:last([^-]|$)|:even|:odd).*";
+  // querySelectorAll unsupported selectors 
+  public static String NATIVE_EXCEPTIONS_REGEXP = "(^[\\./]/.*)|(.*(:contains|!=|:first([^-]|$)|:last([^-]|$)|:even|:odd)).*";
   
   private static HasSelector impl;
   
   public SelectorEngineNative() {
     if (impl == null) {
       impl = GWT.create(HasSelector.class);
+      System.out.println("Created HasSelector: " + impl.getClass().getName());
     }
   }
   

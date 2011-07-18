@@ -138,8 +138,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static SelectorEngine engine;
   
-  private static HasSelector xpahtEngine;
-
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
 
@@ -492,14 +490,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (engine == null) {
       engine = new SelectorEngine();
     }
-    HasSelector impl = engine;
-    if (selector.startsWith("./") || selector.startsWith("/")) {
-      if (xpahtEngine == null) {
-        impl = xpahtEngine =  engine.impl instanceof SelectorEngineCssToXPath ? 
-            engine.impl : new SelectorEngineCssToXPath();
-      }
-    }
-    NodeList<Element> n = impl.select(selector, context == null ? document : context);
+    
+    NodeList<Element> n = engine.select(selector, context == null ? document : context);
     JsNodeArray res = copyNodeList(n);
 
     currentSelector = selector;

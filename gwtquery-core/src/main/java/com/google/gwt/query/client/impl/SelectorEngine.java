@@ -86,6 +86,7 @@ public class SelectorEngine implements HasSelector {
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
+    System.out.println("Create SelectorEngineImpl " + impl.getClass().getName());
   }
 
   public Node getRoot() {
