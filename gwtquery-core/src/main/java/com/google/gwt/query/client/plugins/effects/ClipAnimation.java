@@ -62,7 +62,7 @@ public class ClipAnimation extends GQAnimation {
   public ClipAnimation(Element elem, Action a, Corner c, Direction d,
       final Function... funcs) {
     if (a == Action.TOGGLE) {
-      a = GQuery.$(elem).visible() ? Action.HIDE : Action.SHOW;
+      a = GQuery.$(elem).isVisible() ? Action.HIDE : Action.SHOW;
     }
     this.action = a;
     this.corner = c;

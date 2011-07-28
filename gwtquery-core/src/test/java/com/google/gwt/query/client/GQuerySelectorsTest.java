@@ -42,16 +42,18 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class GQuerySelectorsTest extends GWTTestCase {
 
   protected interface AllSelectors extends Selectors {
-    // @Selector("h1[id]:contains(Selectors)")
-    // NodeList<Element> h1IdContainsSelectors();
-    // @Selector("*:first")
-    // NodeList<Element> allFirst();
-    // @Selector("div[class!=madeup]")
+    @Selector("h1[id]:contains(Selectors)")
+    NodeList<Element> h1IdContainsSelectors();
+    @Selector("tr:first")
+    NodeList<Element> trFirst();
+    @Selector("tr:last")
+    NodeList<Element> trLast();
+    // @Selector("div[class!='madeup']")
     // NodeList<Element> divWithClassNotContainsMadeup();
     // @Selector("div, p a")
     // NodeList<Element> divCommaPA();
-    // @Selector("p:contains(selectors)")
-    // NodeList<Element> pContainsSelectors();
+    @Selector("p:contains(selectors)")
+    NodeList<Element> pContainsSelectors();
     @Selector("a[href][lang][class]")
     NodeList<Element> aHrefLangClass();
     @Selector("*:checked")
@@ -173,22 +175,32 @@ public class GQuerySelectorsTest extends GWTTestCase {
       e.setInnerHTML("");
     }
   }
+  
+  public void testVisibleHidden() {
+    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A Text</td><td width=50%><a></a><p id=a></p><p id=b style='display: none'><span id=c></span></p></td></tr></table>");
+    assertEquals(9, $("* ", e).size());
+    assertEquals(1, $("*:hidden ", e).size());
+    assertEquals(8, $("*:visible ", e).size());
+    assertEquals(2, $("*:hidden , span", e).size());
+    assertEquals(8, $("*:visible , span", e).size());
+  }
 
   public void testCompiledSelectors() {
     final AllSelectors sel = GWT.create(AllSelectors.class);
     $(e).html(getTestContent());
 
     // TODO: fix these selectors
-    // sel.h1IdContainsSelectors().getLength()
-    // sel.allFirst().getLength()
     // sel.divWithClassNotContainsMadeup().getLength()
     // sel.divCommaPA().getLength()
-    // sel.pContainsSelectors().getLength()
+    
     // assertArrayContains(sel.title().getLength(), 1);
-
     assertEquals(1, sel.body().getLength());
     assertArrayContains(sel.bodyDiv().getLength(), 53, 55);
     sel.setRoot(e);
+    assertArrayContains(sel.trFirst().getLength(), 5);
+    assertArrayContains(sel.trLast().getLength(), 5);
+    assertArrayContains(sel.pContainsSelectors().getLength(), 54);
+    assertArrayContains(sel.h1IdContainsSelectors().getLength(), 1);
     assertArrayContains(sel.aHrefLangClass().getLength(), 0, 1);
     assertArrayContains(sel.allChecked().getLength(), 1);
     assertArrayContains(sel.divExample().getLength(), 43);
@@ -392,7 +404,10 @@ public class GQuerySelectorsTest extends GWTTestCase {
 
     assertArrayContains(selEng.select("body", document).getLength(), 1);
     assertArrayContains(selEng.select("body div", document).getLength(), 53, 55);
-
+    
+    assertArrayContains(selEng.select("tr:first", e).getLength(), 0, 1, 5);
+    assertArrayContains(selEng.select("tr:last", e).getLength(), 0, 1, 5);
+    assertArrayContains(selEng.select("p:contains(selectors)", e).getLength(), 54);
     assertArrayContains(selEng.select("h1[id]:contains(Selectors)", e).getLength(), 1);
     assertArrayContains(selEng.select("div[class!=madeup]", e).getLength(), 52, 53);
     assertArrayContains(selEng.select("div, p a", e).getLength(), 136, 137, 138);

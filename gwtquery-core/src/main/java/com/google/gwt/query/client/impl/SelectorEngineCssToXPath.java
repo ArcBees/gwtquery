@@ -34,7 +34,7 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   
-  JsNamedArray<String> cache;
+  static JsNamedArray<String> cache;
   
   /**
    * Interface for callbacks in replaceAll operations.
@@ -225,7 +225,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();    
     } catch (Exception e) {
       System.err.println("ERROR: xpathEvaluate invalid xpath expression:"
-          + xsel + " css-selector:" + sel + "\n\n" + e.getMessage());
+          + xsel + " css-selector:" + sel + "\n");
+      e.printStackTrace();
       return elm;
     }
   }

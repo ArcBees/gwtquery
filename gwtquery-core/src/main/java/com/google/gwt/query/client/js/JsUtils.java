@@ -18,6 +18,7 @@ package com.google.gwt.query.client.js;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 
@@ -109,6 +110,21 @@ public class JsUtils {
       }
     }    
     return ret;
+  }
+  
+  /**
+   * Merge the newNodes list into the oldNodes one.
+   * If oldNodes is null, a new list will be created and returned, 
+   * newNodes list is never modified.
+   */
+  public static NodeList<Element> copyNodeList(NodeList<Element> oldNodes, NodeList<Element> newNodes) {
+    if (oldNodes == null) {
+      oldNodes = JsNodeArray.create();
+    }
+    for (int i = 0, l = newNodes.getLength(), j = oldNodes.getLength(); i < l; i++) {
+      oldNodes.<JsNodeArray>cast().addNode(newNodes.getItem(i), j++);
+    }
+    return oldNodes;
   }
 
 }

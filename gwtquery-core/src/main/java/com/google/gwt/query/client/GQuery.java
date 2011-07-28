@@ -40,9 +40,7 @@ import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.HasSelector;
 import com.google.gwt.query.client.impl.SelectorEngine;
-import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
@@ -443,14 +441,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static JsNodeArray copyNodeList(NodeList<? extends Node> nodes) {
-    JsNodeArray res = JsNodeArray.create();
-    for (int i = 0, l = nodes.getLength(); i < l; i++) {
-      res.addNode(nodes.getItem(i), i);
-    }
-    return res;
-  }
-
   private static native void emptyDocument(Document d) /*-{
 		d.open();
 		d.write("<head/><body/>");
@@ -490,14 +480,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (engine == null) {
       engine = new SelectorEngine();
     }
-    
-    NodeList<Element> n = engine.select(selector, context == null ? document : context);
-    JsNodeArray res = copyNodeList(n);
 
+    NodeList<Element> n = engine.select(selector, context == null ? document : context);
     currentSelector = selector;
     currentContext = context != null ? context : document;
-
-    return setArray(res);
+    return setArray(n);
   }
 
   private static native Element window() /*-{
@@ -545,14 +532,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * It also update the selector appending the new one.
    */
   public GQuery add(GQuery previousObject) {
-    return pushStack(unique(merge(nodeList, previousObject.nodeList)), "add",
+    return pushStack(unique(JsUtils.copyNodeList(previousObject.nodeList, nodeList)), "add",
         getSelector() + "," + previousObject.getSelector());
   }
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
    */
-
   public GQuery add(String selector) {
     return add($(selector));
   }
@@ -1876,7 +1862,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return pushStack(unique(array), "filter", filters[0]);
   }
-
+  
   /**
    * Searches for all elements that match the specified css expression. This
    * method is a good way to find additional descendant elements with which to
@@ -3532,7 +3518,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery toggle() {
     for (Element e : elements) {
-      if ($(e).visible()) {
+      if (styleImpl.isVisible(e)) {
         $(e).hide();
       } else {
         $(e).show();
@@ -3688,7 +3674,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove all duplicate elements from an array of elements. Note that this
    * only works on arrays of DOM elements, not strings or numbers.
    */
-  public JsNodeArray unique(JsNodeArray result) {
+  public JsNodeArray unique(NodeList<Element> result) {
     return JsUtils.unique(result.<JsArray<Element>> cast()).cast();
   }
 
@@ -3832,11 +3818,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new String[0];
   }
 
+
   /**
-   * Return true if the first element is visible.
+   * Return true if the first element is visible.isVisible
    */
-  public boolean visible() {
+  public boolean isVisible() {
     return isEmpty() ? false : styleImpl.isVisible(get(0));
+  }
+  
+  @Deprecated
+  public boolean visible() {
+    return isVisible();
   }
 
   /**
@@ -4215,14 +4207,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 			sib = sib.previousSibling;
 		return sib;
   }-*/;
-
-  private JsNodeArray merge(NodeList<Element> first, NodeList<Element> second) {
-    JsNodeArray res = copyNodeList(first);
-    for (int i = 0, l = second.getLength(); i < l; i++) {
-      res.addNode(second.getItem(i));
-    }
-    return res;
-  }
 
   private void removeData(Element item, String name) {
     if (dataCache == null) {

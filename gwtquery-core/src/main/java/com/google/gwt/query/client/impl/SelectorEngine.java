@@ -16,16 +16,20 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * Core Selector engine functions, and native JS utility functions.
  */
 public class SelectorEngine implements HasSelector {
+  
+  private static DocumentStyleImpl styleImpl;
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
@@ -86,17 +90,47 @@ public class SelectorEngine implements HasSelector {
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
-    System.out.println("Create SelectorEngineImpl " + impl.getClass().getName());
+    System.out.println("Created SelectorEngineImpl: " + impl.getClass().getName());
+    styleImpl = GWT.create(DocumentStyleImpl.class);
+    System.out.println("Created DocumentStyleImpl: " + styleImpl.getClass().getName());
   }
 
   public Node getRoot() {
     return root;
   }
   
-  public NodeList<Element> select(String selector, Node ctx) {
-    return impl.select(selector, ctx);
+  public NodeList<Element> filterByVisibility (NodeList<Element> nodes, boolean visible) {
+    JsNodeArray res = JsNodeArray.create();
+    for (int i = 0, l = nodes.getLength(), j = 0; i < l; i++) {
+      Element e = nodes.getItem(i);
+      if (visible == ((e.getOffsetWidth() + e.getOffsetHeight()) > 0 && styleImpl.isVisible(e))) {
+        res.addNode(e, j++);
+      }
+    }
+    return res;
   }
- 
+  
+  public NodeList<Element> select(String selector, Node ctx) {
+    if (selector.matches(".*:(visible|hidden)\\s*(,|$).*")) {
+      // :visible and :hidden pseudo selectors are computed by gquery
+      JsNodeArray res = JsNodeArray.create();
+      for (String s : selector.trim().split("\\s*,\\s*")) {
+        NodeList<Element> nodes;
+        if (s.endsWith(":visible")) {
+          nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
+        } else if (s.endsWith(":hidden")) {
+          nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
+        } else {
+          nodes = select(s, ctx);
+        }
+        JsUtils.copyNodeList(res, nodes);
+      }
+      return JsUtils.unique(res.<JsArray<Element>> cast()).cast();
+    } else {
+      return impl.select(selector, ctx);
+    }
+  }
+  
   public void setRoot(Node root) {
     assert root != null;
     this.root = root;

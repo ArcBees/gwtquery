@@ -240,7 +240,7 @@ public class PropertiesAnimation extends GQAnimation {
   public void onStart() {
     boolean resize = false;
     boolean move = false;
-    boolean hidden = !g.visible();
+    boolean hidden = !g.isVisible();
     Fx fx;
     // g.show();
     for (String key : prps.keys()) {
