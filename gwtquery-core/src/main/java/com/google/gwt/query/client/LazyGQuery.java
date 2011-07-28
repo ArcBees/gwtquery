@@ -38,9 +38,7 @@ import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.HasSelector;
 import com.google.gwt.query.client.impl.SelectorEngine;
-import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
@@ -2121,7 +2119,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Remove all duplicate elements from an array of elements. Note that this
    * only works on arrays of DOM elements, not strings or numbers.
    */
-  JsNodeArray unique(JsNodeArray result);
+  JsNodeArray unique(NodeList<Element> result);
 
   /**
    * This method removes the element's parent. The matched elements replaces
@@ -2164,9 +2162,9 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   String[] vals();
 
   /**
-   * Return true if the first element is visible.
+   * Return true if the first element is visible.isVisible
    */
-  boolean visible();
+  boolean isVisible();
 
   /**
    * Return the first non null attached widget from the matched elements or null
