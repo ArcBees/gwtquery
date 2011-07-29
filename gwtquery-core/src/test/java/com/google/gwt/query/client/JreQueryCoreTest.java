@@ -56,6 +56,8 @@ public class JreQueryCoreTest extends GWTTestCase {
         .wrapPropertiesString("b: 'a'; c: 1, /*gg: aadf*/d: url('https://test.com');,e:null,f:false"));
     assertEquals("({color:'rgb(0,0,139)',background:'red'})", Properties
         .wrapPropertiesString("color: 'rgb(0, 0,139)', background: red"));
+    assertEquals("({width:'',top:''})", Properties
+        .wrapPropertiesString("width: '' ; top:'' ;"));
   }
 
 }

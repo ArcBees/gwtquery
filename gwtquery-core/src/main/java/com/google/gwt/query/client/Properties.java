@@ -49,10 +49,9 @@ public class Properties extends JavaScriptObject {
         .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
         .replaceAll("\\('([^\\)]+)'\\)" , "($1)") // Remove quotes
         .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
-        .replaceAll(":\\s*[\"']?([^;]+)([;]+|$)[\"']?\\s*", ":'$1',") // put quotes
+        .replaceAll(":\\s*[\"']?([^';]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes
         .replaceAll(":'(-?[\\d\\.]+|null|false|true)',", ":$1,") // numbers do not need quote
         .replaceFirst("[;,]$", "") // remove endings 
-        .replaceAll("\\s*[']+\\s*", "'") // remove duplicates
         + "})";
     return ret;
   }
