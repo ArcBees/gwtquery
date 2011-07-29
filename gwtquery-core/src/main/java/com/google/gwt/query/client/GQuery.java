@@ -3350,7 +3350,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
           "oldDisplay", null), ""));
       // When the display=none is in the stylesheet.
       if (!styleImpl.isVisible(e)) {
-        styleImpl.setStyleProperty(e, "display", "block");
+        styleImpl.setStyleProperty(e, "display",
+            styleImpl.defaultDisplay(e.getNodeName()));
       }
     }
     return this;

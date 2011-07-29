@@ -15,9 +15,12 @@
  */
 package com.google.gwt.query.client.impl;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -184,5 +187,25 @@ public class DocumentStyleImpl {
     var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
     return cStyle ? cStyle.getPropertyValue(hyphenName) : null;
   }-*/;
+  
+  protected static final JsNamedArray<String> elemdisplay = JsNamedArray.create();
+  
+  /**
+   * Returns the default display value for each html tag. 
+   */
+  public String defaultDisplay(String tagName) {
+    String ret = elemdisplay.get(tagName);
+    if (ret == null) {
+      Element e = DOM.createElement(tagName);
+      Document.get().getBody().appendChild(e);
+      ret = curCSS(e, "display", false);
+      e.removeFromParent();
+      if (ret == null || ret.matches("(|none)")) {
+        ret = "block";
+      }
+      elemdisplay.put(tagName, ret);
+    }
+    return ret;
+  }
   
 }
