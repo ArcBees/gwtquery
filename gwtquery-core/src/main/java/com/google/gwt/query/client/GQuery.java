@@ -2012,12 +2012,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery hide() {
     for (Element e : elements) {
+      String currentDisplay = e.getStyle().getDisplay();
       Object old = data(e, "oldDisplay", null);
-      if (old == null) {
+      if (old == null && !"none".equals(currentDisplay)) {
         data(e, "oldDisplay", styleImpl.curCSS(e, "display", false));
       }
+    }
+    
+    // set the display value in a separate for loop to avoid constant reflow
+    // Broswer reflow is triggered each time we gonna set and after get (in styleImpl.curCSS(e, "display", false) method)
+    // the diplay property. Reflows is very bad in performance point of view
+    for (Element e : elements){
       e.getStyle().setDisplay(Display.NONE);
     }
+    
     return this;
   }
 
@@ -3346,12 +3354,30 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery show() {
     for (Element e : elements) {
-      styleImpl.setStyleProperty(e, "display", JsUtils.or((String) data(e,
-          "oldDisplay", null), ""));
-      // When the display=none is in the stylesheet.
-      if (!styleImpl.isVisible(e)) {
-        styleImpl.setStyleProperty(e, "display",
-            styleImpl.defaultDisplay(e.getNodeName()));
+      String currentDisplay = e.getStyle().getDisplay();
+      String oldDisplay = (String) data(e,"oldDisplay", null);
+      
+      //reset the display
+      if (oldDisplay == null && "none".equals(currentDisplay)){
+        styleImpl.setStyleProperty(e, "display", "");
+        currentDisplay = "";
+      }
+      
+      //check if the stylesheet impose display: none. If it is the case, determine 
+      //the default display for the tag and store it at the element level
+      if ("".equals(currentDisplay) && !styleImpl.isVisible(e)){
+        data(e, "oldDisplay", styleImpl.defaultDisplay(e.getNodeName()));
+      }
+    }
+    
+    // set the display value in a separate for loop to avoid constant reflow
+    // because broswer reflow is triggered each time we gonna set and after get (in isVisibleProperty() method)
+    // the diplay property. Reflows is very bad in performance point of view
+    for (Element e : elements) {
+      String currentDisplay = e.getStyle().getDisplay();
+      if ("".equals(currentDisplay) || "none".equals(currentDisplay)){
+        styleImpl.setStyleProperty(e, "display", JsUtils.or((String) data(e,
+            "oldDisplay", null), ""));
       }
     }
     return this;
