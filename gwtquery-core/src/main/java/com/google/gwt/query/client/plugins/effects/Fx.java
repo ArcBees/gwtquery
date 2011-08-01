@@ -3,7 +3,6 @@ package com.google.gwt.query.client.plugins.effects;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.css.BorderColorProperty;
-import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
@@ -29,9 +28,12 @@ public class Fx {
      */
     public static class BorderColorFx extends ColorFx {
 
-      private static BorderColorProperty[] borderColorProperties = {
-          CSS.BORDER_BOTTOM_COLOR, CSS.BORDER_TOP_COLOR, CSS.BORDER_LEFT_COLOR,
-          CSS.BORDER_RIGHT_COLOR};
+      private static String[] borderColorProperties = {
+          BorderColorProperty.BORDER_BOTTOM_COLOR_PROPERTY,
+          BorderColorProperty.BORDER_TOP_COLOR_PROPERTY,
+          BorderColorProperty.BORDER_LEFT_COLOR_PROPERTY,
+          BorderColorProperty.BORDER_RIGHT_COLOR_PROPERTY};
+      
       private JsNamedArray<int[]> startColors;
 
       public BorderColorFx(Element e, String endColorString) {
@@ -41,17 +43,17 @@ public class Fx {
 
         GQuery $e = GQuery.$(e);
 
-        for (BorderColorProperty border : borderColorProperties) {
+        for (String border : borderColorProperties) {
           int[] startColor = parseColor($e.css(border, true));
-          startColors.put(border.getCssName(), startColor);
+          startColors.put(border, startColor);
         }
       }
 
       @Override
       public void applyValue(GQuery g, double progress) {
-        for (BorderColorProperty border : borderColorProperties) {
-          startColor = startColors.get(border.getCssName());
-          cssprop = border.getCssName();
+        for (String border : borderColorProperties) {
+          startColor = startColors.get(border);
+          cssprop = border;
           super.applyValue(g, progress);
         }
       }

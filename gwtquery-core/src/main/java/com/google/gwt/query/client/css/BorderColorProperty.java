@@ -21,11 +21,11 @@ package com.google.gwt.query.client.css;
  */
 public class BorderColorProperty extends CssProperty<RGBColor> {
 
-  private static final String BORDER_BOTTOM_COLOR_PROPERTY = "borderBottomColor";
-  private static final String BORDER_COLOR_PROPERTY = "borderColor";
-  private static final String BORDER_LEFT_COLOR_PROPERTY = "borderLeftColor";
-  private static final String BORDER_RIGHT_COLOR_PROPERTY = "borderRightColor";
-  private static final String BORDER_TOP_COLOR_PROPERTY = "borderTopColor";
+  public static final String BORDER_BOTTOM_COLOR_PROPERTY = "borderBottomColor";
+  public static final String BORDER_COLOR_PROPERTY = "borderColor";
+  public static final String BORDER_LEFT_COLOR_PROPERTY = "borderLeftColor";
+  public static final String BORDER_RIGHT_COLOR_PROPERTY = "borderRightColor";
+  public static final String BORDER_TOP_COLOR_PROPERTY = "borderTopColor";
 
   public static void init() {
     CSS.BORDER_COLOR = new BorderColorProperty(BORDER_COLOR_PROPERTY);
