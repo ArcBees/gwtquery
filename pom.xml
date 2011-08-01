@@ -3,6 +3,7 @@
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
+    <!-- <version>1.0.1-SNAPSHOT</version> -->
     <version>1.0.1-SNAPSHOT</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
@@ -11,11 +12,13 @@
         <system>Google Code</system>
         <url>http://code.google.com/p/gwtquery/issues/list</url>
     </issueManagement>
+<!--
     <parent>
       <groupId>org.sonatype.oss</groupId>
       <artifactId>oss-parent</artifactId>
       <version>3</version>
     </parent>
+-->
 
     <distributionManagement>
       <snapshotRepository>
@@ -233,11 +236,11 @@
             <repoUrl>file://mavenrepo</repoUrl>
           </properties>
           <distributionManagement>
-            <snapshotRepository>
+            <repository>
               <uniqueVersion>false</uniqueVersion>
               <id>local mavenrepo</id>
               <url>file://mavenrepo</url>
-            </snapshotRepository>
+            </repository>
           </distributionManagement>
         </profile>
     </profiles>
