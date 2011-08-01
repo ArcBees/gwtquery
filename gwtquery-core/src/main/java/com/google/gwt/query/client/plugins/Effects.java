@@ -135,7 +135,7 @@ public class Effects extends QueuePlugin<Effects> {
       anim.onStart();
       anim.onComplete();
     } else {
-      queue(e, new Function() {
+      queue(e, DEFAULT_NAME, new Function() {
         public void cancel(Element e) {
           Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
           if (anim != null) {
@@ -582,10 +582,5 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects toggle(int millisecs, Function... f) {
     return animate("opacity: 'toggle', width : 'toggle', height : 'toggle'",
         millisecs, f);
-  }
-  
-  @Override
-  protected String getQueueType() {
-    return super.getQueueType() + "fx";
   }
 }

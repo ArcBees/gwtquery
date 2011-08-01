@@ -57,7 +57,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     $(e).html("<p id='idtest'>Content 1</p></p>");
     
     final GQuery g = $("#idtest");
-    final int duration = 800;
+    final int duration = 1000;
     
     // Clip effect places a relative div in the position of the original element
     // So check that there is not any div.
@@ -86,6 +86,7 @@ public class GQueryEffectsTest extends GWTTestCase {
     //};
     final Timer timer2 = new Timer() {
       public void run() {
+        System.out.println(g.css("clip"));
         // Check that the attribute clip has been set
         assertTrue(g.css("clip").matches("rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)"));
         finishTest();

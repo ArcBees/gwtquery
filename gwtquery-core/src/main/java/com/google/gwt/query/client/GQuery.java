@@ -35,7 +35,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
@@ -50,7 +49,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.SimpleNamedQueue;
 import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
@@ -60,6 +58,7 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -125,7 +124,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
   public static Class<Events> Events = com.google.gwt.query.client.plugins.Events.Events;
   public static Class<Widgets> Widgets = com.google.gwt.query.client.plugins.Widgets.Widgets;
-  public static Class<SimpleNamedQueue> SimpleNamedQueue = com.google.gwt.query.client.plugins.SimpleNamedQueue.SimpleNamedQueue;
 
   /**
    * The window object.
@@ -1010,14 +1008,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * run.
    */
   public GQuery clearQueue() {
-    return as(Effects).clearQueue();
+    return as(Queue).clearQueue();
   }
 
   /**
    * Remove from the queue all {@link Function} that have not yet been run.
    */
   public GQuery clearQueue(String queueName) {
-    return as(SimpleNamedQueue).clearQueue(queueName);
+    return as(Queue).clearQueue(queueName);
   }
 
   /**
@@ -1413,7 +1411,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </pre>
    */
   public GQuery delay(int milliseconds, Function... f) {
-    return as(Effects).delay(milliseconds, f);
+    return as(Queue).delay(milliseconds, f);
   }
 
   /**
@@ -1438,7 +1436,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    */
   public GQuery delay(int milliseconds, String queueName, Function... f) {
-    return as(SimpleNamedQueue).delay(milliseconds, queueName, f);
+    return as(Queue).delay(milliseconds, queueName, f);
   }
 
   /**
@@ -1620,7 +1618,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * otherwise the queue execution will be stopped.
    */
   public GQuery dequeue() {
-    return as(Effects).dequeue();
+    return as(Queue).dequeue();
   }
 
   /**
@@ -1633,7 +1631,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 
    */
   public GQuery dequeue(String queueName) {
-    return as(SimpleNamedQueue).dequeue(queueName);
+    return as(Queue).dequeue(queueName);
   }
 
   /**
@@ -2945,7 +2943,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * first matched element.
    */
   public int queue() {
-    return as(Effects).queue();
+    return as(Queue).queue();
   }
   
   /**
@@ -2953,7 +2951,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * executed on the first matched element.
    */
   public int queue(String queueName) {
-    return as(SimpleNamedQueue).queue();
+    return as(Queue).queue();
   }
   /**
    * Put a set of {@link Function} at the end of the Effects queue.
@@ -2983,7 +2981,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * {@see #dequeue()}
    */
   public GQuery queue(Function... f) {
-    return as(Effects).queue(f);
+    return as(Queue).queue(f);
   }
 
   /**
@@ -3010,7 +3008,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * {@see #dequeue()}
    */
   public GQuery queue(String queueName, Function... f) {
-    return as(SimpleNamedQueue).queue(queueName, f);
+    return as(Queue).queue(queueName, f);
   }
 
   /**
@@ -3508,7 +3506,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The callback functions are then immediately called, if provided.
    */
   public GQuery stop(boolean clearQueue, boolean jumpToEnd) {
-    return as(Effects).stop(clearQueue, jumpToEnd);
+    return as(Queue).stop(clearQueue, jumpToEnd);
   }
 
   /**

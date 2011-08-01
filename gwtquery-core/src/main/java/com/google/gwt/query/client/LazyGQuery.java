@@ -33,7 +33,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
@@ -48,7 +47,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.SimpleNamedQueue;
 import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
@@ -58,6 +56,7 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
