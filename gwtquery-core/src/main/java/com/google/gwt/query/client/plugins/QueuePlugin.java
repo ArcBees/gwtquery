@@ -220,6 +220,19 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   /**
    * Stop the function which is currently in execution and depending on the
    * value of the parameter: 
+   * - remove it from the effects queue and start the next one.
+   * - or remove all functions in the effects queue.
+   * 
+   * If the parameter jump is true, the current stopped effect will set
+   * the final css properties like if the effect would be completely executed.  
+   */
+  public T stop(boolean clearQueue, boolean jumpToEnd) {
+    return stop(DEFAULT_NAME, clearQueue, jumpToEnd);
+  }
+  
+  /**
+   * Stop the function which is currently in execution and depending on the
+   * value of the parameter: 
    * - remove it from the named queue and start the next one.
    * - or remove all functions in the named queue.
    */
