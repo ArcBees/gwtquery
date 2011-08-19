@@ -694,7 +694,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre class="code">
    * $("#foo").queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.RED)).dequeue("colorQueue").done())
    *          .delay(800, "colorQueue")
-   *          .queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done()); 
+   *          .queue("colorQueue", lazy().css(CSS.COLOR.with(RGBColor.BLACK)).dequeue("colorQueue").done()); 
    * </pre>
    * 
    * When this statement is executed, the text color of the element changes to
@@ -868,10 +868,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Execute the next function on the queue named as queueName for the matched elements. 
    * This method is usefull to tell when a function you add in the Effects queue is
    * ended and so the next function in the queue can start.
-   * 
-   * If you are queuing functions in a named queue (not the Effects one), 
-   * you do not need to call dequeue(queueName) since it is preformed automatically. 
-   * 
    */
   LazyGQuery<T> dequeue(String queueName);
 
@@ -1732,18 +1728,20 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * $("#foo").queue("myQueue", new Function(){
    *          public void f(Element e){
    *             $(e).css(CSS.BACKGROUNG_COLOR.with(RGBColor.RED));
+   *             dequeue("myQueue");
    *          }
    *        })
    *        .delay(500, "myQueue")
-   *        .queue("myQueue", lazy().css(CSS.COLOR.with(RGBColor.YELLOW)).done());
+   *        .queue("myQueue", lazy().css(CSS.COLOR.with(RGBColor.YELLOW)).dequeue("myQueue").done());
    * </pre>
    * 
    * When this statement is executed, the background color of the element is set
    * to red, then wait 500ms before to set the text color of the element to
    * yellow. right for 400ms.
    * 
-   * NOTE: {@link #dequeue()} function is not needed at the end of your
-   * function unless you use the Effects ('fx') namespace.
+   * Please note that {@link #dequeue()} function is needed at the end of your
+   * function to start the next function in the queue. In lazy() methods you should
+   * call dequeue() just before the done() call.
    * {@see #dequeue()}
    */
   LazyGQuery<T> queue(String queueName, Function... f);

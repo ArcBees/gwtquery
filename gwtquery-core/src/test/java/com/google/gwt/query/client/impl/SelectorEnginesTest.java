@@ -72,7 +72,6 @@ public class SelectorEnginesTest extends GWTTestCase {
     
     assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", 
         sel.css2Xpath("div[@class='comment']:contains('John')")); 
-    
   }
 
 }

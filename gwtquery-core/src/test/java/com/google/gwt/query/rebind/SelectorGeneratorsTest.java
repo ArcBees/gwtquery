@@ -90,11 +90,12 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     assertEquals(".//*[@checked='checked']|.//*[not(@disabled)]|.//*[@disabled]", 
         sel.css2Xpath(":checked, :enabled, :disabled"));
     
-    assertEquals(".//table[contains(string(.),'String With | @ ~= Space Points.s and Hash#es')]", 
-        sel.css2Xpath("table:contains('String With | @ ~= Space Points.s and Hash#es')"));
+    assertEquals(".//table[contains(string(.),'#String With | @ ~= Space Points.s and Hash#es#')]", 
+        sel.css2Xpath("table:contains('#String With | @ ~= Space Points.s and Hash#es#')"));
     
     assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]", 
         sel.css2Xpath("div[@class='comment']:contains('John')"));
+
   }
 
   public void testReplaceAll() {

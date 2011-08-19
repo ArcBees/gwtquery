@@ -51,7 +51,7 @@ public class PropertiesAnimation extends GQAnimation {
   }
 
   private static final String[] ATTRS_TO_SAVE = new String[]{
-      "overflow", "visibility"};
+      "overflow"};
 
   private static final JsRegexp REGEX_NUMBER_UNIT = new JsRegexp(
       "^([0-9+-.]+)(.*)?$");
@@ -215,6 +215,7 @@ public class PropertiesAnimation extends GQAnimation {
       onComplete();
     } else {
       g.dequeue();
+      g.restoreCssAttrs(ATTRS_TO_SAVE);
     }
   }
 

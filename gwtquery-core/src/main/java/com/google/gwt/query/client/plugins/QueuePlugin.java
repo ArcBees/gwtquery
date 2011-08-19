@@ -37,29 +37,30 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       });
 
   protected class DelayFunction extends Function {
-
     private class SimpleTimer extends Timer {
-      @Override
       public void run() {
-        dequeue();
         g.each(funcs);
+        for (Element e: g.elements()) {
+          dequeueIfNotDoneYet(e, name, DelayFunction.this);
+        }
       }
     }
 
     private int delay;
     Function[] funcs;
     GQuery g;
+    String name;
 
-    public DelayFunction(GQuery gquery, int delayInMilliseconds, Function... f) {
+    public DelayFunction(GQuery gquery, String name, int delayInMilliseconds, Function... f) {
       this.g = gquery;
       this.delay = delayInMilliseconds;
       this.funcs = f;
+      this.name = name;
     }
 
     @Override
     public void f() {
       new SimpleTimer().schedule(delay);
-
     }
   }
 
@@ -101,7 +102,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    */
   @SuppressWarnings("unchecked")
   public T delay(int milliseconds, String name, Function... funcs) {
-    queue(name, new DelayFunction(this, milliseconds));
+    queue(name, new DelayFunction(this, name, milliseconds, funcs));
     return (T) this;
   }
 
@@ -161,13 +162,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public T queue(final String name, Function... funcs) {
     for (final Function f: funcs) {
       for (Element e: elements()) {
-        queue(e, name, new Function(){
-          @Override
-          public void f(Element e) {
-            f.f(e.<com.google.gwt.dom.client.Element>cast());
-            dequeueIfNotDoneYet(e, name, this);
-          }
-        });
+        queue(e, name, f);
       }
     }
     return (T)this;

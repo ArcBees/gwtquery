@@ -95,7 +95,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
 
   public static Object[] regs = new Object[]{
     // scape some dots and spaces
-    "(['\\[])([^'\\]]+)([\\s\\.#])([^'\\]]+)(['\\]])", rc_scp,
+    "(['\\[])([^'\\]]*)([\\s\\.#])([^'\\]]*)(['\\]])", rc_scp,
     // add @ for attrib
     "\\[([^@\\]~\\$\\*\\^\\|\\!]+)(=[^\\]]+)?\\]", "[@$1$2]",
     // multiple queries
