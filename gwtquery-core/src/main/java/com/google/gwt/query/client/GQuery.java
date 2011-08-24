@@ -3758,20 +3758,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       } else if ("input".equalsIgnoreCase(name)) {
         InputElement ie = InputElement.as(e);
         String type = ie.getType();
+        
         if ("radio".equalsIgnoreCase((type))
-            || "checkbox".equalsIgnoreCase(type)) {
-          if ("checkbox".equalsIgnoreCase(type)) {
-            for (String val : values) {
-              if (ie.getValue().equals(val)) {
-                ie.setChecked(true);
-              } else {
-                ie.setChecked(false);
-              }
+            || "checkbox".equalsIgnoreCase(type)){
+          ie.setChecked(false);
+          for (String val : values) {
+            if (ie.getValue().equals(val)) {
+              ie.setChecked(true);
+              break;
             }
-          } else if (ie.getValue().equals(values[0])) {
-            ie.setChecked(true);
-          } else {
-            ie.setChecked(false);
           }
         } else {
           ie.setValue(values[0]);

@@ -29,8 +29,11 @@ import junit.framework.Assert;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -892,6 +895,50 @@ public class GQueryCoreTest extends GWTTestCase {
     assertFalse(JsUtils.truth(00.00f));
     assertFalse(JsUtils.truth(null));
     assertFalse(JsUtils.truth(""));
+  }
+  
+  public void testVal(){
+    //HTML code used in this test
+    $(e).html("<select id='single'>"
+              +    "<option>Single</option>"
+              +    "<option>Single2</option>"
+              +"</select>"
+              +"<select id='multiple' multiple='multiple'>"
+              +    "<option selected='selected'>Multiple</option>"
+              +    "<option>Multiple2</option>"
+              +    "<option selected='selected'>Multiple3</option>"
+              +"</select>"
+              +"<input id='check1' type='checkbox' name='checkboxname' value='check1'> check1"
+              +"<input id='check2' type='checkbox' name='checkboxname' value='check2'> check2"
+              +"<input id='check3' type='checkbox' name='checkboxname' value='check3'> check3"
+              +"<input id='radio1' type='radio' name='r' value='radio1'> radio1"
+              +"<input id='radio2' type='radio' name='r' value='radio2'> radio2"
+              +"<input id='text'   type='text'></input>");
+    
+    $("#single",e).val("Single2");
+    SelectElement single =  SelectElement.as($("#single",e).get(0));
+    assertEquals(1, single.getSelectedIndex());
+    
+    $("#multiple",e).val("Multiple2", "Multiple3"); 
+    NodeList<OptionElement>options = SelectElement.as($("#multiple",e).get(0)).getOptions();
+    
+    assertEquals(false, options.getItem(0).isSelected());
+    assertEquals(true, options.getItem(1).isSelected());
+    assertEquals(true, options.getItem(2).isSelected());
+    
+    $("input",e).val("check1","check2", "radio1", "radio2" );
+    assertEquals(true, InputElement.as($("#check1", e).get(0)).isChecked());
+    assertEquals(true, InputElement.as($("#check2", e).get(0)).isChecked());
+    assertEquals(false, InputElement.as($("#check3", e).get(0)).isChecked());
+    
+    //radio1 should not be selected
+    assertEquals(false, InputElement.as($("#radio1", e).get(0)).isChecked());
+    //radio1 should be selected
+    assertEquals(true, InputElement.as($("#radio2", e).get(0)).isChecked());
+    
+    //radio1 should not be selected
+    assertEquals("check1", InputElement.as($("#text", e).get(0)).getValue());
+
   }
 
   public void testWidthHeight() {
