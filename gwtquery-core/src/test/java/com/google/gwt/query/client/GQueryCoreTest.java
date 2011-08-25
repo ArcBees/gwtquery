@@ -940,7 +940,16 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("check1", InputElement.as($("#text", e).get(0)).getValue());
 
   }
-
+  
+  public void testCheckedAttr_Issue97() {
+    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
+    assertEquals("", $("#cb").val());
+    $("#cb").attr("checked", "checked");
+    assertEquals("1", $("#cb").val());
+    $("#cb").removeAttr("checked");
+    assertEquals("", $("#cb").val());
+  }
+  
   public void testWidthHeight() {
     $(e).html(
         "<div style='border: 1px solid red; padding: 10px; margin:10px; width: 100px; height: 100px'>Content 1</div>");
