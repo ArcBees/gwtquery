@@ -180,6 +180,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static GQuery $() {
     return new GQuery(JsNodeArray.create());
   }
+  
+  /**
+   * Wrap a GQuery around an existing element.
+   */
+  public static GQuery $(Function f) {
+    return new GQuery(f.getElement());
+  }
 
   /**
    * Wrap a GQuery around an existing element.
@@ -469,6 +476,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return array;
   }-*/;
 
+  private static native void setElementValue(Element e, String value) /*-{
+    e.value = value;
+  }-*/;
+  
   private static native void scrollIntoViewImpl(Node n) /*-{
 		if (n)
 			n.scrollIntoView()
@@ -3725,56 +3736,103 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * array of all values in multivalues elements use vals()
    * 
    * When the first element is a radio-button and is not checked, then it looks
-   * for a the first checked radio-button that has the same name in the list of
+   * for the first checked radio-button that has the same name in the list of
    * matched elements.
+   * 
+   * When there are not matched elements it returns null.
    */
   public String val() {
+    if (isEmpty()) {
+      return null;
+    }
     String[] v = vals();
-    return (v != null && v.length > 0) ? v[0] : "";
+    return v == null ? null : v.length > 0 ? v[0] : "";
   }
-
+  
   /**
-   * Sets the value attribute of every matched element In the case of multivalue
-   * elements, all values are setted for other elements, only the first value is
-   * considered.
+   * Sets the value attribute of every matched element based in the return
+   * value of the function evaluated for this element.
+   * 
+   * NOTE: in jquery the function receives the arguments in different
+   * way, first index and them the actual value, but we use the normal way
+   * in gquery Function, first the element and second the index.
+   */
+  public GQuery val(Function f) {
+    for (int i = 0; i < size(); i++){
+      eq(i).val(f.f(get(i), i).toString());
+    }
+    return this;
+  }
+  
+  /**
+   * Sets the 'value' attribute of every matched element, but
+   * does not set the checked flag to checkboxes or radiobuttons.
+   * 
+   * If you wanted to set values in collections of checkboxes o radiobuttons 
+   * use val(String[]) instead
+   */
+  public GQuery val(String value) {
+    for (Element e : elements) {
+      setElementValue(e, value);
+    }
+    return this;
+  }
+  
+  /**
+   * Sets the value of every matched element.
+   * 
+   * There is a different behaviour depending on the element type:
+   * <ul>
+   *  <li>select multiple: options whose value match any of the passed values will be set.
+   *  <li>select single: the last option whose value matches any of the passed values will be set.
+   *  <li>input radio: the last input whose value matches any of the passed values will be set.
+   *  <li>input checkbox: inputs whose value match any of the passed values will be set.
+   *  <li>textarea, button, and other input: value will set to a string result of joining with coma, all passed values 
+   * </ul>
+   * 
+   * NOTE: if you wanted call this function with just one parameter, you have to
+   * pass an array signature to avoid call the overloaded val(String) method:
+   * 
+   * $(...).val(new String[]{"value"});
    */
   public GQuery val(String... values) {
+    String value = values.length > 0 ? values[0] : "";
+    for (int i = 1; i < values.length; i++) {
+      value += "," + values[i];
+    }
     for (Element e : elements) {
       String name = e.getNodeName();
       if ("select".equalsIgnoreCase(name)) {
         SelectElement s = SelectElement.as(e);
         s.setSelectedIndex(-1);
-        if (values.length > 1 && s.isMultiple()) {
-          for (String v : values) {
+        for (String v : values) {
+          if (s.isMultiple()) {
             for (int i = 0, l = s.getOptions().getLength(); i < l; i++) {
               if (v.equals(s.getOptions().getItem(i).getValue())) {
                 s.getOptions().getItem(i).setSelected(true);
               }
             }
+          } else {
+            s.setValue(v);
           }
-        } else {
-          s.setValue(values[0]);
         }
       } else if ("input".equalsIgnoreCase(name)) {
         InputElement ie = InputElement.as(e);
         String type = ie.getType();
-        
         if ("radio".equalsIgnoreCase((type))
             || "checkbox".equalsIgnoreCase(type)){
           ie.setChecked(false);
-          for (String val : values) {
-            if (ie.getValue().equals(val)) {
+          for (String v : values) {
+            if (ie.getValue().equals(v)) {
               ie.setChecked(true);
               break;
             }
           }
         } else {
-          ie.setValue(values[0]);
+          ie.setValue(value);
         }
-      } else if ("textarea".equalsIgnoreCase(name)) {
-        TextAreaElement.as(e).setValue(values[0]);
-      } else if ("button".equalsIgnoreCase(name)) {
-        ButtonElement.as(e).setValue(values[0]);
+      } else {
+        setElementValue(e, value);
       }
     }
     return this;
@@ -3804,29 +3862,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
               result.set(result.length(), oe.getValue());
             }
           }
-          return jsArrayToString(result);
+          return result.length() > 0 ? jsArrayToString(result) : null;
         } else if (se.getSelectedIndex() >= 0) {
           return new String[]{se.getOptions().getItem(se.getSelectedIndex()).getValue()};
         }
       } else if (e.getNodeName().equalsIgnoreCase("input")) {
         InputElement ie = InputElement.as(e);
-        if ("radio".equalsIgnoreCase(ie.getType())) {
-          for (Element e2 : elements) {
-            if ("input".equalsIgnoreCase(e2.getNodeName())) {
-              InputElement ie2 = InputElement.as(e2);
-              if ("radio".equalsIgnoreCase(ie2.getType()) && ie2.isChecked()
-                  && ie.getName().equals(ie2.getName())) {
-                return new String[]{ie2.getValue()};
-              }
-            }
-          }
-        } else if ("checkbox".equalsIgnoreCase(ie.getType())) {
-          if (ie.isChecked()) {
-            return new String[]{ie.getValue()};
-          }
-        } else {
-          return new String[]{ie.getValue()};
-        }
+        return new String[]{ie.getValue()};
+//        if ("radio".equalsIgnoreCase(ie.getType())) {
+//          for (Element e2 : elements) {
+//            if ("input".equalsIgnoreCase(e2.getNodeName())) {
+//              InputElement ie2 = InputElement.as(e2);
+//              if ("radio".equalsIgnoreCase(ie2.getType()) && ie2.isChecked()
+//                  && ie.getName().equals(ie2.getName())) {
+//                return new String[]{ie2.getValue()};
+//              }
+//            }
+//          }
+//          if (ie.isChecked()) {
+//            return new String[]{ie.getValue()};
+//          }
+//        } else {
+//          return new String[]{ie.getValue()};
+//        }
       } else if (e.getNodeName().equalsIgnoreCase("textarea")) {
         return new String[]{TextAreaElement.as(e).getValue()};
       } else if (e.getNodeName().equalsIgnoreCase("button")) {

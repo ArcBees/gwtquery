@@ -265,7 +265,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $("p", e).empty();
     assertHtmlEquals(expected, $(e).html());
   }
-
+  
   public void testInputValueMethods() {
     // imput text
     $(e).html("<input type='text'/>");
@@ -286,8 +286,8 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(
         "<select name='n' multiple='multiple'><option value='v1'>1</option><option value='v2'>2</option><option value='v3'>3</option></select>");
     gq = $("select", e);
-    assertEquals(0, gq.vals().length);
-    assertEquals("", gq.val());
+    assertNull(gq.vals());
+    assertNull(gq.val());
 
     $(e).html(
         "<select name='n' multiple='multiple'><option value='v1'>1</option><option value='v2' selected='selected'>2</option><option value='v3'>3</option></select>");
@@ -307,22 +307,24 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html(
         "<input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input>");
     gq = $("input", e);
-    assertEquals("v2", gq.val());
-    gq.val("v1");
     assertEquals("v1", gq.val());
-    gq.val("v2");
-    assertEquals("v2", gq.val());
+    assertEquals("v2", $("input:checked", e).val());
+    gq.val(new String[]{"v1"});
+    assertEquals("v1", $("input:checked", e).val());
+    gq.val(new String[]{"v2"});
+    assertEquals("v2", $("input:checked", e).val());
 
     // input checkbox
     $(e).html(
         "<input type='checkbox' name='n1' value='v1'>1</input><input type='checkbox' name='n2' value='v2' checked='checked'>2</input>");
     gq = $("input", e);
-    assertEquals("", gq.val());
-    gq.val("v1");
     assertEquals("v1", gq.val());
+    assertEquals("v2", $("input:checked", e).val());
+    gq.val(new String[]{"v1"});
+    assertEquals("v1", $("input:checked", e).val());
   }
-
-  public void testIssue23() {
+  
+   public void testIssue23() {
     $(e).html(
         "<table><tr><td><input type='radio' name='n' value='v1'>1</input><input type='radio' name='n' value='v2' checked='checked'>2</input></td><td><button>Click</button></tr><td></table>");
     $("button").click(new Function() {
@@ -897,57 +899,92 @@ public class GQueryCoreTest extends GWTTestCase {
     assertFalse(JsUtils.truth(""));
   }
   
-  public void testVal(){
-    //HTML code used in this test
-    $(e).html("<select id='single'>"
-              +    "<option>Single</option>"
-              +    "<option>Single2</option>"
-              +"</select>"
-              +"<select id='multiple' multiple='multiple'>"
-              +    "<option selected='selected'>Multiple</option>"
-              +    "<option>Multiple2</option>"
-              +    "<option selected='selected'>Multiple3</option>"
-              +"</select>"
-              +"<input id='check1' type='checkbox' name='checkboxname' value='check1'> check1"
-              +"<input id='check2' type='checkbox' name='checkboxname' value='check2'> check2"
-              +"<input id='check3' type='checkbox' name='checkboxname' value='check3'> check3"
-              +"<input id='radio1' type='radio' name='r' value='radio1'> radio1"
-              +"<input id='radio2' type='radio' name='r' value='radio2'> radio2"
-              +"<input id='text'   type='text'></input>");
+  public void testVal_issue98() {
+    $(e).html(""
+      +"<input type='text' id='inputText' name='inputText' value='original' />"
+      +"<textarea id='textArea' name='textArea'>original</textarea>"
+      +"<button id='button' name='button'value='original'>Click</button>"
     
-    $("#single",e).val("Single2");
-    SelectElement single =  SelectElement.as($("#single",e).get(0));
-    assertEquals(1, single.getSelectedIndex());
+      +"<select id='selectSingle' name='selectSingle'>"
+      +"<option value='v0'>Single0</option>"
+      +"<option value='v1'>Single1</option>"
+      +"<option value='v2'>Single2</option>"
+      +"</select>"
     
-    $("#multiple",e).val("Multiple2", "Multiple3"); 
-    NodeList<OptionElement>options = SelectElement.as($("#multiple",e).get(0)).getOptions();
-    
-    assertEquals(false, options.getItem(0).isSelected());
-    assertEquals(true, options.getItem(1).isSelected());
-    assertEquals(true, options.getItem(2).isSelected());
-    
-    $("input",e).val("check1","check2", "radio1", "radio2" );
-    assertEquals(true, InputElement.as($("#check1", e).get(0)).isChecked());
-    assertEquals(true, InputElement.as($("#check2", e).get(0)).isChecked());
-    assertEquals(false, InputElement.as($("#check3", e).get(0)).isChecked());
-    
-    //radio1 should not be selected
-    assertEquals(false, InputElement.as($("#radio1", e).get(0)).isChecked());
-    //radio1 should be selected
-    assertEquals(true, InputElement.as($("#radio2", e).get(0)).isChecked());
-    
-    //radio1 should not be selected
-    assertEquals("check1", InputElement.as($("#text", e).get(0)).getValue());
+      +"<select id='selectMultiple' name='selectMultiple' multiple='multiple'>"
+      +"<option value='v0'>Multiple0</option>"
+      +"<option value='v1'>Multiple1</option>"
+      +"<option value='v2'>Multiple2</option>"
+      +"</select><br/>"
 
+      +"<input type='checkbox' name='c' value='v0'/> check0"
+      +"<input type='checkbox' name='c' value='v1'/> check1"
+      +"<input type='checkbox' name='c' value='v2'/> check2"
+    
+      +"<input type='radio'  name='r' value='v0'/> radio0"
+      +"<input type='radio'  name='r' value='v1'/> radio1"
+      +"<input type='radio'  name='r' value='v2'/> radio2"
+    );
+    
+    assertNull($().val());
+    assertEquals(0, $().vals().length);
+
+    assertEquals("original", $("#inputText", e).val());
+    assertEquals("original", $("#textArea", e).val());
+    assertEquals("original", $("#button", e).val());
+    $("#inputText, #textArea, #button", e).val("newval");
+    assertEquals("newval", $("#inputText", e).val());
+    assertEquals("newval", $("#textArea", e).val());
+    assertEquals("newval", $("#button", e).val());
+    
+    assertEquals("v0", $("#selectSingle", e).val());
+    assertNull($("#selectMultiple", e).val());
+    $("#selectSingle, #selectMultiple", e).val("v2");
+    assertEquals("v2", $("#selectSingle", e).val());
+    assertEquals("v2", $("#selectMultiple", e).val());
+
+    assertEquals("v0", $("input[type='checkbox']", e).val());
+    assertNull($("input[type='checkbox']:checked", e).val());
+    // val(String) changes the value attribute, but not set it as checked
+    $("input[type='checkbox']", e).eq(0).val("n0");
+    assertEquals("n0", $("input[type='checkbox']", e).val());
+    assertNull($("input[type='checkbox']:checked", e).val());
+    // val(array) set the checked property to true if the value name matches
+    $("input[type='checkbox']", e).val(new String[]{"n0"});
+    assertEquals("n0", $("input[type='checkbox']", e).val());
+    assertNotNull($("input[type='checkbox']:checked", e).val());
+    
+    assertEquals("v0", $("input[type='radio']", e).val());
+    assertNull($("input[type='radio']:checked", e).val());
+    $("input[type='radio']").eq(0).val("n0");
+    assertEquals("n0", $("input[type='radio']", e).val());
+    assertNull($("input[type='radio']:checked", e).val());
+  
+//    evalJQuery("$('input, select, textarea, button').val(['whatever', 'v1', 'v2'])");
+    $("input, select, textarea, button").val("whatever", "v1", "v2");
+    
+    String joinVals = "whatever,v1,v2";
+    assertEquals(joinVals, $("#inputText", e).val());
+    assertEquals(joinVals, $("#textArea", e).val());
+    assertEquals(joinVals, $("#button", e).val());
+    assertEquals("v2", $("#selectSingle", e).val());
+    assertEquals("v1", $("#selectMultiple", e).vals()[0]);
+    assertEquals("v2", $("#selectMultiple", e).vals()[1]);
+    assertEquals(2, $("input[type='checkbox']:checked", e).size());
+    assertEquals("v1", $("input[type='checkbox']:checked", e).eq(0).val());
+    assertEquals("v2", $("input[type='checkbox']:checked", e).eq(1).val());
+    assertEquals(1, $("input[type='radio']:checked", e).size());
+    assertEquals("v2", $("input[type='radio']:checked", e).val());
   }
+  
   
   public void testCheckedAttr_Issue97() {
     $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
-    assertEquals("", $("#cb").val());
-    $("#cb").attr("checked", "checked");
-    assertEquals("1", $("#cb").val());
-    $("#cb").removeAttr("checked");
-    assertEquals("", $("#cb").val());
+    assertNull($("#cb:checked", e).val());
+    $("#cb", e).attr("checked", "checked");
+    assertEquals("1", $("#cb:checked", e).val());
+    $("#cb", e).removeAttr("checked");
+    assertNull($("#cb:checked", e).val());
   }
   
   public void testWidthHeight() {
