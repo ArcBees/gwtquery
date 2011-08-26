@@ -985,6 +985,12 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("1", $("#cb:checked", e).val());
     $("#cb", e).removeAttr("checked");
     assertNull($("#cb:checked", e).val());
+    $("#cb", e).attr("checked", true);
+    assertEquals("1", $("#cb:checked", e).val());
+    $("#cb", e).attr("checked", false);
+    assertNull($("#cb:checked", e).val());
+    $("#cb", e).attr("checked", "");
+    assertNull($("#cb:checked", e).val());
   }
   
   public void testWidthHeight() {

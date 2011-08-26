@@ -469,9 +469,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		return array;
   }-*/;
 
+  private static native void setElementAttribute(Element e, String key, String value) /*-{
+    if (value == null)
+      e.removeAttribute(key);
+    else  
+      e.setAttribute(key, value);
+    e[key] = value;
+  }-*/;
+  
   private static native void setElementValue(Element e, String value) /*-{
     e.value = value;
   }-*/;
+  
   
   private static native void scrollIntoViewImpl(Node n) /*-{
 		if (n)
@@ -891,18 +900,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements) {
       Object val = closure.f(e.<com.google.gwt.dom.client.Element>cast(), i++);
       if (val != null) {
-        e.setAttribute(key, String.valueOf(val));
+        setElementAttribute(e, key, String.valueOf(val));
       }
     }
     return this;
   }
-
+  
+  /**
+   * Set a single property to a value, on all matched elements.
+   */
+  public GQuery attr(String key, boolean value) {
+    String val = value ? "true" : null;
+    for (Element e : elements) {
+      setElementAttribute(e, key, val);
+    }
+    return this;
+  }
+  
   /**
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, String value) {
     for (Element e : elements) {
-      e.setAttribute(key, value);
+      setElementAttribute(e, key, value);
     }
     return this;
   }
@@ -3032,10 +3052,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove the named attribute from every element in the matched set.
    */
   public GQuery removeAttr(String key) {
-    for (Element e : elements) {
-      e.removeAttribute(key);
-    }
-    return this;
+    return attr(key, (String)null);
   }
 
   /**
