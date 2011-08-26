@@ -176,13 +176,15 @@ public class GQuerySelectorsTest extends GWTTestCase {
     }
   }
   
-  public void testVisibleHidden() {
-    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A Text</td><td width=50%><a></a><p id=a></p><p id=b style='display: none'><span id=c></span></p></td></tr></table>");
+  public void testJQueryPseudoselectors() {
+    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A Text</td><td width=50%><a></a><p id=a></p><p id=b style='display: none'><span id=c>s</span></p></td></tr></table>");
     assertEquals(9, $("* ", e).size());
-    assertEquals(1, $("*:hidden ", e).size());
-    assertEquals(8, $("*:visible ", e).size());
-    assertEquals(2, $("*:hidden , span", e).size());
-    assertEquals(8, $("*:visible , span", e).size());
+    assertEquals(2, $("span:hidden, p:hidden ", e).size());
+    assertEquals(2, $("td:visible ", e).size());
+    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' /><input type='radio' id='cb' name='cb' value='1' />");
+    assertEquals(1, $("input:checkbox ", e).size());
+    assertEquals(1, $(":radio ", e).size());
+    assertEquals(2, $("*:radio, *:checkbox", e).size());
   }
 
   public void testCompiledSelectors() {
