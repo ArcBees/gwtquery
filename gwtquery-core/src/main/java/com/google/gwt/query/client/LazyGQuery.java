@@ -354,6 +354,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Set a single property to a value, on all matched elements.
    */
+  LazyGQuery<T> attr(String key, boolean value);
+
+  /**
+   * Set a single property to a value, on all matched elements.
+   */
   LazyGQuery<T> attr(String key, String value);
 
   /**
@@ -2133,15 +2138,48 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * array of all values in multivalues elements use vals()
    * 
    * When the first element is a radio-button and is not checked, then it looks
-   * for a the first checked radio-button that has the same name in the list of
+   * for the first checked radio-button that has the same name in the list of
    * matched elements.
+   * 
+   * When there are not matched elements it returns null.
    */
   String val();
 
   /**
-   * Sets the value attribute of every matched element In the case of multivalue
-   * elements, all values are setted for other elements, only the first value is
-   * considered.
+   * Sets the value attribute of every matched element based in the return
+   * value of the function evaluated for this element.
+   * 
+   * NOTE: in jquery the function receives the arguments in different
+   * way, first index and them the actual value, but we use the normal way
+   * in gquery Function, first the element and second the index.
+   */
+  LazyGQuery<T> val(Function f);
+
+  /**
+   * Sets the 'value' attribute of every matched element, but
+   * does not set the checked flag to checkboxes or radiobuttons.
+   * 
+   * If you wanted to set values in collections of checkboxes o radiobuttons 
+   * use val(String[]) instead
+   */
+  LazyGQuery<T> val(String value);
+
+  /**
+   * Sets the value of every matched element.
+   * 
+   * There is a different behaviour depending on the element type:
+   * <ul>
+   *  <li>select multiple: options whose value match any of the passed values will be set.
+   *  <li>select single: the last option whose value matches any of the passed values will be set.
+   *  <li>input radio: the last input whose value matches any of the passed values will be set.
+   *  <li>input checkbox: inputs whose value match any of the passed values will be set.
+   *  <li>textarea, button, and other input: value will set to a string result of joining with coma, all passed values 
+   * </ul>
+   * 
+   * NOTE: if you wanted call this function with just one parameter, you have to
+   * pass an array signature to avoid call the overloaded val(String) method:
+   * 
+   * $(...).val(new String[]{"value"});
    */
   LazyGQuery<T> val(String... values);
 
