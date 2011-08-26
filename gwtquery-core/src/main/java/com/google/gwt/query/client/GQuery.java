@@ -184,13 +184,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Wrap a GQuery around an existing element.
    */
-  public static GQuery $(Function f) {
-    return new GQuery(f.getElement());
-  }
-
-  /**
-   * Wrap a GQuery around an existing element.
-   */
   public static GQuery $(Element element) {
     return new GQuery(element);
   }
