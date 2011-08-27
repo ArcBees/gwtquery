@@ -1864,9 +1864,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * filters at once.
    */
   public GQuery filter(String... filters) {
-
     JsNodeArray array = JsNodeArray.create();
-
     for (String f : filters) {
       for (Element e : elements) {
         boolean ghostParent = false;
@@ -1992,6 +1990,31 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery gt(int pos) {
     return $(slice(pos + 1, -1));
+  }
+  
+
+  /**
+   * Reduce the set of matched elements to those that have a descendant 
+   * that matches the selector.
+   */
+  public GQuery has(final String selector) {
+    return filter(new Predicate(){
+      public boolean f(Element e, int index) {
+        return !$(selector, e).isEmpty();
+      }
+    });
+  }
+
+  /**
+   * Reduce the set of matched elements to those that have a descendant 
+   * that matches the Element.
+   */
+  public GQuery has(final Element elem) {
+    return filter(new Predicate(){
+      public boolean f(Element e, int index) {
+        return engine.contains(e, elem);
+      }
+    });
   }
 
   /**

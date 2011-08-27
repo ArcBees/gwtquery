@@ -1744,5 +1744,26 @@ public class GQueryCoreTest extends GWTTestCase {
     test.addClass("test");
     test.removeClass("test");
   }
+  
+  public void testHas() {
+    $(e).html("<ul>"
+              +"<li>list item 1</li>"
+              +"<li id='l2'>list item 2"
+              +" <ul>"
+              +"  <li>list item 2-a</li>"
+              +"  <li>list item 2-b</li>"
+              +" </ul>"
+              +"</li>"
+              +"<li id='l3'>list item 3 <span>span</span>" 
+              +"</li>"
+              +"<li>list item 4</li>"
+              +"</ul>");
+    assertEquals("", $("#l2").css("background-color"));
+    $("li", e).has("ul").css("background-color", "red");
+    assertEquals("red", $("#l2").css("background-color"));
+
+    Element span = $("span", e).get(0);
+    assertEquals("l3", $("li", e).has(span).id());
+  }
 
 }

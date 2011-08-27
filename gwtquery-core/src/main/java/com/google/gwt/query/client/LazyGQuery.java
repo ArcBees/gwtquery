@@ -1083,6 +1083,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> gt(int pos);
 
   /**
+   * Reduce the set of matched elements to those that have a descendant 
+   * that matches the selector.
+   */
+  LazyGQuery<T> has(String selector);
+
+  /**
+   * Reduce the set of matched elements to those that have a descendant 
+   * that matches the Element.
+   */
+  LazyGQuery<T> has(Element elem);
+
+  /**
    * Returns true any of the specified classes are present on any of the matched
    * elements.
    */

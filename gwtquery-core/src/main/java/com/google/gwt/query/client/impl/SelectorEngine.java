@@ -139,6 +139,10 @@ public class SelectorEngine implements HasSelector {
     }
   }
   
+  public native boolean contains(Element a, Element b) /*-{
+    return a.contains ? a != b && a.contains(b) : !!(a.compareDocumentPosition(b) & 16)
+  }-*/;
+  
   public void setRoot(Node root) {
     assert root != null;
     this.root = root;
