@@ -920,7 +920,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, boolean value) {
-    String val = value ? "true" : null;
+    String val = value ? key : null;
     for (Element e : elements) {
       setElementAttribute(e, key, val);
     }
@@ -931,13 +931,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, String value) {
-    boolean remove = value == null;
+    if (value == null) {
+      return removeAttr(key);
+    }
     for (Element e : elements) {
-      if (remove) {
-        e.removeAttribute(key);
-      } else {
-        e.setAttribute(key, value);
-      }
+      e.setAttribute(key, value);
     }
     return this;
   }
@@ -3093,7 +3091,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove the named attribute from every element in the matched set.
    */
   public GQuery removeAttr(String key) {
-    return attr(key, (String)null);
+    for (Element e : elements) {
+      e.removeAttribute(key);
+    }
+    return this;
   }
 
   /**
