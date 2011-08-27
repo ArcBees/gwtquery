@@ -23,6 +23,35 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class Function {
   
+  private com.google.gwt.dom.client.Element element = null;
+  private Event event = null;
+  private int index = -1;
+  
+  public <T extends com.google.gwt.dom.client.Element> T getElement() {
+    return element.<T>cast();
+  }
+  
+  public <T extends com.google.gwt.dom.client.Element> void setElement(T e) {
+    element = e;
+  }
+  
+  public void setEvent(Event e) {
+    event = e;
+    element = e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast();
+  }
+  
+  public Event getEvent() {
+    return event;
+  }
+  
+  public void setIndex(int i) {
+    index = i;
+  }
+  
+  public int getIndex() {
+    return index;
+  }
+  
   /**
    * Override this for methods which invoke a cancel action.
    * 
@@ -30,6 +59,7 @@ public abstract class Function {
    * 
    */
   public void cancel(com.google.gwt.dom.client.Element e) {
+    setElement(e);
    // This has to be the order of calls
     cancel(e.<com.google.gwt.user.client.Element>cast());
   }
@@ -41,6 +71,7 @@ public abstract class Function {
    * 
    */
   public void cancel(com.google.gwt.user.client.Element e) {
+    setElement(e);
   }
 
   /**
@@ -48,7 +79,7 @@ public abstract class Function {
    */
   public void f() {
     throw new RuntimeException("You have to override the adequate method to handle " +
-    		"this action, or you have to override 'public void f()' to avoid this error");
+        "this action, or you have to override 'public void f()' to avoid this error");
   }
 
   /**
@@ -59,6 +90,8 @@ public abstract class Function {
    * 
    */
   public Object f(com.google.gwt.dom.client.Element e, int i) {
+    setElement(e);
+    setIndex(i);
     // This has to be the order of calls
     return f(e.<com.google.gwt.user.client.Element>cast(), i); 
   }
@@ -71,6 +104,8 @@ public abstract class Function {
    * 
    */
   public Object f(com.google.gwt.user.client.Element e, int i) {
+    setElement(e);
+    setIndex(i);
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
       f(w, i);
@@ -89,6 +124,8 @@ public abstract class Function {
    *  avoid a runtime exception. 
    */
   public Object f(Widget w, int i) {
+    setElement(w.getElement());
+    setIndex(i);
     f(w);
     return null;
   }
@@ -98,6 +135,7 @@ public abstract class Function {
    * per-handler user data.
    */
   public boolean f(Event e, Object data) {
+    setEvent(e);
     return f(e);
   }
 
@@ -105,6 +143,7 @@ public abstract class Function {
    * Override this method for bound event handlers.
    */
   public boolean f(Event e) {
+    setEvent(e);
     f(e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast());
     return true;
   }
@@ -116,6 +155,7 @@ public abstract class Function {
    * @param e takes a com.google.gwt.dom.client.Element
    */
   public void f(com.google.gwt.dom.client.Element e) {
+    setElement(e);
    // This has to be the order of calls
     f(e.<com.google.gwt.user.client.Element>cast());
   }
@@ -128,6 +168,7 @@ public abstract class Function {
    */
   private boolean loop = false;
   public void f(com.google.gwt.user.client.Element e) {
+    setElement(e);
     Widget w = GQuery.getAssociatedWidget(e);
     if (w != null){
       loop = true;
@@ -146,6 +187,7 @@ public abstract class Function {
    *  avoid a runtime exception. 
    */
   public void f(Widget w){
+    setElement(w.getElement());
     if (loop) {
       loop = false;
       f();

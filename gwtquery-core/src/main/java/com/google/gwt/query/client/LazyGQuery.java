@@ -63,9 +63,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
+   * 
+   * It construct a new GQuery object and does not modify the original ones.
+   * 
    * It also update the selector appending the new one.
    */
-  LazyGQuery<T> add(GQuery previousObject);
+  LazyGQuery<T> add(GQuery elementsToAdd);
 
   /**
    * Add elements to the set of matched elements if they are not included yet.

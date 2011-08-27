@@ -1549,7 +1549,7 @@ public class GQueryCoreTest extends GWTTestCase {
     $(e).html("<div id=fid>0</div>");
     GQuery g = $("#fid", e);
     assertEquals("0", g.text());
-    
+
     // EACH
     g.each(new Function() {
       @Override
@@ -1593,14 +1593,14 @@ public class GQueryCoreTest extends GWTTestCase {
     g.unbind(Event.ONCLICK).click(new Function(){
       @Override
       public void f(com.google.gwt.dom.client.Element e) {
-        $(e).text("D");
+        $(this).text("D");
       }
     }).click();
     assertEquals("D", g.text());
     g.unbind(Event.ONCLICK).click(new Function(){
       @Override
       public boolean f(Event e) {
-        $(e).text("E");
+        $(this).text("E");
         return false;
       }
     }).click();
@@ -1617,7 +1617,7 @@ public class GQueryCoreTest extends GWTTestCase {
     // ELEMENTS AND WIDGETS
     Label label = new Label("1");
     RootPanel.get().add(label);
-    g = g.add($(label));
+    g = $("#fid, .gwt-Label");
     assertEquals(2, g.size());
     
     g.each(new Function() {
