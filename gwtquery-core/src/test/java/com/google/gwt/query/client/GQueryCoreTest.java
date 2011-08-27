@@ -158,12 +158,12 @@ public class GQueryCoreTest extends GWTTestCase {
         Properties.create("color: 'red', 'font-weight': 'bold', background: 'blue'"));
     assertEquals("red", $("p", e).css("color"));
     assertEquals("bold", $("p", e).css("font-weight"));
-    assertEquals("blue", $("p", e).css("background-color"));
+    assertEquals("blue", $("p", e).css("background-color", false));
 
     // css() camelize and uppercase
     $(e).html("<p>Test Paragraph.</p>");
     $("p", e).css(Properties.create("COLOR: 'red', 'FONT-WEIGHT': 'bold'"));
-    assertEquals("red", $("p", e).css("color"));
+    assertEquals("red", $("p", e).css("color", false));
     assertEquals("", $("p", e).css("background"));
   }
 
@@ -599,13 +599,13 @@ public class GQueryCoreTest extends GWTTestCase {
     content = "<div id='mainDiv'><div id='subDiv1' class='subDiv'><div id='subSubDiv1'><p id='p1'>child1</p></div></div><div id='subDiv2' class='subDiv'><div id='subSubDiv2'><p id='p2'>child2</p></div></div></div>";
     $(e).html(content);
     $("p",e).parentsUntil("#mainDiv").css(CSS.COLOR.with(RGBColor.RED));
-    assertEquals("red", $("#subDiv1", e).css(CSS.COLOR));
-    assertEquals("red", $("#subSubDiv1", e).css(CSS.COLOR));
-    assertEquals("red", $("#subDiv2", e).css(CSS.COLOR));
-    assertEquals("red", $("#subSubDiv2", e).css(CSS.COLOR));
-    assertEquals("", $("#mainDiv", e).css(CSS.COLOR));
-    assertEquals("", $("#p1", e).css(CSS.COLOR));
-    assertEquals("", $("#p2", e).css(CSS.COLOR));
+    assertEquals("red", $("#subDiv1", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subSubDiv1", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subDiv2", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subSubDiv2", e).css(CSS.COLOR, false));
+    assertEquals("", $("#mainDiv", e).css(CSS.COLOR, false));
+    assertEquals("", $("#p1", e).css(CSS.COLOR, false));
+    assertEquals("", $("#p2", e).css(CSS.COLOR, false));
     
     $("#p1",e).parentsUntil(".subDiv").css(CSS.COLOR.with(RGBColor.YELLOW));
     assertEquals("red", $("#subDiv1", e).css(CSS.COLOR));
@@ -764,25 +764,25 @@ public class GQueryCoreTest extends GWTTestCase {
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
     final GQuery sectC = $("#id3");
-
+    
     // hide()
     sectA.hide();
-    assertEquals("none", sectA.css("display"));
+    assertEquals("none", sectA.css("display", false));
     sectB.hide();
-    assertEquals("none", sectB.css("display"));
+    assertEquals("none", sectB.css("display", false));
 
     // show()
     sectA.show();
-    assertEquals("inline", sectA.css("display"));
+    assertEquals("inline", sectA.css("display", false));
     sectB.show();
-    assertEquals("", sectB.css("display"));
+    assertEquals("", sectB.css("display", false));
 
     // toggle()
-    assertEquals("", sectC.css("display"));
+    assertEquals("", sectC.css("display", false));
     sectC.toggle();
-    assertEquals("none", sectC.css("display"));
+    assertEquals("none", sectC.css("display", false));
     sectC.toggle();
-    assertEquals("block", sectC.css("display"));
+    assertEquals("block", sectC.css("display", false));
   }
 
   public void testSliceMethods() {
@@ -1326,9 +1326,7 @@ public class GQueryCoreTest extends GWTTestCase {
     
     
     $(parent).click();
-    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR));
-    
-    
+    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR, false));
   }
   
   public void testDetachMethod(){
@@ -1367,12 +1365,9 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals("parent",$("#parent", e).data("key"));
     
     $("#child", e).click();
-    assertEquals("red", $(child).css(CSS.BACKGROUND_COLOR));
+    assertEquals("red", $(child).css(CSS.BACKGROUND_COLOR, false));
     $("#parent", e).click();
-    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR));
-    
-    
-    
+    assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR, false));
   }
   
   public void testDetachMethodWithFilter(){
@@ -1410,12 +1405,10 @@ public class GQueryCoreTest extends GWTTestCase {
     assertEquals(1,$("#parent", e).length());
     
     $(child).click();
-    assertEquals("red", $("#child", e).css(CSS.BACKGROUND_COLOR));
+    assertEquals("red", $("#child", e).css(CSS.BACKGROUND_COLOR, false));
   
     $(parent).click();
-    assertEquals("red", $("#parent", e).css(CSS.BACKGROUND_COLOR));
-    
-    
+    assertEquals("red", $("#parent", e).css(CSS.BACKGROUND_COLOR, false));
   }
   
   public void testUnwrapMethod(){
@@ -1758,9 +1751,9 @@ public class GQueryCoreTest extends GWTTestCase {
               +"</li>"
               +"<li>list item 4</li>"
               +"</ul>");
-    assertEquals("", $("#l2").css("background-color"));
+    assertEquals("", $("#l2").css("background-color", false));
     $("li", e).has("ul").css("background-color", "red");
-    assertEquals("red", $("#l2").css("background-color"));
+    assertEquals("red", $("#l2").css("background-color", false));
 
     Element span = $("span", e).get(0);
     assertEquals("l3", $("li", e).has(span).id());

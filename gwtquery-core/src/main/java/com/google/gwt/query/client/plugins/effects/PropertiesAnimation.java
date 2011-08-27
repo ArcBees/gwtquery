@@ -94,7 +94,7 @@ public class PropertiesAnimation extends GQAnimation {
 
       while ((initialColor == null || initialColor.length() == 0 || initialColor.equals("transparent"))
           && current != null) {
-        initialColor = GQuery.$(current).css(key);
+        initialColor = GQuery.$(current).css(key, false);
         current = !"body".equalsIgnoreCase(current.getTagName())
             ? current.getParentElement() : null;
       }

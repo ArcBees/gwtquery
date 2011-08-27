@@ -931,8 +931,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set a single property to a value, on all matched elements.
    */
   public GQuery attr(String key, String value) {
+    boolean remove = value == null;
     for (Element e : elements) {
-      setElementAttribute(e, key, value);
+      if (remove) {
+        e.removeAttribute(key);
+      } else {
+        e.setAttribute(key, value);
+      }
     }
     return this;
   }
@@ -1266,7 +1271,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Ex : $("#myId").css(CSS.BACKGROUND_COLOR);
    */
   public String css(HasCssValue property) {
-    return css(property, false);
+    return css(property, true);
   }
 
   /**

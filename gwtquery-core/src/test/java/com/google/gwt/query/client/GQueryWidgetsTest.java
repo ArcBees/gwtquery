@@ -18,7 +18,6 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
 
-import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

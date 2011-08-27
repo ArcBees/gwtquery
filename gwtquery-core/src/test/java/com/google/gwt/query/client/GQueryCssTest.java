@@ -104,17 +104,17 @@ public class GQueryCssTest extends GWTTestCase {
 
     $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.AQUA));
 
-    assertEquals("aqua", $("#test").css("backgroundColor"));
-    assertEquals("aqua", $("#test").css(CSS.BACKGROUND_COLOR));
+    assertEquals("aqua", $("#test").css("backgroundColor", false));
+    assertEquals("aqua", $("#test").css(CSS.BACKGROUND_COLOR, false));
 
     $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.rgb("#112233")));
 
-    assertEquals("#112233", $("#test").css("backgroundColor"));
-    assertEquals("#112233", $("#test").css(CSS.BACKGROUND_COLOR));
+    assertEquals("#112233", $("#test").css("backgroundColor", false));
+    assertEquals("#112233", $("#test").css(CSS.BACKGROUND_COLOR, false));
 
     $("#test").css(CSS.BACKGROUND_COLOR.with(RGBColor.rgb(35, 45, 55)));
-    assertEquals("rgb(35,45,55)", $("#test").css("backgroundColor"));
-    assertEquals("rgb(35,45,55)", $("#test").css(CSS.BACKGROUND_COLOR));
+    assertEquals("rgb(35,45,55)", $("#test").css("backgroundColor", false));
+    assertEquals("rgb(35,45,55)", $("#test").css(CSS.BACKGROUND_COLOR, false));
 
   }
 
@@ -372,20 +372,20 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("20mm", $("#test").css(CSS.BORDER_WIDTH));
 
     $("#test").css(CSS.BORDER_BOTTOM_WIDTH.with(BorderWidth.THICK));
-    assertEquals("thick", $("#test").css("borderBottomWidth"));
-    assertEquals("thick", $("#test").css(CSS.BORDER_BOTTOM_WIDTH));
+    assertEquals("thick", $("#test").css("borderBottomWidth", false));
+    assertEquals("thick", $("#test").css(CSS.BORDER_BOTTOM_WIDTH, false));
 
     $("#test").css(CSS.BORDER_TOP_WIDTH.with(BorderWidth.THIN));
-    assertEquals("thin", $("#test").css("borderTopWidth"));
-    assertEquals("thin", $("#test").css(CSS.BORDER_TOP_WIDTH));
+    assertEquals("thin", $("#test").css("borderTopWidth", false));
+    assertEquals("thin", $("#test").css(CSS.BORDER_TOP_WIDTH, false));
 
     $("#test").css(CSS.BORDER_LEFT_WIDTH.with(BorderWidth.THIN));
-    assertEquals("thin", $("#test").css("borderLeftWidth"));
-    assertEquals("thin", $("#test").css(CSS.BORDER_LEFT_WIDTH));
+    assertEquals("thin", $("#test").css("borderLeftWidth", false));
+    assertEquals("thin", $("#test").css(CSS.BORDER_LEFT_WIDTH, false));
 
     $("#test").css(CSS.BORDER_RIGHT_WIDTH.with(BorderWidth.THICK));
-    assertEquals("thick", $("#test").css("borderRightWidth"));
-    assertEquals("thick", $("#test").css(CSS.BORDER_RIGHT_WIDTH));
+    assertEquals("thick", $("#test").css("borderRightWidth", false));
+    assertEquals("thick", $("#test").css(CSS.BORDER_RIGHT_WIDTH, false));
 
   }
 
@@ -644,55 +644,55 @@ public class GQueryCssTest extends GWTTestCase {
     assertEquals("10px", $("#test").css(CSS.HEIGHT));
 
     $("#test").css(CSS.HEIGHT.with(Length.cm(10)));
-    assertEquals("10cm", $("#test").css(CSS.HEIGHT));
+    assertEquals("10cm", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.em(10)));
-    assertEquals("10em", $("#test").css(CSS.HEIGHT));
+    assertEquals("10em", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.ex(10)));
-    assertEquals("10ex", $("#test").css(CSS.HEIGHT));
+    assertEquals("10ex", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.in(10)));
-    assertEquals("10in", $("#test").css(CSS.HEIGHT));
+    assertEquals("10in", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.mm(10)));
-    assertEquals("10mm", $("#test").css(CSS.HEIGHT));
+    assertEquals("10mm", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pc(10)));
-    assertEquals("10pc", $("#test").css(CSS.HEIGHT));
+    assertEquals("10pc", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pct(10)));
-    assertEquals("10%", $("#test").css(CSS.HEIGHT));
+    assertEquals("10%", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pt(10)));
-    assertEquals("10pt", $("#test").css(CSS.HEIGHT));
+    assertEquals("10pt", $("#test").css(CSS.HEIGHT, false));
     
     $("#test").css(CSS.HEIGHT.with(Length.px(10.1)));
-    assertEquals("10.1px", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1px", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.cm(10.1)));
-    assertEquals("10.1cm", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1cm", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.em(10.1)));
-    assertEquals("10.1em", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1em", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.ex(10.1)));
-    assertEquals("10.1ex", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1ex", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.in(10.1)));
-    assertEquals("10.1in", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1in", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.mm(10.1)));
-    assertEquals("10.1mm", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1mm", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pc(10.1)));
-    assertEquals("10.1pc", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1pc", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pct(10.1)));
-    assertEquals("10.1%", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1%", $("#test").css(CSS.HEIGHT, false));
 
     $("#test").css(CSS.HEIGHT.with(Length.pt(10.1)));
-    assertEquals("10.1pt", $("#test").css(CSS.HEIGHT));
+    assertEquals("10.1pt", $("#test").css(CSS.HEIGHT, false));
 
   }
 
@@ -983,8 +983,8 @@ public class GQueryCssTest extends GWTTestCase {
     $(e).html("<div id='test'>Content</div>");
 
     $("#test").css(CSS.TEXT_IDENT.with(Length.px(15)));
-    assertEquals("15px", $("#test").css("textIdent"));
-    assertEquals("15px", $("#test").css(CSS.TEXT_IDENT));
+    assertEquals("15px", $("#test").css("textIdent", false));
+    assertEquals("15px", $("#test").css(CSS.TEXT_IDENT, false));
 
   }
 
@@ -993,14 +993,14 @@ public class GQueryCssTest extends GWTTestCase {
     $(e).html("<div id='test'>Content</div>");
 
     $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.UPPERCASE));
-    assertEquals("uppercase", $("#test").css("textTransform"));
-    assertEquals("uppercase", $("#test").css(CSS.TEXT_TRANSFORM));
+    assertEquals("uppercase", $("#test").css("textTransform", false));
+    assertEquals("uppercase", $("#test").css(CSS.TEXT_TRANSFORM, false));
 
     $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.LOWERCASE));
-    assertEquals("lowercase", $("#test").css("textTransform"));
+    assertEquals("lowercase", $("#test").css("textTransform", false));
 
     $("#test").css(CSS.TEXT_TRANSFORM.with(TextTransform.CAPITALIZE));
-    assertEquals("capitalize", $("#test").css("textTransform"));
+    assertEquals("capitalize", $("#test").css("textTransform", false));
   }
 
   public void testUnicodeBidiProperty() {

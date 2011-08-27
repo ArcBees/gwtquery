@@ -68,7 +68,7 @@ public class UiPlugin extends GQuery {
     public GQuery scrollParent(final UiPlugin gQueryUi) {
       GQuery scrollParent;
 
-      if ("fixed".equals(gQueryUi.css("position"))) {
+      if ("fixed".equals(gQueryUi.css("position", false))) {
         return GQuery.$(getViewportElement());
       }
 
@@ -119,7 +119,7 @@ public class UiPlugin extends GQuery {
 
     @Override
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
-      String position = gQueryUi.css("position");
+      String position = gQueryUi.css("position", false);
       return ("absolute".equals(position) || "relative".equals(position) || "static"
           .equals(position));
     }

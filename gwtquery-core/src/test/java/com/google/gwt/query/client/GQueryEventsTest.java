@@ -83,20 +83,20 @@ public class GQueryEventsTest extends GWTTestCase {
     $("#div1",e).addClass("clickMe");
     
     $("#div1",e).click();
-    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     $("#div1",e).dblclick();
-    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     //reset
     $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
     
     $(".clickMe", e).die("click");
     $("#div1",e).click();
-    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     $("#div1",e).dblclick();
-    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     //reset
     $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
@@ -104,7 +104,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $(".clickMe", e).die("dblclick");
     
     $("#div1",e).dblclick();
-    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
   }
   
@@ -125,10 +125,10 @@ public class GQueryEventsTest extends GWTTestCase {
     $("#div1",e).addClass("clickMe");
     
     $("#div1",e).click();
-    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.RED.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     $("#div1",e).dblclick();
-    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLUE.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
     //reset
     $("#div1",e).css(CSS.COLOR.with(RGBColor.BLACK));
@@ -136,10 +136,10 @@ public class GQueryEventsTest extends GWTTestCase {
     $(".clickMe", e).die();
 
     $("#div1",e).click();
-    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR, false));
 
     $("#div1",e).dblclick();
-    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR));
+    assertEquals(RGBColor.BLACK.getCssName(), $("#div1", e).css(CSS.COLOR, false));
     
   }
 
@@ -156,7 +156,7 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e).dblclick();
-    assertEquals("yellow", $("p", e).css("color"));
+    assertEquals("yellow", $("p", e).css("color", false));
   }
   
   public void testEventsPlugin() {
@@ -173,14 +173,14 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals("red", $("p", e).css("color", false));
+    assertEquals("green", $("p", e).css("background-color", false));
 
     // unbind
     $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).click();
-    assertEquals("white", $("p", e).css("color"));
+    assertEquals("white", $("p", e).css("color", false));
 
     // toggle
     $("p", e).unbind(Event.ONCLICK);
@@ -194,9 +194,9 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e).click();
-    assertEquals("red", $("p", e).css("color"));
+    assertEquals("red", $("p", e).css("color", false));
     $("p", e).click();
-    assertEquals("blue", $("p", e).css("color"));
+    assertEquals("blue", $("p", e).css("color", false));
 
     // one
     $("p", e).unbind(Event.ONCLICK);
@@ -206,10 +206,10 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e).click();
-    assertEquals("red", $("p", e).css("color"));
+    assertEquals("red", $("p", e).css("color", false));
     $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
     $("p", e).click();
-    assertEquals("white", $("p", e).css("color"));
+    assertEquals("white", $("p", e).css("color", false));
 
     // hover (mouseover, mouseout)
     $("p", e).hover(new Function() {
@@ -222,9 +222,9 @@ public class GQueryEventsTest extends GWTTestCase {
       }
     });
     $("p", e).trigger(Event.ONMOUSEOVER);
-    assertEquals("yellow", $("p", e).css("background-color"));
+    assertEquals("yellow", $("p", e).css("background-color", false));
     $("p", e).trigger(Event.ONMOUSEOUT);
-    assertEquals("white", $("p", e).css("background-color"));
+    assertEquals("white", $("p", e).css("background-color", false));
 
 //    // focus
 //    FIXME: Html 2.1.0 failing but FF do not
@@ -234,9 +234,9 @@ public class GQueryEventsTest extends GWTTestCase {
 //      }
 //    });
 //    $("p", e).focus();
-//    assertEquals("black", $("p", e).css("border-top-color"));
-//    assertEquals("dotted", $("p", e).css("border-top-style"));
-//    assertEquals("1px", $("p", e).css("border-top-width"));
+//    assertEquals("black", $("p", e).css("border-top-color", false));
+//    assertEquals("dotted", $("p", e).css("border-top-style", false));
+//    assertEquals("1px", $("p", e).css("border-top-width", false));
 //
 //    // blur
 //    $("p", e).blur(new Function() {
@@ -245,7 +245,7 @@ public class GQueryEventsTest extends GWTTestCase {
 //      }
 //    });
 //    $("p", e).blur();
-//    assertEquals("", $("p", e).css("border"));
+//    assertEquals("", $("p", e).css("border", false));
 
     // key events
     $(e).html("<input type='text'/>");
@@ -268,67 +268,67 @@ public class GQueryEventsTest extends GWTTestCase {
   
   public void testLazyMethods() {
     $(e).css(CSS.COLOR.with(RGBColor.WHITE));
-    assertEquals("white", $(e).css("color"));
+    assertEquals("white", $(e).css("color", false));
 
     $(e).one(Event.ONCLICK, null, lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
     $(e).click();
-    assertEquals("red", $(e).css("color"));
+    assertEquals("red", $(e).css("color", false));
 
     $(e).click(lazy().css(CSS.COLOR.with(RGBColor.BLACK)).done());
     $(e).click();
-    assertEquals("black", $(e).css("color"));
+    assertEquals("black", $(e).css("color", false));
   }
 
   public void testLive() {
     $(e).html("<div id='div1' class='clickMe'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
     $(".clickMe", e).live("click", new Function(){
-      public void f(Element el) {
-        $(el).css("color", "red");
+      public void f() {
+        $(this).css("color", "red");
+        System.out.println($(this));
       }
     });
     
     $(e).append("<div id='div3' class='clickMe'>Content 2 <div id='div4'><span id='span2'>blop</span></div></div>");
-
+    
     $(".clickMe", e).click();
-    assertEquals("red", $("#div1", e).css("color"));
-    assertEquals("red", $("#div3", e).css("color"));
+    assertEquals("red", $("#div1", e).css("color", false));
+    assertEquals("red", $("#div3", e).css("color", false));
     
     //reset
     $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
-    assertEquals("black", $("div", e).css("color"));
-    assertEquals("black", $("span", e).css("color"));
+    assertEquals("black", $("div", e).css("color", false));
+    assertEquals("black", $("span", e).css("color", false));
 
     $("#span1", e).click();
-    assertEquals("red", $("#div1", e).css("color"));
-    assertEquals("black", $("#div3", e).css("color"));
+    assertEquals("red", $("#div1", e).css("color", false));
+    assertEquals("black", $("#div3", e).css("color", false));
     
      //reset
     $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
     
     $("#span2", e).click();
-    assertEquals("black", $("#div1", e).css("color"));
-    assertEquals("red", $("#div3", e).css("color"));
+    assertEquals("black", $("#div1", e).css("color", false));
+    assertEquals("red", $("#div3", e).css("color", false));
     
     //reset
-    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+    $("*", e).removeClass("clickMe").css(CSS.COLOR.with(RGBColor.BLACK));
     
     $("#div2, #div4", e).addClass("clickMe");
     
     $("#span1", e).click();
-    assertEquals("red", $("#div1", e).css("color"));
-    assertEquals("red", $("#div2", e).css("color"));
-    assertEquals("black", $("#div3", e).css("color"));
-    assertEquals("black", $("#div4", e).css("color"));
+    assertEquals("black", $("#div1", e).css("color", false));
+    assertEquals("red", $("#div2", e).css("color", false));
+    assertEquals("black", $("#div3", e).css("color", false));
+    assertEquals("black", $("#div4", e).css("color", false));
 
-  //reset
+    //reset
     $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
           
     $("#span2", e).click();
-    assertEquals("black", $("#div1", e).css("color"));
-    assertEquals("black", $("#div2", e).css("color"));
-    assertEquals("red", $("#div3", e).css("color"));
-    assertEquals("red", $("#div4", e).css("color"));
-
+    assertEquals("black", $("#div1", e).css("color", false));
+    assertEquals("black", $("#div2", e).css("color", false));
+    assertEquals("black", $("#div3", e).css("color", false));
+    assertEquals("red", $("#div4", e).css("color", false));
   }
 
   public void testLive2() {
@@ -358,10 +358,10 @@ public class GQueryEventsTest extends GWTTestCase {
     
     $("#span1", e).click();
     
-    assertEquals("red", $("#div1", e).css(CSS.COLOR));
-    assertEquals("blue", $("#div2", e).css(CSS.COLOR));
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+    assertEquals("blue", $("#div2", e).css(CSS.COLOR, false));
     //ensure taht handler related to mouseover event was not called
-    assertNotSame("yellow", $("#div2", e).css(CSS.BACKGROUND_COLOR));
+    assertNotSame("yellow", $("#div2", e).css(CSS.BACKGROUND_COLOR, false));
     
     
   }
@@ -378,7 +378,7 @@ public class GQueryEventsTest extends GWTTestCase {
     $("#div1", e).addClass("clickable");
     $("#span1", e).click();
     
-    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
     
   }
   
@@ -400,8 +400,8 @@ public class GQueryEventsTest extends GWTTestCase {
     
     $("#span1", e).click();
     
-    assertEquals("red", $("#div1", e).css(CSS.COLOR));
-    assertNotSame("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR));
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+    assertNotSame("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
     
     
   }
@@ -436,8 +436,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("red", $(el).css(CSS.COLOR));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("red", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
     }
     
     
@@ -474,8 +474,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("red", $(el).css(CSS.COLOR));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("red", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
       //reset
       $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
     }
@@ -485,8 +485,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("black", $(el).css(CSS.COLOR));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("black", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
       //reset
       $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
     }
@@ -496,8 +496,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("black", $(el).css(CSS.COLOR));
-      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("black", $(el).css(CSS.COLOR, false));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR, false));
     }
   }
   
@@ -531,8 +531,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("red", $(el).css(CSS.COLOR));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("red", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
       //reset
       $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
     }
@@ -542,8 +542,8 @@ public class GQueryEventsTest extends GWTTestCase {
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("black", $(el).css(CSS.COLOR));
-      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("black", $(el).css(CSS.COLOR, false));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR, false));
     }
   }
 
@@ -577,8 +577,8 @@ public void testUnDelegateAll2(){
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("red", $(el).css(CSS.COLOR));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("red", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
       //reset
       $(el).css(CSS.COLOR.with(RGBColor.BLACK), CSS.BACKGROUND_COLOR.with(RGBColor.WHITE));
     }
@@ -588,8 +588,8 @@ public void testUnDelegateAll2(){
     $("span",e).click().trigger(Event.ONMOUSEOVER);
     
     for (Element el : $(".subDiv",e).elements()){
-      assertEquals("black", $(el).css(CSS.COLOR));
-      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR));
+      assertEquals("black", $(el).css(CSS.COLOR, false));
+      assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR, false));
     }
   }
 
@@ -610,12 +610,12 @@ public void testUnDelegateAll2(){
     
     $("#div1", e).click();
     
-    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
     
     $("#div1", e).css(CSS.COLOR.with(RGBColor.BLACK));
     
     $("#div1", e).trigger(Event.ONMOUSEOVER);
-    assertEquals("red", $("#div1", e).css(CSS.COLOR));
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
     
     $(".myClass2", e).live(Event.ONCLICK|Event.ONMOUSEDOWN, new Function(){
       public void f(Element e) {
@@ -627,12 +627,12 @@ public void testUnDelegateAll2(){
     
     $("#div2", e).click();
     
-    assertEquals("yellow", $("#div2", e).css(CSS.COLOR));
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
     
     $("#div2", e).css(CSS.COLOR.with(RGBColor.BLACK));
     
     $("#div2", e).trigger(Event.ONMOUSEDOWN);
-    assertEquals("yellow", $("#div2", e).css(CSS.COLOR));
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
     
     
     
@@ -658,31 +658,31 @@ public void testUnDelegateAll2(){
       }
     });
     $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color"));
-    assertEquals("green", $("p", e).css("background-color"));
+    assertEquals("red", $("p", e).css("color", false));
+    assertEquals("green", $("p", e).css("background-color", false));
     assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
     $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR,"").css(CSS.FONT_SIZE.with(Length.px(12)));
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
 
     $("p", e, Events.Events).unbind("click.first.namespace");
     $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertEquals("green", $("p", e).css("background-color"));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertEquals("green", $("p", e).css("background-color", false));
     assertEquals(24.0d, $("p", e).cur("fontSize", true));
     
     
     $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR,"").css(CSS.FONT_SIZE.with(Length.px(12)));
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
 
     $("p", e, Events.Events).unbind("click");
     $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color")));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color")));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
     assertEquals(12.0d, $("p", e).cur("fontSize", true));
   }
 
@@ -695,7 +695,7 @@ public void testUnDelegateAll2(){
     });
     $(e).append(b);
     b.click();
-    assertEquals("red", $(b).css("color"));
+    assertEquals("red", $(b).css("color", false));
   }
   
   @DoNotRunWith({Platform.HtmlUnitLayout})
@@ -793,15 +793,15 @@ public void testUnDelegateAll2(){
       }
     });
     $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("red", $("p").css("color"));
+    assertEquals("red", $("p").css("color", false));
     $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("yellow", $("p").css("color"));
+    assertEquals("yellow", $("p").css("color", false));
     $("p").css(CSS.COLOR.with(RGBColor.BLACK));
     $(document).unbind(Event.ONMOUSEUP|Event.ONMOUSEMOVE);
     $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("black", $("p").css("color"));
+    assertEquals("black", $("p").css("color", false));
     $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("black", $("p").css("color"));
+    assertEquals("black", $("p").css("color", false));
   }
 
   public void testWidgetEvents() {
@@ -815,15 +815,15 @@ public void testUnDelegateAll2(){
     $(b).click(lazy().css(CSS.COLOR.with(RGBColor.RED)).done());
 
     $(b).click();
-    assertEquals("red", $("button").css("color"));
-    assertEquals("black", $("button").css("background-color"));
+    assertEquals("red", $("button").css("color", false));
+    assertEquals("black", $("button").css("background-color", false));
     RootPanel.get().remove(b);
     
     $(e).append($(b));
     $(b).css(CSS.COLOR.with(RGBColor.YELLOW), CSS.BACKGROUND_COLOR.with(RGBColor.BLUE));
     $(b).click();
-    assertEquals("red", $("button").css("color"));
-    assertEquals("black", $("button").css("background-color"));
+    assertEquals("red", $("button").css("color", false));
+    assertEquals("black", $("button").css("background-color", false));
   }
 
 }
