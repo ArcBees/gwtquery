@@ -164,11 +164,11 @@ public class GQueryEffectsTest extends GWTTestCase {
     // Delayed assertions at different intervals
     Timer timerShortTime = new Timer() {
       public void run() {
-        double o = Double.valueOf(sectA.css("opacity"));
+        double o = Double.valueOf(sectA.css("opacity", false));
         assertTrue(
             "'sectA' opacity must be in the interval 0-0.5 but is: " + o, o > 0
                 && o < 0.5);
-        o = Double.valueOf(sectB.css("opacity"));
+        o = Double.valueOf(sectB.css("opacity", false));
         assertTrue(
             "'sectB' opacity must be in the interval 0.5-1 but is: " + o,
             o > 0.5 && o < 1);
@@ -176,13 +176,13 @@ public class GQueryEffectsTest extends GWTTestCase {
     };
     Timer timerMidTime = new Timer() {
       public void run() {
-        assertEquals("inline", sectA.css("display"));
-        assertEquals("", sectB.css("display"));
-        double o = Double.valueOf(sectA.css("opacity"));
+        assertEquals("inline", sectA.css("display", false));
+        assertEquals("", sectB.css("display", false));
+        double o = Double.valueOf(sectA.css("opacity", false));
         assertTrue(
             "'sectA' opacity must be in the interval 0.5-1 but is: " + o,
             o > 0.5 && o < 1);
-        o = Double.valueOf(sectB.css("opacity"));
+        o = Double.valueOf(sectB.css("opacity", false));
         assertTrue(
             "'sectB' opacity must be in the interval 0-0.5 but is: " + o, o > 0
                 && o < 0.5);
@@ -190,8 +190,8 @@ public class GQueryEffectsTest extends GWTTestCase {
     };
     Timer timerLongTime = new Timer() {
       public void run() {
-        assertEquals("inline", sectA.css("display"));
-        assertEquals("none", sectB.css("display"));
+        assertEquals("inline", sectA.css("display", false));
+        assertEquals("none", sectB.css("display", false));
         // Last delayed assertion has to stop the test to avoid a timeout
         // failure
         finishTest();
