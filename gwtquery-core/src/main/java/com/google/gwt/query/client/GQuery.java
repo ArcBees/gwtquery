@@ -1310,17 +1310,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return a style property on the first matched element.
    */
   public String css(String name) {
-    return css(name, false);
+    return css(name, true);
   }
 
   /**
    * Return a style property on the first matched element.
    * 
-   * The parameter force has a special meaning here: - When force is false,
-   * returns the value of the css property defined in the style attribute of the
-   * element. - Otherwise it returns the real computed value.
+   * The parameter force has a special meaning here: 
+   * <ul>
+   * <li>When force is false, returns the value of the css property 
+   * defined in the style attribute of the element. 
+   * <li>Otherwise it returns the real computed value.
+   * </ul>
    * 
-   * For instance if you define 'display=none' not in the element style but in
+   * For instance if you don't define 'display=none'in the element style but in
    * the css stylesheet, it returns an empty string unless you pass the
    * parameter force=true.
    */
