@@ -113,18 +113,27 @@ public class JsUtils {
   }
   
   /**
-   * Merge the newNodes list into the oldNodes one.
-   * If oldNodes is null, a new list will be created and returned, 
-   * newNodes list is never modified.
+   * Merge the oldNodes list into the newNodes one.
+   * If oldNodes is null, a new list will be created and returned.
+   * If oldNodes is not null, a new list will be created depending on
+   * the create flag.
    */
-  public static NodeList<Element> copyNodeList(NodeList<Element> oldNodes, NodeList<Element> newNodes) {
-    if (oldNodes == null) {
-      oldNodes = JsNodeArray.create();
+  public static NodeList<Element> copyNodeList(NodeList<Element> oldNodes, NodeList<Element> newNodes, boolean create) {
+    NodeList<Element> ret = oldNodes == null || create ? JsNodeArray.create() : oldNodes;
+    JsCache idlist = JsCache.create();
+    for (int i = 0; oldNodes != null && i < oldNodes.getLength(); i++) {
+      Element e = oldNodes.getItem(i);
+      idlist.put(e.hashCode(), 1);
+      if (create) {
+        ret.<JsNodeArray>cast().addNode(e, i);
+      }
     }
-    for (int i = 0, l = newNodes.getLength(), j = oldNodes.getLength(); i < l; i++) {
-      oldNodes.<JsNodeArray>cast().addNode(newNodes.getItem(i), j++);
+    for (int i = 0, l = newNodes.getLength(), j = ret.getLength(); i < l; i++) {
+      Element e = newNodes.getItem(i);
+      if (!idlist.exists(e.hashCode())) {
+        ret.<JsNodeArray>cast().addNode(newNodes.getItem(i), j++);
+      }
     }
-    return oldNodes;
+    return ret;
   }
-
 }

@@ -112,8 +112,8 @@ public class SelectorEngine implements HasSelector {
     return res;
   }
   
-  // :visible and :hidden pseudo selectors are computed by gquery
-  JsRegexp p = new JsRegexp(".*:(visible|hidden|radio|checkbox)\\s*(,|$).*");
+  // pseudo selectors which are computed by gquery
+  JsRegexp p = new JsRegexp(".*:((visible|hidden)|((radio|checkbox)\\s*(,|$))).*", "i");
 
   public NodeList<Element> select(String selector, Node ctx) {
     if (p.test(selector)) {
@@ -124,16 +124,16 @@ public class SelectorEngine implements HasSelector {
           nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
         } else if (s.endsWith(":hidden")) {
           nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
-        } else if (s.endsWith(":radio")) {
+        } else if (s.contains(":radio")) {
           nodes = select(s.replace(":radio", "[type='radio']"), ctx);
-        } else if (s.endsWith(":checkbox")) {
+        } else if (s.contains(":checkbox")) {
           nodes = select(s.replace(":checkbox", "[type='checkbox']"), ctx);
         } else {
           nodes = select(s, ctx);
         }
-        JsUtils.copyNodeList(res, nodes);
+        JsUtils.copyNodeList(res, nodes, false);
       }
-      return JsUtils.unique(res.<JsArray<Element>> cast()).cast();
+      return res.<NodeList<Element>> cast();
     } else {
       return impl.select(selector, ctx);
     }

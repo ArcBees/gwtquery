@@ -540,11 +540,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   
   /**
    * Add elements to the set of matched elements if they are not included yet.
+   * 
+   * It construct a new GQuery object and does not modify the original ones.
+   * 
    * It also update the selector appending the new one.
    */
-  public GQuery add(GQuery previousObject) {
-    return pushStack(unique(JsUtils.copyNodeList(previousObject.nodeList, nodeList)), "add",
-        getSelector() + "," + previousObject.getSelector());
+  public GQuery add(GQuery elementsToAdd) {
+    return pushStack(JsUtils.copyNodeList(nodeList, elementsToAdd.nodeList, true).<JsNodeArray>cast(), "add",
+        getSelector() + "," + elementsToAdd.getSelector());
   }
 
   /**
