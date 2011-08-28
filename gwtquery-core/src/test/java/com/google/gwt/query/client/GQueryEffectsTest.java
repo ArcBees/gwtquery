@@ -86,7 +86,6 @@ public class GQueryEffectsTest extends GWTTestCase {
     //};
     final Timer timer2 = new Timer() {
       public void run() {
-        System.out.println(g.css("clip"));
         // Check that the attribute clip has been set
         assertTrue(g.css("clip").matches("rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)"));
         finishTest();

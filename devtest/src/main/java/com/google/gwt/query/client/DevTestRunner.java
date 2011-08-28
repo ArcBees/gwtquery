@@ -15,24 +15,10 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-
-import java.util.Date;
+import static com.google.gwt.query.client.GQuery.*;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.query.client.GQuery.Offset;
-import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
@@ -48,221 +34,42 @@ import com.google.gwt.user.client.Window;
  */
 public class DevTestRunner extends MyTestCase implements EntryPoint {
   
-  static native String $j (String s) /*-{
-    return "" + eval(s);
-  }-*/;
-  
-  
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testAttrEffect();
+      testCheckedAttr_Issue97();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
   
-  public void testAttrEffect() {
-    $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A</td><td width=50%>B</td></tr></table>");
-
-    final GQuery g = $("#idtest").css("position", "absolute");
-    final int duration = 2000;
-    
-    assertEquals("cssprop=$width attr=width value=+=100 start=440 end=540 unit=", 
-        PropertiesAnimation.computeFxProp(g.get(0), "$width", "+=100", false).toString());
-    
-    delayTestFinish(duration * 3);
-
-    g.as(Effects.Effects).
-        animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
-    
-    final Timer timer = new Timer() {
-      public void run() {
-        assertEquals(540.0, Double.parseDouble(g.attr("width")));
-        assertEquals(5.0, Double.parseDouble(g.attr("border")));
-        finishTest();
-      }
-    };
-    timer.schedule(duration * 2);
+  public void testCheckedAttr_Issue97() {
+    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
+    assertEquals("", $("#cb").val());
+    $("#cb").attr("checked", "checked");
+    assertEquals("1", $("#cb").val());
+    $("#cb").removeAttr("checked");
+    assertEquals("", $("#cb").val());
   }
   
-  public void testChrome__gwt_ObjectId() {
-    JsCache a = JsCache.create();
-    assertEquals(0, a.length());
-    assertEquals(0, a.keys().length);
-    assertEquals(0, a.elements().length);
-    
-    a.put("obj", new Long(21));
-    assertEquals(1, a.length());
-    assertEquals(1, a.keys().length);
-    assertEquals(1, a.elements().length);
-    
-    JsNodeArray n = JsNodeArray.create();
-    assertEquals(0, n.getLength());
-    assertEquals(0, n.<JsCache>cast().keys().length);
-    assertEquals(0, n.elements().length);
-    
-    n.addNode($("<hr/>").get(0));
-    assertEquals(1, n.getLength());
-    assertEquals(1, n.<JsCache>cast().keys().length);
-    assertEquals(1, n.elements().length);
-  }
-  
-  public void testJsCache() {
-    String[] slist = new String[]{"A", "B", "C"};
-    
-    JsCache c = JsCache.create();
-    assertTrue(c.isEmpty());
-    for (int i=0; i < slist.length; i++) {
-      c.put(i, slist[i]);
+  /**
+   * Run jquery code via jsni. test.html loads jquery, example:
+   * 
+   * System.out.println(evalJQuery("$('div').size()"));
+   */
+  private native <T> T evalJQuery(String command) /*-{
+    command = command.replace(/\$/g, "$wnd.$");
+    try {
+      return eval(command);
+    } catch(e) {
+      $wnd.alert(command + " " + e);
+      return "";
     }
-    assertFalse(c.isEmpty());
-    assertEquals(3, c.length());
-    assertEquals(slist[1], c.get(1));
-    for (int i=0; i < slist.length; i++) {
-      c.put(slist[i], slist[i]);
-    }
-    assertEquals(6, c.length());
-    assertEquals(slist[1], c.get(1));
-    assertEquals(slist[1], c.get(slist[1]));
-    c.put(1, null);
-    c.put("X", "X");
-    assertNull(c.get(1));
-    assertEquals(slist[2], c.get(2));
-    assertEquals(7, c.length());
-    assertEquals(7, c.keys().length);
-    assertEquals(7, c.elements().length);
-    
-    assertTrue(c.exists(2));
-    assertFalse(c.exists(3));
-    assertTrue(c.exists("X"));
-    assertFalse(c.exists("V"));
-    
-    c.delete(2);
-    c.delete("C");
-    assertEquals(5, c.length());
-    
-    c.put(-1, "N");
-    assertEquals(6, c.length());
-    assertEquals("N", c.get(-1));
-    
-    c = JsCache.create();
-    c.put("whatever", new Date());
-  }
+  }-*/;
   
-  public void testLive() {
-    $(e).html("<div id=d1 class='clickMe'>Content 1</div>");
-    final GQuery q = $(".clickMe").live(Event.ONCLICK, new Function(){
-      public void f(Element e) {
-        System.out.println($(e));
-        $(e).css("color", "red");
-      }
-    });
-    $(e).append("<div id=d2 class='clickMe'>Content 2</div>");
-    assertEquals("", $("#d1").css("color"));
-    
-    $(".clickMe", e).click();
-    
-    assertEquals("red", $("#d1").css("color"));
-    assertEquals("red", $("#d2").css("color"));
-    
-    $(".clickMe", e).css("color", "yellow");
-    $(".clickMe").die(Event.ONCLICK);
-    $(e).append("<div id=d3 class='clickMe'>Content 3</div>");
-    $(".clickMe", e).click();
-    assertEquals("yellow", $("#d1").css("color"));
-    assertEquals("yellow", $("#d2").css("color"));
-    assertEquals("", $("#d3").css("color"));
-  }
-  
-  
-  public void testPropertiesAnimationComputeEffects() {
-    $(e)
-        .html(
-            "<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px; margin: 0px'>Content 1</p></div>");
-    GQuery g = $("#child");
-    Properties prop1;
-
-    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
-            false).toString());
-    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
-            false).toString());
-    assertEquals("attr=top value=50% start=0 end=50 unit=%",
-        PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
-            .toString());
-    assertEquals("attr=left value=50% start=0 end=50 unit=%",
-        PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
-            .toString());
-    assertEquals("attr=width value=174px start=100 end=174 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
-            .toString());
-    assertEquals("attr=height value=174px start=100 end=174 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
-            .toString());
-    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
-            .toString());
-
-    prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    PropertiesAnimation an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
-
-    assertEquals("attr=marginTop value=0 start=-110 end=0 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "0", false)
-            .toString());
-    assertEquals("attr=marginLeft value=0 start=-110 end=0 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "0", false)
-            .toString());
-    assertEquals("attr=top value=0% start=50 end=0 unit=%", PropertiesAnimation
-        .computeFxProp(g.get(0), "top", "0%", false).toString());
-    assertEquals("attr=left value=0% start=50 end=0 unit=%",
-        PropertiesAnimation.computeFxProp(g.get(0), "left", "0%", false)
-            .toString());
-    assertEquals("attr=width value=100px start=174 end=100 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "width", "100px", false)
-            .toString());
-    assertEquals("attr=height value=100px start=174 end=100 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "height", "100px", false)
-            .toString());
-    assertEquals("attr=padding value=5px start=20 end=5 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "padding", "5px", false)
-            .toString());
-
-    prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
-
-    assertEquals("attr=marginTop value=-110px start=0 end=-110 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
-            false).toString());
-    assertEquals("attr=marginLeft value=-110px start=0 end=-110 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "marginLeft", "-110px",
-            false).toString());
-    assertEquals("attr=top value=50% start=0 end=50 unit=%",
-        PropertiesAnimation.computeFxProp(g.get(0), "top", "50%", false)
-            .toString());
-    assertEquals("attr=left value=50% start=0 end=50 unit=%",
-        PropertiesAnimation.computeFxProp(g.get(0), "left", "50%", false)
-            .toString());
-    assertEquals("attr=width value=174px start=100 end=174 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "width", "174px", false)
-            .toString());
-    assertEquals("attr=height value=174px start=100 end=174 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "height", "174px", false)
-            .toString());
-    assertEquals("attr=padding value=20px start=5 end=20 unit=px",
-        PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
-            .toString());
-  }
-  
- 
   public void runTestJQuery() {
-    JsUtils.loadScript("jquery-1.3.1.js", "jq");
+    JsUtils.loadScript("jquery-1.6.2.js", "jq");
     new Timer(){
       private int cont = 0;
       private native boolean loaded(String func) /*-{
@@ -278,23 +85,13 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     }.run();
   }
   
-  private native String evalJQurey(String command) /*-{
-    command = command.replace(/\$/g, "$wnd.$");
-    try {
-      return "" + eval(command);
-    } catch(e) {
-      $wnd.alert(command + " " + e);
-      return "";
-    }
-  }-*/;
-  
   public void testCompareJquery() {
     $(e).html("<div class='outer' style='border: 4px solid red; padding: 25px; width: auto; height: 150px'>");
     int gqw = $(".outer").width();
-    String jqw = evalJQurey("$('.outer').width()");
+    String jqw = evalJQuery("$('.outer').width()");
     
     int gqh = $(".outer").height();
-    String jqh = evalJQurey("$('.outer').height()");
+    String jqh = evalJQuery("$('.outer').height()");
     
     String msg = ".outer size: GQuery: " + gqw + "x" + gqh + " jQuery: " + jqw + "x" + jqh;
     Window.alert(msg);
@@ -303,7 +100,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void validateCssBoth(String selector, boolean force, String... attrs) {
     for (String attr: attrs) {
       String gs = $(selector).css(attr, force);
-      String js = evalJQurey("$.css($('" + selector + "').get(0), '" + attr + "', " + force + ")");
+      String js = evalJQuery("$.css($('" + selector + "').get(0), '" + attr + "', " + force + ")");
       System.out.println(selector + " " + attr + " " + force + " g:" + gs + " j:" + js + " " + (gs.replaceAll("px", "").equals(js.replaceAll("px", ""))));
       assertEquals(gs.replaceAll("px", ""), js.replaceAll("px", ""));
     }
@@ -311,7 +108,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void validateCurBoth(String selector, String... attrs) {
     for (String attr: attrs) {
       String gs = Double.toString($(selector).cur(attr, true)).replaceFirst("\\.\\d+$", "");
-      String js = evalJQurey("$.cur($('" + selector + "').get(0), '" + attr + "', true)");
+      String js = evalJQuery("$.cur($('" + selector + "').get(0), '" + attr + "', true)");
       System.out.println(selector + " " + attr + " " + gs + " " + js + " " + (gs.equals(js)));
       assertEquals(gs, js);
     }
@@ -2213,14 +2010,4 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     return ret;
   }
 
-  public HandlerRegistration addFocusHandler(FocusHandler handler) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public void fireEvent(GwtEvent<?> event) {
-    // TODO Auto-generated method stub
-    
-  }
-  
 }
