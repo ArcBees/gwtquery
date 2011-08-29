@@ -28,13 +28,15 @@ public class Properties extends JavaScriptObject {
   }
   
   public static Properties create(String properties) {
-    String p = camelizePropertiesKeys(wrapPropertiesString(properties));
-    try {
-      return (Properties) createImpl(p);
-    } catch (Exception e) {
-      System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
-      return create();
+    if (properties != null && !properties.isEmpty()) {
+      String p = camelizePropertiesKeys(wrapPropertiesString(properties));
+      try {
+        return (Properties) createImpl(p);
+      } catch (Exception e) {
+        System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
+      }
     }
+    return create();
   }
 
   public static final native JavaScriptObject createImpl(String properties) /*-{
