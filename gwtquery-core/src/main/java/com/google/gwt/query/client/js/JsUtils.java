@@ -31,87 +31,14 @@ import com.google.gwt.user.client.DOM;
 public class JsUtils {
 
   /**
-   * Use the method in the gquery class $(elem).cur(prop, force);
+   * Camelize style property names. for instance: font-name -> fontName
    */
-  @Deprecated
-  public static double cur(Element elem, String prop, boolean force) {
-    return GQuery.$(elem).cur(prop, force);
-  }
-
-  /**
-   * Compare two numbers using javascript equality.
-   */
-  public static native boolean eq(double s1, double s2) /*-{
-     return s1 == s2;
+  public static native String camelize(String s)/*-{
+    return s.replace(/\-(\w)/g, function(all, letter) {
+    return letter.toUpperCase();
+    });
   }-*/;
 
-  /**
-   * Compare two objects using javascript equality.
-   */
-  public static native boolean eq(Object s1, Object s2) /*-{
-     return s1 == s2;
-  }-*/;
-
-  /**
-   * Load an external javascript library.
-   * The inserted script replaces the element with the
-   * given id in the document.
-   */
-  public static void loadScript(String url, String id) {
-    GQuery gs = GQuery.$(DOM.createElement("script"));
-    GQuery gp = GQuery.$("#" + id).parent();
-    if (gp.size() != 1) {
-      gp = GQuery.$(GQuery.document.getBody());
-    }
-    GQuery.$("#" + id).remove();
-    gp.append(gs.attr("src", url).attr("type", "text/javascript").attr("id", id));
-  }
-  
-  /**
-   * Return the element which is truth in the double scope. 
-   */
-  public static native double or(double s1, double s2) /*-{
-    return s1 || s2;
-  }-*/;
-
-  /**
-   * Return the element which is truth in the javascript scope.
-   */
-  public static native <T> T or(T s1, T s2) /*-{
-    return s1 || s2;
-  }-*/;
-
-  /**
-   * Check if a number is true in the javascript scope. 
-   */
-  public static native boolean truth(double a) /*-{
-    return a ? true : false;
-  }-*/;
-
-  /**
-   * Check if an object is true in the javascript scope. 
-   */
-  public static native boolean truth(Object a) /*-{
-    return a ? true : false;
-  }-*/;
-  
-  /**
-   * Remove duplicates from an elements array
-   */
-  public static JsArray<Element> unique(JsArray<Element> a) {
-    JsArray<Element> ret = JavaScriptObject.createArray().cast();
-    JsCache cache = JsCache.create();
-    for (int i = 0; i < a.length(); i++) {
-      Element e = a.get(i);
-      int id = e.hashCode();
-      if (!cache.exists(id)) {
-        cache.put(id, 1);
-        ret.push(e);
-      }
-    }    
-    return ret;
-  }
-  
   /**
    * Merge the oldNodes list into the newNodes one.
    * If oldNodes is null, a new list will be created and returned.
@@ -134,6 +61,96 @@ public class JsUtils {
         ret.<JsNodeArray>cast().addNode(newNodes.getItem(i), j++);
       }
     }
+    return ret;
+  }
+
+  /**
+   * Use the method in the gquery class $(elem).cur(prop, force);
+   */
+  @Deprecated
+  public static double cur(Element elem, String prop, boolean force) {
+    return GQuery.$(elem).cur(prop, force);
+  }
+
+  /**
+   * Compare two numbers using javascript equality.
+   */
+  public static native boolean eq(double s1, double s2) /*-{
+     return s1 == s2;
+  }-*/;
+  
+  /**
+   * Compare two objects using javascript equality.
+   */
+  public static native boolean eq(Object s1, Object s2) /*-{
+     return s1 == s2;
+  }-*/;
+
+  /**
+   * Hyphenize style property names. for instance: fontName -> font-name
+   */
+  public static native String hyphenize(String name) /*-{
+    return name.replace(/([A-Z])/g, "-$1" ).toLowerCase();
+  }-*/;
+
+  /**
+   * Load an external javascript library.
+   * The inserted script replaces the element with the
+   * given id in the document.
+   */
+  public static void loadScript(String url, String id) {
+    GQuery gs = GQuery.$(DOM.createElement("script"));
+    GQuery gp = GQuery.$("#" + id).parent();
+    if (gp.size() != 1) {
+      gp = GQuery.$(GQuery.document.getBody());
+    }
+    GQuery.$("#" + id).remove();
+    gp.append(gs.attr("src", url).attr("type", "text/javascript").attr("id", id));
+  }
+
+  /**
+   * Return the element which is truth in the double scope. 
+   */
+  public static native double or(double s1, double s2) /*-{
+    return s1 || s2;
+  }-*/;
+  
+  /**
+   * Return the element which is truth in the javascript scope.
+   */
+  public static native <T> T or(T s1, T s2) /*-{
+    return s1 || s2;
+  }-*/;
+  
+  /**
+   * Check if a number is true in the javascript scope. 
+   */
+  public static native boolean truth(double a) /*-{
+    return a ? true : false;
+  }-*/;
+  
+
+  /**
+   * Check if an object is true in the javascript scope. 
+   */
+  public static native boolean truth(Object a) /*-{
+    return a ? true : false;
+  }-*/;
+
+  /**
+   * Remove duplicates from an elements array
+   */
+  public static JsArray<Element> unique(JsArray<Element> a) {
+    JsArray<Element> ret = JavaScriptObject.createArray().cast();
+    JsCache cache = JsCache.create();
+    for (int i = 0; i < a.length(); i++) {
+      Element e = a.get(i);
+      int id = e.hashCode();
+      if (!cache.exists(id)) {
+        cache.put(id, 1);
+        ret.push(e);
+      }
+    }    
     return ret;
   }
 }

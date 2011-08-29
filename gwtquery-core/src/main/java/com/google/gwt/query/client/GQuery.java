@@ -34,6 +34,7 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.StyleInjector.StyleInjectorImpl;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -886,7 +887,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery attr(Properties properties) {
     for (Element e : elements) {
       for (String name : properties.keys()) {
-        e.setAttribute(name, properties.getStr(name));
+        e.setAttribute(JsUtils.hyphenize(name), properties.getStr(name));
       }
     }
     return this;

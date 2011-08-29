@@ -27,23 +27,6 @@ import com.google.gwt.user.client.Window;
  * A helper class to get computed CSS styles for elements.
  */
 public class DocumentStyleImpl {
-
-  /**
-   * Camelize style property names. for instance: font-name -> fontName
-   */
-  public static native String camelize(String s)/*-{
-    return s.replace(/\-(\w)/g, function(all, letter) {
-    return letter.toUpperCase();
-    });
-  }-*/;
-
-  /**
-   * Hyphenize style property names. for instance: fontName -> font-name
-   */
-  public static native String hyphenize(String name) /*-{
-    return name.replace(/([A-Z])/g, "-$1" ).toLowerCase();
-  }-*/;
-  
   /**
    * Returns the numeric value of a css property.
    *  
@@ -113,7 +96,7 @@ public class DocumentStyleImpl {
     if (!force) {   
       return ret == null ? "" : ret;
     } else {
-      return getComputedStyle(elem, hyphenize(name), name, null);
+      return getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
     }
   }
   
@@ -126,7 +109,7 @@ public class DocumentStyleImpl {
     } else if ("for".equalsIgnoreCase(name)) {
       return "htmlFor";
     }
-    return camelize(name);
+    return JsUtils.camelize(name);
   }
 
   public int getHeight(Element e) {
@@ -174,7 +157,7 @@ public class DocumentStyleImpl {
     if (prop.matches("^[A-Z]+$")) {
       prop = prop.toLowerCase();
     }
-    prop = camelize(prop);
+    prop = JsUtils.camelize(prop);
     if (val == null || val.trim().length() == 0) {
       removeStyleProperty(e, prop);
     } else {
