@@ -3249,8 +3249,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element. 
    */
-  public void resize(final Function f) {
-    
+  public GQuery resize(final Function f) {
+    return bindOrFire(EventsListener.ONRESIZE, null, f);
   }
 
   /**
