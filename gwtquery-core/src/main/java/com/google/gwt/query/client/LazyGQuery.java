@@ -585,11 +585,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Return a style property on the first matched element.
    * 
-   * The parameter force has a special meaning here: - When force is false,
-   * returns the value of the css property defined in the style attribute of the
-   * element. - Otherwise it returns the real computed value.
+   * The parameter force has a special meaning here: 
+   * <ul>
+   * <li>When force is false, returns the value of the css property 
+   * defined in the style attribute of the element. 
+   * <li>Otherwise it returns the real computed value.
+   * </ul>
    * 
-   * For instance if you define 'display=none' not in the element style but in
+   * For instance if you don't define 'display=none'in the element style but in
    * the css stylesheet, it returns an empty string unless you pass the
    * parameter force=true.
    */
@@ -1864,7 +1867,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element. 
    */
-  void resize(Function f);
+  LazyGQuery<T> resize(Function f);
 
   /**
    * Restore a set of previously saved Css properties in every matched element.
