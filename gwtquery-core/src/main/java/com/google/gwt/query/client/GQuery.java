@@ -34,11 +34,11 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.StyleInjector.StyleInjectorImpl;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
+import com.google.gwt.query.client.impl.AttributeImpl;
 import com.google.gwt.query.client.impl.DocumentStyleImpl;
 import com.google.gwt.query.client.impl.SelectorEngine;
 import com.google.gwt.query.client.js.JsCache;
@@ -148,10 +148,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   // Sizzle POS regex : usefull in some methods
   private static final String POS_REGEX = ":(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)";
-
+ 
   private static JsRegexp tagNameRegex = new JsRegexp("<([\\w:]+)");
   
   private static final JsNamedArray<TagWrapper> wrapperMap;
+  
+  private static AttributeImpl attributeDelegate = GWT.create(AttributeImpl.class);
 
   static {
     TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
@@ -885,10 +887,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Properties("src: 'test.jpg', alt: 'Test Image'"))
    */
   public GQuery attr(Properties properties) {
-    for (Element e : elements) {
-      for (String name : properties.keys()) {
-        e.setAttribute(JsUtils.hyphenize(name), properties.getStr(name));
-      }
+    for (String name : properties.keys()) {
+      attributeDelegate.setAttribute(this, JsUtils.hyphenize(name), properties.getStr(name));
     }
     return this;
   }
@@ -902,7 +902,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String attr(String name) {
     return isEmpty() ? "" : get(0).getAttribute(name);
   }
-
+  
   /**
    * Set a single property to a computed value, on all matched elements.
    */
@@ -910,36 +910,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     int i = 0;
     for (Element e : elements) {
       Object val = closure.f(e.<com.google.gwt.dom.client.Element>cast(), i++);
-      if (val != null) {
-        setElementAttribute(e, key, String.valueOf(val));
-      }
+      attributeDelegate.setAttribute($(e), key, val);
     }
     return this;
-  }
+  }  
   
   /**
    * Set a single property to a value, on all matched elements.
    */
-  public GQuery attr(String key, boolean value) {
-    String val = value ? key : null;
-    for (Element e : elements) {
-      setElementAttribute(e, key, val);
-    }
+  public GQuery attr(String key, Object value) {
+    assert key != null : "key cannot be null";
+    attributeDelegate.setAttribute(this, key, value);
     return this;
   }
   
-  /**
-   * Set a single property to a value, on all matched elements.
-   */
-  public GQuery attr(String key, String value) {
-    if (value == null) {
-      return removeAttr(key);
-    }
-    for (Element e : elements) {
-      e.setAttribute(key, value);
-    }
-    return this;
-  }
+ 
 
   /**
    * Insert content before each of the matched elements. The elements must
@@ -3092,9 +3077,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove the named attribute from every element in the matched set.
    */
   public GQuery removeAttr(String key) {
-    for (Element e : elements) {
-      e.removeAttribute(key);
-    }
+    attributeDelegate.removeAttribute(this, key);
     return this;
   }
 

@@ -136,6 +136,14 @@ public class JsUtils {
   public static native boolean truth(Object a) /*-{
     return a ? true : false;
   }-*/;
+  
+  
+  /**
+   * Check if an object have already a property with name <code>name</code> defined.
+   */
+  public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
+    return name in o;
+  }-*/;
 
   /**
    * Remove duplicates from an elements array

@@ -19,21 +19,11 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import junit.framework.Assert;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -53,6 +43,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+
+import junit.framework.Assert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -978,19 +976,79 @@ public class GQueryCoreTest extends GWTTestCase {
   }
   
   
-  public void testCheckedAttr_Issue97() {
+  public void testAttr_Issue97() {
     $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
     assertNull($("#cb:checked", e).val());
+    
     $("#cb", e).attr("checked", "checked");
-    assertEquals("1", $("#cb:checked", e).val());
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
     $("#cb", e).removeAttr("checked");
-    assertNull($("#cb:checked", e).val());
+    assertEquals(0, $("#cb:checked", e).length());
+    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
     $("#cb", e).attr("checked", true);
-    assertEquals("1", $("#cb:checked", e).val());
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
     $("#cb", e).attr("checked", false);
-    assertNull($("#cb:checked", e).val());
+    assertEquals(0, $("#cb:checked", e).length());
+    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
     $("#cb", e).attr("checked", "");
-    assertNull($("#cb:checked", e).val());
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    GQuery gq = $("<div></div>test<!-- a comment-->");
+    gq.attr("class", "test1");
+    
+    assertEquals("test1", gq.get(0).getClassName());
+    assertEquals("test1", gq.attr("class"));
+    assertNull(gq.get(0).getPropertyString("class"));
+    
+    gq.removeAttr("class");
+    assertEquals("", gq.get(0).getClassName());
+    assertEquals("", gq.attr("class"));
+    
+    //test on value
+    $("#cb", e).attr("value", "mail");
+    assertEquals("mail", InputElement.as($("#cb", e).get(0)).getValue());
+    assertEquals("mail", $("#cb", e).get(0).getAttribute("value"));
+    
+    $("#cb", e).removeAttr("value");
+    assertEquals("", InputElement.as($("#cb", e).get(0)).getValue());
+    assertEquals("", $("#cb", e).get(0).getAttribute("value"));
+    
+    try{
+      $("#cb", e).attr("type", "hidden");
+      fail("Cannnot change a type of an element already attached to the dom");
+    }catch (Exception e){}
+    
+    gq = $("<input type='text' value='blop'></input>");
+    gq.attr("type", "radio");
+    assertEquals("radio", InputElement.as(gq.get(0)).getType());
+    assertEquals("blop", InputElement.as(gq.get(0)).getValue());
+    
+    
+    
+    gq.attr(Properties.create("{class:'test2', disabled:true}"));
+    InputElement ie = InputElement.as(gq.get(0));
+    
+    assertEquals("test2", ie.getClassName());
+    assertEquals(true, ie.isDisabled());
+    assertEquals("disabled", ie.getAttribute("disabled"));
+    
   }
   
   public void testWidthHeight() {

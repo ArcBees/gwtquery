@@ -83,13 +83,22 @@
     
     <!-- UI implementations -->
     <replace-with
-		class="gwtquery.plugins.commonui.client.GQuery.GQueryUiImplTrident">
+		class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImplTrident">
 		<when-type-is
-			class="gwtquery.plugins.commonui.client.GQuery.GQueryUiImpl" />
+			class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImpl" />
 		<any>
 			<when-property-is name="user.agent" value="ie6" />
 			<when-property-is name="user.agent" value="ie8" />
 		</any>
+	</replace-with>
+	
+	<!-- Attribute setter implementations -->
+    <replace-with
+		class="com.google.gwt.query.client.impl.AttributeTridentImpl">
+		<when-type-is
+			class="com.google.gwt.query.client.impl.AttributeImpl" />
+		<when-property-is name="user.agent" value="ie6" />
+
 	</replace-with>
 
     <!-- IE8 needs the iframe where the js of app is loaded set to standard in order 
