@@ -728,8 +728,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
    */
-  public GQuery animate(String prop, Function... funcs) {
-    return as(Effects).animate(prop, funcs);
+  public GQuery animate(Object stringOrProperties, Function... funcs) {
+    return as(Effects).animate(stringOrProperties, funcs);
   }
 
   /**
@@ -787,8 +787,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *          complete
    * @param duration the duration in milliseconds of the animation
    */
-  public GQuery animate(String prop, int duration, Function... funcs) {
-    return as(Effects).animate(prop, duration, funcs);
+  public GQuery animate(Object stringOrProperties, int duration, Function... funcs) {
+    return as(Effects).animate(stringOrProperties, duration, funcs);
   }
 
   /**

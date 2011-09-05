@@ -140,7 +140,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
    */
-  LazyEffects<T> animate(String prop, Function... funcs);
+  LazyEffects<T> animate(Object stringOrProperties, Function... funcs);
 
   /**
    * The animate() method allows you to create animation effects on any numeric
@@ -197,7 +197,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    *          complete
    * @param duration the duration in milliseconds of the animation
    */
-  LazyEffects<T> animate(String prop, int duration, Function... funcs);
+  LazyEffects<T> animate(Object stringOrProperties, int duration, Function... funcs);
 
   /**
    * Animate the set of matched elements using the clip property. It is possible

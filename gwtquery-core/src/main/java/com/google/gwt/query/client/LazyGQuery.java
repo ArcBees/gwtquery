@@ -32,6 +32,7 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.StyleInjector.StyleInjectorImpl;
 import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -218,7 +219,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
    */
-  LazyGQuery<T> animate(String prop, Function... funcs);
+  LazyGQuery<T> animate(Object stringOrProperties, Function... funcs);
 
   /**
    * The animate() method allows you to create animation effects on any numeric
@@ -275,7 +276,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *          complete
    * @param duration the duration in milliseconds of the animation
    */
-  LazyGQuery<T> animate(String prop, int duration, Function... funcs);
+  LazyGQuery<T> animate(Object stringOrProperties, int duration, Function... funcs);
 
   /**
    * Append content to the inside of every matched element. This operation is

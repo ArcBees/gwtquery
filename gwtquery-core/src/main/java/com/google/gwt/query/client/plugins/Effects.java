@@ -66,6 +66,30 @@ public class Effects extends QueuePlugin<Effects> {
     super(gq);
   }
 
+  private void queueAnimation(final Element e, final GQAnimation anim, final int duration) {
+    if (isOff()) {
+      anim.onStart();
+      anim.onComplete();
+    } else {
+      queue(e, DEFAULT_NAME, new Function() {
+        public void cancel(Element e) {
+          Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
+          if (anim != null) {
+            anim.cancel();
+          }
+        }
+        public void f(Element e) {
+          data(e, ACTUAL_ANIMATION, anim);
+          anim.run(duration);
+        }
+      });
+    }
+  }
+  
+  protected boolean isOff() {
+    return Fx.off;
+  }
+  
   /**
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS property, or color CSS property.
@@ -129,30 +153,6 @@ public class Effects extends QueuePlugin<Effects> {
     }
     return this;
   }
-  
-  private void queueAnimation(final Element e, final GQAnimation anim, final int duration) {
-    if (isOff()) {
-      anim.onStart();
-      anim.onComplete();
-    } else {
-      queue(e, DEFAULT_NAME, new Function() {
-        public void cancel(Element e) {
-          Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
-          if (anim != null) {
-            anim.cancel();
-          }
-        }
-        public void f(Element e) {
-          data(e, ACTUAL_ANIMATION, anim);
-          anim.run(duration);
-        }
-      });
-    }
-  }
-  
-  protected boolean isOff() {
-    return Fx.off;
-  }
 
   /**
    * 
@@ -211,10 +211,10 @@ public class Effects extends QueuePlugin<Effects> {
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
    */
-  public Effects animate(String prop, Function... funcs) {
-    return animate(prop, 500, funcs);
+  public Effects animate(Object stringOrProperties, Function... funcs) {
+    return animate(stringOrProperties, 500, funcs);
   }
-
+  
   /**
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS properties, or color CSS property.
@@ -270,8 +270,8 @@ public class Effects extends QueuePlugin<Effects> {
    *          complete
    * @param duration the duration in milliseconds of the animation
    */
-  public Effects animate(String prop, int duration, Function... funcs) {
-    return animate($$(prop), duration, Easing.LINEAR, funcs);
+  public Effects animate(Object stringOrProperties, int duration, Function... funcs) {
+    return animate(stringOrProperties, duration, Easing.LINEAR, funcs);
   }
 
   /**

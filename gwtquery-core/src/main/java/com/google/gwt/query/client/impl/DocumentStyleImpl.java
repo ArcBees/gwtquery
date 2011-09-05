@@ -96,7 +96,11 @@ public class DocumentStyleImpl {
     if (!force) {   
       return ret == null ? "" : ret;
     } else {
-      return getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
+      try {
+        return getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
+      } catch (Exception e) {
+        return ret;
+      }
     }
   }
   
@@ -168,7 +172,7 @@ public class DocumentStyleImpl {
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
     var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
-    return cStyle ? cStyle.getPropertyValue(hyphenName) : null;
+    return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
   }-*/;
   
   protected static final JsNamedArray<String> elemdisplay = JsNamedArray.create();
