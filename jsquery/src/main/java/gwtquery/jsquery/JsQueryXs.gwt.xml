@@ -1,0 +1,26 @@
+<module rename-to='jsquery'>
+	<inherits name='gwtquery.jsquery.JsQuery' />
+	
+	<!-- Hack to put code in jsquery.nocache.js -->
+    <define-property name="onload" values="default, foo"/>
+    <property-provider name="onload">
+      <![CDATA[
+	    $wnd.JsQuery = { 
+	      onLoadArray: [],
+	      onLoad: function() {
+	        for (i in $wnd.JsQuery.onLoadArray)
+	          $wnd.JsQuery.onLoadArray[i]();
+	      },
+	      ready: function(f) {
+	        $wnd.JsQuery.onLoadArray.push(f);
+	      }
+	    };
+	    $wnd.$ = function() {return $wnd.JsQuery;}
+        return 'default';
+      ]]>
+    </property-provider>
+    
+    <!-- Cross Site -->
+    <add-linker name="xs"/>
+</module>
+
