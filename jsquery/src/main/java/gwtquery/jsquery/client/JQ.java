@@ -87,8 +87,8 @@ public class JQ implements ExportOverlay<GQuery> {
   // We have to stub all the method we want to export here.
   private JQ(){}
   public String toString() {return null;}
-  public GQuery add(GQuery previousObject) {System.out.println("ccc");return null;}
-  public GQuery add(String selector) {System.out.println("ccc");return null;}
+  public GQuery add(GQuery previousObject) {return null;}
+  public GQuery add(String selector) {return null;}
   public GQuery addClass(String... classes) {return null;}
   public GQuery after(GQuery query) {return null;}
   public GQuery after(Node n) {return null;}
