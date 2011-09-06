@@ -211,7 +211,7 @@ public class AttributeImpl {
     if ("type".equalsIgnoreCase(key)) {
       return  TypeAttrSetter.getInstance();
     
-    } else if ("value".equals("key")){
+    } else if ("value".equals(key)){
       return ValueAttrSetter.getInstance();
     
     } else if (BOOLEAN_ATTR_REGEX.test(key)) {
