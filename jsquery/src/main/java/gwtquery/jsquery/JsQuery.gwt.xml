@@ -1,4 +1,4 @@
-<module rename-to='jsquery'>
+<module rename-to='dev'>
 	<inherits name='com.google.gwt.query.Query' />
 	<inherits name='org.timepedia.exporter.Exporter' />
     <inherits name='com.google.gwt.junit.JUnit' />

@@ -111,8 +111,8 @@ public class JQ implements ExportOverlay<GQuery> {
   public <T extends GQuery> T as(Class<T> plugin) {return null;}
 //  public GQuery attr(Properties properties) {return null;}
   public String attr(String name) {return null;}
-  public GQuery attr(String key, Function closure) {return null;}
-  public GQuery attr(String key, String value) {return null;}
+// public GQuery attr(String key, Function closure) {return null;}
+  public GQuery attr(String key, Object value) {return null;}
   public GQuery before(GQuery query) {return null;}
   public GQuery before(Node n) {return null;}
   public GQuery before(String html) {return null;}

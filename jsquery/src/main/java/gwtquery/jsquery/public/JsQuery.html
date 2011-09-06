@@ -2,18 +2,18 @@
 <head>
 <title>JsQuery</title>
 <script language="javascript"
-    src="jsquery.nocache.js" ></script>
+    src="dev.nocache.js" ></script>
 </head>
 <body>
   <div id='hello' style='display: none'>Hello</div>
   <script>
   onJsQueryLoad = function(){
-      $('#hello').show();
-      alert($('#hello').text());
+    $('#hello').show().attr("width", true);
+    alert($('#hello').text());
   }
-  if ($) {
-	  $(document).ready(onJsQueryLoad);
-	  onJsQueryLoad = null;
+  if (window.$) {
+    $(document).ready(onJsQueryLoad);
+    onJsQueryLoad = null;
   }  
   </script>
 </body>
