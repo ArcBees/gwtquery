@@ -37,6 +37,10 @@
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <when-property-is name="user.agent" value="ie8"/>
     </generate-with>
+    <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNativeIE9">
+        <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
+        <when-property-is name="user.agent" value="ie9"/>
+    </generate-with>
 
     <!--  Document Style -->
     <replace-with class="com.google.gwt.query.client.impl.DocumentStyleImpl">
@@ -47,6 +51,7 @@
         <any>
 	        <when-property-is name="user.agent" value="ie6"/>
 	        <when-property-is name="user.agent" value="ie8"/>
+	        <when-property-is name="user.agent" value="ie9"/>
         </any>
     </replace-with>
 
@@ -57,16 +62,22 @@
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzleIE">
         <when-type-assignable class="com.google.gwt.query.client.impl.HasSelector"/>
         <any>
-            <when-property-is name="user.agent" value="ie8"/>
             <when-property-is name="user.agent" value="ie6"/>
+            <when-property-is name="user.agent" value="ie8"/>
+            <when-property-is name="user.agent" value="ie9"/>
         </any>
     </replace-with>
+    
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzle">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
     </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineSizzleIE">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="user.agent" value="ie6"/>
+        <any>
+          <when-property-is name="user.agent" value="ie6"/>
+          <when-property-is name="user.agent" value="ie8"/>
+          <when-property-is name="user.agent" value="ie9"/>
+        </any>
     </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNative">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
@@ -74,31 +85,36 @@
             <when-property-is name="user.agent" value="gecko1_8"/>
             <when-property-is name="user.agent" value="opera"/>
             <when-property-is name="user.agent" value="safari"/>
+	        <when-property-is name="user.agent" value="ie9"/>
         </any>
     </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
-        <when-property-is name="user.agent" value="ie8"/>
+        <any>
+	        <when-property-is name="user.agent" value="ie8"/>
+        </any>
     </replace-with>
     
     <!-- UI implementations -->
-    <replace-with
-		class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImplTrident">
-		<when-type-is
-			class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImpl" />
+    <replace-with class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImpl">
+		<when-type-is class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImpl" />
+	</replace-with>    
+    <replace-with class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImplTrident">
+		<when-type-is class="com.google.gwt.query.client.plugins.UiPlugin.GQueryUiImpl" />
 		<any>
 			<when-property-is name="user.agent" value="ie6" />
 			<when-property-is name="user.agent" value="ie8" />
+			<when-property-is name="user.agent" value="ie9" />
 		</any>
 	</replace-with>
 	
 	<!-- Attribute setter implementations -->
-    <replace-with
-		class="com.google.gwt.query.client.impl.AttributeTridentImpl">
-		<when-type-is
-			class="com.google.gwt.query.client.impl.AttributeImpl" />
+    <replace-with class="com.google.gwt.query.client.impl.AttributeImpl">
+		<when-type-is class="com.google.gwt.query.client.impl.AttributeImpl" />
+	</replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.AttributeTridentImpl">
+		<when-type-is class="com.google.gwt.query.client.impl.AttributeImpl" />
 		<when-property-is name="user.agent" value="ie6" />
-
 	</replace-with>
 
     <!-- IE8 needs the iframe where the js of app is loaded set to standard in order 

@@ -33,7 +33,7 @@ public class SelectorEngineNativeMin extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      Window.alert("Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
+      Window.alert("GwtQuery: Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
       return null;
     }
   }

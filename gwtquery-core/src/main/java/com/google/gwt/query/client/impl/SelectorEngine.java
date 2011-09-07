@@ -165,4 +165,8 @@ public class SelectorEngine implements HasSelector {
            /native/.test(String($doc.querySelectorAll)) ? true : false; 
   }-*/;
   
+  public static native boolean hasXpathEvaluate() /*-{
+    return $doc.evaluate ? true : false; 
+  }-*/;
+  
 }

@@ -19,13 +19,13 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.query.client.Selector;
-import com.google.gwt.query.client.impl.SelectorEngineNativeIE8;
+import com.google.gwt.query.client.impl.SelectorEngineNative;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * Compile time selector generator which delegates to native browser methods.
  */
-public class SelectorGeneratorNativeIE8 extends SelectorGeneratorJS {
+public class SelectorGeneratorNativeIE9 extends SelectorGeneratorJS {
 
   @Override
   protected void generateMethodBody(SourceWriter sw, JMethod method,
@@ -35,7 +35,7 @@ public class SelectorGeneratorNativeIE8 extends SelectorGeneratorJS {
     if (selector.matches("#[\\w\\-]+")) {
       sw.println("return "
           + wrap(method, "veryQuickId(\"" + selector.substring(1) + "\", root)") + ";");
-    } else if (selector.matches(SelectorEngineNativeIE8.NATIVE_EXCEPTIONS_REGEXP)) {
+    } else if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {
       sw.println("return "

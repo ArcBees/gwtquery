@@ -33,7 +33,7 @@ public class SelectorEngineNativeMinIE8 extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      Window.alert("Selector '" + selector + "' is unsupported in this IE8 engine, check that you are in 'standards mode' or configure your module to use JS fallback");
+      Window.alert("GwtQuery: Selector '" + selector + "' is unsupported in this IE8 engine, check that you are in 'standards mode' or configure your module to use JS fallback");
       return null;
     }
   }
