@@ -27,11 +27,13 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.Selectors.*;
+import com.google.gwt.query.client.Selectors.DeferredSelector;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
 import com.google.gwt.query.client.impl.SelectorEngineNative;
 import com.google.gwt.query.client.impl.SelectorEngineNativeIE8;
+import com.google.gwt.query.client.impl.SelectorEngineNativeMin;
+import com.google.gwt.query.client.impl.SelectorEngineNativeMinIE8;
 import com.google.gwt.query.client.impl.SelectorEngineSizzle;
 import com.google.gwt.query.client.impl.SelectorEngineSizzleIE;
 import com.google.gwt.query.client.impl.research.SelectorEngineJS;
@@ -189,6 +191,8 @@ public class GwtQueryBenchModule implements EntryPoint {
       new DynamicBenchmark(new SelectorEngineCssToXPath(), "gwt_css2xpath"),
       new DynamicBenchmark(new SelectorEngineNative(), "gwt_native"),
       new DynamicBenchmark(new SelectorEngineNativeIE8(), "gwt_nativeIE8"),
+      new DynamicBenchmark(new SelectorEngineNativeMin(), "gwt_native_min"),
+      new DynamicBenchmark(new SelectorEngineNativeMinIE8(), "gwt_native_minIE8"),
       new IframeBenchmark("jquery"),
       new IframeBenchmark("dojo"), 
       new IframeBenchmark("prototype"),
@@ -295,6 +299,7 @@ public class GwtQueryBenchModule implements EntryPoint {
             }
             found = num / numCalls;
           } catch (Exception e) {
+            e.printStackTrace();
             found = -1;
           }
           runTimes[benchMarkNumber] = runtime;
