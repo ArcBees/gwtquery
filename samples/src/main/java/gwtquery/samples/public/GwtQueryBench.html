@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>GwtQuery BenchMarks</title>
+    <title>GwtQuery Benchmarks</title>
     <style>
         * {
             font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -19,14 +19,6 @@
         #startrace {
             cursor: pointer;
         }
-        
-        #selectcontainer {
-           color: black;
-           background: #808080;
-           border: 2px solid #936630;
-           width: 500px;
-        }
-
         body, select {
             background-color: black;
         }
@@ -67,8 +59,7 @@
         #racefield {
           background-image: url(images/bench/grass-texture-small.jpg); 
           background-repeat: repeat;
-		  -moz-border-radius: 15px;
-		  border-radius: 15px;
+		  border-radius: 9px;
         }
 
         .base {
@@ -81,13 +72,50 @@
            font-size: 85%;
            color: green;
         }
+        .lnk {
+          float: right;
+          margin-left: 20px;
+          color: plum;
+          margin-top: 10px;
+          font-size: 12px;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+        .lnk:hover {
+          color: red;
+        }
+        h2 {
+          float: left; 
+          color: white; 
+          border-bottom: 1px solid gray;
+          width: 400px;
+        }
+        
+        .gwt-PopupPanel {
+           max-width: 80%;
+        }
+        .popupContent {
+          background-color: LightSlateGrey;
+          border: 2px solid grey;
+          overflow: auto;
+          border-radius: 7px;
+          padding: 14px;
+        }
+        .clear {
+          clear: both;
+        }
+        button {
+          color: black;
+        }
     </style>
 </head>
 <body>
-	<h2 style="color: white; border-bottom: 1px solid gray">
-	    GWTSpeed - GWT Query benchmarks
+	<h2>
+	    GwtQuery benchmarks
 	</h2>
-	<div id="startrace" style="color: red">Loading Javascript frameworks, please wait ...</div><br/>
+	<div class='lnk' id="about">About</div>
+	<div class='lnk' id="startrace" >Loading Javascript frameworks, please wait ...</div><br/>
+	<div class='clear'></div>
 	<div id="racetrack" style="height: 0px; overflow: hidden;">
 	  <div id="racefield">
 	 </div>
@@ -98,8 +126,51 @@
 	    </table>
 	</div>
 	
-	<div class='base'>Based on <a href='http://mootools.net/slickspeed/'>SlickSpeed</a> test</div>        
 	<script language="javascript" src="gwtquery.samples.GwtQueryBench.nocache.js"></script>
 	
+	<div id='help' style='display: none'>
+		This application has been designed to compare the speed between the different css selector-engines existing in <a href='http://gwtquery.googlecode.com'>gwtquery</a>, and against other javascript libraries.
+		<br/>
+		The html document and selectors used for the benchmark have been taken from the <a href='http://mootools.net/slickspeed/'>SlickSpeed</a> test.
+		<br/>
+		<br/>
+		Click 'start the race' to test the selectors against most popular frameworks. 
+		<br/>
+		If you wanted to experiment with other frameworks or different gquery engine implementations, append the parameter ask=true to the url and select the options in the popup window after clicking 'start'.
+		<br/>
+		Because normally css selectors takes less than 1 or 2 millisecons, each selector is run during a minimum of 200ms for each engine, then we divide the total time between the number of iterations and put this value in the cell, <br/>
+		marking in green the faster engine.
+		<br/>
+		If an engine does not support a selector we put the word 'Error' in the corresponding cell and penalize the engine setting a value of 200ms for that iteration.
+		<br/>
+		The last row represents the acumulated time of the test for each engine.
+		<br/>
+		<br/>
+		
+		Some times, you could obtain different results when running the test with the same browser.
+		<br/>
+		This is due to random browser or system events which makes the current selector running delay some milliseconds. 
+		<br/>
+		To avoid that, try to run the test in a browser running just one window and one tab, and in a computer without activity: close all applications, do not move the mouse etc.
+		<br/>
+		<br/>
+		Leyend:
+		<br/>
+		- gwt_compiled: run css selectors which were optimized during the gwt compilation.
+		<br/>
+		- gwt_dynamic: evaluates selectors in runtime using the most suitable engine for this browser.
+		<br/>
+		- jquery, dojo, prototype ... : runs the selectors using those external libraries.
+		<br/>
+		- gwt_*: different runtime engines, some are experimental, and they could fail depending on the browser.
+		<br/>
+		<br/>
+		Sources:
+		<br/>
+		<a href='http://code.google.com/p/gwtquery/source/browse/trunk/samples/src/main/java/gwtquery/samples/client/GwtQueryBenchModule.java'>Source code of this application</a> is available in the samples module of gwtquery.
+		<br/>
+		<br/>
+		- The GwtQuery team.
+	</div>
 </body>
 </html>

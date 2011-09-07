@@ -227,7 +227,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       
       selectedBenchmarks = readBenchmarkSelection();
       selectPanel.hide();
-      $("#startrace").text("Stop Race");
+      $("#startrace").text("Stop the race");
       $("#results").show();
 
       initResultsTable(ds, selectedBenchmarks);
@@ -313,7 +313,14 @@ public class GwtQueryBenchModule implements EntryPoint {
     }
   };
   private Benchmark[] selectedBenchmarks;
-  private PopupPanel selectPanel = new PopupPanel();
+  private PopupPanel selectPanel = new PopupPanel() {{
+    addStyleName("spanel");
+  }};
+  private PopupPanel helpPanel = new PopupPanel() {{
+    setAutoHideEnabled(true);
+    setWidget(new HTML($("#help").html()));
+    addStyleName("help");
+  }};
   private boolean shareIframes = true;
   
   private double trackWidth;
@@ -323,8 +330,13 @@ public class GwtQueryBenchModule implements EntryPoint {
   public void iframeReadyCallback() {
     writeTestContent($(".ibench").contents().find("body").get(0));
     gwtiframe = $(".ibench").eq(0).contents().get(0);
-    $("#startrace").text("Click to start the race");
+    $("#startrace").text("Start the race");
     $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
+    $("#about").click(new Function(){
+      public void f() {
+        helpPanel.center();
+      }
+    });
   }
 
   /**
