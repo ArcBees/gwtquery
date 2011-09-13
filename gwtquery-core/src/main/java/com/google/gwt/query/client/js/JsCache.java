@@ -95,9 +95,8 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   public final native boolean isEmpty() /*-{
-    var foo = "";
-    for (foo in this) break;
-    return !foo;
+    for (k in this) return false;
+    return true;
   }-*/;
 
   public final native void put(int id, Object obj) /*-{

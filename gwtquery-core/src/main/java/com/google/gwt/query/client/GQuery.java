@@ -3671,7 +3671,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (window.equals(e)) {
         continue;
       }
-      r += (pretty && r.length() > 0 ? "\n " : "") + e.getString();
+      String elStr;
+      try {
+        elStr = e.getString();
+      } catch (Exception e2) {
+        elStr = "< " + (e == null ? "null" : e.getNodeName()) + "(gquery, error getting the element string representation: " + e2.getMessage() + ")/>";
+      }
+      r += (pretty && r.length() > 0 ? "\n " : "") + elStr;
     }
     return r;
   }
