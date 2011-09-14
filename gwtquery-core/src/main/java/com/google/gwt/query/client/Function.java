@@ -26,6 +26,7 @@ public abstract class Function {
   private com.google.gwt.dom.client.Element element = null;
   private Event event = null;
   private int index = -1;
+  private Object[] data = new Object[0];
   
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
     return element.<T>cast();
@@ -46,6 +47,14 @@ public abstract class Function {
   
   public void setIndex(int i) {
     index = i;
+  }
+  
+  public Object[] getData() {
+    return data;
+  }
+
+  public void setData(Object...data) {
+    this.data = data;
   }
   
   public int getIndex() {
@@ -131,10 +140,19 @@ public abstract class Function {
   }
   
   /**
+   * Override this method for bound callbacks
+   */
+  public void f(Object... data) {
+    setData(data);
+    f();
+  }
+  
+  /**
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
    */
   public boolean f(Event e, Object data) {
+    setData(data);
     setEvent(e);
     return f(e);
   }
