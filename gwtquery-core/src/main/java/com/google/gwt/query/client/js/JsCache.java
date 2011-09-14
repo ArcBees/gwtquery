@@ -1,6 +1,7 @@
 package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 
  /**
@@ -26,87 +27,64 @@ public class JsCache extends JavaScriptObject {
     }
   }
   
-  public final native void delete(int name) /*-{
+  public final native <T> void delete(T name) /*-{
     delete this[name];
   }-*/;
 
-  public final native void delete(String name) /*-{
-    delete this[name];
-  }-*/;
-
-  public final native boolean exists(String name) /*-{
+  public final native <T> boolean exists(T name) /*-{
     return !!this[name];
   }-*/;
   
-  public final native boolean exists(int id) /*-{
-    return !!this[id];
-  }-*/;
-
-  public final native <T> T get(int id) /*-{
+  public final native <R, T> R get(T id) /*-{
     return this[id] || null;
   }-*/;
 
-  public final native <T> T get(String id) /*-{
-    return this[id] || null;
-  }-*/;
-
-  public final JsCache getCache(int id) {
+  public final <T> JsCache getCache(int id) {
     return (JsCache)get(id);
   }
   
-  public final native boolean getBoolean(int id) /*-{
+  public final native <T> boolean getBoolean(T id) /*-{
     return !!this[id];
   }-*/;
 
-  public final native boolean getBoolean(String id) /*-{
-    return !!this[id];
-  }-*/;
-
-  public final native float getFloat(int id) /*-{
+  public final native <T> float getFloat(T id) /*-{
     return this[id] || 0;
   }-*/;
 
-  public final native float getFloat(String id) /*-{
+  public final native <T> double getDouble(T id) /*-{
     return this[id] || 0;
   }-*/;
 
-  public final native double getDouble(int id) /*-{
+  public final native <T> int getInt(T id) /*-{
     return this[id] || 0;
   }-*/;
 
-  public final native double getDouble(String id) /*-{
-    return this[id] || 0;
+  public final native <T> String getString(T id) /*-{
+    return this[id] == null ? null : String(this[id]);
   }-*/;
   
-  public final native int getInt(int id) /*-{
-    return this[id] || 0;
+  public final native <T> JsArrayMixed getArray(T id) /*-{
+    var r = this[id];
+    if (r != null && Object.prototype.toString.call(r) == '[object Array]') {
+      return r;
+    }
+    return null;
   }-*/;
-
-  public final native int getInt(String id) /*-{
-    return this[id] || 0;
-  }-*/;
-
-  public final native String getString(int id) /*-{
-    return this[id] == null ? null : String(this[id]);
-  }-*/;
-
-  public final native String getString(String id) /*-{
-    return this[id] == null ? null : String(this[id]);
-  }-*/;
+  
+  public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
+    Object o = get(name); 
+    return (o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
+  }
 
   public final native boolean isEmpty() /*-{
     for (k in this) return false;
     return true;
   }-*/;
 
-  public final native void put(int id, Object obj) /*-{
+  public final native <T, O> void put(T id, O obj) /*-{
     this[id] = obj;
   }-*/;
 
-  public final native void put(String id, Object obj) /*-{
-    this[id] = obj;
-  }-*/;
-  
   public final native int length() /*-{
     if (typeof(this.length) == 'number') 
      return this.length;

@@ -16,6 +16,7 @@
 package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsCache;
 
 /**
@@ -30,6 +31,7 @@ public class Properties extends JavaScriptObject {
   public static Properties create(String properties) {
     if (properties != null && !properties.isEmpty()) {
       String p = camelizePropertiesKeys(wrapPropertiesString(properties));
+      System.out.println(p);
       try {
         return (Properties) createImpl(p);
       } catch (Exception e) {
@@ -51,7 +53,7 @@ public class Properties extends JavaScriptObject {
         .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
         .replaceAll("\\('([^\\)]+)'\\)" , "($1)") // Remove quotes
         .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
-        .replaceAll(":\\s*[\"']?([^';]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes
+        .replaceAll(":\\s*[\"']?([^'\\]};]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes
         .replaceAll(":'(-?[\\d\\.]+|null|false|true)',", ":$1,") // numbers do not need quote
         .replaceFirst("[;,]$", "") // remove endings 
         + "})";
@@ -89,7 +91,7 @@ public class Properties extends JavaScriptObject {
   }
 
   public final <T> T get(Object name) {
-    return c().<T>get(String.valueOf(name));
+    return c().get(String.valueOf(name));
   }
 
   public final boolean getBoolean(Object name) {
@@ -107,7 +109,19 @@ public class Properties extends JavaScriptObject {
   public final String getStr(Object name) {
     return c().getString(String.valueOf(name));
   }
+  
+  public final Object getObject(Object name) {
+    return c().get(String.valueOf(name));
+  }
+  
+  public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
+    return c().getJavaScriptObject(String.valueOf(name));
+  }
 
+  public final JsArrayMixed getArray(Object name) {
+    return c().getArray(String.valueOf(name));
+  }
+  
   public final String[] keys() {
     return c().keys();
   }
@@ -121,10 +135,50 @@ public class Properties extends JavaScriptObject {
   }
   
   public final String tostring() {
+    return "(" + toJsonString() + ")";
+  }
+  
+  public final String toJsonString() {
     String ret = "";
+    
     for (String k : keys()){
-      ret += k + ": '" + getStr(k) + "', ";
+      JsArrayMixed o = getArray(k);
+      if (o != null) {
+        ret += k + ":[";
+        for (int i = 0, l = o.length(); i < l ; i++) {
+          ret += "'" + o.getString(i) + "',";
+        }
+        ret += "],";
+      } else {
+        Properties p = getJavaScriptObject(k);
+        if (p != null) {
+          ret += k + ":" + p.toJsonString();
+        } else {
+          ret += k + ":'" + getStr(k) + "',";
+        }
+      }
     }
-    return "({" + ret.replaceAll("[, ]+$","") + "})";
+    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","").replaceAll("([:,\\[])'(-?[\\d\\.]+|null|false|true)'", "$1$2") + "}";
+  }
+  
+  public final String toQueryString() {
+    String ret = "";
+    for (String k : keys()) {
+      ret += ret.isEmpty() ? "" : "&";
+      JsArrayMixed o = getArray(k);
+      if (o != null) {
+        for (int i = 0, l = o.length(); i < l ; i++) {
+          ret += (i > 0 ? "&" : "") + k + "[]=" + o.getString(i) ;
+        }
+      } else {
+        Properties p = getJavaScriptObject(k);
+        if (p != null) {
+          ret += p.toQueryString();
+        } else {
+          ret += k + "=" + getStr(k);
+        }
+      }
+    }
+    return ret;
   }
 }
