@@ -17,8 +17,7 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
@@ -49,16 +48,15 @@ public abstract class TextBoxBaseWidgetFactory<T extends TextBoxBase>
   protected void copyAttributes(Element src, Element dest) {
     InputElement source = src.cast();
     InputElement destination = dest.cast();
-    
+
     destination.setAccessKey(source.getAccessKey());
     destination.setDefaultValue(source.getDefaultValue());
     destination.setDisabled(source.isDisabled());
-    destination.setMaxLength(source.getMaxLength());
+    if (source.getMaxLength() > 0) destination.setMaxLength(source.getMaxLength());
     destination.setReadOnly(source.isReadOnly());
     destination.setSize(source.getSize());
     destination.setName(source.getName());
     destination.setValue(source.getValue());
-    
   }
 
   protected abstract T createWidget();
