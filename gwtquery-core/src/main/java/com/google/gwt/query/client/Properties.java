@@ -31,7 +31,6 @@ public class Properties extends JavaScriptObject {
   public static Properties create(String properties) {
     if (properties != null && !properties.isEmpty()) {
       String p = camelizePropertiesKeys(wrapPropertiesString(properties));
-      System.out.println(p);
       try {
         return (Properties) createImpl(p);
       } catch (Exception e) {

@@ -36,7 +36,8 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final native <R, T> R get(T id) /*-{
-    return this[id] || null;
+    var r = this[id], t = typeof r;
+    return r && t != 'number' && t != 'boolean' ? r : null;
   }-*/;
 
   public final <T> JsCache getCache(int id) {
@@ -46,18 +47,19 @@ public class JsCache extends JavaScriptObject {
   public final native <T> boolean getBoolean(T id) /*-{
     return !!this[id];
   }-*/;
-
-  public final native <T> float getFloat(T id) /*-{
-    return this[id] || 0;
-  }-*/;
+  
+  public final <T> float getFloat(T id) {
+    return (float)getDouble(id);
+  }
 
   public final native <T> double getDouble(T id) /*-{
-    return this[id] || 0;
+    var r = this[id];
+    return r && (typeof r == 'number') ? r : 0;
   }-*/;
 
-  public final native <T> int getInt(T id) /*-{
-    return this[id] || 0;
-  }-*/;
+  public final <T> int getInt(T id) {
+    return (int)getDouble(id);
+  }
 
   public final native <T> String getString(T id) /*-{
     return this[id] == null ? null : String(this[id]);
@@ -65,7 +67,7 @@ public class JsCache extends JavaScriptObject {
   
   public final native <T> JsArrayMixed getArray(T id) /*-{
     var r = this[id];
-    if (r != null && Object.prototype.toString.call(r) == '[object Array]') {
+    if (r && Object.prototype.toString.call(r) == '[object Array]') {
       return r;
     }
     return null;
