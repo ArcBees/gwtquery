@@ -133,7 +133,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   protected static JsCache dataCache = null;
 
-  private static SelectorEngine engine;
+  protected static SelectorEngine engine;
   
   private static final int FUNC_PREPEND = 0, FUNC_APPEND = 1, FUNC_AFTER = 2,
       FUNC_BEFORE = 3;
@@ -142,18 +142,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
-  private static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
+  protected static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
 
   private static Element windowData = null;
 
   // Sizzle POS regex : usefull in some methods
+  // TODO: Share this static with SelectorEngineSizzle
   private static final String POS_REGEX = ":(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)";
  
   private static JsRegexp tagNameRegex = new JsRegexp("<([\\w:]+)");
   
   private static final JsNamedArray<TagWrapper> wrapperMap;
   
-  private static AttributeImpl attributeDelegate = GWT.create(AttributeImpl.class);
+  protected static AttributeImpl attributeImpl = GWT.create(AttributeImpl.class);
 
   static {
     TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
@@ -174,7 +175,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     wrapperMap.put("th", trWrapper); 
     wrapperMap.put("col",  new TagWrapper(2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"));
     wrapperMap.put("area",  new TagWrapper(1, "<map>", "</map>"));
-
   }
   
   /**
@@ -888,7 +888,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery attr(Properties properties) {
     for (String name : properties.keys()) {
-      attributeDelegate.setAttribute(this, JsUtils.hyphenize(name), properties.getStr(name));
+      attr(JsUtils.hyphenize(name), properties.getStr(name));
     }
     return this;
   }
@@ -910,7 +910,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     int i = 0;
     for (Element e : elements) {
       Object val = closure.f(e.<com.google.gwt.dom.client.Element>cast(), i++);
-      attributeDelegate.setAttribute($(e), key, val);
+      $(e).attr(key, val);
     }
     return this;
   }  
@@ -920,7 +920,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery attr(String key, Object value) {
     assert key != null : "key cannot be null";
-    attributeDelegate.setAttribute(this, key, value);
+    attributeImpl.setAttribute(this, key, value);
     return this;
   }
   
@@ -3077,7 +3077,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove the named attribute from every element in the matched set.
    */
   public GQuery removeAttr(String key) {
-    attributeDelegate.removeAttribute(this, key);
+    attributeImpl.removeAttribute(this, key);
     return this;
   }
 
@@ -3911,22 +3911,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       } else if (e.getNodeName().equalsIgnoreCase("input")) {
         InputElement ie = InputElement.as(e);
         return new String[]{ie.getValue()};
-//        if ("radio".equalsIgnoreCase(ie.getType())) {
-//          for (Element e2 : elements) {
-//            if ("input".equalsIgnoreCase(e2.getNodeName())) {
-//              InputElement ie2 = InputElement.as(e2);
-//              if ("radio".equalsIgnoreCase(ie2.getType()) && ie2.isChecked()
-//                  && ie.getName().equals(ie2.getName())) {
-//                return new String[]{ie2.getValue()};
-//              }
-//            }
-//          }
-//          if (ie.isChecked()) {
-//            return new String[]{ie.getValue()};
-//          }
-//        } else {
-//          return new String[]{ie.getValue()};
-//        }
       } else if (e.getNodeName().equalsIgnoreCase("textarea")) {
         return new String[]{TextAreaElement.as(e).getValue()};
       } else if (e.getNodeName().equalsIgnoreCase("button")) {
@@ -3935,7 +3919,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return new String[0];
   }
-
 
   /**
    * Return true if the first element is visible.isVisible
