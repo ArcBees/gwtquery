@@ -19,16 +19,13 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Helper class for setting and getting attribute on an element.
- * 
  */
 public class AttributeTridentImpl extends AttributeImpl {
 
   /**
-   * use {@link AttrNodeSetter} for button element
-   * 
+   * Use {@link AttrNodeSetter} for button element.
    */
   protected static class IEValueAttrSetter extends ValueAttrSetter {
-
     private static AttributeSetter INSTANCE;
 
     public static AttributeSetter getInstance() {
@@ -38,23 +35,15 @@ public class AttributeTridentImpl extends AttributeImpl {
       return INSTANCE;
     }
 
-    private IEValueAttrSetter() {
-
-    }
-
     public void setAttribute(Element e, String key, Object value) {
-
       if ("button".equals(e.getTagName())) {
         AttrNodeSetter.getInstance().setAttribute(e, key, value);
         return;
       }
-
       super.setAttribute(e, key, value);
     }
-
   }
   private static class AttrNodeSetter extends DefaultSetter {
-
     private static AttributeSetter INSTANCE;
 
     public static AttributeSetter getInstance() {
@@ -64,17 +53,11 @@ public class AttributeTridentImpl extends AttributeImpl {
       return INSTANCE;
     }
 
-    private AttrNodeSetter() {
-    }
-
-    @Override
     public void setAttribute(Element e, String key, Object value) {
       if (!setAttributeNode(e, key, value)) {
         super.setAttribute(e, key, value);
       }
-
     }
-
   }
 
   private static native String getAttributeNode(Element e, String name)/*-{
@@ -114,5 +97,4 @@ public class AttributeTridentImpl extends AttributeImpl {
     }
     return super.getAttributeSetter(key);
   }
-
 }

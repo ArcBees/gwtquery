@@ -112,7 +112,6 @@ public class LazyGenerator extends Generator {
       throws UnableToCompleteException {
 
     JParameter[] params = method.getParameters();
-    String thisClass = method.getEnclosingType().getQualifiedSourceName();
     JTypeParameter gType = method.getReturnType().isTypeParameter();
 
     String retType = method.getReturnType()

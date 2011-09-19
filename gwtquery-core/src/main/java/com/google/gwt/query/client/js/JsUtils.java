@@ -15,20 +15,81 @@
  */
 package com.google.gwt.query.client.js;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.user.client.DOM;
 
 /**
  * A bunch of utility methods for GQuery.
- * 
- * These methods could be moved to $ class, but the class
- * doesn't work right now.
  */
 public class JsUtils {
+  
+  private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
+  
+  public static class JsUtilsImpl {
+    public native Element parseXML(String xml) /*-{
+      return new DOMParser().parseFromString(xml, "text/xml").documentElement;
+    }-*/;
+    
+    public native Properties parseJSON(String json) /*-{
+      return $wnd.JSON.parse(json);
+    }-*/;
+    
+    public native String XML2String(JavaScriptObject o) /*-{
+     return (new XMLSerializer()).serializeToString(o);
+    }-*/;
+    
+    public JsArray<Element> unique(JsArray<Element> a) {
+      JsArray<Element> ret = JavaScriptObject.createArray().cast();
+      JsCache cache = JsCache.create();
+      for (int i = 0; i < a.length(); i++) {
+        Element e = a.get(i);
+        int id = e.hashCode();
+        if (!cache.exists(id)) {
+          cache.put(id, 1);
+          ret.push(e);
+        }
+      }    
+      return ret;
+    }
+  }
+
+  public static class JsUtilsImplIE6  extends JsUtilsImpl {
+    @Override
+    public native Element parseXML(String xml) /*-{
+      var d = new ActiveXObject("Microsoft.XmlDom");       
+      d.loadXML(xml);
+      return d.documentElement;
+    }-*/;
+    
+    @Override
+    public Properties parseJSON(String json) {
+      // No checks to the passed string so json should be
+      // a well-formed json string.
+      return Properties.createImpl(json);
+    }
+    
+    @Override
+    public native String XML2String(JavaScriptObject o) /*-{
+      return o.xml;
+    }-*/;
+    
+    @Override
+    public JsArray<Element> unique(JsArray<Element> a) {
+      // in IE6 XML elements does not support adding hashId to the object
+      if (a.length() > 0 && isXML(a.get(0))) {
+        return a;
+      }
+      return super.unique(a);
+    }
+  }
 
   /**
    * Camelize style property names. for instance: font-name -> fontName
@@ -144,21 +205,81 @@ public class JsUtils {
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
     return name in o;
   }-*/;
-
+  
+  /**
+   * Check is a javascript object can be cast to an Element 
+   */
+  public static boolean isElement(JavaScriptObject o) {
+    return hasProperty(o, "nodeName");
+  }
+  
+  /**
+   * Check is a javascript object can be cast to an Event 
+   */
+  public static boolean isEvent(JavaScriptObject o) {
+    return hasProperty(o, "currentTarget");
+  }
+  
+  /**
+   * Check is a javascript object can be used as an array 
+   */
+  public static native boolean isArray(JavaScriptObject o) /*-{
+   return Object.prototype.toString.call(o) == '[object Array]' 
+       || typeof o.length == 'number';
+  }-*/;
+  
+  /**
+   * Check is a javascript can be cast to a node list 
+   */
+  public static native boolean isNodeList(JavaScriptObject o) /*-{
+    var r = Object.prototype.toString.call(o);
+    return r == '[object HTMLCollection]' || r == '[object NodeList]' || 
+           (typeof o == 'object' && o.length && o[0].tagName) 
+           ? true : false;
+  }-*/;
+  
+  /**
+   * Check if an element is a DOM or a XML node 
+   */
+  public static boolean isXML(Node o) {
+    return o == null ? false : 
+      !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
+  }
+  
+  public static String XML2String(JavaScriptObject o) {
+    return utilsImpl.XML2String(o);
+  }
+  
+  /**
+   * Parses a xml string and return the xml document element which
+   * can then be passed to GQuery to create a typical GQuery object
+   * that can be traversed and manipulated.
+   */
+  public static  Element parseXML(String xml) {
+    return utilsImpl.parseXML(xml);
+  }
+  
+  /**
+   * Returns the owner document element of an element. 
+   */
+  public static Document getOwnerDocument(Node n) {
+    return n == null ? null : 
+           n.getNodeType() == Node.DOCUMENT_NODE ? 
+           n.<Document>cast() : n.getOwnerDocument();
+  }
+  
   /**
    * Remove duplicates from an elements array
    */
   public static JsArray<Element> unique(JsArray<Element> a) {
-    JsArray<Element> ret = JavaScriptObject.createArray().cast();
-    JsCache cache = JsCache.create();
-    for (int i = 0; i < a.length(); i++) {
-      Element e = a.get(i);
-      int id = e.hashCode();
-      if (!cache.exists(id)) {
-        cache.put(id, 1);
-        ret.push(e);
-      }
-    }    
-    return ret;
+    return utilsImpl.unique(a);
+  }
+  
+  /**
+   * Parses a json string returning a Object with useful method
+   * to get the content. 
+   */
+  public static  Properties parseJSON(String json) {
+    return utilsImpl.parseJSON(json);
   }
 }

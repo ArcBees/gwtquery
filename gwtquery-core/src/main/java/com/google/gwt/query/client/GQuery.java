@@ -225,6 +225,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static GQuery $(Function f) {
     return $(f.getElement());
   }
+  
+  /**
+   * Wrap a GQuery around an existing element, event, node or nodelist.
+   */
+  public static GQuery $(JavaScriptObject e) {
+    return JsUtils.isElement(e) ? GQuery.$(e.<Element>cast()) :
+           JsUtils.isEvent(e) ? GQuery.$(e.<Event>cast()) :
+           JsUtils.isNodeList(e) ? GQuery.$(e.<NodeList<Element>>cast()) :
+           $();  
+  }
 
   /**
    * Create a new GQuery given a list of nodes, elements or widgets
@@ -247,7 +257,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing node.
    */
   public static GQuery $(Node n) {
-    return n == null ? $() : new GQuery(JsNodeArray.create(n));
+    return $((Element)n);
   }
 
   /**
@@ -294,7 +304,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return $();
     }
     if (selector.startsWith("<")) {
-      return innerHtml(selectorOrHtml, getOwnerDocument(ctx));
+      return innerHtml(selectorOrHtml, JsUtils.getOwnerDocument(ctx));
     }
     return new GQuery().select(selectorOrHtml, ctx);
   }
@@ -348,6 +358,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(selector, context.getElement(), plugin);
   }
 
+  /**
+   * wraps a GQuery or a plugin object
+   */
   public static <T extends GQuery> T $(T gq) {
     return gq;
   }
@@ -451,11 +464,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 			@com.google.gwt.query.client.GQuery::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
 		return d;
   }-*/;
-
-  private static Document getOwnerDocument(Node n) {
-    return n== null || n.getNodeType() == Node.DOCUMENT_NODE ? 
-        n.<Document> cast() : n.getOwnerDocument();
-  }
 
   private static boolean hasClass(Element e, String clz) {
     return e.getClassName().matches("(^|.*\\s)" + clz + "(\\s.*|$)");
@@ -923,7 +931,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery attr(Properties properties) {
     for (String name : properties.keys()) {
-      attr(JsUtils.hyphenize(name), properties.getStr(name));
+      attr(name, properties.getStr(name));
     }
     return this;
   }
@@ -1442,7 +1450,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Stores the value in the named spot with desired return type.
    */
   public GQuery data(String name, Object value) {
-    for (Element e : elements) {
+//    System.out.println("DDD " + size() + " " + elements().length + " " + name + " " + value);
+    for (Element e : elements()) {
+//      System.out.println("DATAT .....");
       data(e, name, value);
     }
     return this;
@@ -1812,7 +1822,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private GQuery domManip(String htmlString, DomMan type) {
     JsMap<Document, GQuery> cache = JsMap.createObject().cast();
     for (Element e : elements) {
-      Document d = getOwnerDocument(e);
+      Document d = JsUtils.getOwnerDocument(e);
       GQuery g = cache.get(d);
       if (g == null) {
         g = cleanHtmlString(htmlString, d);
@@ -3866,7 +3876,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
       String elStr;
       try {
-        elStr = e.getString();
+        elStr = JsUtils.isXML(e) ? JsUtils.XML2String(e) : e.getString();
       } catch (Exception e2) {
         elStr = "< " + (e == null ? "null" : e.getNodeName()) + "(gquery, error getting the element string representation: " + e2.getMessage() + ")/>";
       }

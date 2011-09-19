@@ -20,7 +20,7 @@ import com.google.gwt.dom.client.Element;
 /**
  * A predicate function used by some GQuery methods.
  */
-public interface Predicate {
+public class Predicate {
 
   /**
    * Used by GQuery methods which loop over matched widgets and
@@ -31,5 +31,13 @@ public interface Predicate {
    * @param index 
    *        the element position in the gquery elements array. 
    */
-  boolean f(Element e, int index);
+  public  boolean f(Element e, int index) {
+    return f((Object)e, index);
+  }
+  
+  public <T> boolean f(T e, int index) {
+    return false;
+  }
+  
+  
 }

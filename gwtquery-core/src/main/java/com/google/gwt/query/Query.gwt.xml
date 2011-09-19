@@ -115,6 +115,15 @@
         <when-type-is class="com.google.gwt.query.client.impl.AttributeImpl" />
         <when-property-is name="user.agent" value="ie6" />
     </replace-with>
+    
+    <!-- JsUtils implementations -->
+    <replace-with class="com.google.gwt.query.client.js.JsUtils.JsUtilsImpl">
+        <when-type-is class="com.google.gwt.query.client.js.JsUtils.JsUtilsImpl" />
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.js.JsUtils.JsUtilsImplIE6">
+        <when-type-is class="com.google.gwt.query.client.js.JsUtils.JsUtilsImpl" />
+        <when-property-is name="user.agent" value="ie6" />
+    </replace-with>
 
     <!-- IE8 needs the iframe where the js of app is loaded set to standard in order 
          to use the queryAll native selector -->    

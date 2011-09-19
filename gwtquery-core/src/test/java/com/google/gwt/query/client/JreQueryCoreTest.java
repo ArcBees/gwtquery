@@ -58,6 +58,8 @@ public class JreQueryCoreTest extends GWTTestCase {
         .wrapPropertiesString("color: 'rgb(0, 0,139)', background: red"));
     assertEquals("({width:'',top:''})", Properties
         .wrapPropertiesString("width: '' ; top:'' ;"));
+    assertEquals("({'border-left':'solid'})", Properties
+        .wrapPropertiesString("border-left: solid"));
   }
 
 }

@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -145,6 +147,25 @@ public abstract class Function {
   public void f(Object... data) {
     setData(data);
     f();
+  }
+  
+  /**
+   * Override this method for bound callbacks
+   */
+  public void f(int i, Object... data) {
+    setIndex(i);
+    setData(data);
+    if (data.length == 1 && data[0] instanceof JavaScriptObject) {
+      if (JsUtils.isElement((JavaScriptObject)data[0])) {
+        setElement((com.google.gwt.dom.client.Element)data[0]);
+        f(getElement(), i);
+      } else if (JsUtils.isEvent((JavaScriptObject)data[0])) {
+        setEvent((Event)data[0]);
+        f(getEvent());
+      } else {
+        f();
+      }
+    }
   }
   
   /**

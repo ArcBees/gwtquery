@@ -25,14 +25,14 @@ import com.google.gwt.query.client.js.JsCache;
 public class Properties extends JavaScriptObject {
   
   public static Properties create() {
-    return (Properties) createImpl("({})");
+    return createImpl("({})");
   }
   
   public static Properties create(String properties) {
     if (properties != null && !properties.isEmpty()) {
-      String p = camelizePropertiesKeys(wrapPropertiesString(properties));
+      String p = wrapPropertiesString(properties);
       try {
-        return (Properties) createImpl(p);
+        return createImpl(p);
       } catch (Exception e) {
         System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
       }
@@ -40,7 +40,7 @@ public class Properties extends JavaScriptObject {
     return create();
   }
 
-  public static final native JavaScriptObject createImpl(String properties) /*-{
+  public static final native Properties createImpl(String properties) /*-{
     return eval(properties);
   }-*/;
 
@@ -52,19 +52,15 @@ public class Properties extends JavaScriptObject {
         .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
         .replaceAll("\\('([^\\)]+)'\\)" , "($1)") // Remove quotes
         .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
-        .replaceAll(":\\s*[\"']?([^'\\]};]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes
+        .replaceAll(":\\s*[\"']?([^'\\]};]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes to values
+        .replaceAll(";([^:]+):", ",$1:") // change semicolon
         .replaceAll(":'(-?[\\d\\.]+|null|false|true)',", ":$1,") // numbers do not need quote
+        .replaceAll("(^|[^\\w-'])([\\w]+[-][\\w-]+):", "$1'$2':") // quote keys with illegal chars
         .replaceFirst("[;,]$", "") // remove endings 
         + "})";
     return ret;
   }
   
-  public static native String camelizePropertiesKeys(String s)/*-{
-    return s.replace(/(\w+)\-(\w)(\w*:)/g, function(all, g1, letter, g2) {
-      return g1 + letter.toUpperCase() + g2;
-    });
-  }-*/;
-
   protected Properties() {
   }
 
@@ -151,13 +147,16 @@ public class Properties extends JavaScriptObject {
       } else {
         Properties p = getJavaScriptObject(k);
         if (p != null) {
-          ret += k + ":" + p.toJsonString();
+          ret += k + ":" + p.toJsonString() + ",";
         } else {
           ret += k + ":'" + getStr(k) + "',";
         }
       }
     }
-    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","").replaceAll("([:,\\[])'(-?[\\d\\.]+|null|false|true)'", "$1$2") + "}";
+    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","")
+    .replaceAll("([:,\\[])'(-?[\\d\\.]+|null|false|true)'", "$1$2")
+    .replaceAll("(^|[^\\w-'])([\\w]+[-][\\w-]+):", "$1'$2':")
+    + "}";
   }
   
   public final String toQueryString() {
