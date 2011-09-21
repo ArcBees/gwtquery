@@ -17,6 +17,11 @@
 <module>
     <inherits name='com.google.gwt.user.User'/>
 
+    <generate-with class="com.google.gwt.query.rebind.JsonBuilderGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.plugins.ajax.JsonBuilder"/>
+    </generate-with>
+
+    <!-- Lazy Generator -->
     <generate-with class="com.google.gwt.query.rebind.LazyGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Lazy"/>
     </generate-with>

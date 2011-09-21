@@ -32,7 +32,7 @@ public class Properties extends JavaScriptObject {
     if (properties != null && !properties.isEmpty()) {
       String p = wrapPropertiesString(properties);
       try {
-        return createImpl(p);
+        return createImpl("({" + p + "})");
       } catch (Exception e) {
         System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
       }
@@ -45,19 +45,19 @@ public class Properties extends JavaScriptObject {
   }-*/;
 
   public static String wrapPropertiesString(String s) {
-    String ret = "({" + s //
+    String ret = s //
         .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") // Remove comments
         .replaceAll("([:\\)\\(,;}{'\"])\\s+" , "$1") // Remove spaces
         .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") // Remove spaces
         .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
-        .replaceAll("\\('([^\\)]+)'\\)" , "($1)") // Remove quotes
+        .replaceAll("\\(\"([^\\)]+)\"\\)" , "($1)") // Remove quotes
         .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
-        .replaceAll(":\\s*[\"']?([^'\\]};]*)[\"']?\\s*(;+|$)", ":'$1',") // put quotes to values
+        .replaceAll(":\\s*[\"']?([^'\"\\]};]*)[\"']?\\s*(;+|$)", ":\"$1\",") // put quotes to all values (even empty)
+        .replaceAll("(^|[^\\w-$'])([\\w-]+):\"", "$1\"$2\":\"") // quote keys
         .replaceAll(";([^:]+):", ",$1:") // change semicolon
-        .replaceAll(":'(-?[\\d\\.]+|null|false|true)',", ":$1,") // numbers do not need quote
-        .replaceAll("(^|[^\\w-'])([\\w]+[-][\\w-]+):", "$1'$2':") // quote keys with illegal chars
-        .replaceFirst("[;,]$", "") // remove endings 
-        + "})";
+        .replaceAll(":\"(-?[\\d\\.]+|null|false|true)\",", ":$1,") // numbers do not need quote
+        .replaceFirst("[,]+$", "") // remove endings 
+        ;
     return ret;
   }
   
@@ -130,32 +130,32 @@ public class Properties extends JavaScriptObject {
   }
   
   public final String tostring() {
-    return "(" + toJsonString() + ")";
+    return toJsonString();
   }
   
   public final String toJsonString() {
     String ret = "";
     
     for (String k : keys()){
+      String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
       JsArrayMixed o = getArray(k);
       if (o != null) {
-        ret += k + ":[";
+        ret += ky + ":[";
         for (int i = 0, l = o.length(); i < l ; i++) {
-          ret += "'" + o.getString(i) + "',";
+          ret += "\"" + o.getString(i) + "\",";
         }
         ret += "],";
       } else {
         Properties p = getJavaScriptObject(k);
         if (p != null) {
-          ret += k + ":" + p.toJsonString() + ",";
+          ret += ky + ":" + p.toJsonString() + ",";
         } else {
-          ret += k + ":'" + getStr(k) + "',";
+          ret += ky + ":\"" + getStr(k) + "\",";
         }
       }
     }
-    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","")
-    .replaceAll("([:,\\[])'(-?[\\d\\.]+|null|false|true)'", "$1$2")
-    .replaceAll("(^|[^\\w-'])([\\w]+[-][\\w-]+):", "$1'$2':")
+    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","$1")
+    .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
     + "}";
   }
   
@@ -178,5 +178,9 @@ public class Properties extends JavaScriptObject {
       }
     }
     return ret;
+  }
+  
+  public final boolean isEmpty(){
+    return c().length() == 0;
   }
 }

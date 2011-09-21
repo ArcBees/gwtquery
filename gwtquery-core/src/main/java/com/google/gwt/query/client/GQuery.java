@@ -1450,9 +1450,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Stores the value in the named spot with desired return type.
    */
   public GQuery data(String name, Object value) {
-//    System.out.println("DDD " + size() + " " + elements().length + " " + name + " " + value);
     for (Element e : elements()) {
-//      System.out.println("DATAT .....");
       data(e, name, value);
     }
     return this;

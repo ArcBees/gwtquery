@@ -280,6 +280,11 @@ public class JsUtils {
    * to get the content. 
    */
   public static  Properties parseJSON(String json) {
-    return utilsImpl.parseJSON(json);
+    try {
+      return utilsImpl.parseJSON(json);
+    } catch (Exception e) {
+      System.err.println("Error while parsing json: " + e.getMessage() + ".\n" + json);
+      return Properties.create();
+    }
   }
 }

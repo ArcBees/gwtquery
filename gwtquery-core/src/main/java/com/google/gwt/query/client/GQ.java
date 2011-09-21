@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.query.client.plugins.ajax.AjaxImpl;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -54,12 +54,12 @@ public abstract class GQ extends GQuery {
     ajax(null, onSuccess, onError, settings);
   }
   
-  private static AjaxImpl ajaxImpl;
+  private static Ajax ajaxImpl;
 
   public static void ajax(String url, Function onSuccess, Function onError,
       Properties settings) {
     if (ajaxImpl == null) {
-      ajaxImpl = GWT.create(AjaxImpl.class);
+      ajaxImpl = GWT.create(Ajax.class);
     }
     ajaxImpl.ajax(url, onSuccess, onError, settings);
   }
