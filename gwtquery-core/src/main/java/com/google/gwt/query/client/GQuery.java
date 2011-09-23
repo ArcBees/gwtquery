@@ -1770,7 +1770,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery domManip(GQuery g, DomMan type, Element... elms) {
-    int size = g.size();
     JsNodeArray newNodes = JsNodeArray.create();
     if (elms.length == 0) {
       elms = elements;
@@ -1780,14 +1779,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (e.getNodeType() == Node.DOCUMENT_NODE) {
         e = e.<Document>cast().getBody();
       }
-      for (int j = 0; j < size; j++) {
+      for (int j = 0, size = g.size(); j < size; j++) {
         // Widget w = getAssociatedWidget(g.get(j));
         // GqUi.detachWidget(w);
         
         Node n = g.get(j);
         // If an element selected is inserted elsewhere, it will be moved into the target (not cloned).
         // If there is more than one target element, however, cloned copies of the inserted element will be created for each target after the first
-        if (size > 1 || i > 0) {
+        if (i > 0) {
           n = n.cloneNode(true);
         }
         switch (type) {
