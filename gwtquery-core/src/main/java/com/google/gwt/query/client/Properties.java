@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
@@ -25,14 +26,14 @@ import com.google.gwt.query.client.js.JsCache;
 public class Properties extends JavaScriptObject {
   
   public static Properties create() {
-    return createImpl("({})");
+    return JsCache.create().cast();
   }
   
   public static Properties create(String properties) {
     if (properties != null && !properties.isEmpty()) {
       String p = wrapPropertiesString(properties);
       try {
-        return createImpl("({" + p + "})");
+        return JsUtils.parseJSON(p);
       } catch (Exception e) {
         System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
       }
@@ -40,24 +41,26 @@ public class Properties extends JavaScriptObject {
     return create();
   }
 
-  public static final native Properties createImpl(String properties) /*-{
-    return eval(properties);
-  }-*/;
-
   public static String wrapPropertiesString(String s) {
     String ret = s //
         .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") // Remove comments
         .replaceAll("([:\\)\\(,;}{'\"])\\s+" , "$1") // Remove spaces
         .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") // Remove spaces
-        .replaceFirst("^[{\\(]+(|.*[^}\\)])[}\\)]+$", "$1") // Remove ({})
-        .replaceAll("\\(\"([^\\)]+)\"\\)" , "($1)") // Remove quotes
-        .replaceAll(",+([\\w-]+:+)" , ";$1") // put semicolon
-        .replaceAll(":\\s*[\"']?([^'\"\\]};]*)[\"']?\\s*(;+|$)", ":\"$1\",") // put quotes to all values (even empty)
-        .replaceAll("(^|[^\\w-$'])([\\w-]+):\"", "$1\"$2\":\"") // quote keys
+        .replaceFirst("^[\\(]+(.*)[\\)]+$", "$1") // Remove ()
+        .replaceAll("\\([\"']([^\\)]+)[\"']\\)" , "($1)") // Remove quotes
+        .replaceAll("[;,]+([\\w-]+):", ";$1:") // Change comma by semicolon
+        .replaceAll("([^,;])([\\]}])", "$1;$2") // Put control semicolon used below
+        .replaceAll(":\\s*[\"']?([^;\\{\\}\\[\\]\"']*)[\"']?\\s*([;,]+|$)", ":\"$1\";") // put quotes to all values (even empty)
+        .replaceAll("[;,]+([\\w-]+):", ";$1:") // Change semicolon by comma
+        .replaceAll("(^|[^\\w-$'])([\\w-]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys
+        .replaceAll("(^|[^\\w-$'])([\\w-]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys second pass
+        .replaceAll("(|[\\[\\]\\{\\},\\(])'([^']*)'", "$1\"$2\"") // Replace single-quote by double-quote
         .replaceAll(";([^:]+):", ",$1:") // change semicolon
-        .replaceAll(":\"(-?[\\d\\.]+|null|false|true)\",", ":$1,") // numbers do not need quote
-        .replaceFirst("[,]+$", "") // remove endings 
+        .replaceAll(";([^:]+):", ",$1:") // change semicolon second pass
+        .replaceAll(":\"(-?[\\d\\.]+|null|false|true)\"[;,]", ":$1,") // numbers do not need quote
+        .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings 
         ;
+    ret = ret.matches("(^[\\[\\{].*[\\]\\}]$)") ? ret : "{" + ret + "}";
     return ret;
   }
   

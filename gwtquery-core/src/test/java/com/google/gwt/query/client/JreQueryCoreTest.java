@@ -34,32 +34,22 @@ public class JreQueryCoreTest extends GWTTestCase {
   }
 
   public void testWrapPropertiesString() {
-    assertEquals("({})", Properties
+    assertEquals("{}", Properties
         .wrapPropertiesString(""));
-    assertEquals("({})", Properties
+    assertEquals("{}", Properties
         .wrapPropertiesString("({})"));
-    assertEquals("({border:'1px solid black'})", Properties
+    assertEquals("{\"border\":\"1px solid black\"}", Properties
         .wrapPropertiesString("border:'1px solid black'"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("(border:'1px solid black')"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("{border:'1px solid black'}"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("{border:'1px solid black'}"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("(border:'1px solid black')"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("{(border:'1px solid black')}"));
-    assertEquals("({border:'1px solid black'})", Properties
-        .wrapPropertiesString("({border:'1px solid black'})"));
-    assertEquals("({b:'a',c:1,d:'url(https://test.com)',e:null,f:false})", Properties
+    assertEquals("{\"b\":\"a\",\"c\":1,\"d\":\"url(https://test.com)\",\"e\":null,\"f\":false}", Properties
         .wrapPropertiesString("b: 'a'; c: 1, /*gg: aadf*/d: url('https://test.com');,e:null,f:false"));
-    assertEquals("({color:'rgb(0,0,139)',background:'red'})", Properties
+    assertEquals("{\"color\":\"rgb(0,0,139)\",\"background\":\"red\"}", Properties
         .wrapPropertiesString("color: 'rgb(0, 0,139)', background: red"));
-    assertEquals("({width:'',top:''})", Properties
+    assertEquals("{\"width\":\"\",\"top\":\"\"}", Properties
         .wrapPropertiesString("width: '' ; top:'' ;"));
-    assertEquals("({'border-left':'solid'})", Properties
+    assertEquals("{\"border-left\":\"solid\"}", Properties
         .wrapPropertiesString("border-left: solid"));
+    assertEquals("[{\"a\":1,\"b\":{\"a\":2,\"b\":{\"a\":3}},\"u\":\"url\",\"d\":2,\"t\":[\"hola\",\"adios\"],\"z\":true}]", Properties
+        .wrapPropertiesString("[{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}]"));
   }
 
 }

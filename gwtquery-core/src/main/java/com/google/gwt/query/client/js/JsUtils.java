@@ -73,8 +73,12 @@ public class JsUtils {
     public Properties parseJSON(String json) {
       // No checks to the passed string so json should be
       // a well-formed json string.
-      return Properties.createImpl(json);
+      return evalImpl("(" + json + ")");
     }
+    
+    public static final native Properties evalImpl(String properties) /*-{
+      return eval(properties);
+    }-*/;
     
     @Override
     public native String XML2String(JavaScriptObject o) /*-{
