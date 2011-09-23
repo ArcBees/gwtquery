@@ -48,16 +48,16 @@ public class Properties extends JavaScriptObject {
         .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") // Remove spaces
         .replaceFirst("^[\\(]+(.*)[\\)]+$", "$1") // Remove ()
         .replaceAll("\\([\"']([^\\)]+)[\"']\\)" , "($1)") // Remove quotes
-        .replaceAll("[;,]+([\\w-]+):", ";$1:") // Change comma by semicolon
+        .replaceAll("[;,]+([\\w-\\$]+):", ";$1:") // Change comma by semicolon
         .replaceAll("([^,;])([\\]}])", "$1;$2") // Put control semicolon used below
         .replaceAll(":\\s*[\"']?([^;\\{\\}\\[\\]\"']*)[\"']?\\s*([;,]+|$)", ":\"$1\";") // put quotes to all values (even empty)
         .replaceAll("[;,]+([\\w-]+):", ";$1:") // Change semicolon by comma
-        .replaceAll("(^|[^\\w-$'])([\\w-]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys
-        .replaceAll("(^|[^\\w-$'])([\\w-]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys second pass
+        .replaceAll("(^|[^\\w-\\$'])([\\w-\\$]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys
+        .replaceAll("(^|[^\\w-\\$'])([\\w-\\$]+):(['\"\\[{])", "$1\"$2\":$3") // quote keys second pass
         .replaceAll("(|[\\[\\]\\{\\},\\(])'([^']*)'", "$1\"$2\"") // Replace single-quote by double-quote
         .replaceAll(";([^:]+):", ",$1:") // change semicolon
         .replaceAll(";([^:]+):", ",$1:") // change semicolon second pass
-        .replaceAll(":\"(-?[\\d\\.]+|null|false|true)\"[;,]", ":$1,") // numbers do not need quote
+        .replaceAll(":\"(-?\\d[\\d\\.]*|null|false|true)\"[;,]", ":$1,") // numbers do not need quote
         .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings 
         ;
     ret = ret.matches("(^[\\[\\{].*[\\]\\}]$)") ? ret : "{" + ret + "}";
