@@ -66,7 +66,6 @@ public class GQueryAjaxTest extends GWTTestCase {
     assertEquals(0, c.getA());
     c.parse(json, true);
     assertEquals(1, c.getA());
-    System.out.println(c);
     assertNotNull(c.getB());
     assertEquals(2, c.getB().getA());
     assertEquals(3, c.getB().getB().getA());

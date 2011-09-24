@@ -284,7 +284,6 @@ public class GQueryEventsTest extends GWTTestCase {
     $(".clickMe", e).live("click", new Function(){
       public void f() {
         $(this).css("color", "red");
-        System.out.println($(this));
       }
     });
     

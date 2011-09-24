@@ -119,7 +119,6 @@ public class GQueryJsTest extends GWTTestCase {
     assertEquals("rgb(0,0,139)", p.getStr("color"));
     
     p = $$("a: 1, b: 0.5, c: null, d: whatever, e: true, f: false");
-    System.out.println(p.tostring());
     assertEquals(1, p.getInt("a"));
     assertEquals(0.5f, p.getFloat("b"));
     assertEquals("whatever", p.getStr("d"));
