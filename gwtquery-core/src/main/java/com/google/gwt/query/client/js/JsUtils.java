@@ -211,6 +211,12 @@ public class JsUtils {
   }-*/;
   
   /**
+   * Check is a javascript object is a Window
+   */
+  public static boolean isWindow(JavaScriptObject o) {
+    return hasProperty(o, "alert");
+  }  
+  /**
    * Check is a javascript object can be cast to an Element 
    */
   public static boolean isElement(JavaScriptObject o) {

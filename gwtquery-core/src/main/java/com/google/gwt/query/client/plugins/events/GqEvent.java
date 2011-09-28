@@ -24,8 +24,8 @@ public class GqEvent extends Event {
 
   // Gwt Events class has not this event defined, 
   // so we have to select one power of 2 which is unused in Event class 
-  public static int ONSUBMIT = 0x8000000;
-  public static int ONRESIZE = 0x4000000;
+  public static int ONSUBMIT = 0x10000000;
+  public static int ONRESIZE = 0x8000000;
   
   /**
    * Create a new {@link GqEvent} by copying the <code>originalEvent</code>.

@@ -426,7 +426,7 @@ public class EventsListener implements EventListener {
     }
     lastEvnt = now;
     lastType = event.getTypeInt();
-
+    
     // Execute the original Gwt listener
     if (getOriginalEventListener() != null) {
       getOriginalEventListener().onBrowserEvent(event);
@@ -473,8 +473,8 @@ public class EventsListener implements EventListener {
     DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
     if (eventBits == ONSUBMIT) {
       sinkEvent(element, "submit");
-    } else if (eventBits == ONRESIZE) {
-        sinkEvent(element, "resize");
+    } else if ((eventBits | ONRESIZE) == ONRESIZE) {
+      sinkEvent(element, "resize");
     } else {
       if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS
           && element.getAttribute("tabIndex").length() == 0) {

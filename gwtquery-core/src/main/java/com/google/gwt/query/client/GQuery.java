@@ -459,7 +459,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private native static Document getContentDocument(Node n) /*-{
-		var d = n.contentDocument || n.contentWindow.document;
+		var d = n.contentDocument || n.document || n.contentWindow.document;
 		if (!d.body)
 			@com.google.gwt.query.client.GQuery::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
 		return d;
@@ -1078,7 +1078,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * will cause only elements matching any of the selectors to be collected.
    */
   public GQuery children(String... filters) {
-    return find(filters);
+    return children().filter(filters);
   }
 
   private void cleanGQData(Element... elements) {
@@ -1264,7 +1264,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery contents() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
-      if ("iframe".equalsIgnoreCase(e.getTagName())) {
+      if (JsUtils.isWindow(e) || "iframe".equalsIgnoreCase(e.getTagName())) {
         result.addNode(getContentDocument(e));
       } else {
         NodeList<Node> children = e.getChildNodes();

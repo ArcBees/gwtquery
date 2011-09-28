@@ -20,6 +20,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 
@@ -42,7 +43,7 @@ public class Events extends GQuery {
    * Don't apply events on text and comment nodes !!
    */
   private static boolean isEventCapable(Node n){
-    return  n.equals(GQuery.window) || n.getNodeType() != 3 && n.getNodeType() != 8;
+    return  JsUtils.isWindow(n) || n.getNodeType() != 3 && n.getNodeType() != 8;
   }
 
   public Events(GQuery gq) {
