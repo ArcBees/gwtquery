@@ -93,15 +93,10 @@ public class DocumentStyleImpl {
     if ("opacity".equalsIgnoreCase(name)) {
       return force ? String.valueOf(getOpacity(elem)) : ret;
     }
-    if (!force) {   
-      return ret == null ? "" : ret;
-    } else {
-      try {
-        return getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
-      } catch (Exception e) {
-        return ret;
-      }
+    if (force) {
+      ret = getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
     }
+    return ret == null ? "" : ret;
   }
   
   /**

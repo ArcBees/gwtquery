@@ -62,9 +62,9 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   /**
    * Remove a style property from an element.
    */
-  public native void removeStyleProperty(Element elem, String prop) /*-{
-    if (elem && elem.style && elem.removeAttribute)
-      elem.style.removeAttribute(prop);
+  public native void removeStyleProperty(Element e, String prop) /*-{
+    if (e && e.style && 'removeAttribute' in e)
+      e.style.removeAttribute(prop);
   }-*/;
   
 
@@ -85,7 +85,7 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
     // code lifted from jQuery
-    if (!elem.style || !elem.currentStyle || !elem.runtimeStyle) return null;
+    if (!elem.style || !'currentStyle' in elem || !'runtimeStyle' in elem) return null;
     var style = elem.style;
     var ret = elem.currentStyle[hyphenName] || elem.currentStyle[camelName];
     if ( !/^\d+(px)?$/i.test( ret ) && /^\d/.test( ret ) ) {
