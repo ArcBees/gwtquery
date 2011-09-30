@@ -225,7 +225,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       SelectorEngine.xpathEvaluate(xsel, ctx, elm);
       return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();    
     } catch (Exception e) {
-      if (GWT.isScript()) {
+      if (!GWT.isScript()) {
         if (!SelectorEngine.hasXpathEvaluate()) {
           throw new RuntimeException("This Browser does not support Xpath selectors.", e);
         }
