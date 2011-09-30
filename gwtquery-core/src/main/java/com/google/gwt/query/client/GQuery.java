@@ -110,7 +110,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Implementation class to modify attributes.
    */
-  protected static AttributeImpl attributeImpl = GWT.create(AttributeImpl.class);
+  protected static AttributeImpl attributeImpl;
 
   /**
    * The body element in the current page.
@@ -158,7 +158,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Implementation class used for style manipulations.
    */
-  protected static DocumentStyleImpl styleImpl = GWT.create(DocumentStyleImpl.class);
+  private static DocumentStyleImpl styleImpl;
 
   private static JsRegexp tagNameRegex = new JsRegexp("<([\\w:]+)");
 
@@ -174,28 +174,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   
   private static Element windowData = null;
   
-  private static final JsNamedArray<TagWrapper> wrapperMap;
-
-  static {
-    TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
-    TagWrapper selectWrapper =  new TagWrapper(1, "<select multiple=\"multiple\">", "</select>");
-    TagWrapper trWrapper = new TagWrapper(3, "<table><tbody><tr>", "</tr></tbody></table>");
-    
-    wrapperMap = JsNamedArray.create();
-    wrapperMap.put("option", selectWrapper);
-    wrapperMap.put("optgroup", selectWrapper);
-    wrapperMap.put("legend", new TagWrapper(1, "<fieldset>", "</fieldset>") );
-    wrapperMap.put("thead", tableWrapper);
-    wrapperMap.put("tbody", tableWrapper);
-    wrapperMap.put("tfoot", tableWrapper);
-    wrapperMap.put("colgroup", tableWrapper);
-    wrapperMap.put("caption", tableWrapper);
-    wrapperMap.put("tr",  new TagWrapper(2, "<table><tbody>", "</tbody></table>"));
-    wrapperMap.put("td", trWrapper);
-    wrapperMap.put("th", trWrapper); 
-    wrapperMap.put("col",  new TagWrapper(2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"));
-    wrapperMap.put("area",  new TagWrapper(1, "<map>", "</map>"));
-  }
+  private static JsNamedArray<TagWrapper> wrapperMap;
   
   /**
    * Create an empty GQuery object.
@@ -388,6 +367,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       throw new  RuntimeException("HTML snippet doesn't contain any tag");
     }
     
+    if (wrapperMap == null){
+      initWrapperMap();
+    }
+    
     TagWrapper wrapper = wrapperMap.get(tag.toLowerCase());
     
     if (wrapper == null){
@@ -426,6 +409,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       d.put(name, value);
     }
     return name != null ? d.get(name) : id;
+  }
+  
+  protected static DocumentStyleImpl getStyleImpl(){
+    if (styleImpl == null){
+      styleImpl = GWT.create(DocumentStyleImpl.class);
+    }
+    return styleImpl;
+  }
+  
+  private static AttributeImpl getAttributeImpl(){
+    if (attributeImpl == null){
+      attributeImpl = GWT.create(AttributeImpl.class);
+    }
+    return attributeImpl;
   }
   
   private static native void emptyDocument(Document d) /*-{
@@ -473,6 +470,29 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(cleanHtmlString(html, doc));
   }
   
+  private static void initWrapperMap(){
+    
+    TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
+    TagWrapper selectWrapper =  new TagWrapper(1, "<select multiple=\"multiple\">", "</select>");
+    TagWrapper trWrapper = new TagWrapper(3, "<table><tbody><tr>", "</tr></tbody></table>");
+    
+    wrapperMap = JsNamedArray.create();
+    wrapperMap.put("option", selectWrapper);
+    wrapperMap.put("optgroup", selectWrapper);
+    wrapperMap.put("legend", new TagWrapper(1, "<fieldset>", "</fieldset>") );
+    wrapperMap.put("thead", tableWrapper);
+    wrapperMap.put("tbody", tableWrapper);
+    wrapperMap.put("tfoot", tableWrapper);
+    wrapperMap.put("colgroup", tableWrapper);
+    wrapperMap.put("caption", tableWrapper);
+    wrapperMap.put("tr",  new TagWrapper(2, "<table><tbody>", "</tbody></table>"));
+    wrapperMap.put("td", trWrapper);
+    wrapperMap.put("th", trWrapper); 
+    wrapperMap.put("col",  new TagWrapper(2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"));
+    wrapperMap.put("area",  new TagWrapper(1, "<map>", "</map>"));
+  
+  }
+  
   protected static String[] jsArrayToString(JsArrayString array) {
     if (GWT.isScript()) {
       return jsArrayToString0(array);
@@ -511,16 +531,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		if (n)
 			n.scrollIntoView()
   }-*/;
-  
-  private static native void setElementAttribute(Element e, String key, String value) /*-{
-    if (value == null)
-      e.removeAttribute(key);
-    else  
-      e.setAttribute(key, value);
-    e[key] = value;
-  }-*/;
-  
-  
+    
   private static native void setElementValue(Element e, String value) /*-{
     e.value = value;
   }-*/;
@@ -965,7 +976,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery attr(String key, Object value) {
     assert key != null : "key cannot be null";
-    attributeImpl.setAttribute(this, key, value);
+    getAttributeImpl().setAttribute(this, key, value);
     return this;
   }
 
@@ -1380,7 +1391,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * parameter force=true.
    */
   public String css(String name, boolean force) {
-    return isEmpty() ? "" : styleImpl.curCSS(get(0), name, force);
+    return isEmpty() ? "" : getStyleImpl().curCSS(get(0), name, force);
   }
 
   /**
@@ -1389,7 +1400,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery css(String prop, String val) {
     for (Element e : elements) {
-      styleImpl.setStyleProperty(e, prop, val);
+      getStyleImpl().setStyleProperty(e, prop, val);
     }
     return this;
   }
@@ -1424,7 +1435,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * When true returns the real computed value.
    */
   public double cur(String prop, boolean force) {
-    return isEmpty() ? 0 : styleImpl.cur(get(0), prop, force);
+    return isEmpty() ? 0 : getStyleImpl().cur(get(0), prop, force);
   }
 
   /**
@@ -2188,7 +2199,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       String currentDisplay = e.getStyle().getDisplay();
       Object old = data(e, "oldDisplay", null);
       if (old == null && !"none".equals(currentDisplay)) {
-        data(e, "oldDisplay", styleImpl.curCSS(e, "display", false));
+        data(e, "oldDisplay", getStyleImpl().curCSS(e, "display", false));
       }
     }
     
@@ -2362,7 +2373,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the first element is visible.isVisible
    */
   public boolean isVisible() {
-    return isEmpty() ? false : styleImpl.isVisible(get(0));
+    return isEmpty() ? false : getStyleImpl().isVisible(get(0));
   }
 
   /**
@@ -2755,7 +2766,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     while (offParent != null
         && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName())
-        && "static".equals(styleImpl.curCSS(offParent, "position", true))) {
+        && "static".equals(getStyleImpl().curCSS(offParent, "position", true))) {
       offParent = offParent.getOffsetParent();
     }
     return new GQuery(offParent);
@@ -2909,22 +2920,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     // Subtract element margins
-    int topMargin = (int) styleImpl.cur(element, "marginTop", true);
-    // TODO: move this check to styleImpl
+    int topMargin = (int) getStyleImpl().cur(element, "marginTop", true);
+    // TODO: move this check to getStyleImpl()
     // When margin-left = auto, Safari and chrome return a value while IE and
     // Firefox return 0
     // force the margin-left to 0 if margin-left = auto.
     int leftMargin = 0;
     if (!"auto".equals(element.getStyle().getMarginLeft())) {
-      leftMargin = (int) styleImpl.cur(element, "marginLeft", true);
+      leftMargin = (int) getStyleImpl().cur(element, "marginLeft", true);
     }
 
     offset = offset.add(-leftMargin, -topMargin);
 
     // Add offsetParent borders
-    int parentOffsetBorderTop = (int) styleImpl.cur(offsetParent,
+    int parentOffsetBorderTop = (int) getStyleImpl().cur(offsetParent,
         "borderTopWidth", true);
-    int parentOffsetBorderLeft = (int) styleImpl.cur(offsetParent,
+    int parentOffsetBorderLeft = (int) getStyleImpl().cur(offsetParent,
         "borderLeftWidth", true);
     parentOffset = parentOffset.add(parentOffsetBorderLeft,
         parentOffsetBorderTop);
@@ -3247,7 +3258,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove the named attribute from every element in the matched set.
    */
   public GQuery removeAttr(String key) {
-    attributeImpl.removeAttribute(this, key);
+    getAttributeImpl().removeAttribute(this, key);
     return this;
   }
 
@@ -3420,7 +3431,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void restoreCssAttrs(String... cssProps) {
     for (Element e : elements) {
       for (String a : cssProps) {
-        styleImpl.setStyleProperty(e, a, (String) data(e, OLD_DATA_PREFIX + a,
+        getStyleImpl().setStyleProperty(e, a, (String) data(e, OLD_DATA_PREFIX + a,
             null));
       }
     }
@@ -3432,7 +3443,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void saveCssAttrs(String... cssProps) {
     for (Element e : elements) {
       for (String a : cssProps) {
-        data(OLD_DATA_PREFIX + a, styleImpl.curCSS(e, a, false));
+        data(OLD_DATA_PREFIX + a, getStyleImpl().curCSS(e, a, false));
       }
     }
   }
@@ -3602,14 +3613,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       
       //reset the display
       if (oldDisplay == null && "none".equals(currentDisplay)){
-        styleImpl.setStyleProperty(e, "display", "");
+        getStyleImpl().setStyleProperty(e, "display", "");
         currentDisplay = "";
       }
       
       //check if the stylesheet impose display: none. If it is the case, determine 
       //the default display for the tag and store it at the element level
-      if ("".equals(currentDisplay) && !styleImpl.isVisible(e)){
-        data(e, "oldDisplay", styleImpl.defaultDisplay(e.getNodeName()));
+      if ("".equals(currentDisplay) && !getStyleImpl().isVisible(e)){
+        data(e, "oldDisplay", getStyleImpl().defaultDisplay(e.getNodeName()));
       }
     }
     
@@ -3619,7 +3630,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements) {
       String currentDisplay = e.getStyle().getDisplay();
       if ("".equals(currentDisplay) || "none".equals(currentDisplay)){
-        styleImpl.setStyleProperty(e, "display", JsUtils.or((String) data(e,
+        getStyleImpl().setStyleProperty(e, "display", JsUtils.or((String) data(e,
             "oldDisplay", null), ""));
       }
     }
@@ -3788,7 +3799,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery toggle() {
     for (Element e : elements) {
-      if (styleImpl.isVisible(e)) {
+      if (getStyleImpl().isVisible(e)) {
         $(e).hide();
       } else {
         $(e).show();
