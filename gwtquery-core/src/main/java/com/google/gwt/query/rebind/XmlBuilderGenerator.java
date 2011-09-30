@@ -17,7 +17,6 @@ package com.google.gwt.query.rebind;
 
 import java.io.PrintWriter;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -30,27 +29,25 @@ import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
+import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  */
-public class JsonBuilderGenerator extends Generator {
+public class XmlBuilderGenerator extends Generator {
   TypeOracle oracle;
-  static JClassType jsonBuilderType;
+  static JClassType xmlBuilderType;
   static JClassType stringType;
-  static JClassType jsType;
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
       throws UnableToCompleteException {
     oracle = generatorContext.getTypeOracle();
     JClassType clazz = oracle.findType(requestedClass);
-    jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
+    xmlBuilderType = oracle.findType(XmlBuilder.class.getName());
     stringType = oracle.findType(String.class.getName());
-    jsType = oracle.findType(JavaScriptObject.class.getName());
 
     String t[] = generateClassName(clazz);
 
@@ -69,7 +66,7 @@ public class JsonBuilderGenerator extends Generator {
     String[] ret = new String[3];
     JClassType c = t.isClassOrInterface();
     ret[0] = c.getPackage().getName();
-    ret[1] = c.getName().replace('.', '_') + "_JsonBuilder";
+    ret[1] = c.getName().replace('.', '_') + "_XmlBuilder";
     ret[2] = ret[0] + "." + ret[1];
     return ret;
   }
@@ -94,28 +91,28 @@ public class JsonBuilderGenerator extends Generator {
       sw.println("() {");
       sw.indent();
       if (retType.matches("(java.lang.Boolean|boolean)")) {
-        sw.println("return p.getBoolean(\"" + name + "\");");
+        sw.println("return getBooleanBase(\"" + name + "\");");
       } else if (method.getReturnType().isPrimitive() != null) {
-        sw.println("return (" + retType + ")p.getFloat(\"" + name + "\");");
+        sw.println("return (" + retType + ")getFloatBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
-        sw.println("return p.getStr(\"" + name + "\");");
-      } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
+        sw.println("return getStrBase(\"" + name + "\");");
+      } else if (isTypeAssignableTo(method.getReturnType(), xmlBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " +
-        		"((" + q + ")GWT.create(" + q + ".class))" +
-        		".load(p.getJavaScriptObject(\"" + name + "\"));");
+        sw.println("Element e = getElementBase(\"" + name + "\");");
+        sw.println("return e == null ? null : (" + q + ")((" + q + ")GWT.create(" + q + ".class)).load(e);");
       } else if (retType.equals(Properties.class.getName())){
         sw.println("return getPropertiesBase(\"" + name + "\");");
-      } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
-        sw.println("return p.getJavaScriptObject(\"" + name + "\");");
       } else if (arr != null) {
-        String t = arr.getComponentType().getQualifiedSourceName();
-        sw.println("JsArrayMixed a = p.getArray(\"" + name + "\");");
-        sw.println("int l = a == null ? 0 : a.length();");
-        sw.println("return getArrayBase(\"" + name + "\", new " + t + "[l], "
-            + t + ".class);");
-      } else {
-        sw.println("return p.get(\"" + name + "\");");
+        String q = arr.getComponentType().getQualifiedSourceName();
+        sw.println("ArrayList<" + q + "> l = new ArrayList<" + q+ ">();");
+        sw.println("for (Element e: getElementsBase(\"" + name + "\")) {");
+        sw.println("  " + q + " c = GWT.create(" + q + ".class);");
+        sw.println("  c.load(e);");
+        sw.println("  l.add(c);");
+        sw.println("}");
+        sw.println("return l.toArray(new " + q + "[0]);");
+//      } else {
+//        sw.println("return p.get(\"" + name + "\");");
       }
       sw.outdent();
       sw.println("}");
@@ -153,12 +150,13 @@ public class JsonBuilderGenerator extends Generator {
     }
     ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
         packageName, className);
-    composerFactory.setSuperclass("com.google.gwt.query.client.builders.JsonBuilderBase<"
+    composerFactory.setSuperclass("com.google.gwt.query.client.builders.XmlBuilderBase<"
         + packageName + "." + className + ">");
     composerFactory.addImport("com.google.gwt.query.client.js.*");
     composerFactory.addImport("com.google.gwt.query.client.*");
     composerFactory.addImport("com.google.gwt.core.client.*");
     composerFactory.addImport("com.google.gwt.dom.client.*");
+    composerFactory.addImport("java.util.*");
     for (String interfaceName : interfaceNames) {
       composerFactory.addImplementedInterface(interfaceName);
     }

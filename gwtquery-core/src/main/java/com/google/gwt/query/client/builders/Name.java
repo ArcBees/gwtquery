@@ -21,9 +21,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation used to specify the attribute, tag or property name
+ * in Json or Xml builders.
  */
 @Target({METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JsonName {
+public @interface Name {
   String value();
 }

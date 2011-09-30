@@ -3763,12 +3763,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * Return the text contained in the first matched element.
+   * Return the concatened text contained in the matched elements.
    */
   public String text() {
     String result = "";
     for (Element e : elements) {
-      result += e.getInnerText();
+      result += JsUtils.text(e);
     }
     return result;
   }

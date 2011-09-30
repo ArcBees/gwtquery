@@ -46,6 +46,10 @@ public class JsUtils {
      return (new XMLSerializer()).serializeToString(o);
     }-*/;
     
+    public String text(Element e) {
+      return e.getInnerText();
+    }
+    
     public JsArray<Element> unique(JsArray<Element> a) {
       JsArray<Element> ret = JavaScriptObject.createArray().cast();
       JsCache cache = JsCache.create();
@@ -93,6 +97,15 @@ public class JsUtils {
       }
       return super.unique(a);
     }
+    
+    @Override
+    public String text(Element e) {
+      return isXML(e) ? xmlText(e) : super.text(e);
+    }
+    
+    private native String xmlText(Element e) /*-{
+      return e.text;
+    }-*/;
   }
 
   /**
@@ -258,6 +271,10 @@ public class JsUtils {
   
   public static String XML2String(JavaScriptObject o) {
     return utilsImpl.XML2String(o);
+  }
+  
+  public static String text(Element e) {
+    return utilsImpl.text(e);
   }
   
   /**

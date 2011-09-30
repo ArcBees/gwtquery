@@ -20,7 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.builders.JsonName;
+import com.google.gwt.query.client.builders.Name;
+import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -48,21 +49,21 @@ public class GQueryAjaxTest extends GWTTestCase {
     }
   }
   
-  interface MyClass extends JsonBuilder {
+  interface JsonExample extends JsonBuilder {
     int getA();
-    MyClass getB();
-    @JsonName("u")
+    JsonExample getB();
+    @Name("u")
     String getUrl();
     long getD();
     Boolean getZ();
     String[] getT();
-    MyClass setT(String[] strings);
-    MyClass setZ(Boolean b);
+    JsonExample setT(String[] strings);
+    JsonExample setZ(Boolean b);
   }
   
   public void testJsonBuilder() {
     String json = "[{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}]";
-    MyClass c = GWT.create(MyClass.class);
+    JsonExample c = GWT.create(JsonExample.class);
     assertEquals(0, c.getA());
     c.parse(json, true);
     assertEquals(1, c.getA());
@@ -78,5 +79,27 @@ public class GQueryAjaxTest extends GWTTestCase {
     assertFalse(c.getZ());
     assertEquals("foo", c.getT()[0]);
     assertEquals("bar", c.getT()[1]);
+  }
+  
+  interface XmlExample extends XmlBuilder {
+    String getA();
+    Boolean getB();
+    @Name("c")
+    int getNumber();
+    
+    XmlExample[] getX();
+    @Name("x")
+    XmlExample getFirstX();
+  }
+  
+  public void testXmlBuilder() {
+    String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'/> <x a='xa2'/> text</a>";
+    XmlExample x = GWT.create(XmlExample.class);
+    x.parse(xml);
+    assertTrue(x.getB());
+    assertEquals("ra", x.getA());
+    assertEquals(-1, x.getNumber());
+    assertEquals("xa2", x.getX()[1].getA());
+    assertEquals("xa1", x.getFirstX().getA());
   }
 }

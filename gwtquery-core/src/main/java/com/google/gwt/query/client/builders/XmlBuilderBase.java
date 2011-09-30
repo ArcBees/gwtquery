@@ -1,0 +1,89 @@
+/*
+ * Copyright 2011, The gwtquery team.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.google.gwt.query.client.builders;
+
+import static com.google.gwt.query.client.GQuery.$;
+
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsUtils;
+
+public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements XmlBuilder {
+  
+  //TODO empty document
+  protected GQuery g = $(JsUtils.parseXML("<root/>"));
+
+  @SuppressWarnings("unchecked")
+  public J parse(String xml) {
+    return load(JsUtils.parseXML(xml));
+  }
+  
+  @SuppressWarnings("unchecked")
+  public J load(Object o) {
+    assert o == null || o instanceof JavaScriptObject && JsUtils.isElement((JavaScriptObject)o) || o instanceof String;
+    if (o != null && o instanceof String) {
+        return parse((String)o);
+    }
+    if (o != null) {
+      g=$((Element)o);
+    }
+    return (J)this;
+  }
+  
+  public String getText() {
+    return g.text();
+  }
+
+  public void setText(String s) {
+    g.text(s);
+  }
+  
+  public String toString() {
+    return g.toString();
+  }
+  
+  protected Element getElementBase(String n) {
+    return g.children(n).get(0);
+  }
+  
+  protected Element[] getElementsBase(String n) {
+    return g.children(n).elements();
+  }
+  
+  public Element getDocumentElement() {
+    return g.get(0);
+  }
+  
+  protected float getFloatBase(String s) {
+    String n = getStrBase(s).replaceAll("[^\\d\\-\\.]", "");
+    return n.isEmpty() ? 0 : Float.parseFloat(n);
+  }
+  
+  protected Boolean getBooleanBase(String n) {
+    return "true".equalsIgnoreCase(getStrBase(n));
+  }
+  
+  protected String getStrBase(String n) {
+    return g.attr(n);
+  }
+  
+  protected Properties getPropertiesBase(String n) {
+    // TODO:
+    return null;
+  }
+}
