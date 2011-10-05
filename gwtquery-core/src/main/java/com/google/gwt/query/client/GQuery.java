@@ -3860,7 +3860,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns the computed left position of the first element matched.
+   * Returns the computed top position of the first element matched.
    */
   public int top() {
     return (int) cur("top", true);
