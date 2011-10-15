@@ -4,16 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.gwtquery</groupId>
   <artifactId>gquery-archetype</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.1</version>
   <packaging>maven-archetype</packaging>
   <name>GwtQuery Archetype</name>
-  <description>This archetype generates a Gwt-2.2.0 project with all set to use GwtQuery and its plugins</description>
 
   <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>
     <version>3</version>
   </parent>
+
+  <description>This archetype generates a Gwt-2.4.0 project with all set to use GwtQuery and its plugins.</description>
+
 
   <scm>
     <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk/archetype</connection>
