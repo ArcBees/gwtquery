@@ -16,9 +16,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:http://gwtquery.googlecode.com/svn/trunk/archetype</connection>
-    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/trunk/archetype</developerConnection>
-    <url>http://code.google.com/p/gwtquery/source/browse/trunk/archetype</url>
+    <connection>scm:svn:http://gwtquery.googlecode.com/svn/tags/gquery-archetype-1.1.0</connection>
+    <developerConnection>scm:svn:https://gwtquery.googlecode.com/svn/tags/gquery-archetype-1.1.0</developerConnection>
+    <url>http://code.google.com/p/gwtquery/source/browse/tags/gquery-archetype-1.1.0</url>
   </scm>
 
   <developers>
