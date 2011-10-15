@@ -24,7 +24,7 @@ public class ${projectName}Test extends GWTTestCase {
 
   public void testOnModuleLoad() {
     
-    // execute the plugin method
+    // Create a container in the document
     final GQuery g =  $("<div></div>").appendTo(document);
 
     // run onModuleLoad

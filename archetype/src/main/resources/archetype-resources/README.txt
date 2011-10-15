@@ -13,9 +13,8 @@ $ mvn gwt:run
  The archetype generates a project ready to be used in eclipse, 
  but before importing it you have to install the following plugins:
 
-    * Google plugin for eclipse (update-site: http://dl.google.com/eclipse/plugin/3.6)
+    * Google plugin for eclipse (update-site: http://dl.google.com/eclipse/plugin/3.7 or 3.6 or 3.5)
     * Sonatype Maven plugin (update-site: http://m2eclipse.sonatype.org/site/m2e)
-    * Subversion plugin (update-site: http://subclipse.tigris.org/update_1.6.x) 
 
  Then you can import the project in your eclipse workspace:
 
