@@ -9,15 +9,11 @@
     <version>${version}</version>
 
     <properties>
-      <maven.compiler.source>1.5</maven.compiler.source>
-      <maven.compiler.target>1.5</maven.compiler.target>
-      <gQueryVersion>1.0.0</gQueryVersion>
-      <!-- Options: 2.0.1, 2.1.0, 2.2.0, 2.3.0 -->
-      <gQueryClassifier>2.3.0</gQueryClassifier>
-      <!-- options: 2.0.1, 2.1.0, 2.1.1, 2.2.0, 2.3.0 -->
-      <gwtversion>2.3.0</gwtversion>
-      <!-- options: 1.1, 2.1.0, 2.1.0-1, 2.2.0 -->
-      <gwtmaven>2.2.0</gwtmaven>
+      <maven.compiler.source>1.6</maven.compiler.source>
+      <maven.compiler.target>1.6</maven.compiler.target>
+      <gQueryVersion>1.1.0</gQueryVersion>
+      <gwtversion>2.4.0</gwtversion>
+      <gwtmaven>2.4.0</gwtmaven>
     </properties>
 
     <repositories>
@@ -76,7 +72,6 @@
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
-            <classifier>${gQueryClassifier}</classifier>
             <scope>provided</scope>
         </dependency>
         <!-- GWT 2.3.0 depends on these -->
@@ -151,14 +146,40 @@
                  <downloadSources>true</downloadSources>
                  <downloadJavadocs>false</downloadJavadocs>
                  <additionalBuildcommands>
-                   <buildCommand>
-                     <name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-                   </buildCommand>
+                   <buildCommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildCommand>
+                   <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</buildcommand>
+                   <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                   <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilderDependencyResolver</buildcommand>
                  </additionalBuildcommands>
                  <additionalProjectnatures>
                    <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+                   <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+                   <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
                  </additionalProjectnatures>
               </configuration>
+            </plugin>
+            <!-- GWT plugin does not copy the webapp folder in hosted mode -->
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>2.5</version>
+              <executions>
+                <execution>
+                  <id>copy-resources</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                    <resources>          
+                      <resource>
+                       <directory>src/main/webapp</directory>
+                       <filtering>true</filtering>
+                      </resource>
+                    </resources>              
+                  </configuration>            
+                </execution>
+              </executions>
             </plugin>
         </plugins>
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>

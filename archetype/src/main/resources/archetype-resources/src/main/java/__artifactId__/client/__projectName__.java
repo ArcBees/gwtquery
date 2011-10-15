@@ -5,7 +5,6 @@ package ${package}.${artifactId}.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import static com.google.gwt.query.client.GQuery.*;
-import static com.google.gwt.query.client.plugins.Effects.Effects;
 
 
 import com.google.gwt.core.client.EntryPoint;
@@ -20,11 +19,11 @@ public class ${projectName} implements EntryPoint {
     ${symbol_dollar}("div")
     .hover(new Function() {
       public void f(Element e) {
-        ${symbol_dollar}(e).css("color", "blue").as(Effects).stop().animate("fontSize: '+=10px'");
+        ${symbol_dollar}(e).css("color", "blue").stop(true, true).animate("fontSize: '+=10px'");
       }
     }, new Function() {
       public void f(Element e) {
-        ${symbol_dollar}(e).css("color", "").as(Effects).stop().animate("fontSize: '-=10px'");
+        ${symbol_dollar}(e).css("color", "").stop(true, true).animate("fontSize: '-=10px'");
       }
     });
   }
