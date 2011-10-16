@@ -259,7 +259,6 @@ public class PropertiesAnimation extends GQAnimation {
     if (move && !g.css("position", true).matches("absolute|relative")) {
       g.css("position", "relative");
     }
-    g.css("visibility", "visible");
     super.onStart();
   }
 

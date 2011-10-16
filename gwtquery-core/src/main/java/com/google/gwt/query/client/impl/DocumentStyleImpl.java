@@ -166,8 +166,10 @@ public class DocumentStyleImpl {
 
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
-    var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
-    return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
+    try {
+     var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
+     return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
+    } catch(e) {return null;}
   }-*/;
   
   protected static final JsNamedArray<String> elemdisplay = JsNamedArray.create();
