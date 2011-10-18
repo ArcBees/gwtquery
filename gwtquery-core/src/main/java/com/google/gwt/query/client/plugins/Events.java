@@ -29,15 +29,12 @@ import com.google.gwt.user.client.Event;
  */
 public class Events extends GQuery {
 
-  public static final Class<Events> Events = Events.class;
-
-  static {
-    GQuery.registerPlugin(Events.class, new Plugin<Events>() {
+  public static final Class<Events> Events = 
+    registerPlugin(Events.class, new Plugin<Events>() {
       public Events init(GQuery gq) {
         return new Events(gq);
       }
     });
-  }
   
   /**
    * Don't apply events on text and comment nodes !!

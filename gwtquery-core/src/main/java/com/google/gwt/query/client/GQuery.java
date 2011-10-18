@@ -51,6 +51,7 @@ import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -1820,7 +1821,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         // GqUi.attachWidget(w);
       }
     }
-    if (newNodes.size() > g.get().getLength()) {
+    if (newNodes.size() > g.size()) {
       g.setArray(newNodes);
     }
     return this;
@@ -2573,8 +2574,37 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Bind a function to the load event of each matched element.
    */
+  @Deprecated
   public GQuery load(Function f) {
     return bind(Event.ONLOAD, null, f);
+  }
+  
+  /**
+   * Load data from the server and place the returned HTML into the matched element.
+   * 
+   * The url allows us to specify a portion of the remote document to be inserted. 
+   * This is achieved with a special syntax for the url parameter. 
+   * If one or more space characters are included in the string, the portion of 
+   * the string following the first space is assumed to be a GQuery selector that 
+   * determines the content to be loaded.
+   * 
+   */
+  public GQuery load(String url, Properties data, final Function onSuccess) {
+    return as(Ajax.Ajax).load(url, data, onSuccess);
+  }
+  
+  /**
+   * Load data from the server and place the returned HTML into the matched element.
+   * 
+   * The url allows us to specify a portion of the remote document to be inserted. 
+   * This is achieved with a special syntax for the url parameter. 
+   * If one or more space characters are included in the string, the portion of 
+   * the string following the first space is assumed to be a GQuery selector that 
+   * determines the content to be loaded.
+   * 
+   */
+  public GQuery load(String url) {
+    return load(url, null, null);
   }
 
   /**
@@ -3911,6 +3941,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery unbind(int eventbits) {
     return as(Events).unbind(eventbits);
+  }
+  
+  /**
+   * Removes all events that match the eventList.
+   */
+  public GQuery unbind(String eventList) {
+    return as(Events).unbind(eventList);
   }
 
   /**

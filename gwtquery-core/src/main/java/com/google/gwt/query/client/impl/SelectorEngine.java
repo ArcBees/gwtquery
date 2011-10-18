@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 
@@ -111,21 +112,22 @@ public class SelectorEngine implements HasSelector {
   }
   
   // pseudo selectors which are computed by gquery
-  JsRegexp p = new JsRegexp(".*:((visible|hidden)|((radio|checkbox)\\s*(,|$))).*", "i");
+  JsRegexp p = new JsRegexp("(.*):((visible|hidden)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
 
   public NodeList<Element> select(String selector, Node ctx) {
     if (p.test(selector)) {
       JsNodeArray res = JsNodeArray.create();
       for (String s : selector.trim().split("\\s*,\\s*")) {
         NodeList<Element> nodes;
-        if (s.endsWith(":visible")) {
-          nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
-        } else if (s.endsWith(":hidden")) {
-          nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
-        } else if (s.contains(":radio")) {
-          nodes = select(s.replace(":radio", "[type='radio']"), ctx);
-        } else if (s.contains(":checkbox")) {
-          nodes = select(s.replace(":checkbox", "[type='checkbox']"), ctx);
+        JsObjectArray<String> a = p.match(s);
+        if (a.get(0) != null) {
+          if (s.endsWith(":visible")) {
+            nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
+          } else if (s.endsWith(":hidden")) {
+            nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
+          } else {
+            nodes = select(a.get(1) + "[type=" + a.get(2) + "]", ctx);
+          }          
         } else {
           nodes = select(s, ctx);
         }

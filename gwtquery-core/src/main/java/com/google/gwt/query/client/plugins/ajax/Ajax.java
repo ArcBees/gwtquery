@@ -9,9 +9,11 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Plugin;
 
 /**
  * Ajax class for GQuery.
@@ -28,61 +30,52 @@ import com.google.gwt.query.client.js.JsUtils;
  * This implementation is almost thought to be used as an alternative to 
  * the GWT-XHR, GWT-XML and GWT-JSON modules.
  * 
- * This class is not a plugin because in jquery it does not extends the jquery
- * object, but we prefer this name-space in order to centralize the jquery core 
- * features in a common folder.
- * 
  */
-public class Ajax {
+public class Ajax extends GQuery {
   
   /**
    * Ajax Settings object 
    */
   public interface Settings extends JsonBuilder {
-    String getType();
-    Settings setType(String t);
-    String getUrl();
-    Settings setUrl(String u);
-    Properties getData();
-    Settings setData(Properties p);
-    String getDataString();
-    Settings setDataString(String d);
-    String getDataType();
-    Settings setDataType(String t);
-    int getTimeout();
-    Settings setTimeout(int t);
-    String getUsername();
-    Settings setUsername(String u);
-    String getPassword();
-    Settings setPassword(String p);
     String getContentType();
-    Settings setContentType(String t);
-    Properties getHeaders();
-    Settings setHeaders(Properties p);
     Element getContext();
-    Settings setContext(Element e);
-    Function getSuccess();
-    Settings setSuccess(Function f);
+    Properties getData();
+    String getDataString();
+    String getDataType();
     Function getError();
+    Properties getHeaders();
+    String getPassword();
+    Function getSuccess();
+    int getTimeout();
+    String getType();
+    String getUrl();
+    String getUsername();
+    Settings setContentType(String t);
+    Settings setContext(Element e);
+    Settings setData(Properties p);
+    Settings setDataString(String d);
+    Settings setDataType(String t);
     Settings setError(Function f);
+    Settings setHeaders(Properties p);
+    Settings setPassword(String p);
+    Settings setSuccess(Function f);
+    Settings setTimeout(int t);
+    Settings setType(String t);
+    Settings setUrl(String u);
+    Settings setUsername(String u);
   }
   
-  public void ajax(String url, Function onSuccess, Function onError, Properties p) {
-    Settings settings = GWT.create(Settings.class);
-    settings.load(p);
-    ajax(url, onSuccess, onError, settings);
-  }
-  
-  public void ajax(String url, Function onSuccess, Function onError) {
-    ajax(url, onSuccess, onError, (Settings)null);
-  }
-  
-  public void ajax(String url, Function onSuccess, Function onError, Settings settings) {
-    if (settings == null) {
-      settings = GWT.create(Settings.class);
-    }
-    settings.setUrl(url).setSuccess(onSuccess).setError(onError);
-    ajax(settings);
+  public static final Class<Ajax> Ajax = 
+    registerPlugin(Ajax.class, new Plugin<Ajax>() {
+      public Ajax init(GQuery gq) {
+        return new Ajax(gq);
+      }
+    });
+
+  public static void ajax(Properties p) {
+    Settings s = createSettings();
+    s.load(p);
+    ajax(s);
   }
   
   /**
@@ -111,7 +104,7 @@ public class Ajax {
    * @param onError the function to execute on error
    * @param settings a Properties object with the configuration of the Ajax request.
    */
-  public void ajax(Settings settings) {
+  public static void ajax(Settings settings) {
     Method httpMethod = RequestBuilder.POST;
     String method = settings.getType();
     if ("get".equalsIgnoreCase(method)) {
@@ -167,6 +160,12 @@ public class Ajax {
     }
 
     r.setCallback(new RequestCallback() {
+      public void onError(Request request, Throwable exception) {
+        if (onError != null) {
+          onError.f(null, exception.getMessage(), request, null, exception);
+        }
+      }
+
       public void onResponseReceived(Request request, Response response) {
         if (response.getStatusCode() > 202) {
           if (onError != null) {
@@ -190,12 +189,6 @@ public class Ajax {
           onSuccess.f(retData, "success", request, response);
         }
       }
-
-      public void onError(Request request, Throwable exception) {
-        if (onError != null) {
-          onError.f(null, exception.getMessage(), request, null, exception);
-        }
-      }
     });
 
     try {
@@ -205,5 +198,97 @@ public class Ajax {
         onError.f(null, -1, null, null, e);
       }
     }
+  }
+  
+  public static void ajax(String url, Function onSuccess, Function onError) {
+    ajax(url, onSuccess, onError, (Settings)null);
+  }
+  
+  public static void ajax(String url, Function onSuccess, Function onError, Settings s) {
+    if (s == null) {
+      s = createSettings();
+    }
+    s.setUrl(url).setSuccess(onSuccess).setError(onError);
+    ajax(s);
+  }
+  
+  public static void ajax(String url, Properties p) {
+    Settings s = createSettings();
+    s.load(p);
+    s.setUrl(url);
+    ajax(s);
+  }
+  
+  public static void ajax(String url, Settings settings) {
+    ajax(settings.setUrl(url)); 
+  }
+  
+  public static Settings createSettings() {
+    return createSettings($$(""));
+  }
+  
+  public static Settings createSettings(String prop) {
+    return createSettings($$(prop));
+  }
+  
+  public static Settings createSettings(Properties p) {
+    Settings s = GWT.create(Settings.class);
+    s.load(p);
+    return s;
+  }
+  
+  public static void get(String url, Properties data, final Function onSuccess) {
+    Settings s = createSettings();
+    s.setUrl(url);
+    s.setDataType("txt");
+    s.setType("get");
+    s.setData(data);
+    s.setSuccess(onSuccess);
+    ajax(s);
+  }
+  
+  public static void getJSON(String url, Properties data, final Function onSuccess) {
+    Settings s = createSettings();
+    s.setUrl(url);
+    s.setDataType("json");
+    s.setType("post");
+    s.setData(data);
+    s.setSuccess(onSuccess);
+    ajax(s);
+  }
+  
+  public static void post(String url, Properties data, final Function onSuccess) {
+    Settings s = createSettings();
+    s.setUrl(url);
+    s.setDataType("txt");
+    s.setType("post");
+    s.setData(data);
+    s.setSuccess(onSuccess);
+    ajax(s);
+  }
+  
+  protected Ajax(GQuery gq) {
+    super(gq);
+  }
+  
+  public Ajax load(String url, Properties data, final Function onSuccess) {
+    Settings s = createSettings();
+    final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
+    s.setUrl(url.replaceAll("\\s+.+$", ""));
+    s.setDataType("html");
+    s.setType("get");
+    s.setData(data);
+    s.setSuccess(new Function() {
+      public void f() {
+        GQuery d = $(getData()[0].toString());
+        Ajax.this.empty().append(filter.isEmpty() ? d : d.filter(filter));
+        if (onSuccess != null) {
+          onSuccess.setElement(Ajax.this.get(0));
+          onSuccess.f();
+        }
+      }
+    });
+    ajax(s);
+    return this;
   }
 }

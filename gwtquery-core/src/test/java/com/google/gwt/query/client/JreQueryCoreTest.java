@@ -53,5 +53,14 @@ public class JreQueryCoreTest extends GWTTestCase {
     assertEquals("{\"$x\":22.60,\"$y\":\".0\",\"h\":\"#y\"}", Properties
         .wrapPropertiesString("$x:22.60,$y:.0,h:#y"));
   }
+  
+  public void testtt()  {
+    String selector = "div[class!=madeup]";
+    if (selector.matches(".*\\[\\w+!=[^\\]]+\\].*")) {
+      System.out.println("OK");
+      selector = selector.replaceAll("(\\[\\w+)!(=[^\\]]+\\])", ":not($1$2)");
+    }
+    System.out.println(selector);
+  }
 
 }

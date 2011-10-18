@@ -3,10 +3,10 @@ package com.google.gwt.query.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 
 /**
  * Class to implement the GQuery API static methods.
@@ -41,27 +41,32 @@ public abstract class GQ extends GQuery {
     super(gq);
   }
 
-  public static void ajax(Properties settings) {
-    ajax(null, null, null, settings);
+  public static void ajax(Properties p) {
+    ajax(p);
   }
 
-  public static void ajax(final Function onSuccess, Properties settings) {
-    ajax(null, onSuccess, null, settings);
-  }
-
-  public static void ajax(final Function onSuccess, final Function onError,
-      Properties settings) {
-    ajax(null, onSuccess, onError, settings);
+  public static void ajax(String url, Settings settings) {
+    Ajax.ajax(url, settings);
   }
   
-  private static Ajax ajaxImpl;
+  public GQuery load(String url, Properties data, final Function onSuccess) {
+    return as(Ajax.Ajax).load(url, data, onSuccess);
+  }
 
-  public static void ajax(String url, Function onSuccess, Function onError,
-      Properties settings) {
-    if (ajaxImpl == null) {
-      ajaxImpl = GWT.create(Ajax.class);
-    }
-    ajaxImpl.ajax(url, onSuccess, onError, settings);
+  public GQuery load(String url) {
+    return as(Ajax.Ajax).load(url, null, null);
+  }
+  
+  public static void get(String url, Properties data, final Function onSuccess) {
+    Ajax.get(url, data, onSuccess);
+  }
+  
+  public static void post(String url, Properties data, final Function onSuccess) {
+    Ajax.post(url, data, onSuccess);
+  }
+  
+  public static void getJSON(String url, Properties data, final Function onSuccess) {
+    Ajax.getJSON(url, data, onSuccess);
   }
 
   public static boolean contains(Element a, Element b) {

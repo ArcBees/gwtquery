@@ -19,6 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.js.JsNamedArray;
 
 /**
  * Runtime selector engine implementation for browsers with native
@@ -27,9 +28,11 @@ import com.google.gwt.dom.client.NodeList;
 public class SelectorEngineNative extends SelectorEngineImpl {
 
   // querySelectorAll unsupported selectors 
-  public static String NATIVE_EXCEPTIONS_REGEXP = "(^[\\./]/.*)|(.*(:contains|!=|:first([^-]|$)|:last([^-]|$)|:even|:odd)).*";
+  public static String NATIVE_EXCEPTIONS_REGEXP = "(^[\\./]/.*)|(.*(:contains|:first([^-]|$)|:last([^-]|$)|:even|:odd)).*";
   
   private static HasSelector impl;
+  
+  static JsNamedArray<String> cache;
   
   public SelectorEngineNative() {
     if (impl == null) {
@@ -40,9 +43,22 @@ public class SelectorEngineNative extends SelectorEngineImpl {
   
   public NodeList<Element> select(String selector, Node ctx) {
     // querySelectorAllImpl does not support ids starting with a digit.
-    if (selector.matches("#[\\w\\-]+")) {
-      return SelectorEngine.veryQuickId(selector.substring(1), ctx);
-    } else if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+//    if (selector.matches("#[\\w\\-]+")) {
+//      return SelectorEngine.veryQuickId(selector.substring(1), ctx);
+//    } else 
+    if (selector.contains("!=")) {
+      if (cache == null) {
+        cache = JsNamedArray.create();
+      }
+      String xsel = cache.get(selector);
+      if (xsel == null) {
+        xsel = selector.replaceAll("(\\[\\w+)!(=[^\\]]+\\])", ":not($1$2)");
+        cache.put(selector, xsel);
+      }
+      selector = xsel;
+    }
+    
+    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return impl.select(selector, ctx); 
     } else {
       try {
