@@ -122,8 +122,8 @@ public interface MySelectors extends Selectors {
   @Selector("p:nth-child(2n+1)")
   NodeList<Element> nThChild2nPlus1(Node n);
 
-  @Selector("p:contains(selectors)")
-  NodeList<Element> pContainsSelectors(Node n);
+//  @Selector("p:contains(selectors)")
+//  NodeList<Element> pContainsSelectors(Node n);
 
   @Selector("p:nth-child(even)")
   NodeList<Element> nThChildEven(Node n);
