@@ -66,7 +66,6 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <module>gwtquery-core-2.2.0</module>
         <module>gwtquery-core-2.1.0</module>
         <module>gwtquery-core-2.0.1</module>
         <!-- <module>samples</module> -->
@@ -161,8 +160,8 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.3.0</gwtversion>
-        <gwtmaven>2.3.0</gwtmaven>
+        <gwtversion>2.4.0</gwtversion>
+        <gwtmaven>2.4.0</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
