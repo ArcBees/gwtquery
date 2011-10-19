@@ -192,6 +192,7 @@
            <properties>
              <repoUrl>http://oss.sonatype.org/service/local/staging/deploy/maven2</repoUrl>
              <repoId>sonatype-nexus-staging</repoId>
+             <maven.test.skip>true</maven.test.skip>
            </properties>
         </profile>
         <profile>
