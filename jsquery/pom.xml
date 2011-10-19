@@ -61,6 +61,8 @@
                     <optimizationLevel>9</optimizationLevel>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
+                    <!-- <disableClassMetadata>true</disableClassMetadata> -->
+                    <disableCastChecking>true</disableCastChecking>
                     <modules>
                         <module>gwtquery.jsquery.JsQueryXs</module>
                     </modules>

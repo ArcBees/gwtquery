@@ -15,6 +15,7 @@
 	        $wnd.JsQuery.onLoadArray.push(f);
 	      }
 	    };
+	    $wnd._$_ = $wnd.$;
 	    $wnd.$ = function() {return $wnd.JsQuery;}
         return 'default';
       ]]>
@@ -22,5 +23,6 @@
     
     <!-- Cross Site -->
     <add-linker name="xs"/>
+    <set-property name="compiler.stackMode" value="strip"/>
 </module>
 

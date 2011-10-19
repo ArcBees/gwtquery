@@ -22,11 +22,11 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
 
 
-@ExportPackage("")
-@Export(value="jQuery", all=false)
+@ExportPackage("jsQuery")
+@Export(value="fn", all=false)
 public class JQ implements ExportOverlay<GQuery> {
   
-  @ExportPackage("")
+  @ExportPackage("jsQuery")
   @Export("jFunction")
   @ExportClosure()
   public interface JFunction extends ExportOverlay<Function>  {
@@ -37,14 +37,14 @@ public class JQ implements ExportOverlay<GQuery> {
     public Object f(Element e, int i);
   }
 
-  @ExportPackage("")
+  @ExportPackage("jsQuery")
   @Export("jPredicate")
   @ExportClosure()
   public interface JPredicate extends ExportOverlay<Predicate>  {
     public boolean f(Element e, int i);
   }
   
-  @ExportPackage("")
+  @ExportPackage("jsQuery")
   @Export("jOffset")
   public static class JOffset implements ExportOverlay<Offset>{
     public int left;
@@ -53,22 +53,24 @@ public class JQ implements ExportOverlay<GQuery> {
     }
   }
   
-  @ExportPackage("")
+  @ExportPackage("jsQuery")
   @Export("jEasing")
   @ExportClosure()
   public interface JEasing extends ExportOverlay<Easing>  {
     public double interpolate(double progress);
   }
   
+  @ExportPackage("")
+  @Export("jsQuery")
   // Used to export $ method 
   public static class Dollar implements Exportable {
-    public native static String dumpObject(JavaScriptObject o) /*-{
+    native static String dumpObject(JavaScriptObject o) /*-{
       var s = "" ; for (k in o) s += " " + k; return s;
     }-*/;
-    public native static boolean isEvent(JavaScriptObject o) /*-{
+    native static boolean isEvent(JavaScriptObject o) /*-{
       return o.preventDefault ? true : false;
     }-*/;
-    public native static boolean isElement(JavaScriptObject o) /*-{
+    native static boolean isElement(JavaScriptObject o) /*-{
       return o.getElementById ? true : false;
     }-*/;
     @Export("$wnd.$")
@@ -82,6 +84,39 @@ public class JQ implements ExportOverlay<GQuery> {
       }
       return GQuery.$();
     }
+    @Export("$wnd.$")
+    public static GQuery StaticDollar(String s, Element ctx) {
+      return GQuery.$(s, ctx);
+    }
+    // FIXME: does not work
+    @Export("$wnd.$.extend")
+    public  static JavaScriptObject extend(JavaScriptObject...objs) {
+      int l = objs.length;
+      boolean me = l < 2;
+      JavaScriptObject ctx = me ? getDefaultPrototype() : objs[0];
+      for (int i = me ? 0 : 1; i < l; i++) {
+        extend(ctx, objs[i]);
+      }
+      return ctx;
+    }
+    private static native JavaScriptObject getDefaultPrototype() /*-{
+      return $wnd.jsQuery && $wnd.jsQuery.fn ? $wnd.jsQuery.fn.prototype : null;
+    }-*/;
+    private static native void extend(JavaScriptObject d, JavaScriptObject s) /*-{
+      for (k in s) d[k] = s[k];
+    }-*/;
+    /*-{
+      try{
+      var me = objs.length < 2;
+      var t = me ? $wnd.jsQuery.fn : objs[0];
+      for (i = me ? 0 : 1; i < objs.length; i++) {
+        for (k in objs[i]) {
+          t[k] = objs[i][k];
+        }
+      }
+      return t;
+      } catch(e) { alert(e); return({});}
+    }-*/;
   }
   
   // We have to stub all the method we want to export here.
@@ -110,7 +145,7 @@ public class JQ implements ExportOverlay<GQuery> {
   public GQuery appendTo(String html) {return null;}
   public <T extends GQuery> T as(Class<T> plugin) {return null;}
 //  public GQuery attr(Properties properties) {return null;}
-  public String attr(String name) {return null;}
+//  public String attr(String name) {return null;}
 // public GQuery attr(String key, Function closure) {return null;}
   public GQuery attr(String key, Object value) {return null;}
   public GQuery before(GQuery query) {return null;}
