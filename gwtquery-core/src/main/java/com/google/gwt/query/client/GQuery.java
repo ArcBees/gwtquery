@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
@@ -52,6 +53,7 @@ import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -215,7 +217,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
            JsUtils.isNodeList(e) ? GQuery.$(e.<NodeList<Element>>cast()) :
            $();  
   }
-
+  
   /**
    * Create a new GQuery given a list of nodes, elements or widgets
    */
@@ -288,8 +290,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return new GQuery().select(selectorOrHtml, ctx);
   }
-  
-  /**
+
+	/**
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements. The second parameter is the context to
@@ -312,7 +314,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  /**
+	/**
    * This function accepts a string containing a CSS selector which is then used
    * to match a set of elements, or it accepts raw HTML creating a GQuery
    * element containing those elements. The second parameter is the context to
@@ -338,7 +340,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(selector, context.getElement(), plugin);
   }
 
-  /**
+	/**
    * wraps a GQuery or a plugin object
    */
   public static <T extends GQuery> T $(T gq) {
@@ -358,6 +360,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static Properties $$(String properties) {
     return Properties.create(properties);
   }
+
+  /**
+   * Perform an ajax request to the server.
+   */
+	public static void ajax(Properties p) {
+		ajax(p);
+	}
+
+  /**
+   * Perform an ajax request to the server.
+   */
+	public static void ajax(Settings settings) {
+		Ajax.ajax(settings);
+	}
+
+  /**
+   * Perform an ajax request to the server.
+   */
+	public static void ajax(String url, Settings settings) {
+		Ajax.ajax(url, settings);
+	}
 
   @SuppressWarnings("unchecked")
   protected static GQuery cleanHtmlString(String elem, Document doc) {
@@ -391,6 +414,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $((NodeList<Element>) n.getChildNodes().cast());
   }
 
+  /**
+	 * Return true if the element b is contained in a. 
+	 */
+	public static boolean contains(Element a, Element b) {
+		return engine.contains(a, b);
+	}
+
+  /**
+	 * Get the element data matching the key. 
+	 */
+	public static Object data(Element e, String key) {
+		return GQuery.data(e, key, null);
+	}
+
   protected static <S> Object data(Element item, String name, S value) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
@@ -412,25 +449,52 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return name != null ? d.get(name) : id;
   }
   
-  protected static DocumentStyleImpl getStyleImpl(){
-    if (styleImpl == null){
-      styleImpl = GWT.create(DocumentStyleImpl.class);
-    }
-    return styleImpl;
-  }
-  
-  private static AttributeImpl getAttributeImpl(){
-    if (attributeImpl == null){
-      attributeImpl = GWT.create(AttributeImpl.class);
-    }
-    return attributeImpl;
-  }
-  
+  /**
+   * Set element data. 
+   */
+	public static Object data(Element e, String key, String value) {
+		return GQuery.data(e, key, value);
+	}
+
+  /**
+   * Execute a function around each object
+   */
+	public static void each(JsArrayMixed objects, Function f) {
+		for (int i = 0, l = objects.length(); i < l; i++) {
+			f.f(i, objects.getObject(i));
+		}
+	}
+
+  /**
+	 * Execute a function around each object
+	 */
+	public static <T> void each(List<T> objects, Function f) {
+		for (int i = 0, l = objects.size(); i < l; i++) {
+			f.f(i, objects.get(i));
+		}
+	}
+
+  /**
+   * Execute a function around each object
+   */
+	public static <T> void each(T[] objects, Function f) {
+		for (int i = 0, l = objects.length; i < l; i++) {
+			f.f(i, objects[i]);
+		}
+	}
+
   private static native void emptyDocument(Document d) /*-{
 		d.open();
 		d.write("<head/><body/>");
 		d.close();
   }-*/;
+
+  /**
+   * Perform an ajax request to the server using GET.
+   */
+	public static void get(String url, Properties data, final Function onSuccess) {
+		Ajax.get(url, data, onSuccess);
+	}
 
   /**
    * We will use the fact as GWT use the widget itself as EventListener ! If no
@@ -456,21 +520,54 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return null;
   }
 
+  private static AttributeImpl getAttributeImpl(){
+    if (attributeImpl == null){
+      attributeImpl = GWT.create(AttributeImpl.class);
+    }
+    return attributeImpl;
+  }
+  
   private native static Document getContentDocument(Node n) /*-{
 		var d = n.contentDocument || n.document || n.contentWindow.document;
 		if (!d.body)
 			@com.google.gwt.query.client.GQuery::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
 		return d;
   }-*/;
+  
+  /**
+   * Perform an ajax request to the server using POST and
+   * parsing the json response.
+   */ 
+	public static void getJSON(String url, Properties data,
+			final Function onSuccess) {
+		Ajax.getJSON(url, data, onSuccess);
+	}
+  
+  protected static DocumentStyleImpl getStyleImpl(){
+    if (styleImpl == null){
+      styleImpl = GWT.create(DocumentStyleImpl.class);
+    }
+    return styleImpl;
+  }
+
+  /**
+   * Return only the set of objects with match the predicate.
+   */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] grep(T[] objects, Predicate f) {
+		ArrayList<Object> ret = new ArrayList<Object>();
+		for (int i = 0, l = objects.length; i < l; i++) {
+			if (f.f(objects[i], i)) {
+				ret.add(objects[i]);
+			}
+		}
+		return (T[]) ret.toArray(new Object[0]);
+	}
 
   private static boolean hasClass(Element e, String clz) {
     return e.getClassName().matches("(^|.*\\s)" + clz + "(\\s.*|$)");
   }
 
-  private static GQuery innerHtml(String html, Document doc) {
-    return $(cleanHtmlString(html, doc));
-  }
-  
   private static void initWrapperMap(){
     
     TagWrapper tableWrapper = new TagWrapper(1, "<table>", "</table>");
@@ -493,6 +590,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     wrapperMap.put("area",  new TagWrapper(1, "<map>", "</map>"));
   
   }
+
+  private static GQuery innerHtml(String html, Document doc) {
+    return $(cleanHtmlString(html, doc));
+  }
   
   protected static String[] jsArrayToString(JsArrayString array) {
     if (GWT.isScript()) {
@@ -505,7 +606,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return result;
     }
   }
-
+  
   private static native String[] jsArrayToString0(JsArrayString array) /*-{
 		return array;
   }-*/;
@@ -517,6 +618,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static LazyGQuery<?> lazy() {
     return $().createLazy();
   }
+
+  /**
+   * Perform an ajax request to the server using POST.
+   */	
+	public static void post(String url, Properties data,
+			final Function onSuccess) {
+		Ajax.post(url, data, onSuccess);
+	}
 
   public static <T extends GQuery> Class<T> registerPlugin(Class<T> plugin,
       Plugin<T> pluginFactory) {
@@ -2589,8 +2698,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * determines the content to be loaded.
    * 
    */
-  public GQuery load(String url, Properties data, final Function onSuccess) {
-    return as(Ajax.Ajax).load(url, data, onSuccess);
+  public GQuery load(String url) {
+    return load(url, null, null);
   }
   
   /**
@@ -2603,8 +2712,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * determines the content to be loaded.
    * 
    */
-  public GQuery load(String url) {
-    return load(url, null, null);
+  public GQuery load(String url, Properties data, final Function onSuccess) {
+    return as(Ajax.Ajax).load(url, data, onSuccess);
   }
 
   /**
