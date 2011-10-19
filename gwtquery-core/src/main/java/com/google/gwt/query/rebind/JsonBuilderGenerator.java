@@ -26,7 +26,6 @@ import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Properties;
@@ -115,20 +114,18 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("return getArrayBase(\"" + name + "\", new " + t + "[l], "
             + t + ".class);");
       } else {
-        sw.println("return p.get(\"" + name + "\");");
+        sw.println("return null; // Unsupported return type: " + retType);
       }
       sw.outdent();
       sw.println("}");
     } else if (params.length == 1) {
       JType type = params[0].getType();
       JArrayType arr = type.isArray();
-      JPrimitiveType pri = type.isPrimitive();
       sw.print("(" + type.getParameterizedQualifiedSourceName() + " a)");
       sw.println("{");
       sw.indent();
       if (arr != null) {
         sw.println("setArrayBase(\"" + name + "\", a);");
-      } else if (pri != null) {
       } else {
         sw.println("p.set(\"" + name + "\", a);");
       }

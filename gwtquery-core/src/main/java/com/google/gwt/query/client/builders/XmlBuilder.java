@@ -34,5 +34,15 @@ public interface XmlBuilder {
   /**
    * Returns the documentElement.
    */
-  Element getDocumentElement();
+  Element getRootElement();
+  
+  /**
+   * Appends a node
+   */
+  void append(XmlBuilder x);
+
+  /**
+   * Appends xml content
+   */
+  void append(String x);
 }

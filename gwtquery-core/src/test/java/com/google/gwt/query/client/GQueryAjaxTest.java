@@ -59,6 +59,7 @@ public class GQueryAjaxTest extends GWTTestCase {
     String[] getT();
     JsonExample setT(String[] strings);
     JsonExample setZ(Boolean b);
+    JsonExample setD(long l);
   }
   
   public void testJsonBuilder() {
@@ -75,10 +76,12 @@ public class GQueryAjaxTest extends GWTTestCase {
     assertEquals("adios", c.getT()[1]);
     assertEquals("url", c.getUrl());
     c.setT(new String[]{"foo", "bar"})
-     .setZ(false);
+     .setZ(false).setD(1234);
     assertFalse(c.getZ());
     assertEquals("foo", c.getT()[0]);
     assertEquals("bar", c.getT()[1]);
+    assertEquals(1234l, c.getD());
+
   }
   
   interface XmlExample extends XmlBuilder {
@@ -90,6 +93,10 @@ public class GQueryAjaxTest extends GWTTestCase {
     XmlExample[] getX();
     @Name("x")
     XmlExample getFirstX();
+    
+    XmlExample setA(String s);
+    @Name("c")
+    XmlExample setNumber(int i);
   }
   
   public void testXmlBuilder() {
@@ -101,5 +108,8 @@ public class GQueryAjaxTest extends GWTTestCase {
     assertEquals(-1, x.getNumber());
     assertEquals("xa2", x.getX()[1].getA());
     assertEquals("xa1", x.getFirstX().getA());
+    x.setA("X").setNumber(1234);
+    assertEquals("X", x.getA());
+    assertEquals(1234, x.getNumber());
   }
 }

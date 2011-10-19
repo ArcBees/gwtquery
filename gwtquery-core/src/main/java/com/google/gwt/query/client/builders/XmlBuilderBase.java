@@ -28,9 +28,46 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
   //TODO empty document
   protected GQuery g = $(JsUtils.parseXML("<root/>"));
 
-  @SuppressWarnings("unchecked")
-  public J parse(String xml) {
-    return load(JsUtils.parseXML(xml));
+  public void append(String xml) {
+    g.append(JsUtils.parseXML(xml));
+  }
+  
+  public void append(XmlBuilder x) {
+    g.append(x.getRootElement());
+  }
+  
+  protected Boolean getBooleanBase(String n) {
+    return "true".equalsIgnoreCase(getStrBase(n));
+  }
+
+  protected Element getElementBase(String n) {
+    return g.children(n).get(0);
+  }
+  
+  protected Element[] getElementsBase(String n) {
+    return g.children(n).elements();
+  }
+  
+  protected float getFloatBase(String s) {
+    String n = getStrBase(s).replaceAll("[^\\d\\-\\.]", "");
+    return n.isEmpty() ? 0 : Float.parseFloat(n);
+  }
+  
+  protected Properties getPropertiesBase(String n) {
+    // TODO:
+    return null;
+  }
+  
+  public Element getRootElement() {
+    return g.get(0);
+  }
+  
+  protected String getStrBase(String n) {
+    return g.attr(n);
+  }
+  
+  public String getText() {
+    return g.text();
   }
   
   @SuppressWarnings("unchecked")
@@ -45,45 +82,28 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     return (J)this;
   }
   
-  public String getText() {
-    return g.text();
+  @SuppressWarnings("unchecked")
+  public J parse(String xml) {
+    return load(JsUtils.parseXML(xml));
   }
-
+  
+  protected <T> void setArrayBase(String n, T[] r) {
+    String v = "";
+    for (T t: r) {
+      v += String.valueOf(t);
+    }
+    setBase(n, v);
+  }
+  
+  protected void setBase(String n, Object v) {
+    g.attr(n, v);
+  }
+  
   public void setText(String s) {
     g.text(s);
   }
-  
+   
   public String toString() {
     return g.toString();
-  }
-  
-  protected Element getElementBase(String n) {
-    return g.children(n).get(0);
-  }
-  
-  protected Element[] getElementsBase(String n) {
-    return g.children(n).elements();
-  }
-  
-  public Element getDocumentElement() {
-    return g.get(0);
-  }
-  
-  protected float getFloatBase(String s) {
-    String n = getStrBase(s).replaceAll("[^\\d\\-\\.]", "");
-    return n.isEmpty() ? 0 : Float.parseFloat(n);
-  }
-  
-  protected Boolean getBooleanBase(String n) {
-    return "true".equalsIgnoreCase(getStrBase(n));
-  }
-  
-  protected String getStrBase(String n) {
-    return g.attr(n);
-  }
-  
-  protected Properties getPropertiesBase(String n) {
-    // TODO:
-    return null;
   }
 }

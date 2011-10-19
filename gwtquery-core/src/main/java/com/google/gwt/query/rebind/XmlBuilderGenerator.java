@@ -111,23 +111,22 @@ public class XmlBuilderGenerator extends Generator {
         sw.println("  l.add(c);");
         sw.println("}");
         sw.println("return l.toArray(new " + q + "[0]);");
-//      } else {
-//        sw.println("return p.get(\"" + name + "\");");
+      } else {
+        sw.println("return null; // Unsupported return type: " + retType);
       }
       sw.outdent();
       sw.println("}");
     } else if (params.length == 1) {
       JType type = params[0].getType();
       JArrayType arr = type.isArray();
-      JPrimitiveType pri = type.isPrimitive();
-      sw.print("(" + type.getParameterizedQualifiedSourceName() + " a)");
+      String qname = type.getParameterizedQualifiedSourceName();
+      sw.print("(" + qname + " a)");
       sw.println("{");
       sw.indent();
       if (arr != null) {
         sw.println("setArrayBase(\"" + name + "\", a);");
-      } else if (pri != null) {
       } else {
-        sw.println("p.set(\"" + name + "\", a);");
+        sw.println("setBase(\"" + name + "\", a);");
       }
       if (!"void".equals(retType)){
         if (isTypeAssignableTo(method.getReturnType(), method.getEnclosingType())) {
