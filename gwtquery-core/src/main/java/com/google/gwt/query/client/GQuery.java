@@ -450,13 +450,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * Set element data. 
-   */
-	public static Object data(Element e, String key, String value) {
-		return GQuery.data(e, key, value);
-	}
-
-  /**
    * Execute a function around each object
    */
 	public static void each(JsArrayMixed objects, Function f) {
@@ -661,6 +654,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The nodeList of matched elements, modify this using setArray
    */
+  // TODO: remove this and use elements, change return type of get()
   private NodeList<Element> nodeList = JavaScriptObject.createArray().cast();
   
   private GQuery previousObject;
@@ -1926,11 +1920,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
             break;
         }
         EventsListener.rebind(n.<Element> cast());
-        
         // GqUi.attachWidget(w);
       }
     }
-    if (newNodes.size() > g.size()) {
+    // TODO: newNodes.size() > g.size() makes testRebind fail
+    if (newNodes.size() >= g.size()) {
       g.setArray(newNodes);
     }
     return this;

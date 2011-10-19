@@ -687,12 +687,18 @@ public void testUnDelegateAll2(){
 
   public void testRebind() {
     final GQuery b = $("<p>content</p>");
+    assertEquals(1, b.size());
+    assertEquals(1, b.get().getLength());
     b.click(new Function() {
       public void f(Element e){
         b.css(CSS.COLOR.with(RGBColor.RED));
       }
     });
     $(e).append(b);
+    // TODO: dom manipulations some times modifies gquery nodelist,
+    // we could remove the nodelist since we maintain a list of elements.
+    assertEquals(1, b.size());
+    assertEquals(1, b.get().getLength());
     b.click();
     assertEquals("red", $(b).css("color", false));
   }

@@ -126,7 +126,7 @@ public class SelectorEngine implements HasSelector {
           } else if (s.endsWith(":hidden")) {
             nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
           } else {
-            nodes = select(a.get(1) + "[type=" + a.get(2) + "]", ctx);
+            nodes = select((a.get(1) != null ? a.get(1) : "") + "[type=" + a.get(2) + "]", ctx);
           }          
         } else {
           nodes = select(s, ctx);
