@@ -98,7 +98,7 @@
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <soyc>false</soyc>
-                    <runTarget>${projectName}/${projectName}Sample.html</runTarget>
+                    <runTarget>${projectName}/${projectName}.html</runTarget>
                     <hostedWebapp>src/main/webapp</hostedWebapp>
                 </configuration>
                 <executions>
