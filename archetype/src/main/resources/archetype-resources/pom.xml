@@ -9,6 +9,7 @@
     <version>${version}</version>
 
     <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.compiler.source>1.6</maven.compiler.source>
       <maven.compiler.target>1.6</maven.compiler.target>
       <gQueryVersion>1.1.0</gQueryVersion>
@@ -99,7 +100,7 @@
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <soyc>false</soyc>
                     <runTarget>${projectName}/${projectName}.html</runTarget>
-                    <hostedWebapp>src/main/webapp</hostedWebapp>
+                    <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                 </configuration>
                 <executions>
                     <execution>
