@@ -19,6 +19,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsNamedArray;
+import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -27,6 +28,9 @@ import com.google.gwt.user.client.Window;
  * A helper class to get computed CSS styles for elements.
  */
 public class DocumentStyleImpl {
+  
+  private static final JsRegexp cssNumber = new JsRegexp("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
+
   /**
    * Returns the numeric value of a css property.
    *  
@@ -160,6 +164,9 @@ public class DocumentStyleImpl {
     if (val == null || val.trim().length() == 0) {
       removeStyleProperty(e, prop);
     } else {
+      if (val.matches("-?[\\d\\.]+") && !cssNumber.test(val)) {
+        val += "px";
+      }
       e.getStyle().setProperty(prop, val);
     }
   }
