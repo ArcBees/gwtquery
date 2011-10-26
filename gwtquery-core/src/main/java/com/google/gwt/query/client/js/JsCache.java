@@ -98,6 +98,10 @@ public class JsCache extends JavaScriptObject {
     for (k in this) return false;
     return true;
   }-*/;
+  
+  public final native int indexOf(Object o) /*-{
+    return this.indexOf(o);
+  }-*/;
 
   public final native <T, O> void put(T id, O obj) /*-{
     this[id] = obj;
