@@ -164,7 +164,7 @@ public class DocumentStyleImpl {
     if (val == null || val.trim().length() == 0) {
       removeStyleProperty(e, prop);
     } else {
-      if (val.matches("-?[\\d\\.]+") && !cssNumber.test(val)) {
+      if (val.matches("-?[\\d\\.]+") && !cssNumber.test(prop)) {
         val += "px";
       }
       e.getStyle().setProperty(prop, val);
