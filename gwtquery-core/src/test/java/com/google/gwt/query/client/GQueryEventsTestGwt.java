@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test class for testing gwt events plugin api.
  */
-public class GQueryEventsTest extends GWTTestCase {
+public class GQueryEventsTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -50,6 +50,11 @@ public class GQueryEventsTest extends GWTTestCase {
 
   public String getModuleName() {
     return "com.google.gwt.query.Query";
+  }
+  
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
   }
 
   public void gwtSetUp() {
@@ -731,7 +736,39 @@ public void testUnDelegateAll2(){
     g.width(400);
     g.resize();
   }
-  
+
+  public void testBindUnbindSubmitEvent() {
+    // Add a form and an iframe to the dom. The form target is the iframe
+    $(e).html("<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    testSubmitEventCont = 0;
+
+    // Add an onsubmit function to the form returning false to cancel the action
+    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+      public boolean f(Event e) {
+        testSubmitEventCont++;
+        return false;
+      }
+    });
+
+    // Check that the onsubmit function is called and the iframe has not changed
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+    
+    // Remove the binding
+    $("form").unbind(EventsListener.ONSUBMIT);
+
+    // Check that on submit function is not called and the form has been
+    // submitted
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+  }
+
+  /**
+   * TODO: submit doesn't work with HtmlUnit, investigate and report.
+   * The problem is that preventDefault does not set the 
+   * flag e.defaultPrevented || e.returnValue in HtmlUnit native event.
+   */
+  @DoNotRunWith({Platform.HtmlUnitLayout})
   public void testSubmitEvent() {
     // Add a form and an iframe to the dom. The form target is the iframe
     $(e).html("<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
@@ -757,11 +794,14 @@ public void testUnDelegateAll2(){
     // submitted
     $("form").submit();
     assertEquals(1, testSubmitEventCont);
+    
+    delayTestFinish(1000);
     new Timer() {
       public void run() {
         // Check that the server returns an error since the action does not
         // exist
         assertTrue($("#miframe").contents().find("body").text().contains("ERROR"));
+        finishTest();
       }
     }.schedule(500);
   }
@@ -771,17 +811,17 @@ public void testUnDelegateAll2(){
    * http://code.google.com/p/gwtquery/issues/detail?id=62
    */
   public void testTabInbexInFocusEventBinding(){
-    String content="<div id='test'>test content</div>";
+    String content="<div id='mtest'>test content</div>";
     $(e).html(content);
-    $("#test").focus(new Function(){});
+    $("#mtest").focus(new Function(){});
     
-    assertEquals($("#test").attr("tabIndex"), "0");
+    assertEquals($("#mtest").attr("tabIndex"), "0");
     
-    content="<div id='test' tabIndex='2'>test content</div>";
+    content="<div id='mtest' tabIndex='2'>test content</div>";
     $(e).html(content);
-    $("#test").focus(new Function(){});
+    $("#mtest").focus(new Function(){});
     
-    assertEquals($("#test").attr("tabIndex"), "2");
+    assertEquals($("#mtest").attr("tabIndex"), "2");
   }
   
   public void testUnbindMultipleEvents() {

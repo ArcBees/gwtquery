@@ -31,7 +31,6 @@ import com.google.gwt.query.client.Selector;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.ReplaceCallback;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.Replacer;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
@@ -44,7 +43,7 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
   /**
    * The replacer implementation for the JVM.
    */
-  public static final Replacer replacerJvm = new Replacer() {
+  public static final Replacer replacer = new Replacer() {
     public String replaceAll(String s, String r, Object o) {
       Pattern p = Pattern.compile(r);
       if (o instanceof ReplaceCallback) {
@@ -67,34 +66,6 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
       }
     }
   };
-
-  /**
-   * A replacer which works in both sides. Right now gquery JsRegexp is faster
-   * than gwt shared RegExp and does not uses HashSet
-   */
-  public static final Replacer replacerGwt = new Replacer() {
-    public String replaceAll(String s, String r, Object o) {
-      RegExp p = RegExp.compile(r, "g");
-      if (o instanceof ReplaceCallback) {
-        ReplaceCallback callback = (ReplaceCallback) o;
-        com.google.gwt.regexp.shared.MatchResult a = null;
-        while ((a = p.exec(s)) != null) {
-          ArrayList<String> args = new ArrayList<String>();
-          for (int i = 0; i < a.getGroupCount(); i++) {
-            args.add(a.getGroup(i));
-          }
-          String f = callback.foundMatch(args);
-          s = s.replace(a.getGroup(0), f);
-          p = RegExp.compile(r, "g");
-        }
-        return s;
-      } else {
-        return p.replace(s, o.toString());
-      }
-    }
-  };
-  
-  public static final Replacer replacer = replacerGwt;
 
   private SelectorEngineCssToXPath engine = new SelectorEngineCssToXPath(
       replacer);

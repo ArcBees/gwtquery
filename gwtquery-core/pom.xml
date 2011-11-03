@@ -70,35 +70,17 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>false</skipTests>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>
-                            ${project.build.sourceDirectory}
-                        </additionalClasspathElement>
-                        <additionalClasspathElement>
-                            ${project.build.testSourceDirectory}
-                        </additionalClasspathElement>
-                    </additionalClasspathElements>
-                    <!-- Needed to run gwt-Tests -->
-                    <useManifestOnlyJar>false</useManifestOnlyJar>
-                    <!-- Necessary to run tests with return the same getModuleName-->
-                    <forkMode>always</forkMode>
-                    <!-- This makes emma:emma fail -->
-                    <!-- <useSystemClassLoader>true</useSystemClassLoader>  -->
-                    <parallel>both</parallel>
-                    <threadCount>6</threadCount>
-                    <systemProperties>
-                        <property>
-                            <name>gwt.args</name>
-                            <value>-out target/www-junit</value>
-                            <name>gwt.noserver</name>
-                            <value>true</value>
-                        </property>
-                    </systemProperties>
-                </configuration>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                 <additionalClasspathElements>
+                   <additionalClasspathElement>${basedir}/src/main/java</additionalClasspathElement>
+                   <additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
+                 </additionalClasspathElements>
+                 <!-- <useManifestOnlyJar>false</useManifestOnlyJar> -->
+                 <!-- <forkMode>always</forkMode> -->
+                 <useSystemClassLoader>false</useSystemClassLoader>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.riedelcastro</groupId>

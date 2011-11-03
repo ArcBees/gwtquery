@@ -314,4 +314,9 @@ public class JsUtils {
       return Properties.create();
     }
   }
+  
+  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
+      return e.defaultPrevented || e.returnValue === false || e.getPreventDefault && e.getPreventDefault() ? true : false;
+  }-*/;
+  
 }

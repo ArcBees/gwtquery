@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test class for testing js classes.
  */
-public class GQueryJsTest extends GWTTestCase {
+public class GQueryJsTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -46,6 +46,11 @@ public class GQueryJsTest extends GWTTestCase {
     } else {
       e.setInnerHTML("");
     }
+  }
+
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
   }
 
   public void testJsCache() {

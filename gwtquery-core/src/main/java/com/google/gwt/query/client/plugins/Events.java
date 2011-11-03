@@ -228,20 +228,27 @@ public class Events extends GQuery {
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0,
           0, 0, 0, false, false, false, false, NativeEvent.BUTTON_LEFT, null));
-    if (eventbits == EventsListener.ONSUBMIT)
-      triggerHtmlEvent("submit");
+    if (eventbits == EventsListener.ONSUBMIT) {
+      Event evt = document.createHtmlEvent("submit", true, true).cast();
+      dispatchEvent(evt, new Function() {
+        public native void f(Element e) /*-{
+          e.submit();
+        }-*/;
+      });
+    }
     if (eventbits == EventsListener.ONRESIZE)
       triggerHtmlEvent("resize");
     return this;
   }
-
+  
   /**
    * Trigger a html event in all matched elements.
    * 
    * @param htmlEvent An string representing the html event desired
+   * @functions a set of function to run if the event is not canceled.
    */
-  public Events triggerHtmlEvent(String htmlEvent) {
-    dispatchEvent(document.createHtmlEvent(htmlEvent, true, true));
+  public Events triggerHtmlEvent(String htmlEvent, Function...functions) {
+    dispatchEvent(document.createHtmlEvent(htmlEvent, true, true), functions);
     return this;
   }
 
@@ -289,11 +296,17 @@ public class Events extends GQuery {
     }
     return this;
   }
-
-  private void dispatchEvent(NativeEvent evt) {
+  
+  private void dispatchEvent(NativeEvent evt, Function...funcs) {
     for (Element e : elements()) {
       if (isEventCapable(e)){
         e.dispatchEvent(evt);
+        if (!JsUtils.isDefaultPrevented(evt)){
+          for (Function f: funcs) {
+            f.setEvent(Event.as(evt));
+            f.f(e);
+          }
+        }
       }
     }
   }
@@ -306,7 +319,5 @@ public class Events extends GQuery {
     }
     return this;
   }
-  
-  
 
 }

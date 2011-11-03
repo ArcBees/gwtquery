@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test class for testing gwtquery effects plugin api.
  */
-public class GQueryEffectsTest extends GWTTestCase {
+public class GQueryEffectsTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -40,6 +40,11 @@ public class GQueryEffectsTest extends GWTTestCase {
 
   public String getModuleName() {
     return "com.google.gwt.query.Query";
+  }
+
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
   }
 
   public void gwtSetUp() {

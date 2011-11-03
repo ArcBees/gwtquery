@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Test class for testing gwtquery widgets plugin api.
  */
-public class GQueryWidgetsTest extends GWTTestCase {
+public class GQueryWidgetsTestGwt extends GWTTestCase {
 
   static Element e = null;
 

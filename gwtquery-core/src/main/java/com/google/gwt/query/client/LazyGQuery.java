@@ -20,6 +20,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
@@ -43,12 +44,15 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.DOM;
@@ -110,59 +114,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> andSelf();
 
   /**
-   * The animate() method allows you to create animation effects on any numeric
-   * Attribute, CSS property, or color CSS property.
-   * 
-   * Concerning to numeric properties, values are treated as a number of pixels
-   * unless otherwise specified. The units em and % can be specified where
-   * applicable.
-   * 
-   * By default animate considers css properties, if you wanted to animate element
-   * attributes you should to prepend the symbol dollar to the attribute name.
-   * 
-   * Example:
-   * 
-   * <pre class="code">
-   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
-   *  //use a swing easing function for the transition
-   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
-   *  // Change the width and border attributes of a table
-   *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
-   * </pre>
-   * 
-   * In addition to numeric values, each property can take the strings 'show',
-   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
-   * animations that take into account the display type of the element. Animated
-   * properties can also be relative. If a value is supplied with a leading +=
-   * or -= sequence of characters, then the target value is computed by adding
-   * or subtracting the given number from the current value of the property.
-   * 
-   * Example:
-   * 
-   * <pre class="code">
-   *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
-   *  //use a swing easing function for the transition
-   *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
-   * </pre>
-   * 
-   * For color css properties, values can be specified via hexadecimal or rgb or
-   * literal values.
-   * 
-   * Example:
-   * 
-   * <pre class="code">
-   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'"), 400, Easing.SWING);
-   * </pre>
-   * 
-   * @param stringOrProperties a String or a {@link Properties} object containing css properties to animate.
-   * @param funcs an array of {@link Function} called once the animation is
-   *          complete
-   * @param duration the duration in milliseconds of the animation
-   * @param easing the easing function to use for the transition
-   */
-  LazyGQuery<T> animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
-
-  /**
    * 
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS property, or color CSS property.
@@ -220,6 +171,59 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *          complete
    */
   LazyGQuery<T> animate(Object stringOrProperties, Function... funcs);
+
+  /**
+   * The animate() method allows you to create animation effects on any numeric
+   * Attribute, CSS property, or color CSS property.
+   * 
+   * Concerning to numeric properties, values are treated as a number of pixels
+   * unless otherwise specified. The units em and % can be specified where
+   * applicable.
+   * 
+   * By default animate considers css properties, if you wanted to animate element
+   * attributes you should to prepend the symbol dollar to the attribute name.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
+   *  // Change the width and border attributes of a table
+   *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
+   * </pre>
+   * 
+   * In addition to numeric values, each property can take the strings 'show',
+   * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
+   * animations that take into account the display type of the element. Animated
+   * properties can also be relative. If a value is supplied with a leading +=
+   * or -= sequence of characters, then the target value is computed by adding
+   * or subtracting the given number from the current value of the property.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
+   *  //use a swing easing function for the transition
+   *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * For color css properties, values can be specified via hexadecimal or rgb or
+   * literal values.
+   * 
+   * Example:
+   * 
+   * <pre class="code">
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'"), 400, Easing.SWING);
+   * </pre>
+   * 
+   * @param stringOrProperties a String or a {@link Properties} object containing css properties to animate.
+   * @param funcs an array of {@link Function} called once the animation is
+   *          complete
+   * @param duration the duration in milliseconds of the animation
+   * @param easing the easing function to use for the transition
+   */
+  LazyGQuery<T> animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
 
   /**
    * The animate() method allows you to create animation effects on any numeric
@@ -467,6 +471,17 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> closest(String selector);
 
   /**
+   * Get the first ancestor element that matches the selector (for each matched
+   * element), beginning at the current element and progressing up through the
+   * DOM tree until reach the <code>context</code> node.
+   * 
+   * If no context is passed in then the context of the gQuery object will be
+   * used instead.
+   * 
+   */
+  LazyGQuery<T> closest(String selector, Node context);
+
+  /**
    * Returns a {@link Map} object as key a selector and as value the list of
    * ancestor elements matching this selectors, beginning at the first matched
    * element and progressing up through the DOM. This method allows retrieving
@@ -489,17 +504,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * @return
    */
   JsNamedArray<NodeList<Element>> closest(String[] selectors, Node context);
-
-  /**
-   * Get the first ancestor element that matches the selector (for each matched
-   * element), beginning at the current element and progressing up through the
-   * DOM tree until reach the <code>context</code> node.
-   * 
-   * If no context is passed in then the context of the gQuery object will be
-   * used instead.
-   * 
-   */
-  LazyGQuery<T> closest(String selector, Node context);
 
   /**
    * Filter the set of elements to those that contain the specified text.
@@ -714,6 +718,80 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Attach <code>handlers</code> to one or more events for all elements that
    * match the <code>selector</code>, now or in the future, based on a specific
+   * set of root elements. 
+   * 
+   * Example:
+   * 
+   * <pre>
+   * $("table").delegate("td", Event.ONCLICK, new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * 
+   * This code above add an handler on click event on all cell (the existing
+   * oneand the future cell) of all table. This code is equivalent to :
+   * 
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live(Event.ONCLICK, new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * </pre>
+   * 
+   * You can attach the handlers to many events by using the '|' operator
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, int eventbits, Function... handlers);
+
+  /**
+   * Attach <code>handlers</code> to one or more events for all elements that match the <code>selector</code>, 
+   * now or in the future, based on a specific set of root elements.
+   * The <code>data</code> parameter allows us
+   * to pass data to the handler.
+   *
+   * Example:
+   * <pre>
+   * $("table").delegate("td", "click", new Function(){
+   *  public void f(Element e){
+   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *  }
+   * });
+   * </pre>
+   * This code above add an handler on click event on all cell (the existing oneand the future cell) of all table.
+   * This code is equivalent to :
+   * <pre>
+   * $("table").each(new Function(){
+   *  public void f(Element table){
+   *   $("td", table).live("click", new Function(){
+   *      public void f(Element e){
+   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
+   *    }
+   *  }
+   * });
+   *
+   * </pre>
+   * 
+   * You can pass attach the handlers to many events by using the '|' operator
+   * ex:
+   * <pre>
+   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
+   * </pre>
+   */
+  LazyGQuery<T> delegate(String selector, int eventbits, Object data, Function... handlers);
+
+  /**
+   * Attach <code>handlers</code> to one or more events for all elements that
+   * match the <code>selector</code>, now or in the future, based on a specific
    * set of root elements.
    * 
    * Example:
@@ -788,80 +866,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> delegate(String selector, String eventType, Object data, Function... handlers);
 
   /**
-   * Attach <code>handlers</code> to one or more events for all elements that
-   * match the <code>selector</code>, now or in the future, based on a specific
-   * set of root elements. 
-   * 
-   * Example:
-   * 
-   * <pre>
-   * $("table").delegate("td", Event.ONCLICK, new Function(){
-   *  public void f(Element e){
-   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
-   *  }
-   * });
-   * </pre>
-   * 
-   * This code above add an handler on click event on all cell (the existing
-   * oneand the future cell) of all table. This code is equivalent to :
-   * 
-   * <pre>
-   * $("table").each(new Function(){
-   *  public void f(Element table){
-   *   $("td", table).live(Event.ONCLICK, new Function(){
-   *      public void f(Element e){
-   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
-   *    }
-   *  }
-   * });
-   *
-   * </pre>
-   * 
-   * You can attach the handlers to many events by using the '|' operator
-   * ex:
-   * <pre>
-   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
-   * </pre>
-   */
-  LazyGQuery<T> delegate(String selector, int eventbits, Function... handlers);
-
-  /**
-   * Attach <code>handlers</code> to one or more events for all elements that match the <code>selector</code>, 
-   * now or in the future, based on a specific set of root elements.
-   * The <code>data</code> parameter allows us
-   * to pass data to the handler.
-   *
-   * Example:
-   * <pre>
-   * $("table").delegate("td", "click", new Function(){
-   *  public void f(Element e){
-   *  $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
-   *  }
-   * });
-   * </pre>
-   * This code above add an handler on click event on all cell (the existing oneand the future cell) of all table.
-   * This code is equivalent to :
-   * <pre>
-   * $("table").each(new Function(){
-   *  public void f(Element table){
-   *   $("td", table).live("click", new Function(){
-   *      public void f(Element e){
-   *      $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED));
-   *    }
-   *  }
-   * });
-   *
-   * </pre>
-   * 
-   * You can pass attach the handlers to many events by using the '|' operator
-   * ex:
-   * <pre>
-   *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
-   * </pre>
-   */
-  LazyGQuery<T> delegate(String selector, int eventbits, Object data, Function... handlers);
-
-  /**
    * Execute the next function on the Effects queue for the matched elements.
    * This method is usefull to tell when a function you add in the Effects queue
    * is ended and so the next function in the queue can start.
@@ -905,19 +909,19 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Remove an event handlers previously attached using
-   * {@link #live(String, Function)} In order for this method to function
-   * correctly, the selector used with it must match exactly the selector
-   * initially used with {@link #live(String, Function)}
-   */
-  LazyGQuery<T> die(String eventName);
-
-  /**
-   * Remove an event handlers previously attached using
    * {@link #live(int, Function)} In order for this method to function
    * correctly, the selector used with it must match exactly the selector
    * initially used with {@link #live(int, Function)}
    */
   LazyGQuery<T> die(int eventbits);
+
+  /**
+   * Remove an event handlers previously attached using
+   * {@link #live(String, Function)} In order for this method to function
+   * correctly, the selector used with it must match exactly the selector
+   * initially used with {@link #live(String, Function)}
+   */
+  LazyGQuery<T> die(String eventName);
 
   /**
    * Run one or more Functions over each element of the GQuery. You have to
@@ -1083,15 +1087,15 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Reduce the set of matched elements to those that have a descendant 
-   * that matches the selector.
-   */
-  LazyGQuery<T> has(String selector);
-
-  /**
-   * Reduce the set of matched elements to those that have a descendant 
    * that matches the Element.
    */
   LazyGQuery<T> has(Element elem);
+
+  /**
+   * Reduce the set of matched elements to those that have a descendant 
+   * that matches the selector.
+   */
+  LazyGQuery<T> has(String selector);
 
   /**
    * Returns true any of the specified classes are present on any of the matched
@@ -1226,6 +1230,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   boolean isEmpty();
 
   /**
+   * Return true if the first element is visible.isVisible
+   */
+  boolean isVisible();
+
+  /**
    * Bind a set of functions to the keydown event of each matched element. Or
    * trigger the event if no functions are provided.
    */
@@ -1273,6 +1282,18 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * return the same value.
    */
   int length();
+
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  LazyGQuery<T> live(int eventbits, Function... funcs);
+
+  /**
+   * Attach a handler for this event to all elements which match the current
+   * selector, now and in the future.
+   */
+  LazyGQuery<T> live(int eventbits, Object data, Function... funcs);
 
   /**
    * <p>
@@ -1326,18 +1347,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </p>
    */
   LazyGQuery<T> live(String eventName, Function... funcs);
-
-  /**
-   * Attach a handler for this event to all elements which match the current
-   * selector, now and in the future.
-   */
-  LazyGQuery<T> live(int eventbits, Function... funcs);
-
-  /**
-   * Attach a handler for this event to all elements which match the current
-   * selector, now and in the future.
-   */
-  LazyGQuery<T> live(int eventbits, Object data, Function... funcs);
 
   /**
    * <p>
@@ -1394,9 +1403,28 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> live(String eventName, Object data, Function... funcs);
 
   /**
-   * Bind a function to the load event of each matched element.
+   * Load data from the server and place the returned HTML into the matched element.
+   * 
+   * The url allows us to specify a portion of the remote document to be inserted. 
+   * This is achieved with a special syntax for the url parameter. 
+   * If one or more space characters are included in the string, the portion of 
+   * the string following the first space is assumed to be a GQuery selector that 
+   * determines the content to be loaded.
+   * 
    */
-  LazyGQuery<T> load(Function f);
+  LazyGQuery<T> load(String url);
+
+  /**
+   * Load data from the server and place the returned HTML into the matched element.
+   * 
+   * The url allows us to specify a portion of the remote document to be inserted. 
+   * This is achieved with a special syntax for the url parameter. 
+   * If one or more space characters are included in the string, the portion of 
+   * the string following the first space is assumed to be a GQuery selector that 
+   * determines the content to be loaded.
+   * 
+   */
+  LazyGQuery<T> load(String url, Properties data, Function onSuccess);
 
   /**
    * Reduce the set of matched elements to all elements before a given position.
@@ -1704,12 +1732,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   int queue();
 
   /**
-   * Show the number of functions in the queued named as queueName to be
-   * executed on the first matched element.
-   */
-  int queue(String queueName);
-
-  /**
    * Put a set of {@link Function} at the end of the Effects queue.
    * 
    * Example:
@@ -1737,6 +1759,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * {@see #dequeue()}
    */
   LazyGQuery<T> queue(Function... f);
+
+  /**
+   * Show the number of functions in the queued named as queueName to be
+   * executed on the first matched element.
+   */
+  int queue(String queueName);
 
   /**
    * Put a set of {@link Function} at the end of a queue.
@@ -1856,14 +1884,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> resize(Function... f);
 
   /**
-   * Save a set of Css properties of every matched element.
-   */
-  void restoreCssAttrs(String... cssProps);
-
-  /**
    * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element. 
    */
   LazyGQuery<T> resize(Function f);
+
+  /**
+   * Save a set of Css properties of every matched element.
+   */
+  void restoreCssAttrs(String... cssProps);
 
   /**
    * Restore a set of previously saved Css properties in every matched element.
@@ -2042,7 +2070,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> submit(Function... funcs);
 
   /**
-   * Return the text contained in the first matched element.
+   * Return the concatened text contained in the matched elements.
    */
   String text();
 
@@ -2077,7 +2105,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> toggleClass(String clz, boolean addOrRemove);
 
   /**
-   * Returns the computed left position of the first element matched.
+   * Returns the computed top position of the first element matched.
    */
   int top();
 
@@ -2108,6 +2136,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> unbind(int eventbits);
 
   /**
+   * Removes all events that match the eventList.
+   */
+  LazyGQuery<T> unbind(String eventList);
+
+  /**
    * Remove all event delegation that have been bound using
    * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
    */
@@ -2123,13 +2156,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
    */
-  LazyGQuery<T> undelegate(String selector, String eventName);
+  LazyGQuery<T> undelegate(String selector, int eventBit);
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
    */
-  LazyGQuery<T> undelegate(String selector, int eventBit);
+  LazyGQuery<T> undelegate(String selector, String eventName);
 
   /**
    * Remove all duplicate elements from an array of elements. Note that this
@@ -2209,11 +2242,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * the array will be empty, otherwise it will contain one or more values.
    */
   String[] vals();
-
-  /**
-   * Return true if the first element is visible.isVisible
-   */
-  boolean isVisible();
 
   /**
    * Return the first non null attached widget from the matched elements or null

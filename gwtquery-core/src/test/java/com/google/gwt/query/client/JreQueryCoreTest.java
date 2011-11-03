@@ -27,9 +27,9 @@ public class JreQueryCoreTest extends GWTTestCase {
   }
 
   public void testAssertHtmlEquals() {
-    GQueryCoreTest.assertHtmlEquals("<span>hello</span>",
+    GQueryCoreTestGwt.assertHtmlEquals("<span>hello</span>",
         "<span $h=\"5\">hello</span>");
-    GQueryCoreTest.assertHtmlEquals("<p class=\"abc\">whatever</p> ",
+    GQueryCoreTestGwt.assertHtmlEquals("<p class=\"abc\">whatever</p> ",
         " <p class=abc added=\"null\">Whatever</p>");
   }
 
@@ -52,15 +52,6 @@ public class JreQueryCoreTest extends GWTTestCase {
         .wrapPropertiesString("[{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}]"));
     assertEquals("{\"$x\":22.60,\"$y\":\".0\",\"h\":\"#y\"}", Properties
         .wrapPropertiesString("$x:22.60,$y:.0,h:#y"));
-  }
-  
-  public void testtt()  {
-    String selector = "div[class!=madeup]";
-    if (selector.matches(".*\\[\\w+!=[^\\]]+\\].*")) {
-      System.out.println("OK");
-      selector = selector.replaceAll("(\\[\\w+)!(=[^\\]]+\\])", ":not($1$2)");
-    }
-    System.out.println(selector);
   }
 
 }

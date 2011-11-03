@@ -55,7 +55,7 @@ import java.util.List;
 /**
  * Test class for testing gwtquery-core api.
  */
-public class GQueryCoreTest extends GWTTestCase {
+public class GQueryCoreTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -82,6 +82,11 @@ public class GQueryCoreTest extends GWTTestCase {
     return "com.google.gwt.query.Query";
   }
 
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
+  }
+ 
   public void gwtSetUp() {
     if (e == null || DOM.getElementById("core-tst") == null) {
       testPanel = new HTML();

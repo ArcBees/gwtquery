@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.rebind.SelectorGeneratorCssToXPath;
 
 /**
  * Test for selector engine implementations
@@ -23,11 +24,16 @@ import com.google.gwt.junit.client.GWTTestCase;
 public class SelectorEnginesTest extends GWTTestCase {
   
   public String getModuleName() {
-    return "com.google.gwt.query.Query";
+    return null;
   }
   
   public void testCssToXpath() {
     SelectorEngineCssToXPath sel = new SelectorEngineCssToXPath();
+    
+    if (getModuleName() == null) {
+      sel = new SelectorEngineCssToXPath(SelectorEngineCssToXPath.replacerGwt);
+    }
+    
     
     assertEquals(".//div[starts-with(@class,'exa') and (substring(@class,string-length(@class)-3)='mple')]", 
         sel.css2Xpath("div[class^=exa][class$=mple]"));

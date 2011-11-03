@@ -16,6 +16,8 @@
 package com.google.gwt.query.client;
 
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -28,7 +30,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test class for testing ajax stuff.
  */
-public class GQueryAjaxTest extends GWTTestCase {
+public class GQueryAjaxTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -36,6 +38,11 @@ public class GQueryAjaxTest extends GWTTestCase {
 
   public String getModuleName() {
     return "com.google.gwt.query.Query";
+  }
+
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
   }
 
   public void gwtSetUp() {

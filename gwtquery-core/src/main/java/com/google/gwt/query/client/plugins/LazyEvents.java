@@ -19,6 +19,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.query.client.LazyBase;
@@ -114,8 +115,9 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * Trigger a html event in all matched elements.
    * 
    * @param htmlEvent An string representing the html event desired
+   * @functions a set of function to run if the event is not canceled.
    */
-  LazyEvents<T> triggerHtmlEvent(String htmlEvent);
+  LazyEvents<T> triggerHtmlEvent(String htmlEvent, Function...functions);
 
   /**
    * Removes all handlers, that matches the events bits passed, from each

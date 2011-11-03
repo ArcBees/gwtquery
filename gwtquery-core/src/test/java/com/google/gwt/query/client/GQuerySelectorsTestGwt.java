@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test for selectors
  */
-public class GQuerySelectorsTest extends GWTTestCase {
+public class GQuerySelectorsTestGwt extends GWTTestCase {
   
   boolean runSlow = false;
 
@@ -167,6 +167,11 @@ public class GQuerySelectorsTest extends GWTTestCase {
     return "com.google.gwt.query.Query";
   }
 
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
+  }
+  
   public void gwtSetUp() {
     if (e == null) {
       testPanel = new HTML();

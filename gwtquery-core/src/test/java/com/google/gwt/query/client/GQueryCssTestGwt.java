@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Test class for testing css part.
  */
-public class GQueryCssTest extends GWTTestCase {
+public class GQueryCssTestGwt extends GWTTestCase {
 
   static Element e = null;
 
@@ -67,6 +67,11 @@ public class GQueryCssTest extends GWTTestCase {
 
   public String getModuleName() {
     return "com.google.gwt.query.Query";
+  }
+  
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
   }
 
   public void gwtSetUp() {

@@ -36,8 +36,8 @@ public class SelectorGeneratorsTest extends GWTTestCase {
     Object[] regs = SelectorEngineCssToXPath.regs;
     String r1 = s, r2 = s;
     for (int i = 0; i < regs.length;) {
-      r1 = SelectorGeneratorCssToXPath.replacerJvm.replaceAll(r1, regs[i].toString(), regs[i+1]);
-      r2 = SelectorGeneratorCssToXPath.replacer.replaceAll(r2, regs[i].toString(), regs[i+1]);
+      r1 = SelectorGeneratorCssToXPath.replacer.replaceAll(r1, regs[i].toString(), regs[i+1]);
+      r2 = SelectorEngineCssToXPath.replacerGwt.replaceAll(r2, regs[i].toString(), regs[i+1]);
       i+=2;
     }
     assertEquals(r1, r2);
@@ -100,7 +100,7 @@ public class SelectorGeneratorsTest extends GWTTestCase {
 
   public void testReplaceAll() {
     assertEquals("<img src='thumbs/01'/> <img src='thumbs/03'/>", 
-        SelectorGeneratorCssToXPath.replacerGwt.replaceAll("/[thumb01]/ /[thumb03]/", "/\\[thumb(\\d+)\\]/", new ReplaceCallback() {
+        SelectorEngineCssToXPath.replacerGwt.replaceAll("/[thumb01]/ /[thumb03]/", "/\\[thumb(\\d+)\\]/", new ReplaceCallback() {
       public String foundMatch(ArrayList<String>s) {
         return "<img src='thumbs/" + s.get(1) + "'/>";
       }

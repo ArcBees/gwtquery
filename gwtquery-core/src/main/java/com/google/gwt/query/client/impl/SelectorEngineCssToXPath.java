@@ -27,6 +27,7 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath
@@ -189,6 +190,32 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         return s;
       } else {
         return s.replaceAll(r, o.toString()); 
+      }
+    }
+  };
+  
+  /**
+   * A replacer which works in both sides. Right now gquery JsRegexp is faster
+   * than gwt shared RegExp and does not uses HashSet
+   */
+  public static final Replacer replacerGwt = new Replacer() {
+    public String replaceAll(String s, String r, Object o) {
+      RegExp p = RegExp.compile(r, "g");
+      if (o instanceof ReplaceCallback) {
+        ReplaceCallback callback = (ReplaceCallback) o;
+        com.google.gwt.regexp.shared.MatchResult a = null;
+        while ((a = p.exec(s)) != null) {
+          ArrayList<String> args = new ArrayList<String>();
+          for (int i = 0; i < a.getGroupCount(); i++) {
+            args.add(a.getGroup(i));
+          }
+          String f = callback.foundMatch(args);
+          s = s.replace(a.getGroup(0), f);
+          p = RegExp.compile(r, "g");
+        }
+        return s;
+      } else {
+        return p.replace(s, o.toString());
       }
     }
   };
