@@ -46,6 +46,7 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
@@ -3717,11 +3718,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery setArray(NodeList<Element> list) {
     if (list != null) {
-      nodeList = list;
+      nodeList.<JsCache>cast().clear();
       int l = list.getLength();
       elements = new Element[l];
       for (int i = 0; i < l; i++) {
         elements[i] = list.getItem(i);
+        nodeList.<JsObjectArray>cast().add(list.getItem(i));
       }
     }
     return this;

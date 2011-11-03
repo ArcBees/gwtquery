@@ -46,6 +46,14 @@ public class JsCache extends JavaScriptObject {
     delete this[name];
   }-*/;
 
+  public final native <T> void clear() /*-{
+    if (this.length) {
+      for (i = this.length - 1; i >= 0; i--) 
+        delete this[i];
+      this.length = 0;  
+    }
+  }-*/;
+
   public final native <T> boolean exists(T name) /*-{
     return !!this[name];
   }-*/;
