@@ -164,6 +164,35 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals("yellow", $("p", e).css("color", false));
   }
   
+  /**
+   * TODO: focus/blur doesn't work with HtmlUnit, investigate and report.
+   */
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testFocusBlur() {
+    $(e).html("<p>Content</p>");
+
+    // focus
+    // FIXME: Html 2.1.0 failing but FF do not
+    $("p", e).focus(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "1px dotted black");
+      }
+    });
+    $("p", e).focus();
+    assertEquals("black", $("p", e).css("border-top-color", false));
+    assertEquals("dotted", $("p", e).css("border-top-style", false));
+    assertEquals("1px", $("p", e).css("border-top-width", false));
+
+    // blur
+    $("p", e).blur(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "");
+      }
+    });
+    $("p", e).blur();
+    assertEquals("", $("p", e).css("border", false));
+  }
+  
   public void testEventsPlugin() {
     $(e).html("<p>Content</p>");
 
@@ -231,33 +260,14 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).trigger(Event.ONMOUSEOUT);
     assertEquals("white", $("p", e).css("background-color", false));
 
-//    // focus
-//    FIXME: Html 2.1.0 failing but FF do not
-//    $("p", e).focus(new Function() {
-//      public void f(Element elem) {
-//        $(elem).css("border", "1px dotted black");
-//      }
-//    });
-//    $("p", e).focus();
-//    assertEquals("black", $("p", e).css("border-top-color", false));
-//    assertEquals("dotted", $("p", e).css("border-top-style", false));
-//    assertEquals("1px", $("p", e).css("border-top-width", false));
-//
-//    // blur
-//    $("p", e).blur(new Function() {
-//      public void f(Element elem) {
-//        $(elem).css("border", "");
-//      }
-//    });
-//    $("p", e).blur();
-//    assertEquals("", $("p", e).css("border", false));
-
     // key events
     $(e).html("<input type='text'/>");
     Function keyEventAction = new Function() {
       public boolean f(Event evnt) {
         GQuery gq = $(evnt);
-        gq.val(gq.val() + Character.toString((char) evnt.getKeyCode()));
+        int c = evnt.getCharCode() > 0 ? evnt.getCharCode() : evnt.getKeyCode();
+        System.out.println(evnt.getCharCode() + " " + evnt.getKeyCode());
+        gq.val(gq.val() + Character.toString((char)c));
         return false;
       }
     };
@@ -265,10 +275,13 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("input", e).keydown(keyEventAction);
     $("input", e).keyup(keyEventAction);
     $("input", e).focus();
+    $("input", e).keydown('A');
+    $("input", e).keypress('B');
+    $("input", e).keyup('C');
     $("input", e).keydown('a');
     $("input", e).keypress('b');
     $("input", e).keyup('c');
-    assertEquals("abc", $("input", e).val());
+    assertEquals("ABCabc", $("input", e).val());
   }
   
   public void testLazyMethods() {

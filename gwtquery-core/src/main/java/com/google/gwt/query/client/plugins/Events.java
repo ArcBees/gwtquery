@@ -18,6 +18,7 @@ package com.google.gwt.query.client.plugins;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
@@ -181,7 +182,6 @@ public class Events extends GQuery {
    * Example: fire(Event.ONCLICK | Event.ONFOCUS) Example: fire(Event.ONKEYDOWN.
    * 'a');
    */
-  @SuppressWarnings("deprecation")
   public Events trigger(int eventbits, int... keys) {
     if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
       dispatchEvent(document.createBlurEvent());
@@ -197,13 +197,13 @@ public class Events extends GQuery {
       dispatchEvent(document.createFocusEvent());
     if ((eventbits | Event.ONKEYDOWN) == Event.ONKEYDOWN)
       dispatchEvent(document.createKeyDownEvent(false, false, false, false,
-          keys[0], 0));
+          keys[0]));
     if ((eventbits | Event.ONKEYPRESS) == Event.ONKEYPRESS)
       dispatchEvent(document.createKeyPressEvent(false, false, false, false,
           keys[0], 0));
     if ((eventbits | Event.ONKEYUP) == Event.ONKEYUP)
       dispatchEvent(document.createKeyUpEvent(false, false, false, false,
-          keys[0], 0));
+          keys[0]));
     if ((eventbits | Event.ONLOSECAPTURE) == Event.ONLOSECAPTURE)
       triggerHtmlEvent("losecapture");
     if ((eventbits | Event.ONMOUSEDOWN) == Event.ONMOUSEDOWN)
