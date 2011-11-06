@@ -1081,7 +1081,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery attr(String key, Object value) {
     assert key != null : "key cannot be null";
+    assert !"$H".equalsIgnoreCase(key) : "$H is a GWT reserved attribute. Changing its value will break your application.";
+    
     getAttributeImpl().setAttribute(this, key, value);
+    
     return this;
   }
 
