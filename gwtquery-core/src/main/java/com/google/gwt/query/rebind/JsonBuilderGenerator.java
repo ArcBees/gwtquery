@@ -16,6 +16,7 @@
 package com.google.gwt.query.rebind;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
@@ -26,6 +27,7 @@ import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
+import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Properties;
@@ -41,6 +43,7 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType jsonBuilderType;
   static JClassType stringType;
   static JClassType jsType;
+  static JClassType listType;
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
@@ -50,11 +53,12 @@ public class JsonBuilderGenerator extends Generator {
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
+    listType = oracle.findType(List.class.getName());
 
     String t[] = generateClassName(clazz);
 
-    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0],
-        t[1], requestedClass);
+    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1],
+        requestedClass);
     if (sw != null) {
       for (JMethod method : clazz.getMethods()) {
         generateMethod(sw, method, treeLogger);
@@ -78,41 +82,71 @@ public class JsonBuilderGenerator extends Generator {
     return (c != null && c.isAssignableTo(o));
   }
 
+  public static String capitalize(String s) {
+    if (s.length() == 0)
+      return s;
+    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+  }
+
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
       throws UnableToCompleteException {
     Name nameAnnotation = method.getAnnotation(Name.class);
     String name = nameAnnotation != null ? nameAnnotation.value()
-        : method.getName().replaceFirst("^(get|set)", "").toLowerCase();
+        : method.getName().replaceFirst("^(get|set)", "");
+    name = name.substring(0, 1).toLowerCase() + name.substring(1);
 
     String retType = method.getReturnType().getParameterizedQualifiedSourceName();
-
     sw.print("public final " + retType + " " + method.getName());
     JParameter[] params = method.getParameters();
     if (params.length == 0) {
       JArrayType arr = method.getReturnType().isArray();
+      JParameterizedType list = method.getReturnType().isParameterized();
+
       sw.println("() {");
       sw.indent();
       if (retType.matches("(java.lang.Boolean|boolean)")) {
         sw.println("return p.getBoolean(\"" + name + "\");");
+      } else if (retType.matches("java.util.Date")) {
+        sw.println("return new Date((long)p.getFloat(\"" + name + "\"));");
       } else if (method.getReturnType().isPrimitive() != null) {
         sw.println("return (" + retType + ")p.getFloat(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " +
-        		"((" + q + ")GWT.create(" + q + ".class))" +
-        		".load(p.getJavaScriptObject(\"" + name + "\"));");
-      } else if (retType.equals(Properties.class.getName())){
+        sw.println("return " + "((" + q + ")GWT.create(" + q + ".class))"
+            + ".load(p.getJavaScriptObject(\"" + name + "\"));");
+      } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
         sw.println("return p.getJavaScriptObject(\"" + name + "\");");
-      } else if (arr != null) {
-        String t = arr.getComponentType().getQualifiedSourceName();
+      } else if (arr != null || list != null) {
+        JType type = arr != null ? arr.getComponentType()
+            : list.getTypeArgs()[0];
+        boolean buildType = isTypeAssignableTo(type, jsonBuilderType);
+        String t = type.getQualifiedSourceName();
         sw.println("JsArrayMixed a = p.getArray(\"" + name + "\");");
         sw.println("int l = a == null ? 0 : a.length();");
-        sw.println("return getArrayBase(\"" + name + "\", new " + t + "[l], "
-            + t + ".class);");
+        String ret;
+        if (buildType) {
+          sw.println(t + "[] r = new " + t + "[l];");
+          sw.println("JsObjectArray<?> a1 = p.getArray(\"" + name
+              + "\").cast();");
+          sw.println("int l1 = r.length;");
+          sw.println("for (int i = 0 ; i < l1 ; i++) {");
+          sw.println("  Object w = a1.get(i);");
+          sw.println("  " + t + " instance = GWT.create(" + t + ".class);");
+          sw.println("  r[i] = instance.load(w);");
+          sw.println("}");
+          ret = "r";
+        } else {
+          ret = "getArrayBase(\"" + name + "\", new " + t + "[l], " + t+ ".class)";
+        }
+        if (arr != null) {
+          sw.println("return " + ret + ";");
+        } else {
+          sw.println("return Arrays.asList(" + ret + ");");
+        }
       } else {
         sw.println("return null; // Unsupported return type: " + retType);
       }
@@ -121,16 +155,25 @@ public class JsonBuilderGenerator extends Generator {
     } else if (params.length == 1) {
       JType type = params[0].getType();
       JArrayType arr = type.isArray();
+      JParameterizedType list = type.isParameterized();
       sw.print("(" + type.getParameterizedQualifiedSourceName() + " a)");
       sw.println("{");
       sw.indent();
-      if (arr != null) {
-        sw.println("setArrayBase(\"" + name + "\", a);");
+      if (arr != null || list != null) {
+        String a = "a";
+        if (list != null) {
+          a = "a.toArray(new " + list.getTypeArgs()[0].getQualifiedSourceName()
+              + "[0])";
+        }
+        sw.println("setArrayBase(\"" + name + "\", " + a + ");");
+      } else if (type.getParameterizedQualifiedSourceName().matches("java.util.Date")) {
+        sw.println("p.set(\"" + name + "\", a.getTime());");
       } else {
         sw.println("p.set(\"" + name + "\", a);");
       }
-      if (!"void".equals(retType)){
-        if (isTypeAssignableTo(method.getReturnType(), method.getEnclosingType())) {
+      if (!"void".equals(retType)) {
+        if (isTypeAssignableTo(method.getReturnType(),
+            method.getEnclosingType())) {
           sw.println("return this;");
         } else {
           sw.println("return null;");
@@ -156,6 +199,8 @@ public class JsonBuilderGenerator extends Generator {
     composerFactory.addImport("com.google.gwt.query.client.*");
     composerFactory.addImport("com.google.gwt.core.client.*");
     composerFactory.addImport("com.google.gwt.dom.client.*");
+    composerFactory.addImport("java.util.*");
+
     for (String interfaceName : interfaceNames) {
       composerFactory.addImplementedInterface(interfaceName);
     }

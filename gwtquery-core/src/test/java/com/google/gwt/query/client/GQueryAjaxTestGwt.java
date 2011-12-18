@@ -18,6 +18,10 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -56,6 +60,11 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     }
   }
   
+  interface Item extends JsonBuilder {
+    Date getDate();
+    void setDate(Date d);
+  }
+  
   interface JsonExample extends JsonBuilder {
     int getA();
     JsonExample getB();
@@ -67,6 +76,8 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     JsonExample setT(String[] strings);
     JsonExample setZ(Boolean b);
     JsonExample setD(long l);
+    List<Item> getItems();
+    void setItems(List<Item> a);
   }
   
   public void testJsonBuilder() {
@@ -88,7 +99,17 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals("foo", c.getT()[0]);
     assertEquals("bar", c.getT()[1]);
     assertEquals(1234l, c.getD());
-
+    
+    Item i1 = GWT.create(Item.class);
+    Item i2 = GWT.create(Item.class);
+    i1.setDate(new Date(2000));
+    i2.setDate(new Date(3000));
+    Item[] items = new Item[]{i1, i2};
+    c.setItems(Arrays.asList(items));
+    assertEquals(2000l, c.getItems().get(0).getDate().getTime());
+    assertEquals(3000l, c.getItems().get(1).getDate().getTime());
+    String s = "{\"a\":1,\"b\":{\"a\":2,\"b\":{\"a\":3}},\"u\":\"url\",\"d\":1234,\"t\":[\"foo\",\"bar\"],\"z\":false,\"items\":[{\"date\":2000},{\"date\":3000}]}";
+    assertEquals(s, c.toString());
   }
   
   interface XmlExample extends XmlBuilder {

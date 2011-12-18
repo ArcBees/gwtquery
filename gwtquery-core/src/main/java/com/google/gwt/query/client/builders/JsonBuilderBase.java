@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -44,11 +45,19 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     }
     return (J)this;
   }
-  
+
   protected <T> void setArrayBase(String n, T[] r) {
-    JsObjectArray<Object> a = JsObjectArray.create();
-    a.add(r);
-    p.set(n, a);
+    if (r.length > 0 && r[0] instanceof JsonBuilder) {
+        JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
+        for (T o : r) {
+          a.push(((JsonBuilder)o).getProperties());
+        }
+        p.set(n, a);
+    } else {
+      JsObjectArray<Object> a = JsObjectArray.create();
+      a.add(r);
+      p.set(n, a);
+    }
   }
   
   @SuppressWarnings("unchecked")

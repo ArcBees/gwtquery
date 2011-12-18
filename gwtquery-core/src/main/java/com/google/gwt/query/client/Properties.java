@@ -141,11 +141,16 @@ public class Properties extends JavaScriptObject {
     
     for (String k : keys()){
       String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
-      JsArrayMixed o = getArray(k);
+      JsCache o = getArray(k).cast();
       if (o != null) {
         ret += ky + ":[";
         for (int i = 0, l = o.length(); i < l ; i++) {
-          ret += "\"" + o.getString(i) + "\",";
+          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          if (p != null) {
+            ret += p.toJsonString() + ",";
+          } else {
+            ret += "\"" + o.getString(i) + "\",";
+          }
         }
         ret += "],";
       } else {
@@ -166,10 +171,16 @@ public class Properties extends JavaScriptObject {
     String ret = "";
     for (String k : keys()) {
       ret += ret.isEmpty() ? "" : "&";
-      JsArrayMixed o = getArray(k);
+      JsCache o = getArray(k).cast();
       if (o != null) {
         for (int i = 0, l = o.length(); i < l ; i++) {
-          ret += (i > 0 ? "&" : "") + k + "[]=" + o.getString(i) ;
+          ret += i > 0 ? "&" : "";
+          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          if (p != null) {
+            ret += k + "[]=" + p.toJsonString();
+          } else {
+            ret += k + "[]=" + o.getString(i) ;
+          }
         }
       } else {
         Properties p = getJavaScriptObject(k);
