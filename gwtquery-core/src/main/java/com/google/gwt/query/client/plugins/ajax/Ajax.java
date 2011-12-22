@@ -11,7 +11,6 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
 
@@ -33,37 +32,149 @@ import com.google.gwt.query.client.plugins.Plugin;
  */
 public class Ajax extends GQuery {
   
-  /**
-   * Ajax Settings object 
-   */
-  public interface Settings extends JsonBuilder {
-    String getContentType();
-    Element getContext();
-    Properties getData();
-    String getDataString();
-    String getDataType();
-    Function getError();
-    Properties getHeaders();
-    String getPassword();
-    Function getSuccess();
-    int getTimeout();
-    String getType();
-    String getUrl();
-    String getUsername();
-    Settings setContentType(String t);
-    Settings setContext(Element e);
-    Settings setData(Properties p);
-    Settings setDataString(String d);
-    Settings setDataType(String t);
-    Settings setError(Function f);
-    Settings setHeaders(Properties p);
-    Settings setPassword(String p);
-    Settings setSuccess(Function f);
-    Settings setTimeout(int t);
-    Settings setType(String t);
-    Settings setUrl(String u);
-    Settings setUsername(String u);
-  }
+	/**
+	 * Ajax Settings object
+	 */
+	public static class Settings {
+
+		private static final String CONTENT_TYPE_KEY = "contentType";
+		private static final String CONTEXT_KEY = "context";
+		private static final String DATA_KEY = "data";
+		private static final String DATA_STRING_KEY = "dataString";
+		private static final String DATA_TYPE_KEY = "dataType";
+		private static final String HEADERS_KEY = "headers";
+		private static final String PASSWORD_KEY = "password";
+		private static final String TIMEOUT_KEY = "timeout";
+		private static final String TYPE_KEY = "type";
+		private static final String URL_KEY = "url";
+		private static final String USERNAME_KEY = "username";
+
+		public Properties settings = Properties.create();
+		public Function onSuccess;
+		public Function onError;
+
+		public String getContentType() {
+			return settings.getStr(CONTENT_TYPE_KEY);
+		}
+
+		public Element getContext() {
+			return settings.get(CONTEXT_KEY);
+		}
+
+		public Properties getData() {
+			return settings.get(DATA_KEY);
+		}
+
+		public String getDataString() {
+			return settings.get(DATA_STRING_KEY);
+		}
+
+		public String getDataType() {
+			return settings.get(DATA_TYPE_KEY);
+		}
+
+		public Function getError() {
+			return onError;
+		}
+
+		public Properties getHeaders() {
+			return settings.get(HEADERS_KEY);
+		}
+
+		public String getPassword() {
+			return settings.get(PASSWORD_KEY);
+		}
+
+		public Function getSuccess() {
+			return onSuccess;
+		}
+
+		public int getTimeout() {
+			Integer timeout = settings.get(TIMEOUT_KEY);
+			return timeout != null ? timeout.intValue() : 0;
+		}
+
+		public String getType() {
+			return settings.get(TYPE_KEY);
+		}
+
+		public String getUrl() {
+			return settings.get(URL_KEY);
+		}
+
+		public String getUsername() {
+			return settings.get(USERNAME_KEY);
+		}
+
+		public Settings setContentType(String t) {
+			settings.set(CONTENT_TYPE_KEY, t);
+			return this;
+		}
+
+		public Settings setContext(Element e) {
+			settings.set(CONTEXT_KEY, e);
+			return this;
+		}
+
+		public Settings setData(Properties p) {
+			settings.set(DATA_KEY, p);
+			return this;
+		}
+
+		public Settings setDataString(String d) {
+			settings.set(DATA_STRING_KEY, d);
+			return this;
+		}
+
+		public Settings setDataType(String t) {
+			settings.set(DATA_TYPE_KEY, t);
+			return this;
+		}
+
+		public Settings setError(Function f) {
+			onError = f;
+			return this;
+		}
+
+		public Settings setHeaders(Properties p) {
+			settings.set(HEADERS_KEY, p);
+			return this;
+		}
+
+		public Settings setPassword(String p) {
+			settings.set(PASSWORD_KEY, p);
+			return this;
+		}
+
+		public Settings setSuccess(Function f) {
+			onSuccess = f;
+			return this;
+		}
+
+		public Settings setTimeout(int t) {
+			settings.set(TIMEOUT_KEY, t);
+			return this;
+		}
+
+		public Settings setType(String t) {
+			settings.set(TYPE_KEY, t);
+			return this;
+		}
+
+		public Settings setUrl(String u) {
+			settings.set(URL_KEY, u);
+			return this;
+		}
+
+		public Settings setUsername(String u) {
+			settings.set(USERNAME_KEY, u);
+			return this;
+		}
+
+		public void load(Properties p) {
+			settings = p;
+		}
+	}
   
   public static final Class<Ajax> Ajax = 
     registerPlugin(Ajax.class, new Plugin<Ajax>() {
@@ -224,7 +335,8 @@ public class Ajax extends GQuery {
   }
   
   public static Settings createSettings() {
-    return createSettings($$(""));
+    //return createSettings($$(""));
+	  return new Settings();
   }
   
   public static Settings createSettings(String prop) {
