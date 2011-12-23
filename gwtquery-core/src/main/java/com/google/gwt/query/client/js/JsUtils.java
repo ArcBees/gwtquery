@@ -321,4 +321,12 @@ public class JsUtils {
       return Properties.create();
     }
   }
+  
+  /**
+   * Return whether the event was prevented
+   */
+  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
+    return e.defaultPrevented || e.returnValue === false 
+      || e.getPreventDefault && e.getPreventDefault() ? true : false;
+  }-*/;
 }
