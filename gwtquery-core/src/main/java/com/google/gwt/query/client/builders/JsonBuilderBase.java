@@ -17,6 +17,7 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -25,10 +26,12 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   
   protected Properties p = Properties.create();
 
+  @SuppressWarnings("unchecked")
   public J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }
   
+  @SuppressWarnings("unchecked")
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
   }
@@ -39,8 +42,10 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (prp != null && prp instanceof String) {
         return parse((String)prp);
     }
+    int i = -1;
     p = prp == null ? Properties.create() : (Properties)prp;
-    while (JsUtils.isArray(p)) {
+    while (p != null && i != p.hashCode() && JsUtils.isArray(p)) {
+      i = p.hashCode(); 
       p = p.get(0);
     }
     return (J)this;
@@ -81,6 +86,26 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   protected Properties getPropertiesBase(String n) {
     Properties r = p.getJavaScriptObject(n);
     return r != null ? r : Properties.create();
+  }
+  
+  protected Function getFunctionBase(String n) {
+    final Object o = p.get("success");
+    if (o != null) {
+      if (o instanceof Function) {
+        return (Function)o;
+      } else if (o instanceof JavaScriptObject 
+          && JsUtils.isFunction((JavaScriptObject)o)) {
+        return new Function() {
+          private native void exec(JavaScriptObject f, Object data) /*-{
+            f(data);
+          }-*/;
+          public void f() {
+            exec((JavaScriptObject)o, getData()[0]);
+          }
+        };
+      }
+    }
+    return null;
   }
   
   public String toString() {

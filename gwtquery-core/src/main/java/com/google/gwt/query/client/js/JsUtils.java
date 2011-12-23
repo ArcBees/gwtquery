@@ -244,6 +244,13 @@ public class JsUtils {
   }
   
   /**
+   * Check is a javascript object is a function
+   */
+  public static native boolean isFunction(JavaScriptObject o) /*-{
+    return o && typeof o == 'function'
+  }-*/;
+  
+  /**
    * Check is a javascript object can be used as an array 
    */
   public static native boolean isArray(JavaScriptObject o) /*-{
@@ -257,7 +264,7 @@ public class JsUtils {
   public static native boolean isNodeList(JavaScriptObject o) /*-{
     var r = Object.prototype.toString.call(o);
     return r == '[object HTMLCollection]' || r == '[object NodeList]' || 
-           (typeof o == 'object' && o.length && o[0] && o[0].tagName) 
+           (typeof o == 'object' && o.length && o[0].tagName) 
            ? true : false;
   }-*/;
   
@@ -314,9 +321,4 @@ public class JsUtils {
       return Properties.create();
     }
   }
-  
-  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
-      return e.defaultPrevented || e.returnValue === false || e.getPreventDefault && e.getPreventDefault() ? true : false;
-  }-*/;
-  
 }

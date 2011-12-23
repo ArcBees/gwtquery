@@ -30,6 +30,7 @@ import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
@@ -44,6 +45,7 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType stringType;
   static JClassType jsType;
   static JClassType listType;
+  static JClassType functionType;
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
@@ -54,6 +56,7 @@ public class JsonBuilderGenerator extends Generator {
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
+    functionType = oracle.findType(Function.class.getName());
 
     String t[] = generateClassName(clazz);
 
@@ -90,9 +93,11 @@ public class JsonBuilderGenerator extends Generator {
 
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
       throws UnableToCompleteException {
+    String ifaceName = method.getEnclosingType().getQualifiedSourceName();
+    String methName = method.getName();
     Name nameAnnotation = method.getAnnotation(Name.class);
     String name = nameAnnotation != null ? nameAnnotation.value()
-        : method.getName().replaceFirst("^(get|set)", "");
+        : methName.replaceFirst("^(get|set)", "");
     name = name.substring(0, 1).toLowerCase() + name.substring(1);
 
     String retType = method.getReturnType().getParameterizedQualifiedSourceName();
@@ -107,7 +112,7 @@ public class JsonBuilderGenerator extends Generator {
       if (retType.matches("(java.lang.Boolean|boolean)")) {
         sw.println("return p.getBoolean(\"" + name + "\");");
       } else if (retType.matches("java.util.Date")) {
-        sw.println("return new Date((long)p.getFloat(\"" + name + "\"));");
+        sw.println("return new Date(Long.parseLong(p.getStr(\"" + name + "\")));");
       } else if (method.getReturnType().isPrimitive() != null) {
         sw.println("return (" + retType + ")p.getFloat(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
@@ -120,6 +125,8 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
         sw.println("return p.getJavaScriptObject(\"" + name + "\");");
+      } else if (isTypeAssignableTo(method.getReturnType(), functionType)) {
+        sw.println("return getFunctionBase(\"" + name + "\");");
       } else if (arr != null || list != null) {
         JType type = arr != null ? arr.getComponentType()
             : list.getTypeArgs()[0];
@@ -140,15 +147,19 @@ public class JsonBuilderGenerator extends Generator {
           sw.println("}");
           ret = "r";
         } else {
-          ret = "getArrayBase(\"" + name + "\", new " + t + "[l], " + t+ ".class)";
+          ret = "getArrayBase(\"" + name + "\", new " + t + "[l], " + t + ".class)";
         }
         if (arr != null) {
           sw.println("return " + ret + ";");
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
+        
       } else {
-        sw.println("return null; // Unsupported return type: " + retType);
+        sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type " 
+            + retType + " " + ifaceName + "." + methName + "()\"); ");
+        // We return the object because probably the user knows how to handle it
+        sw.println("return p.get(\"" + name + "\");");
       }
       sw.outdent();
       sw.println("}");
