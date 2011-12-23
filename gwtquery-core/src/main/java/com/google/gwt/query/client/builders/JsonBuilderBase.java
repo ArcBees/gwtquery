@@ -89,7 +89,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
   
   protected Function getFunctionBase(String n) {
-    final Object o = p.get("success");
+    final Object o = p.get(n);
     if (o != null) {
       if (o instanceof Function) {
         return (Function)o;
