@@ -40,24 +40,19 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public J load(Object prp) {
     assert prp == null || prp instanceof JavaScriptObject || prp instanceof String;
     if (prp != null && prp instanceof String) {
-        return parse((String)prp);
+      return parse((String)prp);
     }
-    int i = -1;
-    p = prp == null ? Properties.create() : (Properties)prp;
-    while (p != null && i != p.hashCode() && JsUtils.isArray(p)) {
-      i = p.hashCode(); 
-      p = p.get(0);
-    }
+    p = (Properties)prp;
     return (J)this;
   }
 
   protected <T> void setArrayBase(String n, T[] r) {
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
-        JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
-        for (T o : r) {
-          a.push(((JsonBuilder)o).getProperties());
-        }
-        p.set(n, a);
+      JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
+      for (T o : r) {
+        a.push(((JsonBuilder)o).getProperties());
+      }
+      p.set(n, a);
     } else {
       JsObjectArray<Object> a = JsObjectArray.create();
       a.add(r);
