@@ -24,3 +24,9 @@ $ mvn gwt:run
 
     * Right click on the project -> Run as -> Web Application
     * Right click on the test class -> Run as -> GWT JUnit Test 
+
+- Although the project has the files .classpath and .project, you could generate them running any 
+ of the following commands:
+
+$ mvn eclipse:m2eclipse  (if you like to use m2eclipse)
+$ mvn eclipse:eclipse    (to use the project without m2eclipse)
