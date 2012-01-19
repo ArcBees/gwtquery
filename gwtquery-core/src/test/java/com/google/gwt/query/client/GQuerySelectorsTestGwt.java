@@ -376,6 +376,53 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
     assertEquals(n, a.length());
   }
   
+  public void testOddEvenNthChild(){
+	  
+	  $(e).append(
+	            "<div id='parent'><div id='first' class='evenClass'>branchA target</div><div id='second' class='oddClass'>branchA target</div><div id='third'  class='evenClass'>branchA target</div><div id='fourth' class='oddClass'>branchA target</div></div>");
+	  
+	  GQuery odd = $("#parent > div:odd",e);
+	  assertEquals(2, odd.size());
+	  for (Element el : odd.elements()){
+		  assertEquals("oddClass", el.getClassName());
+	  }
+	  
+	  GQuery even = $("#parent > div:even", e);
+	  assertEquals(2, even.size());
+	  for (Element el : even.elements()){
+		  assertEquals("evenClass", el.getClassName());
+	  }
+	  
+	  //test filter
+	  odd = $("#parent > div",e).filter(":odd");
+	  assertEquals(2, odd.size());
+	  for (Element el : odd.elements()){
+		  assertEquals("oddClass", el.getClassName());
+	  }
+	  
+	  even = $("#parent > div", e).filter(":even");
+	  assertEquals(2, even.size());
+	  for (Element el : even.elements()){
+		  assertEquals("evenClass", el.getClassName());
+	  }
+	  
+	  //test nth-child
+	  GQuery second = $("#parent > div",e).filter(":nth-child(2)");
+	  assertEquals(1, second.size());
+	  assertEquals("second", second.attr("id"));
+	  
+	  GQuery third =$("#parent > div:nth-child(3)", e);
+	  assertEquals(1, third.size());
+	  assertEquals("third", third.attr("id"));
+	  
+	  //test nth-child with function
+	  GQuery secondAndFourth = $("#parent > div",e).filter(":nth-child(2n)");
+	  assertEquals(2, secondAndFourth.size());
+	  assertEquals("second", secondAndFourth.eq(0).attr("id"));
+	  assertEquals("fourth", secondAndFourth.eq(1).attr("id"));
+
+  }
+  
   private void assertArrayContains(Object result, Object... array) {
     assertArrayContains("", result, array);
   }
