@@ -17,183 +17,195 @@ import com.google.gwt.query.client.plugins.Plugin;
 /**
  * Ajax class for GQuery.
  * 
- * The jQuery library has a full suite of AJAX capabilities, but GWT
- * is plenty of classes to get data from server side: RPC, XHR, RF, etc.
+ * The jQuery library has a full suite of AJAX capabilities, but GWT is plenty of classes to get
+ * data from server side: RPC, XHR, RF, etc.
  * 
- * This class is not a substitute for the GWT utilities, but a complement
- * to get server data in a jquery way, specially when querying non java 
- * backends.
+ * This class is not a substitute for the GWT utilities, but a complement to get server data in a
+ * jquery way, specially when querying non java backends.
  * 
- * We do not pretend to clone all the jquery Ajax API inside gquery, just take 
- * its syntax and to implement the most popular usage of it. 
- * This implementation is almost thought to be used as an alternative to 
- * the GWT-XHR, GWT-XML and GWT-JSON modules.
+ * We do not pretend to clone all the jquery Ajax API inside gquery, just take its syntax and to
+ * implement the most popular usage of it. This implementation is almost thought to be used as an
+ * alternative to the GWT-XHR, GWT-XML and GWT-JSON modules.
  * 
  */
 public class Ajax extends GQuery {
-  
-	/**
-	 * Ajax Settings object
-	 */
-	public static class Settings {
 
-		private static final String CONTENT_TYPE_KEY = "contentType";
-		private static final String CONTEXT_KEY = "context";
-		private static final String DATA_KEY = "data";
-		private static final String DATA_STRING_KEY = "dataString";
-		private static final String DATA_TYPE_KEY = "dataType";
-		private static final String HEADERS_KEY = "headers";
-		private static final String PASSWORD_KEY = "password";
-		private static final String TIMEOUT_KEY = "timeout";
-		private static final String TYPE_KEY = "type";
-		private static final String URL_KEY = "url";
-		private static final String USERNAME_KEY = "username";
+  /**
+   * Ajax Settings object
+   */
+  public static class Settings {
 
-		public Properties settings = Properties.create();
-		public Function onSuccess;
-		public Function onError;
+    private static final String CONTENT_TYPE_KEY = "contentType";
+    private static final String CONTEXT_KEY = "context";
+    private static final String DATA_KEY = "data";
+    private static final String DATA_STRING_KEY = "dataString";
+    private static final String DATA_TYPE_KEY = "dataType";
+    private static final String HEADERS_KEY = "headers";
+    private static final String PASSWORD_KEY = "password";
+    private static final String TIMEOUT_KEY = "timeout";
+    private static final String TYPE_KEY = "type";
+    private static final String URL_KEY = "url";
+    private static final String USERNAME_KEY = "username";
 
-		public String getContentType() {
-			return settings.getStr(CONTENT_TYPE_KEY);
-		}
+    public Properties settings;
+    public Function onSuccess;
+    public Function onError;
+    
+    public Settings() {
+      settings = Properties.create();
+      initDefaults();
+    }
 
-		public Element getContext() {
-			return settings.get(CONTEXT_KEY);
-		}
+    /**
+     * Init some settings with default value
+     */
+    private void initDefaults() {
+      setDataType("text");
+      setType("POST");
+      setContentType("application/x-www-form-urlencoded");
+    }
 
-		public Properties getData() {
-			return settings.get(DATA_KEY);
-		}
+    public String getContentType() {
+      return settings.getStr(CONTENT_TYPE_KEY);
+    }
 
-		public String getDataString() {
-			return settings.get(DATA_STRING_KEY);
-		}
+    public Element getContext() {
+      return settings.get(CONTEXT_KEY);
+    }
 
-		public String getDataType() {
-			return settings.get(DATA_TYPE_KEY);
-		}
+    public Properties getData() {
+      return settings.get(DATA_KEY);
+    }
 
-		public Function getError() {
-			return onError;
-		}
+    public String getDataString() {
+      return settings.get(DATA_STRING_KEY);
+    }
 
-		public Properties getHeaders() {
-			return settings.get(HEADERS_KEY);
-		}
+    public String getDataType() {
+      return settings.get(DATA_TYPE_KEY);
+    }
 
-		public String getPassword() {
-			return settings.get(PASSWORD_KEY);
-		}
+    public Function getError() {
+      return onError;
+    }
 
-		public Function getSuccess() {
-			return onSuccess;
-		}
+    public Properties getHeaders() {
+      return settings.get(HEADERS_KEY);
+    }
 
-		public int getTimeout() {
-			Integer timeout = settings.get(TIMEOUT_KEY);
-			return timeout != null ? timeout.intValue() : 0;
-		}
+    public String getPassword() {
+      return settings.get(PASSWORD_KEY);
+    }
 
-		public String getType() {
-			return settings.get(TYPE_KEY);
-		}
+    public Function getSuccess() {
+      return onSuccess;
+    }
 
-		public String getUrl() {
-			return settings.get(URL_KEY);
-		}
+    public int getTimeout() {
+      Integer timeout = settings.get(TIMEOUT_KEY);
+      return timeout != null ? timeout.intValue() : 0;
+    }
 
-		public String getUsername() {
-			return settings.get(USERNAME_KEY);
-		}
+    public String getType() {
+      return settings.get(TYPE_KEY);
+    }
 
-		public Settings setContentType(String t) {
-			settings.set(CONTENT_TYPE_KEY, t);
-			return this;
-		}
+    public String getUrl() {
+      return settings.get(URL_KEY);
+    }
 
-		public Settings setContext(Element e) {
-			settings.set(CONTEXT_KEY, e);
-			return this;
-		}
+    public String getUsername() {
+      return settings.get(USERNAME_KEY);
+    }
 
-		public Settings setData(Properties p) {
-			settings.set(DATA_KEY, p);
-			return this;
-		}
+    public Settings setContentType(String t) {
+      settings.set(CONTENT_TYPE_KEY, t);
+      return this;
+    }
 
-		public Settings setDataString(String d) {
-			settings.set(DATA_STRING_KEY, d);
-			return this;
-		}
+    public Settings setContext(Element e) {
+      settings.set(CONTEXT_KEY, e);
+      return this;
+    }
 
-		public Settings setDataType(String t) {
-			settings.set(DATA_TYPE_KEY, t);
-			return this;
-		}
+    public Settings setData(Properties p) {
+      settings.set(DATA_KEY, p);
+      return this;
+    }
 
-		public Settings setError(Function f) {
-			onError = f;
-			return this;
-		}
+    public Settings setDataString(String d) {
+      settings.set(DATA_STRING_KEY, d);
+      return this;
+    }
 
-		public Settings setHeaders(Properties p) {
-			settings.set(HEADERS_KEY, p);
-			return this;
-		}
+    public Settings setDataType(String t) {
+      settings.set(DATA_TYPE_KEY, t);
+      return this;
+    }
 
-		public Settings setPassword(String p) {
-			settings.set(PASSWORD_KEY, p);
-			return this;
-		}
+    public Settings setError(Function f) {
+      onError = f;
+      return this;
+    }
 
-		public Settings setSuccess(Function f) {
-			onSuccess = f;
-			return this;
-		}
+    public Settings setHeaders(Properties p) {
+      settings.set(HEADERS_KEY, p);
+      return this;
+    }
 
-		public Settings setTimeout(int t) {
-			settings.set(TIMEOUT_KEY, t);
-			return this;
-		}
+    public Settings setPassword(String p) {
+      settings.set(PASSWORD_KEY, p);
+      return this;
+    }
 
-		public Settings setType(String t) {
-			settings.set(TYPE_KEY, t);
-			return this;
-		}
+    public Settings setSuccess(Function f) {
+      onSuccess = f;
+      return this;
+    }
 
-		public Settings setUrl(String u) {
-			settings.set(URL_KEY, u);
-			return this;
-		}
+    public Settings setTimeout(int t) {
+      settings.set(TIMEOUT_KEY, t);
+      return this;
+    }
 
-		public Settings setUsername(String u) {
-			settings.set(USERNAME_KEY, u);
-			return this;
-		}
+    public Settings setType(String t) {
+      settings.set(TYPE_KEY, t);
+      return this;
+    }
 
-		public void load(Properties p) {
-			settings = p;
-		}
-	}
-  
-  public static final Class<Ajax> Ajax = 
-    registerPlugin(Ajax.class, new Plugin<Ajax>() {
-      public Ajax init(GQuery gq) {
-        return new Ajax(gq);
-      }
-    });
+    public Settings setUrl(String u) {
+      settings.set(URL_KEY, u);
+      return this;
+    }
+
+    public Settings setUsername(String u) {
+      settings.set(USERNAME_KEY, u);
+      return this;
+    }
+
+    public void load(Properties p) {
+      settings = p;
+    }
+  }
+
+  public static final Class<Ajax> Ajax = registerPlugin(Ajax.class, new Plugin<Ajax>() {
+    public Ajax init(GQuery gq) {
+      return new Ajax(gq);
+    }
+  });
 
   public static void ajax(Properties p) {
     Settings s = createSettings();
     s.load(p);
     ajax(s);
   }
-  
+
   /**
    * Perform an ajax request to the server.
    * 
    * 
    * Example:
+   * 
    * <pre>
     import static com.google.gwt.query.client.GQ.*
     ...
@@ -208,7 +220,7 @@ public class Ajax extends GQuery {
         System.err.println("Ajax Error: " + getData()[1]);
       }
     }, properties);
-   * </pre>   
+   * </pre>
    * 
    * @param url The url to connect
    * @param onSuccess a function to execute in the case of success
@@ -216,61 +228,25 @@ public class Ajax extends GQuery {
    * @param settings a Properties object with the configuration of the Ajax request.
    */
   public static void ajax(Settings settings) {
-    Method httpMethod = RequestBuilder.POST;
-    String method = settings.getType();
-    if ("get".equalsIgnoreCase(method)) {
-      httpMethod = RequestBuilder.GET;
-    }
-    
-    String url = settings.getUrl();
 
-    String data = settings.getDataString();
-    if (data == null) {
-      data = settings.getData().toQueryString();
-    }
+    final RequestBuilder requestBuilder = createRequestBuilder(settings);
 
-    if (data != null && httpMethod == RequestBuilder.GET) {
-      url += (url.contains("?") ? "&" : "?") + data;
-    }
-    RequestBuilder r = new RequestBuilder(httpMethod, url);
-    if (data != null && httpMethod != RequestBuilder.GET) {
-      r.setRequestData(data);
-    }
+    final String dataType = settings.getDataType();
 
-    r.setTimeoutMillis(settings.getTimeout());
-
-    String user = settings.getUsername();
-    if (user != null) {
-      r.setUser(user);
-    }
-
-    String password = settings.getPassword();
-    if (password != null) {
-      r.setPassword(password);
-    }
-
-    String ctype = settings.getContentType();
-    r.setHeader("Content-type", ctype != null ? ctype
-        : "application/x-www-form-urlencoded");
-
-    final String dataType = settings.getDataType() != null
-        ? settings.getDataType() : "text";
-        
-    Properties p = settings.getHeaders();
-    for (String s : p.keys()) {
-      r.setHeader(s, p.getStr(s));
-    }
-    
     final Function onSuccess = settings.getSuccess();
+
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
     }
+
     final Function onError = settings.getError();
+
     if (onError != null) {
       onError.setElement(settings.getContext());
     }
 
-    r.setCallback(new RequestCallback() {
+    requestBuilder.setCallback(new RequestCallback() {
+
       public void onError(Request request, Throwable exception) {
         if (onError != null) {
           onError.f(null, exception.getMessage(), request, null, exception);
@@ -293,8 +269,7 @@ public class Ajax extends GQuery {
               retData = response.getText();
             }
           } catch (Exception e) {
-            System.err.println("Error parsing '" + dataType
-                + "' received data: " + e.getMessage());
+            System.err.println("Error parsing '" + dataType + "' received data: " + e.getMessage());
             System.err.println("Server response was: \n" + response.getText());
           }
           onSuccess.f(retData, "success", request, response);
@@ -303,18 +278,88 @@ public class Ajax extends GQuery {
     });
 
     try {
-      r.send();
+      requestBuilder.send();
     } catch (RequestException e) {
       if (onError != null) {
         onError.f(null, -1, null, null, e);
       }
     }
   }
-  
-  public static void ajax(String url, Function onSuccess, Function onError) {
-    ajax(url, onSuccess, onError, (Settings)null);
+
+  private static RequestBuilder createRequestBuilder(Settings settings) {
+
+    Method httpMethod = resolveHttpMethod(settings);
+    String data = resolveData(settings);
+    String url = resolveUrl(settings, httpMethod, data);
+
+    RequestBuilder requestBuilder = new RequestBuilder(httpMethod, url);
+
+    if (data != null && httpMethod != RequestBuilder.GET) {
+      requestBuilder.setRequestData(data);
+    }
+
+    requestBuilder.setTimeoutMillis(settings.getTimeout());
+
+    String user = settings.getUsername();
+    if (user != null) {
+      requestBuilder.setUser(user);
+    }
+
+    String password = settings.getPassword();
+    if (password != null) {
+      requestBuilder.setPassword(password);
+    }
+
+    requestBuilder.setHeader("Content-type", settings.getContentType());
+
+    Properties headers = settings.getHeaders();
+    if (headers != null) {
+      for (String headerKey : headers.keys()) {
+        requestBuilder.setHeader(headerKey, headers.getStr(headerKey));
+      }
+    }
+
+    return requestBuilder;
   }
-  
+
+  private static String resolveUrl(Settings settings, Method httpMethod, String data) {
+    
+    String url = settings.getUrl();
+
+    assert url != null : "no url found in settings";
+
+    if (data != null && httpMethod == RequestBuilder.GET) {
+      url += (url.contains("?") ? "&" : "?") + data;
+    }
+
+    return url;
+  }
+
+  private static String resolveData(Settings settings) {
+    String data = settings.getDataString();
+
+    if (data == null && settings.getData() != null) {
+      data = settings.getData().toQueryString();
+    }
+
+    return data;
+  }
+
+  private static Method resolveHttpMethod(Settings settings) {
+
+    String method = settings.getType();
+
+    if ("get".equalsIgnoreCase(method)) {
+      return RequestBuilder.GET;
+    }
+
+    return RequestBuilder.POST;
+  }
+
+  public static void ajax(String url, Function onSuccess, Function onError) {
+    ajax(url, onSuccess, onError, (Settings) null);
+  }
+
   public static void ajax(String url, Function onSuccess, Function onError, Settings s) {
     if (s == null) {
       s = createSettings();
@@ -322,33 +367,32 @@ public class Ajax extends GQuery {
     s.setUrl(url).setSuccess(onSuccess).setError(onError);
     ajax(s);
   }
-  
+
   public static void ajax(String url, Properties p) {
     Settings s = createSettings();
     s.load(p);
     s.setUrl(url);
     ajax(s);
   }
-  
+
   public static void ajax(String url, Settings settings) {
-    ajax(settings.setUrl(url)); 
+    ajax(settings.setUrl(url));
   }
-  
+
   public static Settings createSettings() {
-    //return createSettings($$(""));
-	  return new Settings();
+    return new Settings();
   }
-  
+
   public static Settings createSettings(String prop) {
     return createSettings($$(prop));
   }
-  
+
   public static Settings createSettings(Properties p) {
     Settings s = GWT.create(Settings.class);
     s.load(p);
     return s;
   }
-  
+
   public static void get(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -358,7 +402,7 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     ajax(s);
   }
-  
+
   public static void getJSON(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -368,7 +412,7 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     ajax(s);
   }
-  
+
   public static void post(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -378,11 +422,11 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     ajax(s);
   }
-  
+
   protected Ajax(GQuery gq) {
     super(gq);
   }
-  
+
   public Ajax load(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
