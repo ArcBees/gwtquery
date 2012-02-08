@@ -46,8 +46,6 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType jsType;
   static JClassType listType;
   static JClassType functionType;
-  static JClassType enumType;
-
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
@@ -59,7 +57,6 @@ public class JsonBuilderGenerator extends Generator {
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
     functionType = oracle.findType(Function.class.getName());
-    enumType = oracle.findType(Enum.class.getName());
 
     String t[] = generateClassName(clazz);
 
@@ -157,9 +154,8 @@ public class JsonBuilderGenerator extends Generator {
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
-      } else if (isTypeAssignableTo(method.getReturnType(), enumType)){  
-    	 sw.println("return "+method.getReturnType().getQualifiedSourceName()+".valueOf(p.getStr(\"" + name + "\"));");
-      }else {
+        
+      } else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type " 
             + retType + " " + ifaceName + "." + methName + "()\"); ");
         // We return the object because probably the user knows how to handle it
