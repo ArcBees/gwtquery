@@ -303,8 +303,6 @@ public class Ajax extends GQuery {
   }
   
   public static void getJSONP(String url, Function success, Function error, int timeout) {
-    System.err.println("EEE");
-
     if (!url.contains("=?")) {
       url += (url.contains("?") ? "&" : "?") + "callback=?";
     }
