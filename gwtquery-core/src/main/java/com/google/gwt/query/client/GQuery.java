@@ -495,21 +495,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Widget associated with the element, this method returns null.
    */
   protected static Widget getAssociatedWidget(Element e) {
-    EventListener listener = DOM.getEventListener((com.google.gwt.user.client.Element) e);
-    // No listener attached to the element, so no widget exist for this element
-    if (listener == null) {
-      return null;
-    }
-    if (listener instanceof Widget) {
-      // GWT uses the widget as event listener
-      return (Widget) listener;
-    } else if (listener instanceof EventsListener) {
-      // GQuery replaces the gwt event listener and save it
-      EventsListener gQueryListener = (EventsListener) listener;
-      if (gQueryListener.getOriginalEventListener() != null
-          && gQueryListener.getOriginalEventListener() instanceof Widget) {
-        return (Widget) gQueryListener.getOriginalEventListener();
+    try {
+      EventListener listener = DOM.getEventListener((com.google.gwt.user.client.Element) e);
+      // No listener attached to the element, so no widget exist for this element
+      if (listener == null) {
+        return null;
       }
+      if (listener instanceof Widget) {
+        // GWT uses the widget as event listener
+        return (Widget) listener;
+      } else if (listener instanceof EventsListener) {
+        // GQuery replaces the gwt event listener and save it
+        EventsListener gQueryListener = (EventsListener) listener;
+        if (gQueryListener.getOriginalEventListener() != null
+            && gQueryListener.getOriginalEventListener() instanceof Widget) {
+          return (Widget) gQueryListener.getOriginalEventListener();
+        }
+      }
+    } catch (Exception e2) {
+      // Some times this code could raise an exception. 
+      // We do not want GQuery to fail, but in dev-move we log the error.
+      e2.printStackTrace();
     }
     return null;
   }
@@ -1202,8 +1208,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private void cleanGQData(Element... elements) {
     for (Element el : elements) {
-      EventsListener.clean(el);
-      removeData(el, null);
+      try {
+        EventsListener.clean(el);
+        removeData(el, null);
+      } catch (Exception e) {
+        // If for some reason event/data removal fails, do not break the app,
+        // just log the error in dev-mode
+        // e.g.: this happens when removing iframes which are no fully loaded.
+        e.printStackTrace();
+      }
     }
   }
 
