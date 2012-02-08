@@ -91,9 +91,9 @@ public class SelectorEngine implements HasSelector {
 
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
-    System.out.println("Created SelectorEngineImpl: " + impl.getClass().getName());
+    GWT.log("GQuery - Created SelectorEngineImpl: " + impl.getClass().getName());
     styleImpl = GWT.create(DocumentStyleImpl.class);
-    System.out.println("Created DocumentStyleImpl: " + styleImpl.getClass().getName());
+    GWT.log("GQuery - Created DocumentStyleImpl: " + styleImpl.getClass().getName());
   }
 
   public Node getRoot() {

@@ -37,7 +37,7 @@ public class SelectorEngineNative extends SelectorEngineImpl {
   public SelectorEngineNative() {
     if (impl == null) {
       impl = GWT.create(HasSelector.class);
-      System.out.println("Created HasSelector: " + impl.getClass().getName());
+      GWT.log("GQuery - Created HasSelector: " + impl.getClass().getName());
     }
   }
   
