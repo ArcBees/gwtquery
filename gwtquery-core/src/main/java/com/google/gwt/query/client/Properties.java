@@ -141,10 +141,6 @@ public class Properties extends JavaScriptObject {
     
     for (String k : keys()){
       String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
-      // We do not have to restore gwt hashCodes.  
-      if (k.equals("$H")) {
-        continue;
-      }
       JsCache o = getArray(k).cast();
       if (o != null) {
         ret += ky + ":[";
@@ -191,7 +187,10 @@ public class Properties extends JavaScriptObject {
         if (p != null) {
           ret += p.toQueryString();
         } else {
-          ret += k + "=" + getStr(k);
+          String v = getStr(k);
+          if (v != null && !v.isEmpty() && !"null".equalsIgnoreCase(v)) {
+            ret += k + "=" + v;
+          }          
         }
       }
     }
