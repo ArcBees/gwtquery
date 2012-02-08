@@ -40,7 +40,7 @@ public abstract class Function {
   
   public void setEvent(Event e) {
     event = e;
-    element = e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast();
+    element = e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast() : null;
   }
   
   public Event getEvent() {
@@ -57,6 +57,38 @@ public abstract class Function {
 
   public void setData(Object...data) {
     this.data = data;
+  }
+  
+  public Object getDataObject() {
+    return getDataObject(0);
+  }
+
+  public Object getDataObject(int idx) {
+    return data.length > idx ? data[idx] : null;
+  }
+  
+  public Properties getDataProperties() {
+    return getDataProperties(0);
+  }
+  
+  public Properties getDataProperties(int idx) {
+    Object o = getDataObject(idx);
+    if (o != null && o instanceof JavaScriptObject) {
+      return (Properties)o;
+    }
+    return null;
+  }
+
+  public void setData(boolean b) {
+    setData(Boolean.valueOf(b));
+  }
+
+  public void setData(double b) {
+    setData(Double.valueOf(b));
+  }
+  
+  public void setDataObject(Object data) {
+    setData(data);
   }
   
   public int getIndex() {
@@ -183,7 +215,7 @@ public abstract class Function {
    */
   public boolean f(Event e) {
     setEvent(e);
-    f(e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast());
+    f(element);
     return true;
   }
   
@@ -208,7 +240,7 @@ public abstract class Function {
   private boolean loop = false;
   public void f(com.google.gwt.user.client.Element e) {
     setElement(e);
-    Widget w = GQuery.getAssociatedWidget(e);
+    Widget w = e != null ? GQuery.getAssociatedWidget(e) : null;
     if (w != null){
       loop = true;
       f(w);

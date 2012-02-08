@@ -24,10 +24,14 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -81,7 +85,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   }
   
   public void testJsonBuilder() {
-    String json = "[{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}]";
+    String json = "{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}";
     JsonExample c = GWT.create(JsonExample.class);
     assertEquals(0, c.getA());
     c.parse(json, true);
@@ -140,4 +144,52 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals("X", x.getA());
     assertEquals(1234, x.getNumber());
   }
+  
+  public void testJsonValidService() {
+    delayTestFinish(5000);
+    String testJsonpUrl = "http://services.digg.com/stories/top?appkey=http://mashup.com&type=javascript&callback=?";
+    Ajax.getJSONP(testJsonpUrl, new Function(){
+      public void f() {
+        Properties p = getDataProperties();
+        assertTrue(0 < p.getInt("count"));
+        finishTest();
+      }
+    }, null, 0);
+  }
+
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testJsonNonCallbackResponse() {
+    delayTestFinish(5000);
+    String testJsonpUrl = "http://www.google.com";
+    Ajax.getJSONP(testJsonpUrl, null, new Function(){
+      public void f() {
+        Properties p = getDataProperties();
+        assertNull(p);
+        finishTest();
+      }
+    }, 500);
+  }
+  
+  public void testJsonTimeout() {
+    delayTestFinish(5000);
+    String nonJsonpUrl = "http://www.google.com/nopage";
+    
+    Settings s = Ajax.createSettings();
+    s.setTimeout(400);
+    s.setSuccess(new Function(){
+      public void f() {
+        fail();
+      }
+    });
+    s.setError(new Function(){
+      public void f() {
+        finishTest();
+      }
+    });
+    s.setDataType("jsonp");
+    s.setUrl(nonJsonpUrl);
+    
+    Ajax.ajax(s);
+  }
+    
 }

@@ -77,6 +77,8 @@ public class JsCache extends JavaScriptObject {
   }
 
   public final native <T> double getDouble(T id) /*-{
+    // HtmlUnit prints an 'Unknown property name in get valueOf' 
+    // error here, but it is ok.
     var r = this[id] ? Number(this[id]) : 0;
     return r ? r : 0;
   }-*/;
