@@ -157,7 +157,6 @@ public class Properties extends JavaScriptObject {
         }
         ret += "],";
       } else {
-        System.out.println("N");
         Properties p = getJavaScriptObject(k);
         if (p != null) {
           ret += ky + ":" + p.toJsonString() + ",";
