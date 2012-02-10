@@ -137,8 +137,11 @@ public class Properties extends JavaScriptObject {
   }
   
   public final String toJsonString() {
-    String ret = "";
+    // In dev-mode a null object casted to JavascriptObject does not throw a NPE
+    // e.g: System.out.println(((Properties)null).toJsonString());
+    if (this == null) return "null";
     
+    String ret = "";
     for (String k : keys()){
       String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
       JsCache o = getArray(k).cast();
@@ -154,6 +157,7 @@ public class Properties extends JavaScriptObject {
         }
         ret += "],";
       } else {
+        System.out.println("N");
         Properties p = getJavaScriptObject(k);
         if (p != null) {
           ret += ky + ":" + p.toJsonString() + ",";
@@ -168,6 +172,9 @@ public class Properties extends JavaScriptObject {
   }
   
   public final String toQueryString() {
+    // In dev-mode a null object casted to JavascriptObject does not throw a NPE
+    if (this == null) return "null";
+    
     String ret = "";
     for (String k : keys()) {
       ret += ret.isEmpty() ? "" : "&";
