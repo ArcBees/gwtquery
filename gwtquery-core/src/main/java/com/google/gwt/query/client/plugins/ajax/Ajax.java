@@ -119,9 +119,8 @@ public class Ajax extends GQuery {
     
     final String dataType = settings.getDataType();
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      Method httpMethod = resolveHttpMethod(settings);
       String data = resolveData(settings);
-      String url = resolveUrl(settings, httpMethod, data);
+      String url = resolveUrl(settings, RequestBuilder.GET, data);
       int timeout = settings.getTimeout();
       getJSONP(url, onSuccess, onError, timeout);
       return;
@@ -306,7 +305,7 @@ public class Ajax extends GQuery {
   }
   
   public static void getJSONP(String url, Function success, Function error, int timeout) {
-    if (!url.contains("=?")) {
+    if (!url.contains("=?") && !url.contains("callback=")) {
       url += (url.contains("?") ? "&" : "?") + "callback=?";
     }
     url += "&_=" + System.currentTimeMillis();

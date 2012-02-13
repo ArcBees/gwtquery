@@ -542,6 +542,34 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 			final Function onSuccess) {
 		Ajax.getJSON(url, data, onSuccess);
 	}
+	
+  /**
+   * Perform an ajax request to the server using scripts tags and
+   * parsing the json response. The request is not subject to the 
+   * same origin policy restrictions.
+   * 
+   * Server side should accept a parameter to specify the callback
+   * funcion name, and it must return a valid json object wrapped
+   * this callback function.
+   * 
+   * Example:
+   <pre>
+    Client code:
+    getJSONP("http://server.exampe.com/getData.php",$$("myCallback:'?', otherParameter='whatever'"), 
+      new Function(){ public void f() {
+        Properties p = getDataProperties();
+        alert(p.getStr("k1");
+    }});
+   
+    Server response:
+    myCallback({"k1":"v1", "k2":"v2"});
+   </pre>
+   * 
+   */ 
+  public static void getJSONP(String url, Properties data,
+      final Function onSuccess) {
+    Ajax.getJSONP(url, data, onSuccess);
+  }
   
   protected static DocumentStyleImpl getStyleImpl(){
     if (styleImpl == null){
