@@ -547,6 +547,13 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     p = $$("({border:'1px solid black'})");
     assertEquals(1, p.keys().length);
     assertNotNull(p.getStr("border"));
+    
+    try {
+      // DevMode null casting return an object
+      ((Properties)null).toJsonString();
+      fail("Executing methods of a null object should throw a NullPointerException");
+    } catch (NullPointerException e) {
+    }
   }
 
   public void testRelativeMethods() {

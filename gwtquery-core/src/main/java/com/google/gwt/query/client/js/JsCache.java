@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.js;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
@@ -36,6 +37,7 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final void pushAll(JavaScriptObject prevElem) {
+    checkNull();
     JsCache c = prevElem.cast();
     for (int i = 0, ilen = c.length(); i < ilen; i++) {
       put(length(), c.get(i));
@@ -101,7 +103,7 @@ public class JsCache extends JavaScriptObject {
   
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
     Object o = get(name); 
-    return (o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
+    return (o != null && o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
   }
 
   public final native boolean isEmpty() /*-{
@@ -128,6 +130,7 @@ public class JsCache extends JavaScriptObject {
   }-*/;
   
   public final int[] indexes() {
+    checkNull();
     JsArrayString a = keysImpl();
     int[] ret = new int[a.length()];
     for (int i = 0; i < a.length(); i++) {
@@ -141,6 +144,7 @@ public class JsCache extends JavaScriptObject {
   }
   
   public final String[] keys() {
+    checkNull();
     JsArrayString a = keysImpl();
     String[] ret = new String[a.length()];
     for (int i = 0; i < a.length(); i++) {
@@ -165,6 +169,13 @@ public class JsCache extends JavaScriptObject {
       ret += k + "=" + get(k) + " ";
     }
     return ret + "}";
+  }
+  
+  private void checkNull() {
+    // In dev-mode a null object casted to JavascriptObject does not throw a NPE
+    if (!GWT.isProdMode() && this == null) {
+      throw new NullPointerException();
+    }
   }
   
   private final native JsArrayString keysImpl() /*-{
