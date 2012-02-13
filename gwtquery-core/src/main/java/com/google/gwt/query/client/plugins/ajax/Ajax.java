@@ -193,8 +193,11 @@ public class Ajax extends GQuery {
     if (password != null) {
       requestBuilder.setPassword(password);
     }
-
-    requestBuilder.setHeader("Content-type", settings.getContentType());
+    
+    String contentType = settings.getContentType();
+    if (contentType != null) {
+      requestBuilder.setHeader("Content-type", settings.getContentType());
+    }
 
     Properties headers = settings.getHeaders();
     if (headers != null) {
