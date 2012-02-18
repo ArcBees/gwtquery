@@ -14,6 +14,7 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.user.client.ui.FormPanel;
 
 /**
  * Ajax class for GQuery.
@@ -105,31 +106,28 @@ public class Ajax extends GQuery {
   public static void ajax(Settings settings) {
 
     final Function onSuccess = settings.getSuccess();
-
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
     }
 
     final Function onError = settings.getError();
-
     if (onError != null) {
       onError.setElement(settings.getContext());
     }
     
-    
+    Method httpMethod = resolveHttpMethod(settings);
+    String data = resolveData(settings, httpMethod);
+    String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
+    
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      String data = resolveData(settings);
-      String url = resolveUrl(settings, RequestBuilder.GET, data);
       int timeout = settings.getTimeout();
       getJSONP(url, onSuccess, onError, timeout);
       return;
     }
     
-    final RequestBuilder requestBuilder = createRequestBuilder(settings);
-
+    final RequestBuilder requestBuilder = createRequestBuilder(settings, httpMethod, url, data);
     requestBuilder.setCallback(new RequestCallback() {
-
       public void onError(Request request, Throwable exception) {
         if (onError != null) {
           onError.f(null, exception.getMessage(), request, null, exception);
@@ -139,7 +137,7 @@ public class Ajax extends GQuery {
       public void onResponseReceived(Request request, Response response) {
         if (response.getStatusCode() > 202) {
           if (onError != null) {
-            onError.f(response.getText(), "error", request, response);
+            onError.fe(response.getText(), "error", request, response);
           }
         } else if (onSuccess != null) {
           Object retData = null;
@@ -152,10 +150,11 @@ public class Ajax extends GQuery {
               retData = response.getText();
             }
           } catch (Exception e) {
-            System.err.println("Error parsing '" + dataType + "' received data: " + e.getMessage());
-            System.err.println("Server response was: \n" + response.getText());
+            if (GWT.getUncaughtExceptionHandler() != null) {
+              GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+            }             
           }
-          onSuccess.f(retData, "success", request, response);
+          onSuccess.fe(retData, "success", request, response);
         }
       }
     });
@@ -169,18 +168,24 @@ public class Ajax extends GQuery {
     }
   }
 
-  private static RequestBuilder createRequestBuilder(Settings settings) {
-
-    Method httpMethod = resolveHttpMethod(settings);
-    String data = resolveData(settings);
-    String url = resolveUrl(settings, httpMethod, data);
+  private static RequestBuilder createRequestBuilder(Settings settings, Method httpMethod, String url, String data) {
 
     RequestBuilder requestBuilder = new RequestBuilder(httpMethod, url);
 
     if (data != null && httpMethod != RequestBuilder.GET) {
+      String ctype = settings.getContentType();
+      if (ctype == null) {
+        String type = settings.getDataType();
+        if (type != null && type.toLowerCase().startsWith("json")) {
+          ctype = "application/json; charset=utf-8";
+        } else {
+          ctype = FormPanel.ENCODING_URLENCODED;
+        }
+      }
+      requestBuilder.setHeader("Content-Type", ctype);
       requestBuilder.setRequestData(data);
     }
-
+    
     requestBuilder.setTimeoutMillis(settings.getTimeout());
 
     String user = settings.getUsername();
@@ -193,11 +198,6 @@ public class Ajax extends GQuery {
       requestBuilder.setPassword(password);
     }
     
-    String contentType = settings.getContentType();
-    if (contentType != null) {
-      requestBuilder.setHeader("Content-type", settings.getContentType());
-    }
-
     Properties headers = settings.getHeaders();
     if (headers != null) {
       for (String headerKey : headers.keys()) {
@@ -207,30 +207,33 @@ public class Ajax extends GQuery {
 
     return requestBuilder;
   }
-
+  
   private static String resolveUrl(Settings settings, Method httpMethod, String data) {
     String url = settings.getUrl();
-
     assert url != null : "no url found in settings";
-
-    if (data != null && httpMethod == RequestBuilder.GET) {
+    if (httpMethod == RequestBuilder.GET && data != null) {
       url += (url.contains("?") ? "&" : "?") + data;
     }
     return url;
   }
 
-  private static String resolveData(Settings settings) {
+  private static String resolveData(Settings settings, Method httpMethod) {
     String data = settings.getDataString();
-
     if (data == null && settings.getData() != null) {
-      data = settings.getData().toQueryString();
+      String type = settings.getDataType();
+      if (type != null 
+          && httpMethod == RequestBuilder.POST
+          && type.equalsIgnoreCase("json")) {
+        data = settings.getData().toJsonString();
+      } else {
+        data = settings.getData().toQueryString();
+      }
     }
     return data;
   }
 
   private static Method resolveHttpMethod(Settings settings) {
     String method = settings.getType();
-
     if ("get".equalsIgnoreCase(method)) {
       return RequestBuilder.GET;
     }
@@ -329,7 +332,7 @@ public class Ajax extends GQuery {
   protected Ajax(GQuery gq) {
     super(gq);
   }
-
+  
   public Ajax load(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
@@ -368,16 +371,15 @@ public class Ajax extends GQuery {
       if (!done) {
         done = true;
         $wnd[fName] = null;
-        success.@com.google.gwt.query.client.Function::setDataObject(Ljava/lang/Object;)(data);
-        success.@com.google.gwt.query.client.Function::f()();
+        success.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(data);
       }
     }
     function err() {
       if (!done) {
         done = true;
         $wnd[fName] = null;
-        if (error) error.@com.google.gwt.query.client.Function::f()();
-        else       success.@com.google.gwt.query.client.Function::f()();
+        var func = error ? error : success;
+        func.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(data);
       }
     }
     if (timeout) {
