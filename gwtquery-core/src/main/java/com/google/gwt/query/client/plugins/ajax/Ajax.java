@@ -379,7 +379,7 @@ public class Ajax extends GQuery {
         done = true;
         $wnd[fName] = null;
         var func = error ? error : success;
-        func.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(data);
+        func.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)();
       }
     }
     if (timeout) {
