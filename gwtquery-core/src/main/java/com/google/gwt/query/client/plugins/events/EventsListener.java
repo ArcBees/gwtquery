@@ -71,7 +71,7 @@ public class EventsListener implements EventListener {
     public boolean fire(Event event) {
       if (times != 0) {
         times--;
-        return function.f(event, data);
+        return function.fe(event, data);
       }
       return true;
     }
@@ -92,7 +92,6 @@ public class EventsListener implements EventListener {
    */
   private static class LiveBindFunction extends BindFunction {
 
-    
     JsNamedArray<JsObjectArray<BindFunction>> bindFunctionBySelector;
 
     LiveBindFunction(int type, String namespace) {

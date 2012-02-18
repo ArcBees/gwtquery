@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
@@ -177,8 +178,7 @@ public abstract class Function {
    * Override this method for bound callbacks
    */
   public void f(Object... data) {
-    setData(data);
-    f();
+    fe(data);
   }
   
   /**
@@ -267,4 +267,73 @@ public abstract class Function {
     }
   }
 
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler.
+   * They are intentionally final to avoid override them 
+   */
+  public final void fe() {
+    fe((Object)null);
+  }
+
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler
+   * They are intentionally final to avoid override them 
+   */
+  public final void fe(Object data) {
+    fe(new Object[]{data});
+  }
+  
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler
+   * They are intentionally final to avoid override them 
+   */
+  public final void fe(Object... data) {
+    setData(data);
+    if (GWT.getUncaughtExceptionHandler() != null) {
+      try {
+        f();
+      } catch (Exception e) {
+        GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+      }
+      return;
+    }
+    f();
+  }
+
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler
+   * They are intentionally final to avoid override them 
+   */
+  public final boolean fe(Event ev, Object  data) {
+    if (GWT.getUncaughtExceptionHandler() != null) {
+      try {
+        return f(ev, data);
+      } catch (Exception e) {
+        GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+      }
+      return true;
+    }
+    return f(ev, data);
+  }
+  
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler
+   * They are intentionally final to avoid override them 
+   */
+  public final void fe(com.google.gwt.dom.client.Element elem) {
+    if (GWT.getUncaughtExceptionHandler() != null) {
+      try {
+        f(elem.<com.google.gwt.dom.client.Element>cast());
+      } catch (Exception e) {
+        GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+      }
+      return;
+    }
+    f(elem.<com.google.gwt.dom.client.Element>cast());
+  }
 }

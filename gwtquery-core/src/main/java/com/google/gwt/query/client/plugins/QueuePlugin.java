@@ -262,7 +262,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       Object f = q.peek();
       if (f != null) {
         if (f instanceof Function) {
-          ((Function) f).f(elem.<com.google.gwt.dom.client.Element>cast());
+          ((Function) f).fe(elem);
         }
       }
     }
@@ -279,7 +279,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
         q.add(func);
         if (q.size() == 1) {
           if (func instanceof Function) {
-            ((Function) func).f(elem.<com.google.gwt.dom.client.Element>cast());
+            ((Function) func).fe(elem);
           }
         }
       }
