@@ -3,6 +3,7 @@ package gwtquery.jsquery.client;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportClosure;
 import org.timepedia.exporter.client.ExportInstanceMethod;
+import org.timepedia.exporter.client.ExportJsInitMethod;
 import org.timepedia.exporter.client.ExportOverlay;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -23,6 +24,7 @@ import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
+import static com.google.gwt.user.client.Window.*;
 
 
 @ExportPackage("jsQuery")
@@ -81,26 +83,37 @@ public class JQ implements ExportOverlay<GQuery> {
     }-*/;
 
     @Export("$wnd.$")
-    public static GQuery StaticDollar(Object o) {
+    public static GQuery staticDollar(Object o) {
       if (o instanceof String) {
+//        System.out.println("R A");
         return GQuery.$((String)o);
       } else if (isFunction(o)) {
+//        System.out.println("R B");
         runFunction(o);
       } else if (o instanceof JavaScriptObject) {
-        return GQuery.$((JavaScriptObject)o);
+        GQuery r =  GQuery.$((JavaScriptObject)o);
+//        System.out.println("R C " + r);
+        return r;
       }
+//      System.out.println("R D");
       return GQuery.$();
     }
     
     @Export("$wnd.$")
-    public static GQuery StaticDollar(String s, Element ctx) {
+    public static GQuery staticDollar(String s, Element ctx) {
       return GQuery.$(s, ctx);
+    }
+    
+    
+    @Export("$wnd.$.ready")
+    public static void ready(Function f) {
+      alert("ready");
     }
     
     @Export("$wnd.$.inArray")
     public static int inArray(Object o, Object a) {
       if (o instanceof JavaScriptObject && JsUtils.isElement((JavaScriptObject)o)) {
-        return StaticDollar(a).index((Element)o);
+        return staticDollar(a).index((Element)o);
       } else if (a instanceof JavaScriptObject && JsUtils.isArray((JavaScriptObject)a)) {
         return ((JsCache)a).indexOf(o); 
       }
@@ -252,6 +265,7 @@ public int size() {return 0;}
   public GQuery find(String... filters) {return null;}
   public GQuery first() {return null;}
   public GQuery focus(Function... f) {return null;}
+  @ExportJsInitMethod
   public NodeList<Element> get() {return null;}
   public Element get(int i) {return null;}
   public Node getContext() {return null;}
@@ -419,4 +433,11 @@ public int size() {return 0;}
   public GQuery wrapInner(Element elem) {return null;}
   public GQuery wrapInner(GQuery query) {return null;}
   public GQuery wrapInner(String html) {return null;}
+
+  @ExportInstanceMethod
+  public static GQuery ready(Function f) {
+    alert("ready ....");
+    return null;
+  }
+
 }

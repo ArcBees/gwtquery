@@ -3,12 +3,19 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <name>JsQuery</name>
     <artifactId>jsquery</artifactId>
     <packaging>war</packaging>
+
+    <properties>
+        <gwtversion>2.4.0</gwtversion>
+        <gwtmaven>2.4.0</gwtmaven>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
@@ -20,7 +27,7 @@
         <dependency>
            <groupId>org.timepedia.exporter</groupId>
            <artifactId>gwtexporter</artifactId>
-           <version>2.3.1-SNAPSHOT</version>
+           <version>2.4.0-SNAPSHOT</version>
            <scope>provided</scope>
         </dependency>
         <dependency>
@@ -57,7 +64,7 @@
                 <version>${gwtmaven}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
-                    <style>${gwt.outputstyle}</style>
+                    <style>OBF</style>
                     <optimizationLevel>9</optimizationLevel>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
@@ -83,19 +90,42 @@
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>true</downloadJavadocs>
                     <additionalBuildcommands>
-                        <buildCommand>
-                            <name>
-                                com.google.gwt.eclipse.core.gwtProjectValidator
-                            </name>
-                        </buildCommand>
+                      <buildCommand>com.google.gwt.eclipse.core.gwtProjectValidator</buildCommand>
+                      <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</buildcommand>
+                      <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                      <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilderDependencyResolver</buildcommand>
                     </additionalBuildcommands>
                     <additionalProjectnatures>
-                        <projectnature>com.google.gwt.eclipse.core.gwtNature
-                        </projectnature>
+                      <projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
+                      <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+                      <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
                     </additionalProjectnatures>
-                </configuration>
+                 </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>2.5</version>
+              <executions>
+                <execution>
+                  <id>copy-resources</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                    <resources>
+                      <resource>
+                       <directory>src/main/webapp</directory>
+                       <filtering>true</filtering>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </execution>
+              </executions>
             </plugin>
         </plugins>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     </build>
 
 </project>

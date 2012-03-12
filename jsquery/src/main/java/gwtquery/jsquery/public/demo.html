@@ -1,0 +1,365 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>jQuery menu plugin demo page</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!-- <script type="text/javascript" src="http://p.sohei.org/wp-content/jquery/jquery-1.2.2.pack.js"></script> -->
+<!-- <script type="text/javascript" src="jquery.dimensions.min.js"></script> -->
+<!-- <script type="text/javascript" src="../jquery.menu.js"></script> -->
+<script src="dev.nocache.js" ></script>
+<!--
+<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shCore.js"></script>
+<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shBrushXml.js"></script>
+<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shBrushJScript.js"></script>
+-->
+<script type="text/javascript">
+<!--
+onJsQueryLoad = function(){
+$(document).ready(function()
+{
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif', copyClassAttr: true, onClick: function(e, menuItem){
+		alert('you clicked item "' + $(this).text() + '"');
+	}};
+	$('#menuone').menu(options);
+
+	var items = [	{src: 'test', url:'http://www.jquery.com'},
+					{src: ''}, // separator
+					{src: 'test2', subMenu: [	{src: 'sub 1'},
+												{src: 'sub 2', url: 'http://p.sohei.org', target: '_blank'},
+												{src: 'sub 3'}]}];
+	$('#menutwo').menu(options, items);
+	$('#menuthree').menu(options);
+	$('#menufive>img').menu(options, '#menufivelist');
+
+	//creating a menu without items
+	var menu = new $.Menu('#menufour', null, options);
+	//adding items to the menu
+	menu.addItems([
+		new $.MenuItem({src: 'test', url:'http://www.jquery.com'}, options),
+		new $.MenuItem({src: ''}) // separator
+	]);
+	var itemWithSubmenu = new $.MenuItem({src: 'test2'}, options);
+	//creating a menu with items (as child of itemWithSubmenu)
+	new $.Menu(itemWithSubmenu, [
+		new $.MenuItem({src: 'sub 1'}, options),
+		new $.MenuItem({src: 'sub 2', url: 'http://p.sohei.org', target: '_blank'}, options),
+		new $.MenuItem({src: 'sub 3'}, options)
+	], options);
+	//adding the submenu to the main menu
+	menu.addItem(itemWithSubmenu);
+
+	//highlight stuff..
+	dp.SyntaxHighlighter.ClipboardSwf = 'http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/clipboard.swf';
+	dp.SyntaxHighlighter.HighlightAll('code');
+});
+}
+-->
+</script>
+</head>
+<body>
+<div id="header">
+<div class="title">jQuery Menu plugin demo</div>
+<div class="link"><a href="http://p.sohei.org/jquery-plugins/menu">plugin page</a></div>
+</div>
+
+<div class="exa">
+<h1>Available options:</h1>
+	options which affect the menu:
+	<ul>
+		<li><strong>showDelay</strong> - The number of milliseconds to wait before opening the menu after hovering over the target. Default value: 200</li>
+		<li><strong>hideDelay</strong> - The number of milliseconds to wait before closing the menu. Default value: 200</li>
+		<li><strong>hoverOpenDelay</strong> - The number of milliseconds to wait before opening the topmost-menu (root) (without clicking it!). Default value: 0 (disabled!)</li>
+		<li><strong>offsetTop</strong> - The number of pixels to offset the position of the topmost-menu (root) to the top. Default value: 0</li>
+		<li><strong>offsetLeft</strong> - The number of pixels to offset the position of the topmost-menu (root) to the left. Default value: 0</li>
+		<li><strong>minWidth</strong> - The minimal number of pixels of the menus width. Default value: 0</li></li>
+		<li><strong>onOpen</strong> - Callback function which is triggered when a menu is opened. Default value: null</li>
+		<li><strong>onClose</strong> - Callback function which is triggered when a menu is closed. Default value: null</li>
+	</ul>
+	options which affect the menuItems:
+	<ul>
+		<li><strong>onClick</strong> - Callback function which is triggered when a menuItem is clicked. The passed parameters are: the event object and the menuItem instance. Default value: null</li>
+		<li><strong>arrowSrc</strong> - URL of the image to be used as an arrow indicating a submenu. Default value: null (no arrow image!)</li>
+	</ul>
+	options which are only used, when building a menu from HTML markup:
+	<ul>
+		<li><strong>copyClassAttr</strong> - Copies the class attribute of the LI elements to the equivalent menuItems. Default value: false</li>
+	</ul>
+</div>
+
+<div class="exa">
+<h1>Example one:</h1>
+	<ul>
+		<li>create a menubar from an unordered list</li>
+		<li>used on an unordered list, the plugin takes its direct &lt;li&gt;-children, which will be the root items (File, Edit...), 
+		and searches each for an &lt;ul&gt;-child, which holds the menu-items (New window, Save, Print...).</li>
+		<li>empty &lt;li&gt;-elements are used as seperators</li>
+	</ul>
+	<div class="codeheader">JavaScript code:</div>
+	<pre name="code" class="JScript">
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif', onClick: function(e, menuItem){
+		alert('you clicked item "' + $(this).text() + '"');
+	}};
+	$('#menuone').menu(options);
+	</pre>
+	<div class="codeheader">HTML markup:</div>
+	<pre name="code" class="html">
+	&lt;!-- note: the plugin doesn't need the classes, they're only used for styling! --&gt;
+	&lt;ul id="menuone" class="menu"&gt;
+		&lt;li class="menumain"&gt;File
+			&lt;ul&gt;&lt;li&gt;New&nbsp;window&lt;/li&gt;
+				&lt;li&gt;&lt;/li&gt; &lt;!-- separator --&gt;
+				&lt;li&gt;Save...&lt;/li&gt;
+				&lt;li&gt;Print...&lt;/li&gt;
+				&lt;li&gt;&lt;/li&gt; &lt;!-- separator --&gt;
+				&lt;li&gt;Exit&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/li&gt;
+		&lt;li class="menumain"&gt;Edit
+			&lt;ul&gt;&lt;li&gt;Undo&lt;/li&gt;
+				&lt;li&gt;Redo&lt;/li&gt;
+				&lt;li&gt;&lt;/li&gt; &lt;!-- separator --&gt;
+				&lt;li&gt;Cut&lt;/li&gt;
+				&lt;li&gt;Copy&lt;/li&gt;
+				&lt;li&gt;Paste&lt;ul&gt;&lt;li&gt;All&lt;/li&gt;&lt;li&gt;Something&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;
+				&lt;li&gt;Delete&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/li&gt;
+		&lt;!-- ...and even more... --&gt;
+	&lt;/ul&gt;
+	</pre>
+	<div class="resultheader">Result:</div>
+	<div class="result" style="padding:0;">
+		<div style="border-bottom: 1px solid #000;background:#eee;">
+			<ul id="menuone" class="menu">
+				<li class="menumain">File
+					<ul><li>New&nbsp;window</li>
+						<li></li>
+						<li>Save...</li>
+						<li>Print...</li>
+						<li></li>
+						<li>Exit</li>
+					</ul>
+				</li>
+				<li class="menumain">Edit
+					<ul><li>Undo</li>
+						<li>Redo</li>
+						<li></li>
+						<li>Cut</li>
+						<li>Copy</li>
+						<li>Paste<ul><li>All</li><li>Something</li></ul></li>
+						<li>Delete</li>
+					</ul>
+				</li>
+				<li class="menumain">Bookmarks
+					<ul><li>Bookmark&nbsp;manager</li>
+						<li></li>
+						<li>some&nbsp;bookmark</li>
+						<li>another&nbsp;bookmark</li>
+						<li></li>
+						<li>Imported&nbsp;bookmarks
+							<ul><li>bookmark&nbsp;one</li>
+								<li>bookmark&nbsp;two</li>
+								<li>bookmark&nbsp;three</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class="menumain" style="float:right;">Help
+					<ul><li>Help&nbsp;index</li>
+						<li></li>
+						<li>About...
+							<ul>
+								<li>me</li>
+								<li>you</li>
+								<li>them</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div style="clear:both;"></div>
+		</div>
+		<p>..some content..</p>
+		<p>..some content..</p>
+		<p>..some content..</p>
+	</div>
+</div>
+
+<div class="exa">
+<h1>Example two:</h1>
+	<ul>
+		<li>create a menu from javascript and open it when clicking on the element with the id &quot;menutwo&quot;</li>
+		<li>when a second parameter ist passed (items), the plugin will use it as menu content</li>
+	</ul>
+	<div class="codeheader">JavaScript code:</div>
+	<pre name="code" class="JScript">
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif'};
+	var items = [	{src: 'test', url:'http://www.jquery.com'}, 
+					{src: ''}, /* separator */
+					{src: 'test2', subMenu: [	{src: 'sub 1'},
+												{src: 'sub 2', url: 'http://p.sohei.org', target: '_blank'},
+												{src: 'sub 3'}]}];
+	$('#menutwo').menu(options, items);
+	</pre>
+	<div class="codeheader">HTML markup:</div>
+	<pre name="code" class="html">
+	&lt;p&gt;&lt;span id="menutwo"&gt;Menu Button&lt;/span&gt;&lt;/p&gt;
+	</pre>
+	<div class="resultheader">Result:</div>
+	<div class="result">
+		<p>..some content..</p>
+		<p><span id="menutwo">Menu Button</span></p>
+		<p>..some content..</p>
+	</div>
+</div>
+
+<div class="exa">
+<h1>Example three:</h1>
+	<ul>
+		<li>same as example two, but without passing the items as parameter to the plugin</li>
+		<li>the plugin looks inside the elment for an unordered list, which holds the menu content</li>
+	</ul>
+	<div class="codeheader">JavaScript code:</div>
+	<pre name="code" class="JScript">
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif'};
+	$('#menuthree').menu(options);
+	</pre>
+	<div class="codeheader">HTML markup:</div>
+	<pre name="code" class="html">
+	&lt;div id="menuthree"&gt;Menu Button
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a href="http://www.jquery.com"&gt;test&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;/li&gt; &lt;!-- separator --&gt;
+			&lt;li&gt;test2
+				&lt;ul&gt;
+					&lt;li&gt;sub 1&lt;/li&gt;
+					&lt;li&gt;&lt;a href="http://p.sohei.org" target="_blank"&gt;sub 2&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;sub 3&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/div&gt;
+	</pre>
+	<div class="resultheader">Result:</div>
+	<div class="result">
+		<p>..some content..</p>
+		<div id="menuthree">Menu Button
+			<ul>
+				<li><a href="http://www.jquery.com">test</a></li>
+				<li></li>
+				<li>test2
+					<ul>
+						<li>sub 1</li>
+						<li><a href="http://p.sohei.org" target="_blank">sub 2</a></li>
+						<li>sub 3</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<p>..some content..</p>
+	</div>
+</div>
+
+<div class="exa">
+<h1>Example four:</h1>
+	<ul>
+		<li>same (result) as example two, but this time creating the menu by using the $.Menu and $.MenuItem classes and its methods</li>
+	</ul>
+	<div class="codeheader">JavaScript code:</div>
+	<pre name="code" class="JScript">
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif'};
+
+	//creating a menu without items
+	var menu = new $.Menu('#menufour', null, options);
+
+	//adding items to the menu
+	menu.addItems([
+		new $.MenuItem({src: 'test', url:'http://www.jquery.com'}, options),
+		new $.MenuItem({src: ''}) /* separator */
+	]);
+	var itemWithSubmenu = new $.MenuItem({src: 'test2'}, options);
+
+	//creating a menu with items (as child of itemWithSubmenu)
+	new $.Menu(itemWithSubmenu, [
+		new $.MenuItem({src: 'sub 1'}, options),
+		new $.MenuItem({src: 'sub 2', url: 'http://p.sohei.org', target: '_blank'}, options),
+		new $.MenuItem({src: 'sub 3'}, options)
+	], options);
+
+	//adding the submenu to the main menu
+	menu.addItem(itemWithSubmenu);
+	</pre>
+	<div class="codeheader">HTML markup:</div>
+	<pre name="code" class="html">
+	&lt;p&gt;&lt;span id="menufour"&gt;Menu Button&lt;/span&gt;&lt;/p&gt;
+	</pre>
+	<div class="resultheader">Result:</div>
+	<div class="result">
+		<p>..some content..</p>
+		<p><span id="menufour">Menu Button</span></p>
+		<p>..some content..</p>
+	</div>
+</div>
+
+<div class="exa">
+<h1>Example five:</h1>
+	<ul>
+		<li>related to example two, the menu items can also be passed as a jquery selector (selecting an &lt;ul&gt;-element!)</li>
+	</ul>
+	<div class="codeheader">JavaScript code:</div>
+	<pre name="code" class="JScript">
+	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif', copyClassAttr: true};
+	$('#menufive>img').menu(options, '#menufivelist');
+	</pre>
+	<div class="codeheader">HTML markup:</div>
+	<pre name="code" class="html">
+	&lt;p id="menufive"&gt;Menu Button &lt;img src="arrowdown.png" /&gt; - Menu Button &lt;img src="arrowdown.png" /&gt; - Menu Button &lt;img src="arrowdown.png" /&gt;&lt;/p&gt;
+	
+	&lt;ul id="menufivelist" style="display:none;"&gt;
+		&lt;li&gt;one&lt;/li&gt;
+		&lt;li class="red"&gt;two&lt;/li&gt;
+		&lt;li class="blue"&gt;three&lt;/li&gt;
+		&lt;li&gt;four
+			&lt;ul&gt;
+				&lt;li&gt;four.1
+					&lt;ul&gt;
+						&lt;li&gt;four.1.1&lt;/li&gt;
+						&lt;li&gt;four.1.2&lt;/li&gt;
+						&lt;li&gt;four.1.3&lt;/li&gt;
+					&lt;/ul&gt;
+				&lt;/li&gt;
+				&lt;li&gt;four.2&lt;/li&gt;
+				&lt;li&gt;four.3&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/li&gt;
+	&lt;/ul&gt;
+	</pre>
+	<div class="resultheader">Result:</div>
+	<div class="result">
+		<p>..some content..</p>
+		<p id="menufive">Menu Button <img src="arrowdown.png" /> - Menu Button <img src="arrowdown.png" /> - Menu Button <img src="arrowdown.png" /></p>
+		<p>..some content..</p>
+	</div>
+	<ul id="menufivelist" style="display:none;">
+		<li>one</li>
+		<li class="red">two</li>
+		<li class="blue">three</li>
+		<li>four
+			<ul>
+				<li>four.1
+					<ul>
+						<li>four.1.1</li>
+						<li>four.1.2</li>
+						<li>four.1.3</li>
+					</ul>
+				</li>
+				<li>four.2</li>
+				<li>four.3</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+
+</body>
+</html>

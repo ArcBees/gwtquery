@@ -1,0 +1,62 @@
+--- mplugins/jquery.menu.js	2012-03-13 00:35:46.000000000 +0100
++++ jsquery/src/main/java/gwtquery/jsquery/client/JsMenu.java	2012-03-13 00:40:53.000000000 +0100
+@@ -1,5 +1,12 @@
++package gwtquery.jsquery.client;
++
++public abstract class JsMenu {
++  public static native void loadPlugin() /*-{
++
+ (function($)
+ {
++  var window = $wnd;
++  var document = $doc;
+ 	var menus = [], //list of all menus
+ 		visibleMenus = [], //list of all visible menus
+ 		activeMenu = activeItem = null,
+@@ -221,9 +225,7 @@
+ 			$.extend(defaults, d);
+ 		},
+ 		prototype : {
+-			/**
+-			 * create / initialize new menu
+-			 */
++
+ 			init : function()
+ 			{
+ 				var self = this;
+@@ -379,7 +381,7 @@
+ 					this.$eDIV.css({display:'none', visibility: ''}).show();
+ 
+ 					//IEs default width: auto is bad! ie6 and ie7 have are producing different errors.. (7 = 5px shadowbox + 2px border)
+-					if ( $.browser.msie )
++          if ( 0) //$.browser.msie )
+ 						this.$eUL.css('width', parseInt($.browser.version) == 6 ? this.$eDIV.width() - 7 : this.$eUL.width());
+ 
+ 					if ( this.settings.onOpen )
+@@ -422,7 +424,7 @@
+ 				}
+ 
+ 				//y-pos
+-				if ( $.fn.scrollTop )
++        if (0) //$.fn.scrollTop )
+ 				{
+ 					wst = $(window).scrollTop();
+ 					if ( wh < height ) //menu is bigger than the window
+@@ -461,7 +463,7 @@
+ 					}
+ 				}
+ 				//x-pos
+-				if ( $.fn.scrollLeft )
++        if (0) //$.fn.scrollLeft )
+ 				{
+ 					wsl = $(window).scrollLeft();
+ 					if ( ww + wsl < posX + width )
+@@ -925,4 +926,7 @@
+ 		return r;
+ 	};
+ 
+-})(jQuery);
++})($wnd.$);
++    
++  }-*/;
++}
