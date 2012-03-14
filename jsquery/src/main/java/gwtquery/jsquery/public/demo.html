@@ -4,20 +4,11 @@
 <head>
 <title>jQuery menu plugin demo page</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
-<!-- <script type="text/javascript" src="http://p.sohei.org/wp-content/jquery/jquery-1.2.2.pack.js"></script> -->
-<!-- <script type="text/javascript" src="jquery.dimensions.min.js"></script> -->
-<!-- <script type="text/javascript" src="../jquery.menu.js"></script> -->
 <script src="dev.nocache.js" ></script>
-<!--
-<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shCore.js"></script>
-<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shBrushXml.js"></script>
-<script type="text/javascript" src="http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/shBrushJScript.js"></script>
--->
 <script type="text/javascript">
-<!--
+
+// JsQuery will run this function after it is asynchronously loaded
 onJsQueryLoad = function(){
-$(document).ready(function()
-{
 	var options = {minWidth: 120, arrowSrc: 'arrow_right.gif', copyClassAttr: true, onClick: function(e, menuItem){
 		alert('you clicked item "' + $(this).text() + '"');
 	}};
@@ -48,12 +39,14 @@ $(document).ready(function()
 	], options);
 	//adding the submenu to the main menu
 	menu.addItem(itemWithSubmenu);
-
-	//highlight stuff..
-	dp.SyntaxHighlighter.ClipboardSwf = 'http://p.sohei.org/wp-content/plugins/syntaxhighlighter-plus/files/clipboard.swf';
-	dp.SyntaxHighlighter.HighlightAll('code');
-});
 }
+
+// If jsQuery or jQuery was already loaded we use the normal way
+if (window.$) {
+  $(document).ready(onJsQueryLoad);
+  onJsQueryLoad = null;
+}
+
 -->
 </script>
 </head>

@@ -1,7 +1,12 @@
 <module rename-to='jsquery'>
 	<inherits name='gwtquery.jsquery.JsQuery' />
 	
-	<!-- Hack to put code in jsquery.nocache.js -->
+	<!-- 
+	     Hack to put code into the jsquery.nocache.js so as $ is available 
+	     to use the $().ready method which is widely used in jquery pages.  
+	     Otherwise $ wont be available until the async loading of the gwt permutation
+	     which happens after the page was ready. 
+	 -->
     <define-property name="onload" values="default, foo"/>
     <property-provider name="onload">
       <![CDATA[
@@ -22,7 +27,9 @@
     </property-provider>
     
     <!-- Cross Site -->
-    <add-linker name="xs"/>
+    <add-linker name="xslinker"/>
+    
+    <!-- Minimize JS -->
     <set-property name="compiler.stackMode" value="strip"/>
 </module>
 

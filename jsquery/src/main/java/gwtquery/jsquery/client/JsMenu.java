@@ -1,10 +1,17 @@
 package gwtquery.jsquery.client;
 
 public abstract class JsMenu {
+  
+  static void log(Object l) {
+    System.out.println(l);
+  }
+  
   public static native void loadPlugin() /*-{
 
 (function($)
 {
+  var l = @gwtquery.jsquery.client.JsMenu::log(Ljava/lang/Object;);
+  
   var window = $wnd;
   var document = $doc;
   var menus = [], //list of all menus
@@ -111,7 +118,6 @@ public abstract class JsMenu {
     checkMouse : function(e)
     {
       var t = e.target;
-
       //the user clicked on the target of the currenty open menu
       if ( visibleMenus.length && t == visibleMenus[0].target )
         return;
@@ -121,6 +127,14 @@ public abstract class JsMenu {
         t = t.parentNode;
 
       //is the found node one of the visible menu elements?
+      for (k in visibleMenus) {
+        if (visibleMenus[k].$eDIV[0] == t)  {
+          // FIXME: why do we need a timeout
+          setTimeout($.Menu.closeAll, 100);
+          break;
+        }
+      }
+      // FIXME: JsQuery each doesn't work with arrays
       if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
       {
         $.Menu.closeAll();
@@ -387,6 +401,7 @@ public abstract class JsMenu {
           if ( this.settings.onOpen )
             this.settings.onOpen.call(this);
         }
+        
         if ( visibleMenus.length == 0 )
           $(document).bind('mousedown', $.Menu.checkMouse).bind('keydown', $.Menu.checkKey);
 
