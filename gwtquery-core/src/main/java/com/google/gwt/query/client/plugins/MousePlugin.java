@@ -41,7 +41,7 @@ public abstract class MousePlugin extends UiPlugin {
 
   protected void destroyMouseHandler() {
     as(Events)
-        .unbind(Event.ONMOUSEDOWN | Event.ONCLICK, getPluginName());
+        .unbind(Event.ONMOUSEDOWN | Event.ONCLICK, getPluginName(), null);
   }
 
   /**
@@ -282,7 +282,7 @@ public abstract class MousePlugin extends UiPlugin {
 
   private void unbindOtherMouseEvent() {
     $(document).as(Events).unbind((Event.ONMOUSEUP | Event.ONMOUSEMOVE),
-        getPluginName());
+        getPluginName(), null);
   }
 
 }

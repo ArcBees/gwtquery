@@ -342,19 +342,25 @@ public class Ajax extends GQuery {
     s.setData(data);
     s.setSuccess(new Function() {
       public void f() {
-        // We clean up the returned string to smoothly append it to our document 
-        String s = getData()[0].toString().replaceAll("<![^>]+>\\s*", "")
-          .replaceAll("(?si)</?html[^>]*>\\s*", "")
-          .replaceFirst("(?si)<head[^>]*>.*</head>\\s*", "")
-          .replaceFirst("(?si)<script[^>]*>.*</script>\\s*", "")
-          .replaceAll("<?si></?body[^>]*>\\s*", "");
-        // We wrap the results in a div
-        s = "<div>" + s + "</div>";
-        
-        Ajax.this.empty().append(filter.isEmpty() ? $(s) : $(s).find(filter));
-        if (onSuccess != null) {
-          onSuccess.setElement(Ajax.this.get(0));
-          onSuccess.f();
+        try {
+          // We clean up the returned string to smoothly append it to our document 
+          String s = getData()[0].toString().replaceAll("<![^>]+>\\s*", "")
+            .replaceAll("(?si)</?html[^>]*>\\s*", "")
+            .replaceFirst("(?si)<head[^>]*>.*</head>\\s*", "")
+            .replaceFirst("(?si)<script[^>]*>.*</script>\\s*", "")
+            .replaceAll("<?si></?body[^>]*>\\s*", "");
+          // We wrap the results in a div
+          s = "<div>" + s + "</div>";
+          
+          Ajax.this.empty().append(filter.isEmpty() ? $(s) : $(s).find(filter));
+          if (onSuccess != null) {
+            onSuccess.setElement(Ajax.this.get(0));
+            onSuccess.f();
+          }
+        } catch (Exception e) {
+          if (GWT.getUncaughtExceptionHandler() != null) {
+            GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+          }
         }
       }
     });

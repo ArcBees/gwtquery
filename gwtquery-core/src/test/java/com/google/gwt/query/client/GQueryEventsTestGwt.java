@@ -215,6 +215,26 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).unbind(Event.ONCLICK);
     $("p", e).click();
     assertEquals("white", $("p", e).css("color", false));
+    
+    Function f1 = new Function() {
+      public void f(){
+        $(this).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    };
+    Function f2 = new Function() {
+      public void f(){
+        $(this).css(CSS.COLOR.with(RGBColor.GREEN));
+      }
+    };
+    $("p", e).click(f1, f2);
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("green", $("p", e).css("color", false));
+    $("p", e).unbind(Event.ONCLICK, f2);
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color", false));
+    
+    
 
     // toggle
     $("p", e).unbind(Event.ONCLICK);
@@ -266,7 +286,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
       public boolean f(Event evnt) {
         GQuery gq = $(evnt);
         int c = evnt.getCharCode() > 0 ? evnt.getCharCode() : evnt.getKeyCode();
-        System.out.println(evnt.getCharCode() + " " + evnt.getKeyCode());
         gq.val(gq.val() + Character.toString((char)c));
         return false;
       }

@@ -84,6 +84,10 @@ public class EventsListener implements EventListener {
     public String toString() {
       return "bind function for event type " + type;
     }
+    
+    public boolean isEquals(Function f) {
+      return function.equals(f);
+    }
   }
 
   /**
@@ -329,7 +333,7 @@ public class EventsListener implements EventListener {
   public void bind(int eventbits, String namespace, final Object data,
       final Function function, int times) {
     if (function == null) {
-      unbind(eventbits, namespace);
+      unbind(eventbits, namespace, null);
       return;
     }
     eventBits |= eventbits;
@@ -435,30 +439,32 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits) {
-    unbind(eventbits, null);
+    unbind(eventbits, null, null);
   }
 
-  public void unbind(int eventbits, String namespace) {
+  public void unbind(int eventbits, String namespace, Function f) {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
       boolean matchNS = namespace == null || namespace.isEmpty()
           || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
-      if (matchNS && matchEV) {
+      boolean matchFC = f == null || listener.isEquals(f);
+      if (matchNS && matchEV && matchFC) {
         continue;
       }
       newList.add(listener);
     }
     elementEvents = newList;
+
   }
 
-  public void unbind(String event) {
+  public void unbind(String event, Function f) {
     // TODO: nameSpaces in event lists
     String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
     String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
     int b = getEventBits(eventName);
-    unbind(b, nameSpace);
+    unbind(b, nameSpace, f);
   }
 
   private void clean() {
@@ -515,4 +521,5 @@ public class EventsListener implements EventListener {
       function.clean();
     }
   }
+
 }

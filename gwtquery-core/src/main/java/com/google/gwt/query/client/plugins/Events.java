@@ -273,25 +273,37 @@ public class Events extends GQuery {
    * 
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER, "my.namespace")
    */
-  public Events unbind(int eventbits, String name) {
+  public Events unbind(int eventbits, String name, Function f) {
     for (Element e : elements()) {
       if (isEventCapable(e)){
-        EventsListener.getInstance(e).unbind(eventbits, name);
+        EventsListener.getInstance(e).unbind(eventbits, name, f);
       }
     }
     return this;
   }
 
   /**
-   * Removes all handlers, that matches event name passed. This name could
-   * contain a namespace.
+   * Removes all handlers, that matches the event name passed. 
+   * 
+   * This name could contain a namespace.
    * 
    * Example: unbind("click.my.namespace")
    */
   public Events unbind(String name) {
+    return unbind(name, null);
+  }
+  
+  /**
+   * Removes the function passed as parameter from the event list matching 
+   * the event name passed. 
+   * This name could contain a namespace.
+   * 
+   * Example: unbind("click.my.namespace", myFunction)
+   */
+  public Events unbind(String name, Function f) {
     for (Element e : elements()) {
       if (isEventCapable(e)){
-        EventsListener.getInstance(e).unbind(name);
+        EventsListener.getInstance(e).unbind(name, f);
       }
     }
     return this;

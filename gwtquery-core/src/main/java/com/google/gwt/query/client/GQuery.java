@@ -4093,10 +4093,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
+   * Removes the function passed from the set of events which match 
+   * the eventbits.
+   */
+  public GQuery unbind(int eventbits, Function f) {
+    return as(Events).unbind(eventbits, null, f);
+  }
+  
+  /**
    * Removes all events that match the eventList.
    */
   public GQuery unbind(String eventList) {
-    return as(Events).unbind(eventList);
+    return unbind(eventList, null);
+  }
+  
+  /**
+   * Removes all events that match the eventList.
+   */
+  public GQuery unbind(String eventList, Function f) {
+    return as(Events).unbind(eventList, f);
   }
 
   /**
