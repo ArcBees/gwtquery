@@ -1,10 +1,5 @@
 package gwtquery.jsquery.client;
 
-import gwtquery.jsquery.client.JQ.Dollar;
-import gwtquery.jsquery.client.JQ.JEasing;
-import gwtquery.jsquery.client.JQ.JFunction;
-import gwtquery.jsquery.client.JQ.JPredicate;
-
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -24,14 +19,22 @@ public class JsQuery implements EntryPoint {
       }
     });    
     
-    GWT.create(JFunction.class);
-    GWT.create(JPredicate.class);
-    GWT.create(JEasing.class);
-    GWT.create(JQ.class);
-    GWT.create(Dollar.class);
-    JsMenu.loadPlugin();
+    OverlayGQuery.export();
+    
     onJsQueryLoad();
+    
+    testJs();
   }
+  
+  private native static void testJs() /*-{
+    var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
+    $ = $wnd.$;
+    l($.each);
+    $.each(["a","b"], function(a, b){
+      l("kk " + " " + a + " " + b);
+    }
+    );
+  }-*/;
   
   private native static void onJsQueryLoad() /*-{
     $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();

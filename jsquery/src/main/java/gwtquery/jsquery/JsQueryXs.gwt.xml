@@ -26,9 +26,6 @@
       ]]>
     </property-provider>
     
-    <!-- Cross Site -->
-    <add-linker name="xslinker"/>
-    
     <!-- Minimize JS -->
     <set-property name="compiler.stackMode" value="strip"/>
 </module>

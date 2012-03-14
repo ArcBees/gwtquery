@@ -5,7 +5,8 @@
 	<set-property name="export" value="yes" />
 
 	<entry-point class="gwtquery.jsquery.client.JsQuery" />
-	
-    <add-linker name="xsiframe"/>
+
+        <!-- cross-site -->	
+        <add-linker name="xsiframe"/>
 </module>
 

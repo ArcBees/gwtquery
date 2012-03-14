@@ -1,6 +1,6 @@
 package gwtquery.jsquery.client;
 
-import static com.google.gwt.user.client.Window.alert;
+import gwtquery.jsquery.client.utils.JsQAux;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportAfterCreateMethod;
@@ -9,11 +9,12 @@ import org.timepedia.exporter.client.ExportInstanceMethod;
 import org.timepedia.exporter.client.ExportJsInitMethod;
 import org.timepedia.exporter.client.ExportOverlay;
 import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
+import org.timepedia.exporter.client.ExportStaticMethod;
 import org.timepedia.exporter.client.ExporterUtil;
+import org.timepedia.exporter.client.NoExport;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -22,26 +23,37 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.query.client.js.JsNodeArray;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Event;
 
-
+/**
+ * Class used to expose GQuery methods and object to Javascript using
+ * gwt-exporter annotations.
+ * 
+ * We prefer to overlay the original GQuery object instead of adding
+ * the gwt-exporter dependency to the project.
+ * 
+ * Because of the differences between java and js apis, we need to 
+ * override some methods in order to deal with complex cases. 
+ *
+ */
 @ExportPackage("jsQuery")
 @Export(value="fn", all=false)
-public class JQ implements ExportOverlay<GQuery> {
+public class OverlayGQuery implements ExportOverlay<GQuery> {
+  
+  @NoExport
+  public static void export() {
+    GWT.create(OverlayFunction.class);
+    GWT.create(OverlayPredicate.class);
+    GWT.create(OverlayGQuery.class);
+  }
   
   @ExportPackage("jsQuery")
   @Export("jFunction")
   @ExportClosure()
-  public interface JFunction extends ExportOverlay<Function>  {
+  protected interface OverlayFunction extends ExportOverlay<Function>  {
     public void f();
-// Element and Event are JavascriptObjects so we export one.    
-//    public void f(Element e);
     public boolean f(Event e);
     public Object f(Element e, int i);
   }
@@ -49,130 +61,87 @@ public class JQ implements ExportOverlay<GQuery> {
   @ExportPackage("jsQuery")
   @Export("jPredicate")
   @ExportClosure()
-  public interface JPredicate extends ExportOverlay<Predicate>  {
+  protected interface OverlayPredicate extends ExportOverlay<Predicate>  {
     public boolean f(Element e, int i);
   }
   
-  @ExportPackage("jsQuery")
-  @Export("jEasing")
-  @ExportClosure()
-  public interface JEasing extends ExportOverlay<Easing>  {
-    public double interpolate(double progress);
-  }
-  
-  @ExportPackage("")
-  @Export("jsQuery")
-  // Used to export $ method 
-  public static class Dollar implements Exportable {
-    // jQuery.fn.init.prototype = jQuery.fn
-    native static String dumpObject(JavaScriptObject o) /*-{
-      var s = "" ; for (k in o) s += " " + k; return s;
-    }-*/;
-    
-    private static native boolean isFunction(Object o) /*-{
-      return typeof(o) == 'function';
-    }-*/;
-    
-    private static native void runFunction(Object f) /*-{
-      f();
-    }-*/;
+  private OverlayGQuery(){}
 
-    @Export("$wnd.$")
-    public static GQuery staticDollar(Object o) {
-      if (o instanceof String) {
-        return GQuery.$((String)o);
-      } else if (isFunction(o)) {
-        runFunction(o);
-      } else if (o instanceof JavaScriptObject) {
-        JavaScriptObject jso = (JavaScriptObject)o;
-        GQuery r = GQuery.$(jso);
-        if (JsUtils.isArray(jso)) {
-          JsCache c = jso.cast();
-          JsNodeArray elms = JsNodeArray.create();
-          for (int i = 0 ; i < c.length(); i++) {
-            elms.addNode(c.getJavaScriptObject(i).<Node>cast());
-          }
-          r = GQuery.$(elms);
-//          System.out.println(c.length() + " " + elms.getLength() + " " + r.length());
-        }
-        
-        return r;
-      } else {
-        System.out.println("Bad!!!! " + o);
-      }
-      return GQuery.$();
-    }
-    
-    @Export("$wnd.$")
-    public static GQuery staticDollar(String s, Element ctx) {
-      return GQuery.$(s, ctx);
-    }
-    
-    
-    @Export("$wnd.$.ready")
-    public static void ready(Function f) {
-      alert("ready");
-    }
-    
-    @Export("$wnd.$.inArray")
-    public static int inArray(Object o, Object a) {
-      if (o instanceof JavaScriptObject && JsUtils.isElement((JavaScriptObject)o)) {
-        return staticDollar(a).index((Element)o);
-      } else if (a instanceof JavaScriptObject && JsUtils.isArray((JavaScriptObject)a)) {
-        return ((JsCache)a).indexOf(o); 
-      }
-      return -1;
-    }
-
-    @Export("$wnd.$.extend")
-    public  static JavaScriptObject extend(Object...objs) {
-      int i = 0, l = objs.length;
-      boolean deep = false;
-      JavaScriptObject ctx = null;
-      Object target = objs[i];
-      if (target instanceof Boolean) {
-        deep = (Boolean) target;
-        if (l == 1) return ctx;
-        target = objs[i++];
-      }
-      if (l - i == 1) {
-        i--;
-      } else {
-        ctx = (JavaScriptObject)target;
-      }
-      
-      for (++i; i < l; i++) {
-        if (objs[i] != null) {
-          ctx = extendImpl(deep, ctx, objs[i]);
-        }
-      }
-      return ctx;
-    }
-    
-    private static native JavaScriptObject getDefaultPrototype() /*-{
-      return $wnd.jsQuery && $wnd.jsQuery.fn ? $wnd.jsQuery.fn.prototype : null;
-    }-*/;
-    
-    private static native JavaScriptObject extendImpl(boolean deep, JavaScriptObject ctx, Object s) /*-{
-      var d = ctx ? ctx : $wnd.jsQuery.fn.prototype || {};
-      for (k in s) {
-        d[k] = s[k];
-        if (!ctx) $wnd.$[k] = s[k];
-      }
-      return d;
-    }-*/;
-    
-    @ExportAfterCreateMethod
-    public static native void afterCreate() /*-{
-    }-*/;
-  }
-  
-  // We have to stub all the method we want to export here.
-  private JQ(){}
-
+  /**
+   * In js a GQuery object represents a Nodelist.
+   * gwt-exporter will use the object returned by get() to wrap
+   * the GQuery object
+   */
   @ExportJsInitMethod
   public NodeList<Element> get() {return null;}
+  
+  /**
+   * Customized JS code to execute after GQuery has been exported.
+   */
+  @ExportAfterCreateMethod
+  public static native void afterCreate() /*-{
+  }-*/;
+  
+  @ExportStaticMethod("$wnd.$")
+  public static GQuery $(Object o) {
+    return JsQAux.dollar(o);
+  }
 
+  @ExportStaticMethod("$wnd.$")
+  public static GQuery $(String s, Element ctx) {
+    return GQuery.$(s, ctx);
+  }
+  
+  @ExportStaticMethod("$wnd.$.extend")
+  public static JavaScriptObject extend(Object...objs) {
+    return JsQAux.extend(objs);
+  }
+  
+  @ExportStaticMethod("$wnd.$.each")
+  public static Object[] each(Object[] objs, Function f) {
+    return JsQAux.each(objs, f);
+  }
+  
+  @ExportInstanceMethod
+  public static GQuery ready(GQuery g, Function f) {
+    f.fe();
+    return g;
+  }
+
+  @ExportInstanceMethod
+  // TODO: normally plugins adds new easing functions to jquery.easing array
+  public static GQuery animate(GQuery g, Object stringOrProperties, int duration, String easing, Function... funcs) {
+    return g.animate(stringOrProperties, duration,
+        "linear".equalsIgnoreCase(easing) 
+            ? PropertiesAnimation.Easing.LINEAR
+            : PropertiesAnimation.Easing.SWING, funcs);
+  }
+  
+  @ExportInstanceMethod
+  public static Object css(GQuery g, Object o) {
+    if (o instanceof String) {
+      return g.css((String)o, false);
+    } else {
+      return ExporterUtil.wrap(g.css((Properties)o));
+    }
+  }
+
+  @ExportInstanceMethod
+  public static GQuery css(GQuery g, String k, Object v) {
+    return g.css(k, String.valueOf(v));
+  }
+  
+  @ExportInstanceMethod
+  public static JavaScriptObject offset(GQuery instance) {
+    Offset o = instance.offset();
+    return Properties.create("left: " + o.left + ", top:" + o.top);
+  }
+  
+  @ExportInstanceMethod
+  public static GQuery unbind(GQuery g, String s, Function o) {
+    return g.unbind(s);
+  }
+  
   public String toString() {return null;}
   public GQuery add(GQuery previousObject) {return null;}
   public GQuery add(String selector) {return null;}
@@ -182,18 +151,14 @@ public class JQ implements ExportOverlay<GQuery> {
   public GQuery after(String html) {return null;}
   public GQuery andSelf() {return null;}
   
-  @ExportInstanceMethod
-  public static GQuery animate(GQuery g, Object stringOrProperties, int duration, String easing, Function... funcs) {
-    return g.animate(stringOrProperties, duration, "linear".equalsIgnoreCase(easing)? PropertiesAnimation.Easing.LINEAR : PropertiesAnimation.Easing.SWING, funcs);
-  }
-//  public GQuery animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {return null;}
+// public GQuery animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {return null;}
   public GQuery animate(Object stringOrProperties, Function... funcs) {return null;}
   public GQuery animate(Object stringOrProperties, int duration, Function... funcs) {return null;}
-//public GQuery attr(Properties properties) {return null;}
-public String attr(String name) {return null;}
-//public GQuery attr(String key, Function closure) {return null;}
-public GQuery attr(String key, Object value) {return null;}
-public int size() {return 0;}
+// public GQuery attr(Properties properties) {return null;}
+  public String attr(String name) {return null;}
+// public GQuery attr(String key, Function closure) {return null;}
+  public GQuery attr(String key, Object value) {return null;}
+  public int size() {return 0;}
 
   public GQuery append(GQuery query) {return null;}
   public GQuery append(Node n) {return null;}
@@ -206,8 +171,8 @@ public int size() {return 0;}
   public GQuery before(GQuery query) {return null;}
   public GQuery before(Node n) {return null;}
   public GQuery before(String html) {return null;}
-//  public GQuery bind(int eventbits, Object data, Function... funcs) {return null;}
-//  public GQuery bind(String eventType, Object data, Function... funcs) {return null;}
+// public GQuery bind(int eventbits, Object data, Function... funcs) {return null;}
+// public GQuery bind(String eventType, Object data, Function... funcs) {return null;}
   @ExportInstanceMethod
   public static GQuery bind(GQuery g, String events, Function func) {
     return g.bind(events, null, func);
@@ -226,18 +191,6 @@ public int size() {return 0;}
   public GQuery closest(String selector, Node context) {return null;}
   public GQuery contains(String text) {return null;}
   public GQuery contents() {return null;}
-  @ExportInstanceMethod
-  public static Object css(GQuery g, Object o) {
-    if (o instanceof String) {
-      return g.css((String)o, false);
-    } else {
-      return ExporterUtil.wrap(g.css((Properties)o));
-    }
-  }
-  @ExportInstanceMethod
-  public static GQuery css(GQuery g, String k, Object v) {
-    return g.css(k, String.valueOf(v));
-  }
 //  public GQuery css(Properties properties) {return null;}
 //  public String css(String name) {return null;}
 //  public String css(String name, boolean force) {return null;}
@@ -317,7 +270,6 @@ public int size() {return 0;}
 //  public GQuery live(int eventbits, Object data, Function... funcs) {return null;}
   public GQuery live(String eventName, Object data, Function... funcs) {return null;}
 //  public GQuery load(Function f) {return null;}
-  
   public GQuery lt(int pos) {return null;}
 //  public <W> List<W> map(Function f) {return null;}
   public GQuery mousedown(Function... f) {return null;}
@@ -332,13 +284,6 @@ public int size() {return 0;}
   public GQuery not(Element elem) {return null;}
   public GQuery not(GQuery gq) {return null;}
   public GQuery not(String... filters) {return null;}
-  
-  @ExportInstanceMethod
-  public static JavaScriptObject offset(GQuery instance) {
-    Offset o = instance.offset();
-    return Properties.create("left: " + o.left + ", top:" + o.top);
-  }
-  
   public GQuery offsetParent() {return null;}
   public GQuery one(int eventbits, Object data, Function f) {return null;}
   public int outerHeight() {return 0;}
@@ -418,10 +363,6 @@ public int size() {return 0;}
   public String toString(boolean pretty) {return null;}
 //  public GQuery trigger(int eventbits, int... keys) {return null;}
 //  public GQuery unbind(int eventbits) {return null;}
-  @ExportInstanceMethod
-  public static GQuery unbind(GQuery g, String s, Function o) {
-    return g.unbind(s);
-  }
   public GQuery undelegate() {return null;}
   public GQuery undelegate(String selector) {return null;}
   public GQuery undelegate(String selector, String eventName) {return null;}
@@ -443,17 +384,4 @@ public int size() {return 0;}
   public GQuery wrapInner(Element elem) {return null;}
   public GQuery wrapInner(GQuery query) {return null;}
   public GQuery wrapInner(String html) {return null;}
-
-  @ExportInstanceMethod
-  public static GQuery ready(GQuery g, Function f) {
-    f.fe();
-    return g;
-  }
-
-  @ExportInstanceMethod
-  public static String imprime(GQuery g, Function f) {
-    System.out.println("Imprime " + g.size() + " " + g.toString(true));
-    return g.toString();
-  }
-
 }

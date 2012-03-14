@@ -2,15 +2,11 @@ package gwtquery.jsquery.client;
 
 public abstract class JsMenu {
   
-  static void log(Object l) {
-    System.out.println(l);
-  }
-  
   public static native void loadPlugin() /*-{
 
 (function($)
 {
-  var l = @gwtquery.jsquery.client.JsMenu::log(Ljava/lang/Object;);
+  var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
   
   var window = $wnd;
   var document = $doc;
