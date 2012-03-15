@@ -31,43 +31,43 @@ import com.google.gwt.user.client.DOM;
  * A bunch of utility methods for GQuery.
  */
 public class JsUtils {
-  
-  private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
-  
+
+  /**
+   * A Function which wraps a javascript function.
+   */
   public static class JsFunction extends Function {
     private JavaScriptObject jso = null;
+
     public JsFunction(JavaScriptObject f) {
       if (JsUtils.isFunction(f)) {
         jso = f;
       }
     }
+
     private native void exec(JavaScriptObject f, Object data) /*-{
-      f(data);
+			f(data);
     }-*/;
+
     public void f() {
       if (jso != null) {
         exec(jso, getData()[0]);
       }
     }
   }
-  
+
   public static class JsUtilsImpl {
-    public native Element parseXML(String xml) /*-{
-      return new DOMParser().parseFromString(xml, "text/xml").documentElement;
-    }-*/;
-    
     public native Properties parseJSON(String json) /*-{
-      return $wnd.JSON.parse(json);
+			return $wnd.JSON.parse(json);
     }-*/;
-    
-    public native String XML2String(JavaScriptObject o) /*-{
-     return (new XMLSerializer()).serializeToString(o);
+
+    public native Element parseXML(String xml) /*-{
+			return new DOMParser().parseFromString(xml, "text/xml").documentElement;
     }-*/;
-    
+
     public String text(Element e) {
       return e.getInnerText();
     }
-    
+
     public JsArray<Element> unique(JsArray<Element> a) {
       JsArray<Element> ret = JavaScriptObject.createArray().cast();
       JsCache cache = JsCache.create();
@@ -78,35 +78,39 @@ public class JsUtils {
           cache.put(id, 1);
           ret.push(e);
         }
-      }    
+      }
       return ret;
     }
+
+    public native String XML2String(JavaScriptObject o) /*-{
+			return (new XMLSerializer()).serializeToString(o);
+    }-*/;
   }
 
-  public static class JsUtilsImplIE6  extends JsUtilsImpl {
-    @Override
-    public native Element parseXML(String xml) /*-{
-      var d = new ActiveXObject("Microsoft.XmlDom");       
-      d.loadXML(xml);
-      return d.documentElement;
+  public static class JsUtilsImplIE6 extends JsUtilsImpl {
+    public static final native Properties evalImpl(String properties) /*-{
+			return eval(properties);
     }-*/;
-    
+
     @Override
     public Properties parseJSON(String json) {
       // No checks to the passed string so json should be
       // a well-formed json string.
       return evalImpl("(" + json + ")");
     }
-    
-    public static final native Properties evalImpl(String properties) /*-{
-      return eval(properties);
-    }-*/;
-    
+
     @Override
-    public native String XML2String(JavaScriptObject o) /*-{
-      return o.xml;
+    public native Element parseXML(String xml) /*-{
+			var d = new ActiveXObject("Microsoft.XmlDom");
+			d.loadXML(xml);
+			return d.documentElement;
     }-*/;
-    
+
+    @Override
+    public String text(Element e) {
+      return isXML(e) ? xmlText(e) : super.text(e);
+    }
+
     @Override
     public JsArray<Element> unique(JsArray<Element> a) {
       // in IE6 XML elements does not support adding hashId to the object
@@ -115,46 +119,49 @@ public class JsUtils {
       }
       return super.unique(a);
     }
-    
+
     @Override
-    public String text(Element e) {
-      return isXML(e) ? xmlText(e) : super.text(e);
-    }
-    
+    public native String XML2String(JavaScriptObject o) /*-{
+			return o.xml;
+    }-*/;
+
     private native String xmlText(Element e) /*-{
-      return e.text;
+			return e.text;
     }-*/;
   }
+
+  private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
 
   /**
    * Camelize style property names. for instance: font-name -> fontName
    */
   public static native String camelize(String s)/*-{
-    return s.replace(/\-(\w)/g, function(all, letter) {
-    return letter.toUpperCase();
-    });
+		return s.replace(/\-(\w)/g, function(all, letter) {
+			return letter.toUpperCase();
+		});
   }-*/;
 
   /**
-   * Merge the oldNodes list into the newNodes one.
-   * If oldNodes is null, a new list will be created and returned.
-   * If oldNodes is not null, a new list will be created depending on
-   * the create flag.
+   * Merge the oldNodes list into the newNodes one. If oldNodes is null, a new
+   * list will be created and returned. If oldNodes is not null, a new list will
+   * be created depending on the create flag.
    */
-  public static NodeList<Element> copyNodeList(NodeList<Element> oldNodes, NodeList<Element> newNodes, boolean create) {
-    NodeList<Element> ret = oldNodes == null || create ? JsNodeArray.create() : oldNodes;
+  public static NodeList<Element> copyNodeList(NodeList<Element> oldNodes,
+      NodeList<Element> newNodes, boolean create) {
+    NodeList<Element> ret = oldNodes == null || create ? JsNodeArray.create()
+        : oldNodes;
     JsCache idlist = JsCache.create();
     for (int i = 0; oldNodes != null && i < oldNodes.getLength(); i++) {
       Element e = oldNodes.getItem(i);
       idlist.put(e.hashCode(), 1);
       if (create) {
-        ret.<JsNodeArray>cast().addNode(e, i);
+        ret.<JsNodeArray> cast().addNode(e, i);
       }
     }
     for (int i = 0, l = newNodes.getLength(), j = ret.getLength(); i < l; i++) {
       Element e = newNodes.getItem(i);
       if (!idlist.exists(e.hashCode())) {
-        ret.<JsNodeArray>cast().addNode(newNodes.getItem(i), j++);
+        ret.<JsNodeArray> cast().addNode(newNodes.getItem(i), j++);
       }
     }
     return ret;
@@ -172,27 +179,104 @@ public class JsUtils {
    * Compare two numbers using javascript equality.
    */
   public static native boolean eq(double s1, double s2) /*-{
-     return s1 == s2;
+		return s1 == s2;
   }-*/;
-  
+
   /**
    * Compare two objects using javascript equality.
    */
   public static native boolean eq(Object s1, Object s2) /*-{
-     return s1 == s2;
+		return s1 == s2;
+  }-*/;
+
+  /**
+   * Returns the owner document element of an element.
+   */
+  public static Document getOwnerDocument(Node n) {
+    return n == null ? null : n.getNodeType() == Node.DOCUMENT_NODE
+        ? n.<Document> cast() : n.getOwnerDocument();
+  }
+
+  /**
+   * Check if an object have already a property with name <code>name</code>
+   * defined.
+   */
+  public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
+		return name in o;
   }-*/;
 
   /**
    * Hyphenize style property names. for instance: fontName -> font-name
    */
   public static native String hyphenize(String name) /*-{
-    return name.replace(/([A-Z])/g, "-$1" ).toLowerCase();
+		return name.replace(/([A-Z])/g, "-$1").toLowerCase();
   }-*/;
 
   /**
-   * Load an external javascript library.
-   * The inserted script replaces the element with the
-   * given id in the document.
+   * Check is a javascript object can be used as an array
+   */
+  public static native boolean isArray(JavaScriptObject o) /*-{
+		return Object.prototype.toString.call(o) == '[object Array]'
+				|| typeof o.length == 'number';
+  }-*/;
+
+  /**
+   * Return whether the event was prevented
+   */
+  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
+		return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
+				&& e.getPreventDefault() ? true : false;
+  }-*/;
+
+  /**
+   * Check is a javascript object can be cast to an Element
+   */
+  public static boolean isElement(JavaScriptObject o) {
+    return hasProperty(o, "nodeName");
+  }
+
+  /**
+   * Check is a javascript object can be cast to an Event
+   */
+  public static boolean isEvent(JavaScriptObject o) {
+    return hasProperty(o, "currentTarget");
+  }
+
+  /**
+   * Check is a javascript object is a function
+   */
+  public static native boolean isFunction(JavaScriptObject o) /*-{
+		return o && typeof o == 'function'
+  }-*/;
+
+  /**
+   * Check is a javascript can be cast to a node list
+   */
+  public static native boolean isNodeList(JavaScriptObject o) /*-{
+		var r = Object.prototype.toString.call(o);
+		return r == '[object HTMLCollection]' || r == '[object NodeList]'
+				|| (typeof o == 'object' && o.length && o[0].tagName) ? true : false;
+  }-*/;
+
+  /**
+   * Check is a javascript object is a Window
+   */
+  public static boolean isWindow(JavaScriptObject o) {
+    return hasProperty(o, "alert");
+  }
+
+  /**
+   * Check if an element is a DOM or a XML node
+   */
+  public static boolean isXML(Node o) {
+    return o == null
+        ? false
+        : !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
+  }
+
+  /**
+   * Load an external javascript library. The inserted script replaces the
+   * element with the given id in the document.
    */
   public static void loadScript(String url, String id) {
     GQuery gs = GQuery.$(DOM.createElement("script"));
@@ -205,146 +289,68 @@ public class JsUtils {
   }
 
   /**
-   * Return the element which is truth in the double scope. 
+   * Return the element which is truth in the double scope.
    */
   public static native double or(double s1, double s2) /*-{
-    return s1 || s2;
+		return s1 || s2;
   }-*/;
-  
+
   /**
    * Return the element which is truth in the javascript scope.
    */
   public static native <T> T or(T s1, T s2) /*-{
-    return s1 || s2;
+		return s1 || s2;
   }-*/;
-  
-  /**
-   * Check if a number is true in the javascript scope. 
-   */
-  public static native boolean truth(double a) /*-{
-    return a ? true : false;
-  }-*/;
-  
 
   /**
-   * Check if an object is true in the javascript scope. 
+   * Parses a json string returning a Object with useful method to get the
+   * content.
    */
-  public static native boolean truth(Object a) /*-{
-    return a ? true : false;
-  }-*/;
-  
-  
-  /**
-   * Check if an object have already a property with name <code>name</code> defined.
-   */
-  public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
-    return name in o;
-  }-*/;
-  
-  /**
-   * Check is a javascript object is a Window
-   */
-  public static boolean isWindow(JavaScriptObject o) {
-    return hasProperty(o, "alert");
-  }  
-  /**
-   * Check is a javascript object can be cast to an Element 
-   */
-  public static boolean isElement(JavaScriptObject o) {
-    return hasProperty(o, "nodeName");
+  public static Properties parseJSON(String json) {
+    try {
+      return utilsImpl.parseJSON(json);
+    } catch (Exception e) {
+      System.err.println("Error while parsing json: " + e.getMessage() + ".\n"
+          + json);
+      return Properties.create();
+    }
   }
-  
+
   /**
-   * Check is a javascript object can be cast to an Event 
+   * Parses a xml string and return the xml document element which can then be
+   * passed to GQuery to create a typical GQuery object that can be traversed
+   * and manipulated.
    */
-  public static boolean isEvent(JavaScriptObject o) {
-    return hasProperty(o, "currentTarget");
+  public static Element parseXML(String xml) {
+    return utilsImpl.parseXML(xml);
   }
-  
-  /**
-   * Check is a javascript object is a function
-   */
-  public static native boolean isFunction(JavaScriptObject o) /*-{
-    return o && typeof o == 'function'
-  }-*/;
-  
-  /**
-   * Check is a javascript object can be used as an array 
-   */
-  public static native boolean isArray(JavaScriptObject o) /*-{
-   return Object.prototype.toString.call(o) == '[object Array]' 
-       || typeof o.length == 'number';
-  }-*/;
-  
-  /**
-   * Check is a javascript can be cast to a node list 
-   */
-  public static native boolean isNodeList(JavaScriptObject o) /*-{
-    var r = Object.prototype.toString.call(o);
-    return r == '[object HTMLCollection]' || r == '[object NodeList]' || 
-           (typeof o == 'object' && o.length && o[0].tagName) 
-           ? true : false;
-  }-*/;
-  
-  /**
-   * Check if an element is a DOM or a XML node 
-   */
-  public static boolean isXML(Node o) {
-    return o == null ? false : 
-      !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
-  }
-  
-  public static String XML2String(JavaScriptObject o) {
-    return utilsImpl.XML2String(o);
-  }
-  
+
   public static String text(Element e) {
     return utilsImpl.text(e);
   }
-  
+
   /**
-   * Parses a xml string and return the xml document element which
-   * can then be passed to GQuery to create a typical GQuery object
-   * that can be traversed and manipulated.
+   * Check if a number is true in the javascript scope.
    */
-  public static  Element parseXML(String xml) {
-    return utilsImpl.parseXML(xml);
-  }
-  
+  public static native boolean truth(double a) /*-{
+		return a ? true : false;
+  }-*/;
+
   /**
-   * Returns the owner document element of an element. 
+   * Check if an object is true in the javascript scope.
    */
-  public static Document getOwnerDocument(Node n) {
-    return n == null ? null : 
-           n.getNodeType() == Node.DOCUMENT_NODE ? 
-           n.<Document>cast() : n.getOwnerDocument();
-  }
-  
+  public static native boolean truth(Object a) /*-{
+		return a ? true : false;
+  }-*/;
+
   /**
    * Remove duplicates from an elements array
    */
   public static JsArray<Element> unique(JsArray<Element> a) {
     return utilsImpl.unique(a);
   }
-  
-  /**
-   * Parses a json string returning a Object with useful method
-   * to get the content. 
-   */
-  public static  Properties parseJSON(String json) {
-    try {
-      return utilsImpl.parseJSON(json);
-    } catch (Exception e) {
-      System.err.println("Error while parsing json: " + e.getMessage() + ".\n" + json);
-      return Properties.create();
-    }
+
+  public static String XML2String(JavaScriptObject o) {
+    return utilsImpl.XML2String(o);
   }
-  
-  /**
-   * Return whether the event was prevented
-   */
-  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
-    return e.defaultPrevented || e.returnValue === false 
-      || e.getPreventDefault && e.getPreventDefault() ? true : false;
-  }-*/;
 }

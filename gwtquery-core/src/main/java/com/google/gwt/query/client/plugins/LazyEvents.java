@@ -134,15 +134,25 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * 
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER, "my.namespace")
    */
-  LazyEvents<T> unbind(int eventbits, String name);
+  LazyEvents<T> unbind(int eventbits, String name, Function f);
 
   /**
-   * Removes all handlers, that matches event name passed. This name could
-   * contain a namespace.
+   * Removes all handlers, that matches the event name passed. 
+   * 
+   * This name could contain a namespace.
    * 
    * Example: unbind("click.my.namespace")
    */
   LazyEvents<T> unbind(String name);
+
+  /**
+   * Removes the function passed as parameter from the event list matching 
+   * the event name passed. 
+   * This name could contain a namespace.
+   * 
+   * Example: unbind("click.my.namespace", myFunction)
+   */
+  LazyEvents<T> unbind(String name, Function f);
 
   LazyEvents<T> undelegate();
 

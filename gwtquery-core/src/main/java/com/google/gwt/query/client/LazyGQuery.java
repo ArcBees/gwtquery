@@ -2136,9 +2136,20 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> unbind(int eventbits);
 
   /**
+   * Removes the function passed from the set of events which match 
+   * the eventbits.
+   */
+  LazyGQuery<T> unbind(int eventbits, Function f);
+
+  /**
    * Removes all events that match the eventList.
    */
   LazyGQuery<T> unbind(String eventList);
+
+  /**
+   * Removes all events that match the eventList.
+   */
+  LazyGQuery<T> unbind(String eventList, Function f);
 
   /**
    * Remove all event delegation that have been bound using
