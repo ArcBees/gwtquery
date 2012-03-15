@@ -37,17 +37,19 @@ public class JsUtils {
    */
   public static class JsFunction extends Function {
     private JavaScriptObject jso = null;
-
     public JsFunction(JavaScriptObject f) {
       if (JsUtils.isFunction(f)) {
         jso = f;
       }
     }
 
+    public boolean equals(Object obj) {
+      return jso.equals(obj);
+    }
+
     private native void exec(JavaScriptObject f, Object data) /*-{
 			f(data);
     }-*/;
-
     public void f() {
       if (jso != null) {
         exec(jso, getData()[0]);
@@ -246,7 +248,7 @@ public class JsUtils {
    * Check is a javascript object is a function
    */
   public static native boolean isFunction(JavaScriptObject o) /*-{
-		return o && typeof o == 'function'
+		return !!o && typeof o == 'function'
   }-*/;
 
   /**
