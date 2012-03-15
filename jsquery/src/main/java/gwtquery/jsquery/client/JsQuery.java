@@ -20,8 +20,7 @@ public class JsQuery implements EntryPoint {
     });    
     
     OverlayGQuery.export();
-    JsMenu.loadPlugin();
-    onJsQueryLoad();
+//    JsMenu.loadPlugin();
 //    testJs();
   }
   
@@ -33,12 +32,4 @@ public class JsQuery implements EntryPoint {
     });
   }-*/;
   
-  private native static void onJsQueryLoad() /*-{
-    $ = $wnd.$;
-    window = $wnd;
-    document = $doc;
-    
-    $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
-    $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
-  }-*/;
 }

@@ -4,9 +4,10 @@ public abstract class JsMenu {
   
   public static native void loadPlugin() /*-{
   var l = @gwtquery.jsquery.client.utils.JsQueryUtils::log(Ljava/lang/Object;);
+  var jQuery = $wnd.$;
+  var $ = $wnd.$;
   var window = $wnd;
   var document = $doc;
-  var jQuery = $wnd.$;
   
 (function($)
 {

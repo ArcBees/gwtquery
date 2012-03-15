@@ -80,6 +80,12 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
    */
   @ExportAfterCreateMethod
   public static native void afterCreate() /*-{
+    $ = $wnd.$;
+    window = $wnd;
+    document = $doc;
+    
+    $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
+    $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
   }-*/;
   
   @ExportStaticMethod("$wnd.$")
