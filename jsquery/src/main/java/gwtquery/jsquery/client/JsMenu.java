@@ -3,13 +3,13 @@ package gwtquery.jsquery.client;
 public abstract class JsMenu {
   
   public static native void loadPlugin() /*-{
-
-(function($)
-{
   var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
-  
   var window = $wnd;
   var document = $doc;
+  var jQuery = $wnd.$;
+  
+(function($)
+{
   var menus = [], //list of all menus
     visibleMenus = [], //list of all visible menus
     activeMenu = activeItem = null,
@@ -135,6 +135,7 @@ public abstract class JsMenu {
       {
         $.Menu.closeAll();
       }
+      return true;
     },
     checkKey : function(e)
     {
@@ -937,7 +938,7 @@ public abstract class JsMenu {
     return r;
   };
 
-})($wnd.$);
+})(jQuery);
     
   }-*/;
 }

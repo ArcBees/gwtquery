@@ -1,6 +1,7 @@
 package gwtquery.jsquery.client.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -57,15 +58,16 @@ public abstract class JsQAux {
   public static void ready(Function f) {
     f.f();
   }
-
-  public static int inArray(Object o, Object a) {
-    if (o instanceof JavaScriptObject) {
-      JavaScriptObject jso = (JavaScriptObject) o;
-      if (JsUtils.isElement(jso)) {
-        return dollar(a).index((Element) o);
-      } else if (JsUtils.isArray(jso)) {
-        return ((JsCache) a).indexOf(o);
-      }
+  
+  public static int inArray(Object object, Object array) {
+    if (array instanceof List) {
+       return ((List)array).indexOf(object);
+    } else if (object instanceof JavaScriptObject
+        && JsUtils.isElement((JavaScriptObject) object)) {
+      return dollar(array).index((Element) object);
+    } else if (array instanceof JavaScriptObject
+        && JsUtils.isArray((JavaScriptObject) array)) {
+      return ((JsCache) array).indexOf(object);
     }
     return -1;
   }
@@ -111,7 +113,7 @@ public abstract class JsQAux {
 		return d;
   }-*/;
   
-  public static Object[] each(Object[] objs, Function f) {
+  public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
     ArrayList<Object> ret = new ArrayList<Object>();
     for (Object o : objs) {
       f.setDataObject(o);
@@ -119,7 +121,7 @@ public abstract class JsQAux {
         ret.add(o);
       }
     }
-    return ret.toArray(new Object[0]);
+    return ret.toArray(new JavaScriptObject[0]);
   }
 
   public static void log(Object l) {

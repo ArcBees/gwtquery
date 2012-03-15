@@ -96,10 +96,15 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
   public static JavaScriptObject extend(Object...objs) {
     return JsQAux.extend(objs);
   }
-  
+
   @ExportStaticMethod("$wnd.$.each")
-  public static Object[] each(Object[] objs, Function f) {
+  public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
     return JsQAux.each(objs, f);
+  }
+  
+  @ExportStaticMethod("$wnd.$.inArray")
+  public static int inArray(Object o, Object arr) {
+    return JsQAux.inArray(o, arr);
   }
   
   @ExportInstanceMethod

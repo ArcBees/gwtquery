@@ -20,23 +20,24 @@ public class JsQuery implements EntryPoint {
     });    
     
     OverlayGQuery.export();
-    
+    JsMenu.loadPlugin();
     onJsQueryLoad();
-    
-    testJs();
+//    testJs();
   }
   
   private native static void testJs() /*-{
     var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
-    $ = $wnd.$;
     l($.each);
     $.each(["a","b"], function(a, b){
       l("kk " + " " + a + " " + b);
-    }
-    );
+    });
   }-*/;
   
   private native static void onJsQueryLoad() /*-{
+    $ = $wnd.$;
+    window = $wnd;
+    document = $doc;
+    
     $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
     $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
   }-*/;
