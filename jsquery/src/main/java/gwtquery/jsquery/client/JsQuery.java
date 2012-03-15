@@ -20,7 +20,9 @@ public class JsQuery implements EntryPoint {
     });    
     
     OverlayGQuery.export();
-//    JsMenu.loadPlugin();
+    JsMenu.loadPlugin();
+    OverlayGQuery.onLoad();
+
 //    testJs();
   }
   

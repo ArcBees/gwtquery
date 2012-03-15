@@ -37,7 +37,7 @@ public abstract class JsQueryUtils {
         new JsUtils.JsFunction(jso).fe();
       } else {
         GQuery r = GQuery.$(jso);
-        if (JsUtils.isArray(jso)) {
+        if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
           JsCache c = jso.cast();
           JsNodeArray elms = JsNodeArray.create();
           for (int i = 0; i < c.length(); i++) {

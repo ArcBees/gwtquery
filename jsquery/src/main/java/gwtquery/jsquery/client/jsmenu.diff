@@ -1,6 +1,6 @@
 --- jquery.menu.js	2012-03-15 10:34:24.000000000 +0100
-+++ JsMenu.jsni	2012-03-15 10:36:20.000000000 +0100
-@@ -134,6 +113,14 @@
++++ JsMenu.java	2012-03-15 13:19:42.000000000 +0100
+@@ -134,6 +130,14 @@
  				t = t.parentNode;
  			
  			//is the found node one of the visible menu elements?
@@ -15,7 +15,7 @@
  			if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
  			{
  				$.Menu.closeAll();
-@@ -239,9 +226,7 @@
+@@ -239,9 +243,7 @@
  			$.extend(defaults, d);
  		},
  		prototype : {
@@ -26,7 +26,7 @@
  			init : function()
  			{
  				var self = this;
-@@ -397,7 +382,7 @@
+@@ -397,7 +399,7 @@
  					this.$eDIV.css({display:'none', visibility: ''}).show();
  
  					//IEs default width: auto is bad! ie6 and ie7 have are producing different errors.. (7 = 5px shadowbox + 2px border)
@@ -35,21 +35,21 @@
  						this.$eUL.css('width', parseInt($.browser.version) == 6 ? this.$eDIV.width() - 7 : this.$eUL.width());
  
  					if ( this.settings.onOpen )
-@@ -439,7 +426,7 @@
+@@ -439,7 +443,7 @@
  				}
  
  				//y-pos
 -				if ( $.fn.scrollTop )
-+        if (0) //$.fn.scrollTop )
++        if ($().scrollTop )
  				{
  					wst = $(window).scrollTop();
  					if ( wh < height ) //menu is bigger than the window
-@@ -478,7 +465,7 @@
+@@ -478,7 +482,7 @@
  					}
  				}
  				//x-pos
 -				if ( $.fn.scrollLeft )
-+        if (0) //$.fn.scrollLeft )
++        if ($().scrollLeft )
  				{
  					wsl = $(window).scrollLeft();
  					if ( ww + wsl < posX + width )

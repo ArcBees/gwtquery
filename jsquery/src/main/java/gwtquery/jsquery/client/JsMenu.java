@@ -1,13 +1,19 @@
 package gwtquery.jsquery.client;
 
+/**
+ * 
+ * This class wraps the jquery menu plugin from:
+ * 
+ * http://p.sohei.org/jquery-plugins/menu/
+ *
+ */
 public abstract class JsMenu {
   
   public static native void loadPlugin() /*-{
   var l = @gwtquery.jsquery.client.utils.JsQueryUtils::log(Ljava/lang/Object;);
-  var jQuery = $wnd.$;
-  var $ = $wnd.$;
   var window = $wnd;
   var document = $doc;
+  var jQuery = $wnd.$;
   
 (function($)
 {
@@ -437,7 +443,7 @@ public abstract class JsMenu {
         }
 
         //y-pos
-        if (0) //$.fn.scrollTop )
+        if ($().scrollTop )
         {
           wst = $(window).scrollTop();
           if ( wh < height ) //menu is bigger than the window
@@ -476,7 +482,7 @@ public abstract class JsMenu {
           }
         }
         //x-pos
-        if (0) //$.fn.scrollLeft )
+        if ($().scrollLeft )
         {
           wsl = $(window).scrollLeft();
           if ( ww + wsl < posX + width )

@@ -49,6 +49,12 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
     GWT.create(OverlayGQuery.class);
   }
   
+  @NoExport
+  public static native void onLoad() /*-{
+    $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
+    $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
+  }-*/;
+  
   @ExportPackage("jsQuery")
   @Export("jFunction")
   @ExportClosure()
@@ -83,9 +89,6 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
     $ = $wnd.$;
     window = $wnd;
     document = $doc;
-    
-    $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
-    $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
   }-*/;
   
   @ExportStaticMethod("$wnd.$")
