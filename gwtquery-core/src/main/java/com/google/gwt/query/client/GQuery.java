@@ -213,10 +213,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around an existing element, event, node or nodelist.
    */
   public static GQuery $(JavaScriptObject e) {
-    return JsUtils.isElement(e) ? GQuery.$(e.<Element>cast()) :
+    return 
+           JsUtils.isWindow(e) ? GQuery.$(e.<Element>cast()) :
+           JsUtils.isElement(e) ? GQuery.$(e.<Element>cast()) :
            JsUtils.isEvent(e) ? GQuery.$(e.<Event>cast()) :
            JsUtils.isNodeList(e) ? GQuery.$(e.<NodeList<Element>>cast()) :
-           $();  
+           $();
   }
   
   /**
@@ -477,12 +479,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 		}
 	}
 
-  private static native void emptyDocument(Document d) /*-{
-		d.open();
-		d.write("<head/><body/>");
-		d.close();
-  }-*/;
-
   /**
    * Perform an ajax request to the server using GET.
    */
@@ -526,13 +522,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return attributeImpl;
   }
-  
-  private native static Document getContentDocument(Node n) /*-{
-		var d = n.contentDocument || n.document || n.contentWindow.document;
-		if (!d.body)
-			@com.google.gwt.query.client.GQuery::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
-		return d;
-  }-*/;
   
   /**
    * Perform an ajax request to the server using POST and
@@ -1425,7 +1414,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
       if (JsUtils.isWindow(e) || "iframe".equalsIgnoreCase(e.getTagName())) {
-        result.addNode(getContentDocument(e));
+        result.addNode(styleImpl.getContentDocument(e));
       } else {
         NodeList<Node> children = e.getChildNodes();
         for (int i = 0, l = children.getLength(); i < l; i++) {
@@ -2023,7 +2012,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery empty() {
     for (Element e : elements) {
       if (e.getNodeType() == Element.DOCUMENT_NODE) {
-        emptyDocument(e.<Document> cast());
+        styleImpl.emptyDocument(e.<Document> cast());
       } else {
         Node c = e.getFirstChild();
         while (c != null) {

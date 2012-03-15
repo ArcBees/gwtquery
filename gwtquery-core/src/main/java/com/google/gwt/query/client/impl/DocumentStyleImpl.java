@@ -17,12 +17,12 @@ package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 
 /**
  * A helper class to get computed CSS styles for elements.
@@ -40,12 +40,12 @@ public class DocumentStyleImpl {
    * - Otherwise it returns the real computed value.   
    */
   public double cur(Element elem, String prop, boolean force) {
-    if (elem.equals(GQuery.window)) {
+    if (JsUtils.isWindow(elem)) {
       if ("width".equals(prop)) {
-        return Window.getClientWidth();
+        return getContentDocument(elem).getClientWidth();
       }
       if ("height".equals(prop)) {
-        return Window.getClientHeight();
+        return getContentDocument(elem).getClientHeight();
       }
       elem = GQuery.body;
     }
@@ -199,4 +199,16 @@ public class DocumentStyleImpl {
     return ret;
   }
   
+  public native Document getContentDocument(Node n) /*-{
+    var d = n.contentDocument || n.document || n.contentWindow.document;
+    if (!d.body)
+      this.@com.google.gwt.query.client.impl.DocumentStyleImpl::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
+    return d;
+  }-*/;
+  
+  public native void emptyDocument(Document d) /*-{
+    d.open();
+    d.write("<head/><body/>");
+    d.close();
+  }-*/;
 }
