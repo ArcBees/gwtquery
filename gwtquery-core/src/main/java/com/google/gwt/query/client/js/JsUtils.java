@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.user.client.DOM;
@@ -32,6 +33,23 @@ import com.google.gwt.user.client.DOM;
 public class JsUtils {
   
   private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
+  
+  public static class JsFunction extends Function {
+    private JavaScriptObject jso = null;
+    public JsFunction(JavaScriptObject f) {
+      if (JsUtils.isFunction(f)) {
+        jso = f;
+      }
+    }
+    private native void exec(JavaScriptObject f, Object data) /*-{
+      f(data);
+    }-*/;
+    public void f() {
+      if (jso != null) {
+        exec(jso, getData()[0]);
+      }
+    }
+  }
   
   public static class JsUtilsImpl {
     public native Element parseXML(String xml) /*-{

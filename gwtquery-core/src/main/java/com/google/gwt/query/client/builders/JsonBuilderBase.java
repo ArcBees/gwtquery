@@ -90,14 +90,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
         return (Function)o;
       } else if (o instanceof JavaScriptObject 
           && JsUtils.isFunction((JavaScriptObject)o)) {
-        return new Function() {
-          private native void exec(JavaScriptObject f, Object data) /*-{
-            f(data);
-          }-*/;
-          public void f() {
-            exec((JavaScriptObject)o, getData()[0]);
-          }
-        };
+        return new JsUtils.JsFunction((JavaScriptObject)o);
       }
     }
     return null;
