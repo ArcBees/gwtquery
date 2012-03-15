@@ -3,7 +3,7 @@ package gwtquery.jsquery.client;
 public abstract class JsMenu {
   
   public static native void loadPlugin() /*-{
-  var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
+  var l = @gwtquery.jsquery.client.utils.JsQueryUtils::log(Ljava/lang/Object;);
   var window = $wnd;
   var document = $doc;
   var jQuery = $wnd.$;

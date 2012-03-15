@@ -26,7 +26,7 @@ public class JsQuery implements EntryPoint {
   }
   
   private native static void testJs() /*-{
-    var l = @gwtquery.jsquery.client.utils.JsQAux::log(Ljava/lang/Object;);
+    var l = @gwtquery.jsquery.client.utils.JsQueryUtils::log(Ljava/lang/Object;);
     l($.each);
     $.each(["a","b"], function(a, b){
       l("kk " + " " + a + " " + b);

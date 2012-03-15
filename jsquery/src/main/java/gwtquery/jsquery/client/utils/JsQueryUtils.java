@@ -12,7 +12,14 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 
-public abstract class JsQAux {
+/**
+ * These are a set of utility methods needed in jsquery because
+ * either they are not in the GQuery core yet, or they are already
+ * there but we need to modify their behavior. 
+ * Most of them should be moved to the GQuery core api.
+ *
+ */
+public abstract class JsQueryUtils {
 
   private native static String dumpObject(JavaScriptObject o) /*-{
 		var s = "";
@@ -21,17 +28,13 @@ public abstract class JsQAux {
 		return s;
   }-*/;
 
-  private static native void runJsFunction(JavaScriptObject f) /*-{
-		f();
-  }-*/;
-
   public static GQuery dollar(Object o) {
     if (o instanceof String) {
       return GQuery.$((String) o);
     } else if (o instanceof JavaScriptObject) {
       JavaScriptObject jso = (JavaScriptObject) o;
       if (JsUtils.isFunction(jso)) {
-        runJsFunction(jso);
+        new JsUtils.JsFunction(jso).fe();
       } else {
         GQuery r = GQuery.$(jso);
         if (JsUtils.isArray(jso)) {

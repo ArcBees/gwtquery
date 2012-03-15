@@ -1,6 +1,6 @@
 package gwtquery.jsquery.client;
 
-import gwtquery.jsquery.client.utils.JsQAux;
+import gwtquery.jsquery.client.utils.JsQueryUtils;
 
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportAfterCreateMethod;
@@ -84,7 +84,7 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
   
   @ExportStaticMethod("$wnd.$")
   public static GQuery $(Object o) {
-    return JsQAux.dollar(o);
+    return JsQueryUtils.dollar(o);
   }
 
   @ExportStaticMethod("$wnd.$")
@@ -94,17 +94,17 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
   
   @ExportStaticMethod("$wnd.$.extend")
   public static JavaScriptObject extend(Object...objs) {
-    return JsQAux.extend(objs);
+    return JsQueryUtils.extend(objs);
   }
 
   @ExportStaticMethod("$wnd.$.each")
   public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
-    return JsQAux.each(objs, f);
+    return JsQueryUtils.each(objs, f);
   }
   
   @ExportStaticMethod("$wnd.$.inArray")
   public static int inArray(Object o, Object arr) {
-    return JsQAux.inArray(o, arr);
+    return JsQueryUtils.inArray(o, arr);
   }
   
   @ExportInstanceMethod
