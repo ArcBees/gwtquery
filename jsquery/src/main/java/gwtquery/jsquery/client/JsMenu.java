@@ -113,7 +113,7 @@ public abstract class JsMenu {
       this.openTimer = null;
 
       this.init();
-      if ( items && items.constructor == Array )
+      if ( items && $.isArray(items) )
         this.addItems(items);
     }
   });
@@ -129,19 +129,14 @@ public abstract class JsMenu {
       while ( t.parentNode && t.parentNode != $rootDiv[0] )
         t = t.parentNode;
 
-      //is the found node one of the visible menu elements?
-      for (k in visibleMenus) {
-        if (visibleMenus[k].$eDIV[0] == t)  {
-          // FIXME: why do we need a timeout
-          setTimeout($.Menu.closeAll, 100);
-          break;
-        }
-      }
+      // FIXME: why do we need a timeout
+      setTimeout($.Menu.closeAll, 100);
+
       // FIXME: JsQuery each doesn't work with arrays
-      if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
-      {
-        $.Menu.closeAll();
-      }
+      // if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
+      // {
+      //  $.Menu.closeAll();
+      // }
       return true;
     },
     checkKey : function(e)
@@ -638,7 +633,7 @@ public abstract class JsMenu {
         var i, isStr,
           src = this.src,
           self = this;
-
+          
         this.$eLI = $(menuItemElement.cloneNode(1));
         if ( this.addClass )
           this.$eLI[0].setAttribute('class', this.addClass);
@@ -902,7 +897,7 @@ public abstract class JsMenu {
     {
       return this.each(function()
       {
-        if ( items && items.constructor == Array )
+        if ( items && $.isArray(items) )
           new $.Menu(this, items, options);
         else
         {

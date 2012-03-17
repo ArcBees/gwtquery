@@ -1,32 +1,36 @@
---- jquery.menu.js	2012-03-15 10:34:24.000000000 +0100
-+++ JsMenu.java	2012-03-15 13:19:42.000000000 +0100
-@@ -134,6 +130,14 @@
+--- query.menu.js	2012-03-17 21:13:29.000000000 +0100
++++ JsMenu.java	2012-03-17 21:04:09.000000000 +0100
+@@ -114,7 +113,7 @@
+ 			this.openTimer = null;
+ 
+ 			this.init();
+-			if ( items && items.constructor == Array )
++      if ( items && $.isArray(items) )
+ 				this.addItems(items);
+ 		}
+ 	});
+@@ -132,11 +129,15 @@
+ 			while ( t.parentNode && t.parentNode != $rootDiv[0] )
  				t = t.parentNode;
- 			
- 			//is the found node one of the visible menu elements?
-+      for (k in visibleMenus) {
-+        if (visibleMenus[k].$eDIV[0] == t)  {
-+          // FIXME: why do we need a timeout
-+          setTimeout($.Menu.closeAll, 100);
-+          break;
-+        }
-+      }
-+      // FIXME: JsQuery each doesn't work with arrays
- 			if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
- 			{
- 				$.Menu.closeAll();
-@@ -239,9 +243,7 @@
- 			$.extend(defaults, d);
- 		},
- 		prototype : {
--			/**
--			 * create / initialize new menu
--			 */
+ 
+-			//is the found node one of the visible menu elements?
+-			if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
+-			{
+-				$.Menu.closeAll();
+-			}
++      // FIXME: why do we need a timeout
++      setTimeout($.Menu.closeAll, 100);
 +
- 			init : function()
- 			{
- 				var self = this;
-@@ -397,7 +399,7 @@
++      // FIXME: JsQuery each doesn't work with arrays
++      // if ( !$(visibleMenus).filter(function(){ return this.$eDIV[0] == t }).length )
++      // {
++      //  $.Menu.closeAll();
++      // }
++      return true;
+ 		},
+ 		checkKey : function(e)
+ 		{
+@@ -395,7 +394,7 @@
  					this.$eDIV.css({display:'none', visibility: ''}).show();
  
  					//IEs default width: auto is bad! ie6 and ie7 have are producing different errors.. (7 = 5px shadowbox + 2px border)
@@ -35,7 +39,7 @@
  						this.$eUL.css('width', parseInt($.browser.version) == 6 ? this.$eDIV.width() - 7 : this.$eUL.width());
  
  					if ( this.settings.onOpen )
-@@ -439,7 +443,7 @@
+@@ -437,7 +438,7 @@
  				}
  
  				//y-pos
@@ -44,7 +48,7 @@
  				{
  					wst = $(window).scrollTop();
  					if ( wh < height ) //menu is bigger than the window
-@@ -478,7 +482,7 @@
+@@ -476,7 +477,7 @@
  					}
  				}
  				//x-pos
@@ -53,3 +57,13 @@
  				{
  					wsl = $(window).scrollLeft();
  					if ( ww + wsl < posX + width )
+@@ -898,7 +897,7 @@
+ 		{
+ 			return this.each(function()
+ 			{
+-				if ( items && items.constructor == Array )
++        if ( items && $.isArray(items) )
+ 					new $.Menu(this, items, options);
+ 				else
+ 				{
+

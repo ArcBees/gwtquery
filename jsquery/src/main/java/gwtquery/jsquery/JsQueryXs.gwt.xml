@@ -2,8 +2,8 @@
 	<inherits name='gwtquery.jsquery.JsQuery' />
 	
 	<!-- 
-	     Hack to put code into the jsquery.nocache.js so as $ is available 
-	     to use the $().ready method which is widely used in jquery pages.  
+	     Hack to put code into the jsquery.nocache.js so as $ is available early
+	     and we can handle the $().ready method which is widely used in jquery pages.  
 	     Otherwise $ wont be available until the async loading of the gwt permutation
 	     which happens after the page was ready. 
 	 -->
@@ -28,5 +28,8 @@
     
     <!-- Minimize JS -->
     <set-property name="compiler.stackMode" value="strip"/>
+    <!-- cross-site -->	
+    <add-linker name="xsiframe"/>
+    
 </module>
 

@@ -28,10 +28,20 @@ public class JsQuery implements EntryPoint {
   
   private native static void testJs() /*-{
     var l = @gwtquery.jsquery.client.utils.JsQueryUtils::log(Ljava/lang/Object;);
-    l($.each);
-    $.each(["a","b"], function(a, b){
-      l("kk " + " " + a + " " + b);
-    });
+    
+  var options = {minWidth: 120, arrowSrc: 'arrow_right.gif', copyClassAttr: true, onClick: function(e, menuItem){
+    alert('you clicked item "' + $(this).text() + '"');
+  }};
+  $('#menuone').menu(options);
+  
+    var items = [ {src: 'test', url:'http://www.jquery.com'},
+          {src: ''}, // separator
+          {src: 'test2', subMenu: [ {src: 'sub 1'},
+                        {src: 'sub 2', url: 'http://p.sohei.org', target: '_blank'},
+                        {src: 'sub 3'}]}];
+    $('#menutwo').menu(options, items);
+  
+  
   }-*/;
   
 }

@@ -23,6 +23,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.user.client.Event;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.Event;
  * override some methods in order to deal with complex cases. 
  *
  */
-@ExportPackage("jsQuery")
+@ExportPackage("JsQuery")
 @Export(value="fn", all=false)
 public class OverlayGQuery implements ExportOverlay<GQuery> {
   
@@ -55,7 +56,7 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
     $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
   }-*/;
   
-  @ExportPackage("jsQuery")
+  @ExportPackage("JsQuery")
   @Export("jFunction")
   @ExportClosure()
   protected interface OverlayFunction extends ExportOverlay<Function>  {
@@ -64,7 +65,7 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
     public Object f(Element e, int i);
   }
 
-  @ExportPackage("jsQuery")
+  @ExportPackage("JsQuery")
   @Export("jPredicate")
   @ExportClosure()
   protected interface OverlayPredicate extends ExportOverlay<Predicate>  {
@@ -115,6 +116,11 @@ public class OverlayGQuery implements ExportOverlay<GQuery> {
   public static int inArray(Object o, Object arr) {
     return JsQueryUtils.inArray(o, arr);
   }
+  
+  @ExportStaticMethod("$wnd.$.isArray")
+  public static boolean isArray(JavaScriptObject o) {
+    return JsUtils.isArray(o);
+  }  
   
   @ExportInstanceMethod
   public static GQuery ready(GQuery g, Function f) {

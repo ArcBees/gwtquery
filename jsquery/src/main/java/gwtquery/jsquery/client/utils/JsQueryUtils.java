@@ -64,7 +64,7 @@ public abstract class JsQueryUtils {
   
   public static int inArray(Object object, Object array) {
     if (array instanceof List) {
-       return ((List)array).indexOf(object);
+       return ((List<?>)array).indexOf(object);
     } else if (object instanceof JavaScriptObject
         && JsUtils.isElement((JavaScriptObject) object)) {
       return dollar(array).index((Element) object);
@@ -101,13 +101,14 @@ public abstract class JsQueryUtils {
   }
 
   private static native JavaScriptObject getDefaultPrototype() /*-{
-		return $wnd.jsQuery && $wnd.jsQuery.fn ? $wnd.jsQuery.fn.prototype
+		return $wnd.JsQuery && $wnd.JsQuery.fn 
+		    ? $wnd.JsQuery.fn.prototype
 				: null;
   }-*/;
 
   private static native JavaScriptObject extendImpl(boolean deep,
       JavaScriptObject ctx, Object s) /*-{
-		var d = ctx ? ctx : $wnd.jsQuery.fn.prototype || {};
+		var d = ctx ? ctx : $wnd.JsQuery.fn.prototype || {};
 		for (k in s) {
 			d[k] = s[k];
 			if (!ctx)
