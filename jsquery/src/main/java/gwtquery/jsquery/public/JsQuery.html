@@ -9,7 +9,7 @@
   <script>
   onJsQueryLoad = function(){
     $('#hello').show().attr("width", true);
-    alert($('#hello').text());
+    $('#hello').fadeOut(1000).queue(2000).text("Hello word").fadeIn();
   }
   if (window.$) {
     $(document).ready(onJsQueryLoad);

@@ -1,4 +1,4 @@
-package gwtquery.jsquery.client;
+package gwtquery.jsquery.client.plugins.menu;
 
 /**
  * 
