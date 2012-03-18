@@ -1085,6 +1085,14 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(142, g.outerWidth(true));
 
   }
+  
+  public void testWidthHeightInlineElement() {
+    $(e).html(
+        "<span style='border: 1px solid red; padding: 10px; margin:10px'>Content 1</span>");
+    GQuery g = $("span", e);
+    assertTrue(g.width() > 0);
+    assertTrue(g.height() > 0);
+  }
 
   public void testWrapMethod() {
     String content = "<p>Test Paragraph.</p>";

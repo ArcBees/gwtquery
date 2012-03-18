@@ -115,7 +115,17 @@ public class DocumentStyleImpl {
     return JsUtils.camelize(name);
   }
 
+  // inline elements do not have width nor height unless we set it to inline-block
+  private void fixInlineElement(Element e) {
+    if (e.getClientHeight() == 0 && e.getClientWidth() == 0 && "inline".equals(curCSS(e, "display", true))) {
+      setStyleProperty(e, "display", "inline-block");
+      setStyleProperty(e, "width", "auto");
+      setStyleProperty(e, "height", "auto");
+    }
+  }
+  
   public int getHeight(Element e) {
+    fixInlineElement(e);
     return (int) (e.getClientHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true)));
   }
   
@@ -125,6 +135,7 @@ public class DocumentStyleImpl {
   }
   
   public int getWidth(Element e) {
+    fixInlineElement(e);
     return (int) (e.getClientWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true)));
   }
 
