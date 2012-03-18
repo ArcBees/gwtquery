@@ -1,0 +1,8 @@
+<module>
+	<inherits name='com.google.gwt.query.Query' />
+
+	<entry-point class="com.google.gwt.query.jsquery.client.JsQuery" />
+	<inherits name='org.timepedia.exporter.Exporter' />
+	<set-property name="export" value="yes" />
+</module>
+

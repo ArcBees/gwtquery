@@ -1,0 +1,7 @@
+<module rename-to='jsmenu'>
+	<inherits name='com.google.gwt.query.jsquery.JsQuery' />
+	<entry-point class="gwtquery.jsplugins.menu.client.JsQueryMenu" />
+	
+	
+</module>
+

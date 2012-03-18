@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+<title>JsQuery</title>
+<script src="jsquery.nocache.js" ></script>
+</head>
+<body>
+  <div id='hello' style='display: none'>Hello</div>
+  <script>
+  onJsQueryLoad = function(){
+    $('#hello').show().attr("width", true);
+    $('#hello').fadeOut(1000).text("Hello word").fadeIn();
+  }
+  if (window.$) {
+    $(document).ready(onJsQueryLoad);
+    onJsQueryLoad = null;
+  }  
+  </script>
+</body>
+</html>

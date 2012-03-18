@@ -71,7 +71,7 @@
                     <!-- <disableClassMetadata>true</disableClassMetadata> -->
                     <disableCastChecking>true</disableCastChecking>
                     <modules>
-                        <module>gwtquery.jsquery.JsQueryXs</module>
+                        <module>com.google.gwt.query.jsquery.JsQueryApi</module>
                     </modules>
                 </configuration>
                 <executions>
