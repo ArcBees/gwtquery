@@ -344,11 +344,14 @@ public class Ajax extends GQuery {
       public void f() {
         try {
           // We clean up the returned string to smoothly append it to our document 
+          // Note: using '\s\S' instead of '.' because gwt String emulation does 
+          // not support java embedded flag expressions (?s) and javascript does
+          // not have multidot flag.
           String s = getData()[0].toString().replaceAll("<![^>]+>\\s*", "")
-            .replaceAll("(?si)</?html[^>]*>\\s*", "")
-            .replaceFirst("(?si)<head[^>]*>.*</head>\\s*", "")
-            .replaceFirst("(?si)<script[^>]*>.*</script>\\s*", "")
-            .replaceAll("<?si></?body[^>]*>\\s*", "");
+            .replaceAll("</?html[\\s\\S]*?>\\s*", "")
+            .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
+            .replaceAll("<script[\\s\\S]*?</script>\\s*", "")
+            .replaceAll("</?body[\\s\\S]*?>\\s*", "");          
           // We wrap the results in a div
           s = "<div>" + s + "</div>";
           
