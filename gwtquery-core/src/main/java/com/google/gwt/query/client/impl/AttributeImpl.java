@@ -171,8 +171,12 @@ public class AttributeImpl {
         continue;
       }
       e.removeAttribute(key);
-      if (BOOLEAN_ATTR_REGEX.test(key) && JsUtils.hasProperty(e, key)) {
-        e.setPropertyBoolean(key, false);
+      if (JsUtils.hasProperty(e, key)) {
+        if (BOOLEAN_ATTR_REGEX.test(key)) {
+          e.setPropertyBoolean(key, false);
+        } else {
+          e.setPropertyObject(key, null);
+        }
       }
     }
   }
