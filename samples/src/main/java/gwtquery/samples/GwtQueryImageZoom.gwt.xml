@@ -1,5 +1,7 @@
 <module>
     <inherits name='com.google.gwt.query.Query'/>
     <entry-point class='gwtquery.samples.client.GwtQueryImageZoom'/>
+    <add-linker name="xsiframe"/>
+    <set-property name="compiler.stackMode" value="strip"/>
 </module>
     
