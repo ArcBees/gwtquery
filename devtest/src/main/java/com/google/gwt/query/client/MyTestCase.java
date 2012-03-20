@@ -119,6 +119,10 @@ public class MyTestCase {
   protected void finishTest() {
     testRunning = false;
   }
+
+  protected void fail() {
+    check(false, "Test failure");
+  }
   
   protected void assertPosition(GQuery g, Offset min, Offset max) {
     int a = Math.min(min.top, max.top);
