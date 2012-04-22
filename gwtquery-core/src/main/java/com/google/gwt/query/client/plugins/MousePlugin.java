@@ -1,16 +1,14 @@
 /*
  * Copyright 2011, The gwtquery team.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.google.gwt.query.client.plugins;
@@ -22,6 +20,8 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.events.GqEvent;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
@@ -29,11 +29,12 @@ import com.google.gwt.user.client.Event;
  */
 public abstract class MousePlugin extends UiPlugin {
 
-  private GqEvent mouseDownEvent;
-  private boolean mouseStarted = false;
+  private GqEvent startEvent;
+  private boolean started = false;
   private Duration mouseUpDuration;
   private MouseOptions options;
   private boolean preventClickEvent = false;
+  private boolean touchSupported = false;
 
   protected MousePlugin(GQuery gq) {
     super(gq);
@@ -41,12 +42,11 @@ public abstract class MousePlugin extends UiPlugin {
 
   protected void destroyMouseHandler() {
     as(Events)
-        .unbind(Event.ONMOUSEDOWN | Event.ONCLICK, getPluginName(), null);
+        .unbind(Event.ONMOUSEDOWN | Event.ONCLICK | Event.ONTOUCHSTART, getPluginName(), null);
   }
 
   /**
-   * Return a String identifying the plugin. This string is used as namespace
-   * when we bind handlers.
+   * Return a String identifying the plugin. This string is used as namespace when we bind handlers.
    * 
    */
   protected abstract String getPluginName();
@@ -60,30 +60,45 @@ public abstract class MousePlugin extends UiPlugin {
 
     for (final Element e : elements()) {
 
-      $(e).as(Events).bind(Event.ONMOUSEDOWN, getPluginName(),
-          (Object) null, new Function() {
-            @Override
-            public boolean f(com.google.gwt.user.client.Event event) {
-              return mouseDown(e, GqEvent.create(event));
+      $(e).as(Events).bind(Event.ONMOUSEDOWN, getPluginName(), (Object) null, new Function() {
+        @Override
+        public boolean f(com.google.gwt.user.client.Event event) {
+          if (touchSupported) {
+            return true;
+          }
+          return mouseDown(e, GqEvent.create(event));
 
-            }
-          }).bind(Event.ONCLICK, getPluginName(), (Object) null,
-          new Function() {
-            @Override
-            public boolean f(com.google.gwt.user.client.Event event) {
-              preventClickEvent |= !mouseClick(e, GqEvent.create(event));
+        }
+      }).bind(Event.ONTOUCHSTART, getPluginName(), (Object) null, new Function() {
+        public boolean f(com.google.gwt.user.client.Event event) {
+          if (event.getTouches().length() > 1) {
+            return true;
+          }
 
-              if (preventClickEvent) {
+          touchSupported = true;
+          return mouseDown(e, GqEvent.create(event));
 
-                preventClickEvent = false;
-                event.stopPropagation();
-                event.preventDefault();
-                return false;
-              }
+        }
+      }).bind(Event.ONCLICK, getPluginName(), (Object) null, new Function() {
+        @Override
+        public boolean f(com.google.gwt.user.client.Event event) {
+          if (touchSupported) {
+            return true;
+          }
 
-              return true;
-            }
-          });
+          preventClickEvent |= !mouseClick(e, GqEvent.create(event));
+
+          if (preventClickEvent) {
+
+            preventClickEvent = false;
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+          }
+
+          return true;
+        }
+      });
     }
 
   }
@@ -107,8 +122,8 @@ public abstract class MousePlugin extends UiPlugin {
   /**
    * Method called when mouse down occur on the element.
    * 
-   * You should not override this method. Instead, override
-   * {@link #mouseStart(Element, GqEvent)} method
+   * You should not override this method. Instead, override {@link #mouseStart(Element, GqEvent)}
+   * method
    * 
    */
   protected boolean mouseDown(Element element, GqEvent event) {
@@ -117,7 +132,8 @@ public abstract class MousePlugin extends UiPlugin {
     if (isEventAlreadyHandled(event)) {
       return false;
     }
-    if (mouseStarted) { // case where we missed a mouseup
+
+    if (started) { // case where we missed a mouseup
       mouseUp(element, event);
     }
 
@@ -129,14 +145,14 @@ public abstract class MousePlugin extends UiPlugin {
     }
 
     if (delayConditionMet() && distanceConditionMet(event)) {
-      mouseStarted = mouseStart(element, event);
-      if (!mouseStarted) {
+      started = mouseStart(element, event);
+      if (!started) {
         event.getOriginalEvent().preventDefault();
         return true;
       }
     }
 
-    bindOtherMouseEvent(element);
+    bindOtherEvents(element);
 
     event.getOriginalEvent().preventDefault();
 
@@ -154,31 +170,30 @@ public abstract class MousePlugin extends UiPlugin {
   /**
    * Method called on MouseMove event.
    * 
-   * You should not override this method. Instead, override
-   * {@link #mouseMove(Element, GqEvent)} method
+   * You should not override this method. Instead, override {@link #mouseMove(Element, GqEvent)}
+   * method
    * 
    */
   protected boolean mouseMove(Element element, GqEvent event) {
-    if (mouseStarted) {
+    if (started) {
       event.getOriginalEvent().preventDefault();
       return mouseDrag(element, event);
     }
 
     if (delayConditionMet() && distanceConditionMet(event)) {
-      mouseStarted = mouseStart(element, mouseDownEvent);
-      if (mouseStarted) {
+      started = mouseStart(element, startEvent);
+      if (started) {
         mouseDrag(element, event);
       } else {
         mouseUp(element, event);
       }
     }
 
-    return !mouseStarted;
+    return !started;
   }
 
   /**
-   * Method called when the mouse is clicked and all conditions for starting the
-   * plugin are met.
+   * Method called when the mouse is clicked and all conditions for starting the plugin are met.
    * 
    */
   protected abstract boolean mouseStart(Element element, GqEvent event);
@@ -192,39 +207,54 @@ public abstract class MousePlugin extends UiPlugin {
   /**
    * Method called when mouse is released..
    * 
-   * You should not override this method. Instead, override
-   * {@link #mouseStop(Element, GqEvent)} method
+   * You should not override this method. Instead, override {@link #mouseStop(Element, GqEvent)}
+   * method
    * 
    */
   protected boolean mouseUp(Element element, GqEvent event) {
-    unbindOtherMouseEvent();
-    if (mouseStarted) {
-      mouseStarted = false;
-      preventClickEvent = (event.getCurrentEventTarget() == mouseDownEvent
-          .getCurrentEventTarget());
+    unbindOtherEvents();
+    if (started) {
+      started = false;
+      preventClickEvent = (event.getCurrentEventTarget() == startEvent.getCurrentEventTarget());
       mouseStop(element, event);
     }
     return false;
 
   }
 
-  private void bindOtherMouseEvent(final Element element) {
+  private void bindOtherEvents(final Element element) {
 
-    $(document).as(Events).bind(Event.ONMOUSEMOVE, getPluginName(),
-        (Object) null, new Function() {
-          @Override
-          public boolean f(com.google.gwt.user.client.Event e) {
-            mouseMove(element, (GqEvent) GqEvent.create(e));
-            return false;
-          }
-        }).bind(Event.ONMOUSEUP, getPluginName(), (Object) null,
-        new Function() {
-          @Override
-          public boolean f(com.google.gwt.user.client.Event e) {
-            mouseUp(element, (GqEvent) GqEvent.create(e));
-            return false;
-          }
-        });
+    int moveEvent = touchSupported ? Event.ONTOUCHMOVE : Event.ONMOUSEMOVE;
+
+    int endEvents = touchSupported ? Event.ONTOUCHEND : Event.ONMOUSEUP;
+
+    $(document).as(Events).bind(moveEvent, getPluginName(), (Object) null, new Function() {
+      @Override
+      public boolean f(com.google.gwt.user.client.Event e) {
+        mouseMove(element, (GqEvent) GqEvent.create(e));
+        return false;
+      }
+    }).bind(endEvents, getPluginName(), (Object) null, new Function() {
+      @Override
+      public boolean f(com.google.gwt.user.client.Event e) {
+        mouseUp(element, (GqEvent) GqEvent.create(e));
+        return false;
+      }
+    });
+
+    // TODO Event.ONTOUCHEND | Event.ONTOUCHCANCEL don't work -> investigate
+    if (touchSupported) {
+      $(document).as(Events).bind(Event.ONTOUCHCANCEL, getPluginName(), (Object) null,
+          new Function() {
+            @Override
+            public boolean f(com.google.gwt.user.client.Event e) {
+              mouseUp(element, (GqEvent) GqEvent.create(e));
+              return false;
+            }
+          });
+
+    }
+
   }
 
   private boolean delayConditionMet() {
@@ -238,26 +268,25 @@ public abstract class MousePlugin extends UiPlugin {
 
   private boolean distanceConditionMet(GqEvent event) {
     int neededDistance = options.getDistance();
-    int mouseDownX = mouseDownEvent.getClientX();
-    int mouseDownY = mouseDownEvent.getClientY();
-    int xMouseDistance = Math.abs(mouseDownX - event.getClientX());
-    int yMouseDistance = Math.abs(mouseDownY - event.getClientY());
+    int startX = getClientX(startEvent);
+    int startY = getClientY(startEvent);
+    int xDistance = Math.abs(startX - getClientX(event));
+    int yDistance = Math.abs(startY - getClientY(event));
     // in jQuery-ui we take the greater distance between x and y... not really
     // good !
     // int mouseDistance = Math.max(xMouseDistance, yMouseDistance);
     // use Pythagor theorem !!
-    int mouseDistance = (int) Math.sqrt(xMouseDistance * xMouseDistance
-        + yMouseDistance * yMouseDistance);
+    int mouseDistance = (int) Math.sqrt(xDistance * xDistance + yDistance * yDistance);
     return mouseDistance >= neededDistance;
   }
 
   private native boolean isEventAlreadyHandled(GqEvent event)/*-{
-    var result = event.mouseHandled ? event.mouseHandled : false;
-    return result;
+		var result = event.mouseHandled ? event.mouseHandled : false;
+		return result;
   }-*/;
 
   private native void markEventAsHandled(GqEvent event)/*-{
-    event.mouseHandled = true;
+		event.mouseHandled = true;
   }-*/;
 
   private boolean notHandleMouseDown(Element element, GqEvent mouseDownEvent) {
@@ -266,23 +295,43 @@ public abstract class MousePlugin extends UiPlugin {
 
     boolean isElementCancel = false;
     if (options.getCancel() != null) {
-      isElementCancel = $(eventTarget).parents().add($(eventTarget)).filter(
-          options.getCancel()).length() > 0;
+      isElementCancel =
+          $(eventTarget).parents().add($(eventTarget)).filter(options.getCancel()).length() > 0;
     }
 
-    return isNotBoutonLeft || isElementCancel
-        || !mouseCapture(element, mouseDownEvent);
+    return isNotBoutonLeft || isElementCancel || !mouseCapture(element, mouseDownEvent);
 
   }
 
-  private void reset(GqEvent mouseDownEvent) {
-    this.mouseDownEvent = mouseDownEvent;
+  private void reset(GqEvent nativeEvent) {
+    this.startEvent = nativeEvent;
     this.mouseUpDuration = new Duration();
   }
 
-  private void unbindOtherMouseEvent() {
-    $(document).as(Events).unbind((Event.ONMOUSEUP | Event.ONMOUSEMOVE),
-        getPluginName(), null);
+  private void unbindOtherEvents() {
+    int events =
+        touchSupported ? Event.ONTOUCHCANCEL | Event.ONTOUCHEND | Event.ONTOUCHMOVE
+            : Event.ONMOUSEUP | Event.ONMOUSEMOVE;
+
+    $(document).as(Events).unbind(events, getPluginName(), null);
+
+    RootPanel.get().add(new Label("events : " + events + " unbind"));
+  }
+
+  protected int getClientX(Event e) {
+    if (touchSupported) {
+      return e.getTouches().get(0).getClientX();
+    } else {
+      return e.getClientX();
+    }
+  }
+
+  protected int getClientY(Event e) {
+    if (touchSupported) {
+      return e.getTouches().get(0).getClientY();
+    } else {
+      return e.getClientY();
+    }
   }
 
 }

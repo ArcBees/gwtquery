@@ -43,6 +43,7 @@ public class GqEvent extends Event {
 		}
 		gQueryEvent.originalEvent = originalEvent;
   }-*/;
+ 
 
   protected GqEvent() {
   }
@@ -76,7 +77,11 @@ public class GqEvent extends Event {
    * 
    */
   public final int pageX() {
-    return getClientX() + GQuery.document.getScrollLeft();
+    if (getTouches() != null && getTouches().length() > 0){
+      return getTouches().get(0).getPageX();
+    }else{
+      return getClientX() + GQuery.document.getScrollLeft();
+    }
   }
 
   /**
@@ -84,7 +89,11 @@ public class GqEvent extends Event {
    * 
    */
   public final int pageY() {
-    return getClientY() + GQuery.document.getScrollTop();
+    if (getTouches() != null &&  getTouches().length() > 0){
+      return getTouches().get(0).getPageY();
+    }else{
+      return getClientY() + GQuery.document.getScrollTop();
+    }
   }
 
 }
