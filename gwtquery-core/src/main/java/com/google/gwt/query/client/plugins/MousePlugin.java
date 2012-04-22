@@ -20,8 +20,6 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.events.GqEvent;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
@@ -82,12 +80,8 @@ public abstract class MousePlugin extends UiPlugin {
       }).bind(Event.ONCLICK, getPluginName(), (Object) null, new Function() {
         @Override
         public boolean f(com.google.gwt.user.client.Event event) {
-          if (touchSupported) {
-            return true;
-          }
-
           preventClickEvent |= !mouseClick(e, GqEvent.create(event));
-
+          
           if (preventClickEvent) {
 
             preventClickEvent = false;
@@ -154,7 +148,9 @@ public abstract class MousePlugin extends UiPlugin {
 
     bindOtherEvents(element);
 
-    event.getOriginalEvent().preventDefault();
+    if (!touchSupported){ //click event are not triggered if we call preventDefault on touchstart event.
+      event.getOriginalEvent().preventDefault();
+    }
 
     markEventAsHandled(event);
 
@@ -218,7 +214,7 @@ public abstract class MousePlugin extends UiPlugin {
       preventClickEvent = (event.getCurrentEventTarget() == startEvent.getCurrentEventTarget());
       mouseStop(element, event);
     }
-    return false;
+    return true;
 
   }
 
@@ -314,8 +310,6 @@ public abstract class MousePlugin extends UiPlugin {
             : Event.ONMOUSEUP | Event.ONMOUSEMOVE;
 
     $(document).as(Events).unbind(events, getPluginName(), null);
-
-    RootPanel.get().add(new Label("events : " + events + " unbind"));
   }
 
   protected int getClientX(Event e) {
