@@ -20,6 +20,8 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.events.GqEvent;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
@@ -33,6 +35,8 @@ public abstract class MousePlugin extends UiPlugin {
   private MouseOptions options;
   private boolean preventClickEvent = false;
   private boolean touchSupported = false;
+  private int startX = -1;
+  private int startY = -1;
 
   protected MousePlugin(GQuery gq) {
     super(gq);
@@ -171,6 +175,7 @@ public abstract class MousePlugin extends UiPlugin {
    * 
    */
   protected boolean mouseMove(Element element, GqEvent event) {
+
     if (started) {
       event.getOriginalEvent().preventDefault();
       return mouseDrag(element, event);
@@ -208,12 +213,14 @@ public abstract class MousePlugin extends UiPlugin {
    * 
    */
   protected boolean mouseUp(Element element, GqEvent event) {
+
     unbindOtherEvents();
     if (started) {
       started = false;
       preventClickEvent = (event.getCurrentEventTarget() == startEvent.getCurrentEventTarget());
       mouseStop(element, event);
     }
+
     return true;
 
   }
@@ -264,14 +271,13 @@ public abstract class MousePlugin extends UiPlugin {
 
   private boolean distanceConditionMet(GqEvent event) {
     int neededDistance = options.getDistance();
-    int startX = getClientX(startEvent);
-    int startY = getClientY(startEvent);
     int xDistance = Math.abs(startX - getClientX(event));
     int yDistance = Math.abs(startY - getClientY(event));
     // in jQuery-ui we take the greater distance between x and y... not really
     // good !
     // int mouseDistance = Math.max(xMouseDistance, yMouseDistance);
     // use Pythagor theorem !!
+   
     int mouseDistance = (int) Math.sqrt(xDistance * xDistance + yDistance * yDistance);
     return mouseDistance >= neededDistance;
   }
@@ -301,6 +307,8 @@ public abstract class MousePlugin extends UiPlugin {
 
   private void reset(GqEvent nativeEvent) {
     this.startEvent = nativeEvent;
+    this.startX = getClientX(nativeEvent);
+    this.startY = getClientY(nativeEvent);
     this.mouseUpDuration = new Duration();
   }
 
