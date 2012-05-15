@@ -1414,7 +1414,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
       if (JsUtils.isWindow(e) || "iframe".equalsIgnoreCase(e.getTagName())) {
-        result.addNode(styleImpl.getContentDocument(e));
+        result.addNode(getStyleImpl().getContentDocument(e));
       } else {
         NodeList<Node> children = e.getChildNodes();
         for (int i = 0, l = children.getLength(); i < l; i++) {
@@ -2012,7 +2012,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery empty() {
     for (Element e : elements) {
       if (e.getNodeType() == Element.DOCUMENT_NODE) {
-        styleImpl.emptyDocument(e.<Document> cast());
+        getStyleImpl().emptyDocument(e.<Document> cast());
       } else {
         Node c = e.getFirstChild();
         while (c != null) {
@@ -2341,9 +2341,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     }
     
-    // set the display value in a separate for loop to avoid constant reflow
-    // Broswer reflow is triggered each time we gonna set and after get (in styleImpl.curCSS(e, "display", false) method)
-    // the diplay property. Reflows is very bad in performance point of view
+    // Set the display value in a separate for loop to avoid constant reflow
+    // Reflows is very bad in performance point of view
     for (Element e : elements){
       e.getStyle().setDisplay(Display.NONE);
     }
@@ -3756,7 +3755,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       elements = new Element[l];
       for (int i = 0; i < l; i++) {
         elements[i] = list.getItem(i);
-        nodeList.<JsObjectArray>cast().add(list.getItem(i));
+        nodeList.<JsObjectArray<Element>>cast().add(list.getItem(i));
       }
     }
     return this;

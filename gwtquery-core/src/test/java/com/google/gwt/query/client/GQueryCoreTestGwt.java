@@ -1039,8 +1039,19 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("mail", $("#cb", e).get(0).getAttribute("value"));
     
     $("#cb", e).removeAttr("value");
-    assertEquals("", InputElement.as($("#cb", e).get(0)).getValue());
-    assertEquals("", $("#cb", e).get(0).getAttribute("value"));
+    
+    // Now HtmlUnit returns a null, but it used to return empty
+    String val = InputElement.as($("#cb", e).get(0)).getValue();
+    if ("null".equalsIgnoreCase(String.valueOf(val))) {
+      val = "";
+    }
+    assertEquals("", val);
+    
+    val = $("#cb", e).get(0).getAttribute("value");
+    if ("null".equalsIgnoreCase(String.valueOf(val))) {
+      val = "";
+    }
+    assertEquals("", val);
     
     try{
       $("#cb", e).attr("type", "hidden");
@@ -1051,8 +1062,6 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     gq.attr("type", "radio");
     assertEquals("radio", InputElement.as(gq.get(0)).getType());
     assertEquals("blop", InputElement.as(gq.get(0)).getValue());
-    
-    
     
     gq.attr(Properties.create("{class:'test2', disabled:true}"));
     InputElement ie = InputElement.as(gq.get(0));

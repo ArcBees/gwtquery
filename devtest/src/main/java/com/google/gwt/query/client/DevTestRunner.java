@@ -18,9 +18,16 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.*;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -37,11 +44,90 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testCheckedAttr_Issue97();
+      testAttr_Issue97();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
+  }
+  
+  public void testAttr_Issue97() {
+    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
+    assertNull($("#cb:checked", e).val());
+    
+    $("#cb", e).attr("checked", "checked");
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    $("#cb", e).removeAttr("checked");
+    assertEquals(0, $("#cb:checked", e).length());
+    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    $("#cb", e).attr("checked", true);
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    $("#cb", e).attr("checked", false);
+    assertEquals(0, $("#cb:checked", e).length());
+    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    $("#cb", e).attr("checked", "");
+    assertEquals(1, $("#cb:checked", e).length());
+    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
+    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
+    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
+    
+    GQuery gq = $("<div></div>test<!-- a comment-->");
+    gq.attr("class", "test1");
+    
+    assertEquals("test1", gq.get(0).getClassName());
+    assertEquals("test1", gq.attr("class"));
+    assertNull(gq.get(0).getPropertyString("class"));
+    
+    gq.removeAttr("class");
+    assertEquals("", gq.get(0).getClassName());
+    assertEquals("", gq.attr("class"));
+    
+    //test on value
+    $("#cb", e).attr("value", "mail");
+    assertEquals("mail", InputElement.as($("#cb", e).get(0)).getValue());
+    assertEquals("mail", $("#cb", e).get(0).getAttribute("value"));
+    
+    $("#cb", e).removeAttr("value");
+    
+    // Now HtmlUnit returns a null, before it returned empty
+    String val = InputElement.as($("#cb", e).get(0)).getValue();
+    if (val == null) {
+      val = "";
+    }
+    assertEquals("", val);
+    assertEquals("", $("#cb", e).get(0).getAttribute("value"));
+    
+    try{
+      $("#cb", e).attr("type", "hidden");
+      fail("Cannnot change a type of an element already attached to the dom");
+    }catch (Exception e){}
+    
+    gq = $("<input type='text' value='blop'></input>");
+    gq.attr("type", "radio");
+    assertEquals("radio", InputElement.as(gq.get(0)).getType());
+    assertEquals("blop", InputElement.as(gq.get(0)).getValue());
+    
+    gq.attr(Properties.create("{class:'test2', disabled:true}"));
+    InputElement ie = InputElement.as(gq.get(0));
+    
+    assertEquals("test2", ie.getClassName());
+    assertEquals(true, ie.isDisabled());
+    assertEquals("disabled", ie.getAttribute("disabled"));
+    
   }
   
   public void testCheckedAttr_Issue97() {
