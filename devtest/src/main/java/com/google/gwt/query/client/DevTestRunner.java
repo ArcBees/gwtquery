@@ -15,26 +15,20 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * This module is thought to emulate a test environment similar to
  * GWTTestCase, but running it in development mode.
  * 
- * The main goal of it is to execute tests in a faster way, because you only need
- * to push reload in your browser.
+ * The main goal of it is to execute tests in a faster way, because you just
+ * push reload in your browser after changing any code.
  * 
  * @author manolo
  * 
@@ -44,172 +38,101 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   public void onModuleLoad() {
     try {
       gwtSetUp();
-      testAttr_Issue97();
+      // Replace this with the method to run
+      testSomething();
     } catch (Exception ex) {
       ex.printStackTrace();
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
   
-  public void testAttr_Issue97() {
-    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
-    assertNull($("#cb:checked", e).val());
-    
-    $("#cb", e).attr("checked", "checked");
-    assertEquals(1, $("#cb:checked", e).length());
-    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
-    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
-    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
-    
-    $("#cb", e).removeAttr("checked");
-    assertEquals(0, $("#cb:checked", e).length());
-    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
-    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
-    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
-    
-    $("#cb", e).attr("checked", true);
-    assertEquals(1, $("#cb:checked", e).length());
-    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
-    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
-    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
-    
-    $("#cb", e).attr("checked", false);
-    assertEquals(0, $("#cb:checked", e).length());
-    assertEquals(false,  InputElement.as($("#cb", e).get(0)).isChecked());
-    assertEquals("",  $("#cb", e).get(0).getAttribute("checked"));
-    assertEquals(false,  $("#cb", e).get(0).getPropertyBoolean("checked"));
-    
-    $("#cb", e).attr("checked", "");
-    assertEquals(1, $("#cb:checked", e).length());
-    assertEquals(true,  InputElement.as($("#cb", e).get(0)).isChecked());
-    assertEquals("checked",  $("#cb", e).get(0).getAttribute("checked"));
-    assertEquals(true,  $("#cb", e).get(0).getPropertyBoolean("checked"));
-    
-    GQuery gq = $("<div></div>test<!-- a comment-->");
-    gq.attr("class", "test1");
-    
-    assertEquals("test1", gq.get(0).getClassName());
-    assertEquals("test1", gq.attr("class"));
-    assertNull(gq.get(0).getPropertyString("class"));
-    
-    gq.removeAttr("class");
-    assertEquals("", gq.get(0).getClassName());
-    assertEquals("", gq.attr("class"));
-    
-    //test on value
-    $("#cb", e).attr("value", "mail");
-    assertEquals("mail", InputElement.as($("#cb", e).get(0)).getValue());
-    assertEquals("mail", $("#cb", e).get(0).getAttribute("value"));
-    
-    $("#cb", e).removeAttr("value");
-    
-    // Now HtmlUnit returns a null, before it returned empty
-    String val = InputElement.as($("#cb", e).get(0)).getValue();
-    if (val == null) {
-      val = "";
-    }
-    assertEquals("", val);
-    assertEquals("", $("#cb", e).get(0).getAttribute("value"));
-    
-    try{
-      $("#cb", e).attr("type", "hidden");
-      fail("Cannnot change a type of an element already attached to the dom");
-    }catch (Exception e){}
-    
-    gq = $("<input type='text' value='blop'></input>");
-    gq.attr("type", "radio");
-    assertEquals("radio", InputElement.as(gq.get(0)).getType());
-    assertEquals("blop", InputElement.as(gq.get(0)).getValue());
-    
-    gq.attr(Properties.create("{class:'test2', disabled:true}"));
-    InputElement ie = InputElement.as(gq.get(0));
-    
-    assertEquals("test2", ie.getClassName());
-    assertEquals(true, ie.isDisabled());
-    assertEquals("disabled", ie.getAttribute("disabled"));
-    
+  public void testSomething() {
+    // Copy and paste any test from the gquery suite
   }
-  
-  public void testCheckedAttr_Issue97() {
-    $(e).html("<input type='checkbox' id='cb' name='cb' value='1' />");
-    assertEquals("", $("#cb").val());
-    $("#cb").attr("checked", "checked");
-    assertEquals("1", $("#cb").val());
-    $("#cb").removeAttr("checked");
-    assertEquals("", $("#cb").val());
-  }
-  
+   
   /**
-   * Run jquery code via jsni. test.html loads jquery, example:
+   * Runs jquery code via jsni.
    * 
+   * Example:
    * System.out.println(evalJQuery("$('div').size()"));
    */
   private native <T> T evalJQuery(String command) /*-{
     command = command.replace(/\$/g, "$wnd.$");
     try {
-      return eval(command);
+      return "" + eval(command);
     } catch(e) {
       $wnd.alert(command + " " + e);
       return "";
     }
   }-*/;
   
+  /**
+   * Loads jquery and schedule the execution of the method testCompare()
+   * which should have code to test something in both in jquery and gquery.
+   * 
+   * Put this method in onModuleLoad, and replace below the method to execute
+   * after jquery is available
+   */
   public void runTestJQuery() {
     JsUtils.loadScript("jquery-1.6.2.js", "jq");
-    new Timer(){
+    Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
       private int cont = 0;
       private native boolean loaded(String func) /*-{
         return eval("$wnd." + func) ? true : false; 
       }-*/;
-      public void run() {
-        if (cont++ > 10 || loaded("$")) {
-          testCompare();
-        } else {
-          schedule(100);
+      public boolean execute() {
+        if (cont++ > 10 || JsUtils.hasProperty(window, "$")) {
+          
+          // Replace with the method to run
+          testJQueryCompare();
+          return false;
         }
+        return true;
       }
-    }.run();
+    }, 100);
   }
   
-  public void testCompareJquery() {
-    $(e).html("<div class='outer' style='border: 4px solid red; padding: 25px; width: auto; height: 150px'>");
-    int gqw = $(".outer").width();
-    String jqw = evalJQuery("$('.outer').width()");
-    
-    int gqh = $(".outer").height();
-    String jqh = evalJQuery("$('.outer').height()");
-    
-    String msg = ".outer size: GQuery: " + gqw + "x" + gqh + " jQuery: " + jqw + "x" + jqh;
-    Window.alert(msg);
-  }
-  
-  public void validateCssBoth(String selector, boolean force, String... attrs) {
-    for (String attr: attrs) {
-      String gs = $(selector).css(attr, force);
-      String js = evalJQuery("$.css($('" + selector + "').get(0), '" + attr + "', " + force + ")");
-      System.out.println(selector + " " + attr + " " + force + " g:" + gs + " j:" + js + " " + (gs.replaceAll("px", "").equals(js.replaceAll("px", ""))));
-      assertEquals(gs.replaceAll("px", ""), js.replaceAll("px", ""));
-    }
-  }
-  public void validateCurBoth(String selector, String... attrs) {
-    for (String attr: attrs) {
-      String gs = Double.toString($(selector).cur(attr, true)).replaceFirst("\\.\\d+$", "");
-      String js = evalJQuery("$.cur($('" + selector + "').get(0), '" + attr + "', true)");
-      System.out.println(selector + " " + attr + " " + gs + " " + js + " " + (gs.equals(js)));
-      assertEquals(gs, js);
-    }
-  }
-  
-  public void testCompare() {
+  public void testJQueryCompare() {
     $(e).html("<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px'>Content 1</p></div>");
     GQuery g = $("#child");
     Properties prop1;
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
     g.css(prop1);
-    validateCurBoth("#child", prop1.keys());
+    validateCurCSSBoth("#child", prop1.keys());
+  }
+
+  public void validateSizesBoth(String html) {
+    $(e).html(html);
+    String gqw = "" + $(".outer").width();
+    String jqw = evalJQuery("$('.outer').width()");
+    String gqh = "" + $(".outer").height();
+    String jqh = evalJQuery("$('.outer').height()");
+
+    System.out.println(".outer size: GQuery: " + gqw + "x" + gqh + " jQuery: " + jqw + "x" + jqh);
+    assertEquals(gqw, jqw);
+    assertEquals(gqh, jqh);
   }
   
+  public void validateCssBoth(String selector, boolean force, String... props) {
+    for (String prop: props) {
+      String gs = $(selector).css(prop, force);
+      String js = evalJQuery("$.css($('" + selector + "').get(0), '" + prop + "', " + force + ")");
+      System.out.println(selector + " prop:" + prop + " force:" + force + " gQuery:" + gs + " jQuery:" + js);
+      assertEquals(gs.replaceAll("px", ""), js.replaceAll("px", ""));
+    }
+  }
+  
+  public void validateCurCSSBoth(String selector, String... props) {
+    for (String prop: props) {
+      String gs = Double.toString($(selector).cur(prop, true)).replaceFirst("\\.\\d+$", "");
+      String js = evalJQuery("$.curCSS($('" + selector + "').get(0), '" + prop + "', true)");
+      gs = gs.replaceAll("px$", "");
+      js = js.replaceAll("px$", "");
+      System.out.println(selector + " prop:" + prop + " gQuery:" + gs + " jQuery:" + js);
+      assertEquals(gs, js);
+    }
+  }
   
   // This method is used to initialize a huge html String, because
   // java 1.5 has a limitation in the size of static strings.
