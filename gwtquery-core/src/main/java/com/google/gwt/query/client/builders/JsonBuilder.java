@@ -21,6 +21,7 @@ import com.google.gwt.query.client.Properties;
  * Tagging interface used to generate JsonBuilder classes. 
  */
 public interface JsonBuilder {
+  
   /**
    * load a properties object.
    */
@@ -42,4 +43,19 @@ public interface JsonBuilder {
    * Returns the javascript properties object.
    */
   Properties getProperties();
+  
+  /**
+   * return a list of field names.
+   */
+  String[] getFieldNames();
+  
+  /**
+   * return a string which represents the object with an alias for the className 
+   */
+  String toJson();
+  
+  /**
+   * return the Json name for this class 
+   */
+  String getJsonName();
 }

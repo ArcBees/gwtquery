@@ -16,7 +16,11 @@
 package com.google.gwt.query.rebind;
 
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
@@ -40,14 +44,28 @@ import com.google.gwt.user.rebind.SourceWriter;
 /**
  */
 public class JsonBuilderGenerator extends Generator {
-  TypeOracle oracle;
+  static JClassType enumType;
+  static JClassType functionType;
   static JClassType jsonBuilderType;
-  static JClassType stringType;
   static JClassType jsType;
   static JClassType listType;
-  static JClassType functionType;
-  static JClassType enumType;
+  static JClassType stringType;
+  public static String capitalize(String s) {
+    if (s.length() == 0)
+      return s;
+    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+  }
 
+  public static String classNameToJsonName(String name) {
+    return deCapitalize(name.replaceAll("^.*[\\.\\$_]", ""));
+  }
+
+  public static String deCapitalize(String s) {
+    return s == null || s.isEmpty() ? s : 
+           (s.substring(0, 1).toLowerCase() + (s.length() > 1 ? s.substring(1) : ""));
+  }
+  
+  TypeOracle oracle;
 
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
@@ -66,42 +84,46 @@ public class JsonBuilderGenerator extends Generator {
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1],
         requestedClass);
     if (sw != null) {
+      Set<String> attrs = new HashSet<String>();
       for (JMethod method : clazz.getMethods()) {
-        generateMethod(sw, method, treeLogger);
+        String methName = method.getName();
+        Name nameAnnotation = method.getAnnotation(Name.class);
+        String name = nameAnnotation != null 
+          ? nameAnnotation.value()
+          : methName.replaceFirst("^(get|set)", "");
+        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        attrs.add(name);
+        generateMethod(sw, method, name, treeLogger);
       }
+      generateFieldNamesMethod(sw, attrs, treeLogger);
+      generateToJsonMethod(sw, t[3], treeLogger);
       sw.commit(treeLogger);
     }
     return t[2];
   }
 
   public String[] generateClassName(JType t) {
-    String[] ret = new String[3];
+    String[] ret = new String[4];
     JClassType c = t.isClassOrInterface();
     ret[0] = c.getPackage().getName();
     ret[1] = c.getName().replace('.', '_') + "_JsonBuilder";
     ret[2] = ret[0] + "." + ret[1];
+    ret[3] = classNameToJsonName(c.getName());
     return ret;
   }
-
-  public boolean isTypeAssignableTo(JType t, JClassType o) {
-    JClassType c = t.isClassOrInterface();
-    return (c != null && c.isAssignableTo(o));
+  
+  public void generateFieldNamesMethod(SourceWriter sw, Collection<String> attrs, TreeLogger logger) {
+    String ret = "";
+    for (Iterator<String> it = attrs.iterator(); it.hasNext();) {
+      ret += (ret.isEmpty() ? "" : ",") + "\"" + it.next() + "\"";
+    }
+    sw.println("public final String[] getFieldNames() {return new String[]{" + ret + "};}");
   }
-
-  public static String capitalize(String s) {
-    if (s.length() == 0)
-      return s;
-    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-  }
-
-  public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)
+  
+  public void generateMethod(SourceWriter sw, JMethod method, String name, TreeLogger logger)
       throws UnableToCompleteException {
     String ifaceName = method.getEnclosingType().getQualifiedSourceName();
-    String methName = method.getName();
-    Name nameAnnotation = method.getAnnotation(Name.class);
-    String name = nameAnnotation != null ? nameAnnotation.value()
-        : methName.replaceFirst("^(get|set)", "");
-    name = name.substring(0, 1).toLowerCase() + name.substring(1);
+
 
     String retType = method.getReturnType().getParameterizedQualifiedSourceName();
     sw.print("public final " + retType + " " + method.getName());
@@ -161,7 +183,7 @@ public class JsonBuilderGenerator extends Generator {
     	 sw.println("return "+method.getReturnType().getQualifiedSourceName()+".valueOf(p.getStr(\"" + name + "\"));");
       }else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type " 
-            + retType + " " + ifaceName + "." + methName + "()\"); ");
+            + retType + " " + ifaceName + "." + name + "()\"); ");
         // We return the object because probably the user knows how to handle it
         sw.println("return p.get(\"" + name + "\");");
       }
@@ -198,6 +220,11 @@ public class JsonBuilderGenerator extends Generator {
       sw.println("}");
     }
   }
+  
+  public void generateToJsonMethod(SourceWriter sw, String name, TreeLogger logger) {
+    sw.println("public final String getJsonName() {return \"" + name + "\";}");
+    sw.println("public final String toJson() {return \"{\\\"\" + getJsonName() + \"\\\":\" + toString() + \"}\";}");
+  }
 
   protected SourceWriter getSourceWriter(TreeLogger logger,
       GeneratorContext context, String packageName, String className,
@@ -220,5 +247,10 @@ public class JsonBuilderGenerator extends Generator {
       composerFactory.addImplementedInterface(interfaceName);
     }
     return composerFactory.createSourceWriter(context, printWriter);
+  }
+
+  public boolean isTypeAssignableTo(JType t, JClassType o) {
+    JClassType c = t.isClassOrInterface();
+    return (c != null && c.isAssignableTo(o));
   }
 }
