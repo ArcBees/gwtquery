@@ -77,9 +77,24 @@ public class EventsListener implements EventListener {
     }
 
     public boolean hasEventType(int etype) {
-      return (type & etype) == type;
+      return (type & etype) != 0;
     }
 
+    /**
+     * Remove a set of events. The bind function will not be fire anymore for those events
+     * @param eventBits the set of events to unsink
+     * 
+     */
+    public int unsink(int eventBits){
+      if (eventBits <= 0){
+        type = 0;
+      }else{
+        type = type & ~eventBits;
+      }
+      
+      return type;
+    }
+    
     @Override
     public String toString() {
       return "bind function for event type " + type;
@@ -446,13 +461,21 @@ public class EventsListener implements EventListener {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
+      
       boolean matchNS = namespace == null || namespace.isEmpty()
           || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
       boolean matchFC = f == null || listener.isEquals(f);
+      
       if (matchNS && matchEV && matchFC) {
-        continue;
+        int currentEventbits = listener.unsink(eventbits);
+        
+        if (currentEventbits == 0){ 
+          //the BindFunction doesn't listen anymore on any events         
+          continue;
+        }
       }
+      
       newList.add(listener);
     }
     elementEvents = newList;
