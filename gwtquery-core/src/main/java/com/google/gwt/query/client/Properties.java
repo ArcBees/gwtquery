@@ -89,8 +89,10 @@ public class Properties extends JavaScriptObject {
     return c().exists(String.valueOf(name));
   }
 
+  @SuppressWarnings("unchecked")
   public final <T> T get(Object name) {
-    return c().get(String.valueOf(name));
+    // Casting because of issue_135
+    return (T)c().get(String.valueOf(name));
   }
 
   public final boolean getBoolean(Object name) {
@@ -113,8 +115,10 @@ public class Properties extends JavaScriptObject {
     return c().get(String.valueOf(name));
   }
   
+  @SuppressWarnings("unchecked")
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
-    return c().getJavaScriptObject(String.valueOf(name));
+    // Casting because of issue_135
+    return (T)c().getJavaScriptObject(String.valueOf(name));
   }
 
   public final JsArrayMixed getArray(Object name) {
