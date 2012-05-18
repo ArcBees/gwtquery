@@ -29,6 +29,8 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -252,6 +254,8 @@ public class EventsListener implements EventListener {
 
   public static int ONSUBMIT = GqEvent.ONSUBMIT;
   public static int ONRESIZE = GqEvent.ONRESIZE;
+  
+  private static RegExp eventStringPattern = RegExp.compile("^([^\\.]*)\\.?(.*$)");
 
   public static void clean(Element e) {
     EventsListener ret = getGQueryEventListener(e);
@@ -357,13 +361,18 @@ public class EventsListener implements EventListener {
         times));
   }
 
-  public void bind(String event, final Object data, Function... funcs) {
-    // TODO: nameSpaces in event lists
-    String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
-    String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
-    int b = getEventBits(eventName);
-    for (Function function : funcs) {
-      bind(b, nameSpace, data, function, -1);
+  public void bind(String events, final Object data, Function... funcs) {
+    String[] parts = events.split("[\\s,]+");
+    
+    for (String event: parts){
+      SplitResult subParts = eventStringPattern.split(event);
+     
+      String nameSpace =  subParts.get(2);
+      String eventName =  subParts.get(1);
+      int b = getTypeInt(eventName);
+      for (Function function : funcs) {
+        bind(b, nameSpace, data, function, -1);
+      }
     }
   }
   
@@ -482,12 +491,20 @@ public class EventsListener implements EventListener {
 
   }
 
-  public void unbind(String event, Function f) {
-    // TODO: nameSpaces in event lists
-    String nameSpace = event.replaceFirst("^[^\\.]+\\.*(.*)$", "$1");
-    String eventName = event.replaceFirst("^([^\\.]+).*$", "$1");
-    int b = getEventBits(eventName);
-    unbind(b, nameSpace, f);
+  public void unbind(String events, Function f) {
+    
+    String[] parts = events.split("[\\s,]+");
+    
+    for (String event: parts){
+      SplitResult subParts = eventStringPattern.split(event);
+      
+      String nameSpace =  subParts.get(2);
+      String eventName =  subParts.get(1);
+      
+      int b = getTypeInt(eventName);
+      
+      unbind(b, nameSpace, f);
+    }
   }
 
   private void clean() {
@@ -519,18 +536,13 @@ public class EventsListener implements EventListener {
     for (String e: events) {
       String[] parts = e.split("[\\s,]+");
       for (String s : parts) {
-        if ("submit".equals(s)) {
-          ret |= ONSUBMIT;
-        } else if ("resize".equals(s)) {
-            ret |= ONRESIZE;
-        } else {
-          int event = Event.getTypeInt(s);
+          int event = getTypeInt(s);
           if (event > 0) {
             ret |= event;
           }
-        }
       }
-    }
+   }
+    
     return ret;
   }
   

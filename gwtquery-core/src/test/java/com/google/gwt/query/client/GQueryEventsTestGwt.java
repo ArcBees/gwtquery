@@ -18,6 +18,8 @@ import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
 import static com.google.gwt.user.client.Event.*;
 
+import java.util.Arrays;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -905,7 +907,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     String content = "<input type='text' id='test'></div>";
     $(e).html(content);
 
-    $("#test", e).bind(FOCUSEVENTS |  KEYEVENTS | MOUSEEVENTS, null,  new Function() {
+    $("#test", e).bind(FOCUSEVENTS | KEYEVENTS | MOUSEEVENTS, null, new Function() {
       @Override
       public void f() {
         $("#test", e).val("event fired");
@@ -914,8 +916,141 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     int allEventbits[] =
         new int[] {
-            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP,
-            ONMOUSEMOVE, ONMOUSEOVER, ONMOUSEOUT};
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+    }
+
+    // unbind focus event
+    $("#test", e).unbind(FOCUSEVENTS);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits == ONBLUR || eventbits == ONFOCUS) {
+        assertEquals("", $("#test", e).val());
+      } else {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      }
+
+    }
+
+    // unbind focus event
+    $("#test", e).unbind(KEYEVENTS);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // unbind some mouse events
+    $("#test", e).unbind(ONMOUSEDOWN | ONMOUSEUP | ONMOUSEMOVE | ONMOUSEOVER);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits == ONMOUSEOUT) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // unbind one event
+    $("#test", e).unbind(ONMOUSEOUT);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+      assertEquals("", $("#test", e).val());
+    }
+
+  }
+
+  public void testMultipleEventsString() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    int allEventbits[] =
+        new int[] {
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    $("#test", e).bind(
+        "focus blur keydown keypress keyup mousedown mouseup mousemove mouseover mouseout", null,
+        new Function() {
+          @Override
+          public void f() {
+            $("#test", e).val("event fired");
+          }
+        });
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+    }
+
+    $("#test", e).unbind("focus blur keydown keypress keyup");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+    }
+
+    $("#test", e).unbind("mousedown mouseup mousemove mouseover").unbind("mouseout");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("", $("#test", e).val());
+
+    }
+
+  }
+
+  public void testBindingWithNameSpace() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    $("#test", e)
+        .bind(
+            "focus.focusevents blur.focusevents keydown.keyevents keypress.keyevents keyup.keyevents "
+                + "mousedown.mouseevents mouseup.mouseevents mousemove.mouseevents mouseover.mouseevents "
+                + "mouseout.mouseevents", null, new Function() {
+              @Override
+              public void f() {
+                $("#test", e).val("event fired");
+              }
+            });
+    
+    int allEventbits[] =
+        new int[] {
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
 
     for (int eventbits : allEventbits) {
       $("#test", e).trigger(eventbits, 'c');
@@ -925,30 +1060,13 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     }
     
-    
-    //unbind focus event
-    $("#test", e).unbind(FOCUSEVENTS);
-    
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if (eventbits == ONBLUR || eventbits == ONFOCUS){
-        assertEquals("", $("#test", e).val());
-      }else{
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      }
-
-    }
-    
-    
-    //unbind focus event
-    $("#test", e).unbind(KEYEVENTS);
+    //test unbind without namespace
+    $("#test", e).unbind("focus blur");
     
     for (int eventbits : allEventbits) {
       $("#test", e).trigger(eventbits, 'c');
-
-      if ((eventbits & MOUSEEVENTS) == eventbits){
+      
+      if (eventbits != ONFOCUS && eventbits != ONBLUR){
         assertEquals("event fired", $("#test", e).val());
         $("#test", e).val("");
       }else{
@@ -957,27 +1075,28 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     }
     
-    //unbind some mouse  events
-    $("#test", e).unbind(ONMOUSEDOWN | ONMOUSEUP|  ONMOUSEMOVE| ONMOUSEOVER);
+    //test unbind event name + namespace
+    $("#test", e).unbind("keydown.keyevents keypress.keyevents keyup.keyevents");
     
     for (int eventbits : allEventbits) {
       $("#test", e).trigger(eventbits, 'c');
 
-      if (eventbits == ONMOUSEOUT){
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
         assertEquals("event fired", $("#test", e).val());
         $("#test", e).val("");
-      }else{
+      } else {
         assertEquals("", $("#test", e).val());
       }
-
     }
     
-    //unbind one event
-    $("#test", e).unbind(ONMOUSEOUT);
+    //test unbind only on namespace
+    $("#test", e).unbind(".mouseevents");
     
     for (int eventbits : allEventbits) {
       $("#test", e).trigger(eventbits, 'c');
+
       assertEquals("", $("#test", e).val());
+
     }
 
   }
