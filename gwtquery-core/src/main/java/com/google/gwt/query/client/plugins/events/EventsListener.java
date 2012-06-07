@@ -175,6 +175,7 @@ public class EventsListener implements EventListener {
 
       boolean result = true;
       GqEvent gqEvent = GqEvent.create(event);
+      outerLoop:
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) { 
@@ -184,11 +185,10 @@ public class EventsListener implements EventListener {
             for (int j = 0; n != null && j < n.getLength(); j++) {
               Element element = n.getItem(i);
               gqEvent.setCurrentElementTarget(element);
-              boolean subResult = f.fire(gqEvent);
-              result &= subResult;
-              if (!subResult) {
-                // Event should not continue to be bubbled, break the second for
-                break;
+              result = f.fire(gqEvent);
+              if (!result) {
+                // Event should not continue because returning false, means to run it once
+                break outerLoop;
               }
             }
           }
