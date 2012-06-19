@@ -71,7 +71,7 @@ public class JsonBuilderGenerator extends Generator {
       GeneratorContext generatorContext, String requestedClass)
       throws UnableToCompleteException {
     oracle = generatorContext.getTypeOracle();
-    JClassType clazz = oracle.findType(requestedClass);
+    JClassType clazz =  oracle.findType(requestedClass);
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
@@ -85,8 +85,13 @@ public class JsonBuilderGenerator extends Generator {
         requestedClass);
     if (sw != null) {
       Set<String> attrs = new HashSet<String>();
-      for (JMethod method : clazz.getMethods()) {
+      for (JMethod method : clazz.getInheritableMethods()) {
         String methName = method.getName();
+        //skip method from JsonBuilder
+        if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
+        	continue;
+        }
+        
         Name nameAnnotation = method.getAnnotation(Name.class);
         String name = nameAnnotation != null 
           ? nameAnnotation.value()
@@ -124,7 +129,6 @@ public class JsonBuilderGenerator extends Generator {
       throws UnableToCompleteException {
     String ifaceName = method.getEnclosingType().getQualifiedSourceName();
 
-
     String retType = method.getReturnType().getParameterizedQualifiedSourceName();
     sw.print("public final " + retType + " " + method.getName());
     JParameter[] params = method.getParameters();
@@ -137,9 +141,20 @@ public class JsonBuilderGenerator extends Generator {
       if (retType.matches("(java.lang.Boolean|boolean)")) {
         sw.println("return p.getBoolean(\"" + name + "\");");
       } else if (retType.matches("java.util.Date")) {
-        sw.println("return new Date(Long.parseLong(p.getStr(\"" + name + "\")));");
+        sw.println("return new Date(java.lang.Long.parseLong(p.getStr(\"" + name + "\")));");
       } else if (method.getReturnType().isPrimitive() != null) {
         sw.println("return (" + retType + ")p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Integer")) {
+    	  sw.println("return (int) p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Float")) {
+    	  sw.println("return p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Double")) {
+    	  sw.println("return (double) p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Long")) {
+    	  sw.println("return (long) p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Byte")) {
+    	  sw.println("return (byte) p.getFloat(\"" + name + "\");");
+
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {

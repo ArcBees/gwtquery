@@ -25,12 +25,11 @@ import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.builders.Name;
+import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -54,7 +53,11 @@ public class XmlBuilderGenerator extends Generator {
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0],
         t[1], requestedClass);
     if (sw != null) {
-      for (JMethod method : clazz.getMethods()) {
+      for (JMethod method : clazz.getInheritableMethods()) {
+    	//skip method from JsonBuilder
+        if(xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
+          	continue;
+        }
         generateMethod(sw, method, treeLogger);
       }
       sw.commit(treeLogger);
