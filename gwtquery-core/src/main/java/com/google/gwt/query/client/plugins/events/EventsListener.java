@@ -173,9 +173,8 @@ public class EventsListener implements EventListener {
         return true;
       }
 
-      boolean result = true;
+      Element stopElement = null;
       GqEvent gqEvent = GqEvent.create(event);
-      outerLoop:
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) { 
@@ -184,11 +183,12 @@ public class EventsListener implements EventListener {
             NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
             for (int j = 0; n != null && j < n.getLength(); j++) {
               Element element = n.getItem(i);
-              gqEvent.setCurrentElementTarget(element);
-              result = f.fire(gqEvent);
-              if (!result) {
-                // Event should not continue because returning false, means to run it once
-                break outerLoop;
+              // When an event fired in an element stops bubbling we have to fire also all other
+              // handlers for this element bound to this element
+              if (stopElement == null || element.equals(stopElement)) {
+                if (!f.fire(gqEvent)) {
+                  stopElement = element;
+                }
               }
             }
           }
@@ -197,7 +197,7 @@ public class EventsListener implements EventListener {
 
       // trick to reset the right currentTarget on the original event on ie
       gqEvent.setCurrentElementTarget(liveContextElement);
-      return result;
+      return stopElement == null;
     }
 
     /**
