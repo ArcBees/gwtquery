@@ -114,7 +114,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
             }
           }
         },
-        "": function(checkSet, part){
+        "-": function(checkSet, part){
           var doneName = done++;
           if ( typeof part === "string" && !/\W/.test(part) ) {
             checkFn = $wnd.dirNodeCheck;

@@ -391,7 +391,7 @@ var Expr = GQS.selectors = {
         }
       }
     },
-    "": function(checkSet, part, isXML){
+    "-": function(checkSet, part, isXML){
       var doneName = done++, checkFn = dirCheck, nodeCheck;
 
       if ( typeof part === "string" && !/\W/.test(part) ) {
