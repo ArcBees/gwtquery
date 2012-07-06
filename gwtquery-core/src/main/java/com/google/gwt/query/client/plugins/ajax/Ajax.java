@@ -236,7 +236,17 @@ public class Ajax extends GQuery {
     String method = settings.getType();
     if ("get".equalsIgnoreCase(method)) {
       return RequestBuilder.GET;
+    }else if("post".equalsIgnoreCase(method)){
+    	return RequestBuilder.POST;
+    }else if("put".equalsIgnoreCase(method)){
+    	return RequestBuilder.PUT;
+    }else if("delete".equalsIgnoreCase(method)){
+    	return RequestBuilder.DELETE;
+    }else if("head".equalsIgnoreCase(method)){
+    	return RequestBuilder.HEAD;
     }
+    
+    GWT.log("unknow method type -> use POST as default method");
     return RequestBuilder.POST;
   }
 
