@@ -222,7 +222,7 @@ public class Ajax extends GQuery {
     if (data == null && settings.getData() != null) {
       String type = settings.getDataType();
       if (type != null 
-          && httpMethod == RequestBuilder.POST
+          && (httpMethod == RequestBuilder.POST || httpMethod == RequestBuilder.PUT)
           && type.equalsIgnoreCase("json")) {
         data = settings.getData().toJsonString();
       } else {
