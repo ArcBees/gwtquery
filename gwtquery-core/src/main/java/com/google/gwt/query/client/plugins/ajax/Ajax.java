@@ -135,7 +135,7 @@ public class Ajax extends GQuery {
       }
 
       public void onResponseReceived(Request request, Response response) {
-        if (response.getStatusCode() > 202) {
+        if (response.getStatusCode() >= 400) {
           if (onError != null) {
             onError.fe(response.getText(), "error", request, response);
           }
