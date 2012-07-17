@@ -27,11 +27,20 @@
     <define-property name="selectorCapability" values="native,js"/>
     <property-provider name="selectorCapability">
         <![CDATA[
-         return document.location.href.indexOf("_force_no_native") < 0 &&
+         return !/_force_no_native/.test(document.location.search) &&
                 document.querySelectorAll && 
                 /native/.test(String(document.querySelectorAll)) ? "native" : "js"; 
         ]]>
     </property-provider>
+    
+    <set-property name="selectorCapability" value="js" >
+        <when-property-is name="user.agent" value="ie6" />
+    </set-property>
+    <set-property name="selectorCapability" value="native" >
+        <any>
+            <when-property-is name="user.agent" value="safari" />
+        </any>
+    </set-property>    
 
     <!-- Selector Engines -->
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">
