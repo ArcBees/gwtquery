@@ -15,9 +15,12 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -36,6 +39,7 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
@@ -63,7 +67,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -781,12 +784,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allPreviousSiblingElements(Element firstChildElement,
-      JsNodeArray result, String untilSelector) {
+      JsNodeArray result, GQuery until, String filterSelector) {
     while (firstChildElement != null) {
-      if (untilSelector != null && $(firstChildElement).is(untilSelector)){
+      if (until != null &&  until.index(firstChildElement) != -1){
         return;
       }
-      result.addNode(firstChildElement);
+      
+      if(filterSelector == null || $(firstChildElement).is(filterSelector)){
+    	  result.addNode(firstChildElement);
+      }
+
       firstChildElement = getPreviousSiblingElement(firstChildElement);
     }
   }
@@ -3207,27 +3214,97 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return new GQuery(unique(result)).filter(selectors);
   }
-  /**
-   * Find all sibling elements in front of the current element.
-   */
-  public GQuery prevAll() {
-    JsNodeArray result = JsNodeArray.create();
-    for (Element e : elements) {
-      allPreviousSiblingElements(getPreviousSiblingElement(e), result, null);
-    }
-    return pushStack(unique(result), "prevAll", getSelector());
-  }
+  
+	/**
+	 * Get all preceding siblings of each element in the set of matched
+	 * elements.
+	 */
+	public GQuery prevAll() {
+	  return prevAll(null);
+	}
 
-  /**
-   * Find all sibling elements in front of the current element.
-   */
-  public GQuery prevUntil(String selector) {
-    JsNodeArray result = JsNodeArray.create();
-    for (Element e : elements) {
-      allPreviousSiblingElements(getPreviousSiblingElement(e), result, selector);
-    }
-    return pushStack(unique(result), "prevUntil", getSelector());
-  }
+	/**
+	 * Get all preceding siblings of each element in the set of matched elements
+	 * filtered by a selector.
+	 */
+	public GQuery prevAll(String selector) {
+		JsNodeArray result = JsNodeArray.create();
+		for (Element e : elements) {
+			allPreviousSiblingElements(getPreviousSiblingElement(e), result,
+					null, selector);
+		}
+		return pushStack(unique(result), "prevAll", getSelector());
+	}
+
+	/**
+	 * Get all preceding siblings of each element up to but not including the
+	 * element matched by the <code>selector</code>.
+	 * 
+	 * The elements are returned in order from the closest sibling to the
+	 * farthest.
+	 */
+	public GQuery prevUntil(String selector) {
+		return prevUntil($(selector), null);
+	}
+
+	/**
+	 * Get all preceding siblings of each element up to but not including the
+	 * <code>until</code> element.
+	 * 
+	 * The elements are returned in order from the closest sibling to the
+	 * farthest.
+	 */
+	public GQuery prevUntil(Element until) {
+		return prevUntil($(until), null);
+	}
+
+	/**
+	 * Get all preceding siblings of each element up to but not including the
+	 * <code>until</code> element.
+	 * 
+	 * The elements are returned in order from the closest sibling to the
+	 * farthest.
+	 */
+	public GQuery prevUntil(GQuery until) {
+		return prevUntil(until, null);
+	}
+
+	/**
+	 * Get all preceding siblings of each element matching the
+	 * <code>filter</code> up to but not including the element matched by the
+	 * <code>selector</code>.
+	 * 
+	 * The elements are returned in order from the closest sibling to the
+	 * farthest.
+	 */
+	public GQuery prevUntil(String selector, String filter) {
+		return prevUntil($(selector), filter);
+	}
+
+	/**
+	 * Get all preceding siblings of each element matching the
+	 * <code>filter</code> up to but not including the <code>until</code>
+	 * element.
+	 * 
+	 */
+	public GQuery prevUntil(Element until, String filter) {
+		return prevUntil($(until), filter);
+	}
+
+	/**
+	 * Get all preceding siblings of each element matching the
+	 * <code>filter</code> up to but not including the element matched by the
+	 * <code>until</code> element.
+	 * 
+	 */
+	public GQuery prevUntil(GQuery until, String filter) {
+		JsNodeArray result = JsNodeArray.create();
+		for (Element e : elements) {
+			allPreviousSiblingElements(getPreviousSiblingElement(e), result,
+					until, filter);
+		}
+		return pushStack(unique(result), "prevUntil", getSelector());
+	}
 
   /**
    * Accesses a boolean property on the first matched element.

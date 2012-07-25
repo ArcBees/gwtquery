@@ -690,14 +690,42 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     $(e).html(content);
     assertEquals(4, $("li.five-item", e).prevAll().size());
     assertHtmlEquals(expected, $("li.five-item", e).prevAll());
+    
+    expected = "<li class='third-item'>i3</li>";
+    assertEquals(1, $("li.five-item", e).prevAll(".third-item").size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevAll(".third-item"));
+    
 
     
     // prevUntil()
-    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
-    expected = "<li>i4</li>";
+    content = "<ul><li class='item'>i1</li><li class='second-item'>i2</li><li class='third-item'>i3</li><li class='item'>i4</li><li class='five-item'>i5</li></ul>";
+    expected = "<li class='item'>i4</li>";
     $(e).html(content);
     assertEquals(1, $("li.five-item", e).prevUntil(".third-item").size());
     assertHtmlEquals(expected, $("li.five-item", e).prevUntil(".third-item"));
+
+    assertEquals(1, $("li.five-item", e).prevUntil($(".third-item")).size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil($(".third-item")));
+    
+    Element until = $(".third-item").get(0);
+    assertEquals(1, $("li.five-item", e).prevUntil(until).size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil(until));
+    
+    
+    assertEquals(0, $("li.five-item", e).prevUntil(".third-item", ".fake-class").size());
+    assertEquals(1, $("li.five-item", e).prevUntil(".second-item", ".item").size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil(".second-item", ".item"));
+    
+    assertEquals(0, $("li.five-item", e).prevUntil($(".third-item"), ".fake-class").size());
+    assertEquals(1, $("li.five-item", e).prevUntil($(".second-item"), ".item").size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil($(".second-item"), ".item"));
+    
+    assertEquals(0, $("li.five-item", e).prevUntil(until, ".fake-class").size());
+    
+    until = $(".second-item").get(0);
+    assertEquals(1, $("li.five-item", e).prevUntil(until, ".item").size());
+    assertHtmlEquals(expected, $("li.five-item", e).prevUntil(until, ".item"));
+
 
     // siblings()
     content = "<p>Hello</p><div id='mdiv'><span>Hello Again</span></div><p>And Again</p>";
