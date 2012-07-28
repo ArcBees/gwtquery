@@ -769,15 +769,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private void allNextSiblingElements(Element firstChildElement,
-      JsNodeArray result, Element elem, String untilSelector) {
-    while (firstChildElement != null) {
+      JsNodeArray result, Element elem, GQuery until, String filterSelector) {
+    
+	 while (firstChildElement != null) {
       
-      if (untilSelector != null && $(firstChildElement).is(untilSelector)){
+      if (until != null &&  until.index(firstChildElement) != -1){
         return;
       }
       
-      if (firstChildElement != elem) {
-        result.addNode(firstChildElement);
+	  if (firstChildElement != elem
+			&& (filterSelector == null || $(firstChildElement).is(filterSelector))) {
+			result.addNode(firstChildElement);
       }
       firstChildElement = firstChildElement.getNextSiblingElement();
     }
@@ -1216,7 +1218,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery children() {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
-      allNextSiblingElements(e.getFirstChildElement(), result, null, null);
+      allNextSiblingElements(e.getFirstChildElement(), result, null, null, null);
     }
     return new GQuery(unique(result));
   }
@@ -2852,12 +2854,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Find all sibling elements after the current element.
+   * Get all following siblings of each element in the set of matched
+   * elements.
    */
   public GQuery nextAll() {
+    return nextAll(null);
+  }
+  
+  /**
+   * Get all following siblings of each element in the set of matched
+   * elements, filtered by a selector.
+   */
+  public GQuery nextAll(String filter) {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
-      allNextSiblingElements(e.getNextSiblingElement(), result, null, null);
+      allNextSiblingElements(e.getNextSiblingElement(), result, null, null, filter);
     }
     return pushStack(unique(result), "nextAll", getSelector());
   }
@@ -2870,13 +2881,72 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @return
    */
   public GQuery nextUntil(String selector) {
+	  return nextUntil($(selector), null);
+  }
+  
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the selector, filtered by a selector.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(String selector, String filter) {
+	  return nextUntil($(selector), filter);
+  }
+
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the DOM node.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(Element until) {
+	  return nextUntil($(until), null);
+  }
+
+  
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the DOM node, filtered by a selector.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(Element until, String filter) {
+	  return nextUntil($(until), filter);
+  }
+  
+  
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the GQuery object.
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(GQuery until) {
+    return nextUntil(until, null);
+  }
+
+  
+  /**
+   * Get all following siblings of each element up to but not including the
+   * element matched by the GQuery object, filtered by a selector
+   * 
+   * @param selector
+   * @return
+   */
+  public GQuery nextUntil(GQuery until, String filter) {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
-      allNextSiblingElements(e.getNextSiblingElement(), result, null, selector);
+      allNextSiblingElements(e.getNextSiblingElement(), result, null, until, filter);
     }
     return pushStack(unique(result), "nextUntil", getSelector());
   }
 
+  
   /**
    * Removes the specified Element from the set of matched elements. This method
    * is used to remove a single Element from a jQuery object.
@@ -3889,7 +3959,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
       allNextSiblingElements(e.getParentElement().getFirstChildElement(),
-          result, e, null);
+          result, e, null, null);
     }
     return new GQuery(unique(result));
   }

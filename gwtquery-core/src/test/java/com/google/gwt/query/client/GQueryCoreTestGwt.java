@@ -648,18 +648,44 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertHtmlEquals(expected, $("p", e).next(".selected").get(0).getString());
 
     // nextAll()
-    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li>i5</li></ul>";
-    expected = "<li>i4</li><li>i5</li>";
+    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class=\"last-item\">i5</li></ul>";
+    expected = "<li>i4</li><li class=\"last-item\">i5</li>";
     $(e).html(content);
     assertEquals(2, $("li.third-item", e).nextAll().size());
     assertHtmlEquals(expected, $("li.third-item", e).nextAll());
+    
+    expected = "<li class=\"last-item\">i5</li>";
+    assertEquals(1, $("li.third-item", e).nextAll(".last-item").size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextAll(".last-item"));
 
     // nextUntil()
-    content = "<ul><li>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
+    content = "<ul><li class='first-item'>i1</li><li>i2</li><li class='third-item'>i3</li><li>i4</li><li class='five-item'>i5</li></ul>";
     expected = "<li>i4</li>";
     $(e).html(content);
     assertEquals(1, $("li.third-item", e).nextUntil(".five-item").size());
     assertHtmlEquals(expected, $("li.third-item", e).nextUntil(".five-item"));
+    
+    GQuery nextUntil = $("li.five-item");
+    assertEquals(1, $("li.third-item", e).nextUntil(nextUntil).size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextUntil(nextUntil));
+    
+    Element nextUntilElement = nextUntil.get(0);
+    assertEquals(1, $("li.third-item", e).nextUntil(nextUntilElement).size());
+    assertHtmlEquals(expected, $("li.third-item", e).nextUntil(nextUntilElement));
+    
+    
+    expected = "<li class='third-item'>i3</li>";
+    $(e).html(content);
+    assertEquals(1, $("li.first-item", e).nextUntil(".five-item", "li.third-item").size());
+    assertHtmlEquals(expected, $("li.first-item", e).nextUntil(".five-item", "li.third-item"));
+    
+    assertEquals(1, $("li.first-item", e).nextUntil(nextUntil, "li.third-item").size());
+    assertHtmlEquals(expected, $("li.first-item", e).nextUntil(nextUntil, "li.third-item"));
+    
+    assertEquals(1, $("li.first-item", e).nextUntil(nextUntilElement, "li.third-item").size());
+    assertHtmlEquals(expected, $("li.first-item", e).nextUntil(nextUntilElement, "li.third-item"));
+    
+    
 
     
     // andSelf()
