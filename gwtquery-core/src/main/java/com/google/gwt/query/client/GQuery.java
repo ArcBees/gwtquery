@@ -17,11 +17,6 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -67,6 +62,11 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -2133,11 +2133,21 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Removes all elements from the set of matched elements that do not pass the
    * specified css expression. This method is used to narrow down the results of
-   * a search. Provide a comma-separated list of expressions to apply multiple
-   * filters at once.
+   * a search. 
    */
+  //TODO performance bad...
   public GQuery filter(String... filters) {
     JsNodeArray array = JsNodeArray.create();
+    /*StringBuilder filterBuilder = new StringBuilder();
+    for (int i = 0; i < filters.length ; i++){
+    	filterBuilder.append(filters[i]);
+    	if (i < filters.length - 1){
+    		filterBuilder.append(",");
+    	}
+    }
+    
+    String filter = filterBuilder.toString();*/
+
     for (String f : filters) {
       for (Element e : elements) {
         boolean ghostParent = false;
@@ -2159,6 +2169,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         }
       }
     }
+    
     return pushStack(unique(array), "filter", filters[0]);
   }
 
@@ -2870,6 +2881,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements) {
       allNextSiblingElements(e.getNextSiblingElement(), result, null, null, filter);
     }
+    
     return pushStack(unique(result), "nextAll", getSelector());
   }
 
