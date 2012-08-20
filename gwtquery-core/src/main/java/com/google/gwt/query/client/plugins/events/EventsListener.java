@@ -186,6 +186,8 @@ public class EventsListener implements EventListener {
               // When an event fired in an element stops bubbling we have to fire also all other
               // handlers for this element bound to this element
               if (stopElement == null || element.equals(stopElement)) {
+                gqEvent.setCurrentElementTarget(element);
+                
                 if (!f.fire(gqEvent)) {
                   stopElement = element;
                 }
