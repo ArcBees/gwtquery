@@ -99,7 +99,7 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
       style.left = left;
       elem.runtimeStyle.left = rsLeft;
     }
-    return ret;
+    return ret ? ""+ret : null;
   }-*/;
 
   private void setOpacity(Element e, String val) {
