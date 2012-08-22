@@ -1,6 +1,7 @@
 package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.Event;
 
@@ -21,6 +22,14 @@ import com.google.gwt.user.client.Event;
  * 
  */
 public class GqEvent extends Event {
+  
+  public static native void setOriginalEventType(NativeEvent evt, String originalEventName)/*-{
+    evt["__gwtquery_originalEventName"] = originalEventName;
+  }-*/;
+  
+  public static native String getOriginalEventType(Event evt)/*-{
+   return evt["__gwtquery_originalEventName"] || null;
+  }-*/;
 
   // Gwt Events class has not this event defined, 
   // so we have to select one power of 2 which is unused in Event class 

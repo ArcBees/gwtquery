@@ -16,9 +16,19 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
-import static com.google.gwt.user.client.Event.*;
-
-import java.util.Arrays;
+import static com.google.gwt.user.client.Event.FOCUSEVENTS;
+import static com.google.gwt.user.client.Event.KEYEVENTS;
+import static com.google.gwt.user.client.Event.MOUSEEVENTS;
+import static com.google.gwt.user.client.Event.ONBLUR;
+import static com.google.gwt.user.client.Event.ONFOCUS;
+import static com.google.gwt.user.client.Event.ONKEYDOWN;
+import static com.google.gwt.user.client.Event.ONKEYPRESS;
+import static com.google.gwt.user.client.Event.ONKEYUP;
+import static com.google.gwt.user.client.Event.ONMOUSEDOWN;
+import static com.google.gwt.user.client.Event.ONMOUSEMOVE;
+import static com.google.gwt.user.client.Event.ONMOUSEOUT;
+import static com.google.gwt.user.client.Event.ONMOUSEOVER;
+import static com.google.gwt.user.client.Event.ONMOUSEUP;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -53,11 +63,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     return "com.google.gwt.query.Query";
   }
 
-  public void gwtTearDown() {
-    $(e).remove();
-    e = null;
-  }
-
   public void gwtSetUp() {
     if (e == null) {
       testPanel = new HTML();
@@ -68,6 +73,144 @@ public class GQueryEventsTestGwt extends GWTTestCase {
       EventsListener.clean(e);
       e.setInnerHTML("");
     }
+  }
+
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
+  }
+
+  public void testBindingWithNameSpace() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    $("#test", e)
+        .bind(
+            "focus.focusevents blur.focusevents keydown.keyevents keypress.keyevents keyup.keyevents "
+                + "mousedown.mouseevents mouseup.mouseevents mousemove.mouseevents mouseover.mouseevents "
+                + "mouseout.mouseevents", null, new Function() {
+              @Override
+              public void f() {
+                $("#test", e).val("event fired");
+              }
+            });
+
+    int allEventbits[] =
+        new int[] {
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+    }
+
+    // test unbind without namespace
+    $("#test", e).unbind("focus blur");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits != ONFOCUS && eventbits != ONBLUR) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // test unbind event name + namespace
+    $("#test", e).unbind("keydown.keyevents keypress.keyevents keyup.keyevents");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+    }
+
+    // test unbind only on namespace
+    $("#test", e).unbind(".mouseevents");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("", $("#test", e).val());
+
+    }
+
+  }
+
+  public void testBindUnbindSubmitEvent() {
+    // Add a form and an iframe to the dom. The form target is the iframe
+    $(e).html(
+        "<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    testSubmitEventCont = 0;
+
+    // Add an onsubmit function to the form returning false to cancel the action
+    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+      public boolean f(Event e) {
+        testSubmitEventCont++;
+        return false;
+      }
+    });
+
+    // Check that the onsubmit function is called and the iframe has not changed
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+
+    // Remove the binding
+    $("form").unbind(EventsListener.ONSUBMIT);
+
+    // Check that on submit function is not called and the form has been
+    // submitted
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+  }
+
+  public void testDelegate() {
+
+    $(e).html(
+        "<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+
+    $(".mainDiv", e).delegate(".subDiv", "click", new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+
+    $(".mainDiv", e).delegate(".subDiv", Event.ONMOUSEOVER, new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+      }
+    });
+
+    for (Element mainDiv : $(".mainDiv", e).elements()) {
+      for (int i = 0; i < 3; i++) {
+        String html = "<div class='subDiv'>Content " + i + "<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+
+    assertEquals(8, $(".subDiv", e).length());
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER);
+
+    for (Element el : $(".subDiv", e).elements()) {
+      assertEquals("red", $(el).css(CSS.COLOR, false));
+      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
+    }
+
   }
 
   public void testDie() {
@@ -161,35 +304,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     });
     $("p", e).dblclick();
     assertEquals("yellow", $("p", e).css("color", false));
-  }
-
-  /**
-   * TODO: focus/blur doesn't work with HtmlUnit, investigate and report.
-   */
-  @DoNotRunWith({Platform.HtmlUnitLayout})
-  public void testFocusBlur() {
-    $(e).html("<p>Content</p>");
-
-    // focus
-    // FIXME: Html 2.1.0 failing but FF do not
-    $("p", e).focus(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "1px dotted black");
-      }
-    });
-    $("p", e).focus();
-    assertEquals("black", $("p", e).css("border-top-color", false));
-    assertEquals("dotted", $("p", e).css("border-top-style", false));
-    assertEquals("1px", $("p", e).css("border-top-width", false));
-
-    // blur
-    $("p", e).blur(new Function() {
-      public void f(Element elem) {
-        $(elem).css("border", "");
-      }
-    });
-    $("p", e).blur();
-    assertEquals("", $("p", e).css("border", false));
   }
 
   public void testEventsPlugin() {
@@ -298,6 +412,35 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("input", e).keypress('b');
     $("input", e).keyup('c');
     assertEquals("ABCabc", $("input", e).val());
+  }
+
+  /**
+   * TODO: focus/blur doesn't work with HtmlUnit, investigate and report.
+   */
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testFocusBlur() {
+    $(e).html("<p>Content</p>");
+
+    // focus
+    // FIXME: Html 2.1.0 failing but FF do not
+    $("p", e).focus(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "1px dotted black");
+      }
+    });
+    $("p", e).focus();
+    assertEquals("black", $("p", e).css("border-top-color", false));
+    assertEquals("dotted", $("p", e).css("border-top-style", false));
+    assertEquals("1px", $("p", e).css("border-top-width", false));
+
+    // blur
+    $("p", e).blur(new Function() {
+      public void f(Element elem) {
+        $(elem).css("border", "");
+      }
+    });
+    $("p", e).blur();
+    assertEquals("", $("p", e).css("border", false));
   }
 
   public void testLazyMethods() {
@@ -416,6 +559,46 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
   }
 
+  public void testLiveWithMultipleEvent() {
+
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+
+    $(".myClass", e).live("click mouseover", new Function() {
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+
+    $("#div1", e).addClass("myClass");
+
+    $("#div1", e).click();
+
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+
+    $("#div1", e).css(CSS.COLOR.with(RGBColor.BLACK));
+
+    $("#div1", e).trigger(Event.ONMOUSEOVER);
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+
+    $(".myClass2", e).live(Event.ONCLICK | Event.ONMOUSEDOWN, new Function() {
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.YELLOW));
+      }
+    });
+
+    $("#div2", e).addClass("myClass2");
+
+    $("#div2", e).click();
+
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
+
+    $("#div2", e).css(CSS.COLOR.with(RGBColor.BLACK));
+
+    $("#div2", e).trigger(Event.ONMOUSEDOWN);
+    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
+
+  }
+
   public void testLiveWithMultipleFunction() {
 
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
@@ -439,41 +622,434 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
   }
 
-  public void testDelegate() {
+  public void testMouseenterEvent() {
+    String content = "<div id='test'>blop</div>";
+    $(e).html(content);
 
+    $("#test", e).mouseenter(new Function() {
+      @Override
+      public void f(Element e) {
+        e.setInnerText("test succeed");
+      }
+    }).mouseover(new Function() {
+      @Override
+      public void f() {
+        fail("mouseover handler should not be fired");
+      }
+    });
+
+    $("#test", e).mouseenter();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    // unbind the mouseover event should not remove the mouseenter
+    $("#test", e).text("blop").unbind("mouseover");
+
+    $("#test", e).mouseenter();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    $("#test", e).text("blop").unbind("mouseenter");
+
+    $("#test", e).mouseenter();
+
+    assertEquals("blop", $("#test", e).text());
+
+    // try the bind function
+    $("#test", e).bind("mouseenter", new Function() {
+      @Override
+      public void f(Element e) {
+        e.setInnerText("test succeed");
+      }
+    }).mouseover(new Function() {
+      @Override
+      public void f() {
+        fail("mouseover handler should not be fired");
+      }
+    });
+
+    $("#test", e).mouseenter();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    $("#test", e).text("blop").unbind("mouseenter");
+
+    $("#test", e).mouseenter();
+
+    assertEquals("blop", $("#test", e).text());
+
+  }
+
+  public void testMouseleaveEvent() {
+    String content = "<div id='test'>blop</div>";
+    $(e).html(content);
+
+    $("#test", e).mouseleave(new Function() {
+      @Override
+      public void f(Element e) {
+        e.setInnerText("test succeed");
+      }
+    }).mouseout(new Function() {
+      @Override
+      public void f() {
+        fail("mouseout handler should not be fired");
+      }
+    });
+
+    $("#test", e).mouseleave();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    // unbind the mouseout event should not remove the mouseleave
+    $("#test", e).text("blop").unbind("mouseout");
+
+    $("#test", e).mouseleave();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    $("#test", e).text("blop").unbind("mouseleave");
+
+    $("#test", e).mouseleave();
+
+    assertEquals("blop", $("#test", e).text());
+
+    // try the bind method directly
+    $("#test", e).bind("mouseleave", new Function() {
+      @Override
+      public void f(Element e) {
+        e.setInnerText("test succeed");
+      }
+    }).mouseout(new Function() {
+      @Override
+      public void f() {
+        fail("mouseout handler should not be fired");
+      }
+    });
+
+    $("#test", e).mouseleave();
+
+    assertEquals("test succeed", $("#test", e).text());
+
+    $("#test", e).text("blop").unbind("mouseleave");
+
+    $("#test", e).mouseleave();
+
+    assertEquals("blop", $("#test", e).text());
+
+  }
+
+  public void testMultipleEvents() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    $("#test", e).bind(FOCUSEVENTS | KEYEVENTS | MOUSEEVENTS, null, new Function() {
+      @Override
+      public void f() {
+        $("#test", e).val("event fired");
+      }
+    });
+
+    int allEventbits[] =
+        new int[] {
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+    }
+
+    // unbind focus event
+    $("#test", e).unbind(FOCUSEVENTS);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits == ONBLUR || eventbits == ONFOCUS) {
+        assertEquals("", $("#test", e).val());
+      } else {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      }
+
+    }
+
+    // unbind focus event
+    $("#test", e).unbind(KEYEVENTS);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // unbind some mouse events
+    $("#test", e).unbind(ONMOUSEDOWN | ONMOUSEUP | ONMOUSEMOVE | ONMOUSEOVER);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits == ONMOUSEOUT) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // unbind one event
+    $("#test", e).unbind(ONMOUSEOUT);
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+      assertEquals("", $("#test", e).val());
+    }
+
+  }
+
+  public void testMultipleEventsString() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    int allEventbits[] =
+        new int[] {
+            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    $("#test", e).bind(
+        "focus blur keydown keypress keyup mousedown mouseup mousemove mouseover mouseout", null,
+        new Function() {
+          @Override
+          public void f() {
+            $("#test", e).val("event fired");
+          }
+        });
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+    }
+
+    $("#test", e).unbind("focus blur keydown keypress keyup");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+    }
+
+    $("#test", e).unbind("mousedown mouseup mousemove mouseover").unbind("mouseout");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("", $("#test", e).val());
+
+    }
+
+  }
+
+  public void testNamedBinding() {
+    $(e).html("<p>Content</p>");
+
+    $("p", e, Events.Events).bind("click.first.namespace", new Function() {
+      public void f(Element elem) {
+        $(elem).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    $("p", e, Events.Events).bind("click.second.namespace", new Function() {
+      public void f(Element elem) {
+        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.GREEN));
+      }
+    });
+    $("p", e, Events.Events).bind("click", "red",new Function() {
+      public void f(Element elem) {
+        $(elem).css(CSS.FONT_SIZE.with(Length.px(24)));
+        
+        assertEquals("red", getData()[0]);
+      }
+    });
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertEquals("red", $("p", e).css("color", false));
+    assertEquals("green", $("p", e).css("background-color", false));
+    assertEquals(24.0d, $("p", e).cur("fontSize", true));
+
+    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR, "").css(
+        CSS.FONT_SIZE.with(Length.px(12)));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
+
+    $("p", e, Events.Events).unbind("click.first.namespace");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertEquals("green", $("p", e).css("background-color", false));
+    assertEquals(24.0d, $("p", e).cur("fontSize", true));
+
+    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR, "").css(
+        CSS.FONT_SIZE.with(Length.px(12)));
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
+
+    $("p", e, Events.Events).unbind("click");
+    $("p", e, Events.Events).trigger(Event.ONCLICK);
+    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
+    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
+    assertEquals(12.0d, $("p", e).cur("fontSize", true));
+  }
+
+  public void testRebind() {
+    final GQuery b = $("<p>content</p>");
+    assertEquals(1, b.size());
+    assertEquals(1, b.get().getLength());
+    b.click(new Function() {
+      public void f(Element e) {
+        b.css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+    $(e).append(b);
+    // TODO: dom manipulations some times modifies gquery nodelist,
+    // we could remove the nodelist since we maintain a list of elements.
+    assertEquals(1, b.size());
+    assertEquals(1, b.get().getLength());
+    b.click();
+    assertEquals("red", $(b).css("color", false));
+  }
+
+  public void testResizeEvent() {
+    $(e).html("<div id=ra></div>");
+    GQuery g = $("#ra", e);
+
+    delayTestFinish(100);
+    g.bind("resize", null, new Function() {
+      public void f(Element e) {
+        finishTest();
+      }
+    });
+
+    g.width(400);
+    g.resize();
+  }
+
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testResizeWindowEvent() {
+    GQuery w = $(GQuery.window);
+
+    delayTestFinish(100);
+    w.bind("resize", null, new Function() {
+      public void f(Element e) {
+        finishTest();
+      }
+    });
+
+    Window.resizeTo(w.width(), w.height() + 100);
+  }
+
+  /**
+   * TODO: submit doesn't work with HtmlUnit, investigate and report. The problem is that
+   * preventDefault does not set the flag e.defaultPrevented || e.returnValue in HtmlUnit native
+   * event.
+   */
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testSubmitEvent() {
+    // Add a form and an iframe to the dom. The form target is the iframe
     $(e).html(
-        "<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+        "<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
+    testSubmitEventCont = 0;
 
-    $(".mainDiv", e).delegate(".subDiv", "click", new Function() {
-      @Override
-      public void f(Element e) {
-        $(e).css(CSS.COLOR.with(RGBColor.RED));
+    // Add an onsubmit function to the form returning false to cancel the action
+    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+      public boolean f(Event e) {
+        testSubmitEventCont++;
+        return false;
       }
     });
 
-    $(".mainDiv", e).delegate(".subDiv", Event.ONMOUSEOVER, new Function() {
-      @Override
-      public void f(Element e) {
-        $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
+    // Check that the onsubmit function is called and the iframe has not changed
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+    assertFalse($("#miframe").contents().find("body").text().contains("ERROR"));
+
+    // Remove the binding
+    $("form").unbind(EventsListener.ONSUBMIT);
+
+    // Check that on submit function is not called and the form has been
+    // submitted
+    $("form").submit();
+    assertEquals(1, testSubmitEventCont);
+
+    delayTestFinish(1000);
+    new Timer() {
+      public void run() {
+        // Check that the server returns an error since the action does not
+        // exist
+        assertTrue($("#miframe").contents().find("body").text().contains("ERROR"));
+        finishTest();
       }
+    }.schedule(500);
+  }
+
+  /**
+   * Test for issue 62 http://code.google.com/p/gwtquery/issues/detail?id=62
+   */
+  public void testTabInbexInFocusEventBinding() {
+    String content = "<div id='mtest'>test content</div>";
+    $(e).html(content);
+    $("#mtest").focus(new Function() {
     });
 
-    for (Element mainDiv : $(".mainDiv", e).elements()) {
-      for (int i = 0; i < 3; i++) {
-        String html = "<div class='subDiv'>Content " + i + "<span>blop</span></div>";
-        $(mainDiv).append(html);
+    assertEquals($("#mtest").attr("tabIndex"), "0");
+
+    content = "<div id='mtest' tabIndex='2'>test content</div>";
+    $(e).html(content);
+    $("#mtest").focus(new Function() {
+    });
+
+    assertEquals($("#mtest").attr("tabIndex"), "2");
+  }
+
+  public void testUnbindMultipleEvents() {
+    String content = "<p>content</p>";
+    $(e).html(content);
+    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
+      public void f(Element e) {
+        $("p").css(CSS.COLOR.with(RGBColor.RED));
       }
-    }
-
-    assertEquals(8, $(".subDiv", e).length());
-
-    $("span", e).click().trigger(Event.ONMOUSEOVER);
-
-    for (Element el : $(".subDiv", e).elements()) {
-      assertEquals("red", $(el).css(CSS.COLOR, false));
-      assertEquals("yellow", $(el).css(CSS.BACKGROUND_COLOR, false));
-    }
-
+    });
+    $(document).bind(Event.ONMOUSEUP, null, new Function() {
+      public void f(Element e) {
+        $("p").css(CSS.COLOR.with(RGBColor.YELLOW));
+      }
+    });
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("red", $("p").css("color", false));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("yellow", $("p").css("color", false));
+    $("p").css(CSS.COLOR.with(RGBColor.BLACK));
+    $(document).unbind(Event.ONMOUSEUP | Event.ONMOUSEMOVE);
+    $(document).trigger(Event.ONMOUSEMOVE);
+    assertEquals("black", $("p").css("color", false));
+    $(document).trigger(Event.ONMOUSEUP);
+    assertEquals("black", $("p").css("color", false));
   }
 
   public void testUnDelegate() {
@@ -628,259 +1204,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     }
   }
 
-  public void testLiveWithMultipleEvent() {
-
-    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
-
-    $(".myClass", e).live("click mouseover", new Function() {
-      public void f(Element e) {
-        $(e).css(CSS.COLOR.with(RGBColor.RED));
-      }
-    });
-
-    $("#div1", e).addClass("myClass");
-
-    $("#div1", e).click();
-
-    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
-
-    $("#div1", e).css(CSS.COLOR.with(RGBColor.BLACK));
-
-    $("#div1", e).trigger(Event.ONMOUSEOVER);
-    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
-
-    $(".myClass2", e).live(Event.ONCLICK | Event.ONMOUSEDOWN, new Function() {
-      public void f(Element e) {
-        $(e).css(CSS.COLOR.with(RGBColor.YELLOW));
-      }
-    });
-
-    $("#div2", e).addClass("myClass2");
-
-    $("#div2", e).click();
-
-    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
-
-    $("#div2", e).css(CSS.COLOR.with(RGBColor.BLACK));
-
-    $("#div2", e).trigger(Event.ONMOUSEDOWN);
-    assertEquals("yellow", $("#div2", e).css(CSS.COLOR, false));
-
-  }
-
-  public void testNamedBinding() {
-    $(e).html("<p>Content</p>");
-
-    $("p", e, Events.Events).bind("click.first.namespace", null, new Function() {
-      ;
-      public void f(Element elem) {
-        $(elem).css(CSS.COLOR.with(RGBColor.RED));
-      }
-    });
-    $("p", e, Events.Events).bind("click.second.namespace", null, new Function() {
-      ;
-      public void f(Element elem) {
-        $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.GREEN));
-      }
-    });
-    $("p", e, Events.Events).bind("click", null, new Function() {
-      ;
-      public void f(Element elem) {
-        $(elem).css(CSS.FONT_SIZE.with(Length.px(24)));
-      }
-    });
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertEquals("red", $("p", e).css("color", false));
-    assertEquals("green", $("p", e).css("background-color", false));
-    assertEquals(24.0d, $("p", e).cur("fontSize", true));
-
-    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR, "").css(
-        CSS.FONT_SIZE.with(Length.px(12)));
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
-    assertEquals(12.0d, $("p", e).cur("fontSize", true));
-
-    $("p", e, Events.Events).unbind("click.first.namespace");
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
-    assertEquals("green", $("p", e).css("background-color", false));
-    assertEquals(24.0d, $("p", e).cur("fontSize", true));
-
-    $("p", e).css(CSS.COLOR.with(null)).css(CSS.BACKGROUND_COLOR, "").css(
-        CSS.FONT_SIZE.with(Length.px(12)));
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
-    assertEquals(12.0d, $("p", e).cur("fontSize", true));
-
-    $("p", e, Events.Events).unbind("click");
-    $("p", e, Events.Events).trigger(Event.ONCLICK);
-    assertFalse("red".equalsIgnoreCase($("p", e).css("color", false)));
-    assertFalse("green".equalsIgnoreCase($("p", e).css("background-color", false)));
-    assertEquals(12.0d, $("p", e).cur("fontSize", true));
-  }
-
-  public void testRebind() {
-    final GQuery b = $("<p>content</p>");
-    assertEquals(1, b.size());
-    assertEquals(1, b.get().getLength());
-    b.click(new Function() {
-      public void f(Element e) {
-        b.css(CSS.COLOR.with(RGBColor.RED));
-      }
-    });
-    $(e).append(b);
-    // TODO: dom manipulations some times modifies gquery nodelist,
-    // we could remove the nodelist since we maintain a list of elements.
-    assertEquals(1, b.size());
-    assertEquals(1, b.get().getLength());
-    b.click();
-    assertEquals("red", $(b).css("color", false));
-  }
-
-  @DoNotRunWith({Platform.HtmlUnitLayout})
-  public void testResizeWindowEvent() {
-    GQuery w = $(GQuery.window);
-
-    delayTestFinish(100);
-    w.bind("resize", null, new Function() {
-      public void f(Element e) {
-        finishTest();
-      }
-    });
-
-    Window.resizeTo(w.width(), w.height() + 100);
-  }
-
-  public void testResizeEvent() {
-    $(e).html("<div id=ra></div>");
-    GQuery g = $("#ra", e);
-
-    delayTestFinish(100);
-    g.bind("resize", null, new Function() {
-      public void f(Element e) {
-        finishTest();
-      }
-    });
-
-    g.width(400);
-    g.resize();
-  }
-
-  public void testBindUnbindSubmitEvent() {
-    // Add a form and an iframe to the dom. The form target is the iframe
-    $(e).html(
-        "<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    testSubmitEventCont = 0;
-
-    // Add an onsubmit function to the form returning false to cancel the action
-    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
-      public boolean f(Event e) {
-        testSubmitEventCont++;
-        return false;
-      }
-    });
-
-    // Check that the onsubmit function is called and the iframe has not changed
-    $("form").submit();
-    assertEquals(1, testSubmitEventCont);
-
-    // Remove the binding
-    $("form").unbind(EventsListener.ONSUBMIT);
-
-    // Check that on submit function is not called and the form has been
-    // submitted
-    $("form").submit();
-    assertEquals(1, testSubmitEventCont);
-  }
-
-  /**
-   * TODO: submit doesn't work with HtmlUnit, investigate and report. The problem is that
-   * preventDefault does not set the flag e.defaultPrevented || e.returnValue in HtmlUnit native
-   * event.
-   */
-  @DoNotRunWith({Platform.HtmlUnitLayout})
-  public void testSubmitEvent() {
-    // Add a form and an iframe to the dom. The form target is the iframe
-    $(e).html(
-        "<form action='whatever' target='miframe'><input type='text' value='Hello'><input type='submit' value='Go'></form><iframe name='miframe' id='miframe' src=\"javascript:''\">");
-    testSubmitEventCont = 0;
-
-    // Add an onsubmit function to the form returning false to cancel the action
-    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
-      public boolean f(Event e) {
-        testSubmitEventCont++;
-        return false;
-      }
-    });
-
-    // Check that the onsubmit function is called and the iframe has not changed
-    $("form").submit();
-    assertEquals(1, testSubmitEventCont);
-    assertFalse($("#miframe").contents().find("body").text().contains("ERROR"));
-
-    // Remove the binding
-    $("form").unbind(EventsListener.ONSUBMIT);
-
-    // Check that on submit function is not called and the form has been
-    // submitted
-    $("form").submit();
-    assertEquals(1, testSubmitEventCont);
-
-    delayTestFinish(1000);
-    new Timer() {
-      public void run() {
-        // Check that the server returns an error since the action does not
-        // exist
-        assertTrue($("#miframe").contents().find("body").text().contains("ERROR"));
-        finishTest();
-      }
-    }.schedule(500);
-  }
-
-  /**
-   * Test for issue 62 http://code.google.com/p/gwtquery/issues/detail?id=62
-   */
-  public void testTabInbexInFocusEventBinding() {
-    String content = "<div id='mtest'>test content</div>";
-    $(e).html(content);
-    $("#mtest").focus(new Function() {
-    });
-
-    assertEquals($("#mtest").attr("tabIndex"), "0");
-
-    content = "<div id='mtest' tabIndex='2'>test content</div>";
-    $(e).html(content);
-    $("#mtest").focus(new Function() {
-    });
-
-    assertEquals($("#mtest").attr("tabIndex"), "2");
-  }
-
-  public void testUnbindMultipleEvents() {
-    String content = "<p>content</p>";
-    $(e).html(content);
-    $(document).bind(Event.ONMOUSEMOVE, null, new Function() {
-      public void f(Element e) {
-        $("p").css(CSS.COLOR.with(RGBColor.RED));
-      }
-    });
-    $(document).bind(Event.ONMOUSEUP, null, new Function() {
-      public void f(Element e) {
-        $("p").css(CSS.COLOR.with(RGBColor.YELLOW));
-      }
-    });
-    $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("red", $("p").css("color", false));
-    $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("yellow", $("p").css("color", false));
-    $("p").css(CSS.COLOR.with(RGBColor.BLACK));
-    $(document).unbind(Event.ONMOUSEUP | Event.ONMOUSEMOVE);
-    $(document).trigger(Event.ONMOUSEMOVE);
-    assertEquals("black", $("p").css("color", false));
-    $(document).trigger(Event.ONMOUSEUP);
-    assertEquals("black", $("p").css("color", false));
-  }
-
   public void testWidgetEvents() {
     final Button b = new Button("click-me");
     b.addClickHandler(new ClickHandler() {
@@ -901,204 +1224,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(b).click();
     assertEquals("red", $("button").css("color", false));
     assertEquals("black", $("button").css("background-color", false));
-  }
-
-  public void testMultipleEvents() {
-    String content = "<input type='text' id='test'></div>";
-    $(e).html(content);
-
-    $("#test", e).bind(FOCUSEVENTS | KEYEVENTS | MOUSEEVENTS, null, new Function() {
-      @Override
-      public void f() {
-        $("#test", e).val("event fired");
-      }
-    });
-
-    int allEventbits[] =
-        new int[] {
-            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
-            ONMOUSEOVER, ONMOUSEOUT};
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      assertEquals("event fired", $("#test", e).val());
-      $("#test", e).val("");
-
-    }
-
-    // unbind focus event
-    $("#test", e).unbind(FOCUSEVENTS);
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if (eventbits == ONBLUR || eventbits == ONFOCUS) {
-        assertEquals("", $("#test", e).val());
-      } else {
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      }
-
-    }
-
-    // unbind focus event
-    $("#test", e).unbind(KEYEVENTS);
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if ((eventbits & MOUSEEVENTS) == eventbits) {
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      } else {
-        assertEquals("", $("#test", e).val());
-      }
-
-    }
-
-    // unbind some mouse events
-    $("#test", e).unbind(ONMOUSEDOWN | ONMOUSEUP | ONMOUSEMOVE | ONMOUSEOVER);
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if (eventbits == ONMOUSEOUT) {
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      } else {
-        assertEquals("", $("#test", e).val());
-      }
-
-    }
-
-    // unbind one event
-    $("#test", e).unbind(ONMOUSEOUT);
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-      assertEquals("", $("#test", e).val());
-    }
-
-  }
-
-  public void testMultipleEventsString() {
-    String content = "<input type='text' id='test'></div>";
-    $(e).html(content);
-
-    int allEventbits[] =
-        new int[] {
-            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
-            ONMOUSEOVER, ONMOUSEOUT};
-
-    $("#test", e).bind(
-        "focus blur keydown keypress keyup mousedown mouseup mousemove mouseover mouseout", null,
-        new Function() {
-          @Override
-          public void f() {
-            $("#test", e).val("event fired");
-          }
-        });
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      assertEquals("event fired", $("#test", e).val());
-      $("#test", e).val("");
-
-    }
-
-    $("#test", e).unbind("focus blur keydown keypress keyup");
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if ((eventbits & MOUSEEVENTS) == eventbits) {
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      } else {
-        assertEquals("", $("#test", e).val());
-      }
-    }
-
-    $("#test", e).unbind("mousedown mouseup mousemove mouseover").unbind("mouseout");
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      assertEquals("", $("#test", e).val());
-
-    }
-
-  }
-
-  public void testBindingWithNameSpace() {
-    String content = "<input type='text' id='test'></div>";
-    $(e).html(content);
-
-    $("#test", e)
-        .bind(
-            "focus.focusevents blur.focusevents keydown.keyevents keypress.keyevents keyup.keyevents "
-                + "mousedown.mouseevents mouseup.mouseevents mousemove.mouseevents mouseover.mouseevents "
-                + "mouseout.mouseevents", null, new Function() {
-              @Override
-              public void f() {
-                $("#test", e).val("event fired");
-              }
-            });
-    
-    int allEventbits[] =
-        new int[] {
-            ONFOCUS, ONBLUR, ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
-            ONMOUSEOVER, ONMOUSEOUT};
-
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      assertEquals("event fired", $("#test", e).val());
-      $("#test", e).val("");
-
-    }
-    
-    //test unbind without namespace
-    $("#test", e).unbind("focus blur");
-    
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-      
-      if (eventbits != ONFOCUS && eventbits != ONBLUR){
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      }else{
-        assertEquals("", $("#test", e).val());
-      }
-
-    }
-    
-    //test unbind event name + namespace
-    $("#test", e).unbind("keydown.keyevents keypress.keyevents keyup.keyevents");
-    
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      if ((eventbits & MOUSEEVENTS) == eventbits) {
-        assertEquals("event fired", $("#test", e).val());
-        $("#test", e).val("");
-      } else {
-        assertEquals("", $("#test", e).val());
-      }
-    }
-    
-    //test unbind only on namespace
-    $("#test", e).unbind(".mouseevents");
-    
-    for (int eventbits : allEventbits) {
-      $("#test", e).trigger(eventbits, 'c');
-
-      assertEquals("", $("#test", e).val());
-
-    }
-
   }
 
 }
