@@ -43,6 +43,19 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
   
   boolean runSlow = false;
 
+  protected interface ParentSelector extends Selectors {
+    @Selector("#parent")
+    GQuery parentSelector();
+    
+  }
+  
+  protected interface ExtendedSelector extends ParentSelector {
+    
+    @Selector("#child")
+    GQuery childSelector();
+  }
+  
+  
   protected interface AllSelectors extends Selectors {
     @Selector("h1[id]:contains(Selectors)")
     NodeList<Element> h1IdContainsSelectors();
@@ -181,6 +194,18 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
     } else {
       e.setInnerHTML("");
     }
+  }
+  
+  public void testInhiterance(){
+    final ExtendedSelector selector = GWT.create(ExtendedSelector.class);
+    
+    $(e).html("<div id=\"parent\">parent<div id=\"child\">child</div></div>");
+    
+    assertEquals(1, selector.parentSelector().length());
+    assertEquals(1, selector.childSelector().length());
+    
+    assertEquals("parentchild", selector.parentSelector().text());
+    assertEquals("child", selector.childSelector().text());
   }
   
   public void testJQueryPseudoselectors() {
