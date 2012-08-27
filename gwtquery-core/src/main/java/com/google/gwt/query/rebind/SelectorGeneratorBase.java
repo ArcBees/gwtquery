@@ -54,10 +54,10 @@ public abstract class SelectorGeneratorBase extends Generator {
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext,
         generatedPkgName, generatedClassName, requestedClass);
     if (sw != null) {
-      for (JMethod method : selectorType.getMethods()) {
+      for (JMethod method : selectorType.getInheritableMethods()) {
         generateMethod(sw, method, treeLogger);
       }
-      genGetAllMethod(sw, selectorType.getMethods(), treeLogger);
+      genGetAllMethod(sw, selectorType.getInheritableMethods(), treeLogger);
       sw.commit(treeLogger);
     }
 
