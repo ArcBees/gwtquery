@@ -114,6 +114,14 @@ public class JsCache extends JavaScriptObject {
   public final native int indexOf(Object o) /*-{
     return this.indexOf(o);
   }-*/;
+  
+  public final native <T> void putBoolean(T id, boolean b) /*-{
+    this[id] = b;
+  }-*/;
+  
+  public final native <T> void putNumber(T id, double n) /*-{
+    this[id] = n;
+  }-*/;
 
   public final native <T, O> void put(T id, O obj) /*-{
     this[id] = obj;
@@ -171,11 +179,9 @@ public class JsCache extends JavaScriptObject {
     return ret + "}";
   }
   
-  private void checkNull() {
-    // In dev-mode a null object casted to JavascriptObject does not throw a NPE
-    if (!GWT.isProdMode() && this == null) {
-      throw new NullPointerException();
-    }
+  // In dev-mode a null object casted to JavascriptObject does not throw a NPE
+  public final void checkNull() {
+    checkNull(this);
   }
   
   private final native JsArrayString keysImpl() /*-{
@@ -184,4 +190,14 @@ public class JsCache extends JavaScriptObject {
     for(key in this) if (key != '__gwt_ObjectId') keys.push(String(key));
     return keys;
   }-*/;
+  
+  /**
+   * Throw a NPE when a js is null
+   */
+  public static final <T extends JavaScriptObject> T checkNull(T js) {
+    if (!GWT.isProdMode() && js == null) {
+      throw new NullPointerException();
+    }
+    return js;
+  }
 }

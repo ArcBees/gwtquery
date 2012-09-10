@@ -61,6 +61,10 @@ public class JsUtils {
     public native Properties parseJSON(String json) /*-{
 			return $wnd.JSON.parse(json);
     }-*/;
+    
+    public native String JSON2String(JavaScriptObject o) /*-{
+      return $wnd.JSON.stringify(o);
+    }-*/;
 
     public native Element parseXML(String xml) /*-{
 			return new DOMParser().parseFromString(xml, "text/xml").documentElement;
@@ -77,7 +81,7 @@ public class JsUtils {
         Element e = a.get(i);
         int id = e.hashCode();
         if (!cache.exists(id)) {
-          cache.put(id, 1);
+          cache.putNumber(id, 1);
           ret.push(e);
         }
       }
@@ -99,6 +103,41 @@ public class JsUtils {
       // No checks to the passed string so json should be
       // a well-formed json string.
       return evalImpl("(" + json + ")");
+    }
+    
+    @Override
+    public String JSON2String(JavaScriptObject js) {
+      // This is a very basic implementation for IE6/IE7 of JSON.stringify
+      // If many people demand a better one we could consider to use json2.js
+      // @see https://github.com/douglascrockford/JSON-js/blob/master/json2.js
+      Properties prop = js.cast();
+      String ret = "";
+      for (String k : prop.keys()){
+        String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
+        JsCache o = prop.getArray(k).cast();
+        if (o != null) {
+          ret += ky + ":[";
+          for (int i = 0, l = o.length(); i < l ; i++) {
+            Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+            if (p != null) {
+              ret += p.toJsonString() + ",";
+            } else {
+              ret += "\"" + o.getString(i) + "\",";
+            }
+          }
+          ret += "],";
+        } else {
+          Properties p = prop.getJavaScriptObject(k);
+          if (p != null) {
+            ret += ky + ":" + p.toJsonString() + ",";
+          } else {
+            ret += ky + ":\"" + prop.getStr(k) + "\",";
+          }
+        }
+      }
+      return "{" + ret.replaceAll(",\\s*([\\]}]|$)","$1")
+      .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
+      + "}";
     }
 
     @Override
@@ -275,7 +314,7 @@ public class JsUtils {
         ? false
         : !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
   }
-
+  
   /**
    * Load an external javascript library. The inserted script replaces the
    * element with the given id in the document.
@@ -352,7 +391,46 @@ public class JsUtils {
     return utilsImpl.unique(a);
   }
 
-  public static String XML2String(JavaScriptObject o) {
-    return utilsImpl.XML2String(o);
+  public static String XML2String(JavaScriptObject js) {
+    return utilsImpl.XML2String(js);
+  }
+  
+  public static String JSON2String(JavaScriptObject js) {
+    return utilsImpl.JSON2String(js);
+  }
+  
+  /**
+   * Returns a QueryString representation of a JavascriptObject.
+   * TODO: jquery implementation accepts a second parameter (traditional) 
+   */
+  public static String param(JavaScriptObject js) {
+    Properties prop = js.cast();
+    String ret = "";
+    for (String k : prop.keys()) {
+      ret += ret.isEmpty() ? "" : "&";
+      JsCache o = prop.getArray(k).cast();
+      if (o != null) {
+        for (int i = 0, l = o.length(); i < l ; i++) {
+          ret += i > 0 ? "&" : "";
+          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          if (p != null) {
+            ret += k + "[]=" + p.toJsonString();
+          } else {
+            ret += k + "[]=" + o.getString(i) ;
+          }
+        }
+      } else {
+        Properties p = prop.getJavaScriptObject(k);
+        if (p != null) {
+          ret += p.toQueryString();
+        } else {
+          String v = prop.getStr(k);
+          if (v != null && !v.isEmpty() && !"null".equalsIgnoreCase(v)) {
+            ret += k + "=" + v;
+          }          
+        }
+      }
+    }
+    return ret;
   }
 }

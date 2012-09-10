@@ -19,6 +19,14 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -43,14 +51,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-
-import junit.framework.Assert;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -539,7 +539,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     
   }
 
-  public void aatestProperties() {
+  public void testProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
     assertNotNull(p.getStr("border"));
@@ -549,7 +549,10 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertNotNull(p.getStr("border"));
     
     try {
-      // DevMode null casting return an object
+      // DevMode null casting returns an object
+      // @see:
+      //  http://code.google.com/p/gwtquery/issues/detail?id=122
+      //  http://code.google.com/p/google-web-toolkit/issues/detail?id=6625
       ((Properties)null).toJsonString();
       fail("Executing methods of a null object should throw a NullPointerException");
     } catch (NullPointerException e) {

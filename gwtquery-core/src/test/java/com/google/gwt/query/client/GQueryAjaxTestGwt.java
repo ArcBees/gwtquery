@@ -147,11 +147,14 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   
   public void testJsonValidService() {
     delayTestFinish(5000);
-    String testJsonpUrl = "http://services.digg.com/stories/top?appkey=http://mashup.com&type=javascript&callback=?";
+    // Use a public json service
+    String testJsonpUrl = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
     Ajax.getJSONP(testJsonpUrl, new Function(){
       public void f() {
         Properties p = getDataProperties();
-        assertTrue(0 < p.getInt("count"));
+        // It should return error since we do not use a valid key
+        // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
+        assertEquals(400, p.getJavaScriptObject("error").<Properties>cast().getInt("code"));
         finishTest();
       }
     }, null, 0);

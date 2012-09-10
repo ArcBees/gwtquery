@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsCache;
@@ -133,7 +132,15 @@ public class Properties extends JavaScriptObject {
     c().delete(String.valueOf(name));
   }
   
-  public final <T> void set(T name, Object val) {
+  public final <T> void setNumber(T name, double val) {
+    c().putNumber(name, val);
+  }
+
+  public final <T> void setBoolean(T name, boolean val) {
+    c().putBoolean(name, val);
+  }
+  
+  public final <T, O> void set(T name, O val) {
     c().put(String.valueOf(name), val);
   }
   
@@ -142,63 +149,11 @@ public class Properties extends JavaScriptObject {
   }
   
   public final String toJsonString() {
-    String ret = "";
-    for (String k : keys()){
-      String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
-      JsCache o = getArray(k).cast();
-      if (o != null) {
-        ret += ky + ":[";
-        for (int i = 0, l = o.length(); i < l ; i++) {
-          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
-          if (p != null) {
-            ret += p.toJsonString() + ",";
-          } else {
-            ret += "\"" + o.getString(i) + "\",";
-          }
-        }
-        ret += "],";
-      } else {
-        Properties p = getJavaScriptObject(k);
-        if (p != null) {
-          ret += ky + ":" + p.toJsonString() + ",";
-        } else {
-          ret += ky + ":\"" + getStr(k) + "\",";
-        }
-      }
-    }
-    return "{" + ret.replaceAll(",\\s*([\\]}]|$)","$1")
-    .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
-    + "}";
+    return JsUtils.JSON2String(JsCache.checkNull(this));
   }
   
   public final String toQueryString() {
-    String ret = "";
-    for (String k : keys()) {
-      ret += ret.isEmpty() ? "" : "&";
-      JsCache o = getArray(k).cast();
-      if (o != null) {
-        for (int i = 0, l = o.length(); i < l ; i++) {
-          ret += i > 0 ? "&" : "";
-          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
-          if (p != null) {
-            ret += k + "[]=" + p.toJsonString();
-          } else {
-            ret += k + "[]=" + o.getString(i) ;
-          }
-        }
-      } else {
-        Properties p = getJavaScriptObject(k);
-        if (p != null) {
-          ret += p.toQueryString();
-        } else {
-          String v = getStr(k);
-          if (v != null && !v.isEmpty() && !"null".equalsIgnoreCase(v)) {
-            ret += k + "=" + v;
-          }          
-        }
-      }
-    }
-    return ret;
+    return JsUtils.param(JsCache.checkNull(this));
   }
   
   public final boolean isEmpty(){

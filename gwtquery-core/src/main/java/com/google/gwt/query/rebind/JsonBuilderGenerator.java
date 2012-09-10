@@ -144,6 +144,10 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("return new Date(java.lang.Long.parseLong(p.getStr(\"" + name + "\")));");
       } else if (method.getReturnType().isPrimitive() != null) {
         sw.println("return (" + retType + ")p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Character")) {
+        sw.println("return (char) p.getFloat(\"" + name + "\");");
+      } else if (retType.equals("java.lang.Byte")) {
+        sw.println("return (byte) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Integer")) {
     	  sw.println("return (int) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Float")) {
@@ -154,7 +158,6 @@ public class JsonBuilderGenerator extends Generator {
     	  sw.println("return (long) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Byte")) {
     	  sw.println("return (byte) p.getFloat(\"" + name + "\");");
-
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
@@ -219,7 +222,11 @@ public class JsonBuilderGenerator extends Generator {
         }
         sw.println("setArrayBase(\"" + name + "\", " + a + ");");
       } else if (type.getParameterizedQualifiedSourceName().matches("java.util.Date")) {
-        sw.println("p.set(\"" + name + "\", a.getTime());");
+        sw.println("p.setNumber(\"" + name + "\", a.getTime());");
+      } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.(Character|Long|Double|Integer|Float|Byte)|(char|long|double|int|float|byte))")) {
+        sw.println("p.setNumber(\"" + name + "\", a);");
+      } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.Boolean|boolean)")) {
+        sw.println("p.setBoolean(\"" + name + "\", a);");        
       } else {
         sw.println("p.set(\"" + name + "\", a);");
       }
