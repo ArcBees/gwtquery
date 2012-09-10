@@ -65,7 +65,7 @@ public abstract class Function {
   }
 
   public Object getDataObject(int idx) {
-    return data.length > idx ? data[idx] : null;
+    return data != null && data.length > idx ? data[idx] : null;
   }
   
   public Properties getDataProperties() {
@@ -273,7 +273,7 @@ public abstract class Function {
    * They are intentionally final to avoid override them 
    */
   public final void fe() {
-    fe((Object)null);
+    fe(data);
   }
 
   /**
