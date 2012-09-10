@@ -190,7 +190,6 @@ public class PropertiesAnimation extends GQAnimation {
     return new Fx(key, val, start, end, unit, rkey);
   }
 
-  private Element e;
   private Easing easing = Easing.SWING;
   private JsObjectArray<Fx> effects = JsObjectArray.create();
   private Function[] funcs;

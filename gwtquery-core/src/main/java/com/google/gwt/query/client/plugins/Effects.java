@@ -36,10 +36,14 @@ public class Effects extends QueuePlugin<Effects> {
    * Class to access protected methods in Animation. 
    */
   public static abstract class GQAnimation  extends Animation {
+    
+    protected Element e;
+    
     protected void onStart() {
       super.onStart();
     }
     protected void onComplete() {
+      $(e).remove(ACTUAL_ANIMATION);
       super.onComplete();
     }
   }
@@ -75,6 +79,7 @@ public class Effects extends QueuePlugin<Effects> {
         public void cancel(Element e) {
           Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
           if (anim != null) {
+            remove(ACTUAL_ANIMATION);
             anim.cancel();
           }
         }
