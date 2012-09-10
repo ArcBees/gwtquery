@@ -29,7 +29,9 @@ import com.google.gwt.user.client.DOM;
  */
 public class DocumentStyleImpl {
   
-  private static final JsRegexp cssNumber = new JsRegexp("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
+  private static final JsRegexp cssNumberRegex = new JsRegexp("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
+  private static final JsRegexp sizeRegex = new JsRegexp("^(client|offset|)(width|height)$", "i");
+
 
   /**
    * Returns the numeric value of a css property.
@@ -48,9 +50,13 @@ public class DocumentStyleImpl {
         return getContentDocument(elem).getClientHeight();
       }
       elem = GQuery.body;
-    }
-    if (elem.getPropertyString(prop) != null
+    } 
+    
+    if (force && sizeRegex.test(prop)) {
+      // make curCSS below resolve width and height (issue #145) when force is true
+    } else if (elem.getPropertyString(prop) != null
         && (elem.getStyle() == null || elem.getStyle().getProperty(prop) == null)) {
+      // cases where elem.prop exists instead of elem.style.prop
       return elem.getPropertyDouble(prop);
     }
     String val = curCSS(elem, prop, force);
@@ -65,7 +71,7 @@ public class DocumentStyleImpl {
       val = curCSS(elem, prop, false); 
     }
     val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
-    return val.length() == 0 ? 0 : Double.parseDouble(val);
+    return val.isEmpty() ? 0 : Double.parseDouble(val);
   }
   
   /**
@@ -87,15 +93,12 @@ public class DocumentStyleImpl {
     name = fixPropertyName(name);
     //value defined in the element style
     String ret = elem.getStyle().getProperty(name);
-    
-    if ("height".equalsIgnoreCase(name)) {
-      return force ? String.valueOf(getHeight(elem))+"px" : ret;
+
+    if (force && sizeRegex.test(name)) {
+      return getVisibleSize(elem, name) + "px";
     }
-    if ("width".equalsIgnoreCase(name)) {
-      return force ? String.valueOf(getWidth(elem))+"px" : ret;
-    }    
-    if ("opacity".equalsIgnoreCase(name)) {
-      return force ? String.valueOf(getOpacity(elem)) : ret;
+    if (force && "opacity".equalsIgnoreCase(name)) {
+      return String.valueOf(getOpacity(elem));
     }
     if (force) {
       ret = getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
@@ -114,6 +117,26 @@ public class DocumentStyleImpl {
     }
     return JsUtils.camelize(name);
   }
+  
+  public int getVisibleSize(Element e, String name) {
+    int ret;
+    if (!isVisible(e)) {
+      // jquery returns the size of the element even when the element isn't visible
+      String display = curCSS(e, "display", false);
+      String position = curCSS(e, "position", false);
+      String visibility = curCSS(e, "visibility", false);
+      setStyleProperty(e, "display", "block");
+      setStyleProperty(e, "position", "absolute");
+      setStyleProperty(e, "visibility", "hidden");
+      ret = getSize(e, name);
+      setStyleProperty(e, "display", display);
+      setStyleProperty(e, "position", position);
+      setStyleProperty(e, "visibility", visibility);
+    } else {
+      ret = getSize(e, name);
+    }
+    return ret;
+  }
 
   // inline elements do not have width nor height unless we set it to inline-block
   private void fixInlineElement(Element e) {
@@ -122,6 +145,24 @@ public class DocumentStyleImpl {
       setStyleProperty(e, "width", "auto");
       setStyleProperty(e, "height", "auto");
     }
+  }
+  
+  private int getSize(Element e, String name) {
+    int ret = 0;
+    if ("width".equals(name)) {
+      ret = getWidth(e);
+    } else if ("height".equals(name)) {
+      ret = getHeight(e);
+    } else if ("clientWidth".equals(name)) {
+      ret = e.getClientWidth();
+    } else if ("clientHeight".equals(name)) {
+      ret = e.getClientHeight();
+    } else if ("offsetWidth".equals(name)) {
+      ret = e.getOffsetWidth();
+    } else if ("offsetHeight".equals(name)) {
+      ret = e.getOffsetHeight();      
+    }
+    return ret;
   }
   
   public int getHeight(Element e) {
@@ -175,7 +216,7 @@ public class DocumentStyleImpl {
     if (val == null || val.trim().length() == 0) {
       removeStyleProperty(e, prop);
     } else {
-      if (val.matches("-?[\\d\\.]+") && !cssNumber.test(prop)) {
+      if (val.matches("-?[\\d\\.]+") && !cssNumberRegex.test(prop)) {
         val += "px";
       }
       e.getStyle().setProperty(prop, val);

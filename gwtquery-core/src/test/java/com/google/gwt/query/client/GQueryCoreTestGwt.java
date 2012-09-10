@@ -499,7 +499,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("0.6", g.css("opacity", true));
     g.css("opacity", "");
     assertEquals("", g.css("opacity", false));
-    assertEquals("1.0", g.css("opacity", true));
+    assertEquals("1", g.css("opacity", true).replaceFirst("\\.0$", ""));
     g.css("opacity", "0.4");
     assertEquals("0.4", g.css("opacity", false));
     assertEquals("0.4", g.css("opacity", true));
@@ -539,7 +539,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     
   }
 
-  public void testProperties() {
+  public void aatestProperties() {
     Properties p = $$("border:'1px solid black'");
     assertEquals(1, p.keys().length);
     assertNotNull(p.getStr("border"));
@@ -1146,7 +1146,26 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(122, g.outerWidth());
     assertEquals(142, g.outerHeight(true));
     assertEquals(142, g.outerWidth(true));
-
+    
+    // When hiding the element we should get the same sizes
+    $(e).hide();
+    
+    assertEquals(100, g.width());
+    assertEquals(100, g.height());
+    assertEquals(120, g.innerWidth());
+    assertEquals(120, g.innerHeight());
+    assertEquals(100d, g.cur("width", false));
+    assertEquals(100d, g.cur("height", false));
+    assertEquals(100d, g.cur("width", true));
+    assertEquals(100d, g.cur("height", true));
+    assertEquals("100px", g.css("width"));
+    assertEquals("100px", g.css("height"));
+    assertEquals("100px", g.get(0).getStyle().getProperty("width"));
+    assertEquals("100px", g.get(0).getStyle().getProperty("height"));
+    assertEquals(122, g.outerHeight());
+    assertEquals(122, g.outerWidth());
+    assertEquals(142, g.outerHeight(true));
+    assertEquals(142, g.outerWidth(true));
   }
   
   public void testWidthHeightInlineElement() {

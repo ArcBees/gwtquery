@@ -2363,7 +2363,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * scrollbar height, border, or margin.
    */
   public int innerHeight() {
-    return isEmpty() ? 0 : get(0).getClientHeight();
+    return (int) cur("clientHeight", true);
   }
 
   /**
@@ -2371,7 +2371,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * scrollbar width, border, or margin.
    */
   public int innerWidth() {
-    return isEmpty() ? 0 : get(0).getClientWidth();
+    return (int) cur("clientWidth", true);
   }
 
   /**
@@ -2987,7 +2987,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return 0;
     }
     // height including padding and border
-    int outerHeight = get(0).getOffsetHeight();
+    int outerHeight = (int)cur("offsetHeight", true);
     if (includeMargin) {
       outerHeight += cur("marginTop", true) + cur("marginBottom", true);
     }
@@ -3011,7 +3011,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return 0;
     }
     // width including padding and border
-    int outerWidth = get(0).getOffsetWidth();
+    int outerWidth = (int)cur("offsetWidth", true);
     if (includeMargin) {
       outerWidth += cur("marginRight", true) + cur("marginLeft", true);
     }
