@@ -184,6 +184,13 @@ public abstract class Function {
   /**
    * Override this method for bound callbacks
    */
+  public void f(int i, Object data) {
+    f(i, new Object[]{data});
+  }
+  
+  /**
+   * Override this method for bound callbacks
+   */
   public void f(int i, Object... data) {
     setIndex(i);
     setData(data);
