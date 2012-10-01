@@ -101,6 +101,22 @@ public class Properties extends JavaScriptObject {
   public final float getFloat(Object name) {
     return c().getFloat(String.valueOf(name));
   }
+  
+  public final Function getFunction(Object name) {
+    final Object o = c().get(String.valueOf(name));
+    if (o != null) {
+      if (o instanceof Function) {
+        return (Function)o;
+      } else if (o instanceof JavaScriptObject) {
+        Object f = ((JavaScriptObject)o).<Properties>cast().getObject("__f");
+        if (f != null && f instanceof Function) {
+          return (Function) f;
+        }
+        return new JsUtils.JsFunction((JavaScriptObject)o);
+      }
+    }
+    return null;
+  }  
 
   public final int getInt(Object name) {
     return c().getInt(String.valueOf(name));
@@ -139,6 +155,14 @@ public class Properties extends JavaScriptObject {
   public final <T> void setBoolean(T name, boolean val) {
     c().putBoolean(name, val);
   }
+  
+  public final native <T> void setFunction(T name, Function f) /*-{
+    this[name] = function() {
+      f.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(arguments);
+    }
+    // We store the original function reference
+    this[name].__f = f;
+  }-*/;
   
   public final <T, O> void set(T name, O val) {
     c().put(String.valueOf(name), val);

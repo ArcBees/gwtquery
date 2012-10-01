@@ -17,7 +17,6 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -83,19 +82,6 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     return r != null ? r : Properties.create();
   }
   
-  protected Function getFunctionBase(String n) {
-    final Object o = p.get(n);
-    if (o != null) {
-      if (o instanceof Function) {
-        return (Function)o;
-      } else if (o instanceof JavaScriptObject 
-          && JsUtils.isFunction((JavaScriptObject)o)) {
-        return new JsUtils.JsFunction((JavaScriptObject)o);
-      }
-    }
-    return null;
-  }
-  
   public String toString() {
     return p.tostring();
   }
@@ -103,4 +89,5 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public Properties getProperties() {
     return p;
   }
+  
 }

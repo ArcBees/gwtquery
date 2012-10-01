@@ -25,6 +25,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 
 /**
@@ -35,7 +36,7 @@ public class JsUtils {
   /**
    * A Function which wraps a javascript function.
    */
-  public static class JsFunction extends Function {
+  public static class JsFunction extends Function implements Command {
     private JavaScriptObject jso = null;
     public JsFunction(JavaScriptObject f) {
       if (JsUtils.isFunction(f)) {
@@ -50,10 +51,15 @@ public class JsUtils {
     private native void exec(JavaScriptObject f, Object data) /*-{
 			f(data);
     }-*/;
+    
     public void f() {
       if (jso != null) {
-        exec(jso, getData()[0]);
+        exec(jso, getDataObject());
       }
+    }
+
+    public void execute() {
+      f();
     }
   }
 

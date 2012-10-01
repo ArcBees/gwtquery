@@ -169,7 +169,7 @@ public class JsonBuilderGenerator extends Generator {
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
         sw.println("return p.getJavaScriptObject(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), functionType)) {
-        sw.println("return getFunctionBase(\"" + name + "\");");
+        sw.println("return p.getFunction(\"" + name + "\");");
       } else if (arr != null || list != null) {
         JType type = arr != null ? arr.getComponentType()
             : list.getTypeArgs()[0];
@@ -227,6 +227,8 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("p.setNumber(\"" + name + "\", a);");
       } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.Boolean|boolean)")) {
         sw.println("p.setBoolean(\"" + name + "\", a);");        
+      } else if (type.getParameterizedQualifiedSourceName().matches("com.google.gwt.query.client.Function")) {
+        sw.println("p.setFunction(\"" + name + "\", a);");        
       } else {
         sw.println("p.set(\"" + name + "\", a);");
       }
