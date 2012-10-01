@@ -3485,12 +3485,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Removes the specified classes to each matched element.
+   * 
+   * If no arguments are provided, it removes all classes like jquery does.
    */
   public GQuery removeClass(String... classes) {
     for (Element e : elements) {
       if (Element.is(e)) {
-        for (String clz : classes) {
-          e.removeClassName(clz);
+        if (classes.length == 0) {
+          e.setClassName(null);
+        } else {
+          for (String clz : classes) {
+            e.removeClassName(clz);
+          }
         }
       }
     }
