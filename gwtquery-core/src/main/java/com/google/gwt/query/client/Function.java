@@ -219,6 +219,8 @@ public abstract class Function {
 
   /**
    * Override this method for bound event handlers.
+   * 
+   * @return boolean: false means stop propagation and prevent default 
    */
   public boolean f(Event e) {
     setEvent(e);

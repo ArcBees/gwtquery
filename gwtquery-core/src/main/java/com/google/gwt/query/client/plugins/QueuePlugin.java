@@ -137,7 +137,8 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * in the named queue.
    */
   public int queue(String name) {
-    return isEmpty() ? 0 : queue(get(0), name, null).size();
+    Queue<Object> q = isEmpty() ? null : queue(get(0), name, null);
+    return q == null? 0 : q.size();
   }
   
   /**
@@ -264,6 +265,9 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
         if (f instanceof Function) {
           ((Function) f).fe(elem);
         }
+      } else {
+        // if it is the last function remove the queue to avoid leaks (issue 132)
+        removeData(elem, name);
       }
     }
   }
@@ -272,10 +276,10 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   protected <S> Queue<S> queue(Element elem, String name, S func) {
     if (elem != null) {
       Queue<S> q = (Queue<S>) data(elem, name, null);
-      if (q == null) {
-        q = (Queue<S>) data(elem, name, new LinkedList<S>());
-      }
       if (func != null) {
+        if (q == null) {
+          q = (Queue<S>) data(elem, name, new LinkedList<S>());
+        }
         q.add(func);
         if (q.size() == 1) {
           if (func instanceof Function) {

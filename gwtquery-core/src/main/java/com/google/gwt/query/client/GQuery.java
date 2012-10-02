@@ -15,6 +15,11 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -60,11 +65,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -123,9 +123,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static final BodyElement body = Document.get().getBody();
 
   /**
-   * Object to store element data.
+   * Object to store element data (public so as we can access to it from tests).
    */
-  protected static JsCache dataCache = null;
+  public static JsCache dataCache = null;
 
   /**
    * The document element in the current page.
@@ -153,6 +153,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static Class<GQuery> GQUERY = GQuery.class;
 
   private static final String OLD_DATA_PREFIX = "old-";
+  
+  private static final String OLD_DISPLAY = OLD_DATA_PREFIX + "display";
 
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
@@ -422,25 +424,32 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return GQuery.data(e, key, null);
   }
 
-  protected static <S> Object data(Element item, String name, S value) {
+  /**
+   * We store data in js object which has this structure:
+   * 
+   *  datacache [element_hash] [key] = value
+   * 
+   * @return the value stored in the element with the given name
+   */
+  protected static <S> Object data(Element element, String key, S value) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
     }
-    item = item == window || item.getNodeName() == null ? windowData : item;
-    if (item == null) {
-      return value;
-    }
-    int id = item.hashCode();
-    if (name != null && !dataCache.exists(id)) {
-      dataCache.put(id, JsCache.createObject().cast());
-    }
+    element = element == window || element.getNodeName() == null ? windowData : element;
+    if (element != null && key != null) {
+      int id = element.hashCode();
 
-    JsCache d = dataCache.getCache(id);
-    if (name != null && value != null) {
-      d.put(name, value);
+      if (value == null) {
+        return dataCache.exists(id) ? dataCache.getCache(id).get(key) : null;
+      }
+      
+      if (!dataCache.exists(id)) {
+        dataCache.put(id, JsCache.createObject().cast());
+      }
+      dataCache.getCache(id).put(key, value);
     }
-    return name != null ? d.get(name) : id;
+    return value;
   }
 
   /**
@@ -2283,10 +2292,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery hide() {
     for (Element e : elements) {
-      String currentDisplay = e.getStyle().getDisplay();
-      Object old = data(e, "oldDisplay", null);
-      if (old == null && !"none".equals(currentDisplay)) {
-        data(e, "oldDisplay", getStyleImpl().curCSS(e, "display", false));
+      String currentDisplay = getStyleImpl().curCSS(e, "display", false);
+      Object old = data(e, OLD_DISPLAY, null);
+      if (old == null && !currentDisplay.matches("(|none)")) {
+        data(e, OLD_DISPLAY, currentDisplay);
       }
     }
 
@@ -3503,7 +3512,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  private void removeData(Element item, String name) {
+  protected void removeData(Element item, String name) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
@@ -3518,6 +3527,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         removeData(item, null);
       }
     } else {
+      // when the element cache is empty we remove its entry to save memory (issue 132)
       dataCache.delete(id);
     }
   }
@@ -3654,7 +3664,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public void restoreCssAttrs(String... cssProps) {
     for (Element e : elements) {
       for (String a : cssProps) {
-        getStyleImpl().setStyleProperty(e, a, (String) data(e, OLD_DATA_PREFIX + a, null));
+        String datakey = OLD_DATA_PREFIX + a;
+        getStyleImpl().setStyleProperty(e, a, (String) data(e, datakey, null));
+        removeData(e, datakey);
       }
     }
   }
@@ -3830,7 +3842,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery show() {
     for (Element e : elements) {
       String currentDisplay = e.getStyle().getDisplay();
-      String oldDisplay = (String) data(e, "oldDisplay", null);
+      String oldDisplay = (String) data(e, OLD_DISPLAY, null);
 
       // reset the display
       if (oldDisplay == null && "none".equals(currentDisplay)) {
@@ -3841,7 +3853,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       // check if the stylesheet impose display: none. If it is the case, determine
       // the default display for the tag and store it at the element level
       if ("".equals(currentDisplay) && !getStyleImpl().isVisible(e)) {
-        data(e, "oldDisplay", getStyleImpl().defaultDisplay(e.getNodeName()));
+        data(e, OLD_DISPLAY, getStyleImpl().defaultDisplay(e.getNodeName()));
       }
     }
 
@@ -3853,9 +3865,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       String currentDisplay = e.getStyle().getDisplay();
       if ("".equals(currentDisplay) || "none".equals(currentDisplay)) {
         getStyleImpl().setStyleProperty(e, "display",
-            JsUtils.or((String) data(e, "oldDisplay", null), ""));
+            JsUtils.or((String) data(e, OLD_DISPLAY, null), ""));
       }
     }
+    removeData(OLD_DISPLAY);
     return this;
   }
 

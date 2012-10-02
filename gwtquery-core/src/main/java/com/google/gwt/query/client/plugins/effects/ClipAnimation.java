@@ -53,7 +53,6 @@ public class ClipAnimation extends GQAnimation {
   Action action;
   Corner corner;
   Direction direction;
-  Element e;
   int percent;
   private GQuery back = Effects.$();
   private Function[] funcs;

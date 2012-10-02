@@ -21,10 +21,10 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation;
-import com.google.gwt.query.client.plugins.effects.Fx;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
+import com.google.gwt.query.client.plugins.effects.Fx;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 
 /**
@@ -36,15 +36,26 @@ public class Effects extends QueuePlugin<Effects> {
    * Class to access protected methods in Animation. 
    */
   public static abstract class GQAnimation  extends Animation {
+
+    private static final String ACTUAL_ANIMATION = "EffectsRunnning";
     
+    // Each Animation is associated to one element
     protected Element e;
     
     protected void onStart() {
+      // Mark this animation as actual, so as we can stop it in the GQuery.stop() method 
+      $(e).data(ACTUAL_ANIMATION, this);
       super.onStart();
     }
     protected void onComplete() {
-      $(e).remove(ACTUAL_ANIMATION);
+      // avoid memory leak (issue #132)
+      $(e).removeData(ACTUAL_ANIMATION);
       super.onComplete();
+    }
+    public void cancel() {
+      // avoid memory leak (issue #132)
+      $(e).removeData(ACTUAL_ANIMATION);
+      super.cancel();
     }
   }
   
@@ -57,7 +68,6 @@ public class Effects extends QueuePlugin<Effects> {
     public static final int SLOW = 600;
   }
 
-  private static final String ACTUAL_ANIMATION = "EffectsRunnning";
   
   public static final Class<Effects> Effects = GQuery.registerPlugin(
       Effects.class, new Plugin<Effects>() {
@@ -77,14 +87,12 @@ public class Effects extends QueuePlugin<Effects> {
     } else {
       queue(e, DEFAULT_NAME, new Function() {
         public void cancel(Element e) {
-          Animation anim = (Animation) data(e, ACTUAL_ANIMATION, null);
+          Animation anim = (Animation) data(e, GQAnimation.ACTUAL_ANIMATION, null);
           if (anim != null) {
-            remove(ACTUAL_ANIMATION);
             anim.cancel();
           }
         }
         public void f(Element e) {
-          data(e, ACTUAL_ANIMATION, anim);
           anim.run(duration);
         }
       });

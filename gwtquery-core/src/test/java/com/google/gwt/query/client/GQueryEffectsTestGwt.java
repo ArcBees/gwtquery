@@ -27,7 +27,9 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Test class for testing gwtquery effects plugin api.
@@ -423,5 +425,63 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     // schedule timer
     timerLongTime.schedule(2200);
   
+  }
+  
+  
+  int animationRunCounter = 0;
+  public void testQueuesAndDataLeaks_issue132() {
+    
+    final Widget w = new Label("some animation");
+    w.setVisible(false);
+    RootPanel.get().add(w);
+    w.getElement().setId("e");
+    GQuery g = $(w);
+    
+    int test_duration = 1000;
+    int fx_duration = 200;
+    final int loops = test_duration / fx_duration;
+    
+    // Queue a set of effects which will use the data cache
+    for (int i = 0; i < loops ; i++) {
+      final char[] bulk = new char[5*1024*1024]; // let's leak 5MBs
+      g.fadeToggle(fx_duration, new Function() {
+        public void f() {
+          animationRunCounter ++;
+          bulk[0] = 0; // we keep it in handler
+        }
+      });
+    }
+    
+    // Testing delay as well
+    g.delay(fx_duration, new Function(){
+      public void f() {
+        animationRunCounter ++;
+      }
+    });
+    
+    // We do the assertions after all effects have been run
+    g.queue(new Function() {
+      public void f() {
+        // after running queue method it is mandatory to call dequeue,
+        // otherwise the queue get stuck
+        $(this).dequeue();
+        // Check that all animations and the delayed function has been run
+        assertEquals(loops + 1, animationRunCounter);
+        
+        // Check that nothings is left in the dataCache object
+        assertEquals(0, GQuery.dataCache.length());
+        
+        // Check that getting queue size does not initialize the data
+        // object for this object
+        assertEquals(0, $(this).queue());
+        assertEquals(0, GQuery.dataCache.length());
+        
+        // Mark the test as success and stop delay timer
+        finishTest();
+      };
+    });
+    
+    // delay the test enough to run all animations
+    delayTestFinish(test_duration * 2);
   }
 }
