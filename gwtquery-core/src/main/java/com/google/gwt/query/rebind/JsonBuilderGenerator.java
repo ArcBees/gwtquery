@@ -15,13 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -41,10 +34,17 @@ import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /**
  */
 public class JsonBuilderGenerator extends Generator {
-  static JClassType enumType;
+  
   static JClassType functionType;
   static JClassType jsonBuilderType;
   static JClassType jsType;
@@ -77,7 +77,6 @@ public class JsonBuilderGenerator extends Generator {
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
     functionType = oracle.findType(Function.class.getName());
-    enumType = oracle.findType(Enum.class.getName());
 
     String t[] = generateClassName(clazz);
 
@@ -197,7 +196,7 @@ public class JsonBuilderGenerator extends Generator {
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
-      } else if (isTypeAssignableTo(method.getReturnType(), enumType)){  
+      } else if (method.getReturnType().isEnum() != null){  
     	 sw.println("return "+method.getReturnType().getQualifiedSourceName()+".valueOf(p.getStr(\"" + name + "\"));");
       }else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type " 
@@ -211,6 +210,7 @@ public class JsonBuilderGenerator extends Generator {
       JType type = params[0].getType();
       JArrayType arr = type.isArray();
       JParameterizedType list = type.isParameterized();
+      
       sw.print("(" + type.getParameterizedQualifiedSourceName() + " a)");
       sw.println("{");
       sw.indent();
@@ -229,7 +229,9 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("p.setBoolean(\"" + name + "\", a);");        
       } else if (type.getParameterizedQualifiedSourceName().matches("com.google.gwt.query.client.Function")) {
         sw.println("p.setFunction(\"" + name + "\", a);");        
-      } else {
+      } else if (type.isEnum() != null){  
+        sw.println("p.set(\"" + name + "\", a.name());");
+      }else {
         sw.println("p.set(\"" + name + "\", a);");
       }
       if (!"void".equals(retType)) {
