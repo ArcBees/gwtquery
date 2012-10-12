@@ -93,16 +93,29 @@ public class DocumentStyleImpl {
     name = fixPropertyName(name);
     //value defined in the element style
     String ret = elem.getStyle().getProperty(name);
-
-    if (force && sizeRegex.test(name)) {
-      return getVisibleSize(elem, name) + "px";
-    }
-    if (force && "opacity".equalsIgnoreCase(name)) {
-      return String.valueOf(getOpacity(elem));
-    }
+    
     if (force) {
-      ret = getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
+      // If the element is dettached to the DOM we attach temporary to it
+      Element parent = null;
+      if (JsUtils.isDettached(elem)) {
+        parent = elem.getParentElement();
+        Document.get().getBody().appendChild(elem);
+      }
+      
+      if (sizeRegex.test(name)) {
+        ret = getVisibleSize(elem, name) + "px";
+      } else if ("opacity".equalsIgnoreCase(name)) {
+        ret = String.valueOf(getOpacity(elem));
+      } else {
+        ret = getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
+      }
+      
+      // If the element had a parent previously to be attached, append to it. 
+      if (parent != null) {
+        parent.appendChild(elem);
+      }
     }
+
     return ret == null ? "" : ret;
   }
   
