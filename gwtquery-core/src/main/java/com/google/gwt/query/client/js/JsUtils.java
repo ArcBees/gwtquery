@@ -274,6 +274,15 @@ public class JsUtils {
 		return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
 				&& e.getPreventDefault() ? true : false;
   }-*/;
+  
+  /**
+   * Return whether a node is dettached to the dom
+   */
+  public static native boolean isDettached(Node n) /*-{
+    while (n.parentNode) 
+      n = n.parentNode;
+    return !n.body;
+  }-*/;
 
   /**
    * Check is a javascript object can be cast to an Element

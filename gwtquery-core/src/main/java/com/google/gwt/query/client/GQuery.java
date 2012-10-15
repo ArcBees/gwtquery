@@ -399,6 +399,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
     // TODO: fix IE link tag serialization
     // TODO: fix IE <script> tag
+    // TODO: add fixes for IE TBODY issue
+    
+    // We use a temporary element to wrap the elements
     Element div = doc.createDivElement();
     div.setInnerHTML(wrapper.preWrap + elem.trim() + wrapper.postWrap);
     Node n = div;
@@ -406,8 +409,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     while (depth-- != 0) {
       n = n.getLastChild();
     }
-    // TODO: add fixes for IE TBODY issue
-    return $((NodeList<Element>) n.getChildNodes().cast());
+    
+    return
+      // return all nodes added to the wrapper
+      $(n.getChildNodes())
+      // detach nodes from their temporary parent
+      .remove();
   }
 
   /**
