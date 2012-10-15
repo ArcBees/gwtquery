@@ -15,11 +15,6 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -65,6 +60,11 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -2294,7 +2294,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements) {
       String currentDisplay = getStyleImpl().curCSS(e, "display", false);
       Object old = data(e, OLD_DISPLAY, null);
-      if (old == null && !currentDisplay.matches("(|none)")) {
+      if (old == null && currentDisplay.length() != 0 && !"none".equals(currentDisplay)) {
         data(e, OLD_DISPLAY, currentDisplay);
       }
     }
