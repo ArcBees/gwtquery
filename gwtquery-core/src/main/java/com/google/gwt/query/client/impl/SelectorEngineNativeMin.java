@@ -15,10 +15,10 @@
  */
 package com.google.gwt.query.client.impl;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.Window;
 
 /**
  * Runtime selector engine implementation for browsers with native
@@ -33,7 +33,7 @@ public class SelectorEngineNativeMin extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      Window.alert("GwtQuery: Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
+      GWT.log("GwtQuery: Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
       return null;
     }
   }
