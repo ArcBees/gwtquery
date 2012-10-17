@@ -61,6 +61,16 @@ public class SelectorEngine implements HasSelector {
       return ctx.querySelectorAll(selector);
   }-*/;
   
+  public static native NodeList<Element> elementsByTagName(String selector,
+      Node ctx) /*-{
+      return ctx.getElementsByTagName(selector);
+  }-*/;
+  
+  public static native NodeList<Element> elementsByClassName(String selector,
+      Node ctx) /*-{
+      return ctx.getElementsByClassName(selector);
+  }-*/;
+  
   public static NodeList<Element> veryQuickId(String id, Node ctx) {
     Document d = ctx.getNodeType() == Node.DOCUMENT_NODE
         ? ctx.<Document> cast() : ctx.getOwnerDocument();

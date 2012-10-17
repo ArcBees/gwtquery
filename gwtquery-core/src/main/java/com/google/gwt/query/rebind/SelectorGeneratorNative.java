@@ -36,6 +36,12 @@ public class SelectorGeneratorNative extends SelectorGeneratorCssToXPath {
     if (selector.matches("#[\\w\\-]+")) {
       sw.println("return "
           + wrap(method, "veryQuickId(\"" + selector.substring(1) + "\", root)") + ";");
+    } else if (selector.equals("*") || selector.matches("[\\w\\-]+")) {
+      sw.println("return "
+          + wrap(method, "elementsByTagName(\"" + selector + "\", root)") + ";");
+    } else if (selector.matches("\\.[\\w\\-]+")) {
+      sw.println("return "
+          + wrap(method, "elementsByClassName(\"" + selector.substring(1) + "\", root)") + ";");
     } else if (selector.contains("!=")) {
       sw.println("return "
           + wrap(method, "querySelectorAll(\"" 

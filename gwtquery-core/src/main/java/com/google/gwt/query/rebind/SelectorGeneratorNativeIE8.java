@@ -35,6 +35,12 @@ public class SelectorGeneratorNativeIE8 extends SelectorGeneratorJS {
     if (selector.matches("#[\\w\\-]+")) {
       sw.println("return "
           + wrap(method, "veryQuickId(\"" + selector.substring(1) + "\", root)") + ";");
+    } else if (selector.equals("*") || selector.matches("[\\w\\-]+")) {
+      sw.println("return "
+          + wrap(method, "elementsByTagName(\"" + selector + "\", root)") + ";");
+    } else if (selector.matches("\\.[\\w\\-]+")) {
+      sw.println("return "
+          + wrap(method, "elementsByClassName(\"" + selector.substring(1) + "\", root)") + ";");
     } else if (selector.matches(SelectorEngineNativeIE8.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {
