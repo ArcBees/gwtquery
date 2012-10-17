@@ -414,7 +414,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       // return all nodes added to the wrapper
       $(n.getChildNodes())
       // detach nodes from their temporary parent
-      .remove();
+      .remove(null, false);
   }
 
   /**
@@ -3476,6 +3476,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (filter == null || $(e).filter(filter).length() == 1) {
         if (clean) {
           // clean data linked to the children
+          // TODO: "*" fails in queryselectorall (webkit mobile)
           cleanGQData($("*", e).elements());
           // clean data linked to the element itself
           cleanGQData(e);
