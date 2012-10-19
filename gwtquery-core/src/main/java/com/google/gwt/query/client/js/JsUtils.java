@@ -278,11 +278,9 @@ public class JsUtils {
   /**
    * Return whether a node is dettached to the dom
    */
-  public static native boolean isDettached(Node n) /*-{
-    while (n.parentNode) 
-      n = n.parentNode;
-    return !n.body;
-  }-*/;
+  public static boolean isDettached(Node n) {
+    return !getOwnerDocument(n).getBody().isOrHasChild(n);
+  }
 
   /**
    * Check is a javascript object can be cast to an Element
