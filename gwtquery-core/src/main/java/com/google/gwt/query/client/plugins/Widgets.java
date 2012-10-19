@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.HtmlPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.LabelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextAreaWidgetFactory;
@@ -128,10 +129,10 @@ public class Widgets extends QueuePlugin<Widgets> {
     return widgets(new ButtonWidgetFactory(), initializers);
   }
 
-  public Widgets label() {
-    return widgets(new LabelWidgetFactory(), null);
+  public Widgets panel() {
+    return widgets(new HtmlPanelWidgetFactory(), null);
   }
-
+  
   public Widgets label(WidgetInitializer<Label> initializers) {
     return widgets(new LabelWidgetFactory(), initializers);
   }

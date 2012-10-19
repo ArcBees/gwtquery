@@ -22,24 +22,50 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This {@link HTMLPanel} takes as content the outer html of an element already
+ * This {@link HTMLPanel} takes as content an element already
  * attached to the DOM. If {@link Widget widgets} are present in the children of
  * the element to attach, they will be automatically adopted by the panel in
  * order to keep a consistent widgets hierarchy.
- * 
  */
 public class WidgetsHtmlPanel extends HTMLPanel {
 
   public WidgetsHtmlPanel(Element e) {
     super("");
-    e.removeFromParent();
-    getElement().appendChild(e);
+    if (e != null) {
+      Widget w = $(e).widget();
+      if (w == null) {
+        // We convert the element to a gwt htmlPanel 
+        setElementImpl(e);
+        GqUi.attachWidget(this, null);
+      } else {
+        Widget p = w.getParent();
+        if (p instanceof Panel) {
+          // Replace the widget by this panel
+          this.add(w);
+          ((Panel) p).add(this);
+        } else {
+          // Replace the element by this element
+          Element n = e.getParentElement();
+          n.appendChild(getElement());
+          getElement().appendChild(e);
+          GqUi.attachWidget(this, null);
+        }
+      }
+    }
     adoptSubWidgets();
   }
+  
+  /**
+   * use jsni to access private attribute 
+   */
+  private native void setElementImpl(Element e)/*-{
+    this.@com.google.gwt.user.client.ui.UIObject::element = e;
+  }-*/;
 
   /**
    * Iterate over the children of this widget's element to find widget. If
