@@ -297,7 +297,8 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * in the queue.
    */
   public void dequeueIfNotDoneYet(Element elem, String name, Object object) {
-    if (object.equals(queue(elem, name, null).peek())) {
+    Queue<?> queue = queue(elem, name, null);
+    if (queue != null && object.equals(queue.peek())) {
       dequeue(name);
     }
   }
