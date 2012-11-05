@@ -117,7 +117,7 @@ public class Ajax extends GQuery {
     
     Method httpMethod = resolveHttpMethod(settings);
     String data = resolveData(settings, httpMethod);
-    String url = resolveUrl(settings, httpMethod, data);
+    final String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
     
     if ("jsonp".equalsIgnoreCase(dataType)) {
@@ -135,7 +135,12 @@ public class Ajax extends GQuery {
       }
 
       public void onResponseReceived(Request request, Response response) {
-        if (response.getStatusCode() >= 400) {
+        int statusCode = response.getStatusCode();
+        if (statusCode <= 0 || statusCode >= 400) {
+          if (statusCode == 0) {
+            // Just warn the developer about the status code
+            GWT.log("GQuery.ajax error, the response.statusCode is 0, this usually happens when you try to access an external server without CORS enabled. url=" + url);
+          }
           if (onError != null) {
             onError.fe(response.getText(), "error", request, response);
           }
