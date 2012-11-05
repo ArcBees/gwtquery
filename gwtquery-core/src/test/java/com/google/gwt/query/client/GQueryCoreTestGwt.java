@@ -1921,5 +1921,17 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     Element span = $("span", e).get(0);
     assertEquals("l3", $("li", e).has(span).id());
   }
+  
+  public void testDetachedElement(){
+	  GQuery view = $("<div id='view' style='width: 300px;'><div style='width: 50%'></div></div>");
+	  
+	  int viewWidth = view.width();
+	  
+	  assertEquals(300, viewWidth);
+	  
+	  int innerViewWidth = view.children().width();
+	  
+	  assertEquals(150, innerViewWidth);
+  }
 
 }

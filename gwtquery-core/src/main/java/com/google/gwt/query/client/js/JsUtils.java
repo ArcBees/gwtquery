@@ -276,9 +276,16 @@ public class JsUtils {
   }-*/;
   
   /**
-   * Return whether a node is dettached to the dom
+   * Return whether a node is detached to the dom
+   * Be careful : This method works only on node that should be inserted within the body node. 
    */
-  public static boolean isDettached(Node n) {
+  public static boolean isDetached(Node n) {
+	assert n != null;
+	
+	if ("html".equalsIgnoreCase(n.getNodeName())){
+		return true;
+	}
+	
     return !getOwnerDocument(n).getBody().isOrHasChild(n);
   }
 
