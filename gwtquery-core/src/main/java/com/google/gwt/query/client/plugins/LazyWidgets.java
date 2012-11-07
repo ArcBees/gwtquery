@@ -19,6 +19,7 @@ import java.util.List;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
+import com.google.gwt.query.client.plugins.widgets.HtmlPanelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.LabelWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.TextAreaWidgetFactory;
@@ -59,7 +60,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    */
   LazyWidgets<T> button(WidgetInitializer<Button> initializers);
 
-  LazyWidgets<T> label();
+  LazyWidgets<T> panel();
 
   LazyWidgets<T> label(WidgetInitializer<Label> initializers);
 
