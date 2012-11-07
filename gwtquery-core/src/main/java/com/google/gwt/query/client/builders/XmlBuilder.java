@@ -45,4 +45,14 @@ public interface XmlBuilder {
    * Appends xml content
    */
   void append(String x);
+  
+  /**
+   * Returns the text content of the element
+   */
+  String getText();
+
+  /**
+   * Sets the text content of the element
+   */
+  <J> J setText(String t);
 }

@@ -98,9 +98,11 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
   protected void setBase(String n, Object v) {
     g.attr(n, v);
   }
-  
-  public void setText(String s) {
-    g.text(s);
+
+  @Override
+  public <T> T setText(String t) {
+    g.text(t);
+    return (T)this;
   }
    
   public String toString() {
