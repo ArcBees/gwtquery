@@ -15,6 +15,11 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -60,11 +65,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -213,14 +213,71 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around an existing element, event, node or nodelist.
+   * Wrap a GQuery around an existing javascript element, event, node, nodelist, function or array.
    */
-  public static GQuery $(JavaScriptObject e) {
-    return JsUtils.isWindow(e) ? GQuery.$(e.<Element> cast()) : JsUtils.isElement(e) ? GQuery.$(e
-        .<Element> cast()) : JsUtils.isEvent(e) ? GQuery.$(e.<Event> cast()) : JsUtils
-        .isNodeList(e) ? GQuery.$(e.<NodeList<Element>> cast()) : $();
-  }
+  public static GQuery $(JavaScriptObject jso) {
+    if (jso == null) {
+      return $();
+    }
+    // Execute a native javascript function like jquery does
+    if (JsUtils.isFunction(jso)) {
+      new JsUtils.JsFunction(jso).fe();
+      return $();
+    }
+    // Wraps a native array like jquery does 
+    if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
+      JsArrayMixed c = jso.cast();
+      JsNodeArray elms = JsNodeArray.create();
+      for (int i = 0; i < c.length(); i++) {
+        Object obj = c.getObject(i);
+        if (obj instanceof Node) {
+          elms.addNode((Node) obj);
+        }
+      }
+      return $((NodeList<Element>)elms);
+    }
 
+    return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) : 
+      JsUtils.isElement(jso) ? $(jso.<Element> cast()) : 
+      JsUtils.isEvent(jso) ? $(jso.<Event> cast()) : 
+      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) : $();
+  }
+  
+  /**
+   * Wrap a GQuery around any object, supported objects are:
+   *   String, GQuery, Function, Widget, JavaScriptObject
+   *   
+   * In the case of string, we accept a CSS selector which is then used to match a set of
+   * elements, or a raw HTML to create a GQuery element containing those elements. Xpath
+   * selector is supported in browsers with native xpath engine.
+   *   
+   * In the case of a JavaScriptObject we handle:  
+   *   Element, Event, Node, Nodelist and native functions or arrays.
+   *   
+   * If the case of a native function, we execute it and return empty.   
+   */
+  public static GQuery $(Object o) {
+    if (o != null) {
+      if (o instanceof String) {
+        return $((String)o);
+      }
+      if (o instanceof GQuery) {
+        return $((GQuery)o);
+      }
+      if (o instanceof Function) {
+        return $((Function)o);
+      }
+      if (o instanceof JavaScriptObject) {
+        return $((JavaScriptObject)o);
+      }
+      if (o instanceof Widget) {
+        return $(new Widget[]{(Widget)o});
+      }
+      System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
+    }
+    return $();
+  }
+  
   /**
    * Create a new GQuery given a list of nodes, elements or widgets
    */

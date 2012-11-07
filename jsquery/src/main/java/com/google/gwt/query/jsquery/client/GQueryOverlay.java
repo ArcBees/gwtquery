@@ -77,7 +77,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   
   @ExportStaticMethod("$wnd.$")
   public static GQuery $(Object o) {
-    return JsQueryUtils.dollar(o);
+    return GQuery.$(o);
   }
 
   @ExportStaticMethod("$wnd.$")
