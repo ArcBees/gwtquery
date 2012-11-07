@@ -162,6 +162,9 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     x.setA("X").setNumber(1234);
     assertEquals("X", x.getA());
     assertEquals(1234, x.getNumber());
+    assertEquals("  text", x.getText());
+    x.getX()[1].setText("pepe");
+    assertEquals(" pepe text", x.getText());
   }
   
   public void testJsonValidService() {
