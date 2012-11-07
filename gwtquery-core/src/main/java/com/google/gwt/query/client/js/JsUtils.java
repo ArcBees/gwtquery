@@ -249,7 +249,7 @@ public class JsUtils {
    * defined.
    */
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
-		return name in o;
+		return o && name in o;
   }-*/;
 
   /**

@@ -32,6 +32,7 @@ import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -165,6 +166,69 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals("  text", x.getText());
     x.getX()[1].setText("pepe");
     assertEquals(" pepe text", x.getText());
+  }
+  
+  interface Feed extends XmlBuilder {
+    interface Tag extends XmlBuilder {
+    }
+    Tag getTitle();
+    Tag getTagline();
+    Tag getFullcount();
+    Tag getModified();
+
+    interface Link extends XmlBuilder {
+      String getHref();
+      String getType();
+    }
+    Link getLink();
+
+    interface Entry extends XmlBuilder {
+      interface Author extends XmlBuilder {
+        Tag getEmail();
+        Tag getName();
+      }
+      Tag getTitle();
+      Tag getSummary();
+      Link getLink();
+      Tag getModified();
+      Tag getIssued();
+      Tag getId();
+      Author getAuthor();
+    }  
+    Entry[] getEntry();
+  }
+  
+  // FIXME: gquery xml does not work well with htmlUnit, FF & Safari works
+  // TODO: test in IE
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testXmlGmailExample() {
+    Window.alert("run");
+    String xml = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<feed version='0.3' xmlns='http://purl.org/atom/ns#'>"
+      + " <title>Gmail - Inbox for manolo@...</title>"
+      + " <tagline>New messages in your Gmail Inbox</tagline>"
+      + " <fullcount>1</fullcount>"
+      + " <link rel='alternate' href='http://mail.google.com/mail' type='text/html' />"
+      + " <modified>2012-11-07T10:32:52Z</modified>"
+      + " <entry>"
+      + "  <title>Trending Startups and Updates</title>"
+      + "  <summary>AngelList Weekly Trending Startups Storenvy Tumblr for stores E-Commerce Platforms · San Francisco</summary>"
+      + "  <link rel='alternate' href='http://mail.google.com/mail?account_id=manolo@....&amp;message_id=13ad2e227da1488b&amp;view=conv&amp;extsrc=atom' type='text/html' />"
+      + "  <modified>2012-11-05T23:22:47Z</modified>"
+      + "  <issued>2012-11-05T23:22:47Z</issued>"
+      + "  <id>tag:gmail.google.com,2004:1417840183363061889</id>"
+      + "  <author>"
+      + "   <name>AName</name>"
+      + "   <email>AnEmail</email>"
+      + "  </author>"
+      + " </entry>"
+      + "</feed>";
+    
+    Feed f = GWT.create(Feed.class);
+    f.parse(xml);
+    assertEquals((int)f.getFullcount().getTextAsNumber(), f.getEntry().length);
+    assertEquals(112, f.getModified().getTextAsDate().getYear());
+    assertEquals("AName", f.getEntry()[0].getAuthor().getName().getText());
   }
   
   public void testJsonValidService() {

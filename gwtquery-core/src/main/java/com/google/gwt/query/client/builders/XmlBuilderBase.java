@@ -17,7 +17,10 @@ package com.google.gwt.query.client.builders;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsDate;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
@@ -26,7 +29,7 @@ import com.google.gwt.query.client.js.JsUtils;
 public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements XmlBuilder {
   
   //TODO empty document
-  protected GQuery g = $(JsUtils.parseXML("<root/>"));
+  protected GQuery g = $((Element)JsUtils.parseXML("<root/>"));
 
   public void append(String xml) {
     g.append(JsUtils.parseXML(xml));
@@ -66,8 +69,25 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     return g.attr(n);
   }
   
+  @Override
   public String getText() {
     return g.text();
+  }
+  
+  @Override
+  public double getTextAsNumber() {
+    String t =  g.text().replaceAll("[^\\d\\.\\-]", "");
+    return t.isEmpty() ? 0 : Double.parseDouble(t);
+  }
+  
+  @Override
+  public Date getTextAsDate() {
+    String t =  g.text().trim();
+    if (t.matches("\\d+")) {
+      return new Date(Long.parseLong(t));
+    } else {
+      return new Date((long)JsDate.parse(t));
+    }
   }
   
   @SuppressWarnings("unchecked")
@@ -99,6 +119,7 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     g.attr(n, v);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T setText(String t) {
     g.text(t);

@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.builders;
 
+import java.util.Date;
+
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -55,4 +57,15 @@ public interface XmlBuilder {
    * Sets the text content of the element
    */
   <J> J setText(String t);
+
+  /**
+   * Returns the text content of the element as a number
+   */
+  double getTextAsNumber();
+  
+  /**
+   * Returns the text content of the element as a date
+   */
+  Date getTextAsDate();
+
 }
