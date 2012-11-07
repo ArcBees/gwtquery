@@ -256,7 +256,7 @@ public class EventsListener implements EventListener {
           if (f.hasEventType(event.getTypeInt())) {
             NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
             for (int j = 0; n != null && j < n.getLength(); j++) {
-              Element element = n.getItem(i);
+              Element element = n.getItem(j);
               // When an event fired in an element stops bubbling we have to fire also all other
               // handlers for this element bound to this element
               if (stopElement == null || element.equals(stopElement)) {
