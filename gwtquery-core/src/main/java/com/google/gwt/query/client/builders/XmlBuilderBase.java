@@ -99,7 +99,6 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     g.attr(n, v);
   }
 
-  @Override
   public <T> T setText(String t) {
     g.text(t);
     return (T)this;
