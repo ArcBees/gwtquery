@@ -65,7 +65,7 @@
     </scm>
 
     <modules>
-        <!-- <module>gwtquery-core</module> -->
+        <module>gwtquery-core</module>
         <!-- <module>gwtquery-core-2.1.0</module> -->
         <!-- <module>gwtquery-core-2.0.1</module> -->
         <!-- <module>samples</module> -->

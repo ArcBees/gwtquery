@@ -27,7 +27,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.GQueryAjaxTestGwt.XmlExample.E;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
@@ -176,7 +175,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     x.getX()[0].setText("pepe");
     assertEquals("pepe", x.getFirstX().getText());
     
-    assertEquals(E.FOO, x.getEnum().getTextAsEnum(E.class));
+    assertEquals(XmlExample.E.FOO, x.getEnum().getTextAsEnum(XmlExample.E.class));
     assertEquals(true, x.getBool().getTextAsBoolean());
     assertEquals(333d, x.getNum().getTextAsNumber());
   }
