@@ -263,7 +263,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         return $((String)o);
       }
       if (o instanceof GQuery) {
-        return $((GQuery)o);
+        return (GQuery)o;
       }
       if (o instanceof Function) {
         return $((Function)o);
@@ -392,13 +392,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static <T extends GQuery> T $(String selector, Widget context, Class<T> plugin) {
     return $(selector, context.getElement(), plugin);
-  }
-
-  /**
-   * wraps a GQuery or a plugin object
-   */
-  public static <T extends GQuery> T $(T gq) {
-    return gq;
   }
 
   /**
@@ -671,7 +664,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static GQuery innerHtml(String html, Document doc) {
-    return $(cleanHtmlString(html, doc));
+    return cleanHtmlString(html, doc);
   }
 
   protected static String[] jsArrayToString(JsArrayString array) {
@@ -1095,12 +1088,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public <T extends GQuery> T as(Class<T> plugin) {
     // GQuery is not a plugin for itself
     if (plugin == GQUERY) {
-      return (T) $(this);
+      return (T)this;
     } else if (plugins != null) {
-
       Plugin<?> p = plugins.get(plugin);
       if (p != null) {
-        return (T) p.init(this);
+        return (T)p.init(this);
       }
     }
     throw new RuntimeException("No plugin registered for class " + plugin.getName());
@@ -2095,14 +2087,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * to complete
    */
   public GQuery fadeIn(Function... f) {
-    return $(as(Effects).fadeIn(f));
+    return as(Effects).fadeIn(f);
   }
 
   /**
    * Fade in all matched elements by adjusting their opacity.
    */
   public GQuery fadeIn(int millisecs, Function... f) {
-    return $(as(Effects).fadeIn(millisecs, f));
+    return as(Effects).fadeIn(millisecs, f);
   }
 
   /**
@@ -2110,7 +2102,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * milliseconds to complete
    */
   public GQuery fadeOut(Function... f) {
-    return $(as(Effects).fadeOut(f));
+    return as(Effects).fadeOut(f);
   }
 
   /**
@@ -2287,7 +2279,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * of matched elements starts at 0 and goes to length - 1.
    */
   public GQuery gt(int pos) {
-    return $(slice(pos + 1, -1));
+    return slice(pos + 1, -1);
   }
 
   /**
@@ -2757,7 +2749,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * element in the set of matched elements starts at 0 and goes to length - 1.
    */
   public GQuery lt(int pos) {
-    return $(slice(0, pos));
+    return slice(0, pos);
   }
 
   /**

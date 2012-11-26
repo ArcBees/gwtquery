@@ -929,7 +929,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(1, b.size());
     assertEquals(1, b.get().getLength());
     b.click();
-    assertEquals("red", $(b).css("color", false));
+    assertEquals("red", b.css("color", false));
   }
 
   public void testResizeEvent() {
