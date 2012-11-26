@@ -12,17 +12,17 @@ import com.google.gwt.query.client.js.JsRegexp;
  * A pojo to store effect values.
  */
 public class Fx {
-  
+
   /**
    * Public variable to enable/disable effects
    */
   public static boolean off = false;
-  
+
   /**
    * A pojo to store color effect values.
    */
   public static class ColorFx extends Fx {
-    
+
     /**
      * Specific class handle specific borderColor shortcut properties
      */
@@ -33,7 +33,7 @@ public class Fx {
           BorderColorProperty.BORDER_TOP_COLOR_PROPERTY,
           BorderColorProperty.BORDER_LEFT_COLOR_PROPERTY,
           BorderColorProperty.BORDER_RIGHT_COLOR_PROPERTY};
-      
+
       private JsNamedArray<int[]> startColors;
 
       public BorderColorFx(Element e, String endColorString) {
@@ -62,7 +62,7 @@ public class Fx {
     // hexadecimal regex
     public static JsRegexp REGEX_HEX_COLOR_PATTERN = new JsRegexp(
         "#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
-    
+
     private static JsNamedArray<int[]> htmlColorToRgb;
 
     // rgb and rgba regex
@@ -209,7 +209,7 @@ public class Fx {
     }
 
   }
-  
+
   public String cssprop;
   public double end;
   public double start;
@@ -245,9 +245,9 @@ public class Fx {
   }
 
   public String toString() {
-    return ("cssprop=" + cssprop + (attribute != null ? " attr=" + attribute : "") 
+    return ("cssprop=" + cssprop + (attribute != null ? " attr=" + attribute : "")
         + " value=" + value + " start=" + start + " end="
         + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
   }
-  
+
 }

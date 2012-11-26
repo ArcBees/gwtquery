@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -44,7 +44,7 @@ import java.util.Set;
 /**
  */
 public class JsonBuilderGenerator extends Generator {
-  
+
   static JClassType functionType;
   static JClassType jsonBuilderType;
   static JClassType jsType;
@@ -61,10 +61,10 @@ public class JsonBuilderGenerator extends Generator {
   }
 
   public static String deCapitalize(String s) {
-    return s == null || s.isEmpty() ? s : 
+    return s == null || s.isEmpty() ? s :
            (s.substring(0, 1).toLowerCase() + (s.length() > 1 ? s.substring(1) : ""));
   }
-  
+
   TypeOracle oracle;
 
   public String generate(TreeLogger treeLogger,
@@ -90,9 +90,9 @@ public class JsonBuilderGenerator extends Generator {
         if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
         	continue;
         }
-        
+
         Name nameAnnotation = method.getAnnotation(Name.class);
-        String name = nameAnnotation != null 
+        String name = nameAnnotation != null
           ? nameAnnotation.value()
           : methName.replaceFirst("^(get|set)", "");
         name = name.substring(0, 1).toLowerCase() + name.substring(1);
@@ -115,7 +115,7 @@ public class JsonBuilderGenerator extends Generator {
     ret[3] = classNameToJsonName(c.getName());
     return ret;
   }
-  
+
   public void generateFieldNamesMethod(SourceWriter sw, Collection<String> attrs, TreeLogger logger) {
     String ret = "";
     for (Iterator<String> it = attrs.iterator(); it.hasNext();) {
@@ -123,7 +123,7 @@ public class JsonBuilderGenerator extends Generator {
     }
     sw.println("public final String[] getFieldNames() {return new String[]{" + ret + "};}");
   }
-  
+
   public void generateMethod(SourceWriter sw, JMethod method, String name, TreeLogger logger)
       throws UnableToCompleteException {
     String ifaceName = method.getEnclosingType().getQualifiedSourceName();
@@ -196,10 +196,10 @@ public class JsonBuilderGenerator extends Generator {
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
-      } else if (method.getReturnType().isEnum() != null){  
+      } else if (method.getReturnType().isEnum() != null){
     	 sw.println("return "+method.getReturnType().getQualifiedSourceName()+".valueOf(p.getStr(\"" + name + "\"));");
       }else {
-        sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type " 
+        sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type "
             + retType + " " + ifaceName + "." + name + "()\"); ");
         // We return the object because probably the user knows how to handle it
         sw.println("return p.get(\"" + name + "\");");
@@ -210,7 +210,7 @@ public class JsonBuilderGenerator extends Generator {
       JType type = params[0].getType();
       JArrayType arr = type.isArray();
       JParameterizedType list = type.isParameterized();
-      
+
       sw.print("(" + type.getParameterizedQualifiedSourceName() + " a)");
       sw.println("{");
       sw.indent();
@@ -226,10 +226,10 @@ public class JsonBuilderGenerator extends Generator {
       } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.(Character|Long|Double|Integer|Float|Byte)|(char|long|double|int|float|byte))")) {
         sw.println("p.setNumber(\"" + name + "\", a);");
       } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.Boolean|boolean)")) {
-        sw.println("p.setBoolean(\"" + name + "\", a);");        
+        sw.println("p.setBoolean(\"" + name + "\", a);");
       } else if (type.getParameterizedQualifiedSourceName().matches("com.google.gwt.query.client.Function")) {
-        sw.println("p.setFunction(\"" + name + "\", a);");        
-      } else if (type.isEnum() != null){  
+        sw.println("p.setFunction(\"" + name + "\", a);");
+      } else if (type.isEnum() != null){
         sw.println("p.set(\"" + name + "\", a.name());");
       }else {
         sw.println("p.set(\"" + name + "\", a);");
@@ -246,7 +246,7 @@ public class JsonBuilderGenerator extends Generator {
       sw.println("}");
     }
   }
-  
+
   public void generateToJsonMethod(SourceWriter sw, String name, TreeLogger logger) {
     sw.println("public final String getJsonName() {return \"" + name + "\";}");
     sw.println("public final String toJson() {return \"{\\\"\" + getJsonName() + \"\\\":\" + toString() + \"}\";}");

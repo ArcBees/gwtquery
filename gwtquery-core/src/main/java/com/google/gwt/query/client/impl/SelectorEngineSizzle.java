@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,8 +28,8 @@ import com.google.gwt.dom.client.NodeList;
  * instead of window.Sizzle to avoid interfering with the original one.
  */
 public class SelectorEngineSizzle extends SelectorEngineImpl {
-  
-  
+
+
   public static native void initialize() /*-{
 (function(){
 
@@ -57,14 +57,14 @@ var GQS = function(selector, context, results, seed) {
   if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
     return [];
   }
-  
+
   if ( !selector || typeof selector !== "string" ) {
     return results;
   }
 
   var parts = [], m, set, checkSet, extra, prune = true, contextXML = GQS.isXML(context),
     soFar = selector, ret, cur, pop, i;
-  
+
   // Reset the position of the chunker regexp (start from head)
   do {
     chunker.exec("");
@@ -72,9 +72,9 @@ var GQS = function(selector, context, results, seed) {
 
     if ( m ) {
       soFar = m[3];
-    
+
       parts.push( m[1] );
-    
+
       if ( m[2] ) {
         extra = m[3];
         break;
@@ -96,7 +96,7 @@ var GQS = function(selector, context, results, seed) {
         if ( Expr.relative[ selector ] ) {
           selector += parts.shift();
         }
-        
+
         set = posProcess( selector, set );
       }
     }
@@ -208,7 +208,7 @@ GQS.find = function(expr, context, isXML){
 
   for ( var i = 0, l = Expr.order.length; i < l; i++ ) {
     var type = Expr.order[i], match;
-    
+
     if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
       var left = match[1];
       match.splice(1,1);
@@ -485,7 +485,7 @@ var Expr = GQS.selectors = {
     },
     ATTR: function(match, curLoop, inplace, result, not, isXML){
       var name = match[1].replace(/\\/g, "");
-      
+
       if ( !isXML && Expr.attrMap[name] ) {
         match[1] = Expr.attrMap[name];
       }
@@ -511,7 +511,7 @@ var Expr = GQS.selectors = {
       } else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] ) ) {
         return true;
       }
-      
+
       return match;
     },
     POS: function(match){
@@ -632,18 +632,18 @@ var Expr = GQS.selectors = {
         case 'only':
         case 'first':
           while ( (node = node.previousSibling) )  {
-            if ( node.nodeType === 1 ) { 
-              return false; 
+            if ( node.nodeType === 1 ) {
+              return false;
             }
           }
-          if ( type === "first" ) { 
-            return true; 
+          if ( type === "first" ) {
+            return true;
           }
           node = elem;
         case 'last':
           while ( (node = node.nextSibling) )  {
-            if ( node.nodeType === 1 ) { 
-              return false; 
+            if ( node.nodeType === 1 ) {
+              return false;
             }
           }
           return true;
@@ -653,20 +653,20 @@ var Expr = GQS.selectors = {
           if ( first === 1 && last === 0 ) {
             return true;
           }
-          
+
           var doneName = match[0],
             parent = elem.parentNode;
-  
+
           if ( parent && (parent.sizcache !== doneName || !elem.nodeIndex) ) {
             var count = 0;
             for ( node = parent.firstChild; node; node = node.nextSibling ) {
               if ( node.nodeType === 1 ) {
                 node.nodeIndex = ++count;
               }
-            } 
+            }
             parent.sizcache = doneName;
           }
-          
+
           var diff = elem.nodeIndex - last;
           if ( first === 0 ) {
             return diff === 0;
@@ -743,7 +743,7 @@ var makeArray = function(array, results) {
     results.push.apply( results, array );
     return results;
   }
-  
+
   return array;
 };
 
@@ -934,7 +934,7 @@ GQS.getText = function( elems ) {
 //    if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
 //      return;
 //    }
-//  
+//
 //    GQS = function(query, context, extra, seed){
 //      context = context || document;
 //
@@ -945,7 +945,7 @@ GQS.getText = function( elems ) {
 //          return makeArray( context.querySelectorAll(query), extra );
 //        } catch(e){}
 //      }
-//    
+//
 //      return oldGQS(query, context, extra, seed);
 //    };
 //
@@ -974,7 +974,7 @@ GQS.getText = function( elems ) {
   if ( div.getElementsByClassName("e").length === 1 ) {
     return;
   }
-  
+
   Expr.order.splice(1, 0, "CLASS");
   Expr.find.CLASS = function(match, context, isXML) {
     if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
@@ -1062,7 +1062,7 @@ GQS.contains = document.compareDocumentPosition ? function(a, b){
 
 GQS.isXML = function(elem){
   // documentElement is verified for cases where it doesn't yet exist
-  // (such as loading iframes in IE - #4833) 
+  // (such as loading iframes in IE - #4833)
   var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
   return documentElement ? documentElement.nodeName !== "HTML" : false;
 };
@@ -1093,22 +1093,22 @@ window.GQS = GQS;
 $wnd.GQS = GQS;
 
 })();
-    
+
   }-*/;
-  
+
 
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     return $wnd.GQS(selector, context, results, seed);
   }-*/;
-  
+
   static boolean initialized = false;
-  
+
   public SelectorEngineSizzle() {
     if (!initialized) {
       initialize();
     }
   }
-  
+
   public NodeList<Element> select(String selector, Node context) {
     JsArray<Element> results = JavaScriptObject.createArray().cast();
     return select(selector, context, results, null).cast();

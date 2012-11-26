@@ -1,11 +1,11 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -600,7 +600,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
   }
 
   public void testLiveWithMultipleFunction() {
-
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
 
     $(".clickable", e).live("click", new Function() {
@@ -614,12 +613,10 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     });
 
     $("#div1", e).addClass("clickable");
-
     $("#span1", e).click();
 
     assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
-    assertNotSame("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
-
+    assertEquals("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
   }
 
   public void testMouseenterEvent() {
@@ -883,7 +880,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e, Events.Events).bind("click", "red",new Function() {
       public void f(Element elem) {
         $(elem).css(CSS.FONT_SIZE.with(Length.px(24)));
-        
+
         assertEquals("red", getData()[0]);
       }
     });
@@ -932,7 +929,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(1, b.size());
     assertEquals(1, b.get().getLength());
     b.click();
-    assertEquals("red", $(b).css("color", false));
+    assertEquals("red", b.css("color", false));
   }
 
   public void testResizeEvent() {
@@ -950,7 +947,8 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     g.resize();
   }
 
-  @DoNotRunWith({Platform.HtmlUnitLayout})
+  @DoNotRunWith({Platform.HtmlUnitLayout, Platform.Prod})
+  // FIXME: Window.resizeTo does not resize the window, maybe we need a different approach.
   public void testResizeWindowEvent() {
     GQuery w = $(GQuery.window);
 

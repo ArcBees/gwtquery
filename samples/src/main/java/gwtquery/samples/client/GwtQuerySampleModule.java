@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -46,7 +46,7 @@ public class GwtQuerySampleModule implements EntryPoint {
   public void onModuleLoad() {
     // Use compiled selectors
     Sample s = GWT.create(Sample.class);
-    
+
     // Just a simple usage of dom manipulation, events, and lazy usage
     s.allNotes().text("Hello Google I/O").
       css(CSS.CURSOR.with(Cursor.POINTER)).
@@ -56,7 +56,7 @@ public class GwtQuerySampleModule implements EntryPoint {
       );
     // Cascade effects
     $("<div id='id' style='font-size: 150%;'>Cascade Efects</div>").appendTo(document).hide().fadeIn(5000).fadeOut(3000);
-    
+
     // Widgets
     $(".btn").as(Widgets).button(new WidgetInitializer<Button>() {
       public void initialize(Button button, Element e) {
@@ -77,4 +77,4 @@ public class GwtQuerySampleModule implements EntryPoint {
       }
     });
   }
-}  
+}

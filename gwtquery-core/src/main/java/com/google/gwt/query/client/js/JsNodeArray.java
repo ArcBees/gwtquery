@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.NodeList;
  * A Lightweight JSO class easily handle a node list.
  */
 public class JsNodeArray extends NodeList<Element> {
-  
+
   public static JsNodeArray create() {
     return create((Node)null);
   }
@@ -32,16 +32,16 @@ public class JsNodeArray extends NodeList<Element> {
   public static native JsNodeArray create(Node node) /*-{
     return node ? [node] : [];
   }-*/;
-  
+
   public static JsNodeArray create(NodeList<?> nl) {
     JsNodeArray ret = create((Node)null);
     ret.pushAll(nl);
     return ret;
   }
-  
+
   protected JsNodeArray(){
   }
-  
+
   public final void addNode(Node n){
     c().add(n);
   }
@@ -53,7 +53,7 @@ public class JsNodeArray extends NodeList<Element> {
   public final void concat(JsNodeArray ary) {
     c().concat(ary.c());
   }
-  
+
   public final Element get(int i) {
     return getElement(i);
   }
@@ -69,15 +69,15 @@ public class JsNodeArray extends NodeList<Element> {
   public final int size() {
     return c().length();
   }
-  
+
   private JsObjectArray<Node> c() {
     return cast();
   }
-  
+
   public final void pushAll(JavaScriptObject prevElem) {
     c().pushAll(prevElem);
   }
-  
+
   public final Element[] elements() {
     Element[] ret = new Element[size()];
     for (int i=0 ; i<size(); i++) {

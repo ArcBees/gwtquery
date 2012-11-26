@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,33 +25,33 @@ import com.google.gwt.user.client.ui.Widget;
  * Extend this class to implement functions callbacks.
  */
 public abstract class Function {
-  
+
   private com.google.gwt.dom.client.Element element = null;
   private Event event = null;
   private int index = -1;
   private Object[] data = new Object[0];
-  
+
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
     return element.<T>cast();
   }
-  
+
   public <T extends com.google.gwt.dom.client.Element> void setElement(T e) {
     element = e;
   }
-  
+
   public void setEvent(Event e) {
     event = e;
     element = e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast() : null;
   }
-  
+
   public Event getEvent() {
     return event;
   }
-  
+
   public void setIndex(int i) {
     index = i;
   }
-  
+
   public Object[] getData() {
     return data;
   }
@@ -59,7 +59,7 @@ public abstract class Function {
   public void setData(Object...data) {
     this.data = data;
   }
-  
+
   public Object getDataObject() {
     return getDataObject(0);
   }
@@ -67,11 +67,11 @@ public abstract class Function {
   public Object getDataObject(int idx) {
     return data != null && data.length > idx ? data[idx] : null;
   }
-  
+
   public Properties getDataProperties() {
     return getDataProperties(0);
   }
-  
+
   public Properties getDataProperties(int idx) {
     Object o = getDataObject(idx);
     if (o != null && o instanceof JavaScriptObject) {
@@ -87,20 +87,20 @@ public abstract class Function {
   public void setData(double b) {
     setData(Double.valueOf(b));
   }
-  
+
   public void setDataObject(Object data) {
     setData(data);
   }
-  
+
   public int getIndex() {
     return index;
   }
-  
+
   /**
    * Override this for methods which invoke a cancel action.
-   * 
+   *
    * @param e takes a com.google.gwt.dom.client.Element.
-   * 
+   *
    */
   public void cancel(com.google.gwt.dom.client.Element e) {
     setElement(e);
@@ -110,9 +110,9 @@ public abstract class Function {
 
   /**
    * Override this for methods which invoke a cancel action.
-   * 
+   *
    * @param e takes a com.google.gwt.user.client.Element.
-   * 
+   *
    */
   public void cancel(com.google.gwt.user.client.Element e) {
     setElement(e);
@@ -129,23 +129,23 @@ public abstract class Function {
   /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
-   * 
+   *
    * @param e takes a com.google.gwt.dom.client.Element.
-   * 
+   *
    */
   public Object f(com.google.gwt.dom.client.Element e, int i) {
     setElement(e);
     setIndex(i);
     // This has to be the order of calls
-    return f(e.<com.google.gwt.user.client.Element>cast(), i); 
+    return f(e.<com.google.gwt.user.client.Element>cast(), i);
   }
 
   /**
    * Override this for GQuery methods which loop over matched elements and
    * invoke a callback on each element.
-   * 
+   *
    * @param e takes a com.google.gwt.user.client.Element.
-   * 
+   *
    */
   public Object f(com.google.gwt.user.client.Element e, int i) {
     setElement(e);
@@ -162,10 +162,10 @@ public abstract class Function {
   /**
    * Override this for GQuery methods which loop over matched widgets and
    * invoke a callback on each widget.
-   * 
-   *  NOTE: If your query has non-widget elements you might need to override 
+   *
+   *  NOTE: If your query has non-widget elements you might need to override
    * 'public void f()' or 'public void f(Element e)' to handle these elements and
-   *  avoid a runtime exception. 
+   *  avoid a runtime exception.
    */
   public Object f(Widget w, int i) {
     setElement(w.getElement());
@@ -173,21 +173,21 @@ public abstract class Function {
     f(w);
     return null;
   }
-  
+
   /**
    * Override this method for bound callbacks
    */
   public void f(Object... data) {
     fe(data);
   }
-  
+
   /**
    * Override this method for bound callbacks
    */
   public void f(int i, Object data) {
     f(i, new Object[]{data});
   }
-  
+
   /**
    * Override this method for bound callbacks
    */
@@ -206,7 +206,7 @@ public abstract class Function {
       }
     }
   }
-  
+
   /**
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
@@ -219,19 +219,19 @@ public abstract class Function {
 
   /**
    * Override this method for bound event handlers.
-   * 
-   * @return boolean: false means stop propagation and prevent default 
+   *
+   * @return boolean: false means stop propagation and prevent default
    */
   public boolean f(Event e) {
     setEvent(e);
     f(element);
     return true;
   }
-  
+
   /**
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
-   * 
+   *
    * @param e takes a com.google.gwt.dom.client.Element
    */
   public void f(com.google.gwt.dom.client.Element e) {
@@ -239,11 +239,11 @@ public abstract class Function {
    // This has to be the order of calls
     f(e.<com.google.gwt.user.client.Element>cast());
   }
-  
+
   /**
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
-   * 
+   *
    * @param e takes a com.google.gwt.user.client.Element
    */
   private boolean loop = false;
@@ -257,14 +257,14 @@ public abstract class Function {
       f();
     }
   }
-  
+
   /**
    * Override this for GQuery methods which take a callback, but do not expect a
    * return value, apply to a single widget.
-   * 
-   *  NOTE: If your query has non-widget elements you might need to override 
+   *
+   *  NOTE: If your query has non-widget elements you might need to override
    * 'public void f()' or 'public void f(Element e)' to handle these elements and
-   *  avoid a runtime exception. 
+   *  avoid a runtime exception.
    */
   public void f(Widget w){
     setElement(w.getElement());
@@ -279,7 +279,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler.
-   * They are intentionally final to avoid override them 
+   * They are intentionally final to avoid override them
    */
   public final void fe() {
     fe(data);
@@ -288,16 +288,16 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them 
+   * They are intentionally final to avoid override them
    */
   public final void fe(Object data) {
     fe(new Object[]{data});
   }
-  
+
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them 
+   * They are intentionally final to avoid override them
    */
   public final void fe(Object... data) {
     setData(data);
@@ -315,7 +315,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them 
+   * They are intentionally final to avoid override them
    */
   public final boolean fe(Event ev, Object  data) {
     if (GWT.getUncaughtExceptionHandler() != null) {
@@ -328,11 +328,11 @@ public abstract class Function {
     }
     return f(ev, data);
   }
-  
+
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them 
+   * They are intentionally final to avoid override them
    */
   public final void fe(com.google.gwt.dom.client.Element elem) {
     if (GWT.getUncaughtExceptionHandler() != null) {

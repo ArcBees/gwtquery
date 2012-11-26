@@ -23,7 +23,7 @@ public class ${projectName}Test extends GWTTestCase {
   }
 
   public void testOnModuleLoad() {
-    
+
     // Create a container in the document
     final GQuery g =  $("<div></div>").appendTo(document);
 
@@ -41,7 +41,7 @@ public class ${projectName}Test extends GWTTestCase {
       public void run() {
         // assert that the font size increases
         assertTrue(fontSize(g) > size1);
-        
+
         // trigger mouse out event
         final double size2 = fontSize(g);
         g.trigger(Event.ONMOUSEOUT);
@@ -50,7 +50,7 @@ public class ${projectName}Test extends GWTTestCase {
             // assert that the font size decreases
             assertTrue(fontSize(g) < size2);
             g.remove();
-            
+
             // finish the test
             finishTest();
           }

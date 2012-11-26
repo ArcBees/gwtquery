@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -33,7 +33,7 @@ public class SlideEffectsSample implements EntryPoint {
         $("#slideUp div.foo").as(Effects).slideUp();
       }
     });
-    
+
     $("#slideUp > button.reset").click(new Function() {
       @Override
       public void f(Element e) {
@@ -49,7 +49,7 @@ public class SlideEffectsSample implements EntryPoint {
         $("#slideDown div.foo").as(Effects).slideDown();
       }
     });
-    
+
     $("#slideDown > button.reset").click(new Function() {
       @Override
       public void f(Element e) {
@@ -64,7 +64,7 @@ public class SlideEffectsSample implements EntryPoint {
         $("#slideToogle div.foo").as(Effects).slideToggle(400);
       }
     });
-    
+
     // SlideLeft sample
     $("#slideLeft > button").click(new Function() {
       @Override
@@ -72,15 +72,15 @@ public class SlideEffectsSample implements EntryPoint {
         $("#slideLeft div.foo").as(Effects).slideLeft();
       }
     });
-    
+
     $("#slideLeft > button.reset").click(new Function() {
       @Override
       public void f(Element e) {
         $("#slideLeft div.foo").show();
       }
     });
-    
-    
+
+
     // SlideRight sample
     $("#slideRight div.foo").hide();
     $("#slideRight > button").click(new Function() {
@@ -89,14 +89,14 @@ public class SlideEffectsSample implements EntryPoint {
         $("#slideRight div.foo").as(Effects).slideRight();
       }
     });
-    
+
     $("#slideRight > button.reset").click(new Function() {
       @Override
       public void f(Element e) {
         $("#slideRight div.foo").hide();
       }
     });
-    
+
   }
 
 }

@@ -4,14 +4,14 @@ import com.google.gwt.dom.client.Style.HasCssName;
 
 public class MultipleValueCssSetter extends SimpleCssSetter {
 
-  
+
   public MultipleValueCssSetter(String cssPropertyName, HasCssName... values) {
     super(cssPropertyName, computeValue(values));
   }
-  
+
   protected static String computeValue(HasCssName... values){
     StringBuilder valueBuilder = new StringBuilder();
-    
+
     for (HasCssName cssValue : values){
       valueBuilder.append(notNull(cssValue));
     }
@@ -23,5 +23,5 @@ public class MultipleValueCssSetter extends SimpleCssSetter {
   private static String notNull(HasCssName value) {
     return value != null ? value.getCssName() + " " : "";
   }
-  
+
 }

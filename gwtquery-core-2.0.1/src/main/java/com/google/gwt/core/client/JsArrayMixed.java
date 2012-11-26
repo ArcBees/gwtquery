@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,10 +17,10 @@ package com.google.gwt.core.client;
 
 /**
  * A simple wrapper around an heterogeneous native array of values.
- * 
+ *
  * This class may not be directly instantiated, and can only be returned from a
  * native method. For example,
- * 
+ *
  * <code>
  * native JsArrayMixed getNativeArray() /*-{
  *   return [
@@ -38,7 +38,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Gets the boolean at a given index.
-   * 
+   *
    * @param index the index to be retrieved
    * @return the object at the given index, or <code>null</code> if none exists
    */
@@ -48,7 +48,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Gets the double at a given index.
-   * 
+   *
    * @param index the index to be retrieved
    * @return the object at the given index, or <code>null</code> if none exists
    */
@@ -58,7 +58,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Gets the {@link JavaScriptObject} at a given index.
-   * 
+   *
    * @param index the index to be retrieved
    * @return the {@code JavaScriptObject} at the given index, or
    *         <code>null</code> if none exists
@@ -69,7 +69,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Gets the String at a given index.
-   * 
+   *
    * @param index the index to be retrieved
    * @return the object at the given index, or <code>null</code> if none exists
    */
@@ -98,7 +98,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Gets the length of the array.
-   * 
+   *
    * @return the array length
    */
   public final native int length() /*-{
@@ -135,10 +135,10 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Sets the boolean value at a given index.
-   * 
+   *
    * If the index is out of bounds, the value will still be set. The array's
    * length will be updated to encompass the bounds implied by the added value.
-   * 
+   *
    * @param index the index to be set
    * @param value the boolean to be stored
    */
@@ -148,10 +148,10 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Sets the double value at a given index.
-   * 
+   *
    * If the index is out of bounds, the value will still be set. The array's
    * length will be updated to encompass the bounds implied by the added value.
-   * 
+   *
    * @param index the index to be set
    * @param value the double to be stored
    */
@@ -161,10 +161,10 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Sets the object value at a given index.
-   * 
+   *
    * If the index is out of bounds, the value will still be set. The array's
    * length will be updated to encompass the bounds implied by the added object.
-   * 
+   *
    * @param index the index to be set
    * @param value the {@link JavaScriptObject} to be stored
    */
@@ -174,10 +174,10 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Sets the String value at a given index.
-   * 
+   *
    * If the index is out of bounds, the value will still be set. The array's
    * length will be updated to encompass the bounds implied by the added String.
-   * 
+   *
    * @param index the index to be set
    * @param value the String to be stored
    */
@@ -187,7 +187,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Reset the length of the array.
-   * 
+   *
    * @param newLength the new length of the array
    */
   public final native void setLength(int newLength) /*-{
@@ -196,7 +196,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts the first value off the array.
-   * 
+   *
    * @return the shifted boolean
    */
   public final native boolean shiftBoolean() /*-{
@@ -205,7 +205,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts the first value off the array.
-   * 
+   *
    * @return the shifted double
    */
   public final native double shiftNumber() /*-{
@@ -214,7 +214,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts the first value off the array.
-   * 
+   *
    * @return the shifted {@link JavaScriptObject}
    */
   public final native <T extends JavaScriptObject> T shiftObject() /*-{
@@ -223,7 +223,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts the first value off the array.
-   * 
+   *
    * @return the shifted String
    */
   public final native String shiftString() /*-{
@@ -232,7 +232,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts a boolean onto the beginning of the array.
-   * 
+   *
    * @param value the value to the stored
    */
   public final native void unshift(boolean value) /*-{
@@ -241,7 +241,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts a double onto the beginning of the array.
-   * 
+   *
    * @param value the value to store
    */
   public final native void unshift(double value) /*-{
@@ -250,7 +250,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts a {@link JavaScriptObject} onto the beginning of the array.
-   * 
+   *
    * @param value the value to store
    */
   public final native void unshift(JavaScriptObject value) /*-{
@@ -259,7 +259,7 @@ public class JsArrayMixed extends JavaScriptObject {
 
   /**
    * Shifts a String onto the beginning of the array.
-   * 
+   *
    * @param value the value to store
    */
   public final native void unshift(String value) /*-{

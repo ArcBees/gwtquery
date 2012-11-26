@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,6 +19,8 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.plugins.Effects;
@@ -62,10 +64,10 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
 
   public void testClipAnimation() {
     $(e).html("<p id='idtest'>Content 1</p></p>");
-    
+
     final GQuery g = $("#idtest");
     final int duration = 1000;
-    
+
     // Clip effect places a relative div in the position of the original element
     // So check that there is not any div.
     GQuery back = $("div", e);
@@ -76,10 +78,10 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     // Check that the back div has been created
     back = $("div", e);
     assertEquals(1, back.size());
-    
+
     // Configure the max duration for this test
     delayTestFinish(duration * 2);
-    
+
     // each timer calls the next one
     //final Timer timer1 = new Timer() {
       //public void run() {
@@ -94,29 +96,30 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     final Timer timer2 = new Timer() {
       public void run() {
         // Check that the attribute clip has been set
-        assertTrue(g.css("clip").matches("rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)"));
+        String re = "rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)";
+        assertTrue(g.css("clip") + " does not match " + re, g.css("clip").matches(re));
         finishTest();
         //timer1.schedule(duration/2 + 1);
       }
     };
-    
+
     // Start the first timer
     timer2.schedule(duration/2);
-  }  
+  }
 
   public void testEffectsShouldBeQueued() {
     $(e).html("<p id='idtest'>Content 1</p></p>");
 
     final GQuery g = $("#idtest").css("position", "absolute");
     final Offset o = g.offset();
-    
+
     final int duration = 1000;
     g.as(Effects.Effects).
         animate($$("left: '+=100'"), duration, Easing.LINEAR).
         animate($$("top: '+=100'"), duration, Easing.LINEAR).
         animate($$("left: '-=100'"), duration, Easing.LINEAR).
         animate($$("top: '-=100'"), duration, Easing.LINEAR);
-    
+
     // Configure the max duration for this test
     delayTestFinish(duration * 4);
 
@@ -149,7 +152,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     // Start the first timer
     timer4.schedule(duration/2);
   }
-  
+
   public void testFade() {
     $(e)
     .html(
@@ -157,7 +160,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
 
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
-    
+
     // fadeIn() & fadeOut() are tested with delayed assertions
     sectA.hide();
     sectA.fadeIn(2000);
@@ -207,7 +210,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     // schedule the delayed assertions
     timerShortTime.schedule(200);
     timerMidTime.schedule(1200);
-    timerLongTime.schedule(2200);    
+    timerLongTime.schedule(2200);
   }
 
   public void testPropertiesAnimationComputeEffects() {
@@ -292,36 +295,36 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
   }
-  
+
   public void testColorEffectParsing(){
     String html = "<div id='test' style='color: #112233'>Test</div>";
     $(e).html(html);
-    
+
     ColorFx effect = (ColorFx) PropertiesAnimation.computeFxProp($("#test",e).get(0), "color", "#ffffff", false);
     assertEquals(17, effect.getStartColor()[0]); //#11
     assertEquals(34, effect.getStartColor()[1]); //#22
     assertEquals(51, effect.getStartColor()[2]); //#33
-    
+
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
-    
+
     effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "rgb(255,255,255)", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
-    
+
     effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "rgb(100%, 100%, 100%)", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
-    
+
     effect = (ColorFx) PropertiesAnimation.computeFxProp(e, "color", "white", false);
     assertEquals(255, effect.getEndColor()[0]);
     assertEquals(255, effect.getEndColor()[1]);
     assertEquals(255, effect.getEndColor()[2]);
   }
-  
+
   private void assertPosition(GQuery g, Offset min, Offset max) {
     int a = Math.min(min.top, max.top);
     int b = Math.max(min.top, max.top);
@@ -339,21 +342,21 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         + " - " + b;
     assertTrue(msg, c);
   }
-  
+
   public void testAttrEffect() {
     $(e).html("<table border=1 id=idtest width=440><tr><td width=50%>A</td><td width=50%>B</td></tr></table>");
 
     final GQuery g = $("#idtest").css("position", "absolute");
     final int duration = 500;
-    
-    assertEquals("cssprop=$width attr=width value=+=100 start=440 end=540 unit=", 
+
+    assertEquals("cssprop=$width attr=width value=+=100 start=440 end=540 unit=",
         PropertiesAnimation.computeFxProp(g.get(0), "$width", "+=100", false).toString());
-    
+
     delayTestFinish(duration * 3);
 
     g.as(Effects.Effects).
         animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
-    
+
     final Timer timer = new Timer() {
       public void run() {
         assertEquals(540.0, Double.parseDouble(g.attr("width")));
@@ -363,7 +366,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     };
     timer.schedule(duration * 2);
   }
-  
+
   public void testStop() {
     $(e)
     .html(
@@ -372,28 +375,28 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
     final GQuery sectC = $("#id2");
-    
+
     sectA.hide();
     sectA.fadeIn(2000);
     sectB.fadeOut(2000).delay(500).fadeIn(1000);
     sectC.fadeOut(2000).delay(500).fadeIn(1000);
 
-    // Call stop 
+    // Call stop
     Timer timerMidTime = new Timer() {
       public void run() {
         sectA.stop();
         sectB.stop(true, true);
         sectC.stop(false, false);
-        
+
         Double o  = Double.valueOf(sectA.css("opacity"));
         sectA.data("opacityA", o);
         assertTrue(
             "'sectA' opacity must be in the interval 0.5-1 but is: " + o,
             o > 0.5 && o < 1);
-        
+
         //animation should jump to the end
         assertEquals("none", sectB.css("display"));
-        
+
         o = Double.valueOf(sectC.css("opacity"));
         sectC.data("opacityC", o);
         assertTrue(
@@ -401,16 +404,16 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             o > 0 && o < 0.5);
       }
     };
-    
-    
+
+
     Timer timerLongTime = new Timer() {
       public void run() {
         Double midAOpacity = sectA.data("opacityA", Double.class);
         //animation was stopped, opacity should not change
         assertEquals(midAOpacity, Double.valueOf(sectA.css("opacity")));
         //animation was stopped and jumped to the end, the queue was cleared so no change too.
-        assertEquals("none", sectB.css("display")); 
-        
+        assertEquals("none", sectB.css("display"));
+
         //fadeOut was stopped but fadeIn should continue
         Double midCOpacity = sectC.data("opacityC", Double.class);
         Double laterCOpacity = Double.valueOf(sectC.css("opacity"));
@@ -424,23 +427,24 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     timerMidTime.schedule(1200);
     // schedule timer
     timerLongTime.schedule(2200);
-  
+
   }
-  
-  
+
+  // This test is used to demonstrate the issue, dont run it normally to avoid
+  // problems during the testing phase
   int animationRunCounter = 0;
-  public void testQueuesAndDataLeaks_issue132() {
-    
+  public void ignore_testQueuesAndDataLeaks_issue132() {
+
     final Widget w = new Label("some animation");
     w.setVisible(false);
     RootPanel.get().add(w);
     w.getElement().setId("e");
     GQuery g = $(w);
-    
+
     int test_duration = 1000;
     int fx_duration = 200;
     final int loops = test_duration / fx_duration;
-    
+
     // Queue a set of effects which will use the data cache
     for (int i = 0; i < loops ; i++) {
       final char[] bulk = new char[5*1024*1024]; // let's leak 5MBs
@@ -451,14 +455,14 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         }
       });
     }
-    
+
     // Testing delay as well
     g.delay(fx_duration, new Function(){
       public void f() {
         animationRunCounter ++;
       }
     });
-    
+
     // We do the assertions after all effects have been run
     g.queue(new Function() {
       public void f() {
@@ -467,20 +471,20 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         $(this).dequeue();
         // Check that all animations and the delayed function has been run
         assertEquals(loops + 1, animationRunCounter);
-        
+
         // Check that nothings is left in the dataCache object
         assertEquals(0, GQuery.dataCache.length());
-        
+
         // Check that getting queue size does not initialize the data
         // object for this object
         assertEquals(0, $(this).queue());
         assertEquals(0, GQuery.dataCache.length());
-        
+
         // Mark the test as success and stop delay timer
         finishTest();
       };
     });
-    
+
     // delay the test enough to run all animations
     delayTestFinish(test_duration * 2);
   }

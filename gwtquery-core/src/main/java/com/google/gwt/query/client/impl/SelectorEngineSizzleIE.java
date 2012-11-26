@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,8 +28,8 @@ import com.google.gwt.dom.client.NodeList;
  * - It uses the window.IES instead of window.Sizzle to avoid interfering.
  * - All the stuff related with non IE browsers has been removed making this
  *   implementation a bit faster and smaller.
- * 
- * There are some reasons why we are using sizzle with IE instead of any other 
+ *
+ * There are some reasons why we are using sizzle with IE instead of any other
  * implementation.
  *  - Sizzle is the faster selector with IE we have tested.
  *  - Only IE8 under some conditions and with a limited set of selectors
@@ -40,8 +40,8 @@ import com.google.gwt.dom.client.NodeList;
  *    IE are coming.
  */
 public class SelectorEngineSizzleIE extends SelectorEngineImpl {
-  
-  
+
+
   public static native void initialize() /*-{
 (function(){
 
@@ -59,14 +59,14 @@ var IES = function(selector, context, results, seed) {
   if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
     return [];
   }
-  
+
   if ( !selector || typeof selector !== "string" ) {
     return results;
   }
 
   var parts = [], m, set, checkSet, extra, prune = true, contextXML = IES.isXML(context),
     soFar = selector, ret, cur, pop, i;
-  
+
   // Reset the position of the chunker regexp (start from head)
   do {
     chunker.exec("");
@@ -74,9 +74,9 @@ var IES = function(selector, context, results, seed) {
 
     if ( m ) {
       soFar = m[3];
-    
+
       parts.push( m[1] );
-    
+
       if ( m[2] ) {
         extra = m[3];
         break;
@@ -98,7 +98,7 @@ var IES = function(selector, context, results, seed) {
         if ( Expr.relative[ selector ] ) {
           selector += parts.shift();
         }
-        
+
         set = posProcess( selector, set );
       }
     }
@@ -210,7 +210,7 @@ IES.find = function(expr, context, isXML){
 
   for ( var i = 0, l = Expr.order.length; i < l; i++ ) {
     var type = Expr.order[i], match;
-    
+
     if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
       var left = match[1];
       match.splice(1,1);
@@ -499,7 +499,7 @@ var Expr = IES.selectors = {
     },
     ATTR: function(match, curLoop, inplace, result, not, isXML){
       var name = match[1].replace(/\\/g, "");
-      
+
       if ( !isXML && Expr.attrMap[name] ) {
         match[1] = Expr.attrMap[name];
       }
@@ -525,7 +525,7 @@ var Expr = IES.selectors = {
       } else if ( Expr.match.POS.test( match[0] ) || Expr.match.CHILD.test( match[0] ) ) {
         return true;
       }
-      
+
       return match;
     },
     POS: function(match){
@@ -646,18 +646,18 @@ var Expr = IES.selectors = {
         case 'only':
         case 'first':
           while ( (node = node.previousSibling) )  {
-            if ( node.nodeType === 1 ) { 
-              return false; 
+            if ( node.nodeType === 1 ) {
+              return false;
             }
           }
-          if ( type === "first" ) { 
-            return true; 
+          if ( type === "first" ) {
+            return true;
           }
           node = elem;
         case 'last':
           while ( (node = node.nextSibling) )  {
-            if ( node.nodeType === 1 ) { 
-              return false; 
+            if ( node.nodeType === 1 ) {
+              return false;
             }
           }
           return true;
@@ -667,20 +667,20 @@ var Expr = IES.selectors = {
           if ( first === 1 && last === 0 ) {
             return true;
           }
-          
+
           var doneName = match[0],
             parent = elem.parentNode;
-  
+
           if ( parent && (parent.sizcache !== doneName || !elem.nodeIndex) ) {
             var count = 0;
             for ( node = parent.firstChild; node; node = node.nextSibling ) {
               if ( node.nodeType === 1 ) {
                 node.nodeIndex = ++count;
               }
-            } 
+            }
             parent.sizcache = doneName;
           }
-          
+
           var diff = elem.nodeIndex - last;
           if ( first === 0 ) {
             return diff === 0;
@@ -758,7 +758,7 @@ var makeArray = function(array, results) {
     results.push.apply( results, array );
     return results;
   }
-  
+
   return array;
 };
 
@@ -902,7 +902,7 @@ IES.contains = function(a, b) {
 
 IES.isXML = function(elem){
   // documentElement is verified for cases where it doesn't yet exist
-  // (such as loading iframes in IE - #4833) 
+  // (such as loading iframes in IE - #4833)
   var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
   return documentElement ? documentElement.nodeName !== "HTML" : false;
 };
@@ -933,22 +933,22 @@ window.IES = IES;
 $wnd.IES = IES;
 
 })();
-    
+
   }-*/;
-  
+
 
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     return $wnd.IES(selector, context, results, seed);
   }-*/;
-  
+
   static boolean initialized = false;
-  
+
   public SelectorEngineSizzleIE() {
     if (!initialized) {
       initialize();
     }
   }
-  
+
   public NodeList<Element> select(String selector, Node context) {
     JsArray<Element> results = JavaScriptObject.createArray().cast();
     return select(selector, context, results, null).cast();

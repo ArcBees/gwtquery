@@ -27,18 +27,18 @@ import com.google.gwt.user.client.Event;
 /**
  * Class used to expose GQuery methods and object to Javascript using
  * gwt-exporter annotations.
- * 
+ *
  * We prefer to overlay the original GQuery object instead of adding
  * the gwt-exporter dependency to the project.
- * 
- * Because of the differences between java and js apis, we need to 
- * override some methods in order to deal with complex cases. 
+ *
+ * Because of the differences between java and js apis, we need to
+ * override some methods in order to deal with complex cases.
  *
  */
 @ExportPackage("JsQuery")
 @Export(value="fn", all=false)
 public class GQueryOverlay implements ExportOverlay<GQuery> {
-  
+
   @ExportPackage("JsQuery")
   @Export("jFunction")
   @ExportClosure()
@@ -54,7 +54,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   public interface PredicateOverlay extends ExportOverlay<Predicate>  {
     public boolean f(Element e, int i);
   }
-  
+
   private GQueryOverlay(){}
 
   /**
@@ -64,7 +64,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
    */
   @ExportJsInitMethod
   public NodeList<Element> get() {return null;}
-  
+
   /**
    * Customized JS code to execute after GQuery has been exported.
    */
@@ -74,17 +74,17 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
     window = $wnd;
     document = $doc;
   }-*/;
-  
+
   @ExportStaticMethod("$wnd.$")
   public static GQuery $(Object o) {
-    return JsQueryUtils.dollar(o);
+    return GQuery.$(o);
   }
 
   @ExportStaticMethod("$wnd.$")
   public static GQuery $(String s, Element ctx) {
     return GQuery.$(s, ctx);
   }
-  
+
   @ExportStaticMethod("$wnd.$.extend")
   public static JavaScriptObject extend(Object...objs) {
     return JsQueryUtils.extend(objs);
@@ -94,17 +94,17 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
     return JsQueryUtils.each(objs, f);
   }
-  
+
   @ExportStaticMethod("$wnd.$.inArray")
   public static int inArray(Object o, Object arr) {
     return JsQueryUtils.inArray(o, arr);
   }
-  
+
   @ExportStaticMethod("$wnd.$.isArray")
   public static boolean isArray(JavaScriptObject o) {
     return JsUtils.isArray(o);
-  }  
-  
+  }
+
   @ExportInstanceMethod
   public static GQuery ready(GQuery g, Function f) {
     f.fe();
@@ -115,11 +115,11 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   // TODO: normally plugins adds new easing functions to jquery.easing array
   public static GQuery animate(GQuery g, Object stringOrProperties, int duration, String easing, Function... funcs) {
     return g.animate(stringOrProperties, duration,
-        "linear".equalsIgnoreCase(easing) 
+        "linear".equalsIgnoreCase(easing)
             ? PropertiesAnimation.Easing.LINEAR
             : PropertiesAnimation.Easing.SWING, funcs);
   }
-  
+
   @ExportInstanceMethod
   public static Object css(GQuery g, Object o) {
     if (o instanceof String) {
@@ -133,18 +133,18 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   public static GQuery css(GQuery g, String k, Object v) {
     return g.css(k, String.valueOf(v));
   }
-  
+
   @ExportInstanceMethod
   public static JavaScriptObject offset(GQuery instance) {
     Offset o = instance.offset();
     return Properties.create("left: " + o.left + ", top:" + o.top);
   }
-  
+
   @ExportInstanceMethod
   public static GQuery unbind(GQuery g, String s, Function o) {
     return g.unbind(s);
   }
-  
+
   public String toString() {return null;}
   public GQuery add(GQuery previousObject) {return null;}
   public GQuery add(String selector) {return null;}
@@ -153,7 +153,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   public GQuery after(Node n) {return null;}
   public GQuery after(String html) {return null;}
   public GQuery andSelf() {return null;}
-  
+
 // public GQuery animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {return null;}
   public GQuery animate(Object stringOrProperties, Function... funcs) {return null;}
   public GQuery animate(Object stringOrProperties, int duration, Function... funcs) {return null;}
@@ -184,7 +184,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
   public GQuery change(Function... f) {return null;}
   public GQuery children() {return null;}
   public GQuery children(String... filters) {return null;}
-  public GQuery clearQueue() {return null;}  
+  public GQuery clearQueue() {return null;}
   public GQuery clone() {return null;}
   public GQuery clearQueue(String queueName) {return null;}
   public GQuery click(Function... f) {return null;}
@@ -204,7 +204,7 @@ public class GQueryOverlay implements ExportOverlay<GQuery> {
 //  public <T> T data(String name, Class<T> clz) {return null;}
   public GQuery data(String name, Object value) {return null;}
   public GQuery dblclick(Function... f) {return null;}
-  
+
   @ExportInstanceMethod
   public static GQuery delay(GQuery g, int milliseconds) {
     System.out.println("DDDDD");

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,7 +20,6 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -39,9 +38,9 @@ public class WidgetsHtmlPanel extends HTMLPanel {
     if (e != null) {
       Widget w = $(e).widget();
       if (w == null) {
-        // We convert the element to a gwt htmlPanel 
+        // We convert the element to a gwt htmlPanel
         setElementImpl(e);
-        GqUi.attachWidget(this, null);
+        WidgetsUtils.attachWidget(this, null);
       } else {
         Widget p = w.getParent();
         if (p instanceof Panel) {
@@ -53,15 +52,15 @@ public class WidgetsHtmlPanel extends HTMLPanel {
           Element n = e.getParentElement();
           n.appendChild(getElement());
           getElement().appendChild(e);
-          GqUi.attachWidget(this, null);
+          WidgetsUtils.attachWidget(this, null);
         }
       }
     }
     adoptSubWidgets();
   }
-  
+
   /**
-   * use jsni to access private attribute 
+   * use jsni to access private attribute
    */
   private native void setElementImpl(Element e)/*-{
     this.@com.google.gwt.user.client.ui.UIObject::element = e;
@@ -79,7 +78,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
    * Check if the {@link Element Element} <code>root</code> is attached to the
    * widget. If it is the case, adopt the widget. If not, check if the chidren
    * are linked to a widget to adopt them.
-   * 
+   *
    */
   protected void adoptSubWidgets(Element root) {
 
@@ -100,7 +99,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
    * widget is an {@link HTMLPanel} or is null, the widget will not detach
    * physically in order to maintain the html structure. If the parent is an
    * other widget, it will be physically detach and reattach to this panel.
-   * 
+   *
    * @param w
    */
   protected void doAdopt(Widget w) {
@@ -113,8 +112,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
       }
 
     } else if (parent instanceof HTMLPanel) {
-      GqUi.doLogicalDetachFromHtmlPanel(w);
-
+      WidgetsUtils.doLogicalDetachFromHtmlPanel(w);
     } else {
       // the widget will be physically detach
       w.removeFromParent();

@@ -15,7 +15,7 @@ import com.google.gwt.query.client.js.JsUtils;
 /**
  * These are a set of utility methods needed in jsquery because
  * either they are not in the GQuery core yet, or they are already
- * there but we need to modify their behavior. 
+ * there but we need to modify their behavior.
  * Most of them should be moved to the GQuery core api.
  *
  */
@@ -28,32 +28,6 @@ public abstract class JsQueryUtils {
 		return s;
   }-*/;
 
-  public static GQuery dollar(Object o) {
-    if (o instanceof String) {
-      return GQuery.$((String) o);
-    } else if (o instanceof JavaScriptObject) {
-      JavaScriptObject jso = (JavaScriptObject) o;
-      if (JsUtils.isFunction(jso)) {
-        new JsUtils.JsFunction(jso).fe();
-      } else {
-        GQuery r = GQuery.$(jso);
-        if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
-          JsCache c = jso.cast();
-          JsNodeArray elms = JsNodeArray.create();
-          for (int i = 0; i < c.length(); i++) {
-            Object obj = c.get(i);
-            if (obj instanceof Node) {
-              elms.addNode((Node) obj);
-            }
-          }
-          r = GQuery.$(elms);
-        }
-        return r;
-      }
-    }
-    return GQuery.$();
-  }
-
   public static GQuery dollar(String s, Element ctx) {
     return GQuery.$(s, ctx);
   }
@@ -61,13 +35,13 @@ public abstract class JsQueryUtils {
   public static void ready(Function f) {
     f.f();
   }
-  
+
   public static int inArray(Object object, Object array) {
     if (array instanceof List) {
        return ((List<?>)array).indexOf(object);
     } else if (object instanceof JavaScriptObject
         && JsUtils.isElement((JavaScriptObject) object)) {
-      return dollar(array).index((Element) object);
+      return GQuery.$(array).index((Element) object);
     } else if (array instanceof JavaScriptObject
         && JsUtils.isArray((JavaScriptObject) array)) {
       return ((JsCache) array).indexOf(object);
@@ -101,7 +75,7 @@ public abstract class JsQueryUtils {
   }
 
   private static native JavaScriptObject getDefaultPrototype() /*-{
-		return $wnd.JsQuery && $wnd.JsQuery.fn 
+		return $wnd.JsQuery && $wnd.JsQuery.fn
 		    ? $wnd.JsQuery.fn.prototype
 				: null;
   }-*/;
@@ -116,7 +90,7 @@ public abstract class JsQueryUtils {
 		}
 		return d;
   }-*/;
-  
+
   public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
     ArrayList<Object> ret = new ArrayList<Object>();
     for (Object o : objs) {

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,8 +26,8 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
  * <i>margin</i> and <i>padding</i> properties, the <i>border</i> property
  * cannot set different values on the four borders. To do so, one or more of the
  * other border properties must be used.
- * 
- * 
+ *
+ *
  */
 public class BorderProperty implements HasCssValue {
 
@@ -67,7 +67,7 @@ public class BorderProperty implements HasCssValue {
       RGBColor borderColor) {
     return new MultipleValueCssSetter(getCssName(), borderWidth, borderStyle, borderColor);
   }
-  
+
   public CssSetter with(Length borderWidth, BorderStyle borderStyle,
       RGBColor borderColor) {
     return new MultipleValueCssSetter(getCssName(), borderWidth, borderStyle, borderColor);

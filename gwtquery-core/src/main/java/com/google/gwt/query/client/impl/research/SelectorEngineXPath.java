@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -65,7 +65,7 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
   private JsRegexp selectorSplitRegExp;
 
   private JsRegexp combinator;
-  
+
   public SelectorEngineXPath() {
   }
 
@@ -237,11 +237,11 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
 
   private native String replaceAttr(String allAttr) /*-{
         if(!allAttr) return "";
-        return allAttr.replace(/["']+/g,'').replace(/(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?/g, 
+        return allAttr.replace(/["']+/g,'').replace(/(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?/g,
             function(a,b,c,d) {
               return @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
             });
-            
+
     }-*/;
 
   private native String replaceAttr2(String allAttr) /*-{

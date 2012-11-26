@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -76,11 +76,11 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
     sw.println("return " + wrap(method,
         "impl.select(\"" + selector + "\", root)") + ";");
 //    sw.println("JSArray n = JSArray.create();");
-//    if(!hasContext) { 
+//    if(!hasContext) {
 //      sw.println("Node root = Document.get();");
 //    }
 //
-//    // add root node as context. 
+//    // add root node as context.
 //    // TODO: support any context
 //    sw.println("n.addNode(root);");
 //    String q = selector, lq = null;
@@ -154,7 +154,7 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 //              debug("added param " + res[i - 1]);
 //            }
 //            Object[] r = res;
-//            // inline enum, perhaps type-tightening will allow inlined eval() 
+//            // inline enum, perhaps type-tightening will allow inlined eval()
 //            // call
 //            if (rm.fnTemplate.indexOf("byPseudo") != -1) {
 //              sw.println("n = Pseudo."+res[0].toUpperCase().replace("-", "_") +

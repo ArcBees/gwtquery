@@ -5,4 +5,4 @@
     <inherits name='com.google.gwt.query.Query'/>
     <entry-point class='${package}.${artifactId}.client.${projectName}'/>
 </module>
-    
+

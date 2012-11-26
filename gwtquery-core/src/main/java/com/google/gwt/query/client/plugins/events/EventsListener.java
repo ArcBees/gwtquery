@@ -1,11 +1,11 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -35,12 +35,12 @@ import java.util.List;
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
  * as the default event listener in GWT.
- * 
+ *
  * The reference to this queue is stored as a unique variable in the element's DOM
- * 
+ *
  * The class takes care of calling the appropriate functions for each browser event and it also
  * calls sinkEvents method.
- * 
+ *
  */
 public class EventsListener implements EventListener {
 
@@ -149,9 +149,9 @@ public class EventsListener implements EventListener {
 
     /**
      * Remove a set of events. The bind function will not be fire anymore for those events
-     * 
+     *
      * @param eventBits the set of events to unsink
-     * 
+     *
      */
     public int unsink(int eventBits) {
       if (eventBits <= 0) {
@@ -183,7 +183,7 @@ public class EventsListener implements EventListener {
 
   /**
    * {@link BindFunction} used for live() method.
-   * 
+   *
    */
   private static class LiveBindFunction extends BindFunction {
 
@@ -256,7 +256,7 @@ public class EventsListener implements EventListener {
           if (f.hasEventType(event.getTypeInt())) {
             NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
             for (int j = 0; n != null && j < n.getLength(); j++) {
-              Element element = n.getItem(i);
+              Element element = n.getItem(j);
               // When an event fired in an element stops bubbling we have to fire also all other
               // handlers for this element bound to this element
               if (stopElement == null || element.equals(stopElement)) {
@@ -285,7 +285,7 @@ public class EventsListener implements EventListener {
 
     /**
      * Tell if no {@link BindFunction} are linked to this object
-     * 
+     *
      * @return
      */
     public boolean isEmpty() {
@@ -301,7 +301,7 @@ public class EventsListener implements EventListener {
     /**
      * Return the element whose the listener fired last. It represent the context element where the
      * {@link LiveBindFunction} was binded
-     * 
+     *
      */
     private Element getCurrentEventTarget(Event e) {
       EventTarget currentEventTarget = e.getCurrentEventTarget();
@@ -446,14 +446,14 @@ public class EventsListener implements EventListener {
     String[] parts = events.split("[\\s,]+");
 
     for (String event : parts) {
-      
+
       String nameSpace = null;
       String eventName = event;
-      
+
       //seperate possible namespace
       //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
-      
+
       if (subparts.length == 2){
         nameSpace = subparts[1];
         eventName = subparts[0];
@@ -601,11 +601,11 @@ public class EventsListener implements EventListener {
     for (String event : parts) {
       String nameSpace = null;
       String eventName = event;
-      
+
       //seperate possible namespace
       //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
-      
+
       if (subparts.length == 2){
         nameSpace = subparts[1];
         eventName = subparts[0];

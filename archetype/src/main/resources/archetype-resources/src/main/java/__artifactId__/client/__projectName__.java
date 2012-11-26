@@ -15,7 +15,7 @@ import com.google.gwt.core.client.EntryPoint;
 public class ${projectName} implements EntryPoint {
 
   public void onModuleLoad() {
-    
+
     ${symbol_dollar}("div")
     .hover(new Function() {
       public void f(Element e) {

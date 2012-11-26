@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -52,17 +52,17 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
     Button b = new Button("test");
     RootPanel.get().add(b);
     RootPanel.get().add(p);
-    
+
     int nitems = 4;
     final String label1 = "I'm the label ";
     final String label2 = "Finally I'm just a simple label";
-    
+
     for (int i = 0; i < nitems; i++) {
       Label l = new Label(label1 + i);
       p.add(l);
     }
     $("<div>whatever</div").appendTo($(p));
-    
+
     b.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         $(".gwt-Label", p).each(new Function() {
@@ -74,7 +74,7 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
         });
       }
     });
-    
+
     $(".gwt-Label", p).each(new Function() {
       @Override
       public Object f(Widget w, int i) {
@@ -82,7 +82,7 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
         return null;
       }
     });
-    
+
     $(b).click();
 
     $(".gwt-Label", p).each(new Function() {
@@ -90,7 +90,7 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
         assertEquals(label2, $(e).text());
       }
     });
-    
+
     $("div", p).each(new Function() {
       public void f(Element e) {
         // Just to avoid the exception when non-widget elements match
@@ -101,11 +101,11 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
         }
       }
     });
-    
+
     p.removeFromParent();
     b.removeFromParent();
   }
-  
+
   class TestButtonWidgetFactory implements WidgetFactory<Button> {
     public Button create(Element e) {
       Button button = new Button();
@@ -114,14 +114,14 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
       return button;
     }
   }
-  
+
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);
     GQuery g = $(b1);
     Button b2 = (Button) g.as(Widgets.Widgets).widget();
     assertEquals(b1, b2);
-    
+
     b2 = $("<button>Click-me</button>").appendTo(document)
        .as(Widgets.Widgets).widgets(new TestButtonWidgetFactory(), null).widget();
     b2.addClickHandler(new ClickHandler() {
@@ -129,9 +129,9 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
         $(b1).css("color", "red");
       }
     });
-    
+
     b2.click();
-    assertEquals("red", $(b1).css("color"));
+    assertEquals("red", $(b1).css("color", false));
   }
 
 }

@@ -1,20 +1,20 @@
 package gwtquery.jsplugins.menu.client;
 
 /**
- * 
+ *
  * This class wraps the jquery menu plugin from:
- * 
+ *
  * http://p.sohei.org/jquery-plugins/menu/
  *
  */
 public abstract class JsMenu {
-  
+
   public static native void loadPlugin() /*-{
   var l = @com.google.gwt.query.jsquery.client.JsQueryUtils::log(Ljava/lang/Object;);
   var window = $wnd;
   var document = $doc;
   var jQuery = $wnd.$;
-  
+
 (function($)
 {
   var menus = [], //list of all menus
@@ -40,20 +40,20 @@ public abstract class JsMenu {
       onClick: null,
       arrowSrc: null,
       addExpando: false,
-      
+
       // $.fn.menuFromElement options
       copyClassAttr: false
     };
-    
+
   $(function(){
     $rootDiv.appendTo('body');
   });
 
   $.extend({
     MenuCollection : function(items) {
-    
+
       this.menus = [];
-    
+
       this.init(items);
     }
   });
@@ -74,9 +74,9 @@ public abstract class JsMenu {
       {
         if ( menu instanceof $.Menu )
           this.menus.push(menu);
-        
+
         menu.menuCollection = this;
-      
+
         var self = this;
         $(menu.target).hover(function(){
           if ( menu.visible )
@@ -124,7 +124,7 @@ public abstract class JsMenu {
       //the user clicked on the target of the currenty open menu
       if ( visibleMenus.length && t == visibleMenus[0].target )
         return;
-      
+
       //get the last node before the #root-menu-div
       while ( t.parentNode && t.parentNode != $rootDiv[0] )
         t = t.parentNode;
@@ -332,8 +332,8 @@ public abstract class JsMenu {
       {
         if ( !this.visible )
           return;
-        
-        var i, 
+
+        var i,
           pos = $.inArray(this, visibleMenus);
 
         this.$eDIV.hide();
@@ -362,7 +362,7 @@ public abstract class JsMenu {
 
         if ( activeMenu == this )
           activeMenu = null;
-          
+
         if ( this.settings.onClose )
           this.settings.onClose.call(this);
       },
@@ -371,7 +371,7 @@ public abstract class JsMenu {
         if ( this.visible )
           return;
 
-        var zi, 
+        var zi,
           pmi = this.parentMenuItem;
 
         if ( this.menuItems.length ) //show only when it has items
@@ -389,7 +389,7 @@ public abstract class JsMenu {
             if ( this.$eDIV.width() < this.settings.minWidth )
               this.$eDIV.css('width', this.settings.minWidth);
           }
-          
+
           this.setPosition();
           this.$eDIV.css({display:'none', visibility: ''}).show();
 
@@ -400,7 +400,7 @@ public abstract class JsMenu {
           if ( this.settings.onOpen )
             this.settings.onOpen.call(this);
         }
-        
+
         if ( visibleMenus.length == 0 )
           $(document).bind('mousedown', $.Menu.checkMouse).bind('keydown', $.Menu.checkKey);
 
@@ -409,11 +409,11 @@ public abstract class JsMenu {
       },
       setPosition : function()
       {
-        var $t, o, posX, posY, 
+        var $t, o, posX, posY,
           pmo, //parent menu offset
           wst, //window scroll top
           wsl, //window scroll left
-          ww = $(window).width(), 
+          ww = $(window).width(),
           wh = $(window).height(),
           pmi = this.parentMenuItem,
           height = this.$eDIV[0].clientHeight,
@@ -432,7 +432,7 @@ public abstract class JsMenu {
           //position right below the target
           $t = $(this.target);
           o = $t.offset();
-          
+
           posX = o.left + this.settings.offsetLeft;
           posY = o.top + $t.height() + this.settings.offsetTop;
         }
@@ -536,7 +536,7 @@ public abstract class JsMenu {
         var i, pos = 0,
           mil = this.menuItems.length,
           o = offset || 1;
-        
+
         //get current pos
         for ( i = 0; i < mil; i++ )
         {
@@ -593,7 +593,7 @@ public abstract class JsMenu {
           if ( (pos = $.inArray(this, this.menuCollection.menus)) > -1 )
             this.menuCollection.menus.splice(pos, 1);
         }
-          
+
         this.$eDIV.remove();
       }
     }
@@ -620,7 +620,7 @@ public abstract class JsMenu {
       this.separator = false;
 
       this.init();
-      
+
       if ( obj.subMenu )
         new $.Menu(this, obj.subMenu, options);
     }
@@ -633,14 +633,14 @@ public abstract class JsMenu {
         var i, isStr,
           src = this.src,
           self = this;
-          
+
         this.$eLI = $(menuItemElement.cloneNode(1));
         if ( this.addClass )
           this.$eLI[0].setAttribute('class', this.addClass);
 
         if ( this.settings.addExpando && this.data )
           this.$eLI[0].menuData = this.data;
-          
+
         if ( src == '' )
         {
           this.$eLI.addClass('menu-separator');
@@ -692,7 +692,7 @@ public abstract class JsMenu {
       {
         this.removeTimer();
 
-        var i, 
+        var i,
           pms = this.parentMenu.subMenus,
           pmi = this.parentMenu.menuItems,
           self = this;
@@ -703,7 +703,7 @@ public abstract class JsMenu {
 
         if ( !this.enabled )
           return;
-          
+
         //deactivate all menuItems on the same level
         for ( i = 0; i < pmi.length; i++ )
         {
@@ -737,7 +737,7 @@ public abstract class JsMenu {
 
         if ( !this.enabled )
           return;
-        
+
         if ( !this.subMenu || !this.subMenu.visible )
           this.setInactive();
       },
@@ -809,17 +809,17 @@ public abstract class JsMenu {
       }
     }
   });
-  
-  
+
+
   $.extend($.fn, {
     menuFromElement : function(options, list, bar)
     {
       var createItems = function(ul)
       {
-        var menuItems = [], 
+        var menuItems = [],
           subItems,
           menuItem,
-          lis, $li, i, subUL, submenu, target, 
+          lis, $li, i, subUL, submenu, target,
           classNames = null;
 
         lis = getAllChilds(ul, 'LI');
@@ -846,17 +846,17 @@ public abstract class JsMenu {
             target = $li[0].childNodes[0].nodeValue;
           else
             target = $li[0].childNodes;
-            
+
           if ( options && options.copyClassAttr )
             classNames = $li.attr('class');
-            
+
           //create item
           menuItem = new $.MenuItem({src: target, addClass: classNames}, options);
           menuItems.push(menuItem);
           //add submenu
           if ( subItems.length )
             new $.Menu(menuItem, subItems, options);
-          
+
         }
         return menuItems;
       };
@@ -917,7 +917,7 @@ public abstract class JsMenu {
       return null;
 
     var n = elem.firstChild;
-    for ( ; n; n = n.nextSibling ) 
+    for ( ; n; n = n.nextSibling )
     {
       if ( n.nodeType == 1 && n.nodeName.toUpperCase() == name )
         return n;
@@ -932,7 +932,7 @@ public abstract class JsMenu {
 
     var r = [],
       n = elem.firstChild;
-    for ( ; n; n = n.nextSibling ) 
+    for ( ; n; n = n.nextSibling )
     {
       if ( n.nodeType == 1 && n.nodeName.toUpperCase() == name )
         r[r.length] = n;
@@ -941,6 +941,6 @@ public abstract class JsMenu {
   };
 
 })(jQuery);
-    
+
   }-*/;
 }

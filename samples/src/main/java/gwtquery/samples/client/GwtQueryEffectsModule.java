@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -49,10 +49,10 @@ public class GwtQueryEffectsModule implements EntryPoint {
     });
     $(".note").click(lazy().fadeOut().done());
     $(".note").append(" Hello");
-    
+
     final Effects a = $(".a, .b > div:nth-child(2)").as(Effects.Effects);
     final Effects b = $(".b > div:nth-child(odd)").as(Effects.Effects);
-    
+
     $("#b0").width(150).css(CSS.FONT_SIZE.with(Length.px(10))).toggle(new Function() {
       public void f(Element e) {
         $("#b0").as(Effects.Effects).animate(" width: '400', opacity: '0.4', marginLeft: '0.6in', fontSize: '24px'");
@@ -62,7 +62,7 @@ public class GwtQueryEffectsModule implements EntryPoint {
         $("#b0").as(Effects.Effects).animate(" width: '150', opacity: '1', marginLeft: '0', fontSize: '10px'");
       }
     });
-    
+
     $("#b1").toggle(new Function() {
       public void f(Element e) {
         $(".a").toggle();
@@ -100,7 +100,7 @@ public class GwtQueryEffectsModule implements EntryPoint {
         a.animate("left: '-=300', width: 'show'");
       }
     });
-    
+
     $("#b2").toggle(new Function() {
       public void f(Element e) {
         b.as(Effects.Effects).clipUp();
@@ -118,6 +118,6 @@ public class GwtQueryEffectsModule implements EntryPoint {
         b.as(Effects.Effects).clipAppear();
       }
     });
-    
+
   }
 }
