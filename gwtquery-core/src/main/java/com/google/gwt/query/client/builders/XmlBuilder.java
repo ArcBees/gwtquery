@@ -68,4 +68,14 @@ public interface XmlBuilder {
    */
   Date getTextAsDate();
 
+  /**
+   * Returns whether the text content of the element is true or false. 
+   * It is false when the string matches false, off, 0 or empty. 
+   */
+  boolean getTextAsBoolean();
+  
+  /**
+   * Returns the Enum value of the text content of the element.
+   */
+  <T extends Enum<T>> T getTextAsEnum(Class<T> clazz);
 }

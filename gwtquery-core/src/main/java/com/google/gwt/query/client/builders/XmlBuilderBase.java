@@ -69,18 +69,15 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     return g.attr(n);
   }
   
-  @Override
   public String getText() {
     return g.text();
   }
   
-  @Override
   public double getTextAsNumber() {
     String t =  g.text().replaceAll("[^\\d\\.\\-]", "");
     return t.isEmpty() ? 0 : Double.parseDouble(t);
   }
   
-  @Override
   public Date getTextAsDate() {
     String t =  g.text().trim();
     if (t.matches("\\d+")) {
@@ -88,6 +85,16 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
     } else {
       return new Date((long)JsDate.parse(t));
     }
+  }
+  
+  public boolean getTextAsBoolean() {
+    String t =  g.text().trim().toLowerCase();
+    return !t.matches("^(|false|off|0)$");
+  }
+  
+  public <T extends Enum<T>> T getTextAsEnum(Class<T> clazz) {
+    String t =  g.text().trim();
+    return Enum.valueOf(clazz, t);
   }
   
   @SuppressWarnings("unchecked")
@@ -120,7 +127,6 @@ public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements Xml
   }
 
   @SuppressWarnings("unchecked")
-  @Override
   public <T> T setText(String t) {
     g.text(t);
     return (T)this;
