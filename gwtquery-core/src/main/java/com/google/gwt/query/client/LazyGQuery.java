@@ -60,7 +60,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.query.client.LazyBase;
 

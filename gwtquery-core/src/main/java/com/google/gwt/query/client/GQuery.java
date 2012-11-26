@@ -59,11 +59,11 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -2045,7 +2045,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         Node c = e.getFirstChild();
         while (c != null) {
           removeData(c.<Element> cast(), null);
-          GqUi.detachWidget(getAssociatedWidget(e));
+          WidgetsUtils.detachWidget(getAssociatedWidget(e));
           EventsListener.clean(c.<Element> cast());
           e.removeChild(c);
           c = e.getFirstChild();

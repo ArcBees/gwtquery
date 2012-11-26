@@ -194,5 +194,4 @@ public class Widgets extends QueuePlugin<Widgets> {
   public Widgets textArea(WidgetInitializer<TextArea> initializers) {
     return widgets(new TextAreaWidgetFactory(), initializers);
   }
-
 }
