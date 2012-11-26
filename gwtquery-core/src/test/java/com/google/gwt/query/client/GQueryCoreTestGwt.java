@@ -454,22 +454,22 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(1, g1.size());
     assertEquals(content, g1.toString());
 
-    $(g1).append(g2);
+    g1.append(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
 
-    $(g1).prepend(g2);
+    g1.prepend(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
 
-    $(g1).after(g2);
+    g1.after(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
 
-    $(g1).before(g2);
+    g1.before(g2);
     assertEquals(1, g1.size());
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
