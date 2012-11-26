@@ -11,8 +11,8 @@
     <packaging>war</packaging>
 
     <properties>
-        <gwtversion>2.5.0-rc1</gwtversion>
-        <gwtmaven>2.4.0</gwtmaven>
+        <gwtversion>2.5.0</gwtversion>
+        <gwtmaven>2.5.0</gwtmaven>
     </properties>
 
 

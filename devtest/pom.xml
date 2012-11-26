@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>devtest</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>dev-mode for testing</name>
     <dependencies>
         <dependency>
@@ -64,6 +64,14 @@
                 <hostedWebapp>target/www</hostedWebapp>
                 <soyc>true</soyc>
             </configuration>
+            <executions>
+                <execution>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
           </plugin>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>

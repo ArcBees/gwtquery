@@ -600,7 +600,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
   }
 
   public void testLiveWithMultipleFunction() {
-
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
 
     $(".clickable", e).live("click", new Function() {
@@ -614,12 +613,10 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     });
 
     $("#div1", e).addClass("clickable");
-
     $("#span1", e).click();
 
     assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
-    assertNotSame("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
-
+    assertEquals("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
   }
 
   public void testMouseenterEvent() {
@@ -950,7 +947,8 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     g.resize();
   }
 
-  @DoNotRunWith({Platform.HtmlUnitLayout})
+  @DoNotRunWith({Platform.HtmlUnitLayout, Platform.Prod})
+  // FIXME: Window.resizeTo does not resize the window, maybe we need a different approach.
   public void testResizeWindowEvent() {
     GQuery w = $(GQuery.window);
 
@@ -960,7 +958,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
         finishTest();
       }
     });
-
+    
     Window.resizeTo(w.width(), w.height() + 100);
   }
 

@@ -20,7 +20,6 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.GqUi;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -41,7 +40,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
       if (w == null) {
         // We convert the element to a gwt htmlPanel 
         setElementImpl(e);
-        GqUi.attachWidget(this, null);
+        WidgetsUtils.attachWidget(this, null);
       } else {
         Widget p = w.getParent();
         if (p instanceof Panel) {
@@ -53,7 +52,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
           Element n = e.getParentElement();
           n.appendChild(getElement());
           getElement().appendChild(e);
-          GqUi.attachWidget(this, null);
+          WidgetsUtils.attachWidget(this, null);
         }
       }
     }
@@ -113,8 +112,7 @@ public class WidgetsHtmlPanel extends HTMLPanel {
       }
 
     } else if (parent instanceof HTMLPanel) {
-      GqUi.doLogicalDetachFromHtmlPanel(w);
-
+      WidgetsUtils.doLogicalDetachFromHtmlPanel(w);
     } else {
       // the widget will be physically detach
       w.removeFromParent();
