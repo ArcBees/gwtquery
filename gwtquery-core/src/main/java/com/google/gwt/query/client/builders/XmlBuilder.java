@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.builders;
 
+import java.util.Date;
+
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -55,4 +57,25 @@ public interface XmlBuilder {
    * Sets the text content of the element
    */
   <J> J setText(String t);
+
+  /**
+   * Returns the text content of the element as a number
+   */
+  double getTextAsNumber();
+  
+  /**
+   * Returns the text content of the element as a date
+   */
+  Date getTextAsDate();
+
+  /**
+   * Returns whether the text content of the element is true or false. 
+   * It is false when the string matches false, off, 0 or empty. 
+   */
+  boolean getTextAsBoolean();
+  
+  /**
+   * Returns the Enum value of the text content of the element.
+   */
+  <T extends Enum<T>> T getTextAsEnum(Class<T> clazz);
 }

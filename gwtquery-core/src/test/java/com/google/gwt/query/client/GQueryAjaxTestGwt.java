@@ -136,6 +136,11 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   }
   
   interface XmlExample extends XmlBuilder {
+    interface T extends XmlBuilder {
+    }
+    enum E {
+      FOO, BAR
+    }
     String getA();
     Boolean getB();
     @Name("c")
@@ -148,10 +153,14 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     XmlExample setA(String s);
     @Name("c")
     XmlExample setNumber(int i);
+    
+    T getEnum();
+    T getBool();
+    T getNum();
   }
   
   public void testXmlBuilder() {
-    String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'/> <x a='xa2'/> text</a>";
+    String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'>  text</x><x a='xa2'/><enum>FOO</enum><bool>true</bool><num>333</num></a>";
     XmlExample x = GWT.create(XmlExample.class);
     x.parse(xml);
     assertTrue(x.getB());
@@ -162,9 +171,76 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     x.setA("X").setNumber(1234);
     assertEquals("X", x.getA());
     assertEquals(1234, x.getNumber());
-    assertEquals("  text", x.getText());
-    x.getX()[1].setText("pepe");
-    assertEquals(" pepe text", x.getText());
+    assertEquals("  text", x.getFirstX().getText());
+    x.getX()[0].setText("pepe");
+    assertEquals("pepe", x.getFirstX().getText());
+    
+    assertEquals(XmlExample.E.FOO, x.getEnum().getTextAsEnum(XmlExample.E.class));
+    assertEquals(true, x.getBool().getTextAsBoolean());
+    assertEquals(333d, x.getNum().getTextAsNumber());
+  }
+  
+  interface Feed extends XmlBuilder {
+    interface Tag extends XmlBuilder {
+    }
+    Tag getTitle();
+    Tag getTagline();
+    Tag getFullcount();
+    Tag getModified();
+
+    interface Link extends XmlBuilder {
+      String getHref();
+      String getType();
+    }
+    Link getLink();
+
+    interface Entry extends XmlBuilder {
+      interface Author extends XmlBuilder {
+        Tag getEmail();
+        Tag getName();
+      }
+      Tag getTitle();
+      Tag getSummary();
+      Link getLink();
+      Tag getModified();
+      Tag getIssued();
+      Tag getId();
+      Author getAuthor();
+    }  
+    Entry[] getEntry();
+  }
+  
+  // FIXME: gquery xml does not work well with htmlUnit, FF & Safari works
+  // TODO: test in IE
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  @SuppressWarnings("deprecation")
+  public void testXmlGmailExample() {
+    String xml = "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<feed version='0.3' xmlns='http://purl.org/atom/ns#'>"
+      + " <title>Gmail - Inbox for manolo@...</title>"
+      + " <tagline>New messages in your Gmail Inbox</tagline>"
+      + " <fullcount>1</fullcount>"
+      + " <link rel='alternate' href='http://mail.google.com/mail' type='text/html' />"
+      + " <modified>2012-11-07T10:32:52Z</modified>"
+      + " <entry>"
+      + "  <title>Trending Startups and Updates</title>"
+      + "  <summary>AngelList Weekly Trending Startups Storenvy Tumblr for stores E-Commerce Platforms · San Francisco</summary>"
+      + "  <link rel='alternate' href='http://mail.google.com/mail?account_id=manolo@....&amp;message_id=13ad2e227da1488b&amp;view=conv&amp;extsrc=atom' type='text/html' />"
+      + "  <modified>2012-11-05T23:22:47Z</modified>"
+      + "  <issued>2012-11-05T23:22:47Z</issued>"
+      + "  <id>tag:gmail.google.com,2004:1417840183363061889</id>"
+      + "  <author>"
+      + "   <name>AName</name>"
+      + "   <email>AnEmail</email>"
+      + "  </author>"
+      + " </entry>"
+      + "</feed>";
+    
+    Feed f = GWT.create(Feed.class);
+    f.parse(xml);
+    assertEquals((int)f.getFullcount().getTextAsNumber(), f.getEntry().length);
+    assertEquals(112, f.getModified().getTextAsDate().getYear());
+    assertEquals("AName", f.getEntry()[0].getAuthor().getName().getText());
   }
   
   public void testJsonValidService() {
@@ -197,10 +273,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   
   public void testJsonTimeout() {
     delayTestFinish(5000);
-    String nonJsonpUrl = "http://www.google.com/nopage";
+    String nonJsonpUrl = "http://127.0.0.1/nopage";
     
     Settings s = Ajax.createSettings();
-    s.setTimeout(400);
+    s.setTimeout(1000);
     s.setSuccess(new Function(){
       public void f() {
         fail();

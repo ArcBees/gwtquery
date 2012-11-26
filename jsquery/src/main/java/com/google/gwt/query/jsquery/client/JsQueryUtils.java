@@ -28,32 +28,6 @@ public abstract class JsQueryUtils {
 		return s;
   }-*/;
 
-  public static GQuery dollar(Object o) {
-    if (o instanceof String) {
-      return GQuery.$((String) o);
-    } else if (o instanceof JavaScriptObject) {
-      JavaScriptObject jso = (JavaScriptObject) o;
-      if (JsUtils.isFunction(jso)) {
-        new JsUtils.JsFunction(jso).fe();
-      } else {
-        GQuery r = GQuery.$(jso);
-        if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
-          JsCache c = jso.cast();
-          JsNodeArray elms = JsNodeArray.create();
-          for (int i = 0; i < c.length(); i++) {
-            Object obj = c.get(i);
-            if (obj instanceof Node) {
-              elms.addNode((Node) obj);
-            }
-          }
-          r = GQuery.$(elms);
-        }
-        return r;
-      }
-    }
-    return GQuery.$();
-  }
-
   public static GQuery dollar(String s, Element ctx) {
     return GQuery.$(s, ctx);
   }
@@ -67,7 +41,7 @@ public abstract class JsQueryUtils {
        return ((List<?>)array).indexOf(object);
     } else if (object instanceof JavaScriptObject
         && JsUtils.isElement((JavaScriptObject) object)) {
-      return dollar(array).index((Element) object);
+      return GQuery.$(array).index((Element) object);
     } else if (array instanceof JavaScriptObject
         && JsUtils.isArray((JavaScriptObject) array)) {
       return ((JsCache) array).indexOf(object);
