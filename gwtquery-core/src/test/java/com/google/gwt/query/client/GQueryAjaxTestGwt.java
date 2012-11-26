@@ -27,12 +27,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.GQueryAjaxTestGwt.XmlExample.E;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -137,6 +137,11 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   }
   
   interface XmlExample extends XmlBuilder {
+    interface T extends XmlBuilder {
+    }
+    enum E {
+      FOO, BAR
+    }
     String getA();
     Boolean getB();
     @Name("c")
@@ -149,10 +154,14 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     XmlExample setA(String s);
     @Name("c")
     XmlExample setNumber(int i);
+    
+    T getEnum();
+    T getBool();
+    T getNum();
   }
   
   public void testXmlBuilder() {
-    String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'/> <x a='xa2'/> text</a>";
+    String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'>  text</x><x a='xa2'/><enum>FOO</enum><bool>true</bool><num>333</num></a>";
     XmlExample x = GWT.create(XmlExample.class);
     x.parse(xml);
     assertTrue(x.getB());
@@ -163,9 +172,13 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     x.setA("X").setNumber(1234);
     assertEquals("X", x.getA());
     assertEquals(1234, x.getNumber());
-    assertEquals("  text", x.getText());
-    x.getX()[1].setText("pepe");
-    assertEquals(" pepe text", x.getText());
+    assertEquals("  text", x.getFirstX().getText());
+    x.getX()[0].setText("pepe");
+    assertEquals("pepe", x.getFirstX().getText());
+    
+    assertEquals(E.FOO, x.getEnum().getTextAsEnum(E.class));
+    assertEquals(true, x.getBool().getTextAsBoolean());
+    assertEquals(333d, x.getNum().getTextAsNumber());
   }
   
   interface Feed extends XmlBuilder {
@@ -201,8 +214,8 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   // FIXME: gquery xml does not work well with htmlUnit, FF & Safari works
   // TODO: test in IE
   @DoNotRunWith({Platform.HtmlUnitLayout})
+  @SuppressWarnings("deprecation")
   public void testXmlGmailExample() {
-    Window.alert("run");
     String xml = "<?xml version='1.0' encoding='UTF-8'?>" +
         "<feed version='0.3' xmlns='http://purl.org/atom/ns#'>"
       + " <title>Gmail - Inbox for manolo@...</title>"
@@ -261,10 +274,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   
   public void testJsonTimeout() {
     delayTestFinish(5000);
-    String nonJsonpUrl = "http://www.google.com/nopage";
+    String nonJsonpUrl = "http://127.0.0.1/nopage";
     
     Settings s = Ajax.createSettings();
-    s.setTimeout(400);
+    s.setTimeout(1000);
     s.setSuccess(new Function(){
       public void f() {
         fail();

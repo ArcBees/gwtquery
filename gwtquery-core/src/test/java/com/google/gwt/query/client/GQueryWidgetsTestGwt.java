@@ -131,7 +131,7 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
     });
     
     b2.click();
-    assertEquals("red", $(b1).css("color"));
+    assertEquals("red", $(b1).css("color", false));
   }
 
 }
