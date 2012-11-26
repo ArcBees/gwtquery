@@ -280,11 +280,11 @@ public class JsUtils {
    * Be careful : This method works only on node that should be inserted within the body node. 
    */
   public static boolean isDetached(Node n) {
-	assert n != null;
-	
-	if ("html".equalsIgnoreCase(n.getNodeName())){
-		return true;
-	}
+    assert n != null;
+    
+	  if ("html".equalsIgnoreCase(n.getNodeName())){
+		  return false;
+	  }
 	
     return !getOwnerDocument(n).getBody().isOrHasChild(n);
   }
