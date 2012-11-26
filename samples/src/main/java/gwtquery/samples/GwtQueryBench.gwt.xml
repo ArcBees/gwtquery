@@ -3,4 +3,4 @@
     <entry-point class='gwtquery.samples.client.GwtQueryBenchModule'/>
     <inherits name="com.google.gwt.precompress.Precompress"/>
 </module>
-    
+

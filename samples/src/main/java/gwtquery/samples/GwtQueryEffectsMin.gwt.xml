@@ -2,4 +2,4 @@
     <inherits name='com.google.gwt.query.QueryMin'/>
     <entry-point class='gwtquery.samples.client.GwtQueryEffectsModule'/>
 </module>
-    
+

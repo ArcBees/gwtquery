@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,7 +27,7 @@ import java.util.Queue;
  * Class used in plugins which need a queue system.
  */
 public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
-  
+
   @SuppressWarnings("rawtypes")
   public static final Class<QueuePlugin> Queue = GQuery.registerPlugin(
       QueuePlugin.class, new Plugin<QueuePlugin>() {
@@ -71,7 +71,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   protected QueuePlugin(GQuery gq) {
     super(gq);
   }
-  
+
   /**
    * remove all queued functions from the effects queue
    */
@@ -96,7 +96,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public T delay(int milliseconds, Function... f) {
     return delay(milliseconds, DEFAULT_NAME, f);
   }
-  
+
   /**
    * Add a delay in the named queue
    */
@@ -131,7 +131,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public int queue() {
     return queue(DEFAULT_NAME);
   }
-  
+
   /**
    * Show the number of functions to be executed on the first matched element
    * in the named queue.
@@ -140,9 +140,9 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     Queue<Object> q = isEmpty() ? null : queue(get(0), name, null);
     return q == null? 0 : q.size();
   }
-  
+
   /**
-   * Adds new functions, to be executed, onto the end of the effects 
+   * Adds new functions, to be executed, onto the end of the effects
    * queue of all matched elements.
    */
   @SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
-   * Adds new functions, to be executed, onto the end of the named 
+   * Adds new functions, to be executed, onto the end of the named
    * queue of all matched elements.
    */
   @SuppressWarnings("unchecked")
@@ -168,12 +168,12 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
     return (T)this;
   }
-  
+
   /**
    * Replaces the current effects queue with the given queue on all matched elements.
    */
   public T queue(Queue<?> queue) {
-    return queue(DEFAULT_NAME, queue); 
+    return queue(DEFAULT_NAME, queue);
   }
 
   /**
@@ -188,15 +188,15 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
-   * Stop the function which is currently in execution, remove it from the 
+   * Stop the function which is currently in execution, remove it from the
    * effects queue and start the next one.
    */
   public T stop() {
     return stop(false);
   }
-  
+
   /**
-   * Stop the function which is currently in execution, remove it from the 
+   * Stop the function which is currently in execution, remove it from the
    * named queue and start the next one.
    */
   public T stop(String name) {
@@ -205,46 +205,46 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
 
   /**
    * Stop the function which is currently in execution and depending on the
-   * value of the parameter: 
+   * value of the parameter:
    * - remove it from the effects queue and start the next one.
    * - or remove all functions in the effects queue.
    */
   public T stop(boolean clearQueue) {
     return stop(DEFAULT_NAME, clearQueue, false);
   }
-  
+
   /**
    * Stop the function which is currently in execution and depending on the
-   * value of the parameter: 
+   * value of the parameter:
    * - remove it from the effects queue and start the next one.
    * - or remove all functions in the effects queue.
-   * 
+   *
    * If the parameter jump is true, the current stopped effect will set
-   * the final css properties like if the effect would be completely executed.  
+   * the final css properties like if the effect would be completely executed.
    */
   public T stop(boolean clearQueue, boolean jumpToEnd) {
     return stop(DEFAULT_NAME, clearQueue, jumpToEnd);
   }
-  
+
   /**
    * Stop the function which is currently in execution and depending on the
-   * value of the parameter: 
+   * value of the parameter:
    * - remove it from the named queue and start the next one.
    * - or remove all functions in the named queue.
    */
   public T stop(String name, boolean clearQueue) {
     return stop(name, clearQueue, false);
   }
-  
+
   /**
    * Stop the function which is currently in execution and depending on the
-   * value of the clear parameter: 
+   * value of the clear parameter:
    * - remove it from the named queue and start the next one.
    * - or remove all functions in the queue.
-   * 
+   *
    * If the parameter jump is true, the current stopped effect will set
-   * the final css properties like if the effect would be completely executed.   
-   * 
+   * the final css properties like if the effect would be completely executed.
+   *
    */
   @SuppressWarnings("unchecked")
   public T stop(String name, boolean clearQueue, boolean jumpToEnd) {
@@ -253,7 +253,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
     return (T) this;
   }
-  
+
   private void dequeueCurrentAndRunNext(Element elem, String name) {
     Queue<?> q = queue(elem, name, null);
     if (q != null) {
@@ -271,7 +271,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       }
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   protected <S> Queue<S> queue(Element elem, String name, S func) {
     if (elem != null) {
@@ -291,7 +291,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     }
     return null;
   }
-  
+
   /**
    * Dequeue the object and run the next if it is the first
    * in the queue.

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,17 +27,17 @@ import com.google.gwt.query.client.js.JsUtils;
 /**
  * Pure Javascript Selector Engine Gwt Implementation based on
  * Sizzle CSS Selector Engine v1.0.
- * 
+ *
  * It has so many JSNI code, the idea is to make an entire implementation
  * using Java. Right now it performs worse than pure JSNI implementation
- * 
+ *
  */
 public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
-  
+
   public static native boolean contains(Object a, Object b) /*-{
-    var ret =  
+    var ret =
       document.compareDocumentPosition ?
-        (a.compareDocumentPosition(b) & 16): 
+        (a.compareDocumentPosition(b) & 16):
         a !== b && (a.contains ? a.contains(b) : true);
     return ret ? true : false;
   }-*/;
@@ -55,7 +55,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
         CHILD: /:(only|nth|last|first)-child(?:\((even|odd|[\dn+-]*)\))?/,
         POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^-]|$)/,
         PSEUDO: /:((?:[\w\u00c0-\uFFFF-]|\\.)+)(?:\((['"]?)((?:\([^\)]+\)|[^\(\)]*)+)\2\))?/,
-        CHUNKER: /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g  
+        CHUNKER: /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g
       },
       leftMatch: {},
       attrMap: {
@@ -334,18 +334,18 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
             case 'only':
             case 'first':
               while ( (node = node.previousSibling) )   {
-                if ( node.nodeType === 1 ) { 
-                  return false; 
+                if ( node.nodeType === 1 ) {
+                  return false;
                 }
               }
-              if ( type === "first" ) { 
-                return true; 
+              if ( type === "first" ) {
+                return true;
               }
               node = elem;
             case 'last':
               while ( (node = node.nextSibling) )   {
-                if ( node.nodeType === 1 ) { 
-                  return false; 
+                if ( node.nodeType === 1 ) {
+                  return false;
                 }
               }
               return true;
@@ -362,7 +362,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
                   if ( node.nodeType === 1 ) {
                     node.nodeIndex = ++count;
                   }
-                } 
+                }
                 parent.sizcache = doneName;
               }
               var diff = elem.nodeIndex - last;
@@ -428,7 +428,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
         return "\\" + (num - 0 + 1);
       }));
     }
-    
+
     return $wnd.Expr;
   }-*/;
 
@@ -462,7 +462,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
        }
      }
    }-*/;
-    
+
    public static native void dirNodeCheck(String dir, Object cur, int doneName, Object checkSet) /*-{
     for ( var i = 0, l = checkSet.length; i < l; i++ ) {
       var elem = checkSet[i];
@@ -488,11 +488,11 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       }
     }
   }-*/;
-  
+
   public static void error(String msg) {
     throw new IllegalArgumentException("Syntax error, unrecognized expression: " + msg);
   }
-   
+
   public static native JsArray<Node> filter(String expr, JsArray<Node> set, boolean inplace, Object not) /*-{
     var old = expr, result = [], curLoop = set, match, anyFound;
     while ( expr && set.length ) {
@@ -520,7 +520,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
               if ( item ) {
                 found = filter( item, match, i, curLoop );
                 var pass = not ^ !!found;
-  
+
                 if ( inplace && found != null ) {
                   if ( pass ) {
                     anyFound = true;
@@ -556,7 +556,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       }
       old = expr;
     }
-    return curLoop;    
+    return curLoop;
   }-*/;
 
   public static native JavaScriptObject find(String expr, Node context) /*-{
@@ -566,11 +566,11 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     }
     for ( var i = 0, l = $wnd.Expr.order.length; i < l; i++ ) {
       var type = $wnd.Expr.order[i], match;
-      
+
       if ( (match = $wnd.Expr.leftMatch[ type ].exec( expr )) ) {
         var left = match[1];
         match.splice(1,1);
-  
+
         if ( left.substr( left.length - 1 ) !== "\\" ) {
           match[1] = (match[1] || "").replace(/\\/g, "");
           set = $wnd.Expr.find[ type ]( match, context);
@@ -584,9 +584,9 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     if ( !set ) {
       set = context.getElementsByTagName("*");
     }
-    return {set: set, expr: expr};    
+    return {set: set, expr: expr};
   }-*/;
-   
+
   public static native String getText(Object elems) /*-{
     var ret = "", elem;
     for ( var i = 0; elems[i]; i++ ) {
@@ -601,7 +601,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     }
     return ret;
   }-*/;
-   
+
   public static native JsArray<Node> makeArray(NodeList<Node> array, JsArray<Node> results) /*-{
     var ret = results || [];
     if ( Object.prototype.toString.call(array) === "[object Array]" ) {
@@ -617,9 +617,9 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
         }
       }
     }
-    return ret;   
+    return ret;
   }-*/;
-  
+
   public static native JsArray<Element> posProcess(String selector, Node context) /*-{
     var tmpSet = [], later = "", match, root = context.nodeType ? [context] : context;
     // Position selectors must be done after the filter
@@ -633,8 +633,8 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
       @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(selector, root[i], tmpSet, null);
     }
     return @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
-  }-*/;   
-  
+  }-*/;
+
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     results = results || [];
     var origContext = context = context || document;
@@ -725,13 +725,13 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     if ( extra ) {
       @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::select(Ljava/lang/String;Lcom/google/gwt/dom/client/Node;Lcom/google/gwt/core/client/JsArray;Lcom/google/gwt/core/client/JsArray;)(extra, origContext, results, seed);
     }
-    return results;     
+    return results;
    }-*/;
-  
+
   public SelectorEngineSizzleGwt() {
     createExpr();
   }
-  
+
   public NodeList<Element> select(String selector, Node context) {
     JsArray<Element> results = JavaScriptObject.createArray().cast();
     return  JsUtils.unique(select(selector, context, results, null)).cast();

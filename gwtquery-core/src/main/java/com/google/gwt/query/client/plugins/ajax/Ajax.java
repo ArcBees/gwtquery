@@ -18,17 +18,17 @@ import com.google.gwt.user.client.ui.FormPanel;
 
 /**
  * Ajax class for GQuery.
- * 
+ *
  * The jQuery library has a full suite of AJAX capabilities, but GWT is plenty of classes to get
  * data from server side: RPC, XHR, RF, etc.
- * 
+ *
  * This class is not a substitute for the GWT utilities, but a complement to get server data in a
  * jquery way, specially when querying non java backends.
- * 
+ *
  * We do not pretend to clone all the jquery Ajax API inside gquery, just take its syntax and to
  * implement the most popular usage of it. This implementation is almost thought to be used as an
  * alternative to the GWT-XHR, GWT-XML and GWT-JSON modules.
- * 
+ *
  */
 public class Ajax extends GQuery {
 
@@ -78,10 +78,10 @@ public class Ajax extends GQuery {
 
   /**
    * Perform an ajax request to the server.
-   * 
-   * 
+   *
+   *
    * Example:
-   * 
+   *
    * <pre>
     import static com.google.gwt.query.client.GQ.*
     ...
@@ -97,7 +97,7 @@ public class Ajax extends GQuery {
       }
     }, properties);
    * </pre>
-   * 
+   *
    * @param url The url to connect
    * @param onSuccess a function to execute in the case of success
    * @param onError the function to execute on error
@@ -114,18 +114,18 @@ public class Ajax extends GQuery {
     if (onError != null) {
       onError.setElement(settings.getContext());
     }
-    
+
     Method httpMethod = resolveHttpMethod(settings);
     String data = resolveData(settings, httpMethod);
     final String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
-    
+
     if ("jsonp".equalsIgnoreCase(dataType)) {
       int timeout = settings.getTimeout();
       getJSONP(url, onSuccess, onError, timeout);
       return;
     }
-    
+
     final RequestBuilder requestBuilder = createRequestBuilder(settings, httpMethod, url, data);
     requestBuilder.setCallback(new RequestCallback() {
       public void onError(Request request, Throwable exception) {
@@ -157,7 +157,7 @@ public class Ajax extends GQuery {
           } catch (Exception e) {
             if (GWT.getUncaughtExceptionHandler() != null) {
               GWT.getUncaughtExceptionHandler().onUncaughtException(e);
-            }             
+            }
           }
           onSuccess.fe(retData, "success", request, response);
         }
@@ -190,7 +190,7 @@ public class Ajax extends GQuery {
       requestBuilder.setHeader("Content-Type", ctype);
       requestBuilder.setRequestData(data);
     }
-    
+
     requestBuilder.setTimeoutMillis(settings.getTimeout());
 
     String user = settings.getUsername();
@@ -202,7 +202,7 @@ public class Ajax extends GQuery {
     if (password != null) {
       requestBuilder.setPassword(password);
     }
-    
+
     Properties headers = settings.getHeaders();
     if (headers != null) {
       for (String headerKey : headers.keys()) {
@@ -212,7 +212,7 @@ public class Ajax extends GQuery {
 
     return requestBuilder;
   }
-  
+
   private static String resolveUrl(Settings settings, Method httpMethod, String data) {
     String url = settings.getUrl();
     assert url != null : "no url found in settings";
@@ -226,7 +226,7 @@ public class Ajax extends GQuery {
     String data = settings.getDataString();
     if (data == null && settings.getData() != null) {
       String type = settings.getDataType();
-      if (type != null 
+      if (type != null
           && (httpMethod == RequestBuilder.POST || httpMethod == RequestBuilder.PUT)
           && type.equalsIgnoreCase("json")) {
         data = settings.getData().toJsonString();
@@ -250,7 +250,7 @@ public class Ajax extends GQuery {
     }else if("head".equalsIgnoreCase(method)){
     	return RequestBuilder.HEAD;
     }
-    
+
     GWT.log("unknow method type -> use POST as default method");
     return RequestBuilder.POST;
   }
@@ -311,7 +311,7 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     ajax(s);
   }
-  
+
   public static void getJSONP(String url, Properties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -321,7 +321,7 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     ajax(s);
   }
-  
+
   public static void getJSONP(String url, Function success, Function error, int timeout) {
     if (!url.contains("=?") && !url.contains("callback=")) {
       url += (url.contains("?") ? "&" : "?") + "callback=?";
@@ -347,7 +347,7 @@ public class Ajax extends GQuery {
   protected Ajax(GQuery gq) {
     super(gq);
   }
-  
+
   public Ajax load(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
@@ -358,18 +358,18 @@ public class Ajax extends GQuery {
     s.setSuccess(new Function() {
       public void f() {
         try {
-          // We clean up the returned string to smoothly append it to our document 
-          // Note: using '\s\S' instead of '.' because gwt String emulation does 
+          // We clean up the returned string to smoothly append it to our document
+          // Note: using '\s\S' instead of '.' because gwt String emulation does
           // not support java embedded flag expressions (?s) and javascript does
           // not have multidot flag.
           String s = getData()[0].toString().replaceAll("<![^>]+>\\s*", "")
             .replaceAll("</?html[\\s\\S]*?>\\s*", "")
             .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
             .replaceAll("<script[\\s\\S]*?</script>\\s*", "")
-            .replaceAll("</?body[\\s\\S]*?>\\s*", "");          
+            .replaceAll("</?body[\\s\\S]*?>\\s*", "");
           // We wrap the results in a div
           s = "<div>" + s + "</div>";
-          
+
           Ajax.this.empty().append(filter.isEmpty() ? $(s) : $(s).find(filter));
           if (onSuccess != null) {
             onSuccess.setElement(Ajax.this.get(0));
@@ -385,9 +385,9 @@ public class Ajax extends GQuery {
     ajax(s);
     return this;
   }
-  
+
   private static int callBackCounter = 0;
-  
+
   public static native void getJsonpImpl(Element elem, String url, String charset, Function success, Function error, int timeout) /*-{
     var fName = "__GQ_cb_" + @com.google.gwt.query.client.plugins.ajax.Ajax::callBackCounter ++;
     var done = false;
@@ -408,7 +408,7 @@ public class Ajax extends GQuery {
     }
     if (timeout) {
       setTimeout(err, timeout);
-    } 
+    }
 
     url = url.replace(/=\?/g,'=' + fName);
     var script = document.createElement("script" );
@@ -421,5 +421,5 @@ public class Ajax extends GQuery {
       err();
     };
     elem.insertBefore(script, elem.firstChild);
-  }-*/;  
+  }-*/;
 }

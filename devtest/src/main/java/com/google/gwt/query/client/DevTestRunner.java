@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,15 +26,15 @@ import com.google.gwt.query.client.js.JsUtils;
 /**
  * This module is thought to emulate a test environment similar to
  * GWTTestCase, but running it in development mode.
- * 
+ *
  * The main goal of it is to execute tests in a faster way, because you just
  * push reload in your browser after changing any code.
- * 
+ *
  * @author manolo
- * 
+ *
  */
 public class DevTestRunner extends MyTestCase implements EntryPoint {
-  
+
   public void onModuleLoad() {
     try {
       gwtSetUp();
@@ -45,14 +45,14 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
-  
+
   public void testSomething() {
     // Copy and paste any test from the gquery suite
   }
-   
+
   /**
    * Runs jquery code via jsni.
-   * 
+   *
    * Example:
    * System.out.println(evalJQuery("$('div').size()"));
    */
@@ -65,11 +65,11 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       return "";
     }
   }-*/;
-  
+
   /**
    * Loads jquery and schedule the execution of the method testCompare()
    * which should have code to test something in both in jquery and gquery.
-   * 
+   *
    * Put this method in onModuleLoad, and replace below the method to execute
    * after jquery is available
    */
@@ -78,11 +78,11 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
       private int cont = 0;
       private native boolean loaded(String func) /*-{
-        return eval("$wnd." + func) ? true : false; 
+        return eval("$wnd." + func) ? true : false;
       }-*/;
       public boolean execute() {
         if (cont++ > 10 || JsUtils.hasProperty(window, "$")) {
-          
+
           // Replace with the method to run
           testJQueryCompare();
           return false;
@@ -91,7 +91,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       }
     }, 100);
   }
-  
+
   public void testJQueryCompare() {
     $(e).html("<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'><p id='child' style='background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px'>Content 1</p></div>");
     GQuery g = $("#child");
@@ -113,7 +113,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
     assertEquals(gqw, jqw);
     assertEquals(gqh, jqh);
   }
-  
+
   public void validateCssBoth(String selector, boolean force, String... props) {
     for (String prop: props) {
       String gs = $(selector).css(prop, force);
@@ -122,7 +122,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       assertEquals(gs.replaceAll("px", ""), js.replaceAll("px", ""));
     }
   }
-  
+
   public void validateCurCSSBoth(String selector, String... props) {
     for (String prop: props) {
       String gs = Double.toString($(selector).cur(prop, true)).replaceFirst("\\.\\d+$", "");
@@ -133,7 +133,7 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       assertEquals(gs, js);
     }
   }
-  
+
   // This method is used to initialize a huge html String, because
   // java 1.5 has a limitation in the size of static strings.
   private String getTestContent() {

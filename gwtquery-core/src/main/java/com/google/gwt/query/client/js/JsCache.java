@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,7 +27,7 @@ public class JsCache extends JavaScriptObject {
 
   protected JsCache() {
   }
-  
+
   public static JsCache create() {
     return createObject().cast();
   }
@@ -35,7 +35,7 @@ public class JsCache extends JavaScriptObject {
   public final native void concat(Object ary) /*-{
     if (ary) this.concat(ary);
   }-*/;
-  
+
   public final void pushAll(JavaScriptObject prevElem) {
     checkNull();
     JsCache c = prevElem.cast();
@@ -43,23 +43,23 @@ public class JsCache extends JavaScriptObject {
       put(length(), c.get(i));
     }
   }
-  
+
   public final native <T> void delete(T name) /*-{
     delete this[name];
   }-*/;
 
   public final native <T> void clear() /*-{
     if (this.length) {
-      for (i = this.length - 1; i >= 0; i--) 
+      for (i = this.length - 1; i >= 0; i--)
         delete this[i];
-      this.length = 0;  
+      this.length = 0;
     }
   }-*/;
 
   public final native <T> boolean exists(T name) /*-{
     return !!this[name];
   }-*/;
-  
+
   public final native <R, T> R get(T id) /*-{
     var r = this[id], t = typeof r;
     return r && t != 'number' && t != 'boolean' ? r : null;
@@ -68,18 +68,18 @@ public class JsCache extends JavaScriptObject {
   public final <T> JsCache getCache(int id) {
     return (JsCache)get(id);
   }
-  
+
   public final native <T> boolean getBoolean(T id) /*-{
     var r = this[id], t = typeof r;
     return 'boolean' == r ? r : 'true' == String(r);
   }-*/;
-  
+
   public final <T> float getFloat(T id) {
     return (float)getDouble(id);
   }
 
   public final native <T> double getDouble(T id) /*-{
-    // HtmlUnit prints an 'Unknown property name in get valueOf' 
+    // HtmlUnit prints an 'Unknown property name in get valueOf'
     // error here, but it is ok.
     var r = this[id] ? Number(this[id]) : 0;
     return r ? r : 0;
@@ -92,7 +92,7 @@ public class JsCache extends JavaScriptObject {
   public final native <T> String getString(T id) /*-{
     return this[id] == null ? null : String(this[id]);
   }-*/;
-  
+
   public final native <T> JsArrayMixed getArray(T id) /*-{
     var r = this[id];
     if (r && Object.prototype.toString.call(r) == '[object Array]') {
@@ -100,9 +100,9 @@ public class JsCache extends JavaScriptObject {
     }
     return null;
   }-*/;
-  
+
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
-    Object o = get(name); 
+    Object o = get(name);
     return (o != null && o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
   }
 
@@ -110,15 +110,15 @@ public class JsCache extends JavaScriptObject {
     for (k in this) return false;
     return true;
   }-*/;
-  
+
   public final native int indexOf(Object o) /*-{
     return this.indexOf(o);
   }-*/;
-  
+
   public final native <T> void putBoolean(T id, boolean b) /*-{
     this[id] = b;
   }-*/;
-  
+
   public final native <T> void putNumber(T id, double n) /*-{
     this[id] = n;
   }-*/;
@@ -128,15 +128,15 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   public final native int length() /*-{
-    if (typeof(this.length) == 'number') 
+    if (typeof(this.length) == 'number')
      return this.length;
-     
+
     var key, ret = 0;
     // Chrome in DevMode injects a property to JS objects
     for (key in this) if (key != "__gwt_ObjectId") ret ++;
-    return ret; 
+    return ret;
   }-*/;
-  
+
   public final int[] indexes() {
     checkNull();
     JsArrayString a = keysImpl();
@@ -150,7 +150,7 @@ public class JsCache extends JavaScriptObject {
     }
     return ret;
   }
-  
+
   public final String[] keys() {
     checkNull();
     JsArrayString a = keysImpl();
@@ -160,7 +160,7 @@ public class JsCache extends JavaScriptObject {
     }
     return ret;
   }
-  
+
   public final Object[] elements() {
     String[] keys = keys();
     Object[] ret = new Object[keys.length];
@@ -170,7 +170,7 @@ public class JsCache extends JavaScriptObject {
     }
     return ret;
   }
-  
+
   public final String tostring() {
     String ret = getClass().getName() + "{ ";
     for (String k: keys()){
@@ -178,19 +178,19 @@ public class JsCache extends JavaScriptObject {
     }
     return ret + "}";
   }
-  
+
   // In dev-mode a null object casted to JavascriptObject does not throw a NPE
   public final void checkNull() {
     checkNull(this);
   }
-  
+
   private final native JsArrayString keysImpl() /*-{
     var key, keys=[];
     // Chrome in DevMode injects a property to JS objects
     for(key in this) if (key != '__gwt_ObjectId') keys.push(String(key));
     return keys;
   }-*/;
-  
+
   /**
    * Throw a NPE when a js is null
    */

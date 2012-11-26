@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -31,19 +31,19 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
  * Effects plugin for Gwt Query.
  */
 public class Effects extends QueuePlugin<Effects> {
-  
+
   /**
-   * Class to access protected methods in Animation. 
+   * Class to access protected methods in Animation.
    */
   public static abstract class GQAnimation  extends Animation {
 
     private static final String ACTUAL_ANIMATION = "EffectsRunnning";
-    
+
     // Each Animation is associated to one element
     protected Element e;
-    
+
     protected void onStart() {
-      // Mark this animation as actual, so as we can stop it in the GQuery.stop() method 
+      // Mark this animation as actual, so as we can stop it in the GQuery.stop() method
       $(e).data(ACTUAL_ANIMATION, this);
       super.onStart();
     }
@@ -58,7 +58,7 @@ public class Effects extends QueuePlugin<Effects> {
       super.cancel();
     }
   }
-  
+
   /**
    * Just a class to store predefined speed constant values.
    */
@@ -68,7 +68,7 @@ public class Effects extends QueuePlugin<Effects> {
     public static final int SLOW = 600;
   }
 
-  
+
   public static final Class<Effects> Effects = GQuery.registerPlugin(
       Effects.class, new Plugin<Effects>() {
         public Effects init(GQuery gq) {
@@ -98,24 +98,24 @@ public class Effects extends QueuePlugin<Effects> {
       });
     }
   }
-  
+
   protected boolean isOff() {
     return Fx.off;
   }
-  
+
   /**
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS property, or color CSS property.
-   * 
+   *
    * Concerning to numeric properties, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
-   * 
+   *
    * By default animate considers css properties, if you wanted to animate element
    * attributes you should to prepend the symbol dollar to the attribute name.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to the position top:500px and left:500px for 400ms.
    *  //use a swing easing function for the transition
@@ -123,32 +123,32 @@ public class Effects extends QueuePlugin<Effects> {
    *  // Change the width and border attributes of a table
    *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
    * </pre>
-   * 
+   *
    * In addition to numeric values, each property can take the strings 'show',
    * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
    * animations that take into account the display type of the element. Animated
    * properties can also be relative. If a value is supplied with a leading +=
    * or -= sequence of characters, then the target value is computed by adding
    * or subtracting the given number from the current value of the property.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
    *  //use a swing easing function for the transition
    *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
    * </pre>
-   * 
+   *
    * For color css properties, values can be specified via hexadecimal or rgb or
    * literal values.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'", 400, Easing.SWING);
    *  $("#foo").animate($$("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
    * </pre>
-   * 
+   *
    * @param p a {@link Properties} object containing css properties to animate.
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -160,7 +160,7 @@ public class Effects extends QueuePlugin<Effects> {
 
     final Properties p = (stringOrProperties instanceof String)
         ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
-        
+
     for (Element e: elements()) {
       queueAnimation(e, new PropertiesAnimation(easing, e, p, funcs), duration);
     }
@@ -168,58 +168,58 @@ public class Effects extends QueuePlugin<Effects> {
   }
 
   /**
-   * 
+   *
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS property, or color CSS property.
-   * 
+   *
    * Concerning to numeric properties, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
-   * 
+   *
    * By default animate considers css properties, if you wanted to animate element
    * attributes you should to prepend the symbol dollar to the attribute name.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'");
    *  // Change the width attribute of a table
    *  $("table").animate("$width:'500'"), 400, Easing.LINEAR);
    * </pre>
-   * 
+   *
    * In addition to numeric values, each property can take the strings 'show',
    * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
    * animations that take into account the display type of the element. Animated
    * properties can also be relative. If a value is supplied with a leading +=
    * or -= sequence of characters, then the target value is computed by adding
    * or subtracting the given number from the current value of the property.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
    *  $("#foo").animate("left:'+=500'", new Function(){
-   *                  
+   *
    *                 public void f(Element e){
    *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
    *                 }
-   *                 
+   *
    *              });
    * </pre>
-   * 
+   *
    * The duration of the animation is 500ms.
-   * 
+   *
    * For color css properties, values can be specified via hexadecimal or rgb or
    * literal values.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
    * </pre>
-   * 
+   *
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -227,36 +227,36 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects animate(Object stringOrProperties, Function... funcs) {
     return animate(stringOrProperties, 500, funcs);
   }
-  
+
   /**
    * The animate() method allows you to create animation effects on any numeric
    * Attribute, CSS properties, or color CSS property.
-   * 
+   *
    * Concerning to numeric property, values are treated as a number of pixels
    * unless otherwise specified. The units em and % can be specified where
    * applicable.
-   * 
+   *
    * By default animate considers css properties, if you wanted to animate element
    * attributes you should to prepend the symbol dollar to the attribute name.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 2s
    *  $("#foo").animate("left:'500px'", 2000);
    *  // Change the width attribute of a table
    *  $("table").animate("$width:'500'"), 400);
    * </pre>
-   * 
+   *
    * In addition to numeric values, each property can take the strings 'show',
    * 'hide', and 'toggle'. These shortcuts allow for custom hiding and showing
    * animations that take into account the display type of the element. Animated
    * properties can also be relative. If a value is supplied with a leading +=
    * or -= sequence of characters, then the target value is computed by adding
    * or subtracting the given number from the current value of the property.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 1000ms and
    *  // change the background color of the element at the end of the animation
@@ -266,18 +266,18 @@ public class Effects extends QueuePlugin<Effects> {
    *     }
    *  });
    * </pre>
-   * 
-   * 
+   *
+   *
    * For color css properties, values can be specified via hexadecimal or rgb or
    * literal values.
-   * 
+   *
    * Example:
-   * 
+   *
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
-   * 
-   * 
+   *
+   *
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is
    *          complete
@@ -307,7 +307,7 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects clip(final ClipAnimation.Action a,
       final ClipAnimation.Corner c, final ClipAnimation.Direction d,
       final int duration, final Function... f) {
-    
+
     for (Element e : elements()) {
       queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
     }
@@ -563,11 +563,11 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects slideUp(int millisecs, Function... f) {
     return animate("height: 'hide'", millisecs, f);
   }
-  
+
 
   /**
    * Toggle displaying each of the set of matched elements.
-   * 
+   *
    * @param showOrHide A Boolean indicating whether to show or hide the
    *          elements.
    */

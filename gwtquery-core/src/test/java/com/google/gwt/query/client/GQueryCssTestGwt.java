@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -70,7 +70,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
-  
+
   public void gwtTearDown() {
     $(e).remove();
     e = null;
@@ -135,12 +135,12 @@ public class GQueryCssTestGwt extends GWTTestCase {
     assertTrue($("#test").css("backgroundImage").contains("image.jpg"));
     assertTrue($("#test").css(CSS.BACKGROUND_IMAGE).contains("image.jpg"));
   }
-  
+
   void assertMatches(String regex, String test) {
     boolean b = test.matches("^(" + regex + ")$");
     assertTrue("assertMatches error, expected:" + regex + ", actual:" + test, b);
   }
-  
+
   public void testBackgroundPositionProperty() {
 
     $(e).html("<div id='test'>Content</div>");
@@ -209,7 +209,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
         CSS.BACKGROUND.with(RGBColor.TRANSPARENT, UriValue.url("back.jpg"),
             BackgroundRepeat.NO_REPEAT, BackgroundAttachment.SCROLL,
             BackgroundPosition.CENTER));
-    
+
     assertMatches(".*back.jpg.*no-repeat scroll (center|center center|50% 50%).*", $("#test").css("background"));
   }
 
@@ -448,7 +448,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
 
     $("#test").css(CSS.COLOR.with(RGBColor.BLACK));
     assertEquals("black", $("#test").css(CSS.COLOR, false));
-    
+
     $("#test").css(CSS.COLOR.with(RGBColor.BLUE));
     assertEquals("blue", $("#test").css(CSS.COLOR, false));
 
@@ -457,7 +457,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
 
     $("#test").css(CSS.COLOR.with(RGBColor.GRAY));
     assertEquals("gray", $("#test").css(CSS.COLOR, false));
-    
+
     $("#test").css(CSS.COLOR.with(RGBColor.GREY));
     assertMatches("grey|rgb\\(128, *128, *128\\)", $("#test").css(CSS.COLOR, false));
 
@@ -663,7 +663,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
 
     $("#test").css(CSS.HEIGHT.with(Length.pt(10)));
     assertEquals("10pt", $("#test").css(CSS.HEIGHT, false));
-    
+
     $("#test").css(CSS.HEIGHT.with(Length.px(10.1)));
     assertEquals("10.1px", $("#test").css(CSS.HEIGHT, false));
 
@@ -714,7 +714,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
     $("#test").css(CSS.LINE_HEIGHT.with(2));
     assertEquals("2", $("#test").css("lineHeight", false));
     assertEquals("2", $("#test").css(CSS.LINE_HEIGHT, false));
-    
+
     $("#test").css(CSS.LINE_HEIGHT.with(2.5));
     assertEquals("2.5", $("#test").css("lineHeight", false));
     assertEquals("2.5", $("#test").css(CSS.LINE_HEIGHT, false));
@@ -746,7 +746,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
   public void testListStyleProperty() {
 
     $(e).html("<ul id='test'><li>Content</li></ul>");
-    
+
     assertMatches("(disc |)(outside |)(none|)", $("#test").css("listStyle"));
 
     $("#test").css(
@@ -754,7 +754,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
             null));
     assertMatches("disc outside( none|)", $("#test").css("listStyle"));
     assertMatches("disc outside( none|)", $("#test").css(CSS.LIST_STYLE));
-    
+
     $("#test").css(
         CSS.LIST_STYLE.with(ListStyleType.DISC, null, UriValue.url("square.jpg")));
     assertMatches("disc (outside |)url\\(.*square.jpg.*\\)", $("#test").css("listStyle"));
@@ -784,7 +784,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
 
     assertEquals("10px 20px", $("#test").css("margin"));
     assertEquals("10px 20px", $("#test").css(CSS.MARGIN));
-    
+
     $("#test").css(CSS.MARGIN.with(Length.px(10), Length.px(20), Length.px(30)));
 
     assertEquals("10px 20px 30px", $("#test").css("margin"));
@@ -1019,11 +1019,11 @@ public class GQueryCssTestGwt extends GWTTestCase {
   public void testVerticalAlignProperty() {
 
     $(e).html("<div id='test'>Content</div>");
-       
+
     $("#test").css(CSS.VERTICAL_ALIGN.with(Length.px(120)));
     assertEquals("120px", $("#test").css("verticalAlign"));
     assertEquals("120px", $("#test").css(CSS.VERTICAL_ALIGN));
-    
+
     $("#test").css(CSS.VERTICAL_ALIGN.with(VerticalAlign.BASELINE));
     assertEquals("baseline", $("#test").css("verticalAlign"));
     assertEquals("baseline", $("#test").css(CSS.VERTICAL_ALIGN));
@@ -1127,7 +1127,7 @@ public class GQueryCssTestGwt extends GWTTestCase {
     $("#test").css(CSS.ZINDEX.with(1000));
     assertEquals("1000", $("#test").css("zIndex", true));
     assertEquals("1000", $("#test").css(CSS.ZINDEX, true));
-    
+
     $("#test").css(CSS.ZINDEX.with(null));
     assertMatches("0|auto", $("#test").css("zIndex", true));
     assertMatches("0|auto", $("#test").css(CSS.ZINDEX, true));

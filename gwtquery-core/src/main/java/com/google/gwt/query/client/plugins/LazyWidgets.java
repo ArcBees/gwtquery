@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -48,7 +48,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link Button} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link Button} created
    * by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> button();
 
@@ -56,7 +56,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link Button} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link Button} created
    * by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> button(WidgetInitializer<Button> initializers);
 
@@ -73,7 +73,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link PasswordTextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new
    * {@link PasswordTextBox} created by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> passwordBox(WidgetInitializer<PasswordTextBox> initializers);
 
@@ -81,7 +81,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link TextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> textBox();
 
@@ -89,7 +89,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link TextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> textBox(WidgetInitializer<TextBox> initializers);
 
@@ -97,7 +97,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link TextArea} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> textArea();
 
@@ -105,7 +105,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    * Create a {@link TextArea} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   LazyWidgets<T> textArea(WidgetInitializer<TextArea> initializers);
 

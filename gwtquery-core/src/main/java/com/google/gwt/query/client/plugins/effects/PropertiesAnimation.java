@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -67,8 +67,8 @@ public class PropertiesAnimation extends GQAnimation {
   private static final JsRegexp REGEX_BORDERCOLOR = new JsRegexp("^bordercolor$", "i");
 
   private static final JsRegexp REGEX_BACKGROUNDCOLOR = new JsRegexp("^backgroundcolor$", "i");
-  
-  
+
+
 
   public static Fx computeFxProp(Element e, String key, String val,
       boolean hidden) {
@@ -167,7 +167,7 @@ public class PropertiesAnimation extends GQAnimation {
         String $2 = parts.get(2);
         String $3 = parts.get(3);
         end = Double.parseDouble($2);
-        
+
         if (rkey == null) {
           unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : //
             $3 == null || $3.isEmpty() ? "px" : $3;
@@ -186,7 +186,7 @@ public class PropertiesAnimation extends GQAnimation {
         }
       }
     }
-    
+
     return new Fx(key, val, start, end, unit, rkey);
   }
 
@@ -206,7 +206,7 @@ public class PropertiesAnimation extends GQAnimation {
     this.prps = p;
     g = Effects.$(e).as(Effects.Effects);
   }
-  
+
   @Override
   public void onCancel() {
     Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);

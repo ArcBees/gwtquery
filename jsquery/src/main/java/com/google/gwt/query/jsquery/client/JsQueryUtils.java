@@ -15,7 +15,7 @@ import com.google.gwt.query.client.js.JsUtils;
 /**
  * These are a set of utility methods needed in jsquery because
  * either they are not in the GQuery core yet, or they are already
- * there but we need to modify their behavior. 
+ * there but we need to modify their behavior.
  * Most of them should be moved to the GQuery core api.
  *
  */
@@ -35,7 +35,7 @@ public abstract class JsQueryUtils {
   public static void ready(Function f) {
     f.f();
   }
-  
+
   public static int inArray(Object object, Object array) {
     if (array instanceof List) {
        return ((List<?>)array).indexOf(object);
@@ -75,7 +75,7 @@ public abstract class JsQueryUtils {
   }
 
   private static native JavaScriptObject getDefaultPrototype() /*-{
-		return $wnd.JsQuery && $wnd.JsQuery.fn 
+		return $wnd.JsQuery && $wnd.JsQuery.fn
 		    ? $wnd.JsQuery.fn.prototype
 				: null;
   }-*/;
@@ -90,7 +90,7 @@ public abstract class JsQueryUtils {
 		}
 		return d;
   }-*/;
-  
+
   public static JavaScriptObject[] each(JavaScriptObject[] objs, Function f) {
     ArrayList<Object> ret = new ArrayList<Object>();
     for (Object o : objs) {

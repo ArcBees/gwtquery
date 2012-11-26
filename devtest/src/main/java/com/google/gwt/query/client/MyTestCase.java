@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,7 +32,7 @@ public class MyTestCase {
   public static void assertEquals(Object a, Object b) {
     check(a.equals(b), "assertEquals: expected=" + a + " actual=" + b);
   }
-  
+
   public static void assertFalse(boolean b) {
     check(!b, "assertTrue: actual should be false but is true");
   }
@@ -52,11 +52,11 @@ public class MyTestCase {
   public static void assertTrue(boolean b) {
     check(b, "assertTrue: actual should be true but is false");
   }
-  
+
   public static void assertTrue(String msg, boolean b) {
     check(b, msg);
   }
-  
+
   public static void check(boolean condition, String message) {
     if (!condition) {
       RuntimeException ex = new RuntimeException(message);
@@ -64,11 +64,11 @@ public class MyTestCase {
       throw ex;
     }
   }
-  
+
   protected static void assertHtmlEquals(Object expected, Object actual) {
     assertEquals(iExplorerFixHtml(expected), iExplorerFixHtml(actual));
   }
-  
+
   protected static String iExplorerFixHtml(Object s) {
     return s.toString().trim().toLowerCase().replaceAll(
         "[\r\n]", "").replaceAll(
@@ -87,11 +87,11 @@ public class MyTestCase {
       e.setInnerHTML("");
     }
   }
-  
+
   protected static void assertArrayContains(Object result, Object... array) {
     assertArrayContains("", result, array);
   }
-  
+
   protected static void assertArrayContains(String message, Object result, Object... array) {
     String values = "";
     boolean done = false;
@@ -103,10 +103,10 @@ public class MyTestCase {
     }
     message = message + ", value (" + result + ") not found in: " + values;
     assertTrue(message, done);
-  }  
-  
+  }
+
   private boolean testRunning = false;
-  
+
   protected void delayTestFinish(int millis) {
     testRunning = true;
     new Timer(){
@@ -115,7 +115,7 @@ public class MyTestCase {
       }
     }.schedule(millis);
   }
-  
+
   protected void finishTest() {
     testRunning = false;
   }
@@ -127,7 +127,7 @@ public class MyTestCase {
   protected void fail(String msg) {
     check(false, msg);
   }
-  
+
   protected void assertPosition(GQuery g, Offset min, Offset max) {
     int a = Math.min(min.top, max.top);
     int b = Math.max(min.top, max.top);

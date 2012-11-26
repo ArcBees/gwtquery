@@ -4,4 +4,4 @@
     <add-linker name="xsiframe"/>
     <set-property name="compiler.stackMode" value="strip"/>
 </module>
-    
+

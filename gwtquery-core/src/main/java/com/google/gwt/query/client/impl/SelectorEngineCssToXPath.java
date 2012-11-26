@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -31,54 +31,54 @@ import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath
- * and delegates to document.evaluate(). 
- * It is based on the regular expressions taken from Andrea Giammarchi's Css2Xpath 
+ * and delegates to document.evaluate().
+ * It is based on the regular expressions taken from Andrea Giammarchi's Css2Xpath
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
-  
+
   static JsNamedArray<String> cache;
-  
+
   /**
    * Interface for callbacks in replaceAll operations.
    */
   public static interface ReplaceCallback {
     String foundMatch(ArrayList<String> s);
   }
-  
+
   /**
    * Interface for replacer implementations (GWT and JVM).
    */
   public static interface Replacer {
     String replaceAll(String s, String expr, Object replacement);
   }
-  
+
   private static SelectorEngineCssToXPath instance;
-  
+
   private static ReplaceCallback rc_scp = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
-      return s.get(1) + s.get(2) + 
+      return s.get(1) + s.get(2) +
         (s.get(3).startsWith(" ") ? "%S%" : s.get(3).startsWith("#") ? "%H%" : "%P%") +
         s.get(4) + s.get(5);
     }
   };
-  
+
   private static ReplaceCallback rc_$Attr = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
       return "[substring(@" + s.get(1) +  ",string-length(@" + s.get(1) + ")-" + (s.get(2).replaceAll("'", "").length() - 1) +  ")=" + s.get(2) + "]";
     }
   };
-  
+
   private static ReplaceCallback rc_Not = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
       return s.get(1) + "[not(" +  getInstance().css2Xpath(s.get(2)).replaceAll("^[^\\[]+\\[([^\\]]*)\\].*$", "$1" +  ")]");
     }
   };
-  
+
   private static ReplaceCallback rc_nth_child = new ReplaceCallback() {
     public String foundMatch(ArrayList<String> s) {
       String s1 = s.get(1);
       String s2 = s.get(2);
-      
+
       boolean noPrefix = s1 == null || s1.length() == 0;
 
       if ("n".equals(s2)) {
@@ -91,11 +91,11 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     	  String prefix = noPrefix ? "" : s1;
         return prefix + "[(count(preceding-sibling::*) + 1) mod 2=1]";
       }
-      
+
       if (!s2.contains("n")){
     	  return "*[position() = "+s2+"]" + (noPrefix ? "" : "/self::" + s1);
       }
-      
+
       String[] t = s2.replaceAll("^([0-9]*)n.*?([0-9]*)?$", "$1+$2").split("\\+");
       String t0 = t[0];
       String t1 = t.length > 1 ? t[1] : "0";
@@ -118,7 +118,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     "([\\w\\-\\*])>([\\w\\-\\*])", "$1/$2",
     // all unescaped stuff escaped
     "\\[([^=]+)=([^'|\"][^\\]]*)\\]", "[$1='$2']",
-    // all descendant or self to 
+    // all descendant or self to
     "(^|[^\\w\\-\\*])(#|\\.)([\\w\\-]+)", "$1*$2$3",
     "([\\>\\+\\|\\~\\,\\s])([a-zA-Z\\*]+)", "$1//$2",
     "\\s+//", "//",
@@ -171,7 +171,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     // Duplicated quotes
     "'+","'",
     };
-  
+
   public static SelectorEngineCssToXPath getInstance() {
     if (instance == null) {
       instance = new SelectorEngineCssToXPath();
@@ -197,11 +197,11 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         }
         return s;
       } else {
-        return s.replaceAll(r, o.toString()); 
+        return s.replaceAll(r, o.toString());
       }
     }
   };
-  
+
   /**
    * A replacer which works in both sides. Right now gquery JsRegexp is faster
    * than gwt shared RegExp and does not uses HashSet
@@ -231,12 +231,12 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   public SelectorEngineCssToXPath() {
     instance = this;
   }
-  
+
   public SelectorEngineCssToXPath(Replacer r) {
     replacer = r;
     instance = this;
   }
-  
+
   public String css2Xpath(String selector) {
     String ret = selector;
     for (int i = 0; i < regs.length;) {
@@ -244,7 +244,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     }
     return ".//" + ret;
   }
-  
+
   public NodeList<Element> select(String sel, Node ctx) {
     if (cache == null) {
       cache = JsNamedArray.create();
@@ -254,11 +254,11 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       xsel =  sel.startsWith("./") || sel.startsWith("/") ? sel : css2Xpath(sel);
       cache.put(sel, xsel);
     }
-    
+
     JsNodeArray elm = JsNodeArray.create();
     try {
       SelectorEngine.xpathEvaluate(xsel, ctx, elm);
-      return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();    
+      return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();
     } catch (Exception e) {
       if (!GWT.isScript()) {
         if (!SelectorEngine.hasXpathEvaluate()) {

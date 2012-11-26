@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,11 +24,11 @@ import com.google.gwt.query.client.js.JsUtils;
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
  */
 public class Properties extends JavaScriptObject {
-  
+
   public static Properties create() {
     return JsCache.create().cast();
   }
-  
+
   public static Properties create(String properties) {
     if (properties != null && !properties.isEmpty()) {
       String p = wrapPropertiesString(properties);
@@ -58,12 +58,12 @@ public class Properties extends JavaScriptObject {
         .replaceAll(";([^:]+):", ",$1:") // change semicolon
         .replaceAll(";([^:]+):", ",$1:") // change semicolon second pass
         .replaceAll(":\"(-?\\d[\\d\\.]*|null|false|true)\"[;,]", ":$1,") // numbers do not need quote
-        .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings 
+        .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings
         ;
     ret = ret.matches("(^[\\[\\{].*[\\]\\}]$)") ? ret : "{" + ret + "}";
     return ret;
   }
-  
+
   protected Properties() {
   }
 
@@ -101,7 +101,7 @@ public class Properties extends JavaScriptObject {
   public final float getFloat(Object name) {
     return c().getFloat(String.valueOf(name));
   }
-  
+
   public final Function getFunction(Object name) {
     final Object o = c().get(String.valueOf(name));
     if (o != null) {
@@ -116,20 +116,20 @@ public class Properties extends JavaScriptObject {
       }
     }
     return null;
-  }  
+  }
 
   public final int getInt(Object name) {
     return c().getInt(String.valueOf(name));
   }
-  
+
   public final String getStr(Object name) {
     return c().getString(String.valueOf(name));
   }
-  
+
   public final Object getObject(Object name) {
     return c().get(String.valueOf(name));
   }
-  
+
   @SuppressWarnings("unchecked")
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
     // Casting because of issue_135
@@ -139,15 +139,15 @@ public class Properties extends JavaScriptObject {
   public final JsArrayMixed getArray(Object name) {
     return c().getArray(String.valueOf(name));
   }
-  
+
   public final String[] keys() {
     return c().keys();
   }
-  
+
   public final <T> void remove(T name) {
     c().delete(String.valueOf(name));
   }
-  
+
   public final <T> void setNumber(T name, double val) {
     c().putNumber(name, val);
   }
@@ -155,7 +155,7 @@ public class Properties extends JavaScriptObject {
   public final <T> void setBoolean(T name, boolean val) {
     c().putBoolean(name, val);
   }
-  
+
   public final native <T> void setFunction(T name, Function f) /*-{
     this[name] = function() {
       f.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(arguments);
@@ -163,23 +163,23 @@ public class Properties extends JavaScriptObject {
     // We store the original function reference
     this[name].__f = f;
   }-*/;
-  
+
   public final <T, O> void set(T name, O val) {
     c().put(String.valueOf(name), val);
   }
-  
+
   public final String tostring() {
     return toJsonString();
   }
-  
+
   public final String toJsonString() {
     return JsUtils.JSON2String(JsCache.checkNull(this));
   }
-  
+
   public final String toQueryString() {
     return JsUtils.param(JsCache.checkNull(this));
   }
-  
+
   public final boolean isEmpty(){
     return c().length() == 0;
   }

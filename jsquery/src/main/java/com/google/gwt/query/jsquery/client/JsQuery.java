@@ -8,7 +8,7 @@ import com.google.gwt.query.jsquery.client.GQueryOverlay.FunctionOverlay;
 import com.google.gwt.query.jsquery.client.GQueryOverlay.PredicateOverlay;
 
 public class JsQuery implements EntryPoint {
-  
+
   public void onModuleLoad() {
     GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
       Logger l = Logger.getLogger("JsQuery");
@@ -19,26 +19,26 @@ public class JsQuery implements EntryPoint {
         }
         l.info(r);
       }
-    });    
-    // We just export the api, but we do not call GQueryOverlay.onLoad() so as 
+    });
+    // We just export the api, but we do not call GQueryOverlay.onLoad() so as
     // apps and plugins could load their stuff before calling it
     export();
-    
+
     // Un comment for testing stuff below
     // testJs();
   }
-  
+
   public static void export() {
     GWT.create(FunctionOverlay.class);
     GWT.create(PredicateOverlay.class);
     GWT.create(GQueryOverlay.class);
   }
-  
+
   public static native void onLoad() /*-{
     $wnd.onJsQueryLoad && $wnd.onJsQueryLoad();
     $wnd.JsQuery && $wnd.JsQuery.onLoad && $wnd.JsQuery.onLoad();
   }-*/;
-  
+
   /**
    * Used to paste jquery code and test it in dev mode
    */
@@ -47,8 +47,8 @@ public class JsQuery implements EntryPoint {
     window = $wnd;
     document = $doc;
     $ = $wnd.$;
-    
+
     // Paste jquery code here
-    
+
   }-*/;
 }

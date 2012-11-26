@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,13 +26,13 @@ import com.google.gwt.query.client.Predicate;
 /**
  * GWT clone of jQueryUi-core. This class define some function present in the
  * jQuery-ui core and not directly in jQuery
- * 
+ *
  */
 public class UiPlugin extends GQuery {
 
   /**
    * A POJO used to store dimension of an element
-   * 
+   *
    */
   public static class Dimension {
     private int height = 0;
@@ -172,7 +172,7 @@ public class UiPlugin extends GQuery {
 
   /**
    * fire event and call callback function.
-   * 
+   *
    */
   protected void trigger(GwtEvent<?> e, Function callback, Element element) {
     trigger(e, callback, element, eventBus);

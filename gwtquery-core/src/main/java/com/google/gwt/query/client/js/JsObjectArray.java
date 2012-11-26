@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,14 +21,14 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Lightweight JSO based array class that can store objects.
  */
 public final class JsObjectArray<T> extends JavaScriptObject {
-  
+
   public static <T> JsObjectArray<T> create() {
     return JavaScriptObject.createArray().cast();
   }
-  
+
   protected JsObjectArray() {
   }
-  
+
   private JsCache c() {
     return cast();
   }
@@ -55,7 +55,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public void set(int i, T val) {
     c().put(i, val);
   }
-  
+
   public void concat(JsObjectArray<T> ary) {
     c().concat(ary);
   }

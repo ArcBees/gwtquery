@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -74,7 +74,7 @@ public class CSS {
    * fixed with regard to the viewport (<i>'fixed'</i>) or scrolls along with
    * the containing block (<i>'scroll'</i>).
    * </p>
-   * 
+   *
    * <p>
    * This property can only take a {@link BackgroundAttachment} object as value.
    * </p>
@@ -86,7 +86,7 @@ public class CSS {
    * This property sets the background color of an element, either a color value
    * or the keyword 'transparent', to make the underlying colors shine through.
    * </p>
-   * 
+   *
    * <p>
    * This property can only take a {@link RGBColor} object as value.
    * </p>
@@ -101,12 +101,12 @@ public class CSS {
    * rendered on top of the background color. (Thus, the color is visible in the
    * transparent parts of the image).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link UriValue} object as value.
    * </p>
-   * 
-   * 
+   *
+   *
    */
   public static BackgroundImageProperty BACKGROUND_IMAGE;
 
@@ -115,11 +115,11 @@ public class CSS {
    * If a background image has been specified, this property specifies its
    * initial position.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BackgroundPosition} object as value.
    * </p>
-   * 
+   *
    */
   public static BackgroundPositionProperty BACKGROUND_POSITION;
 
@@ -129,11 +129,11 @@ public class CSS {
    * image is repeated (tiled), and how. All tiling covers the content and
    * padding areas of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BackgroundRepeat} object as value.
    * </p>
-   * 
+   *
    */
   public static BackgroundRepeatProperty BACKGROUND_REPEAT;
 
@@ -145,7 +145,7 @@ public class CSS {
    * cannot set different values on the four borders. To do so, one or more of
    * the other border properties must be used.
    * </p>
-   * 
+   *
    */
   public static BorderProperty BORDER;
 
@@ -154,7 +154,7 @@ public class CSS {
    * The <i>border-bottom</i> property is a shorthand property for setting the
    * width, style, and color of the bottom border of a box.
    * </p>
-   * 
+   *
    */
   public static BorderProperty BORDER_BOTTOM;
 
@@ -163,11 +163,11 @@ public class CSS {
    * The <i>border-bottom-color</i> property specifies the color of the bottom
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderColorProperty BORDER_BOTTOM_COLOR;
 
@@ -176,7 +176,7 @@ public class CSS {
    * The <i>border-bottom-style</i> property specifies the line style of a box's
    * bottom border (solid, double, dashed, etc.).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
@@ -188,12 +188,12 @@ public class CSS {
    * The <i>border-bottom-width</i> property specifies the width of the bottom
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
-   * 
+   *
    */
   public static BorderWidthProperty BORDER_BOTTOM_WIDTH;
 
@@ -201,11 +201,11 @@ public class CSS {
    * <p>
    * The <i>border-collapse</i> selects a table's border model.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderCollapse} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderCollapseProperty BORDER_COLLAPSE;
 
@@ -214,11 +214,11 @@ public class CSS {
    * The <i>border-color</i> property specifies the color of the 4 borders of a
    * box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderColorProperty BORDER_COLOR;
 
@@ -235,11 +235,11 @@ public class CSS {
    * The <i>border-left-color</i> property specifies the color of the left
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderColorProperty BORDER_LEFT_COLOR;
 
@@ -248,11 +248,11 @@ public class CSS {
    * The <i>border-left-style</i> property specifies the line style of a box's
    * left border (solid, double, dashed, etc.).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderStyleProperty BORDER_LEFT_STYLE;
 
@@ -261,12 +261,12 @@ public class CSS {
    * The <i>border-left-width</i> property specifies the width of the left
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
-   * 
+   *
    */
   public static BorderWidthProperty BORDER_LEFT_WIDTH;
 
@@ -275,7 +275,7 @@ public class CSS {
    * The <i>border-right</i> property is a shorthand property for setting the
    * width, style, and color of the right border of a box.
    * </p>
-   * 
+   *
    */
   public static BorderProperty BORDER_RIGHT;
 
@@ -284,11 +284,11 @@ public class CSS {
    * The <i>border-right-color</i> property specifies the color of the right
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderColorProperty BORDER_RIGHT_COLOR;
 
@@ -297,11 +297,11 @@ public class CSS {
    * The <i>border-right-style</i> property specifies the line style of a box's
    * right border (solid, double, dashed, etc.).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderStyleProperty BORDER_RIGHT_STYLE;
 
@@ -310,12 +310,12 @@ public class CSS {
    * The <i>border-right-width</i> property specifies the width of the right
    * border of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
-   * 
+   *
    */
   public static BorderWidthProperty BORDER_RIGHT_WIDTH;
 
@@ -327,11 +327,11 @@ public class CSS {
    * first gives the horizontal spacing and the second the vertical spacing.
    * Lengths may not be negative.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderSpacing} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderSpacingProperty BORDER_SPACING;
 
@@ -340,11 +340,11 @@ public class CSS {
    * The <i>border-style</i> property specifies the line style of the 4 borders
    * of a box (solid, double, dashed, etc.).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderStyleProperty BORDER_STYLE;
 
@@ -353,7 +353,7 @@ public class CSS {
    * The <i>border-top</i> property is a shorthand property for setting the
    * width, style, and color of the top border of a box.
    * </p>
-   * 
+   *
    */
   public static BorderProperty BORDER_TOP;
 
@@ -362,11 +362,11 @@ public class CSS {
    * The <i>border-top-color</i> property specifies the color of the top border
    * of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderColorProperty BORDER_TOP_COLOR;
 
@@ -375,11 +375,11 @@ public class CSS {
    * The <i>border-top-style</i> property specifies the line style of a box's
    * top border (solid, double, dashed, etc.).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
+   *
    */
   public static BorderStyleProperty BORDER_TOP_STYLE;
 
@@ -388,12 +388,12 @@ public class CSS {
    * The <i>border-top-width</i> property specifies the width of the top border
    * of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
-   * 
+   *
    */
   public static BorderWidthProperty BORDER_TOP_WIDTH;
 
@@ -402,12 +402,12 @@ public class CSS {
    * The <i>border-width</i> property specifies the width of the 4 border of a
    * box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link BorderWidth} or a {@link Length} object as
    * value.
    * </p>
-   * 
+   *
    */
   public static BorderWidthProperty BORDER_WIDTH;
 
@@ -428,11 +428,11 @@ public class CSS {
    * <p>
    * For static positioned elements, the bottom property has no effect.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static EdgePositionProperty BOTTOM;
 
@@ -441,11 +441,11 @@ public class CSS {
    * The <i>caption-side</i> property specifies the position of the caption box
    * with respect to the table box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link CaptionSide} object as value.
    * </p>
-   * 
+   *
    */
   public static CaptionSideProperty CAPTION_SIDE;
 
@@ -456,11 +456,11 @@ public class CSS {
    * itself has floating descendants; the <i>clear</i> property has no effect on
    * those.)
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Clear} object as value.
    * </p>
-   * 
+   *
    */
   public static ClearProperty CLEAR;
 
@@ -478,7 +478,7 @@ public class CSS {
    * <p>
    * This property takes a {@link Shape} object as value.
    * </p>
-   * 
+   *
    */
   public static ClipProperty CLIP;
 
@@ -502,7 +502,7 @@ public class CSS {
    * <p>
    * This property takes a {@link Cursor} object as value.
    * </p>
-   * 
+   *
    */
   public static CursorProperty CURSOR;
 
@@ -517,7 +517,7 @@ public class CSS {
    * <p>
    * This property takes a {@link Direction} object as value.
    * </p>
-   * 
+   *
    */
   public static DirectionProperty DIRECTION;
 
@@ -525,7 +525,7 @@ public class CSS {
    * <p>
    * This property takes a {@link UnicodeBidi} object as value.
    * </p>
-   * 
+   *
    */
   public static UnicodeBidiProperty UNICODE_BIDI;
 
@@ -537,7 +537,7 @@ public class CSS {
    * <p>
    * This property takes a {@link Display} object as value.
    * </p>
-   * 
+   *
    */
   public static DisplayProperty DISPLAY;
 
@@ -560,11 +560,11 @@ public class CSS {
    * no visible content, the entire row behaves as if it had <i>display:
    * none</i>.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link EmptyCells} object as value.
    * </p>
-   * 
+   *
    */
   public static EmptyCellsProperty EMPTY_CELLS;
 
@@ -574,11 +574,11 @@ public class CSS {
    * right, or not at all. It may be set for elements that generate boxes that
    * are not absolutely positioned.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Float} object as value.
    * </p>
-   * 
+   *
    */
   public static FloatProperty FLOAT;
 
@@ -587,11 +587,11 @@ public class CSS {
    * The <i>font-size</i> property requests normal (sometimes referred to as
    * "roman" or "upright"), italic, and oblique faces within a font family.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link FontSize} or a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static FontSizeProperty FONT_SIZE;
 
@@ -600,7 +600,7 @@ public class CSS {
    * The <i>font-style</i> property requests normal (sometimes referred to as
    * "roman" or "upright"), italic, and oblique faces within a font family.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link FontStyle} object as value.
    * </p>
@@ -616,7 +616,7 @@ public class CSS {
    * visible effect for scripts that are unicameral (having only one case, as
    * with most of the world's writing systems).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link FontVariant} object as value.
    * </p>
@@ -627,11 +627,11 @@ public class CSS {
    * <p>
    * The <i>font-weight</i> property specifies the weight of the font.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link FontWeight} object as value.
    * </p>
-   * 
+   *
    */
   public static FontWeightProperty FONT_WEIGHT;
 
@@ -645,11 +645,11 @@ public class CSS {
    * section on computing heights and margins for non-replaced inline elements
    * for the rules used instead.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static HeightProperty HEIGHT;
 
@@ -676,11 +676,11 @@ public class CSS {
    * <p>
    * For static positioned elements, the left property has no effect.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static EdgePositionProperty LEFT;
 
@@ -689,11 +689,11 @@ public class CSS {
    * The <i>letter-spacing</i> property specifies spacing behavior between text
    * characters.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static LetterSpacingProperty LETTER_SPACING;
 
@@ -703,14 +703,14 @@ public class CSS {
    * of inline-level elements, it specifies the minimal height of each generated
    * inline box.
    * </p>
-   * 
+   *
    * <p>
    * If the property is set on an inline-level element, it specifies the exact
    * height of each box generated by the element. (Except for inline replaced
    * elements, where the height of the box is given by the <i>height</i>
    * property.)
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object or a {@link Integer} object or
    * a {@link Double} object as value as value.
@@ -724,7 +724,7 @@ public class CSS {
    * three properties <i>list-style-type</i>, <i>list-style-image</i>, and
    * <i>list-style-position</i> at the same place in the style sheet.
    * </p>
-   * 
+   *
    */
   public static ListStyleProperty LIST_STYLE;
 
@@ -734,11 +734,11 @@ public class CSS {
    * the list item marker. When the image is available, it will replace the
    * marker set with the <i>list-style-type</i> marker.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link UriValue} object as value.
    * </p>
-   * 
+   *
    */
   public static ListStyleImageProperty LIST_STYLE_IMAGE;
 
@@ -747,11 +747,11 @@ public class CSS {
    * The <i>list-style-position</i> property specifies the position of the
    * marker box in the principal block box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link ListStylePosition} object as value.
    * </p>
-   * 
+   *
    */
   public static ListStylePositionProperty LIST_STYLE_POSITION;
 
@@ -764,12 +764,12 @@ public class CSS {
    * systems, and alphabetic systems. Note. Numbered lists improve document
    * accessibility by making lists easier to navigate.
    * </p>
-   * 
+   *
    * <p>
    * Glyphs are specified with disc, circle, and square. Their exact rendering
    * depends on the user agent.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link ListStyleType} object as value.
    * </p>
@@ -782,7 +782,7 @@ public class CSS {
    * <i>margin-top</i>, <i>margin-right</i>, <i>margin-bottom</i>, and
    * <i>margin-left</i> at the same place in the style sheet.
    * </p>
-   * 
+   *
    * <p>
    * If there is only one value, it applies to all sides. If there are two
    * values, the top and bottom margins are set to the first value and the right
@@ -799,11 +799,11 @@ public class CSS {
    * The <i>margin-bottom</i> property specifies the width of the margin area of
    * the bottom of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static MarginProperty MARGIN_BOTTOM;
 
@@ -812,11 +812,11 @@ public class CSS {
    * The <i>margin-left</i> property specifies the width of the margin area of
    * the left side of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static MarginProperty MARGIN_LEFT;
 
@@ -825,11 +825,11 @@ public class CSS {
    * The <i>margin-right</i> property specifies the width of the margin area of
    * the right side of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static MarginProperty MARGIN_RIGHT;
 
@@ -838,7 +838,7 @@ public class CSS {
    * The <i>margin-top</i> property specifies the width of the margin area of
    * the top of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
@@ -849,7 +849,7 @@ public class CSS {
    * <p>
    * The <i>max-height</i> property sets the maximum height of an element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
@@ -860,11 +860,11 @@ public class CSS {
    * <p>
    * The <i>max-width</i> property sets the maximum width of an element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static WidthProperty MAX_WIDTH;
 
@@ -872,11 +872,11 @@ public class CSS {
    * <p>
    * The <i>min-height</i> property sets the minimum height of an element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static HeightProperty MIN_HEIGHT;
 
@@ -884,7 +884,7 @@ public class CSS {
    * <p>
    * The <i>max-width</i> property sets the minimum width of an element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
@@ -908,7 +908,7 @@ public class CSS {
    * make the element "stand out". The outline-color property specifies the
    * color of an outline.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link RGBColor} object as value.
    * </p>
@@ -924,7 +924,7 @@ public class CSS {
    * <p>
    * This property takes a {@link BorderStyle} object as value.
    * </p>
-   * 
+   *
    */
   public static OutlineStyleProperty OUTLINE_STYLE;
 
@@ -937,7 +937,7 @@ public class CSS {
    * <p>
    * This property takes a {@link BorderWidth} object as value.
    * </p>
-   * 
+   *
    */
   public static OutlineWidthProperty OUTLINE_WIDTH;
 
@@ -947,11 +947,11 @@ public class CSS {
    * element is clipped when it overflows the element's box (which is acting as
    * a containing block for the content).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Overflow} object as value.
    * </p>
-   * 
+   *
    */
   public static OverflowProperty OVERFLOW;
 
@@ -961,7 +961,7 @@ public class CSS {
    * <i>padding-top</i>, <i>padding-right</i>, <i>padding-bottom</i>, and
    * <i>padding-left</i> at the same place in the style sheet.
    * </p>
-   * 
+   *
    * <p>
    * If there is only one component value, it applies to all sides. If there are
    * two values, the top and bottom paddings are set to the first value and the
@@ -970,7 +970,7 @@ public class CSS {
    * second, and the bottom is set to the third. If there are four values, they
    * apply to the top, right, bottom, and left, respectively.
    * </p>
-   * 
+   *
    */
   public static ShorthandPaddingProperty PADDING;
 
@@ -979,11 +979,11 @@ public class CSS {
    * The <i>padding-bottom</i> property specifies the width of the padding area
    * of the bottom of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static PaddingProperty PADDING_BOTTOM;
 
@@ -992,11 +992,11 @@ public class CSS {
    * The <i>padding-left</i> property specifies the width of the padding area of
    * the left side of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static PaddingProperty PADDING_LEFT;
 
@@ -1005,11 +1005,11 @@ public class CSS {
    * The <i>padding-right</i> property specifies the width of the padding area
    * of the right side of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static PaddingProperty PADDING_RIGHT;
 
@@ -1018,11 +1018,11 @@ public class CSS {
    * The <i>padding-top</i> property specifies the width of the padding area of
    * the top of a box
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static PaddingProperty PADDING_TOP;
 
@@ -1031,11 +1031,11 @@ public class CSS {
    * The <i>position</i> property determines which of the CSS2 positioning
    * algorithms is used to calculate the position of a box.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Position} object as value.
    * </p>
-   * 
+   *
    */
   public static PositionProperty POSITION;
 
@@ -1056,7 +1056,7 @@ public class CSS {
    * <p>
    * For static positioned elements, the right property has no effect.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
@@ -1068,11 +1068,11 @@ public class CSS {
    * The <i>text-align</i> property describes how inline-level content of a
    * block container is aligned.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link TextAlign} object as value.
    * </p>
-   * 
+   *
    */
   public static TextAlignProperty TEXT_ALIGN;
 
@@ -1097,7 +1097,7 @@ public class CSS {
    * decorations on content that is not text. For example, images and inline
    * blocks must not be underlined.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link TextDecoration} object as value.
    * </p>
@@ -1111,14 +1111,14 @@ public class CSS {
    * of the first box that flows into the block's first line box. The box is
    * indented with respect to the left (or right, for right-to-left layout) edge
    * of the line box. User agents must render this indentation as blank space.
-   * 
+   *
    * </p>
    * <p>
    * <i>Text-ident</i> only affects a line if it is the first formatted line of
    * an element. For example, the first line of an anonymous block box is only
    * affected if it is the first child of its parent element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
@@ -1133,7 +1133,7 @@ public class CSS {
    * <p>
    * This property takes a {@link TextTransform} object as value.
    * </p>
-   * 
+   *
    */
   public static TextTransformProperty TEXT_TRANSFORM;
 
@@ -1153,11 +1153,11 @@ public class CSS {
    * <p>
    * For static positioned elements, the top property has no effect.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static EdgePositionProperty TOP;
 
@@ -1166,11 +1166,11 @@ public class CSS {
    * The <i>vertical-align</i> property affects the vertical positioning inside
    * a line box of the boxes generated by an inline-level element.
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link VerticalAlign} object as value.
    * </p>
-   * 
+   *
    */
   public static VerticalAlignProperty VERTICAL_ALIGN;
 
@@ -1181,11 +1181,11 @@ public class CSS {
    * <i>display<i> property to <i>none</i> to suppress box generation
    * altogether).
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Visibility} object as value.
    * </p>
-   * 
+   *
    */
   public static VisibilityProperty VISIBILITY;
 
@@ -1210,7 +1210,7 @@ public class CSS {
    * <p>
    * This property takes a {@link WhiteSpace} object as value.
    * </p>
-   * 
+   *
    */
   public static WhiteSpaceProperty WHITE_SPACE;
 
@@ -1227,7 +1227,7 @@ public class CSS {
    * given by the their containing block, but may be shorted by the presence of
    * floats.
    * </p>
-   * 
+   *
    * <p>
    * The width of a replaced element's box is intrinsic and may be scaled by the
    * user agent if the value of this property is different than <i>auto</i>.
@@ -1255,7 +1255,7 @@ public class CSS {
    * <p>
    * This property takes a {@link Length} object as value.
    * </p>
-   * 
+   *
    */
   public static WordSpacingProperty WORD_SPACING;
 
@@ -1266,13 +1266,13 @@ public class CSS {
    * <li>The stack level of the box in the current stacking context.</li>
    * <li>Whether the box establishes a local stacking context.</li>
    * </ul>
-   * 
+   *
    * </p>
-   * 
+   *
    * <p>
    * This property takes a {@link Integer} object as value.
    * </p>
-   * 
+   *
    */
   public static ZIndexProperty ZINDEX;
 

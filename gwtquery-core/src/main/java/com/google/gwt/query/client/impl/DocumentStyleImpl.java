@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,18 +29,18 @@ import com.google.gwt.user.client.DOM;
  * A helper class to get computed CSS styles for elements.
  */
 public class DocumentStyleImpl {
-  
+
   private static final JsRegexp cssNumberRegex = new JsRegexp("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
   private static final JsRegexp sizeRegex = new JsRegexp("^(client|offset|)(width|height)$", "i");
 
 
   /**
    * Returns the numeric value of a css property.
-   *  
+   *
    * The parameter force has a special meaning:
    * - When force is false, returns the value of the css property defined
-   *   in the set of style attributes. 
-   * - Otherwise it returns the real computed value.   
+   *   in the set of style attributes.
+   * - Otherwise it returns the real computed value.
    */
   public double cur(Element elem, String prop, boolean force) {
     if (JsUtils.isWindow(elem)) {
@@ -51,8 +51,8 @@ public class DocumentStyleImpl {
         return getContentDocument(elem).getClientHeight();
       }
       elem = GQuery.body;
-    } 
-    
+    }
+
     if (force && sizeRegex.test(prop)) {
       // make curCSS below resolve width and height (issue #145) when force is true
     } else if (elem.getPropertyString(prop) != null
@@ -69,20 +69,20 @@ public class DocumentStyleImpl {
       return (1);
     }
     if (!val.matches("^[\\d\\.]+.*$")) {
-      val = curCSS(elem, prop, false); 
+      val = curCSS(elem, prop, false);
     }
     val = val.trim().replaceAll("[^\\d\\.\\-]+.*$", "");
     return val.isEmpty() ? 0 : Double.parseDouble(val);
   }
-  
+
   /**
    * Return the string value of a css property of an element.
-   * 
+   *
    * The parameter force has a special meaning:
    * - When force is false, returns the value of the css property defined
-   *   in the set of style attributes. 
-   * - Otherwise it returns the real computed value.   
-   * 
+   *   in the set of style attributes.
+   * - Otherwise it returns the real computed value.
+   *
    * For instance if you do not define 'display=none' in the element style but in
    * the css stylesheet, it will return an empty string unless you pass the
    * parameter force=true.
@@ -94,15 +94,15 @@ public class DocumentStyleImpl {
     name = fixPropertyName(name);
     //value defined in the element style
     String ret = elem.getStyle().getProperty(name);
-    
+
     if (force) {
-     
+
       Element toDetach = null;
       if (JsUtils.isDetached(elem)) {
     	// If the element is detached to the DOM we attach temporary to it
     	toDetach = attachTemporary(elem);
       }
-      
+
       if (sizeRegex.test(name)) {
         ret = getVisibleSize(elem, name) + "px";
       } else if ("opacity".equalsIgnoreCase(name)) {
@@ -110,7 +110,7 @@ public class DocumentStyleImpl {
       } else {
         ret = getComputedStyle(elem, JsUtils.hyphenize(name), name, null);
       }
-      
+
       // If the element was previously attached, detached it.
       if (toDetach != null) {
     	  toDetach.removeFromParent();
@@ -119,10 +119,10 @@ public class DocumentStyleImpl {
 
     return ret == null ? "" : ret;
   }
-  
+
   private Element attachTemporary(Element elem) {
 	Element  lastParent = $(elem).parents().last().get(0);
-  	
+
 	if (lastParent == null){
 		//the element itself is detached
   		lastParent = elem;
@@ -144,7 +144,7 @@ public class DocumentStyleImpl {
     }
     return JsUtils.camelize(name);
   }
-  
+
   public int getVisibleSize(Element e, String name) {
     int ret;
     if (!isVisible(e)) {
@@ -173,7 +173,7 @@ public class DocumentStyleImpl {
       setStyleProperty(e, "height", "auto");
     }
   }
-  
+
   private int getSize(Element e, String name) {
     int ret = 0;
     if ("width".equals(name)) {
@@ -187,21 +187,21 @@ public class DocumentStyleImpl {
     } else if ("offsetWidth".equals(name)) {
       ret = e.getOffsetWidth();
     } else if ("offsetHeight".equals(name)) {
-      ret = e.getOffsetHeight();      
+      ret = e.getOffsetHeight();
     }
     return ret;
   }
-  
+
   public int getHeight(Element e) {
     fixInlineElement(e);
     return (int) (e.getClientHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true)));
   }
-  
+
   public double getOpacity(Element e) {
     String o = e.getStyle().getOpacity();
     return JsUtils.truth(o) ? num(o) : 1;
   }
-  
+
   public int getWidth(Element e) {
     fixInlineElement(e);
     return (int) (e.getClientWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true)));
@@ -225,7 +225,7 @@ public class DocumentStyleImpl {
   public void removeStyleProperty(Element elem, String prop) {
     elem.getStyle().setProperty(prop, "");
   }
-  
+
   /**
    * Set the value of a style property of an element.
    */
@@ -257,11 +257,11 @@ public class DocumentStyleImpl {
      return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
     } catch(e) {return null;}
   }-*/;
-  
+
   protected static final JsNamedArray<String> elemdisplay = JsNamedArray.create();
-  
+
   /**
-   * Returns the default display value for each html tag. 
+   * Returns the default display value for each html tag.
    */
   public String defaultDisplay(String tagName) {
     String ret = elemdisplay.get(tagName);
@@ -277,14 +277,14 @@ public class DocumentStyleImpl {
     }
     return ret;
   }
-  
+
   public native Document getContentDocument(Node n) /*-{
     var d = n.contentDocument || n.document || n.contentWindow.document;
     if (!d.body)
       this.@com.google.gwt.query.client.impl.DocumentStyleImpl::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
     return d;
   }-*/;
-  
+
   public native void emptyDocument(Document d) /*-{
     d.open();
     d.write("<head/><body/>");

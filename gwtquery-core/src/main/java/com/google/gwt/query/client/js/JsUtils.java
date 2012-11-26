@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -51,7 +51,7 @@ public class JsUtils {
     private native void exec(JavaScriptObject f, Object data) /*-{
 			f(data);
     }-*/;
-    
+
     public void f() {
       if (jso != null) {
         exec(jso, getDataObject());
@@ -67,7 +67,7 @@ public class JsUtils {
     public native Properties parseJSON(String json) /*-{
 			return $wnd.JSON.parse(json);
     }-*/;
-    
+
     public native String JSON2String(JavaScriptObject o) /*-{
       return $wnd.JSON.stringify(o);
     }-*/;
@@ -110,7 +110,7 @@ public class JsUtils {
       // a well-formed json string.
       return evalImpl("(" + json + ")");
     }
-    
+
     @Override
     public String JSON2String(JavaScriptObject js) {
       // This is a very basic implementation for IE6/IE7 of JSON.stringify
@@ -274,18 +274,18 @@ public class JsUtils {
 		return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
 				&& e.getPreventDefault() ? true : false;
   }-*/;
-  
+
   /**
    * Return whether a node is detached to the dom
-   * Be careful : This method works only on node that should be inserted within the body node. 
+   * Be careful : This method works only on node that should be inserted within the body node.
    */
   public static boolean isDetached(Node n) {
     assert n != null;
-    
+
 	  if ("html".equalsIgnoreCase(n.getNodeName())){
 		  return false;
 	  }
-	
+
     return !getOwnerDocument(n).getBody().isOrHasChild(n);
   }
 
@@ -334,7 +334,7 @@ public class JsUtils {
         ? false
         : !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
   }
-  
+
   /**
    * Load an external javascript library. The inserted script replaces the
    * element with the given id in the document.
@@ -414,14 +414,14 @@ public class JsUtils {
   public static String XML2String(JavaScriptObject js) {
     return utilsImpl.XML2String(js);
   }
-  
+
   public static String JSON2String(JavaScriptObject js) {
     return utilsImpl.JSON2String(js);
   }
-  
+
   /**
    * Returns a QueryString representation of a JavascriptObject.
-   * TODO: jquery implementation accepts a second parameter (traditional) 
+   * TODO: jquery implementation accepts a second parameter (traditional)
    */
   public static String param(JavaScriptObject js) {
     Properties prop = js.cast();
@@ -447,7 +447,7 @@ public class JsUtils {
           String v = prop.getStr(k);
           if (v != null && !v.isEmpty() && !"null".equalsIgnoreCase(v)) {
             ret += k + "=" + v;
-          }          
+          }
         }
       }
     }

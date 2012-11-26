@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -63,12 +63,12 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       e.setInnerHTML("");
     }
   }
-  
+
   interface Item extends JsonBuilder {
     Date getDate();
     void setDate(Date d);
   }
-  
+
   interface JsonExample extends JsonBuilder {
     int getA();
     JsonExample getB();
@@ -87,7 +87,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     Function getF();
     void setF(Function f);
   }
-  
+
 
   boolean functionRun = false;
   public void testJsonBuilder() {
@@ -111,7 +111,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals(1234l, c.getD());
     c.y("y");
     assertEquals("y", c.y());
-    
+
     c.setF(new Function() {
       public void f() {
         functionRun = true;
@@ -120,7 +120,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertFalse(functionRun);
     c.getF().f();
     assertTrue(functionRun);
-    
+
     Item i1 = GWT.create(Item.class);
     Item i2 = GWT.create(Item.class);
     i1.setDate(new Date(2000));
@@ -131,10 +131,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
     String s = "{'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]}";
     assertEquals(s, c.toString().replaceAll("\"", "'"));
-    
-    
+
+
   }
-  
+
   interface XmlExample extends XmlBuilder {
     interface T extends XmlBuilder {
     }
@@ -145,20 +145,20 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     Boolean getB();
     @Name("c")
     int getNumber();
-    
+
     XmlExample[] getX();
     @Name("x")
     XmlExample getFirstX();
-    
+
     XmlExample setA(String s);
     @Name("c")
     XmlExample setNumber(int i);
-    
+
     T getEnum();
     T getBool();
     T getNum();
   }
-  
+
   public void testXmlBuilder() {
     String xml = "<a a='ra' b='true' c='-1.48'><x a='xa1'>  text</x><x a='xa2'/><enum>FOO</enum><bool>true</bool><num>333</num></a>";
     XmlExample x = GWT.create(XmlExample.class);
@@ -174,12 +174,12 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals("  text", x.getFirstX().getText());
     x.getX()[0].setText("pepe");
     assertEquals("pepe", x.getFirstX().getText());
-    
+
     assertEquals(XmlExample.E.FOO, x.getEnum().getTextAsEnum(XmlExample.E.class));
     assertEquals(true, x.getBool().getTextAsBoolean());
     assertEquals(333d, x.getNum().getTextAsNumber());
   }
-  
+
   interface Feed extends XmlBuilder {
     interface Tag extends XmlBuilder {
     }
@@ -206,10 +206,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       Tag getIssued();
       Tag getId();
       Author getAuthor();
-    }  
+    }
     Entry[] getEntry();
   }
-  
+
   // FIXME: gquery xml does not work well with htmlUnit, FF & Safari works
   // TODO: test in IE
   @DoNotRunWith({Platform.HtmlUnitLayout})
@@ -235,14 +235,14 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       + "  </author>"
       + " </entry>"
       + "</feed>";
-    
+
     Feed f = GWT.create(Feed.class);
     f.parse(xml);
     assertEquals((int)f.getFullcount().getTextAsNumber(), f.getEntry().length);
     assertEquals(112, f.getModified().getTextAsDate().getYear());
     assertEquals("AName", f.getEntry()[0].getAuthor().getName().getText());
   }
-  
+
   public void testJsonValidService() {
     delayTestFinish(5000);
     // Use a public json service
@@ -270,11 +270,11 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       }
     }, 500);
   }
-  
+
   public void testJsonTimeout() {
     delayTestFinish(5000);
     String nonJsonpUrl = "http://127.0.0.1/nopage";
-    
+
     Settings s = Ajax.createSettings();
     s.setTimeout(1000);
     s.setSuccess(new Function(){
@@ -289,8 +289,8 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     });
     s.setDataType("jsonp");
     s.setUrl(nonJsonpUrl);
-    
+
     Ajax.ajax(s);
   }
-    
+
 }

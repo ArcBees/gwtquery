@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,7 +29,7 @@ import com.google.gwt.query.client.js.JsUtils;
  * Core Selector engine functions, and native JS utility functions.
  */
 public class SelectorEngine implements HasSelector {
-  
+
   private static DocumentStyleImpl styleImpl;
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
@@ -38,13 +38,13 @@ public class SelectorEngine implements HasSelector {
   }-*/;
 
   public static native Node getNextSibling(Node n) /*-{
-       return n.nextSibling || null; 
+       return n.nextSibling || null;
   }-*/;
 
   public static native Node getPreviousSibling(Node n) /*-{
-       return n.previousSibling || null; 
+       return n.previousSibling || null;
   }-*/;
-  
+
   public NodeList<Element> querySelectorAll(String selector, Node ctx) {
     if (!hasQuerySelector) {
       return impl.select(selector, ctx);
@@ -60,17 +60,17 @@ public class SelectorEngine implements HasSelector {
       Node ctx) /*-{
       return ctx.querySelectorAll(selector);
   }-*/;
-  
+
   public static native NodeList<Element> elementsByTagName(String selector,
       Node ctx) /*-{
       return ctx.getElementsByTagName(selector);
   }-*/;
-  
+
   public static native NodeList<Element> elementsByClassName(String selector,
       Node ctx) /*-{
       return ctx.getElementsByClassName(selector);
   }-*/;
-  
+
   public static NodeList<Element> veryQuickId(String id, Node ctx) {
     Document d = ctx.getNodeType() == Node.DOCUMENT_NODE
         ? ctx.<Document> cast() : ctx.getOwnerDocument();
@@ -86,7 +86,7 @@ public class SelectorEngine implements HasSelector {
       var node;
       var ownerDoc = ctx && (ctx.ownerDocument || ctx );
       var evalDoc = ownerDoc ? ownerDoc : $doc;
-      var result = evalDoc.evaluate(selector, ctx, null, 0, null);      
+      var result = evalDoc.evaluate(selector, ctx, null, 0, null);
       while ((node = result.iterateNext())) {
           r.push(node);
       }
@@ -96,7 +96,7 @@ public class SelectorEngine implements HasSelector {
   public final SelectorEngineImpl impl;
 
   protected Node root = Document.get();
-  
+
   public static final boolean hasQuerySelector = hasQuerySelectorAll();
 
   public SelectorEngine() {
@@ -109,7 +109,7 @@ public class SelectorEngine implements HasSelector {
   public Node getRoot() {
     return root;
   }
-  
+
   public NodeList<Element> filterByVisibility (NodeList<Element> nodes, boolean visible) {
     JsNodeArray res = JsNodeArray.create();
     for (int i = 0, l = nodes.getLength(), j = 0; i < l; i++) {
@@ -120,7 +120,7 @@ public class SelectorEngine implements HasSelector {
     }
     return res;
   }
-  
+
   // pseudo selectors which are computed by gquery
   JsRegexp p = new JsRegexp("(.*):((visible|hidden)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
 
@@ -137,7 +137,7 @@ public class SelectorEngine implements HasSelector {
             nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
           } else {
             nodes = select((a.get(1) != null ? a.get(1) : "") + "[type=" + a.get(2) + "]", ctx);
-          }          
+          }
         } else {
           nodes = select(s, ctx);
         }
@@ -148,35 +148,35 @@ public class SelectorEngine implements HasSelector {
       return impl.select(selector, ctx);
     }
   }
-  
+
   public native boolean contains(Element a, Element b) /*-{
     return a.contains ? a != b && a.contains(b) : !!(a.compareDocumentPosition(b) & 16)
   }-*/;
-  
+
   public void setRoot(Node root) {
     assert root != null;
     this.root = root;
   }
-  
+
   public String getName() {
     return getClass().getName().replaceAll("^.*\\.", "");
   }
-  
+
   public boolean isDegradated() {
     return !hasQuerySelector;
   }
-  
+
   /**
    * Check if the browser has native support for css selectors
    */
   public static native boolean hasQuerySelectorAll() /*-{
     return $doc.location.href.indexOf("_force_no_native") < 0 &&
-           $doc.querySelectorAll && 
-           /native/.test(String($doc.querySelectorAll)) ? true : false; 
+           $doc.querySelectorAll &&
+           /native/.test(String($doc.querySelectorAll)) ? true : false;
   }-*/;
-  
+
   public static native boolean hasXpathEvaluate() /*-{
-    return $doc.evaluate ? true : false; 
+    return $doc.evaluate ? true : false;
   }-*/;
-  
+
 }

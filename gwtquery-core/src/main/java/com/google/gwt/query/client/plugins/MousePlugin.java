@@ -1,11 +1,11 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Base class for all plug-in that need to handle some mouse interactions.
- * 
+ *
  */
 public abstract class MousePlugin extends UiPlugin {
 
@@ -49,13 +49,13 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Return a String identifying the plugin. This string is used as namespace when we bind handlers.
-   * 
+   *
    */
   protected abstract String getPluginName();
 
   /**
    * This method initialize all needed handlers
-   * 
+   *
    */
   protected void initMouseHandler(MouseOptions options) {
     this.options = options;
@@ -85,7 +85,7 @@ public abstract class MousePlugin extends UiPlugin {
         @Override
         public boolean f(com.google.gwt.user.client.Event event) {
           preventClickEvent |= !mouseClick(e, GqEvent.create(event));
-          
+
           if (preventClickEvent) {
 
             preventClickEvent = false;
@@ -103,7 +103,7 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Test if the mouse down event must be handled by the plugin or not.
-   * 
+   *
    */
   protected boolean mouseCapture(Element draggable, GqEvent event) {
     return true;
@@ -111,7 +111,7 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Method called when mouse click
-   * 
+   *
    */
   protected boolean mouseClick(Element element, GqEvent event) {
     return true;
@@ -119,10 +119,10 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Method called when mouse down occur on the element.
-   * 
+   *
    * You should not override this method. Instead, override {@link #mouseStart(Element, GqEvent)}
    * method
-   * 
+   *
    */
   protected boolean mouseDown(Element element, GqEvent event) {
 
@@ -163,16 +163,16 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Method called when the mouse is dragging
-   * 
+   *
    */
   protected abstract boolean mouseDrag(Element element, GqEvent event);
 
   /**
    * Method called on MouseMove event.
-   * 
+   *
    * You should not override this method. Instead, override {@link #mouseMove(Element, GqEvent)}
    * method
-   * 
+   *
    */
   protected boolean mouseMove(Element element, GqEvent event) {
 
@@ -195,22 +195,22 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Method called when the mouse is clicked and all conditions for starting the plugin are met.
-   * 
+   *
    */
   protected abstract boolean mouseStart(Element element, GqEvent event);
 
   /**
    * Method called when the mouse button is released
-   * 
+   *
    */
   protected abstract boolean mouseStop(Element element, GqEvent event);
 
   /**
    * Method called when mouse is released..
-   * 
+   *
    * You should not override this method. Instead, override {@link #mouseStop(Element, GqEvent)}
    * method
-   * 
+   *
    */
   protected boolean mouseUp(Element element, GqEvent event) {
 
@@ -277,7 +277,7 @@ public abstract class MousePlugin extends UiPlugin {
     // good !
     // int mouseDistance = Math.max(xMouseDistance, yMouseDistance);
     // use Pythagor theorem !!
-   
+
     int mouseDistance = (int) Math.sqrt(xDistance * xDistance + yDistance * yDistance);
     return mouseDistance >= neededDistance;
   }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,10 +20,10 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * The z-index property specifies the stack order of an element.
- * 
+ *
  * An element with greater stack order is always in front of an element with a
  * lower stack order.
- * 
+ *
  * The z-index property only works on positioned elements (position:absolute,
  * position:relative, or position:fixed).
  */
@@ -38,7 +38,7 @@ public class ZIndexProperty implements TakesInteger {
   private ZIndexProperty() {
   }
 
-  
+
   public String getCssName() {
     return CSS_PROPERTY;
   }

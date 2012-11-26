@@ -1,12 +1,12 @@
 /*
  * Copyright 2011, The gwtquery team.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -62,7 +62,7 @@ public class Widgets extends QueuePlugin<Widgets> {
     super(gq);
   }
 
-    
+
   /**
    * Try to create a widget using the given factory and the given options for
    * each element of the query. Returns a new gquery set of elements with the
@@ -108,12 +108,12 @@ public class Widgets extends QueuePlugin<Widgets> {
       WidgetInitializer<W> initializers) {
     return widget(get(0), factory, initializers);
   }
-  
+
   /**
    * Create a {@link Button} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link Button} created
    * by passing them in parameter.
-   * 
+   *
    */
   public Widgets button() {
     return widgets(new ButtonWidgetFactory(), null);
@@ -123,7 +123,7 @@ public class Widgets extends QueuePlugin<Widgets> {
    * Create a {@link Button} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link Button} created
    * by passing them in parameter.
-   * 
+   *
    */
   public Widgets button(WidgetInitializer<Button> initializers) {
     return widgets(new ButtonWidgetFactory(), initializers);
@@ -132,34 +132,34 @@ public class Widgets extends QueuePlugin<Widgets> {
   public Widgets panel() {
     return widgets(new HtmlPanelWidgetFactory(), null);
   }
-  
+
   public Widgets label(WidgetInitializer<Label> initializers) {
     return widgets(new LabelWidgetFactory(), initializers);
   }
-  
+
   /**
    * Create a {@link PasswordTextBox} widget for each selected element.
    */
   public Widgets passwordBox() {
     return widgets(new PasswordTextBoxWidgetFactory(), null);
   }
-  
+
   /**
    * Create a {@link PasswordTextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new
    * {@link PasswordTextBox} created by passing them in parameter.
-   * 
+   *
    */
   public Widgets passwordBox(WidgetInitializer<PasswordTextBox> initializers) {
     return widgets(new PasswordTextBoxWidgetFactory(), initializers);
   }
-  
-  
+
+
   /**
    * Create a {@link TextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   public Widgets textBox() {
     return widgets(new TextBoxWidgetFactory(), null);
@@ -169,7 +169,7 @@ public class Widgets extends QueuePlugin<Widgets> {
    * Create a {@link TextBox} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   public Widgets textBox(WidgetInitializer<TextBox> initializers) {
     return widgets(new TextBoxWidgetFactory(), initializers);
@@ -179,7 +179,7 @@ public class Widgets extends QueuePlugin<Widgets> {
    * Create a {@link TextArea} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   public Widgets textArea() {
     return widgets(new TextAreaWidgetFactory(), null);
@@ -189,7 +189,7 @@ public class Widgets extends QueuePlugin<Widgets> {
    * Create a {@link TextArea} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link TextBox}
    * created by passing them in parameter.
-   * 
+   *
    */
   public Widgets textArea(WidgetInitializer<TextArea> initializers) {
     return widgets(new TextAreaWidgetFactory(), initializers);
