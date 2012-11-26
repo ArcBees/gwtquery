@@ -64,6 +64,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.GqUi;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -270,8 +271,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof JavaScriptObject) {
         return $((JavaScriptObject)o);
       }
-      if (o instanceof Widget) {
-        return $(new Widget[]{(Widget)o});
+      if (o instanceof IsWidget) {
+        return $(Arrays.asList(o));
       }
       System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
     }
@@ -287,8 +288,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       for (Object o : nodesOrWidgets) {
         if (o instanceof Node) {
           elms.addNode((Node) o);
-        } else if (o instanceof Widget) {
-          elms.addNode(((Widget) o).getElement());
+        } else if (o instanceof IsWidget) {
+          elms.addNode(((IsWidget)o).asWidget().getElement());
         }
       }
     }
@@ -574,7 +575,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       }
     } catch (Exception e2) {
       // Some times this code could raise an exception.
-      // We do not want GQuery to fail, but in dev-move we log the error.
+      // We do not want GQuery to fail, but in dev-mode we log the error.
       e2.printStackTrace();
     }
     return null;
