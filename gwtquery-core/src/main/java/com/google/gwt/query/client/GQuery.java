@@ -2143,6 +2143,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   // TODO performance bad...
   public GQuery filter(String... filters) {
+    if (filters.length == 0 || filters[0] == null) {
+      return this;
+    }
+    
     JsNodeArray array = JsNodeArray.create();
     /*
      * StringBuilder filterBuilder = new StringBuilder(); for (int i = 0; i < filters.length ; i++){
