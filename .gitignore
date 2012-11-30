@@ -9,6 +9,8 @@ Thumbs.db
 *.class
 target
 
+#intellij
+/.idea
 #GWT generated file
 *~
 *.log
