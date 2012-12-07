@@ -49,7 +49,7 @@ public class JsUtils {
     }
 
     private native void exec(JavaScriptObject f, Object data) /*-{
-			f(data);
+      f(data);
     }-*/;
 
     public void f() {
@@ -65,7 +65,7 @@ public class JsUtils {
 
   public static class JsUtilsImpl {
     public native Properties parseJSON(String json) /*-{
-			return $wnd.JSON.parse(json);
+      return $wnd.JSON.parse(json);
     }-*/;
 
     public native String JSON2String(JavaScriptObject o) /*-{
@@ -73,7 +73,7 @@ public class JsUtils {
     }-*/;
 
     public native Element parseXML(String xml) /*-{
-			return new DOMParser().parseFromString(xml, "text/xml").documentElement;
+      return new DOMParser().parseFromString(xml, "text/xml").documentElement;
     }-*/;
 
     public String text(Element e) {
@@ -95,13 +95,13 @@ public class JsUtils {
     }
 
     public native String XML2String(JavaScriptObject o) /*-{
-			return (new XMLSerializer()).serializeToString(o);
+      return (new XMLSerializer()).serializeToString(o);
     }-*/;
   }
 
   public static class JsUtilsImplIE6 extends JsUtilsImpl {
     public static final native Properties evalImpl(String properties) /*-{
-			return eval(properties);
+      return eval(properties);
     }-*/;
 
     @Override
@@ -148,9 +148,9 @@ public class JsUtils {
 
     @Override
     public native Element parseXML(String xml) /*-{
-			var d = new ActiveXObject("Microsoft.XmlDom");
-			d.loadXML(xml);
-			return d.documentElement;
+      var d = new ActiveXObject("Microsoft.XmlDom");
+      d.loadXML(xml);
+      return d.documentElement;
     }-*/;
 
     @Override
@@ -169,11 +169,11 @@ public class JsUtils {
 
     @Override
     public native String XML2String(JavaScriptObject o) /*-{
-			return o.xml;
+      return o.xml;
     }-*/;
 
     private native String xmlText(Element e) /*-{
-			return e.text;
+      return e.text;
     }-*/;
   }
 
@@ -183,9 +183,9 @@ public class JsUtils {
    * Camelize style property names. for instance: font-name -> fontName
    */
   public static native String camelize(String s)/*-{
-		return s.replace(/\-(\w)/g, function(all, letter) {
-			return letter.toUpperCase();
-		});
+    return s.replace(/\-(\w)/g, function(all, letter) {
+      return letter.toUpperCase();
+    });
   }-*/;
 
   /**
@@ -226,14 +226,14 @@ public class JsUtils {
    * Compare two numbers using javascript equality.
    */
   public static native boolean eq(double s1, double s2) /*-{
-		return s1 == s2;
+    return s1 == s2;
   }-*/;
 
   /**
    * Compare two objects using javascript equality.
    */
   public static native boolean eq(Object s1, Object s2) /*-{
-		return s1 == s2;
+    return s1 == s2;
   }-*/;
 
   /**
@@ -249,30 +249,30 @@ public class JsUtils {
    * defined.
    */
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
-		return o && name in o;
+    return o && name in o;
   }-*/;
 
   /**
    * Hyphenize style property names. for instance: fontName -> font-name
    */
   public static native String hyphenize(String name) /*-{
-		return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+    return name.replace(/([A-Z])/g, "-$1").toLowerCase();
   }-*/;
 
   /**
    * Check is a javascript object can be used as an array
    */
   public static native boolean isArray(JavaScriptObject o) /*-{
-		return Object.prototype.toString.call(o) == '[object Array]'
-				|| typeof o.length == 'number';
+    return Object.prototype.toString.call(o) == '[object Array]'
+        || typeof o.length == 'number';
   }-*/;
 
   /**
    * Return whether the event was prevented
    */
   public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
-		return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
-				&& e.getPreventDefault() ? true : false;
+    return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
+        && e.getPreventDefault() ? true : false;
   }-*/;
 
   /**
@@ -282,9 +282,9 @@ public class JsUtils {
   public static boolean isDetached(Node n) {
     assert n != null;
 
-	  if ("html".equalsIgnoreCase(n.getNodeName())){
-		  return false;
-	  }
+    if ("html".equalsIgnoreCase(n.getNodeName())){
+      return false;
+    }
 
     return !getOwnerDocument(n).getBody().isOrHasChild(n);
   }
@@ -307,16 +307,17 @@ public class JsUtils {
    * Check is a javascript object is a function
    */
   public static native boolean isFunction(JavaScriptObject o) /*-{
-		return !!o && typeof o == 'function'
+    var r = Object.prototype.toString.call(o);
+    return r == '[object Function]';
   }-*/;
 
   /**
    * Check is a javascript can be cast to a node list
    */
   public static native boolean isNodeList(JavaScriptObject o) /*-{
-		var r = Object.prototype.toString.call(o);
-		return r == '[object HTMLCollection]' || r == '[object NodeList]'
-				|| (typeof o == 'object' && o.length && o[0].tagName) ? true : false;
+    var r = Object.prototype.toString.call(o);
+    return r == '[object HTMLCollection]' || r == '[object NodeList]'
+        || (typeof o == 'object' && o.length && o[0].tagName) ? true : false;
   }-*/;
 
   /**
@@ -353,14 +354,14 @@ public class JsUtils {
    * Return the element which is truth in the double scope.
    */
   public static native double or(double s1, double s2) /*-{
-		return s1 || s2;
+    return s1 || s2;
   }-*/;
 
   /**
    * Return the element which is truth in the javascript scope.
    */
   public static native <T> T or(T s1, T s2) /*-{
-		return s1 || s2;
+    return s1 || s2;
   }-*/;
 
   /**
@@ -394,14 +395,14 @@ public class JsUtils {
    * Check if a number is true in the javascript scope.
    */
   public static native boolean truth(double a) /*-{
-		return a ? true : false;
+    return a ? true : false;
   }-*/;
 
   /**
    * Check if an object is true in the javascript scope.
    */
   public static native boolean truth(Object a) /*-{
-		return a ? true : false;
+    return a ? true : false;
   }-*/;
 
   /**
