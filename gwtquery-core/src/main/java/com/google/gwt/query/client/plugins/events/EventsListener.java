@@ -25,6 +25,7 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -636,7 +637,8 @@ public class EventsListener implements EventListener {
     } else if ((eventBits | ONRESIZE) == ONRESIZE) {
       sinkEvent(element, "resize");
     } else {
-      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS
+      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS 
+          && JsUtils.isElement(element)
           && element.getAttribute("tabIndex").length() == 0) {
         element.setAttribute("tabIndex", "0");
       }
