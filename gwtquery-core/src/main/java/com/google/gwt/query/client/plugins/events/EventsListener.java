@@ -495,7 +495,7 @@ public class EventsListener implements EventListener {
     int etype = getTypeInt(event.getType());
     String originalEventType = GqEvent.getOriginalEventType(event);
 
-    for (int i = 0; i < elementEvents.length(); i++) {
+    for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
       if (listener.hasEventType(etype)
           && (originalEventType == null || originalEventType

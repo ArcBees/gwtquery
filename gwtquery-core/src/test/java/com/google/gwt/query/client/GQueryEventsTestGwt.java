@@ -1223,5 +1223,23 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals("red", $("button").css("color", false));
     assertEquals("black", $("button").css("background-color", false));
   }
+  
+  public void testIssue152() {
+    $(e).html("<div class='mdiv'>");
+    final GQuery div = $(".mdiv", e); 
+    final int[] count = { 0 };
+    div.one(Event.ONCLICK, null, new Function() {
+      public void f() {
+        count[0]++;
+        div.one(Event.ONCLICK, null, new Function() {
+          public void f() {
+            fail();
+          }
+        });
+      };
+    });
 
+    div.click();
+    assertEquals(1, count[0]);
+  }
 }
