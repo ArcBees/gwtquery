@@ -19,6 +19,7 @@ import com.google.gwt.core.ext.LinkerContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.linker.LinkerOrder;
+import com.google.gwt.core.ext.linker.Shardable;
 import com.google.gwt.core.linker.IFrameLinker;
 
 /**
@@ -26,6 +27,7 @@ import com.google.gwt.core.linker.IFrameLinker;
  * Without this code, IE8 does not enable document.querySelectorAll feature.
  */
 @LinkerOrder(LinkerOrder.Order.PRIMARY)
+@Shardable
 public class IFrameWithDocTypeLinker extends IFrameLinker {
 
   private static final String DOCTYPE = "<!doctype html>\n";
