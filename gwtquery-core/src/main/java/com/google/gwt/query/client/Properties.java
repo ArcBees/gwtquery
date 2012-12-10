@@ -156,6 +156,13 @@ public class Properties extends JavaScriptObject {
     c().putBoolean(name, val);
   }
 
+  /**
+   * Adds a new native js function to the properties object.
+   * This native function will wrap the passed java Function.
+   * 
+   * Its useful for exporting or importing to javascript.
+   * 
+   */
   public final native <T> void setFunction(T name, Function f) /*-{
     this[name] = function() {
       f.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(arguments);
