@@ -27,6 +27,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasOneWidget;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -171,24 +173,39 @@ public class WidgetsUtils {
    }
 
    /**
-    * Attach a widget to the GWT widget list.
+    * Attach a widget to the GWT widget list. Normally used when GQuery
+    * creates widgets wrapping existing dom elements.
+    * It does nothing if the widget is already attached to another widget.
     *
     * @param widget to attach
     * @param firstParentWidget the parent widget,
-    *   If it is null we just add the widget to the gwt detach list
+    *   If it is null and it is not inside any other widget, we just add
+    *   the widget to the gwt detach list
     */
    public static void attachWidget(Widget widget, Widget firstParentWidget) {
      if (widget != null && widget.getParent() == null) {
        if (firstParentWidget == null) {
-         RootPanel.detachOnWindowClose(widget);
-         widgetOnAttach(widget);
+         firstParentWidget = getFirstParentWidget(widget);
+         if (firstParentWidget == null) {
+           RootPanel.detachOnWindowClose(widget);
+           widgetOnAttach(widget);
+         } else {
+           attachWidget(widget, firstParentWidget);
+         }
        } else if (firstParentWidget instanceof HTMLPanel) {
-         ((HTMLPanel) firstParentWidget).add(widget,
-             widget.getElement().getParentElement()
-             .<com.google.gwt.user.client.Element>cast());
+         HTMLPanel h = (HTMLPanel) firstParentWidget;
+         Element p = widget.getElement().getParentElement();
+         if (p != null) {
+           h.add(widget, p);
+         } else {
+           h.add(widget);
+         }
+       } else if (firstParentWidget instanceof HasOneWidget) {
+         ((HasOneWidget)firstParentWidget).setWidget(widget);
+       } else if (firstParentWidget instanceof HasWidgets) {
+         ((HasWidgets)firstParentWidget).add(widget);
        } else {
-         throw new RuntimeException(
-             "No HTMLPanel available to attach the widget.");
+         widgetSetParent(widget, firstParentWidget);
        }
      }
    }
@@ -231,6 +248,14 @@ public class WidgetsUtils {
        return getChildren(compositeGetWidget((Composite)w));
      }
      return null;
+   }
+
+   /**
+    * Return the first widget parent of the element, or null if it is not
+    * attached to any widget yet. 
+    */
+   private static Widget getFirstParentWidgetElement(Element element) {
+     return $(element).parents().widget();
    }
 
    private static native void widgetOnAttach(Widget w) /*-{
