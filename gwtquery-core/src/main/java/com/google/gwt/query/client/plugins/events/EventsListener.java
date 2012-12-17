@@ -363,11 +363,9 @@ public class EventsListener implements EventListener {
 
   private static native void cleanGQListeners(Element elem) /*-{
 		if (elem.__gwtlistener) {
-			elem.__listener = elem.__gwtlistener;
+      @com.google.gwt.user.client.DOM::setEventListener(*)(elem, elem.__gwtlistener);
 		}
-		elem.__gqueryevent = null
-		elem.__gquery = null;
-
+		elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
   }-*/;
 
   private static native EventsListener getGQueryEventListener(Element elem) /*-{
@@ -379,7 +377,7 @@ public class EventsListener implements EventListener {
   }-*/;
 
   private static native void init(Element elem, EventsListener gqevent)/*-{
-		elem.__gwtlistener = elem.__listener;
+		elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
 		elem.__gqueryevent = gqevent;
   }-*/;
 
