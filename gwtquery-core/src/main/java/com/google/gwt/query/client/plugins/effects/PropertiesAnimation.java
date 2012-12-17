@@ -255,7 +255,7 @@ public class PropertiesAnimation extends GQAnimation {
     if (resize) {
       g.css("overflow", "hidden");
     }
-    if (move && !g.css("position", true).matches("absolute|relative")) {
+    if (move && !g.css("position", true).matches("absolute|relative|fixed")) {
       g.css("position", "relative");
     }
     super.onStart();
