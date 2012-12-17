@@ -15,6 +15,14 @@
         <gwtmaven>2.5.0</gwtmaven>
     </properties>
 
+    <profiles>
+      <profile>
+        <id>clos</id>
+        <properties>
+          <gwt.enableClosureCompiler>true</gwt.enableClosureCompiler>
+        </properties>
+      </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -64,7 +72,7 @@
                 <version>${gwtmaven}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
-                    <style>OBF' -XenableClosureCompiler '-XenableClosureCompiler</style>
+                    <enableClosureCompiler>${gwt.enableClosureCompiler}</enableClosureCompiler>
                     <optimizationLevel>9</optimizationLevel>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
