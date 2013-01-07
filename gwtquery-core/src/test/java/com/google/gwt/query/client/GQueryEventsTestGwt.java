@@ -619,6 +619,78 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals("yellow", $("#div1", e).css(CSS.BACKGROUND_COLOR, false));
   }
 
+  public void testLiveWithNameSpace() {
+    String content = "<input type='text' id='test'></div>";
+    $(e).html(content);
+
+    $(".live", e)
+        .live(
+            "keydown.keyevents keypress.keyevents keyup.keyevents "
+                + "mousedown.mouseevents mouseup.mouseevents mousemove.mouseevents mouseover.mouseevents "
+                + "mouseout.mouseevents", new Function() {
+          @Override
+          public void f() {
+            $("#test", e).val("event fired");
+          }
+        });
+
+    $("#test", e).addClass("live");
+
+
+    int allEventbits[] =
+        new int[]{
+            ONKEYDOWN, ONKEYPRESS, ONKEYUP, ONMOUSEDOWN, ONMOUSEUP, ONMOUSEMOVE,
+            ONMOUSEOVER, ONMOUSEOUT};
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("event fired", $("#test", e).val());
+      $("#test", e).val("");
+
+
+    }
+
+    // test die without namespace
+    $(".live", e).die("keydown");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      if (eventbits != ONKEYDOWN) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+
+    }
+
+    // test die event name + namespace
+    $(".live", e).die("keypress.keyevents keyup.keyevents");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+      if ((eventbits & MOUSEEVENTS) == eventbits) {
+        assertEquals("event fired", $("#test", e).val());
+        $("#test", e).val("");
+      } else {
+        assertEquals("", $("#test", e).val());
+      }
+    }
+
+    // test die only on namespace
+    $(".live", e).die(".mouseevents");
+
+    for (int eventbits : allEventbits) {
+      $("#test", e).trigger(eventbits, 'c');
+
+      assertEquals("", $("#test", e).val());
+
+    }
+
+  }
+
   public void testMouseenterEvent() {
     String content = "<div id='test'>blop</div>";
     $(e).html(content);

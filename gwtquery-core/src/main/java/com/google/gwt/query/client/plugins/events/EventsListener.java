@@ -280,8 +280,30 @@ public class EventsListener implements EventListener {
     /**
      * Remove the BindFunction associated to this cssSelector
      */
-    public void removeBindFunctionForSelector(String cssSelector) {
-      bindFunctionBySelector.delete(cssSelector);
+    public void removeBindFunctionForSelector(String cssSelector, String nameSpace) {
+      if (nameSpace == null || nameSpace.length() == 0) {
+        bindFunctionBySelector.delete(cssSelector);
+      } else {
+        JsObjectArray<BindFunction> functions = bindFunctionBySelector.get(cssSelector);
+
+        if (functions == null || functions.length() == 0) {
+          return;
+        }
+        JsObjectArray<BindFunction> newFunctions = JsObjectArray.create();
+
+        for (int i = 0; i < functions.length(); i++) {
+          BindFunction f = functions.get(i);
+          if (!nameSpace.equals(f.nameSpace)) {
+            newFunctions.add(f);
+          }
+        }
+
+        bindFunctionBySelector.delete(cssSelector);
+        if (newFunctions.length() > 0) {
+          bindFunctionBySelector.put(cssSelector, newFunctions);
+        }
+
+      }
     }
 
     /**
@@ -472,19 +494,39 @@ public class EventsListener implements EventListener {
   }
 
   public void die(String eventNames, String cssSelector) {
-    die(getEventBits(eventNames), cssSelector);
+    String[] parts = eventNames.split("[\\s,]+");
+
+    for (String event : parts) {
+      String nameSpace = null;
+      String eventName = event;
+
+      //seperate possible namespace
+      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      String[] subparts = event.split("\\.", 2);
+
+      if (subparts.length == 2) {
+        nameSpace = subparts[1];
+        eventName = subparts[0];
+      }
+
+      int b = getTypeInt(eventName);
+
+      die(b, nameSpace, cssSelector);
+    }
+
+
   }
 
-  public void die(int eventbits, String cssSelector) {
-    if (eventbits == 0) {
+  public void die(int eventbits, String nameSpace, String cssSelector) {
+    if (eventbits <= 0) {
       for (String k : liveBindFunctionByEventType.keys()) {
         LiveBindFunction liveBindFunction = liveBindFunctionByEventType.<JsCache> cast().get(k);
-        liveBindFunction.removeBindFunctionForSelector(cssSelector);
+        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace);
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
       if (liveBindFunction != null) {
-        liveBindFunction.removeBindFunctionForSelector(cssSelector);
+        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace);
       }
     }
   }
@@ -514,11 +556,32 @@ public class EventsListener implements EventListener {
     return getGwtEventListener(element);
   }
 
-  public void live(String eventNames, String cssSelector, Object data, Function... f) {
-    live(getEventBits(eventNames), cssSelector, data, f);
+  public void live(String events, String cssSelector, Object data, Function... funcs) {
+
+    String[] parts = events.split("[\\s,]+");
+
+    for (String event : parts) {
+
+      String nameSpace = null;
+      String eventName = event;
+
+
+      String[] subparts = event.split("\\.", 2);
+
+      if (subparts.length == 2) {
+        nameSpace = subparts[1];
+        eventName = subparts[0];
+      }
+
+      int b = getTypeInt(eventName);
+      for (Function function : funcs) {
+        //Function handler = hook != null ? hook.createDelegateHandler(function) : function;
+        live(b, nameSpace, cssSelector, data, function);
+      }
+    }
   }
 
-  public void live(int eventbits, String cssSelector, Object data, Function... funcs) {
+  public void live(int eventbits, String nameSpace, String cssSelector, Object data, Function... funcs) {
     for (int i = 0; i < 28; i++) {
       int event = (int) Math.pow(2, i);
       if ((eventbits & event) == event) {
@@ -535,7 +598,7 @@ public class EventsListener implements EventListener {
 
         for (Function f : funcs) {
           // TODO handle special event by passing original event name
-          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event, "live",
+          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event, nameSpace,
               null, f, data));
         }
       }

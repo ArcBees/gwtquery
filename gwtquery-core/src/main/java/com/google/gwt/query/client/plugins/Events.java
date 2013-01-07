@@ -106,10 +106,16 @@ public class Events extends GQuery {
     return this;
   }
 
-  public GQuery die(int eventbits) {
+
+  public GQuery die(int eventbits, String nameSpace) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).die(
-        eventbits, currentSelector);
+        eventbits, nameSpace, currentSelector);
     return this;
+  }
+
+
+  public GQuery die(int eventbits) {
+   return die(eventbits, null);
   }
 
   /**
@@ -124,8 +130,13 @@ public class Events extends GQuery {
   }
 
   public GQuery live(int eventbits, final Object data, Function... funcs) {
+    return live(eventbits, null, data, funcs);
+
+  }
+
+  public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
-        eventbits, currentSelector, data, funcs);
+        eventbits, nameSpace, currentSelector, data, funcs);
     return this;
 
   }
