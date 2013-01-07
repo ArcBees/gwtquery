@@ -109,7 +109,7 @@ public class Events extends GQuery {
 
   public GQuery die(int eventbits, String nameSpace) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).die(
-        eventbits, nameSpace, currentSelector);
+        eventbits, nameSpace, null, currentSelector);
     return this;
   }
 
@@ -136,7 +136,7 @@ public class Events extends GQuery {
 
   public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
-        eventbits, nameSpace, currentSelector, data, funcs);
+        eventbits, nameSpace, null, currentSelector, data, funcs);
     return this;
 
   }
