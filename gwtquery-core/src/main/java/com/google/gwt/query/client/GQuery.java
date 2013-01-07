@@ -872,7 +872,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'");
    *  // Change the width attribute of a table
-   *  $("table").animate("$width:'500'"), 400, Easing.LINEAR);
+   *  $("table").animate("width:'500'", 400, Easing.LINEAR);
    * </pre>
    *
    * In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'.
@@ -905,7 +905,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
    * </pre>
    *
-   * @param prop the property to animate : "cssName:'value'"
+   * @param stringOrProperties the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is complete
    */
   public GQuery animate(Object stringOrProperties, Function... funcs) {
