@@ -25,18 +25,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -3004,9 +2995,63 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * returned object contains two integer properties, top and left. The method works only with
    * visible elements.
    */
-  public com.google.gwt.query.client.GQuery.Offset offset() {
+  public Offset offset() {
     Element e = get(0);
     return e == null ? new Offset(0, 0) : new Offset(e.getAbsoluteLeft(), e.getAbsoluteTop());
+  }
+
+  /**
+   * Set the current coordinates of every element in the set of matched elements, relative to the document.
+   */
+  public GQuery offset(Offset offset) {
+    assert offset() != null : "offset cannot be null";
+    return offset(offset.top, offset.left);
+  }
+
+  /**
+   * Set the current coordinates of every element in the set of matched elements, relative to the document.
+   */
+  public GQuery offset(int top, int left) {
+    for (Element element : elements()){
+      GQuery $element = $(element);
+
+      String position = $element.css("position", true);
+      if ("static".equals(position)) {
+        css("position", "relative");
+      }
+
+      Offset curOffset = $element.offset();
+      String curCSSTop = $element.css("top", true);
+      String curCSSLeft = $element.css("left", true);
+      long curTop = 0;
+      long curLeft = 0;
+
+      if (("absolute".equals(position) || "fixed".equals(position)) && ("auto".equals(curCSSTop) || "auto".equals
+          (curCSSLeft))) {
+        Offset curPosition = $element.position();
+        curTop = curPosition.top;
+        curLeft = curPosition.left;
+      } else {
+        try {
+          curTop = Long.parseLong(curCSSTop);
+        } catch (NumberFormatException e) {
+          curTop = 0;
+        }
+
+        try {
+          curLeft = Long.parseLong(curCSSLeft);
+        } catch (NumberFormatException e) {
+          curLeft = 0;
+        }
+      }
+
+      long newTop = top - curOffset.top + curTop;
+      long newLeft = left - curOffset.left + curLeft;
+
+      $element.css("top", "" + newTop).css("left", "" + newLeft);
+    }
+
+    return this;
   }
 
   /**
@@ -3152,7 +3197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * contains two Integer properties, top and left. For accurate calculations make sure to use pixel
    * values for margins, borders and padding. This method only works with visible elements.
    */
-  public com.google.gwt.query.client.GQuery.Offset position() {
+  public Offset position() {
     if (isEmpty()) {
       return new Offset(0, 0);
     }
