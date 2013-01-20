@@ -2007,9 +2007,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery each(Function... f) {
     if (f != null) {
       for (Function f1 : f) {
-        int i = 0;
-        for (Element e : elements) {
-          f1.f(e.<com.google.gwt.dom.client.Element> cast(), i++);
+        if (f1 != null) {
+          int i = 0;
+          for (Element e : elements) {
+            f1.f(e.<com.google.gwt.dom.client.Element> cast(), i++);
+          }
         }
       }
     }
