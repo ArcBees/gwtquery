@@ -280,8 +280,33 @@ public class EventsListener implements EventListener {
     /**
      * Remove the BindFunction associated to this cssSelector
      */
-    public void removeBindFunctionForSelector(String cssSelector) {
-      bindFunctionBySelector.delete(cssSelector);
+    public void removeBindFunctionForSelector(String cssSelector, String nameSpace, String originalEventName) {
+      if (nameSpace == null && originalEventName == null) {
+        bindFunctionBySelector.delete(cssSelector);
+      } else {
+        JsObjectArray<BindFunction> functions = bindFunctionBySelector.get(cssSelector);
+
+        if (functions == null || functions.length() == 0) {
+          return;
+        }
+        JsObjectArray<BindFunction> newFunctions = JsObjectArray.create();
+
+        for (int i = 0; i < functions.length(); i++) {
+          BindFunction f = functions.get(i);
+          boolean matchNamespace = nameSpace == null || nameSpace.equals(f.nameSpace);
+          boolean matchOriginalEventName = originalEventName == null || originalEventName.equals(f.originalEventType);
+
+          if (!matchNamespace || !matchOriginalEventName) {
+            newFunctions.add(f);
+          }
+        }
+
+        bindFunctionBySelector.delete(cssSelector);
+        if (newFunctions.length() > 0) {
+          bindFunctionBySelector.put(cssSelector, newFunctions);
+        }
+
+      }
     }
 
     /**
@@ -472,19 +497,45 @@ public class EventsListener implements EventListener {
   }
 
   public void die(String eventNames, String cssSelector) {
-    die(getEventBits(eventNames), cssSelector);
+    String[] parts = eventNames.split("[\\s,]+");
+
+    for (String event : parts) {
+      String nameSpace = null;
+      String eventName = event;
+
+      //seperate possible namespace
+      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      String[] subparts = event.split("\\.", 2);
+
+      if (subparts.length == 2) {
+        nameSpace = subparts[1];
+        eventName = subparts[0];
+      }
+
+
+      //handle special event like mouseenter or mouseleave
+      SpecialEvent hook = special.get(eventName);
+      eventName = hook != null ? hook.getDelegateType() : eventName;
+      String originalEventName = hook != null ? hook.getOriginalType() : null;
+
+      int b = getTypeInt(eventName);
+
+      die(b, nameSpace, originalEventName, cssSelector);
+    }
+
+
   }
 
-  public void die(int eventbits, String cssSelector) {
-    if (eventbits == 0) {
+  public void die(int eventbits, String nameSpace, String originalEventName,String cssSelector) {
+    if (eventbits <= 0) {
       for (String k : liveBindFunctionByEventType.keys()) {
         LiveBindFunction liveBindFunction = liveBindFunctionByEventType.<JsCache> cast().get(k);
-        liveBindFunction.removeBindFunctionForSelector(cssSelector);
+        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, null);
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
       if (liveBindFunction != null) {
-        liveBindFunction.removeBindFunctionForSelector(cssSelector);
+        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, originalEventName);
       }
     }
   }
@@ -514,11 +565,37 @@ public class EventsListener implements EventListener {
     return getGwtEventListener(element);
   }
 
-  public void live(String eventNames, String cssSelector, Object data, Function... f) {
-    live(getEventBits(eventNames), cssSelector, data, f);
+  public void live(String events, String cssSelector, Object data, Function... funcs) {
+
+    String[] parts = events.split("[\\s,]+");
+
+    for (String event : parts) {
+
+      String nameSpace = null;
+      String eventName = event;
+
+
+      String[] subparts = event.split("\\.", 2);
+
+      if (subparts.length == 2) {
+        nameSpace = subparts[1];
+        eventName = subparts[0];
+      }
+
+      //handle special event like mouseenter or mouseleave
+      SpecialEvent hook = special.get(eventName);
+      eventName = hook != null ? hook.getDelegateType() : eventName;
+      String originalEventName = hook != null ? hook.getOriginalType() : null;
+
+      int b = getTypeInt(eventName);
+      for (Function function : funcs) {
+        Function handler = hook != null ? hook.createDelegateHandler(function) : function;
+        live(b, nameSpace, originalEventName, cssSelector, data, handler);
+      }
+    }
   }
 
-  public void live(int eventbits, String cssSelector, Object data, Function... funcs) {
+  public void live(int eventbits, String nameSpace, String originalEventName, String cssSelector, Object data, Function... funcs) {
     for (int i = 0; i < 28; i++) {
       int event = (int) Math.pow(2, i);
       if ((eventbits & event) == event) {
@@ -534,9 +611,8 @@ public class EventsListener implements EventListener {
         }
 
         for (Function f : funcs) {
-          // TODO handle special event by passing original event name
-          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event, "live",
-              null, f, data));
+          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event, nameSpace,
+              originalEventName, f, data));
         }
       }
     }
