@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.gwt.query.client.GQuery.Offset;
 import junit.framework.Assert;
 
 import com.google.gwt.dom.client.Document;
@@ -491,6 +492,36 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     $(e).html(txt);
     $("h2", e).appendTo($("div"));
     assertHtmlEquals(expected, $(e).html());
+  }
+
+  public void testOffset(){
+    $(e).html(
+        "<div id='id1' style='padding-left:10px; padding-top:20px;'><div id='id2'>Content 1</div></div>");
+
+    Offset parentOffset = $("#id1", e).offset();
+
+    GQuery g = $("#id2", e);
+    Offset initialOffset = g.offset();
+
+    assertEquals(10 + parentOffset.left, initialOffset.left);
+    assertEquals(20 + parentOffset.top, initialOffset.top);
+
+    g.offset(10, 0);
+
+    Offset offset = g.offset();
+    assertEquals(0, offset.left);
+    assertEquals(10, offset.top);
+
+    //css control
+    String top = g.css("top", true);
+    String left = g.css("left", true);
+
+    int expectedTop = 10 - initialOffset.top;
+    int expectedLeft = 0 - initialOffset.left;
+
+    assertEquals(""+expectedTop+"px", top);
+    assertEquals(""+expectedLeft+"px", left);
+
   }
 
   public void testOpacity() {
