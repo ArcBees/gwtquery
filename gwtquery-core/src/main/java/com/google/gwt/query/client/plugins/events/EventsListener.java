@@ -16,6 +16,7 @@ package com.google.gwt.query.client.plugins.events;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NodeList;
@@ -531,11 +532,17 @@ public class EventsListener implements EventListener {
       for (String k : liveBindFunctionByEventType.keys()) {
         LiveBindFunction liveBindFunction = liveBindFunctionByEventType.<JsCache> cast().get(k);
         liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, null);
+        if (liveBindFunction.isEmpty()){
+          liveBindFunctionByEventType.<JsCache>cast().delete(k);
+        }
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
       if (liveBindFunction != null) {
         liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, originalEventName);
+      }
+      if (liveBindFunction.isEmpty()){
+        liveBindFunctionByEventType.remove(eventbits);
       }
     }
   }
