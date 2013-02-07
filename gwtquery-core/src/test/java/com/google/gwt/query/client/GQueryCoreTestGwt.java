@@ -1148,6 +1148,18 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("disabled", ie.getAttribute("disabled"));
 
   }
+  
+  public void testAttr_Issue165() {
+    $(e).html("<a href='#' title='a title'>anchor</a>");
+    Element a = $("a", e).get(0);
+    
+    assertEquals("a title", a.getAttribute("title"));
+    assertTrue(JsUtils.hasAttribute(a, "title"));
+    
+    $(a).removeAttr("title");
+    assertEquals("", a.getAttribute("title"));
+    assertFalse(JsUtils.hasAttribute(a, "title"));
+  }
 
   @DoNotRunWith({Platform.Prod})
   // FIXME: the hidden part does not work in FF nor Chrome

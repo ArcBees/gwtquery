@@ -245,13 +245,22 @@ public class JsUtils {
   }
 
   /**
-   * Check if an object have already a property with name <code>name</code>
+   * Check if an object has already a property with name <code>name</code>
    * defined.
    */
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
     return o && name in o;
   }-*/;
-
+  
+  /**
+   * Check whether an element has an attribute, this is here since GWT Element.getAttribute
+   * implementation returns an empty string instead of null when the attribute is not 
+   * present
+   */
+  public static native boolean hasAttribute(JavaScriptObject o, String name)/*-{
+    return !!(o && o.getAttribute(name));
+  }-*/;
+  
   /**
    * Hyphenize style property names. for instance: fontName -> font-name
    */
