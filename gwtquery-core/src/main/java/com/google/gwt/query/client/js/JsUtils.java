@@ -257,7 +257,7 @@ public class JsUtils {
    * implementation returns an empty string instead of null when the attribute is not 
    * present
    */
-  public static native boolean hasAttribute(JavaScriptObject o, String name)/*-{
+  public static native boolean hasAttribute(Element o, String name)/*-{
     return !!(o && o.getAttribute(name));
   }-*/;
   
