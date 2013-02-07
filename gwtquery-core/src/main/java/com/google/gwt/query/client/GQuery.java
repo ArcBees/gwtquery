@@ -3539,7 +3539,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * matched element.
    */
   public int queue(String queueName) {
-    return as(Queue).queue();
+    return as(Queue).queue(queueName);
   }
 
   /**
