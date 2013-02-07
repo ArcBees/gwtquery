@@ -848,22 +848,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * property, or color CSS property.
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 500ms
+   *  //move the element from its original position to left:500px
    *  $("#foo").animate("left:'500'");
-   *  // Change the width attribute of a table
-   *  $("table").animate("width:'500'", 400, Easing.LINEAR);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  $("table").animate("$width:'500'");
    * </pre>
    *
    * In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'.
@@ -877,16 +882,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
+   *  
    *  $("#foo").animate("left:'+=500'", new Function(){
-   *
    *                 public void f(Element e){
    *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
    *                 }
-   *
    *              });
    * </pre>
    *
-   * The duration of the animation is 500ms.
+   * The default duration of the animation is 500ms.
    *
    * For color css properties, values can be specified via hexadecimal or rgb or literal values.
    *
@@ -904,22 +908,28 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * property, or color CSS property.
+   *
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
-   *  //use a swing easing function for the transition
-   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
-   *  // Change the width and border attributes of a table
+   *  //move the element from its original position to left:500px for 500ms using a swing easing
+   *  $("#foo").animate("left:'500'", 500, Easing.SWING);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  // the animation will last 400ms, and we use the LINEAR easing algorithm
    *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
    * </pre>
    *
@@ -956,21 +966,27 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * properties, or color CSS property.
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
-   * Concerning to numeric property, values are treated as a number of pixels unless otherwise
+   * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 2s
-   *  $("#foo").animate("left:'500px'", 2000);
-   *  // Change the width attribute of a table
+   *  //move the element from its original position to left:500px for 500ms
+   *  $("#foo").animate("left:'500'", 500);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  // the animation will last 400ms
    *  $("table").animate("$width:'500'"), 400);
    * </pre>
    *
