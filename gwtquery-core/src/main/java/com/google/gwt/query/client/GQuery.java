@@ -424,9 +424,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   protected static GQuery cleanHtmlString(String elem, Document doc) {
 
     String tag = tagNameRegex.exec(elem).get(1);
-
     if (tag == null) {
-      throw new RuntimeException("HTML snippet doesn't contain any tag");
+      return $(doc.createTextNode(elem));
     }
 
     if (wrapperMap == null) {

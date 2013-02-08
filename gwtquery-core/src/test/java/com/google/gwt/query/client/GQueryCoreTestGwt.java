@@ -475,6 +475,15 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
   }
+  
+  public void test_issue128() {
+    GQuery g = $(e).html("<span>a</span><span>b</span><span>c</span>");
+    assertEquals(g.text(), "abc");
+    $("span", e).after(" ");
+    assertEquals(g.text(), "a b c ");
+    $("span", e).after("-");
+    assertEquals(g.text(), "a- b- c- ");
+  }
 
   public void testAppendTo() {
     String txt = "<h2>Greetings</h2><div class='container'><div class='inner'>Hello</div><div class='inner'>Goodbye</div></div>";
