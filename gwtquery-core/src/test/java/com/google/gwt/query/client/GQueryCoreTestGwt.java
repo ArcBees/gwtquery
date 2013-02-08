@@ -28,6 +28,7 @@ import java.util.List;
 import com.google.gwt.query.client.GQuery.Offset;
 import junit.framework.Assert;
 
+import com.google.gwt.dev.jjs.impl.AssertionNormalizer;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -1001,6 +1002,15 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertFalse(JsUtils.truth(00.00f));
     assertFalse(JsUtils.truth(null));
     assertFalse(JsUtils.truth(""));
+  }
+  
+  public void testUtilsCallFunc() {
+    Element e = JsUtils.runJavascriptFunction(document, "createElement", "div");
+    assertNotNull(e);
+    assertEquals(e.getTagName().toLowerCase(), "div");
+    
+    e = JsUtils.runJavascriptFunction(document, "foo", "bar", 2, true);
+    assertNull(e);
   }
 
   public void testVal_issue98() {
