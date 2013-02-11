@@ -170,7 +170,6 @@ public class AttributeImpl {
       if (e.getNodeType() != 1) {
         continue;
       }
-      e.removeAttribute(key);
       if (JsUtils.hasProperty(e, key)) {
         if (BOOLEAN_ATTR_REGEX.test(key)) {
           e.setPropertyBoolean(key, false);
@@ -178,6 +177,7 @@ public class AttributeImpl {
           e.setPropertyObject(key, null);
         }
       }
+      e.removeAttribute(key);
     }
   }
 

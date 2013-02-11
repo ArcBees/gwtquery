@@ -18,6 +18,7 @@ package com.google.gwt.query.client.js;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -245,13 +246,22 @@ public class JsUtils {
   }
 
   /**
-   * Check if an object have already a property with name <code>name</code>
+   * Check if an object has already a property with name <code>name</code>
    * defined.
    */
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
     return o && name in o;
   }-*/;
-
+  
+  /**
+   * Check whether an element has an attribute, this is here since GWT Element.getAttribute
+   * implementation returns an empty string instead of null when the attribute is not 
+   * present
+   */
+  public static native boolean hasAttribute(Element o, String name)/*-{
+    return !!(o && o.getAttribute(name));
+  }-*/;
+  
   /**
    * Hyphenize style property names. for instance: fontName -> font-name
    */
@@ -307,8 +317,7 @@ public class JsUtils {
    * Check is a javascript object is a function
    */
   public static native boolean isFunction(JavaScriptObject o) /*-{
-    var r = Object.prototype.toString.call(o);
-    return r == '[object Function]';
+    return Object.prototype.toString.call(o) == '[object Function]';
   }-*/;
 
   /**
@@ -390,6 +399,33 @@ public class JsUtils {
   public static String text(Element e) {
     return utilsImpl.text(e);
   }
+  
+  /**
+   * Call via jsni any arbitrary function present in a Javascript object.
+   * 
+   * It's thought for avoiding to create jsni methods to call external functions and
+   * facilitate the writing of js wrappers.
+   * 
+   * Example
+   * <pre>
+   *  // Create a svg node in our document.
+   *  Element svg = runJavascriptFunction(document, "createElementNS", "http://www.w3.org/2000/svg", "svg");
+   *  // Append it to the dom
+   *  $(svg).appendTo(document);
+   * </pre>
+   * 
+   * @param o  the javascript object where the function is.
+   * @param meth the literal name of the function to call.
+   * @param args an array with the arguments to pass to the function.
+   * @return the javascript object returned by the jsni method or null.
+   */
+  public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
+    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());
+  }
+  
+  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
+    return (f = o && o[meth]) && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f) && f.apply(o, args) || null;
+  }-*/;
 
   /**
    * Check if a number is true in the javascript scope.

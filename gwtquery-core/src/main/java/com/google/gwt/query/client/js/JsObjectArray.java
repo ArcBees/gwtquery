@@ -33,14 +33,22 @@ public final class JsObjectArray<T> extends JavaScriptObject {
     return cast();
   }
 
-  public void add(T...vals) {
+  public JsObjectArray<T> add(T...vals) {
     for (T t: vals) {
-      c().put(length(), t);
+      if (t instanceof Number) {
+        c().putNumber(length(), (((Number)t).doubleValue()));
+      } else if (t instanceof Boolean) {
+        c().putBoolean(length(), ((Boolean)t).booleanValue());
+      } else {
+        c().put(length(), t);
+      }
     }
+    return this;
   }
 
-  public void add(int i, T val) {
+  public JsObjectArray<T> add(int i, T val) {
     c().put(i, val);
+    return this;
   }
 
   @SuppressWarnings("unchecked")
