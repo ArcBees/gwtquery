@@ -128,7 +128,7 @@ var IES = function(selector, context, results, seed) {
         pop = cur;
 
         if ( !Expr.relative[ cur ] ) {
-          cur = "";
+          cur = "-";
         } else {
           pop = parts.pop();
         }
