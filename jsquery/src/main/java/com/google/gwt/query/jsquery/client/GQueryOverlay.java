@@ -94,6 +94,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   }
 
   @ExportStaticMethod("$wnd.$.expr")
+  // TODO: it is just a dummy implementation, fix it
   public static JavaScriptObject expr(Object...objs) {
     return JsCache.createObject();
   }
