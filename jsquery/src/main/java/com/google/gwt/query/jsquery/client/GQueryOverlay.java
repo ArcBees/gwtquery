@@ -43,17 +43,17 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   @ExportPackage("JsQuery")
   @Export("jFunction")
   @ExportClosure()
-  public abstract interface FunctionOverlay extends ExportOverlay<Function>  {
-    public abstract void f();
-    public abstract boolean f(Event e);
-    public abstract Object f(Element e, int i);
+  public interface FunctionOverlay extends ExportOverlay<Function>  {
+    public void f();
+    public boolean f(Event e);
+    public Object f(Element e, int i);
   }
 
   @ExportPackage("JsQuery")
   @Export("jPredicate")
   @ExportClosure()
-  public abstract interface PredicateOverlay extends ExportOverlay<Predicate>  {
-    public abstract boolean f(Element e, int i);
+  public interface PredicateOverlay extends ExportOverlay<Predicate>  {
+    public boolean f(Element e, int i);
   }
 
   private GQueryOverlay(){}
