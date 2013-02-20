@@ -331,6 +331,14 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * this animation, meaning that all of the matched elements should already
    * have some form of height and width associated with them.
    */
+  LazyEffects<T> fadeTo(double opacity, Function... f);
+
+  /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
   LazyEffects<T> fadeTo(int millisecs, double opacity, Function... f);
 
   /**

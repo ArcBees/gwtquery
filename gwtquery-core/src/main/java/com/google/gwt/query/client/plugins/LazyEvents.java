@@ -65,6 +65,8 @@ public interface LazyEvents<T> extends LazyBase<T>{
    */
   LazyEvents<T> bind(String event, Object data, Function... funcs);
 
+  GQuery die(int eventbits, String nameSpace);
+
   GQuery die(int eventbits);
 
   /**
@@ -75,6 +77,8 @@ public interface LazyEvents<T> extends LazyBase<T>{
   GQuery die(String eventName);
 
   GQuery live(int eventbits, Object data, Function... funcs);
+
+  GQuery live(int eventbits, String nameSpace, Object data, Function... funcs);
 
   GQuery live(String eventName, Object data, Function... funcs);
 
