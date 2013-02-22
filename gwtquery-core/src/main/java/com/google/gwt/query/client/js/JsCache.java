@@ -70,8 +70,7 @@ public class JsCache extends JavaScriptObject {
   }
 
   public final native <T> boolean getBoolean(T id) /*-{
-    var r = this[id], t = typeof r;
-    return 'boolean' == r ? r : 'true' == String(r);
+    return /true|1/.test(this[id]);
   }-*/;
 
   public final <T> float getFloat(T id) {
@@ -110,8 +109,18 @@ public class JsCache extends JavaScriptObject {
     for (k in this) return false;
     return true;
   }-*/;
+  
+  public final native boolean contains(Object o)/*-{
+    return this.indexOf(o) >= 0;
+  }-*/;
+  
+  public final native void remove(Object o) /*-{
+    var i = this.indexOf(o);
+    if (i >= 0) this.splice(i, 1);
+  }-*/;
 
   public final native int indexOf(Object o) /*-{
+    // HtmlUnit fails when this returns 0
     return this.indexOf(o);
   }-*/;
 

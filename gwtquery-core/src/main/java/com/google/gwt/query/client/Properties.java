@@ -61,7 +61,6 @@ public class Properties extends JavaScriptObject {
         .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings
         ;
     ret = ret.matches("(^[\\[\\{].*[\\]\\}]$)") ? ret : "{" + ret + "}";
-    System.out.println(s + " -> " + ret);
     return ret;
   }
 
