@@ -48,7 +48,7 @@ public class Properties extends JavaScriptObject {
         .replaceAll("\\s+([:\\)\\(,;}{'\"])" , "$1") // Remove spaces
         .replaceFirst("^[\\(]+(.*)[\\)]+$", "$1") // Remove ()
         .replaceAll("\\([\"']([^\\)]+)[\"']\\)" , "($1)") // Remove quotes
-        .replaceAll("[;,]+([\\w-\\$]+):", ";$1:") // Change comma by semicolon
+        .replaceAll("[;,]+([\\w-\\$]+:|$)", ";$1") // Change comma by semicolon
         .replaceAll("([^,;])([\\]}])", "$1;$2") // Put control semicolon used below
         .replaceAll(":\\s*[\"']?([^;\\{\\}\\[\\]\"']*)[\"']?\\s*([;,]+|$)", ":\"$1\";") // put quotes to all values (even empty)
         .replaceAll("[;,]+([\\w-]+):", ";$1:") // Change semicolon by comma
@@ -61,6 +61,7 @@ public class Properties extends JavaScriptObject {
         .replaceAll("[;,]+([\\]\\}]|$)", "$1") // remove endings
         ;
     ret = ret.matches("(^[\\[\\{].*[\\]\\}]$)") ? ret : "{" + ret + "}";
+    System.out.println(s + " -> " + ret);
     return ret;
   }
 
