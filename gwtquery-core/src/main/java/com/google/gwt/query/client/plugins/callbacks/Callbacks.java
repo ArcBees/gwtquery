@@ -120,7 +120,7 @@ public class Callbacks {
    */
   public Callbacks disable() {
     callbacks = JsObjectArray.create();
-    memory = JsObjectArray.create();
+    memory = null;
     done = true;
     return this;
   }

@@ -136,6 +136,10 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     callbacks.remove( fn1 );
     callbacks.add( fn1 );
     assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
+    callbacks.remove( fn1 );
+    callbacks.disable();
+    callbacks.add( fn1 );
+    assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
   }
 
 }
