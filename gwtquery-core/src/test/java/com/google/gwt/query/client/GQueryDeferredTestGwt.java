@@ -30,7 +30,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
   }
 
   private String result = "";
-  
+
   public void testCallbacks() {
     Function fn1 = new Function() {
       public void f() {
@@ -66,8 +66,6 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
         result += s;
       }
     };
-    
-    
     
     result = "";
     Callbacks callbacks = new Callbacks();
@@ -108,7 +106,9 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     callbacks.fire( "foo" );
     callbacks.add( fn2 );
     callbacks.fire( "bar" );
-    assertEquals(" f1: foo f1: foo bar f2: foo bar", result);
+    callbacks.remove(fn2);
+    callbacks.fire( "foobar" );
+    assertEquals(" f1: foo f2: foo f1: bar f2: bar f1: foobar", result);
 
     result = "";
     callbacks = new Callbacks("stopOnFalse");
@@ -123,12 +123,19 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     assertEquals("", result);
 
     result = "";
-    callbacks = new Callbacks("once");
+    callbacks = new Callbacks("memory once unique");
+    callbacks.add( fn1 );
     callbacks.add( fn1 );
     callbacks.fire( "bar" );
     assertEquals(" f1: bar", result);
     callbacks.fire( "foo" );
     assertEquals(" f1: bar", result);
+    callbacks.add( fn2 );
+    callbacks.add( fn2 );
+    assertEquals(" f1: bar f2: bar f2: bar", result);
+    callbacks.remove( fn1 );
+    callbacks.add( fn1 );
+    assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
   }
 
 }
