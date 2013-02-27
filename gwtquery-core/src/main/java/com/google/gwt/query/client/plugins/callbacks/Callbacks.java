@@ -119,8 +119,7 @@ public class Callbacks {
    * Disable a callback list from doing anything more.
    */
   public Callbacks disable() {
-    callbacks = JsObjectArray.create();
-    memory = null;
+    callbacks = memory = null;
     done = true;
     return this;
   }
@@ -152,13 +151,15 @@ public class Callbacks {
   }
   
   private void addAll(Object...o) {
-    for (Object c : o) {
-      if (!opts.getUnique() || !callbacks.contains(c)) {
-        callbacks.add(c);
-      }
-      // In jQuery add always is run when memory is true even when unique is set
-      if (opts.getMemory() && memory != null) {
-        run(c, memory.elements());
+    if (callbacks != null) {
+      for (Object c : o) {
+        if (!opts.getUnique() || !callbacks.contains(c)) {
+          callbacks.add(c);
+        }
+        // In jQuery add always is run when memory is true even when unique is set
+        if (opts.getMemory() && memory != null) {
+          run(c, memory.elements());
+        }
       }
     }
   }  
