@@ -459,7 +459,17 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects fadeOut(int millisecs, Function... f) {
     return animate("opacity: 'hide'", millisecs, f);
   };
-
+  
+  /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public Effects fadeTo(double opacity, Function... f) {
+    return fadeTo(Speed.DEFAULT, opacity, f);
+  }
+  
   /**
    * Fade the opacity of all matched elements to a specified opacity and firing
    * an optional callback after completion. Only the opacity is adjusted for
