@@ -12,56 +12,23 @@
  * the License.
  */
 package com.google.gwt.query.client;
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
-import com.google.gwt.query.client.impl.AttributeImpl;
-import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.SelectorEngine;
-import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.Widgets;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
-import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
 
@@ -110,22 +77,27 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * property, or color CSS property.
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 500ms
+   *  //move the element from its original position to left:500px
    *  $("#foo").animate("left:'500'");
-   *  // Change the width attribute of a table
-   *  $("table").animate("$width:'500'"), 400, Easing.LINEAR);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  $("table").animate("$width:'500'");
    * </pre>
    *
    * In addition to numeric values, each property can take the strings 'show', 'hide', and 'toggle'.
@@ -139,16 +111,15 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
+   *  
    *  $("#foo").animate("left:'+=500'", new Function(){
-   *
    *                 public void f(Element e){
    *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
    *                 }
-   *
    *              });
    * </pre>
    *
-   * The duration of the animation is 500ms.
+   * The default duration of the animation is 500ms.
    *
    * For color css properties, values can be specified via hexadecimal or rgb or literal values.
    *
@@ -158,28 +129,34 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'");
    * </pre>
    *
-   * @param prop the property to animate : "cssName:'value'"
+   * @param stringOrProperties the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is complete
    */
   LazyGQuery<T> animate(Object stringOrProperties, Function... funcs);
 
   /**
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * property, or color CSS property.
+   *
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to the position top:500px and left:500px for 400ms.
-   *  //use a swing easing function for the transition
-   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
-   *  // Change the width and border attributes of a table
+   *  //move the element from its original position to left:500px for 500ms using a swing easing
+   *  $("#foo").animate("left:'500'", 500, Easing.SWING);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  // the animation will last 400ms, and we use the LINEAR easing algorithm
    *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
    * </pre>
    *
@@ -214,21 +191,27 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
 
   /**
-   * The animate() method allows you to create animation effects on any numeric Attribute, CSS
-   * properties, or color CSS property.
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * CSS property, or color CSS property.
    *
-   * Concerning to numeric property, values are treated as a number of pixels unless otherwise
+   * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
    * specified. The units em and % can be specified where applicable.
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
-   * should to prepend the symbol dollar to the attribute name.
+   * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
+   * 
+   * NOTE: The ability of animating attribute values is only available in gquery but not jquery
+   *  
    *
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 2s
-   *  $("#foo").animate("left:'500px'", 2000);
-   *  // Change the width attribute of a table
+   *  //move the element from its original position to left:500px for 500ms
+   *  $("#foo").animate("left:'500'", 500);
+   *  
+   *  // Change the width html attribute of a table, note the symbol '$' to
+   *  // tell gquery which it is an html-attribute instead of a css-property.
+   *  // the animation will last 400ms
    *  $("table").animate("$width:'500'"), 400);
    * </pre>
    *
@@ -955,6 +938,22 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> fadeIn(int millisecs, Function... f);
 
   /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  LazyGQuery<T> fadeTo(int millisecs, double opacity, Function... f);
+
+  /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  LazyGQuery<T> fadeTo(double opacity, Function... f);
+
+  /**
    * Fade out all matched elements by adjusting their opacity. The effect will take 1000
    * milliseconds to complete
    */
@@ -1538,7 +1537,17 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * returned object contains two integer properties, top and left. The method works only with
    * visible elements.
    */
-  com.google.gwt.query.client.GQuery.Offset offset();
+  Offset offset();
+
+  /**
+   * Set the current coordinates of every element in the set of matched elements, relative to the document.
+   */
+  LazyGQuery<T> offset(Offset offset);
+
+  /**
+   * Set the current coordinates of every element in the set of matched elements, relative to the document.
+   */
+  LazyGQuery<T> offset(int top, int left);
 
   /**
    * Returns a GQuery collection with the positioned parent of the first matched element. This is
@@ -1618,7 +1627,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * contains two Integer properties, top and left. For accurate calculations make sure to use pixel
    * values for margins, borders and padding. This method only works with visible elements.
    */
-  com.google.gwt.query.client.GQuery.Offset position();
+  Offset position();
 
   /**
    * Prepend content to the inside of every matched element. This operation is the best way to
@@ -1863,6 +1872,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Removes named data store from an element.
    */
   LazyGQuery<T> removeData(String name);
+
+  /**
+   * Remove a property for the set of matched elements.
+   */
+  LazyGQuery<T> removeProp(String name);
 
   /**
    * Replaces the element <code>elem</code> by the specified selector with the matched elements.

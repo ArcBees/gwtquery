@@ -70,8 +70,7 @@ public class JsCache extends JavaScriptObject {
   }
 
   public final native <T> boolean getBoolean(T id) /*-{
-    var r = this[id], t = typeof r;
-    return 'boolean' == r ? r : 'true' == String(r);
+    return /true|1/.test(this[id]);
   }-*/;
 
   public final <T> float getFloat(T id) {
@@ -95,7 +94,7 @@ public class JsCache extends JavaScriptObject {
 
   public final native <T> JsArrayMixed getArray(T id) /*-{
     var r = this[id];
-    if (r && Object.prototype.toString.call(r) == '[object Array]') {
+    if (r && @com.google.gwt.query.client.js.JsUtils::isArray(*)(r)) {
       return r;
     }
     return null;
@@ -110,21 +109,34 @@ public class JsCache extends JavaScriptObject {
     for (k in this) return false;
     return true;
   }-*/;
+  
+  public final native boolean contains(Object o)/*-{
+    return this.indexOf(o) >= 0;
+  }-*/;
+  
+  public final native void remove(Object o) /*-{
+    var i = this.indexOf(o);
+    if (i >= 0) this.splice(i, 1);
+  }-*/;
 
   public final native int indexOf(Object o) /*-{
+    // HtmlUnit fails when this returns 0
     return this.indexOf(o);
   }-*/;
 
-  public final native <T> void putBoolean(T id, boolean b) /*-{
+  public final native <T> JsCache putBoolean(T id, boolean b) /*-{
     this[id] = b;
+    return this;
   }-*/;
 
-  public final native <T> void putNumber(T id, double n) /*-{
+  public final native <T> JsCache putNumber(T id, double n) /*-{
     this[id] = n;
+    return this;
   }-*/;
 
-  public final native <T, O> void put(T id, O obj) /*-{
+  public final native <T, O> JsCache put(T id, O obj) /*-{
     this[id] = obj;
+    return this;
   }-*/;
 
   public final native int length() /*-{

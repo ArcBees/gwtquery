@@ -2104,6 +2104,26 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery fadeIn(int millisecs, Function... f) {
     return as(Effects).fadeIn(millisecs, f);
   }
+  
+  /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public GQuery fadeTo(int millisecs, double opacity, Function... f) {
+    return as(Effects).fadeTo(millisecs, opacity, f);
+  }
+  
+  /**
+   * Fade the opacity of all matched elements to a specified opacity and firing
+   * an optional callback after completion. Only the opacity is adjusted for
+   * this animation, meaning that all of the matched elements should already
+   * have some form of height and width associated with them.
+   */
+  public GQuery fadeTo(double opacity, Function... f) {
+    return as(Effects).fadeTo(opacity, f);
+  }
 
   /**
    * Fade out all matched elements by adjusting their opacity. The effect will take 1000
@@ -3662,6 +3682,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery removeData(String name) {
     for (Element e : elements) {
       removeData(e, name);
+    }
+    return this;
+  }
+
+  /**
+   * Remove a property for the set of matched elements.
+   */
+  public GQuery removeProp(String name) {
+    for (Element e : elements) {
+      e.<JsCache>cast().delete(name);
     }
     return this;
   }

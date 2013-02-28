@@ -22,6 +22,7 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.user.client.Event;
 
@@ -55,7 +56,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public interface PredicateOverlay extends ExportOverlay<Predicate>  {
     public boolean f(Element e, int i);
   }
-
+  
   private GQueryOverlay(){}
 
   /**
@@ -150,6 +151,22 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   }
 
   @ExportInstanceMethod
+  public static GQuery offset(GQuery instance, JsCache o) {
+    return instance.offset(new Offset(o.getInt("left"), o.getInt("top")));
+  }
+  
+  @ExportInstanceMethod
+  public static Element[] toArray(GQuery g) {
+    return g.elements();
+  }
+  
+  @ExportInstanceMethod
+  public static GQuery trigger(GQuery g, String name, Function f) {
+    g.as(Events.Events).triggerHtmlEvent(name, f);
+    return g;
+  }
+
+  @ExportInstanceMethod
   public static GQuery unbind(GQuery g, String s, Function o) {
     return g.unbind(s);
   }
@@ -178,7 +195,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery appendTo(GQuery other);
   public abstract GQuery appendTo(Node n);
   public abstract GQuery appendTo(String html);
-  public abstract <T extends GQuery> T as(Class<T> plugin);
+//  public abstract <T extends GQuery> T as(Class<T> plugin);
 
   public abstract GQuery before(GQuery query);
   public abstract GQuery before(Node n);
@@ -233,7 +250,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery die(String eventName);
 //  public abstract GQuery die(int eventbits);
   public abstract GQuery each(Function... f);
-  public abstract Element[] elements();
+//  public abstract Element[] elements();
   public abstract GQuery empty();
 //  public abstract GQuery end();
   public abstract GQuery eq(int pos);
@@ -242,17 +259,23 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery fadeIn(int millisecs, Function... f);
   public abstract GQuery fadeOut(Function... f);
   public abstract GQuery fadeOut(int millisecs, Function... f);
+  public abstract GQuery fadeTo(double opacity, Function... f);
+  public abstract GQuery fadeTo(int millisecs, double opacity, Function... f);  
   public abstract Effects fadeToggle(int millisecs, Function... f);
   public abstract GQuery filter(Predicate filterFn);
 //  public abstract GQuery filter(String... filters);
   public abstract GQuery find(String... filters);
   public abstract GQuery first();
+  // TODO: focusIn
+  // TODO: focusOut
   public abstract GQuery focus(Function... f);
   public abstract Element get(int i);
   public abstract Node getContext();
-  public abstract GQuery getPreviousObject();
-  public abstract String getSelector();
-  public abstract GQuery gt(int pos);
+//  public abstract GQuery getPreviousObject();
+//  public abstract String getSelector();
+//  public abstract GQuery gt(int pos);
+  public abstract GQuery has(String selector);
+  public abstract GQuery has(Element elem);
   public abstract boolean hasClass(String... classes);
   public abstract int height();
   public abstract GQuery height(int height);
@@ -261,9 +284,10 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery hover(Function fover, Function fout);
   public abstract String html();
   public abstract GQuery html(String html);
-  public abstract String id();
-  public abstract GQuery id(String id);
+//  public abstract String id();
+//  public abstract GQuery id(String id);
   public abstract int index(Element element);
+  // TODO: init
   public abstract int innerHeight();
   public abstract int innerWidth();
   public abstract GQuery insertAfter(Element elem);
@@ -273,7 +297,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery insertBefore(GQuery query);
   public abstract GQuery insertBefore(String selector);
   public abstract boolean is(String... filters);
-  public abstract boolean isEmpty();
+//  public abstract boolean isEmpty();
   public abstract GQuery keydown(Function... f);
   public abstract GQuery keydown(int key);
   public abstract GQuery keypress(Function... f);
@@ -281,16 +305,18 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery keyup(Function... f);
   public abstract GQuery keyup(int key);
   public abstract GQuery last();
-  public abstract int left();
-  public abstract int length();
+//  public abstract int left();
+//  public abstract int length();
   public abstract GQuery live(String eventName, Function... funcs);
 //  public abstract GQuery live(int eventbits, Function... funcs);
 //  public abstract GQuery live(int eventbits, Object data, Function... funcs);
   public abstract GQuery live(String eventName, Object data, Function... funcs);
-//  public abstract GQuery load(Function f);
-  public abstract GQuery lt(int pos);
-//  public abstract <W> List<W> map(Function f);
+//  TODO: public abstract GQuery load(Function f);
+//  public abstract GQuery lt(int pos);
+//  TODO: public abstract <W> List<W> map(Function f);
   public abstract GQuery mousedown(Function... f);
+  public abstract GQuery mouseenter(Function... f);
+  public abstract GQuery mouseleave(Function... f);
   public abstract GQuery mousemove(Function... f);
   public abstract GQuery mouseout(Function... f);
   public abstract GQuery mouseover(Function... f);
@@ -313,7 +339,6 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery parents();
   public abstract GQuery parents(String... filters);
   public abstract GQuery parentsUntil(String selector);
-//  public abstract Offset position();
   public abstract GQuery prepend(GQuery query);
   public abstract GQuery prepend(Node n);
   public abstract GQuery prepend(String html);
@@ -324,6 +349,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery prev(String... selectors);
   public abstract GQuery prevAll();
   public abstract GQuery prevUntil(String selector);
+  // TODO: pushStack 
   public abstract boolean prop(String key);
   public abstract GQuery prop(String key, boolean value);
   public abstract GQuery prop(String key, Function closure);
@@ -336,6 +362,7 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery removeAttr(String key);
   public abstract GQuery removeClass(String... classes);
   public abstract GQuery removeData(String name);
+  public abstract GQuery removeProp(String name);
   public abstract GQuery replaceAll(Element elem);
   public abstract GQuery replaceAll(GQuery target);
   public abstract GQuery replaceAll(String selector);
@@ -343,21 +370,25 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery replaceWith(GQuery target);
   public abstract GQuery replaceWith(String html);
   public abstract GQuery resize(Function... f);
-  public abstract void restoreCssAttrs(String... cssProps);
-  public abstract void resize(Function f);
-  public abstract void saveCssAttrs(String... cssProps);
+//  public abstract void restoreCssAttrs(String... cssProps);
+//  public abstract void resize(Function f);
+//  public abstract void saveCssAttrs(String... cssProps);
   public abstract GQuery scroll(Function... f);
-  public abstract GQuery scrollIntoView();
-  public abstract GQuery scrollIntoView(boolean ensure);
+//  public abstract GQuery scrollIntoView();
+//  public abstract GQuery scrollIntoView(boolean ensure);
   public abstract int scrollLeft();
   public abstract GQuery scrollLeft(int left);
-  public abstract GQuery scrollTo(int left, int top);
+//  public abstract GQuery scrollTo(int left, int top);
   public abstract int scrollTop();
   public abstract GQuery scrollTop(int top);
   public abstract GQuery select();
-  public abstract GQuery setArray(NodeList<Element> list);
-  public abstract void setPreviousObject(GQuery previousObject);
-  public abstract GQuery setSelector(String selector);
+  // TODO: selector
+  // TODO: selector
+  // TODO: serialize
+  // TODO: serializeArray
+  // public abstract GQuery setArray(NodeList<Element> list);
+  // public abstract void setPreviousObject(GQuery previousObject);
+  // public abstract GQuery setSelector(String selector);
   public abstract GQuery show();
   public abstract GQuery siblings();
   public abstract GQuery siblings(String... selectors);
@@ -377,20 +408,20 @@ public abstract class GQueryOverlay implements ExportOverlay<GQuery> {
   public abstract GQuery toggle(Function... fn);
   public abstract GQuery toggleClass(String... classes);
   public abstract GQuery toggleClass(String clz, boolean addOrRemove);
-  public abstract int top();
   public abstract String toString(boolean pretty);
-//  public abstract GQuery trigger(int eventbits, int... keys);
-//  public abstract GQuery unbind(int eventbits);
+//  public abstract GQuery unbind(String eventName);
+//  public abstract GQuery unbind(String eventName, Function f);
   public abstract GQuery undelegate();
   public abstract GQuery undelegate(String selector);
   public abstract GQuery undelegate(String selector, String eventName);
-  public abstract GQuery undelegate(String selector, int eventBit);
+//  public abstract GQuery undelegate(String selector, int eventBit);
 //  public abstract JsNodeArray unique(NodeList<Element> result);
+  // TODO: unload
   public abstract GQuery unwrap();
   public abstract String val();
   public abstract GQuery val(String... values);
-  public abstract String[] vals();
-  public abstract boolean isVisible();
+//  public abstract String[] vals();
+//  public abstract boolean isVisible();
   public abstract int width();
   public abstract GQuery width(int width);
   public abstract GQuery wrap(Element elem);

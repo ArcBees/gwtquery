@@ -47,7 +47,7 @@ public class JreQueryCoreTest extends GWTTestCase {
     assertEquals("{\"width\":\"\",\"top\":\"\"}", Properties
         .wrapPropertiesString("width: '' ; top:'' ;"));
     assertEquals("{\"border-left\":\"solid\"}", Properties
-        .wrapPropertiesString("border-left: solid"));
+        .wrapPropertiesString("border-left: solid,"));
     assertEquals("[{\"a\":1,\"b\":{\"a\":2,\"b\":{\"a\":3}},\"u\":\"url\",\"d\":2,\"t\":[\"hola\",\"adios\"],\"z\":true}]", Properties
         .wrapPropertiesString("[{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}]"));
     assertEquals("{\"$x\":22.60,\"$y\":\".0\",\"h\":\"#y\"}", Properties

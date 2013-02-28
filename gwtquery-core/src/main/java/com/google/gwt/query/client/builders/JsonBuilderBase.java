@@ -41,7 +41,9 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (prp != null && prp instanceof String) {
       return parse((String)prp);
     }
-    p = (Properties)prp;
+    if (prp != null) {
+      p = (Properties)prp;
+    }
     return (J)this;
   }
 

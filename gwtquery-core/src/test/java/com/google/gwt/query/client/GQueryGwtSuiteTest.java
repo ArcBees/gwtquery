@@ -15,6 +15,7 @@ public class GQueryGwtSuiteTest extends GWTTestSuite
   {
       GWTTestSuite suite = new GWTTestSuite( "GQuery Suite" );
       suite.addTestSuite(GQueryAjaxTestGwt.class);
+      suite.addTestSuite(GQueryDeferredTestGwt.class);
       suite.addTestSuite(GQuerySelectorsTestGwt.class);
       suite.addTestSuite(GQueryCoreTestGwt.class);
       suite.addTestSuite(GQueryCssTestGwt.class);
