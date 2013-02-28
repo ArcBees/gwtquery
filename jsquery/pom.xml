@@ -76,7 +76,8 @@
                     <optimizationLevel>9</optimizationLevel>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
-                    <!-- <disableClassMetadata>true</disableClassMetadata> -->
+                    <disableClassMetadata>true</disableClassMetadata>
+	            <!-- Consider this in module <inherits name='com.google.gwt.user.RemoteServiceObfuscateTypeNames' />  -->
                     <disableCastChecking>true</disableCastChecking>
                     <modules>
                         <module>com.google.gwt.query.jsquery.JsQueryApi</module>

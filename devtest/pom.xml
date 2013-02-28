@@ -62,7 +62,7 @@
                 </modules>
                 <runTarget>test/test.html</runTarget>
                 <hostedWebapp>target/www</hostedWebapp>
-                <soyc>true</soyc>
+                <compileReport>true</compileReport>
             </configuration>
             <executions>
                 <execution>
