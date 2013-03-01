@@ -403,7 +403,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Perform an ajax request to the server.
    */
   public static void ajax(Properties p) {
-    ajax(p);
+    Ajax.ajax(p);
   }
 
   /**
