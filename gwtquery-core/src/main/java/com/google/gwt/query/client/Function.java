@@ -29,7 +29,7 @@ public abstract class Function {
   private com.google.gwt.dom.client.Element element = null;
   private Event event = null;
   private int index = -1;
-  private Object[] data = new Object[0];
+  protected Object[] arguments = new Object[0];
 
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
     return element.<T>cast();
@@ -51,21 +51,48 @@ public abstract class Function {
   public void setIndex(int i) {
     index = i;
   }
-
+  
+  @Deprecated
   public Object[] getData() {
-    return data;
+    return getArguments();
   }
 
-  public void setData(Object...data) {
-    this.data = data;
+  public Object[] getArguments() {
+    return arguments;
+  }
+  
+  @Deprecated
+  public void setData(Object...arguments) {
+    setArguments(arguments);
   }
 
+  /**
+   * Set the list of arguments to be passed to the function
+   */
+  public void setArguments(Object...arguments) {
+    this.arguments = arguments;
+  }
+
+  /**
+   * Return the first element of the arguments list
+   */
   public Object getDataObject() {
-    return getDataObject(0);
+    return getArgument(0);
   }
 
+  /**
+   * @deprecated use getArgument instead 
+   */
+  @Deprecated
   public Object getDataObject(int idx) {
-    return data != null && data.length > idx ? data[idx] : null;
+    return getArgument(0);
+  }
+
+  /**
+   * return the argument in position idx; 
+   */
+  public Object getArgument(int idx) {
+    return arguments != null && arguments.length > idx ? arguments[idx] : null;
   }
 
   public Properties getDataProperties() {
@@ -73,7 +100,7 @@ public abstract class Function {
   }
 
   public Properties getDataProperties(int idx) {
-    Object o = getDataObject(idx);
+    Object o = getArgument(idx);
     if (o != null && o instanceof JavaScriptObject) {
       return (Properties)o;
     }
@@ -89,7 +116,7 @@ public abstract class Function {
   }
 
   public void setDataObject(Object data) {
-    setData(data);
+    setArguments(data);
   }
 
   public int getIndex() {
@@ -177,8 +204,10 @@ public abstract class Function {
   /**
    * Override this method for bound callbacks
    */
-  public void f(Object... data) {
-    fe(data);
+  public Object f(Object... data) {
+    setArguments(data);
+    f();
+    return true;
   }
 
   /**
@@ -193,7 +222,7 @@ public abstract class Function {
    */
   public void f(int i, Object... data) {
     setIndex(i);
-    setData(data);
+    setArguments(data);
     if (data.length == 1 && data[0] instanceof JavaScriptObject) {
       if (JsUtils.isElement((JavaScriptObject)data[0])) {
         setElement((com.google.gwt.dom.client.Element)data[0]);
@@ -212,7 +241,7 @@ public abstract class Function {
    * per-handler user data.
    */
   public boolean f(Event e, Object data) {
-    setData(data);
+    setArguments(data);
     setEvent(e);
     return f(e);
   }
@@ -282,7 +311,7 @@ public abstract class Function {
    * They are intentionally final to avoid override them
    */
   public final void fe() {
-    fe(data);
+    fe(arguments);
   }
 
   /**
@@ -299,17 +328,16 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final void fe(Object... data) {
-    setData(data);
+  public final Object fe(Object... data) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        f();
+        return f(data);
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
-      return;
+      return true;
     }
-    f();
+    return f(data);
   }
 
   /**

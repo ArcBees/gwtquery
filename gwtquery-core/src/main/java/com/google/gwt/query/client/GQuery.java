@@ -25,9 +25,18 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -232,7 +241,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) :
       JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
       JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
-      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) : $();
+      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) : 
+        $(jso.<Element> cast());
   }
 
   /**
@@ -402,22 +412,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Perform an ajax request to the server.
    */
-  public static void ajax(Properties p) {
-    Ajax.ajax(p);
+  public static Promise ajax(Properties p) {
+    return Ajax.ajax(p);
   }
 
   /**
    * Perform an ajax request to the server.
    */
-  public static void ajax(Settings settings) {
-    Ajax.ajax(settings);
+  public static Promise ajax(Settings settings) {
+    return Ajax.ajax(settings);
   }
 
   /**
    * Perform an ajax request to the server.
    */
-  public static void ajax(String url, Settings settings) {
-    Ajax.ajax(url, settings);
+  public static Promise ajax(String url, Settings settings) {
+    return Ajax.ajax(url, settings);
   }
 
   @SuppressWarnings("unchecked")
@@ -3454,11 +3464,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    */
   public boolean prop(String key) {
-    assert key != null : "Key is null";
-
-    return !isEmpty() && get(0).getPropertyBoolean(key);
+    return !isEmpty() && elements[0].getPropertyBoolean(key);
   }
-
+  
   /**
    * Sets a boolean property to a value on all matched elements.
    *

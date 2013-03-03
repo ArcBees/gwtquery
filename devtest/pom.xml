@@ -31,6 +31,11 @@
             <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>        
+        <dependency>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-codeserver</artifactId>
+          <version>${gwtversion}</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -89,6 +94,30 @@
                  </additionalProjectnatures>
               </configuration>
           </plugin>
+          <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                   <execution>
+                     <goals>
+                       <goal>java</goal>
+                     </goals>
+                   </execution>
+                </executions>
+               <configuration>
+                  <mainClass>com.google.gwt.dev.codeserver.CodeServer</mainClass>
+                  <arguments>
+                      <argument>-src</argument>
+                      <argument>src/main/java</argument>
+                      <argument>-bindAddress</argument>
+                      <argument>0.0.0.0</argument>
+                      <argument>com.google.gwt.query.DevTestRunner</argument>
+                  </arguments>
+                  <classpathScope>compile</classpathScope>
+               </configuration>
+          </plugin>
+
         </plugins>
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     </build>

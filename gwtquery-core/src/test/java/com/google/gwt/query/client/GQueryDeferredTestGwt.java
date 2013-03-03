@@ -33,12 +33,13 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
   public void testCallbacks() {
     Function fn1 = new Function() {
-      public void f() {
+      public Object f(Object...arguments) {
         String s = " f1:";
-        for (Object o: getData()){
+        for (Object o: arguments){
           s += " " + o;
         }
         result += s;
+        return false;
       }
     };
     
@@ -55,8 +56,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     
     com.google.gwt.core.client.Callback<Object, Object> fn3 = new com.google.gwt.core.client.Callback<Object, Object>() {
       public void onFailure(Object reason) {
-        String s = " f3_fail: " + reason;
-        System.out.println(s);
+        result += " f3_fail: " + reason;
       }
       public void onSuccess(Object objects) {
         String s = " f3_success:";
@@ -112,10 +112,10 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
     result = "";
     callbacks = new Callbacks("stopOnFalse");
-    callbacks.add( fn2 );
     callbacks.add( fn1 );
+    callbacks.add( fn2 );
     callbacks.fire( "bar" );
-    assertEquals(" f2: bar", result);
+    assertEquals(" f1: bar", result);
     
     result = "";
     callbacks.disable();

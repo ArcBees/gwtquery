@@ -94,7 +94,7 @@ public class JsCache extends JavaScriptObject {
 
   public final native <T> JsArrayMixed getArray(T id) /*-{
     var r = this[id];
-    if (r && @com.google.gwt.query.client.js.JsUtils::isArray(*)(r)) {
+    if (r && Object.prototype.toString.call(r) == '[object Array]') {
       return r;
     }
     return null;

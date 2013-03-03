@@ -1,6 +1,7 @@
 package com.google.gwt.query.client.plugins.ajax;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -10,11 +11,15 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Deferred;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.xhr.client.ReadyStateChangeHandler;
+import com.google.gwt.xhr.client.XMLHttpRequest;
 
 /**
  * Ajax class for GQuery.
@@ -70,10 +75,10 @@ public class Ajax extends GQuery {
     }
   });
 
-  public static void ajax(Properties p) {
+  public static Promise ajax(Properties p) {
     Settings s = createSettings();
     s.load(p);
-    ajax(s);
+    return ajax(s);
   }
 
   /**
@@ -103,7 +108,7 @@ public class Ajax extends GQuery {
    * @param onError the function to execute on error
    * @param settings a Properties object with the configuration of the Ajax request.
    */
-  public static void ajax(Settings settings) {
+  public static void ajaxOld(Settings settings) {
 
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
@@ -133,6 +138,8 @@ public class Ajax extends GQuery {
           onError.f(null, exception.getMessage(), request, null, exception);
         }
       }
+      
+      
 
       public void onResponseReceived(Request request, Response response) {
         int statusCode = response.getStatusCode();
@@ -171,6 +178,120 @@ public class Ajax extends GQuery {
         onError.f(null, -1, null, null, e);
       }
     }
+  }
+  
+  
+  public static Promise ajax(Settings settings) {
+
+    final Deferred dfd = $().as(Deferred.Deferred);
+
+    final Function onSuccess = settings.getSuccess();
+    if (onSuccess != null) {
+      onSuccess.setElement(settings.getContext());
+      dfd.promise().done(onSuccess);
+    }
+
+    final Function onError = settings.getError();
+    if (onError != null) {
+      onError.setElement(settings.getContext());
+      dfd.promise().fail(onError);
+    }
+
+    Method httpMethod = resolveHttpMethod(settings);
+    String data = resolveData(settings, httpMethod);
+    final String url = resolveUrl(settings, httpMethod, data);
+    final String dataType = settings.getDataType();
+
+    if ("jsonp".equalsIgnoreCase(dataType)) {
+      int timeout = settings.getTimeout();
+      return getJSONP(url, onSuccess, onError, timeout);
+    }
+
+    RequestCallback mdb = new RequestCallback() {
+      public void onError(Request request, Throwable exception) {
+        if (onError != null) {
+          onError.f(null, exception.getMessage(), request, null, exception);
+        }
+      }
+
+      public void onResponseReceived(Request request, Response response) {
+        int statusCode = response.getStatusCode();
+        if (statusCode <= 0 || statusCode >= 400) {
+          if (statusCode == 0) {
+            // Just warn the developer about the status code
+            GWT.log("GQuery.ajax error, the response.statusCode is 0, this usually happens when you try to access an external server without CORS enabled. url=" + url);
+          }
+          dfd.reject(response.getText(), "error", request, response);
+        } else if (onSuccess != null) {
+          Object retData = null;
+          try {
+            if ("xml".equalsIgnoreCase(dataType)) {
+              retData = JsUtils.parseXML(response.getText());
+            } else if ("json".equalsIgnoreCase(dataType)) {
+              retData = JsUtils.parseJSON(response.getText());
+            } else {
+              retData = response.getText();
+            }
+          } catch (Exception e) {
+            if (GWT.getUncaughtExceptionHandler() != null) {
+              GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+            }
+          }
+          dfd.resolve(retData, "success", request, response);
+        }
+      }
+    };
+    
+    XMLHttpRequest xmlHttpRequest = createXHR(settings, httpMethod.toString(), url, dataType, mdb);
+    
+    try {
+      xmlHttpRequest.send(data);
+    } catch (JavaScriptException e) {
+      dfd.reject(e.getMessage(), "error", null, null, e);
+    }
+    
+    return dfd.promise();
+  }
+  
+  
+  private static native Request createRequest(XMLHttpRequest r, int t, RequestCallback c) /*-{
+   return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(r, t, c);
+  }-*/;
+  
+  private static native void fireOnResponseReceived(Request q, RequestCallback c) /*-{
+    q.@com.google.gwt.http.client.Request::fireOnResponseReceived(*)(c);
+  }-*/;
+  
+  
+  private static XMLHttpRequest createXHR (Settings settings, String httpMethod, String url, String data, final RequestCallback cb) {
+    XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
+
+    if (settings.getUsername() != null && settings.getPassword() != null) {
+      xmlHttpRequest.open(httpMethod.toString(), url, settings.getUsername(), settings.getPassword());
+    } else if (settings.getUsername() != null) {
+      xmlHttpRequest.open(httpMethod, url, settings.getUsername());
+    } else {
+      xmlHttpRequest.open(httpMethod, url);
+    }
+    
+    Properties headers = settings.getHeaders();
+    if (headers != null) {
+      for (String headerKey : headers.keys()) {
+        xmlHttpRequest.setRequestHeader(headerKey, headers.getStr(headerKey));
+      }
+    }
+
+    final Request request = createRequest(xmlHttpRequest, settings.getTimeout(), cb);
+    xmlHttpRequest.setOnReadyStateChange(new ReadyStateChangeHandler() {
+      public void onReadyStateChange(XMLHttpRequest xhr) {
+        if (xhr.getReadyState() == XMLHttpRequest.DONE) {
+          xhr.clearOnReadyStateChange();
+          fireOnResponseReceived(request, cb);
+        }
+      }
+    });
+    
+    return xmlHttpRequest;
   }
 
   private static RequestBuilder createRequestBuilder(Settings settings, Method httpMethod, String url, String data) {
@@ -255,27 +376,27 @@ public class Ajax extends GQuery {
     return RequestBuilder.POST;
   }
 
-  public static void ajax(String url, Function onSuccess, Function onError) {
-    ajax(url, onSuccess, onError, (Settings) null);
+  public static Promise ajax(String url, Function onSuccess, Function onError) {
+    return ajax(url, onSuccess, onError, (Settings) null);
   }
 
-  public static void ajax(String url, Function onSuccess, Function onError, Settings s) {
+  public static Promise ajax(String url, Function onSuccess, Function onError, Settings s) {
     if (s == null) {
       s = createSettings();
     }
     s.setUrl(url).setSuccess(onSuccess).setError(onError);
-    ajax(s);
+    return ajax(s);
   }
 
-  public static void ajax(String url, Properties p) {
+  public static Promise ajax(String url, Properties p) {
     Settings s = createSettings();
     s.load(p);
     s.setUrl(url);
-    ajax(s);
+    return ajax(s);
   }
 
-  public static void ajax(String url, Settings settings) {
-    ajax(settings.setUrl(url));
+  public static Promise ajax(String url, Settings settings) {
+    return ajax(settings.setUrl(url));
   }
 
   public static Settings createSettings() {
@@ -322,7 +443,7 @@ public class Ajax extends GQuery {
     ajax(s);
   }
 
-  public static void getJSONP(String url, Function success, Function error, int timeout) {
+  public static Promise getJSONP(String url, Function success, Function error, int timeout) {
     if (!url.contains("=?") && !url.contains("callback=")) {
       url += (url.contains("?") ? "&" : "?") + "callback=?";
     }
@@ -331,7 +452,10 @@ public class Ajax extends GQuery {
     if (e == null) {
       e = document.getDocumentElement();
     }
-    getJsonpImpl(e, url, null, success, error == null ? success : error, timeout);
+    Deferred dfd = $().as(Deferred.Deferred);
+    dfd.promise().done(success).fail(error == null ? success : error);
+    getJsonpImpl(e, url, null, dfd, timeout);
+    return dfd.promise();
   }
 
   public static void post(String url, Properties data, final Function onSuccess) {
@@ -362,7 +486,7 @@ public class Ajax extends GQuery {
           // Note: using '\s\S' instead of '.' because gwt String emulation does
           // not support java embedded flag expressions (?s) and javascript does
           // not have multidot flag.
-          String s = getData()[0].toString().replaceAll("<![^>]+>\\s*", "")
+          String s = getArguments()[0].toString().replaceAll("<![^>]+>\\s*", "")
             .replaceAll("</?html[\\s\\S]*?>\\s*", "")
             .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
             .replaceAll("<script[\\s\\S]*?</script>\\s*", "")
@@ -388,22 +512,21 @@ public class Ajax extends GQuery {
 
   private static int callBackCounter = 0;
 
-  public static native void getJsonpImpl(Element elem, String url, String charset, Function success, Function error, int timeout) /*-{
+  public static native void getJsonpImpl(Element elem, String url, String charset, Deferred dfd, int timeout) /*-{
     var fName = "__GQ_cb_" + @com.google.gwt.query.client.plugins.ajax.Ajax::callBackCounter ++;
     var done = false;
     $wnd[fName] = function(data) {
       if (!done) {
         done = true;
         $wnd[fName] = null;
-        success.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(data);
+        dfd.@com.google.gwt.query.client.plugins.Deferred::ok(*)(data)
       }
     }
     function err() {
       if (!done) {
         done = true;
         $wnd[fName] = null;
-        var func = error ? error : success;
-        func.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)();
+        dfd.@com.google.gwt.query.client.plugins.Deferred::err(*)(null)
       }
     }
     if (timeout) {
@@ -411,7 +534,7 @@ public class Ajax extends GQuery {
     }
 
     url = url.replace(/=\?/g,'=' + fName);
-    var script = document.createElement("script" );
+    var script = document.createElement("script");
     script.async = "async";
     if (charset) script.charset = charset;
     script.src = url;
