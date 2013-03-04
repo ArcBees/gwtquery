@@ -24,18 +24,50 @@ public interface Promise {
   public static final String REJECTED = "rejected";
   public static final String RESOLVED = "resolved";
 
+  /**
+   * Add handlers to be called when the Deferred object is either resolved or rejected.
+   */
   Promise always(Function... o);
 
+  /**
+   * Add handlers to be called when the Deferred object is resolved.
+   */
   Promise done(Function... o);
 
+  /**
+   * Add handlers to be called when the Deferred object is rejected.
+   */
   Promise fail(Function... o);
 
+  /**
+   * Utility method to filter and/or chain Deferreds.
+   * 
+   * @deprecated use 'then' instead. 
+   *   it was deprecated in jquery, and we maintain it here for compatibility.
+   */
+  @Deprecated
   Promise pipe(Function... f);
 
+  /**
+   * Utility method to filter and/or chain Deferreds.
+   */
   Promise progress(Function... o);
 
+  /**
+   * Return the status of the deferred object.
+   * 
+   * Valid values are: Promise.PENDING, Promise.REJECTED, Promise.RESOLVED
+   * 
+   */
   String state();
 
+  /**
+   * Add handlers to be called when the Deferred object is resolved, rejected, or still in progress.
+   * 
+   * @param f a list of 1, 2, or 3 functions, which will be used in this way:
+   *   1st function will be called when the deferred is resolved.
+   *   2nd function that is called when the deferred is rejected.
+   *   3rd one will be called when progress notifications are sent.  
+   */
   Promise then(Function... f);
-
 }

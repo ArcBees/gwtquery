@@ -52,6 +52,9 @@ public abstract class Function {
     index = i;
   }
   
+  /**
+   * @deprecated use getArguments instead.
+   */
   @Deprecated
   public Object[] getData() {
     return getArguments();
@@ -61,6 +64,9 @@ public abstract class Function {
     return arguments;
   }
   
+  /**
+   * @deprecated use use setArguments instead
+   */
   @Deprecated
   public void setData(Object...arguments) {
     setArguments(arguments);
@@ -75,7 +81,9 @@ public abstract class Function {
 
   /**
    * Return the first element of the arguments list
+   * @deprecated use getArgument(idx) instead.
    */
+  @Deprecated
   public Object getDataObject() {
     return getArgument(0);
   }
@@ -89,10 +97,50 @@ public abstract class Function {
   }
 
   /**
-   * return the argument in position idx; 
+   * Utility method for safety getting a JavaScriptObject present at a certain
+   * position in the list of arguments composed by arrays.
+   * 
+   */
+  public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
+    Object[] objs = getArgumentArray(argIdx);
+    if (objs.length > pos && objs[pos] instanceof JavaScriptObject) {
+      return ((JavaScriptObject)objs[pos]).cast();
+    }
+    return null;
+  }
+  
+  /**
+   * Utility method for safety getting a JavaScriptObject present at a certain
+   * position in the list of arguments.
+   */
+  public <T extends JavaScriptObject> T getArgumentJSO(int idx) {
+    return getArgumentJSO(-1, idx);
+  }
+  
+  /**
+   * Utility method for safety getting an array present at a certain
+   * position in the list of arguments.
+   * 
+   * Useful for Deferred chains where result of each resolved 
+   * promise is set as an array in the arguments list.
+   * 
+   * Always returns an array.
+   */
+  public Object[] getArgumentArray(int idx) {
+    Object o = idx < 0 ? arguments: getArgument(idx);
+    if (o != null && o.getClass().isArray()) {
+      return (Object[])o;
+    } else if (idx == 0) {
+      return arguments;
+    }
+    return new Object[0];
+  }
+
+  /**
+   * return the argument in the position idx; 
    */
   public Object getArgument(int idx) {
-    return arguments != null && arguments.length > idx ? arguments[idx] : null;
+    return arguments.length > idx ? arguments[idx] : null;
   }
 
   public Properties getDataProperties() {
@@ -100,11 +148,7 @@ public abstract class Function {
   }
 
   public Properties getDataProperties(int idx) {
-    Object o = getArgument(idx);
-    if (o != null && o instanceof JavaScriptObject) {
-      return (Properties)o;
-    }
-    return null;
+    return getArgumentJSO(idx);
   }
 
   public void setData(boolean b) {
@@ -115,8 +159,8 @@ public abstract class Function {
     setData(Double.valueOf(b));
   }
 
-  public void setDataObject(Object data) {
-    setArguments(data);
+  public void setDataObject(Object arg) {
+    setArguments(arg);
   }
 
   public int getIndex() {
@@ -204,8 +248,8 @@ public abstract class Function {
   /**
    * Override this method for bound callbacks
    */
-  public Object f(Object... data) {
-    setArguments(data);
+  public Object f(Object... args) {
+    setArguments(args);
     f();
     return true;
   }
@@ -213,22 +257,22 @@ public abstract class Function {
   /**
    * Override this method for bound callbacks
    */
-  public void f(int i, Object data) {
-    f(i, new Object[]{data});
+  public void f(int i, Object arg) {
+    f(i, new Object[]{arg});
   }
 
   /**
    * Override this method for bound callbacks
    */
-  public void f(int i, Object... data) {
+  public void f(int i, Object... args) {
     setIndex(i);
-    setArguments(data);
-    if (data.length == 1 && data[0] instanceof JavaScriptObject) {
-      if (JsUtils.isElement((JavaScriptObject)data[0])) {
-        setElement((com.google.gwt.dom.client.Element)data[0]);
+    setArguments(args);
+    if (args.length == 1 && args[0] instanceof JavaScriptObject) {
+      if (JsUtils.isElement((JavaScriptObject)args[0])) {
+        setElement((com.google.gwt.dom.client.Element)args[0]);
         f(getElement(), i);
-      } else if (JsUtils.isEvent((JavaScriptObject)data[0])) {
-        setEvent((Event)data[0]);
+      } else if (JsUtils.isEvent((JavaScriptObject)args[0])) {
+        setEvent((Event)args[0]);
         f(getEvent());
       } else {
         f();
@@ -240,8 +284,8 @@ public abstract class Function {
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
    */
-  public boolean f(Event e, Object data) {
-    setArguments(data);
+  public boolean f(Event e, Object arg) {
+    setArguments(arg);
     setEvent(e);
     return f(e);
   }
@@ -319,8 +363,8 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final void fe(Object data) {
-    fe(new Object[]{data});
+  public final void fe(Object arg) {
+    fe(new Object[]{arg});
   }
 
   /**
@@ -328,16 +372,16 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final Object fe(Object... data) {
+  public final Object fe(Object... args) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        return f(data);
+        return f(args);
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
       return true;
     }
-    return f(data);
+    return f(args);
   }
 
   /**
@@ -345,16 +389,16 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final boolean fe(Event ev, Object  data) {
+  public final boolean fe(Event ev, Object arg) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        return f(ev, data);
+        return f(ev, arg);
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
       return true;
     }
-    return f(ev, data);
+    return f(ev, arg);
   }
 
   /**

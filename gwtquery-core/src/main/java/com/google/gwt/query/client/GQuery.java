@@ -51,6 +51,7 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Deferred;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.Plugin;
@@ -540,8 +541,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Perform an ajax request to the server using GET.
    */
-  public static void get(String url, Properties data, final Function onSuccess) {
-    Ajax.get(url, data, onSuccess);
+  public static Promise get(String url, Properties data, final Function onSuccess) {
+    return Ajax.get(url, data, onSuccess);
   }
 
   /**
@@ -584,8 +585,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Perform an ajax request to the server using POST and parsing the json response.
    */
-  public static void getJSON(String url, Properties data, final Function onSuccess) {
-    Ajax.getJSON(url, data, onSuccess);
+  public static Promise getJSON(String url, Properties data, final Function onSuccess) {
+    return Ajax.getJSON(url, data, onSuccess);
   }
 
   /**
@@ -610,8 +611,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    </pre>
    *
    */
-  public static void getJSONP(String url, Properties data, final Function onSuccess) {
-    Ajax.getJSONP(url, data, onSuccess);
+  public static Promise getJSONP(String url, Properties data, final Function onSuccess) {
+    return Ajax.getJSONP(url, data, onSuccess);
   }
 
   protected static DocumentStyleImpl getStyleImpl() {
@@ -694,8 +695,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Perform an ajax request to the server using POST.
    */
-  public static void post(String url, Properties data, final Function onSuccess) {
-    Ajax.post(url, data, onSuccess);
+  public static Promise post(String url, Properties data, final Function onSuccess) {
+    return Ajax.post(url, data, onSuccess);
   }
 
   public static <T extends GQuery> Class<T> registerPlugin(Class<T> plugin, Plugin<T> pluginFactory) {
@@ -705,6 +706,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
     plugins.put(plugin, pluginFactory);
     return plugin;
+  }
+  
+  /**
+   * Provides a way to execute callback Functions based on one or more Promise objects
+   * that represent asynchronous events.
+   * 
+   * Returns a new promise which will be finalized when all of its subordinates finish.
+   * In the case of all subordinates are resolved correctly the promise will be resolved
+   * otherwise it will be rejected.
+   * 
+   */
+  public static Promise when(Promise... subordinates) {
+    return Deferred.when(subordinates);
   }
 
   private static native void scrollIntoViewImpl(Node n) /*-{
@@ -744,9 +758,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   protected GQuery(GQuery gq) {
-    this(gq == null ? null : gq.get());
-    currentSelector = gq.getSelector();
-    currentContext = gq.getContext();
+    if (gq != null) {
+      elements = gq.elements;
+      nodeList = gq.nodeList;
+      currentSelector = gq.currentSelector;
+      currentContext = gq.currentContext;
+    }
   }
 
   private GQuery(JsNodeArray nodes) {
@@ -4546,7 +4563,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public boolean visible() {
     return isVisible();
   }
-
+  
   /**
    * Return the first non null attached widget from the matched elements or null if there isn't any.
    */

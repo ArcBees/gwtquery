@@ -16,7 +16,10 @@
 package com.google.gwt.query.client;
 
 
+import static com.google.gwt.query.client.GQuery.when;
+
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks.Callback;
 
@@ -140,6 +143,42 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     callbacks.disable();
     callbacks.add( fn1 );
     assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
+  }
+  
+  public void testDeferredAjaxWhenDone() {
+    String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+    
+    delayTestFinish(5000);
+
+    when(Ajax.getJSONP(url, null, null, 1000))
+      .done(new Function() {
+        public void f() {
+          Properties p = getArgumentJSO(0, 0);
+          assertEquals(400, p.getJavaScriptObject("error").<Properties>cast().getInt("code"));
+          finishTest();
+        }
+      });
+  }
+
+  public void testDeferredAjaxWhenFail() {
+    String url1 = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+    String url2 = "https://localhost:4569/foo";
+    
+    delayTestFinish(5000);
+
+    when(
+        Ajax.getJSONP(url1), 
+        Ajax.getJSONP(url2, null, null, 1000))
+      .done(new Function() {
+        public void f() {
+          fail();
+        }
+      })
+      .fail(new Function(){
+        public void f() {
+          finishTest();
+        }
+      });
   }
 
 }
