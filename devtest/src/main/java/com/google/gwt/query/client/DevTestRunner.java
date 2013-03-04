@@ -22,9 +22,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.user.client.Window;
 
 /**
  * This module is thought to emulate a test environment similar to
@@ -50,91 +47,6 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
   }
   
   public void testSomething() {
-    System.out.println("com");
-    
-    delayTestFinish(5000);
-    String nonJsonpUrl = "http://127.0.0.1/nopage";
-
-    Settings s = Ajax.createSettings();
-    s.setTimeout(1000);
-    s.setSuccess(new Function(){
-      public void f() {
-        fail();
-      }
-    });
-    s.setError(new Function(){
-      public void f() {
-        finishTest();
-      }
-    });
-    s.setDataType("jsonp");
-    s.setUrl(nonJsonpUrl);
-
-    Ajax.ajax(s);
-    
-//    GQuery.ajax(Ajax.createSettings()
-//        .setUrl("test.html")
-//        .setDataType("txt") // txt, json, jsonp, xml
-//        .setType("get")     // post, get
-//        .setData(GQuery.$$("param1: 1, param2: 2")) // parameters for the query-string
-//        .setTimeout(3000)
-//        .setSuccess(new Function(){ // callback to be run if the request success
-//          public void f() {
-//            // The response when dataType=xml, is a dom tree which we can traverse using gquery
-//            Window.alert("ok");
-//          }
-//        })
-////        .setError(new Function(){ // callback to be run if the request fails
-////          public void f() {
-////            Window.alert("There was an error" + getDataObject());
-////          }
-////        })
-//      ).done(new Function(){
-//        public void f() {
-//          System.out.println("Aqui");
-//        }
-//      }, new Function(){
-//        public void f() {
-//          System.out.println("Aqui2");
-//        }
-//      }
-//      );
-//    
-    
-    
-//    Settings set = Ajax.createSettings();
-//    
-//    $(window).delay(1000, new Function(){
-//      public void f() {
-//        System.out.println("Run 1");
-//      }
-//    });
-//    $(window).delay(3000, new Function(){
-//      public void f() {
-//        System.out.println("Run 3");
-//      }
-//    });
-  }
-
-  
-  private native void setWindowVars() /*-{
-    $wnd._boolean = true;
-    $wnd._number = 0.56;
-    $wnd._string = "string";
-    $wnd._element = $doc.body;
-    $wnd._object = $wnd.console;
-  }-*/;
-
-  public void testSomething2() {
-    setWindowVars();
-    System.out.println($(window).prop("_boolean"));
-    System.out.println($(window).propString("_string"));
-    System.out.println($(window).propDouble("_number"));
-    System.out.println($(window).propObject("_boolean"));
-    System.out.println($(window).propJSO("_element"));
-    Object o = window.getPropertyObject("_element");
-    System.out.println(o);
-    // Copy and paste any test from the gquery suite
   }
 
   /**
