@@ -431,7 +431,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return Ajax.ajax(url, settings);
   }
 
-  @SuppressWarnings("unchecked")
   protected static GQuery cleanHtmlString(String elem, Document doc) {
 
     String tag = tagNameRegex.exec(elem).get(1);

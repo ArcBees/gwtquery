@@ -1,7 +1,6 @@
 package com.google.gwt.query.client.plugins.ajax;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -18,8 +17,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Deferred;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.xhr.client.ReadyStateChangeHandler;
-import com.google.gwt.xhr.client.XMLHttpRequest;
 
 /**
  * Ajax class for GQuery.
