@@ -478,7 +478,6 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(expected, g2.toString());
   }
 
-  // FIXME: it started failing after updating to 2.5.1
   public void test_issue128() {
     GQuery g = $(e).html("<span>a</span><span>b</span><span>c</span>");
     assertEquals(g.text(), "abc");
