@@ -67,7 +67,7 @@
         <!-- <module>gwtquery-core-2.1.0</module> -->
         <!-- <module>gwtquery-core-2.0.1</module> -->
         <!-- <module>samples</module> -->
-        <!-- <module>devtest</module> -->
+        <module>devtest</module>
     </modules>
 
     <pluginRepositories>
@@ -148,8 +148,8 @@
 
     <properties>
         <!-- <gwtversion>2.4.0-dollarpatch</gwtversion> -->
-        <gwtversion>2.5.0</gwtversion>
-        <gwtmaven>2.5.0</gwtmaven>
+        <gwtversion>2.5.1</gwtversion>
+        <gwtmaven>2.5.1-rc1</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>

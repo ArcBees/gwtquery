@@ -179,6 +179,29 @@ public class JsUtils {
   }
 
   private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
+  
+  /**
+   * Returns a property present in a javascript object.
+   */
+  public static <T> T prop(JavaScriptObject o, Object id, Class<? extends T> type) {
+    return o == null ? null : o.<JsCache>cast().get(id, type);
+  }
+
+  /**
+   * Returns a property present in a javascript object.
+   */
+  public static <T> T prop(JavaScriptObject o, Object id) {
+    return o == null ? null : o.<JsCache>cast().<T>get(id);
+  }
+  
+  /**
+   * Set a property to a javascript object 
+   */
+  public static void prop(JavaScriptObject o, Object id, Object val) {
+    if (o != null) {
+      o.<JsCache>cast().put(id, val);
+    }
+  }
 
   /**
    * Camelize style property names. for instance: font-name -> fontName

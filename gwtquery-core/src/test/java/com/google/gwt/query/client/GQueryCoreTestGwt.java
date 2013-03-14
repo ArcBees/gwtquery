@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -475,7 +477,8 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(1, g2.size());
     assertEquals(expected, g2.toString());
   }
-  
+
+  // FIXME: it started failing after updating to 2.5.1
   public void test_issue128() {
     GQuery g = $(e).html("<span>a</span><span>b</span><span>c</span>");
     assertEquals(g.text(), "abc");
@@ -565,8 +568,8 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   public void testPropMethod(){
     $(e).html("<input id=\"checkBox1\" type=\"checkbox\" checked=\"checked\" /> <input id=\"checkBox2\" type=\"checkbox\" />");
 
-    assertTrue($("#checkBox1",e).prop("checked"));
-    assertFalse($("#checkBox2",e).prop("checked"));
+    assertEquals(true, $("#checkBox1",e).prop("checked"));
+    assertEquals(false, $("#checkBox2",e).prop("checked"));
 
     $("#checkBox1",e).prop("checked", false);
     $("#checkBox2",e).prop("checked", new Function() {
@@ -575,10 +578,12 @@ public class GQueryCoreTestGwt extends GWTTestCase {
         return Boolean.TRUE;
       }
     });
-
-    assertTrue($("#checkBox2",e).prop("checked"));
-    assertFalse($("#checkBox1",e).prop("checked"));
-
+    assertEquals(true, $("#checkBox2",e).prop("checked"));
+    assertEquals(false, $("#checkBox1",e).prop("checked"));
+    
+    $(window).prop("foo", 234);
+    assertEquals(234d, $(window).prop("foo"));
+    assertEquals(234l, (long)$(window).prop("foo", Long.class));
   }
 
   @DoNotRunWith(Platform.Prod)

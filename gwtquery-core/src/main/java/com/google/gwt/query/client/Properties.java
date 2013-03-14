@@ -35,7 +35,8 @@ public class Properties extends JavaScriptObject {
       try {
         return JsUtils.parseJSON(p);
       } catch (Exception e) {
-        System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
+        String msg =  e.getMessage();
+        System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + msg);
       }
     }
     return create();
