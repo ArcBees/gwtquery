@@ -82,21 +82,6 @@
                  <useSystemClassLoader>false</useSystemClassLoader>
               </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.riedelcastro</groupId>
-                <artifactId>gcupload-maven-plugin</artifactId>
-                <version>0.9</version>
-                <configuration>
-                  <allowSnapshots>true</allowSnapshots>
-                  <projectName>${artifactId}</projectName>
-                  <uploads>
-                    <upload>
-                      <extensions>jar</extensions>
-                      <labels>Featured</labels>
-                    </upload>
-                  </uploads>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
