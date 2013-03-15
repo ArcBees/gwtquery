@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
-    <version>1.3.2</version>
+    <version>1.4.0-SNAPSHOT</version>
   </parent>
 
   <description>Generates an artifact compiled with a concrete gwt version specified in the artifactId</description>
