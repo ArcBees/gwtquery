@@ -116,11 +116,7 @@ public class JsCache extends JavaScriptObject {
 
   public final native JsArrayMixed getArray(Object id) /*-{
     var r = this[id];
-<<<<<<< HEAD
-    if (r && Object.prototype.toString.call(r) == '[object Array]') {
-=======
     if (Object.prototype.toString.call(r) == '[object Array]') {
->>>>>>> bb71ac03afde8f01e14270b02438bf9fde997a71
       return r;
     }
     return null;
