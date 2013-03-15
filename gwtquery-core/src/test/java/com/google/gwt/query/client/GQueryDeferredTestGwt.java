@@ -152,12 +152,11 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
     
     delayTestFinish(5000);
-
-    when(Ajax.getJSONP(url, null, null, 1000))
+    GQuery.when(Ajax.getJSONP(url, null, null, 1000))
       .done(new Function() {
         public void f() {
-          Properties p = getArgumentJSO(0, 0);
-          assertEquals(400, p.getJavaScriptObject("error").<Properties>cast().getInt("code"));
+          Properties p = getArgument(0, 0);
+          assertEquals(400, p.getProperties("error").getInt("code"));
           finishTest();
         }
       });
@@ -169,7 +168,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     
     delayTestFinish(5000);
 
-    when(
+    GQuery.when(
         Ajax.getJSONP(url1), 
         Ajax.getJSONP(url2, null, null, 1000))
       .done(new Function() {

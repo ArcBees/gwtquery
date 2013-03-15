@@ -129,6 +129,10 @@ public class Properties extends JavaScriptObject {
   public final Object getObject(Object name) {
     return c().get(String.valueOf(name));
   }
+  
+  public final Properties getProperties(Object name) {
+    return getJavaScriptObject(name);
+  }
 
   @SuppressWarnings("unchecked")
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {

@@ -145,6 +145,16 @@ public abstract class Function {
    * If the element class is not of the requested type it returns null and
    * you don't get casting exeption.
    */
+  public <T> T getArgument(int argIdx, int pos) {
+    return getArgument(argIdx, pos, null);
+  }
+  
+  /**
+   * Safety return the argument in the position idx.
+   * 
+   * If the element class is not of the requested type it returns null and
+   * you don't get casting exeption.
+   */
   public <T> T getArgument(int idx, Class<? extends T> type) {
     return getArgument(-1, idx, type);
   }
