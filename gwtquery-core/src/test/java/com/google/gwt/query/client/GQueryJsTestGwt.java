@@ -91,6 +91,37 @@ public class GQueryJsTestGwt extends GWTTestCase {
     assertEquals(6, c.length());
     assertEquals("N", c.get(-1));
   }
+  
+  public void testGetMethod() {
+    JsCache j = GQuery.$$("bt: true, bf: false, dz: 0, dp: 1.2, dn: -2.3, st: 'foo', nl: null").cast();
+    Boolean bt = j.get("bt");
+    assertEquals(Boolean.TRUE, bt);
+    Boolean bf = j.get("bf");
+    assertEquals(Boolean.FALSE, bf);
+    Double  dz = j.get("dz");
+    assertEquals(0d, dz);
+    Double  dp = j.get("dp");
+    assertEquals(1.2, dp);
+    Double  dn = j.get("dn");
+    assertEquals(-2.3, dn);
+    String st = j.get("st");
+    assertEquals("foo", st);
+    Object o = j.get("nl");
+    assertNull(o);
+
+    Integer i = j.get("dp", Integer.class);
+    assertEquals(new Integer(1), i);
+    Short s = j.get("dp", Short.class);
+    assertEquals((short)1, (short)s);
+    Long l = j.get("dp", Long.class);
+    assertEquals(1l, (long)l);
+    Byte b = j.get("dp", Byte.class);
+    assertEquals((byte)1, (byte)b);
+    
+    j.put("me", j);
+    JsCache r = j.get("me");
+    assertEquals(j, r);
+  }
 
   public void testChrome__gwt_ObjectId() {
     JsCache a = JsCache.create();

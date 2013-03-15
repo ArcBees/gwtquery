@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 
@@ -35,7 +36,9 @@ public class Properties extends JavaScriptObject {
       try {
         return JsUtils.parseJSON(p);
       } catch (Exception e) {
-        System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
+        if (!GWT.isProdMode()) {
+          System.err.println("Error creating Properties: \n> " + properties  + "\n< " + p + "\n" + e.getMessage());
+        }
       }
     }
     return create();
