@@ -17,8 +17,11 @@ package com.google.gwt.query.client;
 
 
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.plugins.Deferred.PromiseFunction;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks.Callback;
+import com.google.gwt.user.client.Timer;
 
 /**
  * Test class for testing deferred and callbacks stuff.
@@ -33,12 +36,13 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
   public void testCallbacks() {
     Function fn1 = new Function() {
-      public void f() {
+      public Object f(Object...arguments) {
         String s = " f1:";
-        for (Object o: getData()){
+        for (Object o: arguments){
           s += " " + o;
         }
         result += s;
+        return false;
       }
     };
     
@@ -55,8 +59,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     
     com.google.gwt.core.client.Callback<Object, Object> fn3 = new com.google.gwt.core.client.Callback<Object, Object>() {
       public void onFailure(Object reason) {
-        String s = " f3_fail: " + reason;
-        System.out.println(s);
+        result += " f3_fail: " + reason;
       }
       public void onSuccess(Object objects) {
         String s = " f3_success:";
@@ -112,10 +115,10 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
     result = "";
     callbacks = new Callbacks("stopOnFalse");
-    callbacks.add( fn2 );
     callbacks.add( fn1 );
+    callbacks.add( fn2 );
     callbacks.fire( "bar" );
-    assertEquals(" f2: bar", result);
+    assertEquals(" f1: bar", result);
     
     result = "";
     callbacks.disable();
@@ -141,5 +144,71 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     callbacks.add( fn1 );
     assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
   }
+  
+      public void testDeferredAjaxWhenDone() {
+        String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+        
+        delayTestFinish(5000);
+        GQuery.when(Ajax.getJSONP(url, null, null, 1000))
+          .done(new Function() {
+            public void f() {
+              Properties p = getArgument(0, 0);
+              assertEquals(400, p.getProperties("error").getInt("code"));
+              finishTest();
+            }
+          });
+      }
+    
+      public void testDeferredAjaxWhenFail() {
+        String url1 = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+        String url2 = "https://localhost:4569/foo";
+        
+        delayTestFinish(5000);
+        GQuery.when(
+            Ajax.getJSONP(url1), 
+            Ajax.getJSONP(url2, null, null, 1000))
+          .done(new Function() {
+            public void f() {
+              fail();
+            }
+          })
+          .fail(new Function(){
+            public void f() {
+              finishTest();
+            }
+          });
+      }
+      
+      int progress = 0;
+      public void testPromiseFunction() {
+        delayTestFinish(3000);
+        final Promise doSomething = new PromiseFunction() {
+          @Override
+          public void f(final Deferred dfd) {
+            new Timer() {
+              int count = 0;
+              public void run() {
+                dfd.notify(count ++);
+                if (count > 3) {
+                  cancel();
+                  dfd.resolve("done");
+                }
+              }
+            }.scheduleRepeating(50);
+          }
+        };
+        
+        doSomething.progress(new Function() {
+          public void f() {
+            progress = getArgument(0);
+          }
+        }).done(new Function() {
+          public void f() {
+            assertEquals(3, progress);
+            assertEquals(Promise.RESOLVED, doSomething.state());
+            finishTest();
+          }
+        });
+      }
 
 }

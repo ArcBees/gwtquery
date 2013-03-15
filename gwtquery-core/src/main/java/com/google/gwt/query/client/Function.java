@@ -29,69 +29,218 @@ public abstract class Function {
   private com.google.gwt.dom.client.Element element = null;
   private Event event = null;
   private int index = -1;
-  private Object[] data = new Object[0];
+  protected Object[] arguments = new Object[0];
 
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
     return element.<T>cast();
   }
 
-  public <T extends com.google.gwt.dom.client.Element> void setElement(T e) {
+  public <T extends com.google.gwt.dom.client.Element> Function setElement(T e) {
     element = e;
+    return this;
   }
 
-  public void setEvent(Event e) {
+  public Function setEvent(Event e) {
     event = e;
     element = e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast() : null;
+    return this;
   }
 
   public Event getEvent() {
     return event;
   }
 
-  public void setIndex(int i) {
+  public Function setIndex(int i) {
     index = i;
+    return this;
   }
-
+  
+  /**
+   * @deprecated use getArguments instead.
+   */
+  @Deprecated
   public Object[] getData() {
-    return data;
+    return getArguments();
   }
 
-  public void setData(Object...data) {
-    this.data = data;
+  public Object[] getArguments() {
+    return arguments;
+  }
+  
+  /**
+   * Set the list of arguments to be passed to the function
+   */
+  public Function setArguments(Object...arguments) {
+    this.arguments = arguments;
+    return this;
   }
 
+  /**
+   * Return the first element of the arguments list
+   * @deprecated use getArgument(idx) instead.
+   */
+  @Deprecated
   public Object getDataObject() {
-    return getDataObject(0);
+    return getArgument(0);
   }
 
+  /**
+   * @deprecated use getArgument instead 
+   */
+  @Deprecated
   public Object getDataObject(int idx) {
-    return data != null && data.length > idx ? data[idx] : null;
+    return getArgument(0);
   }
 
-  public Properties getDataProperties() {
-    return getDataProperties(0);
+  /**
+   * Utility method for safety getting a JavaScriptObject present at a certain
+   * position in the list of arguments composed by arrays.
+   * 
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
+    return (T)getArgument(argIdx, pos, JavaScriptObject.class);
+  }
+  
+  /**
+   * Utility method for safety getting a JavaScriptObject present at a certain
+   * position in the list of arguments.
+   */
+  public <T extends JavaScriptObject> T getArgumentJSO(int idx) {
+    return getArgumentJSO(-1, idx);
+  }
+  
+  /**
+   * Utility method for safety getting an array present at a certain
+   * position in the list of arguments.
+   * 
+   * Useful for Deferred chains where result of each resolved 
+   * promise is set as an array in the arguments list.
+   * 
+   * Always returns an array.
+   */
+  public Object[] getArgumentArray(int idx) {
+    Object o = idx < 0 ? arguments: getArgument(idx);
+    if (o != null && o.getClass().isArray()) {
+      return (Object[])o;
+    } else if (idx == 0) {
+      return arguments;
+    }
+    return new Object[0];
   }
 
-  public Properties getDataProperties(int idx) {
-    Object o = getDataObject(idx);
-    if (o != null && o instanceof JavaScriptObject) {
-      return (Properties)o;
+  /**
+   * Return the argument in the position idx or null if it doesn't exist.
+   * 
+   * Note: if the return type doesn't match the object, you
+   * will get a casting exception. 
+   */
+  public <T> T getArgument(int idx) {
+    return getArgument(-1, idx, null);
+  }
+  
+  /**
+   * Safety return the argument in the position idx.
+   * 
+   * If the element class is not of the requested type it returns null and
+   * you don't get casting exeption.
+   */
+  public <T> T getArgument(int argIdx, int pos) {
+    return getArgument(argIdx, pos, null);
+  }
+  
+  /**
+   * Safety return the argument in the position idx.
+   * 
+   * If the element class is not of the requested type it returns null and
+   * you don't get casting exeption.
+   */
+  public <T> T getArgument(int idx, Class<? extends T> type) {
+    return getArgument(-1, idx, type);
+  }
+
+  /**
+   * Utility method for safety getting an object present at a certain
+   * position in the list of arguments composed by arrays.
+   * 
+   * Useful for Deferred chains where result of each resolved 
+   * promise is set as an array in the arguments list.
+   * 
+   * When the object found in the array doesn't match the type required it returns a null.
+   * 
+   * Note: If type is null, we don't check the class of the object found andd you could
+   * eventually get a casting exception. 
+   * 
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getArgument(int argIdx, int pos, Class<? extends T> type) {
+    Object[] objs = getArgumentArray(argIdx);
+    Object o = objs.length > pos ? objs[pos] : null;
+    if (o != null && (
+      // When type is null we don't safety check
+      type == null ||
+      // The object is an instance of the type requested
+      o.getClass() == type ||
+      // Overlay types
+      type == JavaScriptObject.class && o instanceof JavaScriptObject
+      )) {
+      return (T)o;
     }
     return null;
   }
 
+  
+  /**
+   * @deprecated use: getArgument()
+   */
+  @Deprecated
+  public Properties getDataProperties() {
+    return getDataProperties(0);
+  }
+
+  /**
+   * @deprecated use: getArgument(idx)
+   */
+  @Deprecated
+  public Properties getDataProperties(int idx) {
+    return getArgumentJSO(idx);
+  }
+
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
   public void setData(boolean b) {
-    setData(Boolean.valueOf(b));
+    setArguments(b);
   }
 
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
   public void setData(double b) {
-    setData(Double.valueOf(b));
+    setArguments(b);
+  }
+  
+  /**
+   * @deprecated use use setArguments instead
+   */
+  @Deprecated
+  public void setData(Object...arguments) {
+    setArguments(arguments);
   }
 
-  public void setDataObject(Object data) {
-    setData(data);
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
+  public void setDataObject(Object arg) {
+    setArguments(arg);
   }
 
+  /**
+   * Return the index in a loop execution. Used in GQuery.each()
+   */
   public int getIndex() {
     return index;
   }
@@ -177,29 +326,31 @@ public abstract class Function {
   /**
    * Override this method for bound callbacks
    */
-  public void f(Object... data) {
-    fe(data);
+  public Object f(Object... args) {
+    setArguments(args);
+    f();
+    return true;
   }
 
   /**
    * Override this method for bound callbacks
    */
-  public void f(int i, Object data) {
-    f(i, new Object[]{data});
+  public void f(int i, Object arg) {
+    f(i, new Object[]{arg});
   }
 
   /**
    * Override this method for bound callbacks
    */
-  public void f(int i, Object... data) {
+  public void f(int i, Object... args) {
     setIndex(i);
-    setData(data);
-    if (data.length == 1 && data[0] instanceof JavaScriptObject) {
-      if (JsUtils.isElement((JavaScriptObject)data[0])) {
-        setElement((com.google.gwt.dom.client.Element)data[0]);
+    setArguments(args);
+    if (args.length == 1 && args[0] instanceof JavaScriptObject) {
+      if (JsUtils.isElement((JavaScriptObject)args[0])) {
+        setElement((com.google.gwt.dom.client.Element)args[0]);
         f(getElement(), i);
-      } else if (JsUtils.isEvent((JavaScriptObject)data[0])) {
-        setEvent((Event)data[0]);
+      } else if (JsUtils.isEvent((JavaScriptObject)args[0])) {
+        setEvent((Event)args[0]);
         f(getEvent());
       } else {
         f();
@@ -211,8 +362,8 @@ public abstract class Function {
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
    */
-  public boolean f(Event e, Object data) {
-    setData(data);
+  public boolean f(Event e, Object arg) {
+    setArguments(arg);
     setEvent(e);
     return f(e);
   }
@@ -282,7 +433,7 @@ public abstract class Function {
    * They are intentionally final to avoid override them
    */
   public final void fe() {
-    fe(data);
+    fe(arguments);
   }
 
   /**
@@ -290,8 +441,8 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final void fe(Object data) {
-    fe(new Object[]{data});
+  public final void fe(Object arg) {
+    fe(new Object[]{arg});
   }
 
   /**
@@ -299,34 +450,33 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final void fe(Object... data) {
-    setData(data);
+  public final Object fe(Object... args) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        f();
-      } catch (Exception e) {
-        GWT.getUncaughtExceptionHandler().onUncaughtException(e);
-      }
-      return;
-    }
-    f();
-  }
-
-  /**
-   * Methods fe(...) should be used from asynchronous contexts so as we can
-   * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them
-   */
-  public final boolean fe(Event ev, Object  data) {
-    if (GWT.getUncaughtExceptionHandler() != null) {
-      try {
-        return f(ev, data);
+        return f(args);
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
       return true;
     }
-    return f(ev, data);
+    return f(args);
+  }
+
+  /**
+   * Methods fe(...) should be used from asynchronous contexts so as we can
+   * catch the exception and send it to the GWT UncaughtExceptionHandler
+   * They are intentionally final to avoid override them
+   */
+  public final boolean fe(Event ev, Object arg) {
+    if (GWT.getUncaughtExceptionHandler() != null) {
+      try {
+        return f(ev, arg);
+      } catch (Exception e) {
+        GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+      }
+      return true;
+    }
+    return f(ev, arg);
   }
 
   /**

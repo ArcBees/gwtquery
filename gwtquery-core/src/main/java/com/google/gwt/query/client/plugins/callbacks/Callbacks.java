@@ -56,7 +56,7 @@ public class Callbacks {
     return GWT.create(CallbackOptions.class);
   }
   
-  private JsObjectArray<Object> callbacks = JsObjectArray.create();
+  private JsObjectArray<Object> stack = JsObjectArray.create();
   
   private boolean done = false;
     
@@ -119,8 +119,19 @@ public class Callbacks {
    * Disable a callback list from doing anything more.
    */
   public Callbacks disable() {
-    callbacks = memory = null;
+    stack = memory = null;
     done = true;
+    return this;
+  }
+  
+  /**
+   * lock
+   */
+  public Callbacks lock() {
+    if (!opts.getMemory()) {
+      disable();
+    }
+    stack = null;
     return this;
   }
 
@@ -130,7 +141,7 @@ public class Callbacks {
   public Callbacks fire(Object... o) {
     if (!done) {
       done = opts.getOnce();
-      for (Object c : callbacks.elements()) {
+      if (stack != null) for (Object c : stack.elements()) {
         if (!run(c, o) && opts.getStopOnFalse()) {
           break;
         }
@@ -146,20 +157,18 @@ public class Callbacks {
    * Remove a callback or a collection of callbacks from a callback list.
    */
   public Callbacks remove(Object... o) {
-    callbacks.remove(o);
+    stack.remove(o);
     return this;
   }
   
   private void addAll(Object...o) {
-    if (callbacks != null) {
-      for (Object c : o) {
-        if (!opts.getUnique() || !callbacks.contains(c)) {
-          callbacks.add(c);
-        }
-        // In jQuery add always is run when memory is true even when unique is set
-        if (opts.getMemory() && memory != null) {
-          run(c, memory.elements());
-        }
+    for (Object c : o) {
+      if (!done && (!opts.getUnique() || !stack.contains(c))) {
+        stack.add(c);
+      }
+      // In jQuery add always is run when memory is true even when unique is set
+      if (opts.getMemory() && memory != null) {
+        run(c, memory.elements());
       }
     }
   }  
@@ -169,7 +178,8 @@ public class Callbacks {
     if (c instanceof Callback) {
       return ((Callback)c).f(o);
     } else if (c instanceof Function) {
-      ((Function)c).f(o);
+      Object r = ((Function)c).f(o);
+      return (r instanceof Boolean) ? (Boolean)r : true;
     } else if (c instanceof com.google.gwt.core.client.Callback) {
       ((com.google.gwt.core.client.Callback)c).onSuccess(o);
     }

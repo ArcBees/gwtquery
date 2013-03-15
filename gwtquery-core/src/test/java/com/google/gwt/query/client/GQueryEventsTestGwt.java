@@ -953,7 +953,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
       public void f(Element elem) {
         $(elem).css(CSS.FONT_SIZE.with(Length.px(24)));
 
-        assertEquals("red", getData()[0]);
+        assertEquals("red", getArgument(0));
       }
     });
     $("p", e, Events.Events).trigger(Event.ONCLICK);
