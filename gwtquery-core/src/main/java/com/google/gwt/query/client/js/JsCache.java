@@ -44,7 +44,7 @@ public class JsCache extends JavaScriptObject {
     }
   }
 
-  public final native <T> void delete(T name) /*-{
+  public final native void delete(Object name) /*-{
     delete this[name];
   }-*/;
 
@@ -56,45 +56,67 @@ public class JsCache extends JavaScriptObject {
     }
   }-*/;
 
-  public final native <T> boolean exists(T name) /*-{
+  public final native boolean exists(Object name) /*-{
     return !!this[name];
   }-*/;
 
-  public final native <R, T> R get(T id) /*-{
-    var r = this[id], t = typeof r;
-    return r && t != 'number' && t != 'boolean' ? r : null;
+  @SuppressWarnings("unchecked")
+  public final <T> T get(Object id, Class<? extends T> clz) {
+    Object o = get(id);
+    if (o instanceof Double) {
+      Double d = (Double)o;
+      if (clz == Float.class) o = d.floatValue();
+      else if (clz == Integer.class) o = d.intValue();
+      else if (clz == Long.class) o = d.longValue();
+      else if (clz == Short.class) o = d.shortValue();
+      else if (clz == Byte.class) o = d.byteValue();
+    } else if (clz == Boolean.class && !(o instanceof Boolean)) {
+      o = Boolean.valueOf(String.valueOf(o));
+    } else if (clz == String.class && !(o instanceof String)) {
+      o = String.valueOf(o);
+    }
+    return (T)o;
+  }
+  
+  public final native <T> T get(Object id) /*-{
+    var r = this && this[id], t = typeof r;
+    // box booleans and numbers in a gwt object
+    if (t == 'boolean') return @java.lang.Boolean::valueOf(Z)(r);
+    if (t == 'number')  return @java.lang.Double::valueOf(D)(r);
+    return r;
   }-*/;
 
-  public final <T> JsCache getCache(int id) {
+  public final JsCache getCache(int id) {
     return (JsCache)get(id);
   }
 
-  public final native <T> boolean getBoolean(T id) /*-{
-    return /true|1/.test(this[id]);
-  }-*/;
-
-  public final <T> float getFloat(T id) {
-    return (float)getDouble(id);
+  public final boolean getBoolean(Object id) {
+    Boolean r = get(id, Boolean.class);
+    return r == null ? false : r;
   }
 
-  public final native <T> double getDouble(T id) /*-{
-    // HtmlUnit prints an 'Unknown property name in get valueOf'
-    // error here, but it is ok.
-    var r = this[id] ? Number(this[id]) : 0;
-    return r ? r : 0;
-  }-*/;
-
-  public final <T> int getInt(T id) {
-    return (int)getDouble(id);
+  public final float getFloat(Object id) {
+    Float r = get(id, Float.class);
+    return r == null ? 0 : r;
   }
 
-  public final native <T> String getString(T id) /*-{
+  public final double getDouble(Object id) {
+    Double r = get(id, Double.class);
+    return r == null ? 0 : r;
+  }
+
+  public final int getInt(Object id) {
+    Integer r = get(id, Integer.class);
+    return r == null ? 0 : r;
+  }
+
+  public final native String getString(Object id) /*-{
     return this[id] == null ? null : String(this[id]);
   }-*/;
 
-  public final native <T> JsArrayMixed getArray(T id) /*-{
+  public final native JsArrayMixed getArray(Object id) /*-{
     var r = this[id];
-    if (r && @com.google.gwt.query.client.js.JsUtils::isArray(*)(r)) {
+    if (Object.prototype.toString.call(r) == '[object Array]') {
       return r;
     }
     return null;
@@ -124,17 +146,28 @@ public class JsCache extends JavaScriptObject {
     return this.indexOf(o);
   }-*/;
 
-  public final native <T> JsCache putBoolean(T id, boolean b) /*-{
+  public final native JsCache putBoolean(Object id, boolean b) /*-{
     this[id] = b;
     return this;
   }-*/;
 
-  public final native <T> JsCache putNumber(T id, double n) /*-{
+  public final native JsCache putNumber(Object id, double n) /*-{
     this[id] = n;
     return this;
   }-*/;
 
-  public final native <T, O> JsCache put(T id, O obj) /*-{
+  public final JsCache put(Object id, Object obj)  {
+    if (obj instanceof Boolean) {
+      putBoolean(id, ((Boolean)obj).booleanValue());
+    } else if (obj instanceof Number) {
+      putNumber(id, ((Number)obj).doubleValue());
+    } else {
+      putObject(id, obj);
+    }
+    return this;
+  }
+
+  public final native JsCache putObject(Object id, Object obj) /*-{
     this[id] = obj;
     return this;
   }-*/;
