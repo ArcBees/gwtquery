@@ -45,8 +45,9 @@ public class DevTestRunner extends MyTestCase implements EntryPoint {
       $(e).html("").after("<div>ERROR: " + ex.getMessage() + "</div>");
     }
   }
-  
+
   public void testSomething() {
+    // Copy and paste any test from the gquery suite
   }
 
   /**
