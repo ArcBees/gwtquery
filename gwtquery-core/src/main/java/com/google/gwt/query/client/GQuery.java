@@ -276,7 +276,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof IsWidget) {
         return $(Arrays.asList(o));
       }
-      System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
+      if (!GWT.isProdMode()) {
+        System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
+      }
     }
     return $();
   }
@@ -3480,32 +3482,49 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Accesses a boolean property on the first matched element.
+   * Get the value of a property for the first element in the set of matched elements.
    *
-   * @param key the name of the boolean property to be accessed
-   *
-   * @return <code>true</code> if at least one element is matched and the specified boolean property
-   *         is set to <code>true</code> on the first matched element; <code>false</code> otherwise
-   *
+   * @param key the name of the property to be accessed
+   * @return the value of the property, in the case the property is a 'boolean' it
+   *        returns a Boolean object, and a Double if is a 'number', so be prepared
+   *        if you cast to other numeric objects. In the case of the property is undefined
+   *        it returns null. 
    */
-  public boolean prop(String key) {
-    return !isEmpty() && elements[0].getPropertyBoolean(key);
+  public <T> T prop(String key) {
+    assert key != null : "Key is null";
+    return isEmpty() ? null : JsUtils.<T>prop(get(0), key);
   }
   
   /**
-   * Sets a boolean property to a value on all matched elements.
+   * Get the value of a property for the first element in the set of matched elements.
+   *
+   * @param key the name of the property to be accessed
+   * @param clz the class of the type to return
+   * 
+   * @return the value of the property, it safely check the type passed as parameter 
+   *        and preform the aproproate transformations for numbers and booleans. 
+   *        In the case of the property is undefined it returns null. 
+   */
+  public <T> T prop(String key, Class<? extends T> clz) {
+    assert key != null : "Key is null";
+    return isEmpty() ? null : JsUtils.<T>prop(get(0), key, clz);
+  }
+  
+  /**
+   * Sets a property to a value on all matched elements.
    *
    * @param key the name of the boolean property to be set
-   * @param value the value the specified boolean property should be set to
+   * @param value the value specified. In the case the value is a Number, it is set
+   *        as a 'number' in the javascript object and the same with Boolean.
    *
    * @return this <code>GQuery</code> object
    *
    */
-  public GQuery prop(String key, boolean value) {
+  public GQuery prop(String key, Object value) {
     assert key != null : "Key is null";
 
-    for (final Element element : elements) {
-      element.setPropertyBoolean(key, value);
+    for (Element e : elements) {
+      JsUtils.prop(e, key, value);
     }
 
     return this;
@@ -3532,10 +3551,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     int i = 0;
     for (Element e : elements) {
       Object value = closure.f(e, i++);
-      if (value != null) {
-        e.setPropertyBoolean(key, value instanceof Boolean ? (Boolean) value : Boolean
-            .valueOf(value.toString()));
-      }
+      JsUtils.prop(e, key, value);
     }
 
     return this;

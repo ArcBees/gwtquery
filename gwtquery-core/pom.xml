@@ -3,12 +3,12 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.3.2-SNAPSHOT</version>
+        <version>1.4.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>gwtquery</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
     <name>Gwt Query Core API</name>
     <url>http://gwtquery.com</url>
     <dependencies>
@@ -81,21 +81,6 @@
                  <!-- <forkMode>always</forkMode> -->
                  <useSystemClassLoader>false</useSystemClassLoader>
               </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.riedelcastro</groupId>
-                <artifactId>gcupload-maven-plugin</artifactId>
-                <version>0.9</version>
-                <configuration>
-                  <allowSnapshots>true</allowSnapshots>
-                  <projectName>${artifactId}</projectName>
-                  <uploads>
-                    <upload>
-                      <extensions>jar</extensions>
-                      <labels>Featured</labels>
-                    </upload>
-                  </uploads>
-                </configuration>
             </plugin>
         </plugins>
     </build>

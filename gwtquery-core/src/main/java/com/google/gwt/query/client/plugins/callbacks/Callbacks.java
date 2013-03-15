@@ -87,7 +87,7 @@ public class Callbacks {
    */
   public Callbacks(String options) {
     this();
-    opts.load(Properties.create(options.replaceAll("[^\\S]+|$", ":1,")));
+    opts.load(Properties.create(options.replaceAll("[^\\S]+|$", ":true,")));
   }
   
   /**
