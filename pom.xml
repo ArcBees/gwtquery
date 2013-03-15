@@ -149,7 +149,7 @@
     <properties>
         <!-- <gwtversion>2.4.0-dollarpatch</gwtversion> -->
         <gwtversion>2.5.1</gwtversion>
-        <gwtmaven>2.5.1-rc1</gwtmaven>
+        <gwtmaven>2.5.1</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
