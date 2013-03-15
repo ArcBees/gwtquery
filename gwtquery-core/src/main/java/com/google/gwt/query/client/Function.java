@@ -68,14 +68,6 @@ public abstract class Function {
   }
   
   /**
-   * @deprecated use use setArguments instead
-   */
-  @Deprecated
-  public void setData(Object...arguments) {
-    setArguments(arguments);
-  }
-
-  /**
    * Set the list of arguments to be passed to the function
    */
   public Function setArguments(Object...arguments) {
@@ -209,7 +201,7 @@ public abstract class Function {
    */
   @Deprecated
   public void setData(boolean b) {
-    setData(Boolean.valueOf(b));
+    setArguments(b);
   }
 
   /**
@@ -217,7 +209,15 @@ public abstract class Function {
    */
   @Deprecated
   public void setData(double b) {
-    setData(Double.valueOf(b));
+    setArguments(b);
+  }
+  
+  /**
+   * @deprecated use use setArguments instead
+   */
+  @Deprecated
+  public void setData(Object...arguments) {
+    setArguments(arguments);
   }
 
   /**
