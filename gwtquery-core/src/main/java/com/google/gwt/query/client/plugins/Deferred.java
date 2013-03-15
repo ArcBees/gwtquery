@@ -31,30 +31,27 @@ public class Deferred extends GQuery implements Promise.Deferred {
    * public class used to create customized promises which can manipulate
    * the asociated deferred object.
    * <pre>
-
-    Promise doSomething = new PromiseFunction() {
-      @Override
-      public void f(Deferred dfd) {
-        dfd.notify("hi");
-        dfd.resolve("done");
-      }
-    };
-    
-    doSomething.progress(new Function() {
-      public void f() {
-        Window.alert("" + arguments[0]);
-      }
-    }).done(new Function() {
-      public void f() {
-        Window.alert("" + arguments[0]);
-      }
-    });
-   
+   *    Promise doSomething = new PromiseFunction() {
+   *      @Override
+   *      public void f(Deferred dfd) {
+   *        dfd.notify("hi");
+   *        dfd.resolve("done");
+   *      }
+   *    };
+   *    
+   *    doSomething.progress(new Function() {
+   *      public void f() {
+   *        Window.alert("" + arguments[0]);
+   *      }
+   *    }).done(new Function() {
+   *      public void f() {
+   *        Window.alert("" + arguments[0]);
+   *      }
+   *    });
    * </pre>
    */
   public static abstract class PromiseFunction extends DeferredPromiseImpl {
     public PromiseFunction() {
-      super(null);
       f(dfd);
     }
     
@@ -71,14 +68,16 @@ public class Deferred extends GQuery implements Promise.Deferred {
   private static class DeferredPromiseImpl implements Promise {
     protected com.google.gwt.query.client.plugins.Deferred dfd;
     
-    protected DeferredPromiseImpl(Object o) {
-      if (o instanceof com.google.gwt.query.client.plugins.Deferred) {
-        dfd = (com.google.gwt.query.client.plugins.Deferred) o;
-      } else  if (o instanceof DeferredPromiseImpl) {
-        dfd = ((DeferredPromiseImpl)o).dfd;;
-      } else {
-        dfd = new com.google.gwt.query.client.plugins.Deferred();
-      }
+    protected DeferredPromiseImpl(com.google.gwt.query.client.plugins.Deferred o) {
+      dfd = o;
+    }
+
+    protected DeferredPromiseImpl(DeferredPromiseImpl o) {
+      dfd = o.dfd;
+    }
+
+    protected DeferredPromiseImpl() {
+      dfd = new com.google.gwt.query.client.plugins.Deferred();
     }
     
     public Promise always(Function... f) {
@@ -129,9 +128,11 @@ public class Deferred extends GQuery implements Promise.Deferred {
      */
     private class DoneFnc extends Function {
       final int idx;
+
       public DoneFnc(int i, Deferred d) {
         idx = i; 
       }
+
       public Object f(Object... args) {
         values[idx] = args;
         if (--remaining == 0) {
