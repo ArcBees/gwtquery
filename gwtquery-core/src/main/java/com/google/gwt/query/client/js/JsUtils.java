@@ -404,8 +404,9 @@ public class JsUtils {
     try {
       return utilsImpl.parseJSON(json);
     } catch (Exception e) {
-      System.err.println("Error while parsing json: " + e.getMessage() + ".\n"
-          + json);
+      if (!GWT.isProdMode()) {
+        System.err.println("Error while parsing json: " + e.getMessage() + ".\n" + json);
+      }
       return Properties.create();
     }
   }

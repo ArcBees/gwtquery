@@ -274,7 +274,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof IsWidget) {
         return $(Arrays.asList(o));
       }
-      System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
+      if (!GWT.isProdMode()) {
+        System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
+      }
     }
     return $();
   }
