@@ -19,6 +19,31 @@ import com.google.gwt.query.client.Function;
  * Definition of jquery Promise interface used in gquery. 
  */
 public interface Promise {
+  
+  /**
+   * Definition of jquery Deferred interface used in gquery. 
+   */
+  public interface Deferred {
+    /**
+     * Call the progressCallbacks on a Deferred object with the given args.
+     */
+    Deferred notify(Object... o);
+    
+    /**
+     * Return a Deferred’s Promise object.
+     */
+    Promise promise();
+    
+    /**
+     * Reject a Deferred object and call any failCallbacks with the given args.
+     */
+    Deferred reject(Object... o);
+    
+    /**
+     * Resolve a Deferred object and call any doneCallbacks with the given args.
+     */
+    Deferred resolve(Object... o);
+  }
 
   public static final String PENDING = "pending";
   public static final String REJECTED = "rejected";

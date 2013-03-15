@@ -19,9 +19,12 @@ package com.google.gwt.query.client;
 import static com.google.gwt.query.client.GQuery.when;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.plugins.Deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks.Callback;
+import com.google.gwt.user.client.Timer;
 
 /**
  * Test class for testing deferred and callbacks stuff.
@@ -179,6 +182,38 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
           finishTest();
         }
       });
+  }
+  
+  int progress = 0;
+  public void testPromiseFunction() {
+    delayTestFinish(3000);
+    
+    final Promise doSomething = new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        new Timer() {
+          int count = 0;
+          public void run() {
+            dfd.notify(count ++);
+            if (count > 3) {
+              cancel();
+              dfd.resolve("done");
+            }
+          }
+        }.scheduleRepeating(50);
+      }
+    };
+    
+    doSomething.progress(new Function() {
+      public void f() {
+        progress = (Integer)arguments[0];
+      }
+    }).done(new Function() {
+      public void f() {
+        assertEquals(3, progress);
+        assertEquals(Promise.RESOLVED, doSomething.state());
+        finishTest();
+      }
+    });
   }
 
 }

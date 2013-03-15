@@ -719,6 +719,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static Promise when(Promise... subordinates) {
     return Deferred.when(subordinates);
   }
+  
+  /**
+   * A constructor function that returns a chainable utility object with methods to register
+   * multiple callbacks into callback queues, invoke callback queues, and relay the success
+   * or failure state of any synchronous or asynchronous function
+   */
+  public static Promise.Deferred Deferred() {
+    return new Deferred();
+  }
 
   private static native void scrollIntoViewImpl(Node n) /*-{
 		if (n)

@@ -141,7 +141,7 @@ public class Callbacks {
   public Callbacks fire(Object... o) {
     if (!done) {
       done = opts.getOnce();
-      for (Object c : stack.elements()) {
+      if (stack != null) for (Object c : stack.elements()) {
         if (!run(c, o) && opts.getStopOnFalse()) {
           break;
         }
