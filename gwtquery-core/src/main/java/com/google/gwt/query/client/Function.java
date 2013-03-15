@@ -35,21 +35,24 @@ public abstract class Function {
     return element.<T>cast();
   }
 
-  public <T extends com.google.gwt.dom.client.Element> void setElement(T e) {
+  public <T extends com.google.gwt.dom.client.Element> Function setElement(T e) {
     element = e;
+    return this;
   }
 
-  public void setEvent(Event e) {
+  public Function setEvent(Event e) {
     event = e;
     element = e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast() : null;
+    return this;
   }
 
   public Event getEvent() {
     return event;
   }
 
-  public void setIndex(int i) {
+  public Function setIndex(int i) {
     index = i;
+    return this;
   }
   
   /**
@@ -75,8 +78,9 @@ public abstract class Function {
   /**
    * Set the list of arguments to be passed to the function
    */
-  public void setArguments(Object...arguments) {
+  public Function setArguments(Object...arguments) {
     this.arguments = arguments;
+    return this;
   }
 
   /**
@@ -101,12 +105,9 @@ public abstract class Function {
    * position in the list of arguments composed by arrays.
    * 
    */
+  @SuppressWarnings("unchecked")
   public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
-    Object[] objs = getArgumentArray(argIdx);
-    if (objs.length > pos && objs[pos] instanceof JavaScriptObject) {
-      return ((JavaScriptObject)objs[pos]).cast();
-    }
-    return null;
+    return (T)getArgument(argIdx, pos, JavaScriptObject.class);
   }
   
   /**
@@ -137,32 +138,99 @@ public abstract class Function {
   }
 
   /**
-   * return the argument in the position idx; 
+   * Return the argument in the position idx or null if it doesn't exist.
+   * 
+   * Note: if the return type doesn't match the object, you
+   * will get a casting exception. 
    */
-  public Object getArgument(int idx) {
-    return arguments.length > idx ? arguments[idx] : null;
+  public <T> T getArgument(int idx) {
+    return getArgument(-1, idx, null);
+  }
+  
+  /**
+   * Safety return the argument in the position idx.
+   * 
+   * If the element class is not of the requested type it returns null and
+   * you don't get casting exeption.
+   */
+  public <T> T getArgument(int idx, Class<? extends T> type) {
+    return getArgument(-1, idx, type);
   }
 
+  /**
+   * Utility method for safety getting an object present at a certain
+   * position in the list of arguments composed by arrays.
+   * 
+   * Useful for Deferred chains where result of each resolved 
+   * promise is set as an array in the arguments list.
+   * 
+   * When the object found in the array doesn't match the type required it returns a null.
+   * 
+   * Note: If type is null, we don't check the class of the object found andd you could
+   * eventually get a casting exception. 
+   * 
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getArgument(int argIdx, int pos, Class<? extends T> type) {
+    Object[] objs = getArgumentArray(argIdx);
+    Object o = objs.length > pos ? objs[pos] : null;
+    if (o != null && (
+      // When type is null we don't safety check
+      type == null ||
+      // The object is an instance of the type requested
+      o.getClass() == type ||
+      // Overlay types
+      type == JavaScriptObject.class && o instanceof JavaScriptObject
+      )) {
+      return (T)o;
+    }
+    return null;
+  }
+
+  
+  /**
+   * @deprecated use: getArgument()
+   */
+  @Deprecated
   public Properties getDataProperties() {
     return getDataProperties(0);
   }
 
+  /**
+   * @deprecated use: getArgument(idx)
+   */
+  @Deprecated
   public Properties getDataProperties(int idx) {
     return getArgumentJSO(idx);
   }
 
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
   public void setData(boolean b) {
     setData(Boolean.valueOf(b));
   }
 
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
   public void setData(double b) {
     setData(Double.valueOf(b));
   }
 
+  /**
+   * @deprecated use: setArguments()
+   */
+  @Deprecated
   public void setDataObject(Object arg) {
     setArguments(arg);
   }
 
+  /**
+   * Return the index in a loop execution. Used in GQuery.each()
+   */
   public int getIndex() {
     return index;
   }
