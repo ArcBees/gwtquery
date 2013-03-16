@@ -7,3 +7,6 @@ do
     perl -pi -e "s;<version>$V</version>;<version>$1</version>;" $i
     echo $V $i
 done
+
+perl -pi -e "s;<gQueryVersion>$V</gQueryVersion>;<gQueryVersion>$1</gQueryVersion>;" \
+     archetype/src/main/resources/archetype-resources/pom.xml
