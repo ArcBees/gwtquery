@@ -16,7 +16,8 @@ order to speed up TDD.
 - When your test was ready put it in your test class extending
   GWTTestCase.
 
-
+- If you prefer superdev mode run: mvn gwt:run-codeserver but
+  you have to be familiar with debuging in javascript and use source maps.
 
 
 

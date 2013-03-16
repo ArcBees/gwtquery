@@ -7,6 +7,11 @@ $ mvn clean install
 
 - Run it in development mode:
 $ mvn gwt:run
+and point your browser to http://127.0.0.1:8888/${projectName}/${projectName}.html?gwt.codesvr=127.0.0.1:9997
+
+- Run superdev mode:
+$ mvn gwt:run-codeserver
+and point your browser to http://127.0.0.1:9876/${projectName}/${projectName}.html
 
 - Import and run in Eclipse:
 
