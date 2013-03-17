@@ -21,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Implementation of jQuery.Deferred for gwtquery.
@@ -28,8 +29,8 @@ import com.google.gwt.query.client.plugins.callbacks.Callbacks;
 public class Deferred extends GQuery implements Promise.Deferred {
   
   /**
-   * public class used to create customized promises which can manipulate
-   * the asociated deferred object.
+   * Utility class used to create customized promises which can manipulate
+   * the associated deferred object.
    * <pre>
    *    Promise doSomething = new PromiseFunction() {
    *      @Override
@@ -41,11 +42,11 @@ public class Deferred extends GQuery implements Promise.Deferred {
    *    
    *    doSomething.progress(new Function() {
    *      public void f() {
-   *        Window.alert("" + arguments[0]);
+   *        String hi = getArgument(0);
    *      }
    *    }).done(new Function() {
    *      public void f() {
-   *        Window.alert("" + arguments[0]);
+   *        String done = getArgument(0);
    *      }
    *    });
    * </pre>
@@ -60,7 +61,33 @@ public class Deferred extends GQuery implements Promise.Deferred {
      * new deferred is available.
      */
     public abstract void f(Deferred dfd);
-  }  
+  }
+  
+  /**
+   * Utility class used to create promises for RPC CallBacks.
+   * <pre>
+   *        PromiseRPC<String> gretting = new PromiseRPC<String>();
+   *        
+   *        gretting.fail(new Function(){
+   *          public void f() {
+   *            Throwable error = getArgument(0);
+   *          }
+   *        }).done(new Function(){
+   *          public void f() {
+   *            String response = getArgument(0);
+   *          }
+   *        });
+   * </pre>
+   */
+  public static class PromiseRPC<T> extends DeferredPromiseImpl implements AsyncCallback<T> {
+    public void onFailure(Throwable caught) {
+      dfd.reject(caught);
+    }
+
+    public void onSuccess(T result) {
+      dfd.resolve(result);
+    }
+  }
   
   /**
    * Implementation of the Promise interface which is used internally by Deferred.
@@ -70,10 +97,6 @@ public class Deferred extends GQuery implements Promise.Deferred {
     
     protected DeferredPromiseImpl(com.google.gwt.query.client.plugins.Deferred o) {
       dfd = o;
-    }
-
-    protected DeferredPromiseImpl(DeferredPromiseImpl o) {
-      dfd = o.dfd;
     }
 
     protected DeferredPromiseImpl() {
