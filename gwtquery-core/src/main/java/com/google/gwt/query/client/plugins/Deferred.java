@@ -17,11 +17,22 @@ import static com.google.gwt.query.client.Promise.PENDING;
 import static com.google.gwt.query.client.Promise.REJECTED;
 import static com.google.gwt.query.client.Promise.RESOLVED;
 
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.plugins.callbacks.Callbacks;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.requestfactory.shared.Receiver;
+import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
 /**
  * Implementation of jQuery.Deferred for gwtquery.
@@ -64,9 +75,93 @@ public class Deferred extends GQuery implements Promise.Deferred {
   }
   
   /**
-   * Utility class used to create promises for RPC CallBacks.
+   * Utility class used to create promises for RequestBuilder.
+   * <pre>
+   *        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "http://127.0.0.1:8888/whatever");
+   *        PromiseRequest gettingResponse = new PromiseRequest(builder);
+   *        
+   *        gettingResponse.fail(new Function() {
+   *          public void f() {
+   *            Throwable exception = arguments(0);
+   *          }
+   *        }).done(new Function() {
+   *          public void f() {
+   *            Response response = arguments(0);
+   *          }
+   *        });
+   * </pre>
+   */
+  public static class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCallback {
+    public PromiseReqBuilder(RequestBuilder builder) {
+      builder.setCallback(this);
+      try {
+        builder.send();
+      } catch (RequestException e) {
+        onError(null, e);
+      }
+    }
+
+    public void onError(Request request, Throwable exception) {
+      dfd.reject(exception, request);
+    }
+
+    public void onResponseReceived(Request request, Response response) {
+      int status = response.getStatusCode();
+      if (status <= 0 || status >= 400) {
+        String statusText = status <= 0 ? "Bad CORS" : response.getStatusText();
+        onError(request, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()));
+      } else {
+        dfd.resolve(response, request);
+      }
+    }
+  }
+  
+  
+  /**
+   * Utility class used to create promises for RequestFactory services.
+   * <pre>
+   *    Request<SessionProxy> req1 = loginFact.api().login(null, null);
+   *    Request<UserProxy> req2 = srvFact.api().getCurrentUser();
+   *    
+   *    Deferred.when(new PromiseRF(req1), new PromiseRF(req2)
+   *      .done(new Function() {
+   *        public void f() {
+   *          SessionProxy session = arguments(0, 0);
+   *          UserProxy user = arguments(1, 0);
+   *        }
+   *      })
+   *      .fail(new Function() {
+   *        public void f() {
+   *          ServerFailure failure = arguments(0);
+   *        }
+   *      }); 
+   * </pre>
+   */
+  public static class PromiseRF extends DeferredPromiseImpl {
+    public <T> PromiseRF(com.google.web.bindery.requestfactory.shared.Request<T> request) {
+      request.fire(new Receiver<T>() {
+        public void onConstraintViolation(Set<ConstraintViolation<?>> violations) {
+          dfd.reject(new ServerFailure("ConstraintViolation"), violations);
+        }
+
+        public void onFailure(ServerFailure error) {
+          dfd.reject(error);
+        }
+
+        public void onSuccess(T response) {
+          dfd.resolve(response);
+        }
+      });
+    }
+  }
+  
+  /**
+   * Utility class used to create promises for RPC services.
    * <pre>
    *        PromiseRPC<String> gretting = new PromiseRPC<String>();
+   *        
+   *        GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
+   *        greetingService.greetServer("hi", gretting);
    *        
    *        gretting.fail(new Function(){
    *          public void f() {
@@ -88,19 +183,20 @@ public class Deferred extends GQuery implements Promise.Deferred {
       dfd.resolve(result);
     }
   }
+
   
   /**
    * Implementation of the Promise interface which is used internally by Deferred.
    */
   private static class DeferredPromiseImpl implements Promise {
-    protected com.google.gwt.query.client.plugins.Deferred dfd;
+    com.google.gwt.query.client.plugins.Deferred dfd;
     
-    protected DeferredPromiseImpl(com.google.gwt.query.client.plugins.Deferred o) {
-      dfd = o;
-    }
-
     protected DeferredPromiseImpl() {
       dfd = new com.google.gwt.query.client.plugins.Deferred();
+    }
+
+    protected DeferredPromiseImpl(com.google.gwt.query.client.plugins.Deferred o) {
+      dfd = o;
     }
     
     public Promise always(Function... f) {
