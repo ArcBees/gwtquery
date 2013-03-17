@@ -210,5 +210,52 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
           }
         });
       }
+      
+      public void testNestedPromiseFunction() {
+        progress = 0;
+        delayTestFinish(3000);
+        
+        Promise doingFoo = new PromiseFunction() {
+          public void f(final Deferred dfd) {
+            new Timer() {
+              int count = 0;
+              public void run() {
+                dfd.notify(count ++);
+                if (count > 3) {
+                  cancel();
+                  dfd.resolve("done");
+                }
+              }
+            }.scheduleRepeating(50);
+          }
+        };
+        
+        Promise doingBar = new PromiseFunction() {
+          public void f(final Deferred dfd) {
+            new Timer() {
+              int count = 0;
+              public void run() {
+                dfd.notify(count ++);
+                if (count > 3) {
+                  cancel();
+                  dfd.resolve("done");
+                }
+              }
+            }.scheduleRepeating(50);
+          }
+        };
+        
+        GQuery.when(doingFoo, doingBar).progress(new Function() {
+          public void f() {
+            int c = getArgument(0);
+            progress += c;
+          }
+        }).done(new Function() {
+          public void f() {
+            assertEquals(12, progress);
+            finishTest();
+          }
+        });
+      }
 
 }
