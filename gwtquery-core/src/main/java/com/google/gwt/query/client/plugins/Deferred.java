@@ -53,11 +53,11 @@ public class Deferred extends GQuery implements Promise.Deferred {
    *    
    *    doSomething.progress(new Function() {
    *      public void f() {
-   *        String hi = getArgument(0);
+   *        String hi = arguments(0);
    *      }
    *    }).done(new Function() {
    *      public void f() {
-   *        String done = getArgument(0);
+   *        String done = arguments(0);
    *      }
    *    });
    * </pre>
@@ -123,8 +123,9 @@ public class Deferred extends GQuery implements Promise.Deferred {
    *    Request<SessionProxy> req1 = loginFact.api().login(null, null);
    *    Request<UserProxy> req2 = srvFact.api().getCurrentUser();
    *    
-   *    Deferred.when(new PromiseRF(req1), new PromiseRF(req2)
-   *      .done(new Function() {
+   *    Promise requestingAll = Deferred.when(new PromiseRF(req1), new PromiseRF(req2);
+   *    
+   *    requestingAll.done(new Function() {
    *        public void f() {
    *          SessionProxy session = arguments(0, 0);
    *          UserProxy user = arguments(1, 0);
@@ -158,18 +159,18 @@ public class Deferred extends GQuery implements Promise.Deferred {
   /**
    * Utility class used to create promises for RPC services.
    * <pre>
-   *        PromiseRPC<String> gretting = new PromiseRPC<String>();
+   *        PromiseRPC<String> greeting = new PromiseRPC<String>();
    *        
    *        GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
-   *        greetingService.greetServer("hi", gretting);
+   *        greetingService.greetServer("hi", greeting);
    *        
-   *        gretting.fail(new Function(){
+   *        greeting.fail(new Function(){
    *          public void f() {
-   *            Throwable error = getArgument(0);
+   *            Throwable error = arguments(0);
    *          }
    *        }).done(new Function(){
    *          public void f() {
-   *            String response = getArgument(0);
+   *            String response = arguments(0);
    *          }
    *        });
    * </pre>
