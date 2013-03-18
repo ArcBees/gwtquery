@@ -78,7 +78,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
    * Utility class used to create promises for RequestBuilder.
    * <pre>
    *        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "http://127.0.0.1:8888/whatever");
-   *        PromiseRequest gettingResponse = new PromiseRequest(builder);
+   *        PromiseRequest gettingResponse = new PromiseReqBuilder(builder);
    *        
    *        gettingResponse.fail(new Function() {
    *          public void f() {
