@@ -2,6 +2,7 @@ package com.google.gwt.query.client.plugins.ajax;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.http.client.Response;
@@ -13,8 +14,8 @@ import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
-import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
+import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 import com.google.gwt.user.client.ui.FormPanel;
 
 /**
@@ -110,13 +111,11 @@ public class Ajax extends GQuery {
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
-      dfd.promise().done(onSuccess);
     }
 
     final Function onError = settings.getError();
     if (onError != null) {
       onError.setElement(settings.getContext());
-      dfd.promise().fail(onError);
     }
 
     Method httpMethod = resolveHttpMethod(settings);
@@ -125,41 +124,39 @@ public class Ajax extends GQuery {
     final String dataType = settings.getDataType();
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      int timeout = settings.getTimeout();
-      return getJSONP(url, onSuccess, onError, timeout);
-    }
-
-    createPromiseRequestBuilder(settings, httpMethod, url, data)
-      .done(new Function() {
-        public void f() {
-          Response response = arguments(0);
-          Response request = arguments(1);
-          Object retData = null;
-          try {
-            if ("xml".equalsIgnoreCase(dataType)) {
-              retData = JsUtils.parseXML(response.getText());
-            } else if ("json".equalsIgnoreCase(dataType)) {
-              retData = JsUtils.parseJSON(response.getText());
-            } else {
-              retData = response.getText();
+      return getJSONP(url, onSuccess, onError, settings.getTimeout());
+    } else {
+      return createPromiseRequestBuilder(settings, httpMethod, url, data)
+        .then(new Function() {
+          public Object f(Object...args) {
+            Response response = (Response)args[0];
+            Request request = (Request)args[1];
+            Object retData = null;
+            try {
+              if ("xml".equalsIgnoreCase(dataType)) {
+                retData = JsUtils.parseXML(response.getText());
+              } else if ("json".equalsIgnoreCase(dataType)) {
+                retData = JsUtils.parseJSON(response.getText());
+              } else {
+                retData = response.getText();
+              }
+            } catch (Exception e) {
+              if (GWT.getUncaughtExceptionHandler() != null) {
+                GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+              }
             }
-          } catch (Exception e) {
-            if (GWT.getUncaughtExceptionHandler() != null) {
-              GWT.getUncaughtExceptionHandler().onUncaughtException(e);
-            }
+            return new Object[]{retData, "success", request, response};
           }
-          dfd.resolve(retData, "success", request, response);
-        }
-      })
-      .fail(new Function() {
-        public void f() {
-          Throwable exception = arguments(0);
-          Response request = arguments(1);
-          dfd.reject(null, exception.getMessage(), request, null, exception);
-        }
-      });
-    
-    return dfd.promise();
+        }, new Function() {
+          public Object f(Object...args) {
+            Throwable exception = (Throwable)args[0];
+            Response request = (Response)args[1];
+            return new Object[]{null, exception.getMessage(), request, null, exception};
+          }
+        })
+        .done(onSuccess)
+        .fail(onError);
+    }
   }
   
   private static Promise createPromiseRequestBuilder(Settings settings, Method httpMethod, String url, String data) {

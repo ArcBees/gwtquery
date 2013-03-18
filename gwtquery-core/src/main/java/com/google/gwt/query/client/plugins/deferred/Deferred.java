@@ -68,14 +68,24 @@ public class Deferred extends GQuery implements Promise.Deferred {
       return dfd.state;
     }
     
-    public Promise then(Function... f) {
-      assert f.length < 4 : "Promise.then: Too much arguments";
-      switch (f.length) {
-        case 3: progress(f[2]);
-        case 2: fail(f[1]);
-        case 1: done(f[0]);
-      }
-      return this;
+    public Promise then(final Function... f) {
+      final Deferred newDfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
+      progress(new Function() {
+        public void f() {
+          newDfd.notify(f.length > 2 ? f[2].f(getArguments()) : getArguments());
+        }
+      });
+      fail(new Function() {
+        public void f() {
+          newDfd.reject(f.length > 1 ? f[1].f(getArguments()) : getArguments());
+        }
+      });
+      done(new Function() {
+        public void f() {
+          newDfd.resolve(f.length > 0 ? f[0].f(getArguments()) : getArguments());
+        }
+      });
+      return newDfd.promise();
     }
 
     public boolean isResolved() {

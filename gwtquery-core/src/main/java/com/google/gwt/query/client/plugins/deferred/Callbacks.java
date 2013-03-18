@@ -175,6 +175,10 @@ public class Callbacks {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private boolean run(Object c, Object...o) {
+    // Unbox array into array, it happens when running filters in Promise.then
+    if (o.length == 1 && o[0].getClass().isArray()) {
+      o = (Object[])o[0];
+    }
     if (c instanceof Callback) {
       return ((Callback)c).f(o);
     } else if (c instanceof Function) {

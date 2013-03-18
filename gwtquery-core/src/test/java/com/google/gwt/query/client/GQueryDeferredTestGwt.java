@@ -19,8 +19,8 @@ package com.google.gwt.query.client;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
-import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -254,6 +254,26 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
           public void f() {
             assertEquals(12, progress);
             finishTest();
+          }
+        });
+      }
+
+      public void testWhen() {
+        new PromiseFunction() {
+          public void f(final Deferred dfd) {
+            dfd.resolve(5);
+          }
+        }.done(new Function() {
+          public void f() {
+            assertEquals(5d, arguments(0));
+          }
+        }).then(new Function() {
+          public Object f(Object... args) {
+            return (Double)args[0] * 2;
+          }
+        }).done(new Function() {
+          public void f() {
+            assertEquals(10d, arguments(0));
           }
         });
       }

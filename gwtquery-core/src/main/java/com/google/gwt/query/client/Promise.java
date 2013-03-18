@@ -87,8 +87,13 @@ public interface Promise {
   String state();
 
   /**
-   * Add handlers to be called when the Deferred object is resolved, rejected, or still in progress.
-   * 
+   * Add filters to be called when the Deferred object is resolved, rejected, or still in progress.
+   *
+   * These handlers are used to eventually change the values used to resolve the promise.
+   *
+   * `then` returns a new Promise which will be resolved with the values returned by the handlers
+   * in old jquery versions `then` was called `pipe`.
+   *
    * @param f a list of 1, 2, or 3 functions, which will be used in this way:
    *   1st function will be called when the deferred is resolved.
    *   2nd function that is called when the deferred is rejected.
