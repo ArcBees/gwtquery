@@ -30,7 +30,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
   /**
    * Implementation of the Promise interface which is used internally by Deferred.
    */
-  public static class DeferredPromiseImpl implements Promise {
+  static class DeferredPromiseImpl implements Promise {
     protected com.google.gwt.query.client.plugins.deferred.Deferred dfd;
     
     protected DeferredPromiseImpl() {
