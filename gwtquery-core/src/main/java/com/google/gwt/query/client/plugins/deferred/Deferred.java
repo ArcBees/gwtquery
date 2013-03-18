@@ -226,16 +226,4 @@ public class Deferred extends GQuery implements Promise.Deferred {
     resolve.fire(o);
     return this;
   }
-
-  // private, used from jsni because it does not handles variable arguments
-  @SuppressWarnings("unused")
-  private void err(Object o) {
-    reject(o);
-  }
-  
-  // private, used from jsni because it does not handles variable arguments
-  @SuppressWarnings("unused")
-  private void ok(Object o) {
-    resolve(o);
-  }
 }
