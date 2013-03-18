@@ -26,6 +26,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
@@ -116,7 +117,56 @@ public class Deferred extends GQuery implements Promise.Deferred {
     }
   }
   
-  
+  /**
+   * Utility class used to create promises for JsonpRequestBuilder.
+   * <pre>
+   *    Promise p = new PromiseJsonpReqBuilder(url, 4000);
+   *    
+   *    p.done(new Function() {
+   *      public void f() {
+   *        Properties p = arguments(0);
+   *      }
+   *    }).fail(new Function() {
+   *      public void f() {
+   *        Throwable error = arguments(0);
+   *      }
+   *    });
+   * </pre>
+   */
+  public static class PromiseJsonpReqBuilder extends DeferredPromiseImpl {
+    public PromiseJsonpReqBuilder(String url) {
+      this(url, null, 0);
+    }
+
+    public PromiseJsonpReqBuilder(String url, int timeout) {
+      this(url, null, timeout);
+    }
+
+    public PromiseJsonpReqBuilder(String url, String callbackParam, int timeout) {
+      JsonpRequestBuilder builder = new JsonpRequestBuilder();
+      if (timeout > 0) {
+        builder.setTimeout(timeout);
+      }
+      if (callbackParam != null) {
+        builder.setCallbackParam(callbackParam);
+      }
+      send(builder, url, new AsyncCallback<Object>() {
+        public void onFailure(Throwable caught) {
+          dfd.reject(caught);
+        }
+
+        public void onSuccess(Object result) {
+          dfd.resolve(result);
+        }
+      });
+    }
+
+    // Using jsni because method send in JsonpRequestBuilder is private
+    private final native void send(JsonpRequestBuilder bld, String url, AsyncCallback<?> cb) /*-{
+      bld.@com.google.gwt.jsonp.client.JsonpRequestBuilder::send(Ljava/lang/String;Lcom/google/gwt/user/client/rpc/AsyncCallback;Z)(url,cb,false);
+    }-*/;
+  }
+
   /**
    * Utility class used to create promises for RequestFactory services.
    * <pre>
