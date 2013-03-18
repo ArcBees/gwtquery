@@ -17,10 +17,10 @@ package com.google.gwt.query.client;
 
 
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.plugins.Deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.query.client.plugins.callbacks.Callbacks;
-import com.google.gwt.query.client.plugins.callbacks.Callbacks.Callback;
+import com.google.gwt.query.client.plugins.deferred.Callbacks;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
 import com.google.gwt.user.client.Timer;
 
 /**

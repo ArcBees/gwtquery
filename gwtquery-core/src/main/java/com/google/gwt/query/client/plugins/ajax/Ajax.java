@@ -11,10 +11,10 @@ import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.Deferred;
-import com.google.gwt.query.client.plugins.Deferred.PromiseJsonpReqBuilder;
-import com.google.gwt.query.client.plugins.Deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.deferred.Deferred;
+import com.google.gwt.query.client.plugins.deferred.PromiseJsonpReqBuilder;
+import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.user.client.ui.FormPanel;
 
 /**
@@ -318,7 +318,7 @@ public class Ajax extends GQuery {
   public static Promise getJSONP(String url, Function success, Function error, int timeout) {
     return new PromiseJsonpReqBuilder(url, null, timeout)
        .done(success)
-       .fail(error == null ? success : error);
+       .fail(error);
   }
 
   public static Promise post(String url, Properties data, final Function onSuccess) {
