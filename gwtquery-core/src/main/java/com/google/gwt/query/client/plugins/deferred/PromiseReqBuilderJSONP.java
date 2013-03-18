@@ -22,19 +22,19 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *    });
  * </pre>
  */
-public class PromiseJsonpReqBuilder extends DeferredPromiseImpl {
+public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
   
   private static final JsRegexp callbackRegex = new JsRegexp("^(.+[\\?&])([^=]+)=\\?(.*)$");
   
-  public PromiseJsonpReqBuilder(String url) {
+  public PromiseReqBuilderJSONP(String url) {
     this(url, null, 0);
   }
 
-  public PromiseJsonpReqBuilder(String url, int timeout) {
+  public PromiseReqBuilderJSONP(String url, int timeout) {
     this(url, null, timeout);
   }
 
-  public PromiseJsonpReqBuilder(String url, String callbackParam, int timeout) {
+  public PromiseReqBuilderJSONP(String url, String callbackParam, int timeout) {
     JsonpRequestBuilder builder = new JsonpRequestBuilder();
     if (timeout > 0) {
       builder.setTimeout(timeout);

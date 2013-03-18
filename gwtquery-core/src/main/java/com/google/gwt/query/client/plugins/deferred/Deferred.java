@@ -77,6 +77,14 @@ public class Deferred extends GQuery implements Promise.Deferred {
       }
       return this;
     }
+
+    public boolean isResolved() {
+      return Promise.RESOLVED.equals(state());
+    }
+
+    public boolean isRejected() {
+      return Promise.REJECTED.equals(state());
+    }
   }
   
   /**

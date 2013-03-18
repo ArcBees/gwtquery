@@ -95,4 +95,14 @@ public interface Promise {
    *   3rd one will be called when progress notifications are sent.  
    */
   Promise then(Function... f);
+  
+  /**
+   * Determine whether a Deferred object has been resolved.
+   */
+  boolean isResolved();
+  
+  /**
+   * Determine whether a Deferred object has been rejected.
+   */
+  boolean isRejected();
 }
