@@ -138,6 +138,21 @@ public abstract class Function {
   public <T> T getArgument(int idx) {
     return getArgument(-1, idx, null);
   }
+
+  /**
+   * Convenience alias for the getArguments(idx) method thought just to 
+   * make gQuery code look closed to jQuery.
+   */
+  public <T> T arguments(int idx) {
+    return getArgument(idx);
+  }
+  
+  /**
+   * Convenience alias for the getArguments(argIdx, pos) method;
+   */
+  public <T> T arguments(int argIdx, int pos) {
+    return getArgument(argIdx, pos);
+  }
   
   /**
    * Safety return the argument in the position idx.
