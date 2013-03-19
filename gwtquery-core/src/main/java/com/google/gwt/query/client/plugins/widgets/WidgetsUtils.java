@@ -203,7 +203,12 @@ public class WidgetsUtils {
        } else if (firstParentWidget instanceof HasOneWidget) {
          ((HasOneWidget)firstParentWidget).setWidget(widget);
        } else if (firstParentWidget instanceof HasWidgets) {
-         ((HasWidgets)firstParentWidget).add(widget);
+         try {
+           ((HasWidgets)firstParentWidget).add(widget);
+         } catch (UnsupportedOperationException e) {
+           // Some widgets like 'table' has no implementation of 'add(widget)'
+           widgetSetParent(widget, firstParentWidget);
+         }
        } else {
          widgetSetParent(widget, firstParentWidget);
        }
