@@ -82,6 +82,19 @@
                  <useSystemClassLoader>false</useSystemClassLoader>
               </configuration>
             </plugin>
+
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>gwt-maven-plugin</artifactId>
+              <version>${gwtmaven}</version>
+              <configuration>
+                  <gwtVersion>${gwtversion}</gwtVersion>
+                  <productionMode>false</productionMode>
+                  <timeOut>300</timeOut>
+                  <includes>**/GQueryGwtSuiteTest.java</includes>
+              </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
