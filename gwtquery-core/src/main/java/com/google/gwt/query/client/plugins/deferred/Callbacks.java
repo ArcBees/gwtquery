@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.plugins.callbacks;
+package com.google.gwt.query.client.plugins.deferred;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.client.Function;
@@ -163,7 +163,7 @@ public class Callbacks {
   
   private void addAll(Object...o) {
     for (Object c : o) {
-      if (!done && (!opts.getUnique() || !stack.contains(c))) {
+      if (!done && c != null && (!opts.getUnique() || !stack.contains(c))) {
         stack.add(c);
       }
       // In jQuery add always is run when memory is true even when unique is set
@@ -175,6 +175,10 @@ public class Callbacks {
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private boolean run(Object c, Object...o) {
+    // Unbox array into array, it happens when running filters in Promise.then
+    if (o.length == 1 && o[0].getClass().isArray()) {
+      o = (Object[])o[0];
+    }
     if (c instanceof Callback) {
       return ((Callback)c).f(o);
     } else if (c instanceof Function) {

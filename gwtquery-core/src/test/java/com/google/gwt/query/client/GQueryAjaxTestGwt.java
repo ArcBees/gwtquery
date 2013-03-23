@@ -271,7 +271,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     }, 500);
   }
 
-  public void testJsonTimeout() {
+  public void testJsonpTimeout() {
     delayTestFinish(5000);
     String nonJsonpUrl = "http://127.0.0.1/nopage";
 
@@ -291,6 +291,27 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     s.setUrl(nonJsonpUrl);
 
     Ajax.ajax(s);
+  }
+  
+  public void testAjaxError() {
+    delayTestFinish(5000);
+    String url = "http://127.0.0.1/nopage";
+    
+    Ajax.ajax(Ajax.createSettings().setTimeout(1000).setUrl(url))
+      .done(new Function(){
+        public void f() {
+          fail();
+        }
+      }).fail(new Function(){
+        public void f() {
+          System.out.println(arguments(0));
+          System.out.println(arguments(1));
+          System.out.println(arguments(2));
+          System.out.println(arguments(3));
+          System.out.println(arguments(4));
+          finishTest();
+        }
+      });
   }
 
 }
