@@ -89,7 +89,7 @@ public abstract class Function {
    */
   @Deprecated
   public Object getDataObject(int idx) {
-    return getArgument(0);
+    return getArgument(idx);
   }
 
   /**
