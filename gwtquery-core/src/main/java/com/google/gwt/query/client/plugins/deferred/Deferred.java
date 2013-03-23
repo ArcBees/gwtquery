@@ -1,14 +1,16 @@
 /*
  * Copyright 2013, The gwtquery team.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.google.gwt.query.client.plugins.deferred;
@@ -26,21 +28,71 @@ import com.google.gwt.query.client.plugins.Plugin;
  * Implementation of jQuery.Deferred for gwtquery.
  */
 public class Deferred extends GQuery implements Promise.Deferred {
-  
+
   /**
-   * Implementation of the Promise interface which is used internally by Deferred.
+   * Implementation of the Promise interface which is used internally by
+   * Deferred.
    */
   static class DeferredPromiseImpl implements Promise {
-    protected com.google.gwt.query.client.plugins.deferred.Deferred dfd;
     
+    // Private class used to handle `Promise.then()`
+    private static class ThenFunction extends Function {
+      // Used internally in ThenFunction, to resolve deferred object
+      private class DoFunction extends Function {
+        public void f() {
+          if (type == 0) dfd.resolve(getArguments());
+          if (type == 1) dfd.reject(getArguments());
+          if (type == 2) dfd.notify(getArguments());
+        }
+      }
+
+      // Original filter function
+      private final Function filter;
+      // Type of action (0 = done, 1 = fail, 2 = progress)
+      private final int type;
+      // Original deferred object
+      private final Deferred dfd;
+
+      public ThenFunction(Deferred newDfd, Function[] subordinates, int funcType) {
+        type = funcType;
+        filter = subordinates.length > type ? subordinates[type] : null;
+        dfd = newDfd;
+      }
+
+      public void f() {
+        Object[] args = getArguments();
+        Function doIt = new DoFunction().setArguments(args);
+        if (filter != null) {
+          // We filter resolved arguments with the filter function
+          Object newArgs = filter.setArguments(args).f(args);
+          // If filter function returns a promise we pipeline it
+          if (newArgs instanceof Promise) {
+            Promise p = (Promise) newArgs;
+            if (type == 0) p.done(doIt);
+            if (type == 1) p.fail(doIt);
+            if (type == 2) p.progress(doIt);
+            return;
+          } else if (newArgs.getClass().isArray()) {
+            doIt.setArguments((Object[])newArgs);
+          } else {
+            doIt.setArguments(newArgs);
+          }
+        }
+        doIt.f();
+      }
+    }    
+    
+    protected com.google.gwt.query.client.plugins.deferred.Deferred dfd;
+
     protected DeferredPromiseImpl() {
       dfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
     }
 
-    protected DeferredPromiseImpl(com.google.gwt.query.client.plugins.deferred.Deferred o) {
+    protected DeferredPromiseImpl(
+        com.google.gwt.query.client.plugins.deferred.Deferred o) {
       dfd = o;
     }
-    
+
     public Promise always(Function... f) {
       return done(f).fail(f);
     }
@@ -49,7 +101,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
       dfd.resolve.add(f);
       return this;
     }
-    
+
     public Promise fail(Function... f) {
       dfd.reject.add(f);
       return this;
@@ -58,33 +110,21 @@ public class Deferred extends GQuery implements Promise.Deferred {
     public Promise pipe(Function... f) {
       return then(f);
     }
-    
+
     public Promise progress(Function... f) {
       dfd.notify.add(f);
       return this;
     }
-    
+
     public String state() {
       return dfd.state;
     }
-    
+
     public Promise then(final Function... f) {
       final Deferred newDfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
-      progress(new Function() {
-        public void f() {
-          newDfd.notify(f.length > 2 ? f[2].f(getArguments()) : getArguments());
-        }
-      });
-      fail(new Function() {
-        public void f() {
-          newDfd.reject(f.length > 1 ? f[1].f(getArguments()) : getArguments());
-        }
-      });
-      done(new Function() {
-        public void f() {
-          newDfd.resolve(f.length > 0 ? f[0].f(getArguments()) : getArguments());
-        }
-      });
+      done(new ThenFunction(newDfd, f, 0));
+      fail(new ThenFunction(newDfd, f, 1));
+      progress(new ThenFunction(newDfd, f, 2));
       return newDfd.promise();
     }
 
@@ -96,20 +136,20 @@ public class Deferred extends GQuery implements Promise.Deferred {
       return Promise.REJECTED.equals(state());
     }
   }
-  
+
   /**
-   * Internal Deferred class used to combine a set of subordinate promises. 
+   * Internal Deferred class used to combine a set of subordinate promises.
    */
   private static class WhenDeferredImpl extends Deferred {
     /**
-     * Internal function used to track whether all deferred 
-     * subordinates are resolved. 
+     * Internal function used to track whether all deferred subordinates are
+     * resolved.
      */
     private class DoneFnc extends Function {
       final int idx;
 
       public DoneFnc(int i, Deferred d) {
-        idx = i; 
+        idx = i;
       }
 
       public Object f(Object... args) {
@@ -120,27 +160,27 @@ public class Deferred extends GQuery implements Promise.Deferred {
         return true;
       }
     }
-    
+
     private Function failFnc = new Function() {
       public Object f(Object... o) {
         WhenDeferredImpl.this.reject(o);
         return true;
       }
     };
-    
+
     private Function progressFnc = new Function() {
       public Object f(Object... o) {
         WhenDeferredImpl.this.notify(o);
         return true;
       }
     };
-    
+
     // Remaining counter
     private int remaining;
-    
+
     // An indexed array with the fired values of all subordinated
     private final Object[] values;
-    
+
     public WhenDeferredImpl(Promise[] sub) {
       int l = remaining = sub.length;
       values = new Object[l];
@@ -149,7 +189,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
       }
     }
   }
-  
+
   // Register Deferred as a GQuery plugin
   public static final Class<Deferred> Deferred = GQuery.registerPlugin(
       Deferred.class, new Plugin<Deferred>() {
@@ -157,7 +197,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
           return new Deferred(gq);
         }
       });
-  
+
   public static Promise when(Promise... d) {
     final int n = d.length;
     switch (n) {
@@ -169,21 +209,21 @@ public class Deferred extends GQuery implements Promise.Deferred {
         return new WhenDeferredImpl(d).promise();
     }
   }
-  
+
   private Callbacks notify = new Callbacks("memory");
-  
+
   private Promise promise = null;
-  
+
   private Callbacks reject = new Callbacks("once memory");
-  
+
   private Callbacks resolve = new Callbacks("once memory");
-  
+
   private String state = PENDING;
-  
+
   public Deferred() {
     this(null);
   }
-  
+
   protected Deferred(GQuery gq) {
     super(gq);
     resolve.add(new Function() {
@@ -202,7 +242,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
       }
     });
   }
-  
+
   /**
    * Call the progressCallbacks on a Deferred object with the given args.
    */
@@ -220,7 +260,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
     }
     return promise;
   }
-  
+
   /**
    * Reject a Deferred object and call any failCallbacks with the given args.
    */
@@ -228,7 +268,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
     reject.fire(o);
     return this;
   }
-  
+
   /**
    * Resolve a Deferred object and call any doneCallbacks with the given args.
    */

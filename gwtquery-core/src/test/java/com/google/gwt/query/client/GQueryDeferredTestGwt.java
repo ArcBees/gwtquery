@@ -145,137 +145,159 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
   }
   
-      public void testDeferredAjaxWhenDone() {
-        String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
-        
-        delayTestFinish(5000);
-        GQuery.when(Ajax.getJSONP(url, null, null, 1000))
-          .done(new Function() {
-            public void f() {
-              Properties p = getArgument(0, 0);
-              assertEquals(400, p.getProperties("error").getInt("code"));
-              finishTest();
-            }
-          });
-      }
+  public void testDeferredAjaxWhenDone() {
+    String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
     
-      public void testDeferredAjaxWhenFail() {
-        String url1 = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
-        String url2 = "https://localhost:4569/foo";
-        
-        delayTestFinish(5000);
-        GQuery.when(
-            Ajax.getJSONP(url1), 
-            Ajax.getJSONP(url2, null, null, 1000))
-          .done(new Function() {
-            public void f() {
-              fail();
-            }
-          })
-          .fail(new Function(){
-            public void f() {
-              finishTest();
-            }
-          });
-      }
-      
-      int progress = 0;
-      public void testPromiseFunction() {
-        delayTestFinish(3000);
-        final Promise doSomething = new PromiseFunction() {
-          @Override
-          public void f(final Deferred dfd) {
-            new Timer() {
-              int count = 0;
-              public void run() {
-                dfd.notify(count ++);
-                if (count > 3) {
-                  cancel();
-                  dfd.resolve("done");
-                }
-              }
-            }.scheduleRepeating(50);
-          }
-        };
-        
-        doSomething.progress(new Function() {
-          public void f() {
-            progress = getArgument(0);
-          }
-        }).done(new Function() {
-          public void f() {
-            assertEquals(3, progress);
-            assertEquals(Promise.RESOLVED, doSomething.state());
-            finishTest();
-          }
-        });
-      }
-      
-      public void testNestedPromiseFunction() {
-        progress = 0;
-        delayTestFinish(3000);
-        
-        Promise doingFoo = new PromiseFunction() {
-          public void f(final Deferred dfd) {
-            new Timer() {
-              int count = 0;
-              public void run() {
-                dfd.notify(count ++);
-                if (count > 3) {
-                  cancel();
-                  dfd.resolve("done");
-                }
-              }
-            }.scheduleRepeating(50);
-          }
-        };
-        
-        Promise doingBar = new PromiseFunction() {
-          public void f(final Deferred dfd) {
-            new Timer() {
-              int count = 0;
-              public void run() {
-                dfd.notify(count ++);
-                if (count > 3) {
-                  cancel();
-                  dfd.resolve("done");
-                }
-              }
-            }.scheduleRepeating(50);
-          }
-        };
-        
-        GQuery.when(doingFoo, doingBar).progress(new Function() {
-          public void f() {
-            int c = getArgument(0);
-            progress += c;
-          }
-        }).done(new Function() {
-          public void f() {
-            assertEquals(12, progress);
-            finishTest();
-          }
-        });
-      }
+    delayTestFinish(5000);
+    GQuery.when(Ajax.getJSONP(url, null, null, 1000))
+      .done(new Function() {
+        public void f() {
+          Properties p = getArgument(0, 0);
+          assertEquals(400, p.getProperties("error").getInt("code"));
+          finishTest();
+        }
+      });
+  }
 
-      public void testWhen() {
-        new PromiseFunction() {
-          public void f(final Deferred dfd) {
-            dfd.resolve(5);
+  public void testDeferredAjaxWhenFail() {
+    String url1 = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+    String url2 = "https://localhost:4569/foo";
+    
+    delayTestFinish(5000);
+    GQuery.when(
+        Ajax.getJSONP(url1), 
+        Ajax.getJSONP(url2, null, null, 1000))
+      .done(new Function() {
+        public void f() {
+          fail();
+        }
+      })
+      .fail(new Function(){
+        public void f() {
+          finishTest();
+        }
+      });
+  }
+  
+  int progress = 0;
+  public void testPromiseFunction() {
+    delayTestFinish(3000);
+    final Promise doSomething = new PromiseFunction() {
+      @Override
+      public void f(final Deferred dfd) {
+        new Timer() {
+          int count = 0;
+          public void run() {
+            dfd.notify(count ++);
+            if (count > 3) {
+              cancel();
+              dfd.resolve("done");
+            }
           }
-        }.done(new Function() {
-          public void f() {
-            assertEquals(5d, arguments(0));
-          }
-        }).then(new Function() {
-          public Object f(Object... args) {
-            return (Double)args[0] * 2;
-          }
-        }).done(new Function() {
-          public void f() {
-            assertEquals(10d, arguments(0));
-          }
-        });
+        }.scheduleRepeating(50);
       }
+    };
+    
+    doSomething.progress(new Function() {
+      public void f() {
+        progress = getArgument(0);
+      }
+    }).done(new Function() {
+      public void f() {
+        assertEquals(3, progress);
+        assertEquals(Promise.RESOLVED, doSomething.state());
+        finishTest();
+      }
+    });
+  }
+  
+  public void testNestedPromiseFunction() {
+    progress = 0;
+    delayTestFinish(3000);
+    
+    Promise doingFoo = new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        new Timer() {
+          int count = 0;
+          public void run() {
+            dfd.notify(count ++);
+            if (count > 3) {
+              cancel();
+              dfd.resolve("done");
+            }
+          }
+        }.scheduleRepeating(50);
+      }
+    };
+    
+    Promise doingBar = new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        new Timer() {
+          int count = 0;
+          public void run() {
+            dfd.notify(count ++);
+            if (count > 3) {
+              cancel();
+              dfd.resolve("done");
+            }
+          }
+        }.scheduleRepeating(50);
+      }
+    };
+    
+    GQuery.when(doingFoo, doingBar).progress(new Function() {
+      public void f() {
+        int c = getArgument(0);
+        progress += c;
+      }
+    }).done(new Function() {
+      public void f() {
+        assertEquals(12, progress);
+        finishTest();
+      }
+    });
+  }
+
+  public void testThen() {
+    new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        dfd.resolve(5);
+      }
+    }.done(new Function() {
+      public void f() {
+        assertEquals(5d, arguments(0));
+      }
+    }).then(new Function() {
+      public Object f(Object... args) {
+        return (Double)args[0] * 2;
+      }
+    }).done(new Function() {
+      public void f() {
+        assertEquals(10d, arguments(0));
+      }
+    });
+  }
+
+  public void testDeferredAjaxThenDone() {
+    final String url = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
+
+    delayTestFinish(5000);
+    GQuery
+      .when(Ajax.getJSONP(url))
+      .then(new Function() {
+        public Object f(Object... args) {
+          Properties p = arguments(0, 0);
+          assertEquals(400, p.getProperties("error").getInt("code"));
+          return Ajax.getJSONP(url);
+        }
+      })
+      .done(new Function() {
+        public void f() {
+          Properties p = arguments(0, 0);
+          assertEquals(400, p.getProperties("error").getInt("code"));
+          finishTest();
+        }
+      });
+  }
 
 }
