@@ -263,7 +263,7 @@ public class JsCache extends JavaScriptObject {
   public static native Object gwtBox(JavaScriptObject oneElementArray) /*-{
     var r = oneElementArray;
     if (typeof r == 'object' && r.length == 1) {
-      var r = r[0]; t = typeof r;
+      var r = r[0], t = typeof r;
       if (t == 'boolean') return @java.lang.Boolean::valueOf(Z)(r);
       if (t == 'number')  return @java.lang.Double::valueOf(D)(r);
     }
