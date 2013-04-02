@@ -312,7 +312,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       f.fe(elem);
     } else {
       // Run final hooks when emptying the queue, used in promises
-      emptyHooks(elem, name).fire(elem, name, f);
+      emptyHooks(elem, name).fire(elem, name);
       // It is the last function, remove the queue to avoid leaks (issue 132)
       removeData(elem, name);
     }
