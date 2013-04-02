@@ -410,7 +410,7 @@ public abstract class Function {
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
    *
-   * @param e takes a com.google.gwt.user.client.Element
+   * @param elem takes a com.google.gwt.user.client.Element
    */
   private boolean loop = false;
   public void f(com.google.gwt.user.client.Element e) {

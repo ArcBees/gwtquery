@@ -16,24 +16,51 @@
 package com.google.gwt.query.client;
 
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.document;
+
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Test class for testing deferred and callbacks stuff.
  */
 public class GQueryDeferredTestGwt extends GWTTestCase {
+  
+  static Element e = null;
+
+  static HTML testPanel = null;
 
   public String getModuleName() {
     return "com.google.gwt.query.Query";
   }
 
-  private String result = "";
+  public void gwtTearDown() {
+    $(e).remove();
+    e = null;
+  }
 
+  public void gwtSetUp() {
+    if (e == null) {
+      testPanel = new HTML();
+      RootPanel.get().add(testPanel);
+      e = testPanel.getElement();
+      e.setId("core-tst");
+    } else {
+      e.setInnerHTML("");
+    }
+  }
+
+  private String result = "";
   public void testCallbacks() {
     Function fn1 = new Function() {
       public Object f(Object...arguments) {
@@ -299,5 +326,117 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
         }
       });
   }
+  
+  public void testDeferredQueueDelay() {
+    final int delay = 300;
+    final double init = Duration.currentTimeMillis();
+    
+    delayTestFinish(delay * 2);
+    
+    Function doneFc = new Function() {
+      public void f() {
+        finishTest();
 
+        double ellapsed = Duration.currentTimeMillis() - init;
+        assertTrue(ellapsed >= delay);
+      }
+    };
+    
+    $(document).delay(delay).promise().done(doneFc);
+  }
+  
+  int deferredRun = 0;
+  public void testDeferredQueueMultipleDelay() {
+    final int delay = 300;
+    final double init = Duration.currentTimeMillis();
+    deferredRun = 0;
+    
+    delayTestFinish(delay * 3);
+    
+    $("<div>a1</div><div>a2</div>")
+      .delay(delay, new Function() {
+        public void f() {
+          double ellapsed = Duration.currentTimeMillis() - init;
+          assertTrue(ellapsed >= delay);
+          deferredRun ++;
+        }
+      })
+      .delay(delay, new Function() {
+        public void f() {
+          double ellapsed = Duration.currentTimeMillis() - init;
+          assertTrue(ellapsed >= (delay * 2));
+          deferredRun ++;
+        }
+      })
+      .promise().done(new Function() {
+        public void f() {
+          finishTest();
+          // Functions are run 4 times (2 functions * 2 elements) 
+          assertEquals(4, deferredRun);
+        }
+      });
+  }
+  
+  /**
+   * Example taken from the gquery.promise() documentation
+   */
+  public void testDeferredEffect() {
+    $(e).html("<button>click</button><p>Ready...</p><br/><div></div>");
+    $("div", e).css($$("height: 50px; width: 50px;float: left; margin-right: 10px;display: none; background-color: #090;"));
+    
+    final Function effect = new Function() {public Object f(Object... args) {
+        return $("div", e).fadeIn(800).delay(1200).fadeOut();
+    }};
+    
+    final double init = Duration.currentTimeMillis();
+
+    delayTestFinish(10000);
+
+    $("button", e)
+      .click(new Function(){public void f()  {
+        $("p", e).append(" Started... ");
+        GQuery.when( effect ).done(new Function(){public void f()  {
+          $("p", e).append(" Finished! ");
+          assertEquals("Ready... Started...  Finished! ", $("p", e).text());
+          
+          double ellapsed = Duration.currentTimeMillis() - init;
+          assertTrue(ellapsed >= (800 + 1200 + 400));
+          
+          finishTest();
+        }});
+      }})
+    .click();
+  }
+  
+  /**
+   * Example taken from the gquery.promise() documentation
+   */
+  public void testDeferredEffectEach() {
+    $(e).html("<button>click</button><p>Ready...</p><br/><div></div><div></div><div></div><div></div>");
+    $("div", e).css($$("height: 50px; width: 50px;float: left; margin-right: 10px;display: none; background-color: #090;"));
+    
+    final double init = Duration.currentTimeMillis();
+
+    delayTestFinish(10000);
+
+    $("button", e)
+      .bind("click", new Function(){public void f()  {
+        $("p", e).append(" Started... ");
+        
+        $("div",e).each(new Function(){public Object f(Element e, int i) {
+          return $( this ).fadeIn().fadeOut( 1000 * (i+1) );
+        }});
+        
+        $("div", e).promise().done(new Function(){ public void f() {
+          $("p", e).append( " Finished! " );
+          
+          assertEquals("Ready... Started...  Finished! ", $("p", e).text());
+          double ellapsed = Duration.currentTimeMillis() - init;
+          assertTrue(ellapsed >= (1000 * 4));
+          
+          finishTest();
+        }});
+      }})
+     .click();
+  }  
 }

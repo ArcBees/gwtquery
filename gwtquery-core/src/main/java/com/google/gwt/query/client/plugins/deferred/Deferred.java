@@ -197,7 +197,32 @@ public class Deferred extends GQuery implements Promise.Deferred {
           return new Deferred(gq);
         }
       });
-
+  
+  public static Promise when(Object... d) {
+    int l = d.length;
+    Promise[] p = new Promise[l];
+    for (int i = 0; i < l; i++) {
+      p[i] = makePromise(d[i]);
+    }
+    return when(p);
+  }
+  
+  private static Promise makePromise(final Object o) {
+    if (o instanceof Promise) {
+      return (Promise)o;
+    } else if (o instanceof Function) {
+      return makePromise(((Function)o).f(new Object[0]));
+    } else if (o instanceof GQuery) {
+      return ((GQuery)o).promise();
+    } else {
+      return new PromiseFunction() {
+        public void f(Deferred dfd) {
+          dfd.resolve(o);
+        }
+      };
+    }
+  }
+  
   public static Promise when(Promise... d) {
     final int n = d.length;
     switch (n) {
