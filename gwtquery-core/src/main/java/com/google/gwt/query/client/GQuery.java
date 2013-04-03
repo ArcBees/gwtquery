@@ -724,7 +724,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * It Returns a new promise which will be finalized when all of its subordinates finish.
    * In the case of all subordinates are resolved correctly the promise will be resolved
    * otherwise it will be rejected.
-   * 
    */
   public static Promise when(Object... subordinates) {
     return Deferred.when(subordinates);

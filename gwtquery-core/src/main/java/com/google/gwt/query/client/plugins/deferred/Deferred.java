@@ -153,7 +153,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
       }
 
       public Object f(Object... args) {
-        values[idx] = args;
+        values[idx] = args.length == 1 ? args[0] : args;
         if (--remaining == 0) {
           WhenDeferredImpl.this.resolve(values);
         }
@@ -198,6 +198,15 @@ public class Deferred extends GQuery implements Promise.Deferred {
         }
       });
   
+  /**
+   * Provides a way to execute callback functions based on one or more objects,
+   * usually Deferred objects that represent asynchronous events.
+   *
+   * Returns the Promise from a new "master" Deferred object that tracks the aggregate
+   * state of all the Deferreds passed. The method will resolve its master
+   * Deferred as soon as all the Deferreds resolve, or reject the master Deferred as
+   * soon as one of the Deferreds is rejected
+   */
   public static Promise when(Object... d) {
     int l = d.length;
     Promise[] p = new Promise[l];

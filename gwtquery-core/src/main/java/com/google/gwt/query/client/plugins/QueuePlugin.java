@@ -145,23 +145,28 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * Returns a dynamically generated Promise that is resolved once all actions 
    * in the named queue have ended.
    */
-  public Promise promise(String name) {
+  public Promise promise(final String name) {
     final Promise.Deferred dfd = Deferred();
 
-    Function resolve = new Function() {
-      int l = QueuePlugin.this.length();
-      public Object f(Object... args) {
+    // This is the resolve function which will be added to each element
+    new Function() {
+      int l = 1;
+      public void f() {
         if (--l == 0) {
-          dfd.resolve();
+          dfd.resolve(QueuePlugin.this);
         }
-        return null;
       }
-    };
-
-    for (Element elem: elements()) {
-      emptyHooks(elem, name).add(resolve);
-    }
-
+      {
+        for (Element elem: elements()) {
+          // Add this hook function only to those elements with active queue 
+          if (queue(elem, name, null) != null) {
+            emptyHooks(elem, name).add(this);
+            l++;
+          }
+        }
+      }
+    }.f(this, name);
+    
     return dfd.promise();
   }
 
@@ -312,7 +317,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       f.fe(elem);
     } else {
       // Run final hooks when emptying the queue, used in promises
-      emptyHooks(elem, name).fire(elem, name);
+      emptyHooks(elem, name).fire();
       // It is the last function, remove the queue to avoid leaks (issue 132)
       removeData(elem, name);
     }
