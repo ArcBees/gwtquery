@@ -189,4 +189,8 @@ public class Callbacks {
     }
     return true;
   }
+  
+  public String status() {
+    return (stack == null ? 0 : stack.length()) + " " + done;
+  }
 }

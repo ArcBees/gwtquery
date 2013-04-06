@@ -39,6 +39,10 @@ public class Deferred extends GQuery implements Promise.Deferred {
     private static class ThenFunction extends Function {
       // Used internally in ThenFunction, to resolve deferred object
       private class DoFunction extends Function {
+        int type;
+        public DoFunction(int type) {
+          this.type = type;
+        }
         public void f() {
           if (type == 0) dfd.resolve(getArguments());
           if (type == 1) dfd.reject(getArguments());
@@ -60,24 +64,26 @@ public class Deferred extends GQuery implements Promise.Deferred {
       }
 
       public void f() {
-        Object[] args = getArguments();
-        Function doIt = new DoFunction().setArguments(args);
+        final Object[] args = getArguments();
+        Function doIt = new DoFunction(type).setArguments(args);
         if (filter != null) {
           // We filter resolved arguments with the filter function
           Object newArgs = filter.setArguments(args).f(args);
-          // If filter function returns a promise we pipeline it
+          // If filter function returns a promise we pipeline it and don't resolve this
           if (newArgs instanceof Promise) {
             Promise p = (Promise) newArgs;
-            if (type == 0) p.done(doIt);
-            if (type == 1) p.fail(doIt);
-            if (type == 2) p.progress(doIt);
+            p.done(new DoFunction(0));
+            p.fail(new DoFunction(1));
+            p.progress(new DoFunction(2));
             return;
+          // Otherwise we change the arguments with the new args
           } else if (newArgs.getClass().isArray()) {
             doIt.setArguments((Object[])newArgs);
           } else {
             doIt.setArguments(newArgs);
           }
         }
+        // run the function with the new args to resolve this deferred
         doIt.f();
       }
     }    

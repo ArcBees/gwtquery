@@ -22,6 +22,7 @@ import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
@@ -327,6 +328,46 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
       });
   }
   
+  public void testDeferredAjaxThenFail() {
+    delayTestFinish(5000);
+    GQuery
+      .when(new PromiseFunction() {
+        public void f(Deferred dfd) {
+          dfd.resolve("message");
+        }
+      })
+      .then(new Function() {
+        public Object f(Object... args) {
+          return new PromiseFunction() {
+            public void f(Deferred dfd) {
+              dfd.resolve(arguments);
+            }
+          };
+        }
+      })
+      .then(new Function() {
+        public Object f(Object... args) {
+          return new PromiseFunction() {
+            public void f(Deferred dfd) {
+              dfd.reject(arguments);
+            }
+          };
+        }
+      })
+      .done(new Function() {
+        public void f() {
+          finishTest();
+          fail();
+        }
+      })
+      .fail(new Function() {
+        public void f() {
+          assertEquals("message", arguments(0));
+          finishTest();
+        }
+      });
+  }
+
   public void testDeferredQueueDelay() {
     final int delay = 300;
     final double init = Duration.currentTimeMillis();
