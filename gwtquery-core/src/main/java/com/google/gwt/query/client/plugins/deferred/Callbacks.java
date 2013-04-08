@@ -163,7 +163,7 @@ public class Callbacks {
   
   private void addAll(Object...o) {
     for (Object c : o) {
-      if (!done && c != null && (!opts.getUnique() || !stack.contains(c))) {
+      if (!done && stack != null && c != null && (!opts.getUnique() || !stack.contains(c))) {
         stack.add(c);
       }
       // In jQuery add always is run when memory is true even when unique is set

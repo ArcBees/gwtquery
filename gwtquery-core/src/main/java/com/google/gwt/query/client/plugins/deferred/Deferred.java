@@ -35,6 +35,9 @@ public class Deferred extends GQuery implements Promise.Deferred {
    */
   static class DeferredPromiseImpl implements Promise {
     
+    // Using 'int' instead of 'enum' because we use type as array index as well
+    private static final int DONE = 0, FAIL = 1, PROGRESS = 2;
+
     // Private class used to handle `Promise.then()`
     private static class ThenFunction extends Function {
       // Used internally in ThenFunction, to resolve deferred object
@@ -44,9 +47,9 @@ public class Deferred extends GQuery implements Promise.Deferred {
           this.type = type;
         }
         public void f() {
-          if (type == 0) dfd.resolve(getArguments());
-          if (type == 1) dfd.reject(getArguments());
-          if (type == 2) dfd.notify(getArguments());
+          if (type == DONE) dfd.resolve(getArguments());
+          if (type == FAIL) dfd.reject(getArguments());
+          if (type == PROGRESS) dfd.notify(getArguments());
         }
       }
 
@@ -72,9 +75,9 @@ public class Deferred extends GQuery implements Promise.Deferred {
           // If filter function returns a promise we pipeline it and don't resolve this
           if (newArgs instanceof Promise) {
             Promise p = (Promise) newArgs;
-            p.done(new DoFunction(0));
-            p.fail(new DoFunction(1));
-            p.progress(new DoFunction(2));
+            p.done(new DoFunction(DONE));
+            p.fail(new DoFunction(FAIL));
+            p.progress(new DoFunction(PROGRESS));
             return;
           // Otherwise we change the arguments with the new args
           } else if (newArgs.getClass().isArray()) {

@@ -148,24 +148,30 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public Promise promise(final String name) {
     final Promise.Deferred dfd = Deferred();
 
-    // This is the resolve function which will be added to each element
-    new Function() {
-      int l = 1;
-      public void f() {
-        if (--l == 0) {
-          dfd.resolve(QueuePlugin.this);
-        }
-      }
+    // This is the unique instance of the resolve function which will be added to each element.
+    final Function resolve = new Function() {
+      // Because it is an inner function, the counter cannot final outside the function
+      int count = 1;
+      // Inner functions don't have constructors, we use a block to initialize it
       {
         for (Element elem: elements()) {
-          // Add this hook function only to those elements with active queue 
+          // Add this resolve function only to those elements with active queue 
           if (queue(elem, name, null) != null) {
             emptyHooks(elem, name).add(this);
-            l++;
+            count++;
           }
         }
       }
-    }.f(this, name);
+      
+      public void f() {
+        if (--count == 0) {
+          dfd.resolve(QueuePlugin.this);
+        }
+      }
+    };
+    
+    // Run the function and resolve it in case there are not elements with active queue
+    resolve.f(this, name);
     
     return dfd.promise();
   }
