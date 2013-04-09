@@ -34,8 +34,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
    * Deferred.
    */
   static class DeferredPromiseImpl implements Promise {
-    
-    // Using 'int' instead of 'enum' because we use type as array index as well
+    // Using 'int' instead of 'enum' because we use them as indexes as well
     private static final int DONE = 0, FAIL = 1, PROGRESS = 2;
 
     // Private class used to handle `Promise.then()`
@@ -55,7 +54,7 @@ public class Deferred extends GQuery implements Promise.Deferred {
 
       // Original filter function
       private final Function filter;
-      // Type of action (0 = done, 1 = fail, 2 = progress)
+      // Type of action (DONE/FAIL/PROGRESS)
       private final int type;
       // Original deferred object
       private final Deferred dfd;
@@ -131,9 +130,9 @@ public class Deferred extends GQuery implements Promise.Deferred {
 
     public Promise then(final Function... f) {
       final Deferred newDfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
-      done(new ThenFunction(newDfd, f, 0));
-      fail(new ThenFunction(newDfd, f, 1));
-      progress(new ThenFunction(newDfd, f, 2));
+      done(new ThenFunction(newDfd, f, DONE));
+      fail(new ThenFunction(newDfd, f, FAIL));
+      progress(new ThenFunction(newDfd, f, PROGRESS));
       return newDfd.promise();
     }
 
