@@ -13,7 +13,7 @@
  */
 package com.google.gwt.query.client.plugins.callbacks;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
