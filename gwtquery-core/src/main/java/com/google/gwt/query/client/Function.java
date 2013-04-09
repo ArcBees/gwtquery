@@ -53,27 +53,27 @@ public abstract class Function {
   }
   
   private String dumpArguments(Object[] arguments, String sep) {
-    String ret = "";
+    StringBuilder b = new StringBuilder();
     for (int i = 0, l = arguments.length; i < l; i++ ) {
-      ret += "[" + i + "]";
+      b.append("[").append(i).append("]");
       Object o = arguments[i];
       if (o == null) {
-        ret += " null";
+        b.append(" null");
       } else if (o.getClass().isArray()) {
-        ret += dumpArguments((Object[])o, sep + "   ");
+        b.append(dumpArguments((Object[])o, sep + "   "));
       } else if (o instanceof JavaScriptObject) {
         JavaScriptObject jso = (JavaScriptObject)o;
         if (JsUtils.isElement(jso)) {
-          ret += "(Element) " + jso.toString();
+          b.append("(Element) ").append(jso.toString());
         } else {
-          ret += "(JSO) " + jso.<Properties>cast().toJsonString();
+          b.append("(JSO) ").append(jso.<Properties>cast().toJsonString());
         }
       } else {
-        ret += "(" + o.getClass().getName() + ") " + o;
+        b.append("(").append(o.getClass().getName()).append(") ").append(o);
       }
-      if (i < l-1) ret += sep;
+      if (i < l-1) b.append(sep);
     }
-    return ret;
+    return b.toString();
   }
 
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
