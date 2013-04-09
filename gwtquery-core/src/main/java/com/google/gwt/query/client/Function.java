@@ -30,6 +30,51 @@ public abstract class Function {
   private Event event = null;
   private int index = -1;
   protected Object[] arguments = new Object[0];
+  
+  /**
+   * Utility method to get a string representation with the content
+   * of the arguments array. It recursively visits arrays and inspect
+   * object to print an appropriate representation of them.
+   * 
+   * It is very useful to debug arguments passed in nested promises. 
+   * 
+   * It is protected so as it can be used in Inner functions.
+   * 
+   * Output example:
+   * <pre>
+   * [0](com.google.gwt.query.client.plugins.QueuePlugin) <div>a1</div><div>a2</div>
+   * [1](com.google.gwt.query.client.plugins.QueuePlugin) <div>a1</div><div>a2</div>
+   * [2](java.lang.String) Foo
+   * [3](JSO) {"bar":"foo"}
+   * </pre>
+   */
+  protected String dumpArguments() {
+    return dumpArguments(arguments, "\n");
+  }
+  
+  private String dumpArguments(Object[] arguments, String sep) {
+    StringBuilder b = new StringBuilder();
+    for (int i = 0, l = arguments.length; i < l; i++ ) {
+      b.append("[").append(i).append("]");
+      Object o = arguments[i];
+      if (o == null) {
+        b.append(" null");
+      } else if (o.getClass().isArray()) {
+        b.append(dumpArguments((Object[])o, sep + "   "));
+      } else if (o instanceof JavaScriptObject) {
+        JavaScriptObject jso = (JavaScriptObject)o;
+        if (JsUtils.isElement(jso)) {
+          b.append("(Element) ").append(jso.toString());
+        } else {
+          b.append("(JSO) ").append(jso.<Properties>cast().toJsonString());
+        }
+      } else {
+        b.append("(").append(o.getClass().getName()).append(") ").append(o);
+      }
+      if (i < l-1) b.append(sep);
+    }
+    return b.toString();
+  }
 
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
     return element.<T>cast();
@@ -121,8 +166,8 @@ public abstract class Function {
    */
   public Object[] getArgumentArray(int idx) {
     Object o = idx < 0 ? arguments: getArgument(idx);
-    if (o != null && o.getClass().isArray()) {
-      return (Object[])o;
+    if (o != null) {
+      return o.getClass().isArray() ? (Object[])o : new Object[]{o};
     } else if (idx == 0) {
       return arguments;
     }
@@ -410,7 +455,7 @@ public abstract class Function {
    * Override this for GQuery methods which take a callback and do not expect a
    * return value.
    *
-   * @param e takes a com.google.gwt.user.client.Element
+   * @param elem takes a com.google.gwt.user.client.Element
    */
   private boolean loop = false;
   public void f(com.google.gwt.user.client.Element e) {

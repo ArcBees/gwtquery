@@ -710,15 +710,22 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * Provides a way to execute callback Functions based on one or more Promise objects
+   * Provides a way to execute callback Functions based on one or more objects
    * that represent asynchronous events.
    * 
-   * Returns a new promise which will be finalized when all of its subordinates finish.
+   * Arguments can be of any Object, but normally you would pass Promises.
+   * In the case you provide a GQuery object it will call the promise() method to return
+   * a Promise which will be executed when the queue is resolved.
+   * In the case you provide a normal Object, it will return a promise which will be immediately
+   * resolved with the object as argument.
+   * In the case you provide a Function it will executed and if the f(Object...) method returns
+   * a new promise it will be used, otherwise we will use the returned object like in the last case. 
+   * 
+   * It Returns a new promise which will be finalized when all of its subordinates finish.
    * In the case of all subordinates are resolved correctly the promise will be resolved
    * otherwise it will be rejected.
-   * 
    */
-  public static Promise when(Promise... subordinates) {
+  public static Promise when(Object... subordinates) {
     return Deferred.when(subordinates);
   }
   
@@ -3480,7 +3487,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return pushStack(unique(result), "prevUntil", getSelector());
   }
-
+  
+  /**
+   * Returns a dynamically generated Promise that is resolved once all actions 
+   * in the queue have ended.
+   */
+  public Promise promise() {
+    return as(Queue).promise();
+  }
+  
+  /**
+   * Returns a dynamically generated Promise that is resolved once all actions 
+   * in the named queue have ended.
+   */
+  public Promise promise(String name) {
+    return as(Queue).promise(name);
+  }
+  
   /**
    * Get the value of a property for the first element in the set of matched elements.
    *

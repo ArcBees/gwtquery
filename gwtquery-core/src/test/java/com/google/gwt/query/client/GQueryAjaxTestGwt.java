@@ -304,11 +304,6 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
         }
       }).fail(new Function(){
         public void f() {
-          System.out.println(arguments(0));
-          System.out.println(arguments(1));
-          System.out.println(arguments(2));
-          System.out.println(arguments(3));
-          System.out.println(arguments(4));
           finishTest();
         }
       });

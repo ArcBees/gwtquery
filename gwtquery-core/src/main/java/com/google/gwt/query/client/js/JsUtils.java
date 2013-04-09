@@ -49,13 +49,13 @@ public class JsUtils {
       return jso.equals(obj);
     }
 
-    private native void exec(JavaScriptObject f, Object data) /*-{
-      f(data);
+    private native Object exec(JavaScriptObject f, Object data) /*-{
+      return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ f(data) ]);
     }-*/;
 
     public void f() {
       if (jso != null) {
-        exec(jso, getDataObject());
+        setArguments(exec(jso, arguments(0)));
       }
     }
 
@@ -448,7 +448,9 @@ public class JsUtils {
   }
   
   private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
-    return (f = o && o[meth]) && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f) && f.apply(o, args) || null;
+    return (f = o && o[meth])
+        && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)
+        && @com.google.gwt.query.client.js.JsCache::gwtBox(*)([f.apply(o, args)]);
   }-*/;
 
   /**
@@ -514,4 +516,5 @@ public class JsUtils {
     }
     return ret;
   }
+
 }

@@ -79,11 +79,7 @@ public class JsCache extends JavaScriptObject {
   }
   
   public final native <T> T get(Object id) /*-{
-    var r = this && this[id], t = typeof r;
-    // box booleans and numbers in a gwt object
-    if (t == 'boolean') return @java.lang.Boolean::valueOf(Z)(r);
-    if (t == 'number')  return @java.lang.Double::valueOf(D)(r);
-    return r;
+    return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ this && this[id] ]);
   }-*/;
 
   public final JsCache getCache(int id) {
@@ -245,4 +241,32 @@ public class JsCache extends JavaScriptObject {
     }
     return js;
   }
+
+  /**
+   * Gets an object wrapped in a js array and boxes it with the appropriate
+   * Object in the GWT world.
+   *
+   * It is thought to be called from other jsni code without dealing with casting issues.
+   *
+   * It will box the unique element in the array with a Boolean or a Double in the case
+   * of primitive variables, otherwise it returns the object itself, or null if undefined.
+   *
+   * Example
+   * <pre>
+   * native Object myMethod() /*-{
+   *   var myJsVar = ... ;
+   *   return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ myJsVar ]);
+   * }-* /
+   * </pre>
+   *
+   */
+  public static native Object gwtBox(JavaScriptObject oneElementArray) /*-{
+    var r = oneElementArray;
+    if (typeof r == 'object' && r.length == 1) {
+      var r = r[0], t = typeof r;
+      if (t == 'boolean') return @java.lang.Boolean::valueOf(Z)(r);
+      if (t == 'number')  return @java.lang.Double::valueOf(D)(r);
+    }
+    return r || null;
+  }-*/;
 }

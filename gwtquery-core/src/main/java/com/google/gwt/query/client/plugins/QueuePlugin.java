@@ -15,13 +15,15 @@
  */
 package com.google.gwt.query.client.plugins;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Promise;
+import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.user.client.Timer;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Class used in plugins which need a queue system.
@@ -36,24 +38,28 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
         }
       });
 
+  /**
+   * Function used to delay the execution of a set of functions in
+   * a queue.
+   */
   protected class DelayFunction extends Function {
     private class SimpleTimer extends Timer {
       public void run() {
-        g.each(funcs);
-        for (Element e: g.elements()) {
-          dequeueIfNotDoneYet(e, name, DelayFunction.this);
+        for (Function f : funcs) {
+          f.fe(elem);
         }
+        dequeueIfNotDoneYet(elem, name, DelayFunction.this);
       }
     }
 
     private int delay;
     Function[] funcs;
-    GQuery g;
+    Element elem;
     String name;
 
-    public DelayFunction(GQuery gquery, String name, int delayInMilliseconds, Function... f) {
-      this.g = gquery;
-      this.delay = delayInMilliseconds;
+    public DelayFunction(Element elem, String name, int delay, Function... f) {
+      this.elem = elem;
+      this.delay = delay;
       this.funcs = f;
       this.name = name;
     }
@@ -67,6 +73,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public static final String JUMP_TO_END = QueuePlugin.class.getName() + ".StopData";
   protected static final String QUEUE_DATA_PREFIX = QueuePlugin.class.getName() + ".Queue-";
   protected static String DEFAULT_NAME = QUEUE_DATA_PREFIX + "fx";
+  private static final String EMPTY_HOOKS = ".Empty";
 
   protected QueuePlugin(GQuery gq) {
     super(gq);
@@ -102,8 +109,10 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    */
   @SuppressWarnings("unchecked")
   public T delay(int milliseconds, String name, Function... funcs) {
-    queue(name, new DelayFunction(this, name, milliseconds, funcs));
-    return (T) this;
+    for (Element e : elements()) {
+      queue(e, name, new DelayFunction(e, name, milliseconds, funcs));
+    }
+    return (T)this;
   }
 
   /**
@@ -125,6 +134,49 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
+   * Returns a dynamically generated Promise that is resolved once all actions 
+   * in the queue have ended.
+   */
+  public Promise promise() {
+    return promise(DEFAULT_NAME);
+  }
+  
+  /**
+   * Returns a dynamically generated Promise that is resolved once all actions 
+   * in the named queue have ended.
+   */
+  public Promise promise(final String name) {
+    final Promise.Deferred dfd = Deferred();
+
+    // This is the unique instance of the resolve function which will be added to each element.
+    final Function resolve = new Function() {
+      // Because it is an inner function, the counter cannot final outside the function
+      int count = 1;
+      // Inner functions don't have constructors, we use a block to initialize it
+      {
+        for (Element elem: elements()) {
+          // Add this resolve function only to those elements with active queue 
+          if (queue(elem, name, null) != null) {
+            emptyHooks(elem, name).add(this);
+            count++;
+          }
+        }
+      }
+      
+      public void f() {
+        if (--count == 0) {
+          dfd.resolve(QueuePlugin.this);
+        }
+      }
+    };
+    
+    // Run the function and resolve it in case there are not elements with active queue
+    resolve.f(this, name);
+    
+    return dfd.promise();
+  }
+
+  /**
    * Show the number of functions to be executed on the first matched element
    * in the effects queue.
    */
@@ -137,7 +189,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * in the named queue.
    */
   public int queue(String name) {
-    Queue<Object> q = isEmpty() ? null : queue(get(0), name, null);
+    Queue<?> q = isEmpty() ? null : queue(get(0), name, null);
     return q == null? 0 : q.size();
   }
 
@@ -255,25 +307,30 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   private void dequeueCurrentAndRunNext(Element elem, String name) {
-    Queue<?> q = queue(elem, name, null);
+    Queue<? extends Function> q = queue(elem, name, null);
     if (q != null) {
       // Remove current function
       q.poll();
       // Run the next in the queue
-      Object f = q.peek();
-      if (f != null) {
-        if (f instanceof Function) {
-          ((Function) f).fe(elem);
-        }
-      } else {
-        // if it is the last function remove the queue to avoid leaks (issue 132)
-        removeData(elem, name);
-      }
+      runNext(elem, name, q);
+    }
+  }
+  
+  private void runNext(Element elem, String name, Queue<? extends Function> q) {
+    assert q != null;
+    Function f = q.peek();
+    if (f != null) {
+      f.fe(elem);
+    } else {
+      // Run final hooks when emptying the queue, used in promises
+      emptyHooks(elem, name).fire();
+      // It is the last function, remove the queue to avoid leaks (issue 132)
+      removeData(elem, name);
     }
   }
 
   @SuppressWarnings("unchecked")
-  protected <S> Queue<S> queue(Element elem, String name, S func) {
+  protected <S extends Function> Queue<S> queue(Element elem, String name, S func) {
     if (elem != null) {
       Queue<S> q = (Queue<S>) data(elem, name, null);
       if (func != null) {
@@ -282,9 +339,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
         }
         q.add(func);
         if (q.size() == 1) {
-          if (func instanceof Function) {
-            ((Function) func).fe(elem);
-          }
+          runNext(elem, name, q);
         }
       }
       return q;
@@ -297,9 +352,9 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * in the queue.
    */
   public void dequeueIfNotDoneYet(Element elem, String name, Object object) {
-    Queue<?> queue = queue(elem, name, null);
+    Queue queue = queue(elem, name, null);
     if (queue != null && object.equals(queue.peek())) {
-      dequeue(name);
+      dequeueCurrentAndRunNext(elem, name);
     }
   }
 
@@ -308,9 +363,18 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       data(elem, name, queue);
     }
   }
+  
+  private Callbacks emptyHooks(Element elem, String name) {
+    String key = name + EMPTY_HOOKS;
+    Callbacks c = (Callbacks)data(elem, key, null);
+    if (c == null) {
+      c = (Callbacks)data(elem, key, new Callbacks("once memory"));
+    }
+    return c;
+  }
 
   private void stop(Element elem, String name, boolean clear, boolean jumpToEnd) {
-    Queue<?> q = queue(elem, name, null);
+    Queue q = queue(elem, name, null);
     if (q != null) {
       Object f = q.peek();
       if (clear) {
