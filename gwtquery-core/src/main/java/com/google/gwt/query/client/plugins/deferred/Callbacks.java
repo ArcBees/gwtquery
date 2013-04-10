@@ -13,11 +13,11 @@
  */
 package com.google.gwt.query.client.plugins.deferred;
 
-import com.google.gwt.core.shared.GWT;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.js.JsObjectArray;
 
 /**
  * Implementation of jQuery.Callbacks for gwtquery.
@@ -36,48 +36,18 @@ public class Callbacks {
     boolean f(Object ...objects);
   }
   
-  /**
-   * Interface representing the options of a Callbacks collection.
-   * 
-   * To create an implementation of this interface just call: Callbacks.createOptions()
-   */
-  public static interface CallbackOptions extends JsonBuilder {
-    boolean getMemory();
-    boolean getOnce();
-    boolean getStopOnFalse();
-    boolean getUnique();
-    CallbackOptions setMemory();
-    CallbackOptions setOnce();
-    CallbackOptions setStopOnFalse();
-    CallbackOptions setUnique();
-  }
-  
-  public static CallbackOptions createOptions() {
-    return GWT.create(CallbackOptions.class);
-  }
-  
-  private JsObjectArray<Object> stack = JsObjectArray.create();
+  private List<Object> stack = new ArrayList<Object>();
   
   private boolean done = false;
     
-  private JsObjectArray<Object> memory = null;
+  private List<Object> memory = null;
   
-  public final CallbackOptions opts;
+  private boolean isOnce, isMemory, isUnique, stopOnFalse;
   
-  /**
-   * Create a new Callbacks object with default options
-   */
   public Callbacks() {
-    opts = createOptions();
+    this("");
   }
-
-  /**
-   * Create a new Callbacks object with given options
-   */
-  public Callbacks(CallbackOptions options) {
-    opts = options;
-  }
-
+  
   /**
    * Create a new Callbacks object with options given as a space delimited string.
    * 
@@ -86,8 +56,10 @@ public class Callbacks {
    * once, memory, unique, stopOnFalse
    */
   public Callbacks(String options) {
-    this();
-    opts.load(Properties.create(options.replaceAll("[^\\S]+|$", ":true,")));
+    isOnce = options.contains("once");
+    isMemory = options.contains("memory");
+    isUnique = options.contains("unique");
+    stopOnFalse = options.contains("stopOnFalse");
   }
   
   /**
@@ -128,7 +100,7 @@ public class Callbacks {
    * lock
    */
   public Callbacks lock() {
-    if (!opts.getMemory()) {
+    if (!isMemory) {
       disable();
     }
     stack = null;
@@ -140,14 +112,14 @@ public class Callbacks {
    */
   public Callbacks fire(Object... o) {
     if (!done) {
-      done = opts.getOnce();
-      if (stack != null) for (Object c : stack.elements()) {
-        if (!run(c, o) && opts.getStopOnFalse()) {
+      done = isOnce;
+      if (stack != null) for (Object c : stack) {
+        if (!run(c, o) && stopOnFalse) {
           break;
         }
       }
-      if (opts.getMemory()) {
-        memory = JsObjectArray.create().add(o);
+      if (isMemory) {
+        memory = new ArrayList<Object>(Arrays.asList(o));
       }
     }
     return this;
@@ -157,25 +129,26 @@ public class Callbacks {
    * Remove a callback or a collection of callbacks from a callback list.
    */
   public Callbacks remove(Object... o) {
-    stack.remove(o);
+    stack.removeAll(Arrays.asList(o));
     return this;
   }
   
   private void addAll(Object...o) {
     for (Object c : o) {
-      if (!done && stack != null && c != null && (!opts.getUnique() || !stack.contains(c))) {
+      if (!done && stack != null && c != null && (!isUnique || !stack.contains(c))) {
         stack.add(c);
       }
       // In jQuery add always is run when memory is true even when unique is set
-      if (opts.getMemory() && memory != null) {
-        run(c, memory.elements());
+      if (isMemory && memory != null) {
+        run(c, memory.toArray());
       }
     }
   }  
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private boolean run(Object c, Object...o) {
-    // Unbox array into array, it happens when running filters in Promise.then
+    // Unbox array inside array when there is only an element.
+    // It happens when running filters in Promise.then()
     if (o.length == 1 && o[0].getClass().isArray()) {
       o = (Object[])o[0];
     }
@@ -191,6 +164,6 @@ public class Callbacks {
   }
   
   public String status() {
-    return (stack == null ? 0 : stack.length()) + " " + done;
+    return (stack == null ? 0 : stack.size()) + " " + done;
   }
 }
