@@ -22,12 +22,11 @@ import static com.google.gwt.query.client.Promise.RESOLVED;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
-import com.google.gwt.query.client.plugins.Plugin;
 
 /**
  * Implementation of jQuery.Deferred for gwtquery.
  */
-public class Deferred extends GQuery implements Promise.Deferred {
+public class Deferred implements Promise.Deferred {
 
   /**
    * Implementation of the Promise interface which is used internally by
@@ -198,14 +197,6 @@ public class Deferred extends GQuery implements Promise.Deferred {
     }
   }
 
-  // Register Deferred as a GQuery plugin
-  public static final Class<Deferred> Deferred = GQuery.registerPlugin(
-      Deferred.class, new Plugin<Deferred>() {
-        public Deferred init(GQuery gq) {
-          return new Deferred(gq);
-        }
-      });
-  
   /**
    * Provides a way to execute callback functions based on one or more objects,
    * usually Deferred objects that represent asynchronous events.
@@ -263,11 +254,6 @@ public class Deferred extends GQuery implements Promise.Deferred {
   private String state = PENDING;
 
   public Deferred() {
-    this(null);
-  }
-
-  protected Deferred(GQuery gq) {
-    super(gq);
     resolve.add(new Function() {
       public void f() {
         state = RESOLVED;
