@@ -21,9 +21,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.js.JsNodeArray;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Core Selector engine functions, and native JS utility functions.
@@ -122,21 +122,21 @@ public class SelectorEngine implements HasSelector {
   }
 
   // pseudo selectors which are computed by gquery
-  JsRegexp p = new JsRegexp("(.*):((visible|hidden)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
+  RegExp p = RegExp.compile("(.*):((visible|hidden)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
 
   public NodeList<Element> select(String selector, Node ctx) {
     if (p.test(selector)) {
       JsNodeArray res = JsNodeArray.create();
       for (String s : selector.trim().split("\\s*,\\s*")) {
         NodeList<Element> nodes;
-        JsObjectArray<String> a = p.match(s);
-        if (a.get(0) != null) {
+        MatchResult a = p.exec(s);
+        if (a != null) {
           if (s.endsWith(":visible")) {
             nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
           } else if (s.endsWith(":hidden")) {
             nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
           } else {
-            nodes = select((a.get(1) != null ? a.get(1) : "") + "[type=" + a.get(2) + "]", ctx);
+            nodes = select((a.getGroup(1) != null ? a.getGroup(1) : "") + "[type=" + a.getGroup(2) + "]", ctx);
           }
         } else {
           nodes = select(s, ctx);

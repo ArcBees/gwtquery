@@ -19,7 +19,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * A wrapper around Javascript Regexps.
+ * @deprecated use RegExp instead whose jsni implementation is the same
  */
+@Deprecated
 public class JsRegexp {
 
   public static native JavaScriptObject compile(String pat) /*-{
@@ -40,10 +42,18 @@ public class JsRegexp {
 
   private final JavaScriptObject regexp;
 
+  /**
+   * @deprecated use RegExp.compile(pattern) instead
+   */
+  @Deprecated
   public JsRegexp(String pattern) {
     this.regexp = compile(pattern);
   }
 
+  /**
+   * @deprecated use RegExp.compile(pattern, flags) instead
+   */
+  @Deprecated
   public JsRegexp(String pat, String flags) {
     this.regexp = compileFlags(pat, flags);
   }
