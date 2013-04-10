@@ -13,7 +13,6 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -106,7 +105,6 @@ public class Ajax extends GQuery {
    * @param settings a Properties object with the configuration of the Ajax request.
    */
   public static Promise ajax(Settings settings) {
-    final Deferred dfd = $().as(Deferred.Deferred);
 
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
@@ -150,7 +148,7 @@ public class Ajax extends GQuery {
         }, new Function() {
           public Object f(Object...args) {
             Throwable exception = (Throwable)args[0];
-            Response request = (Response)args[1];
+            Request request = (Request)args[1];
             return new Object[]{null, exception.getMessage(), request, null, exception};
           }
         })
