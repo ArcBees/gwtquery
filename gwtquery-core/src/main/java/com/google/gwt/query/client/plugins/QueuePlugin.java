@@ -352,6 +352,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    * in the queue.
    */
   public void dequeueIfNotDoneYet(Element elem, String name, Object object) {
+    @SuppressWarnings("rawtypes")
     Queue queue = queue(elem, name, null);
     if (queue != null && object.equals(queue.peek())) {
       dequeueCurrentAndRunNext(elem, name);
@@ -374,6 +375,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   private void stop(Element elem, String name, boolean clear, boolean jumpToEnd) {
+    @SuppressWarnings("rawtypes")
     Queue q = queue(elem, name, null);
     if (q != null) {
       Object f = q.peek();

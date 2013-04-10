@@ -24,9 +24,8 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
@@ -183,14 +182,14 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   // when using this engine in generators and tests for the JVM
   private Replacer replacer = new Replacer() {
     public String replaceAll(String s, String r, Object o) {
-      JsRegexp p = new JsRegexp(r);
+      RegExp p = RegExp.compile(r);
       if (o instanceof ReplaceCallback) {
         ReplaceCallback callback = (ReplaceCallback) o;
         while (p.test(s)) {
-          JsObjectArray<String> a = p.match(s);
+          MatchResult a = p.exec(s);
           ArrayList<String> args = new ArrayList<String>();
-          for (int i = 0; i < a.length(); i++) {
-            args.add(a.get(i));
+          for (int i = 0; a != null && i < a.getGroupCount(); i++) {
+            args.add(a.getGroup(i));
           }
           String f = callback.foundMatch(args);
           s = s.replaceFirst(r, f);
