@@ -14,9 +14,9 @@
 package com.google.gwt.query.client.plugins.deferred;
 
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
   
-  private static final JsRegexp callbackRegex = new JsRegexp("^(.+[\\?&])([^=]+)=\\?(.*)$");
+  private static final RegExp callbackRegex = RegExp.compile("^(.+[\\?&])([^=]+)=\\?(.*)$");
   
   public PromiseReqBuilderJSONP(String url) {
     this(url, null, 0);
@@ -54,10 +54,10 @@ public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
     }
     // jQuery allows a parameter callback=? to figure out the callback parameter
     if (callbackParam == null) {
-      JsObjectArray<String> tmp = callbackRegex.exec(url);
-      if  (tmp.length() == 4) {
-        callbackParam = tmp.get(2);
-        url = tmp.get(1) + tmp.get(3);
+      MatchResult tmp = callbackRegex.exec(url);
+      if  (tmp != null && tmp.getGroupCount() == 4) {
+        callbackParam = tmp.getGroup(2);
+        url = tmp.getGroup(1) + tmp.getGroup(3);
       }
     }
     if (callbackParam != null) {

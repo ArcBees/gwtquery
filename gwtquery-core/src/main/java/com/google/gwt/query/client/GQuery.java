@@ -49,7 +49,6 @@ import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Events;
@@ -61,6 +60,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -122,7 +122,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The body element in the current page.
    */
-  public static final BodyElement body = Document.get().getBody();
+  public static final BodyElement body = GWT.isClient() ? Document.get().getBody() : null;
 
   /**
    * Object to store element data (public so as we can access to it from tests).
@@ -132,7 +132,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The document element in the current page.
    */
-  public static final Document document = Document.get();
+  public static final Document document = GWT.isClient() ? Document.get() : null;
 
   /**
    * Static reference Effects plugin
@@ -162,15 +162,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   // Sizzle POS regex : usefull in some methods
   // TODO: Share this static with SelectorEngineSizzle
-  private static final String POS_REGEX =
-      ":(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)";
+  private static RegExp posRegex = RegExp.compile("^:(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)$");
 
   /**
    * Implementation class used for style manipulations.
    */
   private static DocumentStyleImpl styleImpl;
 
-  private static JsRegexp tagNameRegex = new JsRegexp("<([\\w:]+)");
+  private static RegExp tagNameRegex = RegExp.compile("<([\\w:]+)");
 
   /**
    * Static reference to the Widgets plugin
@@ -180,7 +179,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The window object.
    */
-  public static final Element window = window();
+  public static final Element window = GWT.isClient() ? window() : null;
 
   private static Element windowData = null;
 
@@ -435,7 +434,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   protected static GQuery cleanHtmlString(String elem, Document doc) {
 
-    String tag = tagNameRegex.exec(elem).get(1);
+    String tag = tagNameRegex.exec(elem).getGroup(1);
     if (tag == null) {
       return $(doc.createTextNode(elem));
     }
@@ -701,11 +700,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public static <T extends GQuery> Class<T> registerPlugin(Class<T> plugin, Plugin<T> pluginFactory) {
-    if (plugins == null) {
-      plugins = JsMap.createObject().cast();
+    // TODO: decide whether change plugins type to java.util.list
+    // Right now we only test static methods in gquery, so this is only needed when initializing 
+    // plugins shortcuts in gquery.
+    if (GWT.isClient()) {
+      if (plugins == null) {
+        plugins = JsMap.createObject().cast();
+      }
+      plugins.put(plugin, pluginFactory);
     }
-
-    plugins.put(plugin, pluginFactory);
     return plugin;
   }
   
@@ -1398,7 +1401,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       context = currentContext;
     }
 
-    GQuery pos = selector.matches(POS_REGEX) ? $(selector, context) : null;
+    GQuery pos = posRegex.test(selector) ? $(selector, context) : null;
     JsNodeArray result = JsNodeArray.create();
 
     for (Element e : elements) {
@@ -1452,7 +1455,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       JsNamedArray<GQuery> matches = JsNamedArray.create();
       for (String selector : selectors) {
         if (!matches.exists(selector)) {
-          matches.put(selector, selector.matches(POS_REGEX) ? $(selector, context) : null);
+          matches.put(selector, posRegex.test(selector) ? $(selector, context) : null);
         }
       }
 

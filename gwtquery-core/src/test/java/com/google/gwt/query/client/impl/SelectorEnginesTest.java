@@ -16,7 +16,6 @@
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.rebind.SelectorGeneratorCssToXPath;
 
 /**
  * Test for selector engine implementations
