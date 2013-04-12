@@ -110,4 +110,9 @@ public interface Promise {
    * Determine whether a Deferred object has been rejected.
    */
   boolean isRejected();
+
+  /**
+   * Determine whether a Deferred object is pending.
+   */
+  boolean isPending();
 }
