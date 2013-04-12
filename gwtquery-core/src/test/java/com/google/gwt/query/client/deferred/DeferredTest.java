@@ -21,6 +21,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
+import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 
 /**
@@ -230,15 +231,4 @@ public class DeferredTest extends GWTTestCase {
       });
   }
 
-  public static abstract class FunctionDeferred extends Function {
-    public abstract void f(Deferred dfd);
-
-    public Object f(Object... args) {
-      return new PromiseFunction() {
-        public void f(Deferred dfd) {
-          FunctionDeferred.this.f(dfd);
-        }
-      };
-    }
-  }
 }
