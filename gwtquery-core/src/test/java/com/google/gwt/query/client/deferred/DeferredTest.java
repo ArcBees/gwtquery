@@ -18,6 +18,7 @@ package com.google.gwt.query.client.deferred;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
@@ -162,33 +163,58 @@ public class DeferredTest extends GWTTestCase {
       }
     });
   }
-  
-  public void testDeferredAjaxThenFail() {
+
+  public void testDeferredThenDone() {
     delayTestFinish(5000);
-    
+
     GQuery
       .when(new PromiseFunction() {
         public void f(Deferred dfd) {
           dfd.resolve("message");
         }
       })
-      .then(new Function() {
-        public Object f(Object... args) {
-          return new PromiseFunction() {
-            public void f(Deferred dfd) {
-              dfd.resolve(arguments);
-            }
-          };
+      .then(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve("then1 " + arguments[0]);
+          }
+      })
+      .then(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve("then2 " + arguments[0]);
+          }
+      })
+      .fail(new Function() {
+        public void f() {
+          finishTest();
+          fail();
         }
       })
-      .then(new Function() {
-        public Object f(Object... args) {
-          return new PromiseFunction() {
-            public void f(Deferred dfd) {
-              dfd.reject(arguments);
-            }
-          };
+      .done(new Function() {
+        public void f() {
+          assertEquals("then2 then1 message", arguments(0));
+          finishTest();
         }
+      });
+  }
+
+  public void testDeferredThenFail() {
+    delayTestFinish(5000);
+
+    GQuery
+      .when(new PromiseFunction() {
+        public void f(Deferred dfd) {
+          dfd.resolve("message");
+        }
+      })
+      .then(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve("then1 " + arguments[0]);
+          }
+      })
+      .then(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.reject("then2 " + arguments[0]);
+          }
       })
       .done(new Function() {
         public void f() {
@@ -198,11 +224,21 @@ public class DeferredTest extends GWTTestCase {
       })
       .fail(new Function() {
         public void f() {
-          assertEquals("message", arguments(0));
+          assertEquals("then2 then1 message", arguments(0));
           finishTest();
         }
       });
   }
-  
 
+  public static abstract class FunctionDeferred extends Function {
+    public abstract void f(Deferred dfd);
+
+    public Object f(Object... args) {
+      return new PromiseFunction() {
+        public void f(Deferred dfd) {
+          FunctionDeferred.this.f(dfd);
+        }
+      };
+    }
+  }
 }
