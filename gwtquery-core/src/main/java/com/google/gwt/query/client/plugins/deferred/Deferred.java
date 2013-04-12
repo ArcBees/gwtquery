@@ -146,6 +146,10 @@ public class Deferred implements Promise.Deferred {
     public boolean isPending() {
       return Promise.PENDING.equals(state());
     }
+
+    public String toString() {
+      return "Promise this=" + hashCode() + " " + dfd;
+    }
   }
 
   /**
@@ -307,5 +311,10 @@ public class Deferred implements Promise.Deferred {
   public Deferred resolve(Object... o) {
     resolve.fire(o);
     return this;
+  }
+
+  @Override
+  public String toString() {
+    return "Deferred this=" + hashCode() + " promise=" + promise().hashCode() + " state=" + promise.state() + " restatus=" + resolve.status();
   }
 }
