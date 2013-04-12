@@ -142,6 +142,10 @@ public class Deferred implements Promise.Deferred {
     public boolean isRejected() {
       return Promise.REJECTED.equals(state());
     }
+
+    public boolean isPending() {
+      return Promise.PENDING.equals(state());
+    }
   }
 
   /**
