@@ -164,6 +164,7 @@ public class Callbacks {
   }
   
   public String status() {
-    return (stack == null ? 0 : stack.size()) + " " + done;
+    return "stack=" + (stack == null ? "null" : stack.size()) + " " + done;
   }
 }
+
