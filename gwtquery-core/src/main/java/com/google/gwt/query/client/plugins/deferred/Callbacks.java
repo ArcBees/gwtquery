@@ -149,7 +149,7 @@ public class Callbacks {
   private boolean run(Object c, Object...o) {
     // Unbox array inside array when there is only an element.
     // It happens when running filters in Promise.then()
-    if (o.length == 1 && o[0].getClass().isArray()) {
+    if (o != null && o.length == 1 && o[0] != null && o[0].getClass().isArray()) {
       o = (Object[])o[0];
     }
     if (c instanceof Callback) {
