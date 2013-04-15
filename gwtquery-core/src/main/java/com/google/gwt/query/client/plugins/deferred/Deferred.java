@@ -87,9 +87,47 @@ public class Deferred implements Promise.Deferred {
         // run the function with the new args to resolve this deferred
         doIt.f();
       }
-    }    
+    }
     
     protected com.google.gwt.query.client.plugins.deferred.Deferred dfd;
+
+    /**
+     * Utility function which can be used inside classes extending this to
+     * resolve this deferred in a call to any other promise method.
+     *
+     * Example:
+     * <pre>
+     * new PromiseFunction() {
+     *   public void f(final Deferred dfd) {
+     *     anotherPromise.done( resolve );
+     *   }
+     * }
+     * </pre>
+     */
+    protected Function resolve = new Function() {
+      public void f() {
+        dfd.resolve(arguments);
+      };
+    };
+
+    /**
+     * Utility function which can be used inside classes extending this to
+     * reject this deferred in a call to any other promise method.
+     *
+     * Example:
+     * <pre>
+     * new PromiseFunction() {
+     *   public void f(final Deferred dfd) {
+     *     anotherPromise.done( reject );
+     *   }
+     * }
+     * </pre>
+     */
+    protected Function reject = new Function() {
+      public void f() {
+        dfd.reject(arguments);
+      };
+    };
 
     protected DeferredPromiseImpl() {
       dfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
