@@ -104,7 +104,7 @@ public class Deferred implements Promise.Deferred {
      * }
      * </pre>
      */
-    protected Function resolve = new Function() {
+    public Function resolve = new Function() {
       public void f() {
         dfd.resolve(arguments);
       };
@@ -123,7 +123,7 @@ public class Deferred implements Promise.Deferred {
      * }
      * </pre>
      */
-    protected Function reject = new Function() {
+    public Function reject = new Function() {
       public void f() {
         dfd.reject(arguments);
       };

@@ -231,4 +231,32 @@ public class DeferredTest extends GWTTestCase {
       });
   }
 
+
+  public void testProtected() {
+    delayTestFinish(20);
+    GQuery.when(new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        GQuery.when(new Function() {
+          public void f() {
+            // This causes an '...IllegalAccessError: tried to access class ...Deferred$DeferredPromiseImpl ...'
+            // in dev-mode when resolve is protected. It works in JRE and production though.
+            resolve.f();
+          }
+        });
+      }
+    }).then(new FunctionDeferred() {
+      protected void f(Deferred dfd) {
+        GQuery.when(new Function() {
+          public void f() {
+            resolve.f();
+          }
+        });
+      }
+    }).done(new Function() {
+      public void f() {
+        finishTest();
+      }
+    });
+  }
+
 }
