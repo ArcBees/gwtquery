@@ -42,6 +42,7 @@ import com.google.gwt.query.client.Promise.Deferred;
 public abstract class FunctionDeferred extends Function {
   
   protected Deferred dfd;
+  public Function resolve, reject;
   
   /**
    * This function is called once the the previous promise in the
@@ -58,6 +59,8 @@ public abstract class FunctionDeferred extends Function {
   public final Object f(Object... args) {
     return new PromiseFunction() {
       public void f(Deferred dfd) {
+        FunctionDeferred.this.resolve = resolve;
+        FunctionDeferred.this.reject = reject;
         FunctionDeferred.this.dfd = dfd;
         FunctionDeferred.this.f(dfd);
       }
