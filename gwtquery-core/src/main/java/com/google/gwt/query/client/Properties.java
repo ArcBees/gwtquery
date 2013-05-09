@@ -171,6 +171,7 @@ public class Properties extends JavaScriptObject {
    * 
    */
   public final native <T> void setFunction(T name, Function f) /*-{
+    if (!f) return;
     this[name] = function() {
       f.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(arguments);
     }
