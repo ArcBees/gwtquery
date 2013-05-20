@@ -326,6 +326,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       emptyHooks(elem, name).fire();
       // It is the last function, remove the queue to avoid leaks (issue 132)
       removeData(elem, name);
+      removeData(elem, name + EMPTY_HOOKS);
     }
   }
 
