@@ -113,7 +113,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     
     doSomething.progress(new Function() {
       public void f() {
-        progress = getArgument(0);
+        progress = this.<Integer>getArgument(0);
       }
     }).done(new Function() {
       public void f() {
@@ -160,7 +160,7 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
     
     GQuery.when(doingFoo, doingBar).progress(new Function() {
       public void f() {
-        int c = getArgument(0);
+        int c = this.<Integer>getArgument(0);
         progress += c;
       }
     }).done(new Function() {
