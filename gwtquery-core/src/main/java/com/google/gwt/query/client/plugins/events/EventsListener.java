@@ -552,7 +552,7 @@ public class EventsListener implements EventListener {
 
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener.hasEventType(etype)
+      if (listener != null && listener.hasEventType(etype)
           && (originalEventType == null || originalEventType
               .equals(listener.getOriginalEventType()))) {
         if (!listener.fire(event)) {
