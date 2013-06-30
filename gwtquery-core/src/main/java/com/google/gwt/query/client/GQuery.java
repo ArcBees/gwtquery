@@ -241,7 +241,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) :
       JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
       JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
-      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) : 
+      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
         $(jso.<Element> cast());
   }
 
@@ -701,7 +701,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   public static <T extends GQuery> Class<T> registerPlugin(Class<T> plugin, Plugin<T> pluginFactory) {
     // TODO: decide whether change plugins type to java.util.list
-    // Right now we only test static methods in gquery, so this is only needed when initializing 
+    // Right now we only test static methods in gquery, so this is only needed when initializing
     // plugins shortcuts in gquery.
     if (GWT.isClient()) {
       if (plugins == null) {
@@ -711,19 +711,19 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return plugin;
   }
-  
+
   /**
    * Provides a way to execute callback Functions based on one or more objects
    * that represent asynchronous events.
-   * 
+   *
    * Arguments can be of any Object, but normally you would pass Promises.
    * In the case you provide a GQuery object it will call the promise() method to return
    * a Promise which will be executed when the queue is resolved.
    * In the case you provide a normal Object, it will return a promise which will be immediately
    * resolved with the object as argument.
    * In the case you provide a Function it will executed and if the f(Object...) method returns
-   * a new promise it will be used, otherwise we will use the returned object like in the last case. 
-   * 
+   * a new promise it will be used, otherwise we will use the returned object like in the last case.
+   *
    * It Returns a new promise which will be finalized when all of its subordinates finish.
    * In the case of all subordinates are resolved correctly the promise will be resolved
    * otherwise it will be rejected.
@@ -731,7 +731,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static Promise when(Object... subordinates) {
     return Deferred.when(subordinates);
   }
-  
+
   /**
    * A constructor function that returns a chainable utility object with methods to register
    * multiple callbacks into callback queues, invoke callback queues, and relay the success
@@ -889,12 +889,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * adding something that was matched before the last traversal.
    */
   public GQuery andSelf() {
-    return add(previousObject);
+    return previousObject != null ? add(previousObject) : this;
   }
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -902,16 +902,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px
    *  $("#foo").animate("left:'500'");
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  $("table").animate("$width:'500'");
@@ -928,7 +928,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
-   *  
+   *
    *  $("#foo").animate("left:'+=500'", new Function(){
    *                 public void f(Element e){
    *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
@@ -955,7 +955,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -963,16 +963,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms using a swing easing
    *  $("#foo").animate("left:'500'", 500, Easing.SWING);
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  // the animation will last 400ms, and we use the LINEAR easing algorithm
@@ -1012,7 +1012,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -1020,16 +1020,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'", 500);
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  // the animation will last 400ms
@@ -2151,7 +2151,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery fadeIn(int millisecs, Function... f) {
     return as(Effects).fadeIn(millisecs, f);
   }
-  
+
   /**
    * Fade the opacity of all matched elements to a specified opacity and firing
    * an optional callback after completion. Only the opacity is adjusted for
@@ -2161,7 +2161,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery fadeTo(int millisecs, double opacity, Function... f) {
     return as(Effects).fadeTo(millisecs, opacity, f);
   }
-  
+
   /**
    * Fade the opacity of all matched elements to a specified opacity and firing
    * an optional callback after completion. Only the opacity is adjusted for
@@ -2221,7 +2221,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (filters.length == 0 || filters[0] == null) {
       return this;
     }
-    
+
     JsNodeArray array = JsNodeArray.create();
     /*
      * StringBuilder filterBuilder = new StringBuilder(); for (int i = 0; i < filters.length ; i++){
@@ -3273,7 +3273,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         par = par.getParentNode();
       }
     }
-    return new GQuery(unique(result));
+    return new GQuery(unique(result)).setPreviousObject(this);
   }
 
   /**
@@ -3490,23 +3490,23 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return pushStack(unique(result), "prevUntil", getSelector());
   }
-  
+
   /**
-   * Returns a dynamically generated Promise that is resolved once all actions 
+   * Returns a dynamically generated Promise that is resolved once all actions
    * in the queue have ended.
    */
   public Promise promise() {
     return as(Queue).promise();
   }
-  
+
   /**
-   * Returns a dynamically generated Promise that is resolved once all actions 
+   * Returns a dynamically generated Promise that is resolved once all actions
    * in the named queue have ended.
    */
   public Promise promise(String name) {
     return as(Queue).promise(name);
   }
-  
+
   /**
    * Get the value of a property for the first element in the set of matched elements.
    *
@@ -3514,28 +3514,28 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @return the value of the property, in the case the property is a 'boolean' it
    *        returns a Boolean object, and a Double if is a 'number', so be prepared
    *        if you cast to other numeric objects. In the case of the property is undefined
-   *        it returns null. 
+   *        it returns null.
    */
   public <T> T prop(String key) {
     assert key != null : "Key is null";
     return isEmpty() ? null : JsUtils.<T>prop(get(0), key);
   }
-  
+
   /**
    * Get the value of a property for the first element in the set of matched elements.
    *
    * @param key the name of the property to be accessed
    * @param clz the class of the type to return
-   * 
-   * @return the value of the property, it safely check the type passed as parameter 
-   *        and preform the aproproate transformations for numbers and booleans. 
-   *        In the case of the property is undefined it returns null. 
+   *
+   * @return the value of the property, it safely check the type passed as parameter
+   *        and preform the aproproate transformations for numbers and booleans.
+   *        In the case of the property is undefined it returns null.
    */
   public <T> T prop(String key, Class<? extends T> clz) {
     assert key != null : "Key is null";
     return isEmpty() ? null : JsUtils.<T>prop(get(0), key, clz);
   }
-  
+
   /**
    * Sets a property to a value on all matched elements.
    *
@@ -4056,8 +4056,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return this;
   }
 
-  public void setPreviousObject(GQuery previousObject) {
+  public GQuery setPreviousObject(GQuery previousObject) {
     this.previousObject = previousObject;
+    return this;
   }
 
   public GQuery setSelector(String selector) {
@@ -4613,7 +4614,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public boolean visible() {
     return isVisible();
   }
-  
+
   /**
    * Return the first non null attached widget from the matched elements or null if there isn't any.
    */
