@@ -64,10 +64,6 @@
 
     <modules>
         <module>gwtquery-core</module>
-        <!-- <module>gwtquery-core-2.1.0</module> -->
-        <!-- <module>gwtquery-core-2.0.1</module> -->
-        <!-- <module>samples</module> -->
-        <!-- <module>devtest</module> -->
     </modules>
 
     <pluginRepositories>
@@ -136,18 +132,18 @@
             </snapshots>
         </repository>
         <repository>
-            <id>gwtquery-plugins</id>
-            <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
+            <id>sonatype</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots><enabled>true</enabled></snapshots>
+            <releases><enabled>false</enabled></releases>
         </repository>
         <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
+            <id>gwtquery-plugins</id>
+            <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
         </repository>
     </repositories>
 
     <properties>
-        <!-- <gwtversion>2.4.0-dollarpatch</gwtversion> -->
         <gwtversion>2.5.1</gwtversion>
         <gwtmaven>2.5.1</gwtmaven>
         <gqueryclassifier />
@@ -159,6 +155,20 @@
     </properties>
 
     <profiles>
+	<profile>
+           <id>jsquery</id>
+           <modules>
+             <module>gwtquery-core</module>
+             <module>jsquery</module>
+           </modules>
+        </profile>
+	<profile>
+           <id>samples</id>
+           <modules>
+             <module>gwtquery-core</module>
+             <module>samples</module>
+           </modules>
+        </profile>
         <profile>
            <id>2.1.0</id>
            <properties>
@@ -166,6 +176,7 @@
              <gwtmaven>2.1.0</gwtmaven>
              <gqueryclassifier>2.1.0</gqueryclassifier>
            </properties>
+           <modules><module>gwtquery-core-2.0.1</module></modules>
         </profile>
         <profile>
            <id>2.0.1</id>
@@ -174,6 +185,7 @@
              <gwtmaven>1.1</gwtmaven>
              <gqueryclassifier>2.0.1</gqueryclassifier>
            </properties>
+           <modules><module>gwtquery-core-2.1.0</module></modules>
         </profile>
         <profile>
            <id>prod</id>

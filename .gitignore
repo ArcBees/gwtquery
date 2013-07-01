@@ -18,3 +18,11 @@ target
 *.ipr
 *.iml
 *.iws
+gen
+.gwt
+gwt-unitCache
+
+#eclipse
+.project
+.classpath
+.settings

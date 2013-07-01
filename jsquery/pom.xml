@@ -11,18 +11,8 @@
     <packaging>war</packaging>
 
     <properties>
-        <gwtversion>2.5.0</gwtversion>
-        <gwtmaven>2.5.0</gwtmaven>
+        <gwtExporterVersion>2.4.0</gwtExporterVersion>
     </properties>
-
-    <profiles>
-      <profile>
-        <id>clos</id>
-        <properties>
-          <gwt.enableClosureCompiler>true</gwt.enableClosureCompiler>
-        </properties>
-      </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -35,7 +25,7 @@
         <dependency>
            <groupId>org.timepedia.exporter</groupId>
            <artifactId>gwtexporter</artifactId>
-           <version>2.4.0-SNAPSHOT</version>
+           <version>${gwtExporterVersion}</version>
            <scope>provided</scope>
         </dependency>
         <dependency>
@@ -72,12 +62,11 @@
                 <version>${gwtmaven}</version>
                 <configuration>
                     <logLevel>${gwt.loglevel}</logLevel>
-                    <enableClosureCompiler>${gwt.enableClosureCompiler}</enableClosureCompiler>
+                    <enableClosureCompiler>true</enableClosureCompiler>
                     <optimizationLevel>9</optimizationLevel>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
                     <disableClassMetadata>true</disableClassMetadata>
-	            <!-- Consider this in module <inherits name='com.google.gwt.user.RemoteServiceObfuscateTypeNames' />  -->
                     <disableCastChecking>true</disableCastChecking>
                     <modules>
                         <module>com.google.gwt.query.jsquery.JsQueryApi</module>
