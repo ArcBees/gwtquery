@@ -15,20 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.window;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import com.google.gwt.query.client.GQuery.Offset;
-import junit.framework.Assert;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -39,6 +25,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
@@ -55,6 +42,18 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+import junit.framework.Assert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -578,7 +577,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     });
     assertEquals(true, $("#checkBox2",e).prop("checked"));
     assertEquals(false, $("#checkBox1",e).prop("checked"));
-    
+
     $(window).prop("foo", 234);
     assertEquals(234d, $(window).prop("foo"));
     assertEquals(234l, (long)$(window).prop("foo", Long.class));
@@ -1005,12 +1004,12 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertFalse(JsUtils.truth(null));
     assertFalse(JsUtils.truth(""));
   }
-  
+
   public void testUtilsCallFunc() {
     Element e = JsUtils.runJavascriptFunction(document, "createElement", "div");
     assertNotNull(e);
     assertEquals(e.getTagName().toLowerCase(), "div");
-    
+
     e = JsUtils.runJavascriptFunction(document, "foo", "bar", 2, true);
     assertNull(e);
   }
@@ -1169,14 +1168,14 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("disabled", ie.getAttribute("disabled"));
 
   }
-  
+
   public void testAttr_Issue165() {
     $(e).html("<a href='#' title='a title'>anchor</a>");
     Element a = $("a", e).get(0);
-    
+
     assertEquals("a title", a.getAttribute("title"));
     assertTrue(JsUtils.hasAttribute(a, "title"));
-    
+
     $(a).removeAttr("title");
     assertEquals("", a.getAttribute("title"));
     assertFalse(JsUtils.hasAttribute(a, "title"));
@@ -1978,15 +1977,34 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   }
 
   public void testDetachedElement(){
-	  GQuery view = $("<div id='view' style='width: 300px;'><div style='width: 50%'></div></div>");
+    GQuery view = $("<div id='view' style='width: 300px;'><div style='width: 50%'></div></div>");
 
-	  int viewWidth = view.width();
+    int viewWidth = view.width();
 
-	  assertEquals(300, viewWidth);
+    assertEquals(300, viewWidth);
 
-	  int innerViewWidth = view.children().width();
+    int innerViewWidth = view.children().width();
 
-	  assertEquals(150, innerViewWidth);
+    assertEquals(150, innerViewWidth);
+  }
+
+  public void testParentAndSelf() {
+    $(e).html("<ul><li><span>test</span></li></ul>");
+
+    Element span = $("span", e).get(0);
+    Element li = $("li", e).get(0);
+    int ulParentsNumber = $("ul", e).parents().size();
+
+    assertNotNull(span);
+    assertNotNull(li);
+
+    GQuery result = $(span).parents().andSelf();
+
+    assertEquals(ulParentsNumber + 3, result.size());
+
+    result = $(li).parents().andSelf();
+
+    assertEquals(ulParentsNumber + 2, result.size());
   }
 
 }
