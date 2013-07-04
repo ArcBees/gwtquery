@@ -77,7 +77,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -85,16 +85,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px
    *  $("#foo").animate("left:'500'");
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  $("table").animate("$width:'500'");
@@ -111,7 +111,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre class="code">
    *  //move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
-   *  
+   *
    *  $("#foo").animate("left:'+=500'", new Function(){
    *                 public void f(Element e){
    *                   $(e).css(CSS.BACKGROUND_COLOR.with(RGBColor.RED);
@@ -136,7 +136,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    *
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -144,16 +144,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms using a swing easing
    *  $("#foo").animate("left:'500'", 500, Easing.SWING);
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  // the animation will last 400ms, and we use the LINEAR easing algorithm
@@ -191,7 +191,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> animate(Object stringOrProperties, int duration, Easing easing, Function... funcs);
 
   /**
-   * The animate() method allows you to create animation effects on any numeric HTML Attribute, 
+   * The animate() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color CSS property.
    *
    * Concerning to numeric properties, values are treated as a number of pixels unless otherwise
@@ -199,16 +199,16 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * By default animate considers css properties, if you wanted to animate element attributes you
    * should to prepend the symbol dollar to the attribute name. It's useful to animate svg elements.
-   * 
+   *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
-   *  
+   *
    *
    * Example:
    *
    * <pre class="code">
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'", 500);
-   *  
+   *
    *  // Change the width html attribute of a table, note the symbol '$' to
    *  // tell gquery which it is an html-attribute instead of a css-property.
    *  // the animation will last 400ms
@@ -593,20 +593,21 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   double cur(String prop, boolean force);
 
   /**
-   * Returns value at named data store for the element, as set by data(name, value).
+   * Return the value at the named data store for the first element in the set of matched
+   * elements.
    */
-  Object data(String name);
+  <T> T data(String name);
 
   /**
-   * Returns value at named data store for the element, as set by data(name, value) with desired
-   * return type.
+   * Return the value at the named data store for the first element in the set of matched
+   * elements, as set by data(name, value), with desired return type.
    *
    * @param clz return type class literal
    */
-  <T> T data(String name, Class<T> clz);
+  <T> T data(String name, Class<? extends T> clz);
 
   /**
-   * Stores the value in the named spot with desired return type.
+   * Store arbitrary data associated with the matched elements in the named data store.
    */
   LazyGQuery<T> data(String name, Object value);
 
@@ -1745,13 +1746,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> prevUntil(GQuery until, String filter);
 
   /**
-   * Returns a dynamically generated Promise that is resolved once all actions 
+   * Returns a dynamically generated Promise that is resolved once all actions
    * in the queue have ended.
    */
   Promise promise();
 
   /**
-   * Returns a dynamically generated Promise that is resolved once all actions 
+   * Returns a dynamically generated Promise that is resolved once all actions
    * in the named queue have ended.
    */
   Promise promise(String name);
@@ -1763,7 +1764,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * @return the value of the property, in the case the property is a 'boolean' it
    *        returns a Boolean object, and a Double if is a 'number', so be prepared
    *        if you cast to other numeric objects. In the case of the property is undefined
-   *        it returns null. 
+   *        it returns null.
    */
   <T> T prop(String key);
 
@@ -1772,10 +1773,10 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * @param key the name of the property to be accessed
    * @param clz the class of the type to return
-   * 
-   * @return the value of the property, it safely check the type passed as parameter 
-   *        and preform the aproproate transformations for numbers and booleans. 
-   *        In the case of the property is undefined it returns null. 
+   *
+   * @return the value of the property, it safely check the type passed as parameter
+   *        and preform the aproproate transformations for numbers and booleans.
+   *        In the case of the property is undefined it returns null.
    */
   <T> T prop(String key, Class<? extends T> clz);
 
@@ -2042,7 +2043,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    */
   LazyGQuery<T> setArray(NodeList<Element> list);
 
-  void setPreviousObject(GQuery previousObject);
+  LazyGQuery<T> setPreviousObject(GQuery previousObject);
 
   LazyGQuery<T> setSelector(String selector);
 
