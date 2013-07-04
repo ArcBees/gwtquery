@@ -477,13 +477,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Get the element data matching the key.
-   */
-  public static Object data(Element e, String key) {
-    return GQuery.data(e, key, null);
-  }
-
-  /**
    * We store data in js object which has this structure:
    *
    *  datacache [element_hash] [key] = value
@@ -491,6 +484,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * @return the value stored in the element with the given name
    */
   protected static <S> Object data(Element element, String key, S value) {
+    return data(element, key, value, Object.class);
+  }
+
+  private static <S> Object data(Element element, String key, S value, Class<S> clz) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
@@ -500,7 +497,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       int id = element.hashCode();
 
       if (value == null) {
-        return dataCache.exists(id) ? dataCache.getCache(id).get(key) : null;
+        return dataCache.exists(id) ? dataCache.getCache(id).get(key, clz) : null;
       }
 
       if (!dataCache.exists(id)) {
@@ -1673,7 +1670,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(String name, Class<T> clz) {
-    return isEmpty() ? null : (T) data(get(0), name, null);
+    return isEmpty() ? null : (T) data(get(0), name, null, clz);
   }
 
   /**
