@@ -405,6 +405,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Create an empty JSON object.
+   */
+  public static Properties $$() {
+    return $$(null);
+  }
+
+  /**
    * Wrap a JSON object.
    */
   public static Properties $$(String properties) {
@@ -477,17 +484,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * We store data in js object which has this structure:
+   * Get the element data matching the key.
+   */
+  public static <T> T data(Element e, String key) {
+    return data(e, key, null);
+  }
+
+  /**
+   * Store arbitrary data associated with the specified element.
    *
-   *  datacache [element_hash] [key] = value
+   * We store this data in a global js object having the structure:
+   *  datacache [element.hashCode()] [key] = value
    *
    * @return the value stored in the element with the given name
    */
-  protected static <S> Object data(Element element, String key, S value) {
-    return data(element, key, value, Object.class);
+  public static <T> T data(Element element, String key, T value) {
+    return data(element, key, value, null);
   }
 
-  private static <S> Object data(Element element, String key, S value, Class<S> clz) {
+  private static <T> T data(Element element, String key, T value, Class<? extends T> clz) {
     if (dataCache == null) {
       windowData = JavaScriptObject.createObject().cast();
       dataCache = JavaScriptObject.createObject().cast();
@@ -1656,25 +1671,26 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Returns value at named data store for the element, as set by data(name, value).
+   * Return the value at the named data store for the first element in the set of matched
+   * elements.
    */
-  public Object data(String name) {
-    return isEmpty() ? null : data(get(0), name, null);
+  @SuppressWarnings("unchecked")
+  public <T> T data(String name) {
+    return isEmpty() ? null : (T)data(get(0), name, null);
   }
 
   /**
-   * Returns value at named data store for the element, as set by data(name, value) with desired
-   * return type.
+   * Return the value at the named data store for the first element in the set of matched
+   * elements, as set by data(name, value), with desired return type.
    *
    * @param clz return type class literal
    */
-  @SuppressWarnings("unchecked")
-  public <T> T data(String name, Class<T> clz) {
-    return isEmpty() ? null : (T) data(get(0), name, null, clz);
+  public <T> T data(String name, Class<? extends T> clz) {
+    return isEmpty() ? null : data(get(0), name, null, clz);
   }
 
   /**
-   * Stores the value in the named spot with desired return type.
+   * Store arbitrary data associated with the matched elements in the named data store.
    */
   public GQuery data(String name, Object value) {
     for (Element e : elements()) {
