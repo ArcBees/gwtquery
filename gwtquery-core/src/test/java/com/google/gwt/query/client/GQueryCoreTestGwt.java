@@ -1546,6 +1546,37 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR, false));
   }
 
+  public void testData() {
+
+    assertEquals(null, $().data("whatever"));
+
+    Object o = $$();
+
+    GQuery g = $(e)
+               .data("number", 3.5)
+               .data("bool", true)
+               .data("string", "foo")
+               .data("object", o);
+
+    double d = g.data("number");
+    assertEquals(3.5d, d);
+    int i = g.data("number", Integer.class);
+    assertEquals(3, i);
+    long l = g.data("number", Long.class);
+    assertEquals(3l, l);
+
+    boolean b = g.data("bool");
+    assertTrue(b);
+
+    String s = g.data("string");
+    assertEquals("foo", s);
+    s = g.data("bool", String.class);
+    assertEquals("true", s);
+
+    Element n = GQuery.data(e, "object");
+    assertEquals(o, n);
+  }
+
   public void testDetachMethod(){
     String html = "<div id='parent'>parent<div id='child'>child</div></div>";
     $(e).html(html);

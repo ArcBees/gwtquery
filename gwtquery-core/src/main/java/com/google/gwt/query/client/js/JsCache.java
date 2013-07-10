@@ -63,17 +63,19 @@ public class JsCache extends JavaScriptObject {
   @SuppressWarnings("unchecked")
   public final <T> T get(Object id, Class<? extends T> clz) {
     Object o = get(id);
-    if (o instanceof Double) {
-      Double d = (Double)o;
-      if (clz == Float.class) o = d.floatValue();
-      else if (clz == Integer.class) o = d.intValue();
-      else if (clz == Long.class) o = d.longValue();
-      else if (clz == Short.class) o = d.shortValue();
-      else if (clz == Byte.class) o = d.byteValue();
-    } else if (clz == Boolean.class && !(o instanceof Boolean)) {
-      o = Boolean.valueOf(String.valueOf(o));
-    } else if (clz == String.class && !(o instanceof String)) {
-      o = String.valueOf(o);
+    if (clz != null) {
+      if (o instanceof Double) {
+        Double d = (Double)o;
+        if (clz == Float.class) o = d.floatValue();
+        else if (clz == Integer.class) o = d.intValue();
+        else if (clz == Long.class) o = d.longValue();
+        else if (clz == Short.class) o = d.shortValue();
+        else if (clz == Byte.class) o = d.byteValue();
+      } else if (clz == Boolean.class && !(o instanceof Boolean)) {
+        o = Boolean.valueOf(String.valueOf(o));
+      } else if (clz == String.class && !(o instanceof String)) {
+        o = String.valueOf(o);
+      }
     }
     return (T)o;
   }
