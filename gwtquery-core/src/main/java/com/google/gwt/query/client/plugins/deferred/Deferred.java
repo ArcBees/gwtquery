@@ -78,7 +78,7 @@ public class Deferred implements Promise.Deferred {
             p.progress(new DoFunction(PROGRESS));
             return;
           // Otherwise we change the arguments with the new args
-          } else if (newArgs.getClass().isArray()) {
+          } else if (newArgs != null && newArgs.getClass().isArray()) {
             doIt.setArguments((Object[])newArgs);
           } else {
             doIt.setArguments(newArgs);
