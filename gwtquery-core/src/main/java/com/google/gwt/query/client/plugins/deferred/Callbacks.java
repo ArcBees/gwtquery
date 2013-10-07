@@ -91,7 +91,7 @@ public class Callbacks {
    * Disable a callback list from doing anything more.
    */
   public Callbacks disable() {
-    stack = memory = null;
+    stack = null;
     done = true;
     return this;
   }
@@ -113,13 +113,13 @@ public class Callbacks {
   public Callbacks fire(Object... o) {
     if (!done) {
       done = isOnce;
+      if (isMemory) {
+        memory = new ArrayList<Object>(Arrays.asList(o));
+      }
       if (stack != null) for (Object c : stack) {
         if (!run(c, o) && stopOnFalse) {
           break;
         }
-      }
-      if (isMemory) {
-        memory = new ArrayList<Object>(Arrays.asList(o));
       }
     }
     return this;
