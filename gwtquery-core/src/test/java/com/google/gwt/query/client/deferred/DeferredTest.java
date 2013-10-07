@@ -15,6 +15,9 @@
  */
 package com.google.gwt.query.client.deferred;
 
+import static com.google.gwt.query.client.GQuery.*;
+
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -35,7 +38,7 @@ public class DeferredTest extends GWTTestCase {
 
   private String result = "";
   public void testCallbacks() {
-    Function fn1 = new Function() {
+    final Function fn1 = new Function() {
       public Object f(Object...arguments) {
         String s = " f1:";
         for (Object o: arguments){
@@ -46,7 +49,7 @@ public class DeferredTest extends GWTTestCase {
       }
     };
     
-    Callback fn2 = new Callback() {
+    final Callback fn2 = new Callback() {
       public boolean f(Object... objects) {
         String s = " f2:";
         for (Object o: objects){
@@ -142,7 +145,17 @@ public class DeferredTest extends GWTTestCase {
     callbacks.remove( fn1 );
     callbacks.disable();
     callbacks.add( fn1 );
-    assertEquals(" f1: bar f2: bar f2: bar f1: bar", result);
+    assertEquals(" f1: bar f2: bar f2: bar f1: bar f1: bar", result);
+    
+    // Test adding callback functions in nested executions
+    result = "";
+    final Callbacks callbacks2 = new Callbacks("memory once unique");
+    callbacks2.add(fn1);
+    callbacks2.add(new Function(){public void f() {
+      callbacks2.add( fn2 );
+    }});
+    callbacks2.fire("foo");
+    assertEquals(" f1: foo f2: foo", result);
   }
   
   public void testThen() {
@@ -164,8 +177,32 @@ public class DeferredTest extends GWTTestCase {
       }
     });
   }
-
+  
+  
+  // In JVM delayTestFinish does not make the test fail if finishTest()
+  // is not called, so we use a done flag in tests using it 
+  // to verify .done() has been run
+  private boolean done;
+  
+  public void testDone() {
+    done = false;
+    delayTestFinish(5000);
+    
+    when(new PromiseFunction() {public void f(Deferred dfd) {
+      dfd.resolve("Hi");
+    }}).done(new Function(){public void f() {
+      assertEquals("Hi", arguments(0));
+      finishTest();
+      done = true;
+    }});
+    
+    if (!GWT.isClient()) {
+      assertTrue(done);
+    }
+  }
+  
   public void testDeferredThenDone() {
+    done = false;
     delayTestFinish(5000);
 
     GQuery
@@ -194,11 +231,17 @@ public class DeferredTest extends GWTTestCase {
         public void f() {
           assertEquals("then2 then1 message", arguments(0));
           finishTest();
+          done = true;
         }
       });
+    
+    if (!GWT.isClient()) {
+      assertTrue(done);
+    }   
   }
 
   public void testDeferredThenFail() {
+    done = false;
     delayTestFinish(5000);
 
     GQuery
@@ -227,8 +270,13 @@ public class DeferredTest extends GWTTestCase {
         public void f() {
           assertEquals("then2 then1 message", arguments(0));
           finishTest();
+          done = true;
         }
       });
+    
+    if (!GWT.isClient()) {
+      assertTrue(done);
+    }    
   }
 
 
