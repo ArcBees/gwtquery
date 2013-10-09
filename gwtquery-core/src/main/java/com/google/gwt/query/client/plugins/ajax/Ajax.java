@@ -1,6 +1,8 @@
 package com.google.gwt.query.client.plugins.ajax;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -13,6 +15,7 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -121,10 +124,14 @@ public class Ajax extends GQuery {
     final String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
 
+    Promise ret = null;
+
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      return getJSONP(url, onSuccess, onError, settings.getTimeout());
+      ret = new PromiseReqBuilderJSONP(url, null, settings.getTimeout());
+    } else if ("script".equalsIgnoreCase(dataType)){
+      ret = createPromiseScriptInjector(url);
     } else {
-      return createPromiseRequestBuilder(settings, httpMethod, url, data)
+      ret = createPromiseRequestBuilder(settings, httpMethod, url, data)
         .then(new Function() {
           public Object f(Object...args) {
             Response response = (Response)args[0];
@@ -151,10 +158,15 @@ public class Ajax extends GQuery {
             Request request = (Request)args[1];
             return new Object[]{null, exception.getMessage(), request, null, exception};
           }
-        })
-        .done(onSuccess)
-        .fail(onError);
+        });
     }
+    if (onSuccess != null) {
+      ret.done(onSuccess);
+    }
+    if (onError != null) {
+      ret.fail(onError);
+    }
+    return ret;
   }
   
   private static Promise createPromiseRequestBuilder(Settings settings, Method httpMethod, String url, String data) {
@@ -197,6 +209,21 @@ public class Ajax extends GQuery {
     return new PromiseReqBuilder(requestBuilder);
   }
 
+  private static Promise createPromiseScriptInjector(final String url) {
+    return new PromiseFunction() {
+      public void f(final Deferred dfd) {
+        ScriptInjector.fromUrl(url).setCallback(new Callback<Void, Exception>() {
+          public void onSuccess(Void result) {
+            dfd.resolve();
+          }
+          public void onFailure(Exception reason) {
+            dfd.reject(reason);
+          }
+        }).inject();
+      }
+    };
+  }
+
   private static String resolveUrl(Settings settings, Method httpMethod, String data) {
     String url = settings.getUrl();
     assert url != null : "no url found in settings";
@@ -225,17 +252,17 @@ public class Ajax extends GQuery {
     String method = settings.getType();
     if ("get".equalsIgnoreCase(method)) {
       return RequestBuilder.GET;
-    }else if("post".equalsIgnoreCase(method)){
-    	return RequestBuilder.POST;
-    }else if("put".equalsIgnoreCase(method)){
-    	return RequestBuilder.PUT;
-    }else if("delete".equalsIgnoreCase(method)){
-    	return RequestBuilder.DELETE;
-    }else if("head".equalsIgnoreCase(method)){
-    	return RequestBuilder.HEAD;
+    } else if ("post".equalsIgnoreCase(method)) {
+      return RequestBuilder.POST;
+    } else if ("put".equalsIgnoreCase(method)) {
+      return RequestBuilder.PUT;
+    } else if ("delete".equalsIgnoreCase(method)) {
+      return RequestBuilder.DELETE;
+    } else if ("head".equalsIgnoreCase(method)) {
+      return RequestBuilder.HEAD;
     }
 
-    GWT.log("unknow method type -> use POST as default method");
+    GWT.log("GQuery.Ajax: no method type provided, using POST as default method");
     return RequestBuilder.POST;
   }
 
@@ -297,9 +324,9 @@ public class Ajax extends GQuery {
   }
   
   public static Promise getJSONP(String url) {
-    return getJSONP(url, null, null, 0);
+    return getJSONP(url, null, null);
   }
-  
+
   public static Promise getJSONP(String url, Properties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -311,9 +338,30 @@ public class Ajax extends GQuery {
   }
 
   public static Promise getJSONP(String url, Function success, Function error, int timeout) {
-    return new PromiseReqBuilderJSONP(url, null, timeout)
-       .done(success)
-       .fail(error);
+    return ajax(createSettings()
+      .setUrl(url)
+      .setDataType("jsonp")
+      .setType("get")
+      .setTimeout(timeout)
+      .setSuccess(success)
+      .setError(error)
+    );
+  }
+
+  /**
+   * Load a JavaScript file from the server using a GET HTTP request, then execute it.
+   */
+  public static Promise getScript(String url) {
+    return getScript(url, null);
+  }
+
+  public static Promise getScript(final String url, Function success) {
+    return ajax(createSettings()
+      .setUrl(url)
+      .setType("get")
+      .setDataType("script")
+      .setSuccess(success)
+    );
   }
 
   public static Promise post(String url, Properties data, final Function onSuccess) {

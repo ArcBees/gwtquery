@@ -826,6 +826,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Add the previous selection to the current selection. Useful for traversing elements, and then
+   * adding something that was matched before the last traversal.
+   */
+  public GQuery addBack() {
+    return previousObject != null ? add(previousObject) : this;
+  }
+
+  /**
    * Adds the specified classes to each matched element.
    */
   public GQuery addClass(String... classes) {
@@ -899,9 +907,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Add the previous selection to the current selection. Useful for traversing elements, and then
    * adding something that was matched before the last traversal.
+   * @deprecated use addBack() instead
    */
+  @Deprecated
   public GQuery andSelf() {
-    return previousObject != null ? add(previousObject) : this;
+    return addBack();
   }
 
   /**
@@ -2348,7 +2358,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * query)
    */
   public GQuery getPreviousObject() {
-    return previousObject;
+    return end();
   }
 
   private native Element getPreviousSiblingElement(Element elem) /*-{

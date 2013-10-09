@@ -309,4 +309,34 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       });
   }
 
+  public void testGetScript() {
+    delayTestFinish(5000);
+    String url = "http://code.jquery.com/jquery-2.0.3.min.js";
+    Ajax.getScript(url)
+      .done(new Function(){
+        public void f() {
+          finishTest();
+        }
+      }).fail(new Function(){
+        public void f() {
+          fail();
+        }
+      });
+  }
+
+  public void testGetScriptFail() {
+    delayTestFinish(5000);
+    String url = "http://127.0.0.1/nopage";
+    Ajax.getScript(url)
+      .done(new Function(){
+        public void f() {
+          fail();
+        }
+      }).fail(new Function(){
+        public void f() {
+          finishTest();
+        }
+      });
+  }
+
 }
