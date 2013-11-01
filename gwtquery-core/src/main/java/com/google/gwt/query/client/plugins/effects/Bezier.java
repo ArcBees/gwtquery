@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-
 /**
  * Bezier curve for transition easing functions.
  * 
@@ -33,22 +32,22 @@ public class Bezier {
     this.x1 = x1; this.y1 = y1; this.x2 = x2; this.y2 = y2;
   }
   
-  private double A(double a1, double a2) {
+  private double a(double a1, double a2) {
     return 1.0 - 3.0 * a2 + 3.0 * a1;
   }
-  private double B(double a1, double a2) {
+  private double b(double a1, double a2) {
     return 3.0 * a2 - 6.0 * a1;
   }
-  private double C(double a1){
+  private double c(double a1){
     return 3.0 * a1;
   }
   
   private double calcBezier(double t, double a1, double a2) {
-    return ((A(a1, a2)*t + B(a1, a2))*t + C(a1))*t;
+    return ((a(a1, a2)*t + b(a1, a2))*t + c(a1))*t;
   }
   
   private double calcSlope(double t, double a1, double a2) {
-    return 3.0 * A(a1, a2)*t*t + 2.0 * B(a1, a2) * t + C(a1);
+    return 3.0 * a(a1, a2)*t*t + 2.0 * b(a1, a2) * t + c(a1);
   }
   
   private double getTForX(double x) {
@@ -69,5 +68,4 @@ public class Bezier {
   public String toString() {
     return x1 + "," + y1 + "," + x2 + "," + y2;
   }
-
 }
