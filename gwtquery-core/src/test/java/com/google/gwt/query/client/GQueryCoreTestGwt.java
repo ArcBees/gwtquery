@@ -105,7 +105,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   
   @DoNotRunWith({Platform.Prod})
   public void testBrowser() {
-    assertTrue(GQuery.browser.webkit);
+    assertTrue(GQuery.browser.mozilla);
     assertFalse(GQuery.browser.webkit);
     assertFalse(GQuery.browser.opera);
     assertFalse(GQuery.browser.msie);
