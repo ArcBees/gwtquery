@@ -16,6 +16,11 @@
 
 <module>
     <inherits name='com.google.gwt.user.User'/>
+    
+    <!-- Browser flags -->
+    <generate-with class="com.google.gwt.query.rebind.BrowserGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.Browser"/>
+    </generate-with>
 
     <!-- Json and Xml builders -->
     <generate-with class="com.google.gwt.query.rebind.JsonBuilderGenerator">

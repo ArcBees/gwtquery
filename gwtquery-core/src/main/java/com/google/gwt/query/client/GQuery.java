@@ -13,7 +13,7 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
+import static com.google.gwt.query.client.plugins.QueuePlugin.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,18 +25,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -123,6 +114,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The body element in the current page.
    */
   public static final BodyElement body = GWT.isClient() ? Document.get().getBody() : null;
+  
+  /**
+   * A Browser object with a set of browser-specific flags.
+   */
+  public static final Browser browser = GWT.isClient() ? GWT.<Browser>create(Browser.class) : null;
 
   /**
    * Object to store element data (public so as we can access to it from tests).
@@ -133,7 +129,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The document element in the current page.
    */
   public static final Document document = GWT.isClient() ? Document.get() : null;
-
+  
   /**
    * Static reference Effects plugin
    */

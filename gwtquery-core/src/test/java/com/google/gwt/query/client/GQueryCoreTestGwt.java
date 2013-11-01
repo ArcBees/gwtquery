@@ -50,6 +50,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.validation.constraints.AssertFalse;
+
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
@@ -99,6 +101,17 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     } else {
       e.setInnerHTML("");
     }
+  }
+  
+  @DoNotRunWith({Platform.Prod})
+  public void testBrowser() {
+    assertTrue(GQuery.browser.webkit);
+    assertFalse(GQuery.browser.webkit);
+    assertFalse(GQuery.browser.opera);
+    assertFalse(GQuery.browser.msie);
+    assertFalse(GQuery.browser.ie6);
+    assertFalse(GQuery.browser.ie8);
+    assertFalse(GQuery.browser.ie9);
   }
 
   public void testAttributeMethods() {
