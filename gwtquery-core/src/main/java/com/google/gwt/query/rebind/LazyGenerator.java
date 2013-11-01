@@ -63,6 +63,8 @@ public class LazyGenerator extends Generator {
         break;
       }
     }
+    
+    if (targetType == null) return null;
 
     assert targetType != null : "Parameter of Lazy<T> not found";
     String genClass = targetType.getPackage().getName() + "."
