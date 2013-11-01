@@ -516,5 +516,15 @@ public class JsUtils {
     }
     return ret;
   }
+  
+  /**
+   * Dump an object to the browser console.
+   * 
+   * TODO: enable console in IE8 && IE9
+   * http://snipplr.com/view/67830/
+   */
+  public static native void log(Object o) /*-{
+    if ($wnd.console && typeof $wnd.console.log === 'function') $wnd.console.log('' + o);
+  }-*/;
 
 }
