@@ -64,7 +64,7 @@ public class PropertiesAnimation extends GQAnimation {
    * This enum can be used with customized transitions in this way:
    * <pre>
     
-    $("#foo").animate($$("{top:'500px',left:'500px'}"), 400, EasingCurve.custom(.02,.01,.47,1));
+    $("#foo").animate($$("{top:'500px',left:'500px'}"), 400, EasingCurve.custom.with(.02,.01,.47,1));
      
    * </pre>
    * 
