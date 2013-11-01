@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, The gwtquery team.
+ * Copyright 2013, The gwtquery team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,7 +20,7 @@ import com.google.gwt.query.rebind.BrowserGenerator;
 /**
  * This class is the equivalent to the jQuery.browser object in gQuery.
  * 
- * The implementation is performend by the {@link BrowserGenerator}
+ * The implementation is performed by the {@link BrowserGenerator}
  * 
  * It can be used as a way of deferred-binding without modifying .gwt.xml files,
  * taking advantage of compiler optimizations which will or will not include the
@@ -41,17 +41,14 @@ import com.google.gwt.query.rebind.BrowserGenerator;
 public abstract class Browser {
   
   /**
-   * Not in jquery, but useful in GWT for deferred bindings.
    * @return true if ie6
    */
   public final boolean ie6 = isIe6();
   /**
-   * Not in jquery, but useful in GWT for deferred bindings.
    * @return true if ie8
    */
   public final boolean ie8 = isIe8();
   /**
-   * Not in jquery, but useful in GWT for deferred bindings.
    * @return true if ie9
    */
   public final boolean ie9 = isIe9();

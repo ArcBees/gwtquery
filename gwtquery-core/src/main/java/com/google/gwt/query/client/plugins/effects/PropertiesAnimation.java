@@ -36,19 +36,99 @@ public class PropertiesAnimation extends GQAnimation {
    */
   public static interface Easing {
     public double interpolate(double progress);
+    /**
+     * @deprecated use EasingCurve.linear instead
+     */
+    public Easing LINEAR = EasingCurve.linear;
 
-    public Easing LINEAR = new Easing() {
-      public double interpolate(double progress) {
-        return progress;
-      }
-    };
-
-    public Easing SWING = new Easing() {
-      public double interpolate(double progress) {
-        return (1 + Math.cos(Math.PI + progress * Math.PI)) / 2;
-      }
-    };
+    /**
+     * @deprecated use EasingCurve.swing instead
+     */
+    public Easing SWING = EasingCurve.swing;
   }
+  
+  /**
+   * This is a collection of most popular curves used in web animations
+   * implemented using the Bezier Curve instead of a different algorithm per
+   * animation.
+   * 
+   * The toString() method returns the string parameter which can be used
+   * for CSS3 transition-timing-function properties, example:
+   * <pre>
+
+   transition-timing-function: ease;
+   transition-timing-function: cubic-bezier(0, 0, 1, 1);
+     
+   * </pre>
+   * 
+   * This enum can be used with customized transitions in this way:
+   * <pre>
+    
+    $("#foo").animate($$("{top:'500px',left:'500px'}"), 400, EasingCurve.custom.with(.02,.01,.47,1));
+     
+   * </pre>
+   * 
+   */
+  public static enum EasingCurve implements Easing {
+      linear (0, 0, 1, 1) {
+        public double interpolate(double p){return p;}
+        public String toString() {return "linear";}
+      },
+      ease (0.25, 0.1, 0.25, 1) {
+        public String toString() {return "ease";}
+      },
+      easeIn (0.42, 0, 1, 1) {
+        public String toString() {return "ease-in";}
+      },
+      easeOut (0, 0, 0.58, 1) {
+        public String toString() {return "ease-out";}
+      },
+      easeInOut (0.42, 0, 0.58, 1) {
+        public String toString() {return "ease-in-out";}
+      },
+      snap (0,1,.5,1),
+      swing (.02,.01,.47,1),
+      easeInCubic (.550,.055,.675,.190),
+      easeOutCubic (.215,.61,.355,1),
+      easeInOutCubic (.645,.045,.355,1),
+      easeInCirc (.6,.04,.98,.335),
+      easeOutCirc (.075,.82,.165,1),
+      easeInOutCirc (.785,.135,.15,.86),
+      easeInExpo (.95,.05,.795,.035),
+      easeOutExpo (.19,1,.22,1),
+      easeInOutExpo (1,0,0,1),
+      easeInQuad (.55,.085,.68,.53),
+      easeOutQuad (.25,.46,.45,.94),
+      easeInOutQuad (.455,.03,.515,.955),
+      easeInQuart (.895,.03,.685,.22),
+      easeOutQuart (.165,.84,.44,1),
+      easeInOutQuart (.77,0,.175,1),
+      easeInQuint (.755,.05,.855,.06),
+      easeOutQuint (.23,1,.32,1),
+      easeInOutQuint (.86,0,.07,1),
+      easeInSine (.47,0,.745,.715),
+      easeOutSine (.39,.575,.565,1),
+      easeInOutSine (.445,.05,.55,.95),
+      easeInBack (.6,-.28,.735,.045),
+      easeOutBack (.175, .885,.32,1.275),
+      easeInOutBack (.68,-.55,.265,1.55),
+      custom(0, 0, 1, 1);
+     
+     private Bezier c = new Bezier(0, 0, 1, 1);
+     EasingCurve(double x1, double y1, double x2, double y2) {
+       with(x1, y1, x2, y2);
+     }
+     public Easing with(double x1, double y1, double x2, double y2) {
+       c = new Bezier(x1, y1, x2, y2);
+       return this;
+     }
+     public double interpolate(double progress) {
+       return c.f(progress);
+     }
+     public String toString() {
+      return "cubic-bezier(" + c + ")";
+     }
+   }
 
   private static final String[] ATTRS_TO_SAVE = new String[]{
       "overflow"};
@@ -190,7 +270,7 @@ public class PropertiesAnimation extends GQAnimation {
     return new Fx(key, val, start, end, unit, rkey);
   }
 
-  private Easing easing = Easing.SWING;
+  private Easing easing = EasingCurve.linear;
   private JsObjectArray<Fx> effects = JsObjectArray.create();
   private Function[] funcs;
 

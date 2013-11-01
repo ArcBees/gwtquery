@@ -15,16 +15,16 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.*;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
-import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -71,38 +71,43 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     GQuery back = $("div", e);
     assertEquals(0, back.size());
 
-    g.as(Effects.Effects).clipDisappear(duration);
+    // Configure the max duration for this test
+    delayTestFinish(duration * 3);
+
+    // each timer calls the next one
+    final Timer endTimer = new Timer() {
+      public void run() {
+        // Check that the back div has been removed
+        GQuery back = $("div", e);
+        assertEquals(0, back.size());
+        // Check that the attribute clip has been removed
+        assertTrue(g.css("clip").matches("(|auto)"));
+        finishTest();
+      }
+    };
+    
+    Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+      int c = 0;
+      // Run until we detect the rect has been changed or timeout
+      public boolean execute() {
+        String re = "rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)";
+        if (g.css("clip").matches(re)) {
+          endTimer.schedule(duration);
+          return false;
+        }
+        if (duration < (c += 10))  {
+          fail(g.css("clip") + " does not matched " + re);
+          return false;
+        }
+        return true;
+      }
+    }, 100);
+    
+    g.as(Effects).clipDisappear(duration);
 
     // Check that the back div has been created
     back = $("div", e);
     assertEquals(1, back.size());
-
-    // Configure the max duration for this test
-    delayTestFinish(duration * 2);
-
-    // each timer calls the next one
-    //final Timer timer1 = new Timer() {
-      //public void run() {
-        // Check that the back div has been removed
-        //GQuery back = $("div", e);
-        //assertEquals(0, back.size());
-        // Check that the attribute clip has been removed
-        //assertEquals("", g.css("clip"));
-        //finishTest();
-      //}
-    //};
-    final Timer timer2 = new Timer() {
-      public void run() {
-        // Check that the attribute clip has been set
-        String re = "rect\\(\\d+px[, ]+\\d+px[, ]+\\d+px[, ]+\\d+px\\)";
-        assertTrue(g.css("clip") + " does not match " + re, g.css("clip").matches(re));
-        finishTest();
-        //timer1.schedule(duration/2 + 1);
-      }
-    };
-
-    // Start the first timer
-    timer2.schedule(duration/2);
   }
 
   public void testEffectsShouldBeQueued() {
@@ -112,11 +117,11 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     final Offset o = g.offset();
 
     final int duration = 1000;
-    g.as(Effects.Effects).
-        animate($$("left: '+=100'"), duration, Easing.LINEAR).
-        animate($$("top: '+=100'"), duration, Easing.LINEAR).
-        animate($$("left: '-=100'"), duration, Easing.LINEAR).
-        animate($$("top: '-=100'"), duration, Easing.LINEAR);
+    g.as(Effects).
+        animate($$("left: '+=100'"), duration, EasingCurve.linear).
+        animate($$("top: '+=100'"), duration, EasingCurve.linear).
+        animate($$("left: '-=100'"), duration, EasingCurve.linear).
+        animate($$("top: '-=100'"), duration, EasingCurve.linear);
 
     // Configure the max duration for this test
     delayTestFinish(duration * 4);
@@ -241,7 +246,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    PropertiesAnimation an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
+    PropertiesAnimation an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
     an.onStart();
     an.onComplete();
 
@@ -267,7 +272,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
+    an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
     an.onStart();
     an.onComplete();
 
@@ -352,8 +357,8 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
 
     delayTestFinish(duration * 3);
 
-    g.as(Effects.Effects).
-        animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
+    g.as(Effects).
+        animate($$("$width: +=100; $border: +=4"), duration, EasingCurve.linear);
 
     final Timer timer = new Timer() {
       public void run() {
