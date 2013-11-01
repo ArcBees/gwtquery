@@ -49,8 +49,8 @@ public class PropertiesAnimation extends GQAnimation {
   
   /**
    * This is a collection of most popular curves used in web animations
-   * implemented using Bezier Curve instead of a different formula per
-   * animation. 
+   * implemented using the Bezier Curve instead of a different algorithm per
+   * animation.
    * 
    * The toString() method returns the string parameter which can be used
    * for CSS3 transition-timing-function properties, example:
@@ -60,6 +60,14 @@ public class PropertiesAnimation extends GQAnimation {
    transition-timing-function: cubic-bezier(0, 0, 1, 1);
      
    * </pre>
+   * 
+   * This enum can be used with customized transitions in this way:
+   * <pre>
+    
+    $("#foo").animate($$("{top:'500px',left:'500px'}"), 400, EasingCurve.custom(.02,.01,.47,1));
+     
+   * </pre>
+   * 
    */
   public static enum EasingCurve implements Easing {
       linear (0, 0, 1, 1) {
