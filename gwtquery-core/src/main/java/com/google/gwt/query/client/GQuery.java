@@ -49,6 +49,8 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.RegExp;
@@ -134,6 +136,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Static reference Effects plugin
    */
   public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
+  
+  /**
+   * Static reference Transitions plugin
+   */
+  public static Class<Transitions> Transitions = com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
 
   /**
    * Implementation engine used for CSS selectors.
@@ -698,6 +705,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static LazyGQuery<?> lazy() {
     return $().createLazy();
+  }
+  
+  /**
+   * Dump an object to the window.console.log when available
+   */
+  public static void log(Object o) {
+    JsUtils.log(o);
   }
 
   /**
@@ -4349,6 +4363,37 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public String toString() {
     return toString(false);
+  }
+  
+  /**
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
+   * 
+   * It works similar to animate()
+   *
+   * Example:
+   * $("#foo").transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack);
+   *
+   */
+  public GQuery transition(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
+    return transition(stringOrProperties, duration, 0, easing, funcs);
+  }
+  
+  /**
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
+   * 
+   * It works similar to animate() but has an extra parameter for delaying the animation, so as
+   * we dont have to use GQuery queue system for delaying executions, nor callbacks for firing more
+   * animations
+   *
+   * Example animate an element within 2 seconds:
+   * $("#foo")
+   *   .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, 2000, EasingCurve.easeInBack);
+   *
+   */
+  public GQuery transition(Object stringOrProperties, int duration, int delay, Easing easing, Function... funcs) {
+    return as(Transitions).transition(stringOrProperties, duration, easing, delay, funcs);
   }
 
   /**
