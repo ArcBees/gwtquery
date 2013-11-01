@@ -118,8 +118,9 @@ public class PropertiesAnimation extends GQAnimation {
      EasingCurve(double x1, double y1, double x2, double y2) {
        with(x1, y1, x2, y2);
      }
-     public void with(double x1, double y1, double x2, double y2) {
+     public Easing with(double x1, double y1, double x2, double y2) {
        c = new Bezier(x1, y1, x2, y2);
+       return this;
      }
      public double interpolate(double progress) {
        return c.f(progress);
