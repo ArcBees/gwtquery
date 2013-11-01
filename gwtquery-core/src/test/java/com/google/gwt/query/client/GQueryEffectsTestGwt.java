@@ -16,15 +16,15 @@
 package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.*;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
-import com.google.gwt.query.client.plugins.effects.Bezier.EasingCurve;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -118,10 +118,10 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
 
     final int duration = 1000;
     g.as(Effects).
-        animate($$("left: '+=100'"), duration, Easing.LINEAR).
-        animate($$("top: '+=100'"), duration, Easing.LINEAR).
-        animate($$("left: '-=100'"), duration, Easing.LINEAR).
-        animate($$("top: '-=100'"), duration, Easing.LINEAR);
+        animate($$("left: '+=100'"), duration, EasingCurve.linear).
+        animate($$("top: '+=100'"), duration, EasingCurve.linear).
+        animate($$("left: '-=100'"), duration, EasingCurve.linear).
+        animate($$("top: '-=100'"), duration, EasingCurve.linear);
 
     // Configure the max duration for this test
     delayTestFinish(duration * 4);
@@ -246,7 +246,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    PropertiesAnimation an = new PropertiesAnimation(EasingCurve.SWING, g.get(0), prop1);
+    PropertiesAnimation an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
     an.onStart();
     an.onComplete();
 
@@ -272,7 +272,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation(Easing.SWING, g.get(0), prop1);
+    an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
     an.onStart();
     an.onComplete();
 
@@ -358,7 +358,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     delayTestFinish(duration * 3);
 
     g.as(Effects).
-        animate($$("$width: +=100; $border: +=4"), duration, Easing.LINEAR);
+        animate($$("$width: +=100; $border: +=4"), duration, EasingCurve.linear);
 
     final Timer timer = new Timer() {
       public void run() {

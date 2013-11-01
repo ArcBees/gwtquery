@@ -17,7 +17,6 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
