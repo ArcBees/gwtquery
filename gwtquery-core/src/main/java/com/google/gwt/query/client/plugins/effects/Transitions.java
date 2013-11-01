@@ -156,7 +156,7 @@ public class Transitions extends GQuery {
   private static final String transition = getVendorPropertyName("transition");
   
   private static final String transitionDelay = getVendorPropertyName("transitionDelay");
-  private static final String transitionEnd = browser.mozilla ? "transitionEnd" : (prefix + "transitionEnd");
+  private static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "transitionEnd");
   
   public static boolean has3d = supportsTransform3d();
   
