@@ -25,6 +25,7 @@ import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyEffects<T> extends LazyBase<T>{
@@ -45,9 +46,9 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * <pre class="code">
    *  //move the element from its original position to the position top:500px and left:500px for 400ms.
    *  //use a swing easing function for the transition
-   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, Easing.SWING);
+   *  $("#foo").animate(Properties.create("{top:'500px',left:'500px'}"), 400, EasingCurve.swing);
    *  // Change the width and border attributes of a table
-   *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, Easing.LINEAR);
+   *  $("table").animate(Properties.create("{$width: '500', $border: '10'}"), 400, EasingCurve.linear);
    * </pre>
    *
    * In addition to numeric values, each property can take the strings 'show',
@@ -71,8 +72,8 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'", 400, Easing.SWING);
-   *  $("#foo").animate($$("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, Easing.SWING);
+   *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'", 400, EasingCurve.swing);
+   *  $("#foo").animate($$("{backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)'}"), 400, EasingCurve.swing);
    * </pre>
    *
    * @param p a {@link Properties} object containing css properties to animate.
@@ -101,7 +102,7 @@ public interface LazyEffects<T> extends LazyBase<T>{
    *  //move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'");
    *  // Change the width attribute of a table
-   *  $("table").animate("$width:'500'"), 400, Easing.LINEAR);
+   *  $("table").animate("$width:'500'"), 400, EasingCurve.swing);
    * </pre>
    *
    * In addition to numeric values, each property can take the strings 'show',
