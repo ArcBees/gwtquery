@@ -168,11 +168,17 @@ public class Transitions extends GQuery {
       });
   
   private static String getVendorPropertyName(String prop) {
-    if (JsUtils.hasProperty(divStyle, prop)) return prop;
+    if (JsUtils.hasProperty(divStyle, prop)) {
+      return prop;
+    }
     String camelProp = JsUtils.camelize(prop);
-    if (JsUtils.hasProperty(divStyle, camelProp)) return camelProp;
+    if (JsUtils.hasProperty(divStyle, camelProp)) {
+      return camelProp;
+    }
     String vendorProp =  prefix + camelProp;
-    if (JsUtils.hasProperty(divStyle, vendorProp)) return vendorProp;
+    if (JsUtils.hasProperty(divStyle, vendorProp)) {
+      return vendorProp;
+    }
     return null;
   }
   

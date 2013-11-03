@@ -49,7 +49,6 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
@@ -137,11 +136,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
   
-  /**
-   * Static reference Transitions plugin
-   */
-  public static Class<Transitions> Transitions = com.google.gwt.query.client.plugins.effects.Transitions.Transitions;
-
   /**
    * Implementation engine used for CSS selectors.
    */
@@ -4393,7 +4387,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    */
   public GQuery transition(Object stringOrProperties, int duration, int delay, Easing easing, Function... funcs) {
-    return as(Transitions).transition(stringOrProperties, duration, easing, delay, funcs);
+    return as(Transitions.Transitions).transition(stringOrProperties, duration, easing, delay, funcs);
   }
 
   /**
