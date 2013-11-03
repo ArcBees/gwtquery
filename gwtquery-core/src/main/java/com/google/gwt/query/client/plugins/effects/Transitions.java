@@ -1,6 +1,6 @@
 /*
- * Copyright 2013, The gwtquery team.
  *
+ * Copyright 2013, The gwtquery team.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  *
@@ -286,6 +286,8 @@ public class Transitions extends GQuery {
     // schedule setting css animated properties so as we are sure css transition property has been set.
     delay(0, new Function(){public void f() {
       css(p);
+      // prevent memory leak
+      removeData(TRANSFORM);
     }});
     
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
