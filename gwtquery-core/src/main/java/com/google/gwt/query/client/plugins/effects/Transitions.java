@@ -82,7 +82,7 @@ public class Transitions extends GQuery {
     }
     
     public void setFromString(String prop, String ...val) {
-      if (val.length == 0 && val[0] instanceof String) {
+      if (val.length == 1 && val[0] instanceof String) {
         String[] vals = ((String)val[0]).split("[\\s*,\\s*]");
         set(prop, vals);
       } else {
@@ -276,9 +276,11 @@ public class Transitions extends GQuery {
     if (easing == null) {
       easing = EasingCurve.ease;
     }
+    
+    // Force reflow before setting transitions, so as we do not animate previous values
+    css("offsetHeight");
 
     String attribs = duration + "ms" + " "  + easing.toString() + " " + delay + "ms";
-    
     List<String> props = filterPropertyNames(p);
     String value  = "";
     for (String s : props) {
