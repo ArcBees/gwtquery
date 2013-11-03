@@ -4363,10 +4363,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The transition() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color using CSS3 transformations and transitions.
    * 
-   * It works similar to animate()
+   * It works similar to animate(), and support chainning and queueing.
    *
    * Example:
    * $("#foo").transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack);
+   * 
+   * $("#bar")
+   *  .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
+   *  .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);     
    *
    */
   public GQuery transition(Object stringOrProperties, int duration, Easing easing, Function... funcs) {

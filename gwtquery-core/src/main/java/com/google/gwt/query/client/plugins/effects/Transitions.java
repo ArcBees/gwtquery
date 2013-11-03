@@ -45,6 +45,10 @@ import com.google.gwt.user.client.DOM;
      .promise().done(new Function(){public void f() {
         g1.transition("{x: +100}", 2000, "linear", 0);
      }});
+     
+    $("#bar")
+     .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
+     .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);     
 
  * </pre>
  */
@@ -267,6 +271,13 @@ public class Transitions extends GQuery {
   
   /**
    * Works like GQuery.animate(), but uses CSS transitions.
+   * 
+   * It allows chaining like:
+   * <pre>
+    $("#foo")
+      .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
+      .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
+   * </pre>
    */
   public Transitions transition(Object stringOrProperties, int duration, Easing easing, int delay, final Function... funcs) {
     final Properties p = (stringOrProperties instanceof String) ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
@@ -277,29 +288,27 @@ public class Transitions extends GQuery {
       easing = EasingCurve.ease;
     }
     
-    // Force reflow before setting transitions, so as we do not animate previous values
-    css("offsetHeight");
-
     String attribs = duration + "ms" + " "  + easing.toString() + " " + delay + "ms";
     List<String> props = filterPropertyNames(p);
     String value  = "";
     for (String s : props) {
       value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
-    }    
-    css(transition, value);
+    }
     
-    // Force reflow so as we are assure css transition property has been set 
-    // to the elements before setting other properties.
-    css("offsetHeight");
-    
-    // Use our override css method to set all props 
-    css(p);
-    // prevent memory leak
-    removeData(TRANSFORM);
+    // Use gQuery queue, so as we can chain transitions
+    final String transitionValue = value;
+    delay(0, new Function(){public void f() {
+      // Configure animation using transition property
+      css(transition, transitionValue);
+      // Set all css properties for this transition 
+      css(p);
+      // prevent memory leak
+      removeData(TRANSFORM);
+    }});
     
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
     // TODO: Use transitionEnd events once GQuery supports non-bit events
-    delay(duration, new Function(){public void f() {
+    delay(duration + delay, new Function(){public void f() {
       css(transition, oldTransitions);
       each(funcs);
     }});
