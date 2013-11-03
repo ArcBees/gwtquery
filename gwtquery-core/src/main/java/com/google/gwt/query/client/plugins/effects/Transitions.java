@@ -282,13 +282,17 @@ public class Transitions extends GQuery {
       value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
     }    
     css(transition, value);
+    
+    // Force reflow so as we are assure css transition property has been set 
+    // to the elements before setting other properties.
+    css("offsetHeight");
+    
+    // Use our override css method to set all props 
+    css(p);
 
-    // schedule setting css animated properties so as we are sure css transition property has been set.
-    delay(0, new Function(){public void f() {
-      css(p);
-      // prevent memory leak
-      removeData(TRANSFORM);
-    }});
+    // prevent memory leak
+    removeData(TRANSFORM);
+
     
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
     // TODO: Use transitionEnd events once GQuery supports non-bit events
