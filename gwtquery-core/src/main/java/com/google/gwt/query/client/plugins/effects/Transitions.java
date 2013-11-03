@@ -147,7 +147,7 @@ public class Transitions extends GQuery {
   // Used to check supported properties in the browser
   private static Style divStyle = DOM.createDiv().getStyle();
   
-  private static final String prefix = browser.msie ? "ms" : browser.opera ? "O" : browser.mozilla ? "Moz" : browser.webkit ? "Webkit" : "";
+  private static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
   private static final String transform = getVendorPropertyName("transform");
   private static final String TRANSFORM = "_t_";
   private static final String transformOrigin = getVendorPropertyName("transformOrigin");
@@ -168,6 +168,11 @@ public class Transitions extends GQuery {
       });
   
   private static String getVendorPropertyName(String prop) {
+    // we prefer vendor specific names by default
+    String vendorProp =  JsUtils.camelize("-" + prefix + "-" + prop);
+    if (JsUtils.hasProperty(divStyle, vendorProp)) {
+      return vendorProp;
+    }
     if (JsUtils.hasProperty(divStyle, prop)) {
       return prop;
     }
@@ -175,16 +180,12 @@ public class Transitions extends GQuery {
     if (JsUtils.hasProperty(divStyle, camelProp)) {
       return camelProp;
     }
-    String vendorProp =  prefix + camelProp;
-    if (JsUtils.hasProperty(divStyle, vendorProp)) {
-      return vendorProp;
-    }
     return null;
   }
   
   private static String property(String prop) {
     if (transformRegex.test(prop)) {
-      return "transform";
+      return transform;
     }
     return prop.replaceFirst("^(margin|padding).+$", "$1");
   }
@@ -246,6 +247,8 @@ public class Transitions extends GQuery {
       if (m != null) {
         c = m;
       }
+      // chrome needs transition:-webkit-transform instead of transition:transform 
+      c = JsUtils.hyphenize(c);
       if (!ret.contains(c)) {
         ret.add(c);
       }
@@ -289,10 +292,8 @@ public class Transitions extends GQuery {
     
     // Use our override css method to set all props 
     css(p);
-
     // prevent memory leak
     removeData(TRANSFORM);
-
     
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
     // TODO: Use transitionEnd events once GQuery supports non-bit events
