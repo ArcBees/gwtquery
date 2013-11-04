@@ -4360,41 +4360,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
   
   /**
-   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
-   * CSS property, or color using CSS3 transformations and transitions.
-   * 
-   * It works similar to animate(), and support chainning and queueing.
-   *
-   * Example:
-   * $("#foo").transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack);
-   * 
-   * $("#bar")
-   *  .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
-   *  .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);     
-   *
-   */
-  public GQuery transition(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
-    return transition(stringOrProperties, duration, 0, easing, funcs);
-  }
-  
-  /**
-   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
-   * CSS property, or color using CSS3 transformations and transitions.
-   * 
-   * It works similar to animate() but has an extra parameter for delaying the animation, so as
-   * we dont have to use GQuery queue system for delaying executions, nor callbacks for firing more
-   * animations
-   *
-   * Example animate an element within 2 seconds:
-   * $("#foo")
-   *   .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, 2000, EasingCurve.easeInBack);
-   *
-   */
-  public GQuery transition(Object stringOrProperties, int duration, int delay, Easing easing, Function... funcs) {
-    return as(Transitions.Transitions).transition(stringOrProperties, duration, easing, delay, funcs);
-  }
-
-  /**
    * Produces a string representation of the matched elements.
    */
   public String toString(boolean pretty) {
