@@ -308,7 +308,6 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects clip(final ClipAnimation.Action a,
       final ClipAnimation.Corner c, final ClipAnimation.Direction d,
       final int duration, final Function... f) {
-
     for (Element e : elements()) {
       queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
     }
@@ -573,27 +572,6 @@ public class Effects extends QueuePlugin<Effects> {
    */
   public Effects slideUp(int millisecs, Function... f) {
     return animate("height: 'hide'", millisecs, f);
-  }
-
-
-  /**
-   * Toggle displaying each of the set of matched elements.
-   *
-   * @param showOrHide A Boolean indicating whether to show or hide the
-   *          elements.
-   */
-  // maybe move this function in GQuery class directly ?
-  public Effects toggle(boolean showOrHide) {
-    for (Element element : elements()) {
-      GQuery $element = $(element);
-      if (!showOrHide) {
-        $element.hide();
-      } else {
-        $element.show();
-      }
-
-    }
-    return this;
   }
 
   /**
