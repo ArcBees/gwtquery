@@ -20,11 +20,12 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx.BorderColorFx;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Animation effects on any numeric CSS property.
@@ -130,25 +131,20 @@ public class PropertiesAnimation extends GQAnimation {
      }
    }
 
-  private static final String[] ATTRS_TO_SAVE = new String[]{
-      "overflow"};
+  private static final String[] ATTRS_TO_SAVE = new String[]{"overflow"};
+  
+  private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
 
-  private static final JsRegexp REGEX_NUMBER_UNIT = new JsRegexp(
-      "^([0-9+-.]+)(.*)?$");
+  private static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
-  private static final JsRegexp REGEX_SYMBOL_NUMBER_UNIT = new JsRegexp(
-      "^([+-]=)?([0-9+-.]+)(.*)?$");
+  private static final RegExp REGEX_NON_PIXEL_ATTRS = 
+      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|^\\$", "i");
 
-  private static final JsRegexp REGEX_NON_PIXEL_ATTRS = new JsRegexp(
-      "z-?index|font-?weight|opacity|zoom|line-?height|^\\$", "i");
+  private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 
-  private static final JsRegexp REGEX_COLOR_ATTR = new JsRegexp(".*color$", "i");
+  private static final RegExp REGEX_BORDERCOLOR = RegExp.compile("^bordercolor$", "i");
 
-  private static final JsRegexp REGEX_BORDERCOLOR = new JsRegexp("^bordercolor$", "i");
-
-  private static final JsRegexp REGEX_BACKGROUNDCOLOR = new JsRegexp("^backgroundcolor$", "i");
-
-
+  private static final RegExp REGEX_BACKGROUNDCOLOR =RegExp.compile("^backgroundcolor$", "i");
 
   public static Fx computeFxProp(Element e, String key, String val,
       boolean hidden) {
@@ -212,10 +208,10 @@ public class PropertiesAnimation extends GQAnimation {
     if (key.startsWith("$")) {
       rkey = key.substring(1).toLowerCase();
       String attr = g.attr(rkey);
-      JsObjectArray<String> parts = REGEX_NUMBER_UNIT.match(attr);
+      MatchResult parts = REGEX_NUMBER_UNIT.exec(attr);
       if (parts != null) {
-        String $1 = parts.get(1);
-        String $2 = parts.get(2);
+        String $1 = parts.getGroup(1);
+        String $2 = parts.getGroup(2);
         cur = Double.parseDouble($1);
         unit = $2 == null ? "" : $2;
       } else {
@@ -240,12 +236,12 @@ public class PropertiesAnimation extends GQAnimation {
       end = 0;
       unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
     } else {
-      JsObjectArray<String> parts = REGEX_SYMBOL_NUMBER_UNIT.match(val);
+      MatchResult parts = REGEX_SYMBOL_NUMBER_UNIT.exec(val);
 
       if (parts != null) {
-        String $1 = parts.get(1);
-        String $2 = parts.get(2);
-        String $3 = parts.get(3);
+        String $1 = parts.getGroup(1);
+        String $2 = parts.getGroup(2);
+        String $3 = parts.getGroup(3);
         end = Double.parseDouble($2);
 
         if (rkey == null) {
