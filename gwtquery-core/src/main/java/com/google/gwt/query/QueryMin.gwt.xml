@@ -41,6 +41,11 @@
             <when-property-is name="user.agent" value="safari" />
         </any>
     </set-property>
+    
+    <!-- Browser flags -->
+    <generate-with class="com.google.gwt.query.rebind.BrowserGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.Browser"/>
+    </generate-with>    
 
     <!-- Selector Engines -->
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">

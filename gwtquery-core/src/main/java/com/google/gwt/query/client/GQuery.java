@@ -49,6 +49,7 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.RegExp;
@@ -134,7 +135,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Static reference Effects plugin
    */
   public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
-
+  
   /**
    * Implementation engine used for CSS selectors.
    */
@@ -698,6 +699,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static LazyGQuery<?> lazy() {
     return $().createLazy();
+  }
+  
+  /**
+   * Dump an object to the window.console.log when available
+   */
+  public static void log(Object o) {
+    JsUtils.log(o);
   }
 
   /**
@@ -4350,7 +4358,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String toString() {
     return toString(false);
   }
-
+  
   /**
    * Produces a string representation of the matched elements.
    */

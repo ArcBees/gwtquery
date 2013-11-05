@@ -5,8 +5,8 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.css.BorderColorProperty;
 import com.google.gwt.query.client.css.RGBColor;
 import com.google.gwt.query.client.js.JsNamedArray;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsRegexp;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * A pojo to store effect values.
@@ -60,14 +60,13 @@ public class Fx {
     }
 
     // hexadecimal regex
-    public static JsRegexp REGEX_HEX_COLOR_PATTERN = new JsRegexp(
-        "#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
+    public static RegExp REGEX_HEX_COLOR_PATTERN = RegExp.compile("#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
 
     private static JsNamedArray<int[]> htmlColorToRgb;
 
     // rgb and rgba regex
-    public static JsRegexp REGEX_RGB_COLOR_PATTERN = new JsRegexp(
-        "rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
+    public static RegExp REGEX_RGB_COLOR_PATTERN = 
+        RegExp.compile("rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
 
     static {
       htmlColorToRgb = JsNamedArray.create();
@@ -152,7 +151,7 @@ public class Fx {
     }
 
     protected int[] parseColor(String color) {
-      JsObjectArray<String> matches = REGEX_RGB_COLOR_PATTERN.exec(color);
+      MatchResult matches = REGEX_RGB_COLOR_PATTERN.exec(color);
       if (matches != null) {
         return parseRGBColor(matches);
       }
@@ -165,11 +164,11 @@ public class Fx {
       return parseLiteralColor(color);
     }
 
-    private int[] parseHexColor(JsObjectArray<String> matches) {
-      assert matches.length() == 2;
+    private int[] parseHexColor(MatchResult matches) {
+      assert matches.getGroupCount() == 2;
       int[] result = new int[3];
 
-      String hexCode = matches.get(1);
+      String hexCode = matches.getGroup(1);
 
       int step = (hexCode.length() == 3) ? 1 : 2;
 
@@ -189,12 +188,12 @@ public class Fx {
       return htmlColorToRgb.get(color);
     }
 
-    private int[] parseRGBColor(JsObjectArray<String> matches) {
-      assert matches.length() == 4;
+    private int[] parseRGBColor(MatchResult matches) {
+      assert matches.getGroupCount() == 4;
       int[] result = new int[3];
 
       for (int i = 1; i < 4; i++) {
-        String valueString = matches.get(i);
+        String valueString = matches.getGroup(i);
         int value = -1;
         if (valueString.endsWith("%")) {
           int percentage = Integer.parseInt(valueString.substring(0,

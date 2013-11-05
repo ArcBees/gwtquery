@@ -50,30 +50,32 @@ public class BrowserGenerator extends Generator {
     String cName = clz.getName() + "_" + ua;
     
     PrintWriter pWriter = context.tryCreate(logger, pName, cName);
-
-    ClassSourceFileComposerFactory cFact = new ClassSourceFileComposerFactory(pName, cName);
-    cFact.setSuperclass(pName + "." + clz.getName());
     
-    SourceWriter writer = cFact.createSourceWriter(context, pWriter);
-    
-    writer.println("protected boolean isWebkit() {return " + "safari".equals(ua) + ";}");
-    writer.println("protected boolean isSafari() {return " + "safari".equals(ua) + ";}");
-    writer.println("protected boolean isOpera() {return " + "opera".equals(ua) + ";}");
-    writer.println("protected boolean isMozilla() {return " + ua.contains("gecko") + ";}");
-    writer.println("protected boolean isMsie() {return " + ua.contains("ie") + ";}");
-    writer.println("protected boolean isIe6() {return " + "ie6".equals(ua) + ";}");
-    writer.println("protected boolean isIe8() {return " + "ie8".equals(ua) + ";}");
-    writer.println("protected boolean isIe9() {return " + "ie9".equals(ua) + ";}");
-    writer.println("public String toString() {return \"Browser:\"" +
-    		" + \" webkit=\" + webkit" +
-        " + \" mozilla=\" + mozilla" +
-        " + \" opera=\" + opera" +
-        " + \" msie=\" + msie" +
-        " + \" ie6=\" + ie6" +
-        " + \" ie8=\" + ie8" +
-        " + \" ie9=\" + ie9" +  
-        ";}");
-    writer.commit(logger);
+    if (pWriter != null) {
+      ClassSourceFileComposerFactory cFact = new ClassSourceFileComposerFactory(pName, cName);
+      cFact.setSuperclass(pName + "." + clz.getName());
+      
+      SourceWriter writer = cFact.createSourceWriter(context, pWriter);
+      
+      writer.println("protected boolean isWebkit() {return " + "safari".equals(ua) + ";}");
+      writer.println("protected boolean isSafari() {return " + "safari".equals(ua) + ";}");
+      writer.println("protected boolean isOpera() {return " + "opera".equals(ua) + ";}");
+      writer.println("protected boolean isMozilla() {return " + ua.contains("gecko") + ";}");
+      writer.println("protected boolean isMsie() {return " + ua.contains("ie") + ";}");
+      writer.println("protected boolean isIe6() {return " + "ie6".equals(ua) + ";}");
+      writer.println("protected boolean isIe8() {return " + "ie8".equals(ua) + ";}");
+      writer.println("protected boolean isIe9() {return " + "ie9".equals(ua) + ";}");
+      writer.println("public String toString() {return \"Browser:\"" +
+      		" + \" webkit=\" + webkit" +
+          " + \" mozilla=\" + mozilla" +
+          " + \" opera=\" + opera" +
+          " + \" msie=\" + msie" +
+          " + \" ie6=\" + ie6" +
+          " + \" ie8=\" + ie8" +
+          " + \" ie9=\" + ie9" +  
+          ";}");
+      writer.commit(logger);
+    }
     
     return pName + "." + cName;
   }

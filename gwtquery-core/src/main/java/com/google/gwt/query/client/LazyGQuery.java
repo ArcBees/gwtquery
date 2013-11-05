@@ -12,23 +12,51 @@
  * the License.
  */
 package com.google.gwt.query.client;
+import static com.google.gwt.query.client.plugins.QueuePlugin.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
+import com.google.gwt.query.client.impl.AttributeImpl;
+import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.SelectorEngine;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.effects.Transitions;
+import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
 
@@ -45,6 +73,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Add elements to the set of matched elements if they are not included yet.
    */
   LazyGQuery<T> add(String selector);
+
+  /**
+   * Add the previous selection to the current selection. Useful for traversing elements, and then
+   * adding something that was matched before the last traversal.
+   */
+  LazyGQuery<T> addBack();
 
   /**
    * Adds the specified classes to each matched element.
@@ -68,12 +102,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * the document (you can't insert an element after another if it's not in the page).
    */
   LazyGQuery<T> after(String html);
-
-  /**
-   * Add the previous selection to the current selection. Useful for traversing elements, and then
-   * adding something that was matched before the last traversal.
-   */
-  LazyGQuery<T> andSelf();
 
   /**
    *
@@ -2188,6 +2216,37 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Produces a string representation of the matched elements.
    */
   String toString();
+
+  /**
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
+   * 
+   * It works similar to animate(), and support chainning and queueing.
+   *
+   * Example:
+   * $("#foo").transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack);
+   * 
+   * $("#bar")
+   *  .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
+   *  .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);     
+   *
+   */
+  LazyGQuery<T> transition(Object stringOrProperties, int duration, Easing easing, Function... funcs);
+
+  /**
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
+   * 
+   * It works similar to animate() but has an extra parameter for delaying the animation, so as
+   * we dont have to use GQuery queue system for delaying executions, nor callbacks for firing more
+   * animations
+   *
+   * Example animate an element within 2 seconds:
+   * $("#foo")
+   *   .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, 2000, EasingCurve.easeInBack);
+   *
+   */
+  LazyGQuery<T> transition(Object stringOrProperties, int duration, int delay, Easing easing, Function... funcs);
 
   /**
    * Produces a string representation of the matched elements.
