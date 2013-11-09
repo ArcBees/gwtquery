@@ -108,8 +108,6 @@ public interface Promise {
    * It works in the same way than adding a second parameter to {@link then} method but 
    * continuing the flow and making more readable the code.
    *
-   * NOTE: this method is in gQuery but not in jQuery.
-   *
    * Example:
    * <pre>
      GQuery.when(gettingConfigurationFromCache())

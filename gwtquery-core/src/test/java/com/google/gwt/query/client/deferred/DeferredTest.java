@@ -309,7 +309,7 @@ public class DeferredTest extends GWTTestCase {
             dfd.reject(arguments[0] + " reject-or2");
           }
       })
-      .then(null, new FunctionDeferred() {
+      .or(new FunctionDeferred() {
           public void f(Deferred dfd) {
             dfd.resolve(arguments[0] + " resolve-or3");
           }

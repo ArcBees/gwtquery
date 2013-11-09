@@ -68,14 +68,9 @@ public class Deferred implements Promise.Deferred {
               }});
             } else {
               p.always(new Function(){public void f() {
-                if (p.isRejected() && !cont) {
-                  settle(FAIL, getArguments());
-                } else {
-                  settle(DONE, getArguments());
-                }
+                settle((type == DONE || type == FAIL && cont) && p.isResolved() ? DONE : FAIL, getArguments());
               }});
             }
-          
           } else {
             // Otherwise we change the arguments by the new ones
             newArgs = Boolean.TRUE.equals(newArgs) ? oldArgs :
@@ -163,7 +158,7 @@ public class Deferred implements Promise.Deferred {
     }
     
     public Promise or(final Function f) {
-      return then(false, null, f);
+      return then(true, null, f);
     }   
     
     public Promise pipe(Function... f) {
