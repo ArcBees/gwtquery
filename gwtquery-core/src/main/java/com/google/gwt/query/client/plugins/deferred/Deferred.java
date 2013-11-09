@@ -15,9 +15,7 @@
  */
 package com.google.gwt.query.client.plugins.deferred;
 
-import static com.google.gwt.query.client.Promise.PENDING;
-import static com.google.gwt.query.client.Promise.REJECTED;
-import static com.google.gwt.query.client.Promise.RESOLVED;
+import static com.google.gwt.query.client.Promise.*;
 
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -38,18 +36,6 @@ public class Deferred implements Promise.Deferred {
 
     // Private class used to handle `Promise.then()`
     private static class ThenFunction extends Function {
-      // Used internally in ThenFunction, to resolve deferred object
-      private class DoFunction extends Function {
-        int type;
-        public DoFunction(int type) {
-          this.type = type;
-        }
-        public void f() {
-          if (type == DONE) dfd.resolve(getArguments());
-          if (type == FAIL) dfd.reject(getArguments());
-          if (type == PROGRESS) dfd.notify(getArguments());
-        }
-      }
 
       // Original filter function
       private final Function filter;
@@ -57,35 +43,50 @@ public class Deferred implements Promise.Deferred {
       private final int type;
       // Original deferred object
       private final Deferred dfd;
+      // Whether break the flow if old deferred fails
+      boolean cont = false;
 
-      public ThenFunction(Deferred newDfd, Function[] subordinates, int funcType) {
+      public ThenFunction(Deferred newDfd, Function[] subordinates, int funcType, boolean continueFlow) {
         type = funcType;
         filter = subordinates.length > type ? subordinates[type] : null;
         dfd = newDfd;
+        cont = continueFlow;
       }
 
       public void f() {
-        final Object[] args = getArguments();
-        Function doIt = new DoFunction(type).setArguments(args);
+        final Object[] oldArgs = getArguments();
         if (filter != null) {
           // We filter resolved arguments with the filter function
-          Object newArgs = filter.setArguments(args).f(args);
-          // If filter function returns a promise we pipeline it and don't resolve this
+          Object newArgs = filter.setArguments(oldArgs).f(oldArgs);
+
           if (newArgs instanceof Promise) {
-            Promise p = (Promise) newArgs;
-            p.done(new DoFunction(DONE));
-            p.fail(new DoFunction(FAIL));
-            p.progress(new DoFunction(PROGRESS));
-            return;
-          // Otherwise we change the arguments with the new args
-          } else if (newArgs != null && newArgs.getClass().isArray()) {
-            doIt.setArguments((Object[])newArgs);
+            // If filter function returns a promise we pipeline it.
+            final Promise p = (Promise) newArgs;
+            if (type == PROGRESS) {
+              p.progress(new Function(){public void f() {
+                settle(PROGRESS, getArguments());
+              }});
+            } else {
+              p.always(new Function(){public void f() {
+                settle((type == DONE || type == FAIL && cont) && p.isResolved() ? DONE : FAIL, getArguments());
+              }});
+            }
           } else {
-            doIt.setArguments(newArgs);
+            // Otherwise we change the arguments by the new ones
+            newArgs = Boolean.TRUE.equals(newArgs) ? oldArgs :
+                      newArgs != null && newArgs.getClass().isArray() ? (Object[])newArgs : newArgs;
+            settle(type, newArgs);
           }
+        } else {
+          // just continue the flow when filter is null
+          settle(type, oldArgs);
         }
-        // run the function with the new args to resolve this deferred
-        doIt.f();
+      }
+      
+      private void settle(int action, Object... args) {
+        if (action == DONE) dfd.resolve(args);
+        if (action == FAIL) dfd.reject(args);
+        if (action == PROGRESS) dfd.notify(args);          
       }
     }
     
@@ -141,7 +142,11 @@ public class Deferred implements Promise.Deferred {
     public Promise always(Function... f) {
       return done(f).fail(f);
     }
-
+    
+    public Promise and(Function f) {
+      return then(f);
+    }
+    
     public Promise done(Function... f) {
       dfd.resolve.add(f);
       return this;
@@ -151,7 +156,11 @@ public class Deferred implements Promise.Deferred {
       dfd.reject.add(f);
       return this;
     }
-
+    
+    public Promise or(final Function f) {
+      return then(true, null, f);
+    }   
+    
     public Promise pipe(Function... f) {
       return then(f);
     }
@@ -165,12 +174,16 @@ public class Deferred implements Promise.Deferred {
       return dfd.state;
     }
 
-    public Promise then(final Function... f) {
+    private Promise then(boolean continueFlow, final Function... f) {
       final Deferred newDfd = new com.google.gwt.query.client.plugins.deferred.Deferred();
-      done(new ThenFunction(newDfd, f, DONE));
-      fail(new ThenFunction(newDfd, f, FAIL));
-      progress(new ThenFunction(newDfd, f, PROGRESS));
+      done(new ThenFunction(newDfd, f, DONE, continueFlow));
+      fail(new ThenFunction(newDfd, f, FAIL, continueFlow));
+      progress(new ThenFunction(newDfd, f, PROGRESS, continueFlow));
       return newDfd.promise();
+    }
+    
+    public Promise then(final Function... f) {
+      return then(false, f);
     }
 
     public boolean isResolved() {
