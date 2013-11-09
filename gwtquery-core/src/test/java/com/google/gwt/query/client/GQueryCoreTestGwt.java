@@ -50,8 +50,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.validation.constraints.AssertFalse;
-
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
