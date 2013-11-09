@@ -19,6 +19,29 @@ public class Fx {
   public static boolean off = false;
 
   /**
+   * A pojo to store color transition values.
+   */
+  public static class TransitFx extends Fx {
+    public String transitEnd;
+    public String transitStart;
+
+    TransitFx() {
+    }
+
+    TransitFx(String attr, String value, String start, String end, String unit) {
+      this.cssprop = attr;
+      this.value = value;
+      this.transitStart = start;
+      this.transitEnd = end;
+      this.unit = unit;
+    }
+
+    public String toString() {
+      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd; 
+    }
+  }
+
+  /**
    * A pojo to store color effect values.
    */
   public static class ColorFx extends Fx {

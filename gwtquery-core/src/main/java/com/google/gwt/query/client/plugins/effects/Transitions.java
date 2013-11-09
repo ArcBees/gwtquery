@@ -45,10 +45,10 @@ import com.google.gwt.user.client.DOM;
      .promise().done(new Function(){public void f() {
         g1.transition("{x: +100}", 2000, "linear", 0);
      }});
-     
+
     $("#bar")
      .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
-     .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);     
+     .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
 
  * </pre>
  */
@@ -156,7 +156,7 @@ public class Transitions extends GQuery {
   private static final String TRANSFORM = "_t_";
   private static final String transformOrigin = getVendorPropertyName("transformOrigin");
   
-  private static final RegExp transformRegex = RegExp.compile("^(scale|translate|rotate([XY]|3d)?|perspective|skew[XY]|x|y)$");
+  protected static final RegExp transformRegex = RegExp.compile("^(scale|translate|rotate([XY]|3d)?|perspective|skew[XY]|x|y)$");
   private static final String transition = getVendorPropertyName("transition");
   
   private static final String transitionDelay = getVendorPropertyName("transitionDelay");
@@ -270,16 +270,26 @@ public class Transitions extends GQuery {
   }
   
   /**
-   * Works like GQuery.animate(), but uses CSS transitions.
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
    * 
-   * It allows chaining like:
+   * It works similar to animate(), supports chainning and queueing and an extra parameter for
+   * delaying the animation.
+   *
+   * Example:
    * <pre>
-    $("#foo")
-      .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
-      .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
+     $("#foo").transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack);
+
+     $("#bar")
+       .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack)
+       .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
    * </pre>
    */
   public Transitions transition(Object stringOrProperties, int duration, Easing easing, int delay, final Function... funcs) {
+    if (isEmpty()) {
+      return this;
+    }
+    
     final Properties p = (stringOrProperties instanceof String) ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
 
     final String oldTransitions = css(transition);
@@ -295,28 +305,45 @@ public class Transitions extends GQuery {
       value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
     }
     
-    // Use gQuery queue, so as we can chain transitions
     final String transitionValue = value;
+
+    // Use gQuery queue, so as we can chain transitions, animations etc.
     delay(0, new Function(){public void f() {
-      // Configure animation using transition property
-      css(transition, transitionValue);
-      // Set all css properties for this transition 
-      css(p);
-      // prevent memory leak
-      removeData(TRANSFORM);
+      // This is called once per element
+      $(this)
+        // Configure animation using transition property
+        .css(transition, transitionValue)
+        // Set all css properties for this transition using the css method in this class 
+        .as(Transitions).css(p)
+        // prevent memory leak
+        .removeData(TRANSFORM);
     }});
     
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
     // TODO: Use transitionEnd events once GQuery supports non-bit events
     delay(duration + delay, new Function(){public void f() {
-      css(transition, oldTransitions);
-      each(funcs);
+      // This is called once per element
+      $(this).as(Transitions)
+        .css(transition, oldTransitions)
+        .each(funcs);
     }});
     
     return this;
   }
 
+  /**
+   * The transition() method allows you to create animation effects on any numeric HTML Attribute,
+   * CSS property, or color using CSS3 transformations and transitions.
+   *
+   * It works similar to animate() but has an extra parameter for delaying the animation.
+   *
+   * Example animate an element within 2 seconds:
+   * $("#foo")
+   *   .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, EasingCurve.easeInBack, 2000);
+   *
+   */
   public Transitions transition(Object stringOrProperties, int duration, String easing, int delay) {
     return transition(stringOrProperties, duration, EasingCurve.valueOf(easing), delay);
   }
+
 }

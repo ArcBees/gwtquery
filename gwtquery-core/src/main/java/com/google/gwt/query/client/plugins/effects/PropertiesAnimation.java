@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -131,13 +133,13 @@ public class PropertiesAnimation extends GQAnimation {
      }
    }
 
-  private static final String[] ATTRS_TO_SAVE = new String[]{"overflow"};
+  protected static final String[] ATTRS_TO_SAVE = new String[]{"overflow"};
   
   private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
 
-  private static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
+  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
-  private static final RegExp REGEX_NON_PIXEL_ATTRS = 
+  protected static final RegExp REGEX_NON_PIXEL_ATTRS = 
       RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
@@ -266,21 +268,19 @@ public class PropertiesAnimation extends GQAnimation {
     return new Fx(key, val, start, end, unit, rkey);
   }
 
-  private Easing easing = EasingCurve.linear;
-  private JsObjectArray<Fx> effects = JsObjectArray.create();
-  private Function[] funcs;
+  protected Easing easing;
+  protected JsObjectArray<Fx> effects = JsObjectArray.create();
+  protected Function[] funcs;
+  protected Properties prps;
 
   private Effects g;
 
-  private Properties prps;
-
-  public PropertiesAnimation(Easing easing, Element elem, Properties p,
-      Function... funcs) {
-    this.easing = easing;
+  public PropertiesAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
+    this.easing = easing != null ? easing : EasingCurve.linear;
     this.e = elem;
     this.funcs = funcs;
     this.prps = p;
-    g = Effects.$(e).as(Effects.Effects);
+    g = $(e).as(Effects.Effects);
   }
 
   @Override
@@ -346,11 +346,7 @@ public class PropertiesAnimation extends GQAnimation {
 
   @Override
   protected double interpolate(double progress) {
-    if (easing != null) {
-      return easing.interpolate(progress);
-    }
-    // maybe return super.interpolate() instead ?
-    return progress;
+    return easing.interpolate(progress);
   }
 
 }
