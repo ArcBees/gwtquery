@@ -50,8 +50,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.validation.constraints.AssertFalse;
-
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
@@ -1571,14 +1569,14 @@ public class GQueryCoreTestGwt extends GWTTestCase {
                .data("string", "foo")
                .data("object", o);
 
-    double d = g.data("number");
+    Double d = g.data("number");
     assertEquals(3.5d, d);
     int i = g.data("number", Integer.class);
     assertEquals(3, i);
     long l = g.data("number", Long.class);
     assertEquals(3l, l);
 
-    boolean b = g.data("bool");
+    Boolean b = g.data("bool");
     assertTrue(b);
 
     String s = g.data("string");

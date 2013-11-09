@@ -15,16 +15,17 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 
 /**
- * Animation wich uses the css clip property to show/hide an element.
+ * Animation which uses the css clip property to show/hide an element.
  */
-public class ClipAnimation extends GQAnimation {
+public class ClipAnimation extends PropertiesAnimation {
 
   /**
    * Type of the effect action.
@@ -48,7 +49,7 @@ public class ClipAnimation extends GQAnimation {
   }
 
   private static final String[] attrsToSave = new String[]{
-      "position", "overflow", "visibility", "white-space", "top", "left"};
+      "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
 
   Action action;
   Corner corner;
@@ -58,8 +59,9 @@ public class ClipAnimation extends GQAnimation {
   private Function[] funcs;
   private Effects g;
 
-  public ClipAnimation(Element elem, Action a, Corner c, Direction d,
-      final Function... funcs) {
+  public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
+      Properties p, final Function... funcs) {
+    super(easing, elem, p, funcs);
     if (a == Action.TOGGLE) {
       a = GQuery.$(elem).isVisible() ? Action.HIDE : Action.SHOW;
     }
@@ -69,6 +71,10 @@ public class ClipAnimation extends GQAnimation {
     this.funcs = funcs;
     e = elem;
     g = GQuery.$(e).as(Effects.Effects);
+  }
+
+  public ClipAnimation(Element elem, Action a, Corner c, Direction d, final Function... funcs) {
+    this(elem, a, c, d, null, Properties.create(), funcs);
   }
 
   @Override
@@ -97,49 +103,61 @@ public class ClipAnimation extends GQAnimation {
 
   @Override
   public void onStart() {
+    super.onStart();
     g.show();
     g.saveCssAttrs(attrsToSave);
-    if (!"absolute".equalsIgnoreCase(g.css("position", true))) {
-      g.css("position", "absolute");
-      g.css("top", g.offset().top + "px");
-      g.css("left", g.offset().left + "px");
+
+    // CSS clip only works with absolute/fixed positioning
+    if (!g.css("position", true).matches("absolute|fixed")) {
+      // Add a temporary element to replace the original one, so nothing is moved when
+      // setting the absolute  position to our element
       back = back.add(g.before("<div></div>")).prev();
       back.height(g.height());
       back.width(g.width());
+      // change the position property, but keeping its original position and sizes
+      g.css("top", g.offset().top + "px");
+      g.css("left", g.offset().left + "px");
+      g.css("width", g.width() + "px");
+      g.css("height", g.height() + "px");
+      g.css("position", "absolute");
     }
     g.css("overflow", "hidden");
     g.css("visivility", "visible");
-    super.onStart();
   }
 
   @Override
   public void onUpdate(double progress) {
+    super.onUpdate(progress);
+
     if (action == Action.HIDE) {
       progress = (1 - progress);
     }
+    int w = g.outerWidth();
+    int h = g.outerHeight();
     int top = 0;
     int left = 0;
-    int right = g.width();
-    int bottom = g.height();
+    int right = w;
+    int bottom = h;
 
     if (direction == Direction.VERTICAL || direction == Direction.BIDIRECTIONAL) {
-      bottom = (int) (g.height() * progress);
+      bottom = (int) (h * progress);
     }
-    if (direction == Direction.HORIZONTAL
-        || direction == Direction.BIDIRECTIONAL) {
-      right = (int) (g.width() * progress);
+    if (direction == Direction.HORIZONTAL || direction == Direction.BIDIRECTIONAL) {
+      right = (int) (w * progress);
     }
     if (corner == Corner.CENTER) {
-      top = (g.height() - bottom) / 2;
-      left = (g.width() - right) / 2;
-    } else if (corner == Corner.BOTTOM_LEFT) {
-      top = (g.height() - bottom);
-    } else if (corner == Corner.TOP_RIGHT) {
-      left = (g.width() - right);
-    } else if (corner == Corner.BOTTOM_RIGHT) {
-      left = (g.width() - right);
-      top = (g.height() - bottom);
+      top = (h - bottom) / 2;
+      left = (w - right) / 2;
     }
+    if (corner == Corner.TOP_RIGHT || corner == Corner.BOTTOM_RIGHT) {
+      left = (w - right);
+      right = w;
+    }
+    if (corner == Corner.BOTTOM_LEFT || corner == Corner.BOTTOM_RIGHT) {
+      top = (h - bottom);
+      bottom = h;
+    }
+
     String rect = top + "px " + right + "px " + bottom + "px  " + left + "px";
     g.css("clip", "rect(" + rect + ")");
   }
