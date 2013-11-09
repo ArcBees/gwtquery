@@ -59,7 +59,8 @@ public class ClipAnimation extends PropertiesAnimation {
   private Function[] funcs;
   private Effects g;
 
-  public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,  Properties p, final Function... funcs) {
+  public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
+      Properties p, final Function... funcs) {
     super(easing, elem, p, funcs);
     if (a == Action.TOGGLE) {
       a = GQuery.$(elem).isVisible() ? Action.HIDE : Action.SHOW;
