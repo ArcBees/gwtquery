@@ -110,10 +110,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create a {@link Button} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link Button} created
-   * by passing them in parameter.
-   *
+   * Create a {@link Button} widget for each selected element.
    */
   public Widgets button() {
     return widgets(new ButtonWidgetFactory(), null);
@@ -129,10 +126,25 @@ public class Widgets extends QueuePlugin<Widgets> {
     return widgets(new ButtonWidgetFactory(), initializers);
   }
 
+  /**
+   * Create a {@link Panel} widget for each selected element.
+   */
   public Widgets panel() {
     return widgets(new HtmlPanelWidgetFactory(), null);
   }
 
+  /**
+   * Create a {@link Label} widget for each selected element.
+   */
+  public Widgets label() {
+    return widgets(new LabelWidgetFactory(), null);
+  }
+  
+  /**
+   * Create a {@link Label} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Label} created
+   * by passing them in parameter.
+   */
   public Widgets label(WidgetInitializer<Label> initializers) {
     return widgets(new LabelWidgetFactory(), initializers);
   }
