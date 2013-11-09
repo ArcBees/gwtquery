@@ -211,7 +211,7 @@ public class DeferredTest extends GWTTestCase {
           dfd.resolve("message");
         }
       })
-      .then(new FunctionDeferred() {
+      .and(new FunctionDeferred() {
           public void f(Deferred dfd) {
             dfd.resolve("then1 " + arguments[0]);
           }
@@ -250,14 +250,24 @@ public class DeferredTest extends GWTTestCase {
           dfd.resolve("message");
         }
       })
-      .then(new FunctionDeferred() {
-          public void f(Deferred dfd) {
-            dfd.resolve("then1 " + arguments[0]);
-          }
+      .and(new Function(){
+        public Object f(Object... data) {
+          return (arguments[0] + " then1");
+        }
+      })
+      .then(new Function(){
+        public void f() {
+          // should return the previous value
+        }
       })
       .then(new FunctionDeferred() {
           public void f(Deferred dfd) {
             dfd.reject("then2 " + arguments[0]);
+          }
+      })
+      .then(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve("then3 " + arguments[0]);
           }
       })
       .done(new Function() {
@@ -268,9 +278,63 @@ public class DeferredTest extends GWTTestCase {
       })
       .fail(new Function() {
         public void f() {
-          assertEquals("then2 then1 message", arguments(0));
+          assertEquals("then2 message then1", arguments(0));
           finishTest();
           done = true;
+        }
+      });
+    
+    if (!GWT.isClient()) {
+      assertTrue(done);
+    }    
+  }
+  
+  public void testDeferredOr() {
+    done = false;
+    delayTestFinish(5000);
+
+    GQuery
+      .when(new PromiseFunction() {
+        public void f(Deferred dfd) {
+          dfd.reject("reject-when");
+        }
+      })
+      .or(new FunctionDeferred() {
+        public void f(Deferred dfd) {
+          dfd.reject(arguments[0] + " reject-or1");
+        }
+      })
+      .or(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.reject(arguments[0] + " reject-or2");
+          }
+      })
+      .then(null, new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve(arguments[0] + " resolve-or3");
+          }
+      })      
+      .or(new FunctionDeferred() {
+          public void f(Deferred dfd) {
+            dfd.resolve(arguments[0] + " or4");
+          }
+      })      
+      .or(new FunctionDeferred() {
+        public void f(Deferred dfd) {
+          dfd.reject(arguments[0] + " or5");
+        }
+      })
+      .done(new Function() {
+        public void f() {
+          assertEquals("reject-when reject-or1 reject-or2 resolve-or3", arguments(0));
+          finishTest();
+          done = true;
+        }
+      })
+      .fail(new Function() {
+        public void f() {
+          finishTest();
+          fail();
         }
       });
     

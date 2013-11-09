@@ -102,6 +102,45 @@ public interface Promise {
   Promise then(Function... f);
   
   /**
+   * Add filters to be called just in case the Deferred object is rejected returning
+   * a new valid promise so as we can continue the flow control of the chain.
+   *
+   * It works in the same way than adding a second parameter to {@link then} method but 
+   * continuing the flow and making more readable the code.
+   *
+   * NOTE: this method is in gQuery but not in jQuery.
+   *
+   * Example:
+   * <pre>
+     GQuery.when(gettingConfigurationFromCache())
+           .or(gettingConfigurationFromServer())
+           .done(drawUI());
+   * </pre>
+   *
+   * NOTE: this is a convenience method in gQuery not present in jQuery.
+   */
+  Promise or(Function f);
+
+  /**
+   * Add filters to be called just in case the Deferred object is resolved.
+   *
+   * It works in the same way than {@link then} does but making more readable
+   * the code flow.
+   *
+   * NOTE: this method is in gQuery but not in jQuery.
+   *
+   * Example:
+   * <pre>
+     GQuery.when(login())
+           .and(getConfiguration())
+           .done(drawUI());
+   * </pre>
+   *
+   * NOTE: this is a convenience method in gQuery not present in jQuery.
+   */
+  Promise and(Function f);
+
+  /**
    * Determine whether a Deferred object has been resolved.
    */
   boolean isResolved();
