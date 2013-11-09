@@ -22,6 +22,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
+import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.regexp.shared.MatchResult;
 
 /**
@@ -92,6 +93,10 @@ public class TransitionsAnimation extends PropertiesAnimation {
   }
 
   private Transitions g;
+  
+  public TransitionsAnimation(Element elem, Properties p, Function... funcs) {
+    this(null, elem, p, funcs);
+  }
 
   public TransitionsAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
     super(easing, elem, p, funcs);

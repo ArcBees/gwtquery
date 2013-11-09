@@ -20,6 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
 
 /**
@@ -51,20 +52,44 @@ public class ClipAnimation extends PropertiesAnimation {
   private static final String[] attrsToSave = new String[]{
       "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
 
-  Action action;
-  Corner corner;
-  Direction direction;
-  int percent;
+  private Action action;
+  private Corner corner;
+  private Direction direction;
   private GQuery back = Effects.$();
   private Function[] funcs;
   private Effects g;
+  private Action currentAction;
+
+  public ClipAnimation(Element elem, Properties p, Function... funcs) {
+    super(elem, p, funcs);
+    corner = Corner.CENTER;
+    try {
+      corner = Corner.valueOf(getNormalizedValue("clip-origin", p));
+    } catch (Exception e) {
+    }
+    direction = Direction.BIDIRECTIONAL;
+    try {
+      direction = Direction.valueOf(getNormalizedValue("clip-direction", p));
+    } catch (Exception e) {
+    }
+    action = Action.TOGGLE;
+    try {
+      action = Action.valueOf(getNormalizedValue("clip-action", p));
+    } catch (Exception e) {
+    }
+
+    this.funcs = funcs;
+    e = elem;
+    g = GQuery.$(e).as(Effects.Effects);
+  }
+
+  private String getNormalizedValue(String value, Properties p) {
+    return JsUtils.hyphenize(p.getStr("clip-direction")).replace("-", "_").toUpperCase();
+  }
 
   public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
       Properties p, final Function... funcs) {
     super(easing, elem, p, funcs);
-    if (a == Action.TOGGLE) {
-      a = GQuery.$(elem).isVisible() ? Action.HIDE : Action.SHOW;
-    }
     this.action = a;
     this.corner = c;
     this.direction = d;
@@ -90,7 +115,7 @@ public class ClipAnimation extends PropertiesAnimation {
   @Override
   public void onComplete() {
     super.onComplete();
-    if (action == Action.HIDE) {
+    if (currentAction == Action.HIDE) {
       g.hide();
     }
     g.restoreCssAttrs(attrsToSave);
@@ -103,8 +128,10 @@ public class ClipAnimation extends PropertiesAnimation {
 
   @Override
   public void onStart() {
+    boolean hidden = !g.isVisible();
     super.onStart();
-    g.show();
+    currentAction = action != Action.TOGGLE ? action :  hidden ? Action.SHOW : Action.HIDE;
+
     g.saveCssAttrs(attrsToSave);
 
     // CSS clip only works with absolute/fixed positioning
@@ -123,13 +150,16 @@ public class ClipAnimation extends PropertiesAnimation {
     }
     g.css("overflow", "hidden");
     g.css("visivility", "visible");
+
+    // Set the initial clip viewport before showing the element
+    onUpdate(0);
+    g.show();
   }
 
   @Override
   public void onUpdate(double progress) {
     super.onUpdate(progress);
-
-    if (action == Action.HIDE) {
+    if (currentAction == Action.HIDE) {
       progress = (1 - progress);
     }
     int w = g.outerWidth();

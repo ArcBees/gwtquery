@@ -269,14 +269,24 @@ public class PropertiesAnimation extends GQAnimation {
   }
 
   protected Easing easing;
-  protected JsObjectArray<Fx> effects = JsObjectArray.create();
+  protected JsObjectArray<Fx> effects;
   protected Function[] funcs;
   protected Properties prps;
-
   private Effects g;
 
+  public PropertiesAnimation(Element elem, Properties p, Function... funcs) {
+    this(null, elem, p, funcs);
+  }
+
   public PropertiesAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-    this.easing = easing != null ? easing : EasingCurve.linear;
+    if (easing == null) {
+      try {
+        easing = EasingCurve.valueOf(p.getStr("easing"));
+      } catch (Exception e) {
+        easing = EasingCurve.linear;
+      }
+    }
+    this.easing = easing;
     this.e = elem;
     this.funcs = funcs;
     this.prps = p;
@@ -314,6 +324,7 @@ public class PropertiesAnimation extends GQAnimation {
 
   @Override
   public void onStart() {
+    effects = JsObjectArray.create();
     boolean resize = false;
     boolean move = false;
     boolean hidden = !g.isVisible();
