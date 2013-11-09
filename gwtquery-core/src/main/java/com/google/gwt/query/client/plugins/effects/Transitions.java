@@ -345,5 +345,4 @@ public class Transitions extends GQuery {
   public Transitions transition(Object stringOrProperties, int duration, String easing, int delay) {
     return transition(stringOrProperties, duration, EasingCurve.valueOf(easing), delay);
   }
-
 }

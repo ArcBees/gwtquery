@@ -131,8 +131,12 @@ public class ClipAnimation extends PropertiesAnimation {
     if (action == Action.HIDE) {
       progress = (1 - progress);
     }
-    int w = g.outerWidth(), h = g.outerHeight();
-    int top = 0, left = 0, right = w, bottom = h;
+    int w = g.outerWidth();
+    int h = g.outerHeight();
+    int top = 0;
+    int left = 0;
+    int right = w;
+    int bottom = h;
 
     if (direction == Direction.VERTICAL || direction == Direction.BIDIRECTIONAL) {
       bottom = (int) (h * progress);

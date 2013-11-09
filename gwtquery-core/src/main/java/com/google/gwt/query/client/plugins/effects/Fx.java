@@ -19,7 +19,7 @@ public class Fx {
   public static boolean off = false;
 
   /**
-   * A pojo to store color transition values.
+   * A pojo to store css3 transition values.
    */
   public static class TransitFx extends Fx {
     public String transitEnd;

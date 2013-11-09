@@ -37,7 +37,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
       val = hidden ? "show" : "hide";
     }
 
-    if (("show".equals(val) && !hidden) || ("hide").equals(val) && hidden) {
+    if ("show".equals(val) && !hidden || "hide".equals(val) && hidden) {
       return null;
     }
 
@@ -62,13 +62,13 @@ public class TransitionsAnimation extends PropertiesAnimation {
       if (parts != null) {
         unit = REGEX_NON_PIXEL_ATTRS.test(key) || Transitions.transformRegex.test(key) ? "" : "px";
         
-        String $1 = parts.getGroup(1);
-        String $2 = parts.getGroup(2);
-        String $3 = parts.getGroup(3);
-        trsEnd = "" + Double.parseDouble($2);
+        String part1 = parts.getGroup(1);
+        String part2 = parts.getGroup(2);
+        String part3 = parts.getGroup(3);
+        trsEnd = "" + Double.parseDouble(part2);
         
-        if (unit.isEmpty() && $3 != null) {
-          unit = $3;
+        if (unit.isEmpty() && part3 != null) {
+          unit = part3;
         }
         if (trsStart.isEmpty()) {
           trsStart = "0";
@@ -78,8 +78,8 @@ public class TransitionsAnimation extends PropertiesAnimation {
           trsStart += unit;
         }
 
-        if ($1 != null && !$1.isEmpty()) {
-          double n = "-=".equals($1) ? -1 : 1;
+        if (part1 != null && !part1.isEmpty()) {
+          double n = "-=".equals(part1) ? -1 : 1;
           double st = Double.parseDouble(trsStart);
           double en = Double.parseDouble(trsEnd);
           trsEnd = "" + (st + (n*en));
@@ -121,7 +121,6 @@ public class TransitionsAnimation extends PropertiesAnimation {
         resize = resize || "height".equals(key) || "width".equals(key);
         move = move || "top".equals(key) || "left".equals(key);
       }
-      System.out.println(fx);
     }
     g.saveCssAttrs(ATTRS_TO_SAVE);
     if (resize) {
@@ -136,10 +135,8 @@ public class TransitionsAnimation extends PropertiesAnimation {
   public void run(int duration) {
     onStart();
     Properties p = getFxProperties(true);
-    System.out.println(p.toJsonString());
     g.css(p);
     p = getFxProperties(false);
-    System.out.println(p.toJsonString());
     g.transition(p, duration - 150, easing, 0, new Function(){public void f() {
       onComplete();
     }});
