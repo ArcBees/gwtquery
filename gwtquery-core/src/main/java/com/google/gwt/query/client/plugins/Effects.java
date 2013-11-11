@@ -42,7 +42,16 @@ public class Effects extends QueuePlugin<Effects> {
 
     // Each Animation is associated to one element
     protected Element e;
-
+    protected Properties prps;
+    
+    protected GQAnimation setElement(Element element) {
+      e = element;
+      return this;
+    }
+    protected GQAnimation setProperties(Properties properties) {
+      prps = properties;
+      return this;
+    }
     protected void onStart() {
       // Mark this animation as actual, so as we can stop it in the GQuery.stop() method
       $(e).data(ACTUAL_ANIMATION, this);

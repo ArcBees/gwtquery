@@ -271,7 +271,6 @@ public class PropertiesAnimation extends GQAnimation {
   protected Easing easing;
   protected JsObjectArray<Fx> effects;
   protected Function[] funcs;
-  protected Properties prps;
   private Effects g;
 
   public PropertiesAnimation(Element elem, Properties p, Function... funcs) {
@@ -287,9 +286,10 @@ public class PropertiesAnimation extends GQAnimation {
       }
     }
     this.easing = easing;
-    this.e = elem;
     this.funcs = funcs;
-    this.prps = p;
+    setProperties(p);
+    setElement(elem);
+    
     g = $(e).as(Effects.Effects);
   }
 

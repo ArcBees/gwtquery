@@ -56,7 +56,6 @@ public class ClipAnimation extends PropertiesAnimation {
   private Corner corner;
   private Direction direction;
   private GQuery back = Effects.$();
-  private Function[] funcs;
   private Effects g;
   private Action currentAction;
 
@@ -103,16 +102,6 @@ public class ClipAnimation extends PropertiesAnimation {
   }
 
   @Override
-  public void onCancel() {
-    Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
-    if (jumpToEnd != null && jumpToEnd){
-      onComplete();
-    } else {
-      g.dequeue();
-    }
-  }
-
-  @Override
   public void onComplete() {
     super.onComplete();
     if (currentAction == Action.HIDE) {
@@ -122,8 +111,6 @@ public class ClipAnimation extends PropertiesAnimation {
     back.remove();
     back = Effects.$();
     g.css("clip", "");
-    g.each(funcs);
-    g.dequeue();
   }
 
   @Override
