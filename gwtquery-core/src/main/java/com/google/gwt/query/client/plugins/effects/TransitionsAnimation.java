@@ -21,6 +21,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Corner;
+import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.regexp.shared.MatchResult;
 
@@ -29,7 +32,66 @@ import com.google.gwt.regexp.shared.MatchResult;
  * using CSS3 transitions
  */
 public class TransitionsAnimation extends PropertiesAnimation {
-  
+
+  public static class TransitionsClipAnimation extends TransitionsAnimation {
+
+    private Action action;
+    private Corner corner;
+    private Direction direction;
+    private Action currentAction;
+
+    public TransitionsClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
+        Properties p, final Function... funcs) {
+      super(easing, elem, p, funcs);
+      this.action = a;
+      this.corner = c;
+      this.direction = d;
+    }
+
+    public void onStart() {
+      boolean hidden = !g.isVisible();
+
+      super.onStart();
+
+      currentAction = action != Action.TOGGLE ? action :  hidden ? Action.SHOW : Action.HIDE;
+      int bit = currentAction == Action.HIDE ? 1 : 0;
+
+      String originX = "left", originY = "top";
+      int scaleXini = 0^bit, scaleYini = scaleXini;
+      int scaleXend = 1^bit, scaleYend = scaleXend;
+
+      if (direction == Direction.VERTICAL) {
+        scaleXini = scaleXend = 1;
+      }
+      if (direction == Direction.HORIZONTAL) {
+        scaleYini = scaleYend = 1;
+      }
+      if (corner == Corner.CENTER) {
+        originX = originY = "center";
+      }
+      if (corner == Corner.TOP_RIGHT || corner == Corner.BOTTOM_RIGHT) {
+        originX = "right";
+      }
+      if (corner == Corner.BOTTOM_LEFT || corner == Corner.BOTTOM_RIGHT) {
+        originY = "bottom";
+      }
+
+      g.show().css("transformOrigin", originX + " " + originY);
+
+      effects.add(new TransitFx("scale", "", scaleXini + " " + scaleYini, scaleXend + " " + scaleYend, ""));
+    }
+
+    @Override
+    public void onComplete() {
+      super.onComplete();
+      if (currentAction == Action.HIDE) {
+        g.hide();
+      }
+      g.css("transformOrigin", "");
+      g.css("transform", "scale(1 1)");
+    }
+  }
+
   public static Fx computeFxProp(Element e, String key, String val, boolean hidden) {
     Transitions g = $(e).as(Transitions.Transitions);
     String unit = "";
@@ -47,35 +109,28 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
     String cur = g.css(key, true);
     String trsStart = cur, trsEnd = trsStart;
-    
+
     if ("show".equals(val)) {
       g.saveCssAttrs(key);
       trsStart = "0";
     } else if ("hide".equals(val)) {
-      if (hidden) {
-        return null;
-      }
       g.saveCssAttrs(key);
       trsEnd = "0";
     } else {
       MatchResult parts = REGEX_SYMBOL_NUMBER_UNIT.exec(val);
       if (parts != null) {
         unit = REGEX_NON_PIXEL_ATTRS.test(key) || Transitions.transformRegex.test(key) ? "" : "px";
-        
+
         String part1 = parts.getGroup(1);
         String part2 = parts.getGroup(2);
         String part3 = parts.getGroup(3);
         trsEnd = "" + Double.parseDouble(part2);
-        
+
         if (unit.isEmpty() && part3 != null) {
           unit = part3;
         }
         if (trsStart.isEmpty()) {
-          trsStart = "0";
-        }
-        
-        if (!trsStart.endsWith(unit)) {
-          trsStart += unit;
+          trsStart = key.matches("scale") ? "1" : "0";
         }
 
         if (part1 != null && !part1.isEmpty()) {
@@ -85,14 +140,15 @@ public class TransitionsAnimation extends PropertiesAnimation {
           trsEnd = "" + (st + (n*en));
         }
       } else {
-        trsStart = trsEnd = val;
+        trsStart = "";
+        trsEnd = val;
       }
     }
     return new TransitFx(key, val, trsStart, trsEnd, unit);
   }
 
-  private Transitions g;
-  
+  protected Transitions g;
+
   public TransitionsAnimation(Element elem, Properties p, Function... funcs) {
     this(null, elem, p, funcs);
   }
@@ -106,7 +162,10 @@ public class TransitionsAnimation extends PropertiesAnimation {
     Properties p = $$();
     for (int i = 0; i < effects.length(); i++) {
       TransitFx fx = (TransitFx)effects.get(i);
-      p.set(fx.cssprop, (isStart ? fx.transitStart : fx.transitEnd) + fx.unit);
+      String val = isStart ? fx.transitStart : fx.transitEnd;
+      if (!val.isEmpty()) {
+        p.set(fx.cssprop, val + fx.unit);
+      }
     }
     return p;
   }
@@ -136,12 +195,18 @@ public class TransitionsAnimation extends PropertiesAnimation {
   }
 
   @Override
+  public void onUpdate(double progress) {
+  }
+
+  @Override
   public void run(int duration) {
     onStart();
     Properties p = getFxProperties(true);
     g.css(p);
+    // TODO: Reflow, it seems it is not needed in chrome and FF, check other browsers
+    // g.css("offsetHeight");
     p = getFxProperties(false);
-    g.transition(p, duration - 150, easing, 0, new Function(){public void f() {
+    g.transition(p, duration, easing, 0, new Function(){public void f() {
       onComplete();
     }});
   }

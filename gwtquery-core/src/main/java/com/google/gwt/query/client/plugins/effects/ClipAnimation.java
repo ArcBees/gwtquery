@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -71,18 +70,14 @@ public class ClipAnimation extends PropertiesAnimation {
       direction = Direction.valueOf(getNormalizedValue("clip-direction", p));
     } catch (Exception e) {
     }
-    action = Action.TOGGLE;
     try {
       action = Action.valueOf(getNormalizedValue("clip-action", p));
     } catch (Exception e) {
     }
-
-    this.funcs = funcs;
-    e = elem;
     g = GQuery.$(e).as(Effects.Effects);
   }
 
-  private String getNormalizedValue(String value, Properties p) {
+  private static String getNormalizedValue(String value, Properties p) {
     return JsUtils.hyphenize(p.getStr("clip-direction")).replace("-", "_").toUpperCase();
   }
 
@@ -92,8 +87,6 @@ public class ClipAnimation extends PropertiesAnimation {
     this.action = a;
     this.corner = c;
     this.direction = d;
-    this.funcs = funcs;
-    e = elem;
     g = GQuery.$(e).as(Effects.Effects);
   }
 
@@ -175,7 +168,6 @@ public class ClipAnimation extends PropertiesAnimation {
       bottom = h;
     }
 
-    String rect = top + "px " + right + "px " + bottom + "px  " + left + "px";
-    g.css("clip", "rect(" + rect + ")");
+    g.css("clip", "rect(" + top + "px " + right + "px " + bottom + "px  " + left + "px)");
   }
 }

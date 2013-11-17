@@ -140,7 +140,7 @@ public class PropertiesAnimation extends GQAnimation {
   protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
   protected static final RegExp REGEX_NON_PIXEL_ATTRS = 
-      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|^\\$", "i");
+      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotation|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 
@@ -270,7 +270,7 @@ public class PropertiesAnimation extends GQAnimation {
 
   protected Easing easing;
   protected JsObjectArray<Fx> effects;
-  protected Function[] funcs;
+  private Function[] funcs;
   private Effects g;
 
   public PropertiesAnimation(Element elem, Properties p, Function... funcs) {
