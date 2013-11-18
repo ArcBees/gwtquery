@@ -29,14 +29,21 @@ import java.lang.annotation.Target;
  * external handwritten javascript files.
  * 
  * The goals of using this technique are:
- *   - Use pure javascript files so as we can use IDEs for editing, formating etc.
- *   - Ability to test js files directly in the browser without compiling.
- *   - Include 3party libraries without modification of the original sources.
- *   - Not need of including javascript tags to include 3party js.
- *   - GWT compiler will get rid of these jsni fragments if the application
- *     does not use any method.
+ *   - Use pure javascript files so as we can use IDEs for editing, formating etc,
+ *     instead of dealing with code in comment blocks.
+ *   - Facilitate writing and testing javascript in the browser before compiling it.
+ *   - Include 3party javascript libraries without modification of the original source.
+ *   - Not need of adding javascript tags in the html page or module file to include
+ *     3rd party javascript.
+ *   - GWT compiler will get rid of any jsni fragment if the application does not use it.
  *   - Included javascript will take advantage of GWT jsni validators, obfuscators
  *     and optimizers.
+ *
+ * In summary, this mechanism facilitates the creation of GWT libraries wrapping or using
+ * external javascript code, hence the developer does not have to take care of tags,
+ * and leaving gwt compiler the decission to include external code when it is actually
+ * required.
+ *
  * <pre>
     public interface HighCharts extends JsniBundle {
       @LibrarySource("highcharts.js")
