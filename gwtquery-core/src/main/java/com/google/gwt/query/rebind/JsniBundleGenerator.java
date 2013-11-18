@@ -92,7 +92,7 @@ public class JsniBundleGenerator extends Generator {
                 // remove MS <CR>
                 .replace("\r", "")
                 // remove 'c' (/* */) style comments blocks 
-                .replaceAll("(\\s*/\\*[\\s\\S]*?\\*/\\s*)", "\n")
+                .replaceAll("/\\*(?>(?:(?>[^\\*]+)|\\*(?!/))*)\\*/", "")
                 // remove 'c++' (//) style comment lines
                 .replaceAll("(?m)^\\s*//.*$", "")
                 // remove 'c++' (//) style comments at the end of a code line
