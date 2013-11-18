@@ -45,15 +45,14 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class JsniBundleGenerator extends Generator {
 
-  public String generate(TreeLogger logger,
-      GeneratorContext context, String requestedClass)
+  public String generate(TreeLogger logger, GeneratorContext context, String requestedClass)
       throws UnableToCompleteException {
     
     TypeOracle oracle = context.getTypeOracle();
     JClassType clazz = oracle.findType(requestedClass);
 
     String packageName = clazz.getPackage().getName();
-    String className = clazz.getName().replace('.', '_') + "_Impl" ;
+    String className = clazz.getName().replace('.', '_') + "_Impl";
     String fullName = packageName + "." + className;
     
     PrintWriter pw = context.tryCreate(logger, packageName, className);

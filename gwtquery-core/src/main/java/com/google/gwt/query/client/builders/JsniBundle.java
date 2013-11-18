@@ -32,9 +32,9 @@ import java.lang.annotation.Target;
  *   - Use pure javascript files so as we can use IDEs for editing, formating etc,
  *     instead of dealing with code in comment blocks.
  *   - Facilitate writing and testing javascript in the browser before compiling it.
- *   - Include 3party javascript libraries without modification of the original source.
+ *   - Include third-party javascript libraries without modification of the original source.
  *   - Not need of adding javascript tags in the html page or module file to include
- *     3rd party javascript.
+ *     third-party javascript.
  *   - GWT compiler will get rid of any jsni fragment if the application does not use it.
  *   - Included javascript will take advantage of GWT jsni validators, obfuscators
  *     and optimizers.
@@ -56,7 +56,7 @@ import java.lang.annotation.Target;
    // Generate the Bundle implementation
    HighCharts library = GWT.create(HighCharts.class);
 
-   // Initialize the 3party library
+   // Initialize the third-party library
    library.initialize();
 
    // Create a new chart
@@ -67,7 +67,7 @@ import java.lang.annotation.Target;
 public interface JsniBundle {
   
   /**
-   * Annotation to mark inclusion of 3 party libraries.
+   * Annotation to mark inclusion of third-party libraries.
    *  
    * The content is wrapped with an inner javascript function to set
    * the context to the document window instead of the iframe where GWT
