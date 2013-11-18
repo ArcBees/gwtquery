@@ -27,6 +27,8 @@ import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 
 /**
  * Effects plugin for Gwt Query.
@@ -42,7 +44,16 @@ public class Effects extends QueuePlugin<Effects> {
 
     // Each Animation is associated to one element
     protected Element e;
+    protected Properties prps;
 
+    protected GQAnimation setElement(Element element) {
+      e = element;
+      return this;
+    }
+    protected GQAnimation setProperties(Properties properties) {
+      prps = properties == null ? Properties.create() : properties;
+      return this;
+    }
     protected void onStart() {
       // Mark this animation as actual, so as we can stop it in the GQuery.stop() method
       $(e).data(ACTUAL_ANIMATION, this);
@@ -68,7 +79,6 @@ public class Effects extends QueuePlugin<Effects> {
     public static final int FAST = 200;
     public static final int SLOW = 600;
   }
-
 
   public static final Class<Effects> Effects = GQuery.registerPlugin(
       Effects.class, new Plugin<Effects>() {
@@ -159,11 +169,16 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects animate(Object stringOrProperties, final int duration,
       final Easing easing, final Function... funcs) {
 
+
     final Properties p = (stringOrProperties instanceof String)
         ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
 
     for (Element e: elements()) {
-      queueAnimation(e, new PropertiesAnimation(easing, e, p, funcs), duration);
+      if (Fx.css3) {
+        new TransitionsAnimation(easing, e, p, funcs).run(duration);
+      } else {
+        queueAnimation(e, new PropertiesAnimation(easing, e, p, funcs), duration);
+      }
     }
     return this;
   }
@@ -309,7 +324,11 @@ public class Effects extends QueuePlugin<Effects> {
       final ClipAnimation.Corner c, final ClipAnimation.Direction d,
       final int duration, final Function... f) {
     for (Element e : elements()) {
-      queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
+      if (Fx.css3) {
+        new TransitionsClipAnimation(e, a, c, d, null, null, f).run(duration);
+      } else {
+        queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
+      }
     }
     return this;
   }
@@ -459,7 +478,7 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects fadeOut(int millisecs, Function... f) {
     return animate("opacity: 'hide'", millisecs, f);
   };
-  
+
   /**
    * Fade the opacity of all matched elements to a specified opacity and firing
    * an optional callback after completion. Only the opacity is adjusted for
@@ -469,7 +488,7 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects fadeTo(double opacity, Function... f) {
     return fadeTo(Speed.DEFAULT, opacity, f);
   }
-  
+
   /**
    * Fade the opacity of all matched elements to a specified opacity and firing
    * an optional callback after completion. Only the opacity is adjusted for

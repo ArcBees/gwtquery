@@ -34,11 +34,11 @@ import com.google.gwt.user.client.DOM;
 
 /**
  * Transitions and transformation plugin for gQuery.
- * 
+ *
  * It is inspired on jquery.transit (http://github.com/rstacruz/jquery.transit)
  *
  * Usage examples:
- * <pre> 
+ * <pre>
 
     $("#foo")
      .transition("{ opacity: 0.1, scale: 2, x: 50, y: 50 }", 5000, "easeOutBack", 0)
@@ -53,25 +53,35 @@ import com.google.gwt.user.client.DOM;
  * </pre>
  */
 public class Transitions extends GQuery {
-  
+
   /**
    * A dictionary class with all the properties of an element transform
    * which is able to return the correct syntax for setting css properties.
    */
   public static class Transform  {
-    
+
     private static final RegExp transform3dRegex = RegExp.compile("^(rotate([XY]|3d)|perspective)$");
-    
+
     private HashMap<String, List<String>> map = new HashMap<String, List<String>>();
 
     public Transform(String s) {
       parse(s);
     }
-    
-    public List<String> get(String prop) {
-      return map.get(prop);
+
+    public String get(String prop) {
+      return listToStr(map.get(prop), ",");
     }
-    
+
+    private String listToStr(List<String> l, String sep) {
+      String v = "";
+      if (l != null) {
+        for (String s : l) {
+          v += (v.isEmpty() ? "" : sep) + s;
+        }
+      }
+      return v;
+    }
+
     private void parse(String s) {
       if (s != null) {
         RegExp re = RegExp.compile("([a-zA-Z0-9]+)\\((.*?)\\)", "g");
@@ -80,11 +90,11 @@ public class Transitions extends GQuery {
         }
       }
     }
-    
+
     public void set(String prop, String ...val) {
       setter(prop, val);
     }
-    
+
     public void setFromString(String prop, String ...val) {
       if (val.length == 1 && val[0] instanceof String) {
         String[] vals = ((String)val[0]).split("[\\s*,\\s*]");
@@ -93,7 +103,7 @@ public class Transitions extends GQuery {
         set(prop, val);
       }
     }
-    
+
     private void setter(String prop, String ...val) {
       if (prop.matches("(rotate[XY]?|skew[XY])")) {
         map.put(prop, unit(val[0], "deg"));
@@ -123,7 +133,7 @@ public class Transitions extends GQuery {
         map.put("translate", Arrays.asList(map.get("translateX").get(0), map.get("translateY").get(0)));
       }
     }
-    
+
     /**
      * Converts the dictionary to a transition css string.
      */
@@ -133,44 +143,41 @@ public class Transitions extends GQuery {
       String ret = "";
       for (Entry<String, List<String>> e: map.entrySet()) {
         if (has3d || !transform3dRegex.test(e.getKey())) {
-          String v = "";
-          for (String s : e.getValue()) {
-            v += (v.isEmpty() ? "" : ",") + s;
-          }
+          String v = listToStr(e.getValue(), ",");
           ret += (ret.isEmpty() ? "" : " ") + e.getKey() + "(" + v + ")";
         }
       }
       return ret;
     }
-    
+
     private List<String> unit(String val, String unit) {
       return Arrays.asList(val + (val.endsWith(unit) ? "" : unit));
     }
   }
-  
+
   // Used to check supported properties in the browser
   private static Style divStyle = DOM.createDiv().getStyle();
-  
+
   private static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
   private static final String transform = getVendorPropertyName("transform");
   private static final String TRANSFORM = "_t_";
   private static final String transformOrigin = getVendorPropertyName("transformOrigin");
-  
+
   protected static final RegExp transformRegex = RegExp.compile("^(scale|translate|rotate([XY]|3d)?|perspective|skew[XY]|x|y)$");
-  private static final String transition = getVendorPropertyName("transition");
-  
+  protected static final String transition = getVendorPropertyName("transition");
+
   private static final String transitionDelay = getVendorPropertyName("transitionDelay");
   private static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "transitionEnd");
-  
+
   public static boolean has3d = supportsTransform3d();
-  
+
   public static final Class<Transitions> Transitions = GQuery.registerPlugin(
       Transitions.class, new Plugin<Transitions>() {
         public Transitions init(GQuery gq) {
           return new Transitions(gq);
         }
       });
-  
+
   private static String getVendorPropertyName(String prop) {
     // we prefer vendor specific names by default
     String vendorProp =  JsUtils.camelize("-" + prefix + "-" + prop);
@@ -186,40 +193,42 @@ public class Transitions extends GQuery {
     }
     return null;
   }
-  
+
   private static String property(String prop) {
     if (transformRegex.test(prop)) {
       return transform;
     }
     return prop.replaceFirst("^(margin|padding).+$", "$1");
   }
-  
+
   private static boolean supportsTransform3d() {
     String rotate = "rotateY(1deg)";
     divStyle.setProperty(transform, rotate);
     rotate = divStyle.getProperty(transform);
     return rotate != null && !rotate.isEmpty();
   }
-  
+
   protected Transitions(GQuery gq) {
     super(gq);
   }
 
-  @Override 
+  @Override
   public String css(String prop, boolean force) {
     if ("transform".equals(prop)) {
-      Transform t = data(TRANSFORM);
-      return t == null ? "" : t.toString();
+      return isEmpty() ? "" : getTransform(get(0), null).toString();
     } else if ("transformOrigin".equals(prop)) {
       return super.css(transformOrigin, force);
     } else if ("transition".equals(prop)) {
       return super.css(transition, force);
+    } else if (transformRegex.test(prop)) {
+      return isEmpty() ? "" : getTransform(get(0), null).get(prop);
     } else {
-      return super.css(prop, force);
+      String ret =  super.css(prop, force);
+      return ret;
     }
   }
-  
-  @Override 
+
+  @Override
   public Transitions css(String prop, String value) {
     if ("transform".equals(prop)) {
       for (Element e : elements()) {
@@ -241,7 +250,7 @@ public class Transitions extends GQuery {
     }
     return this;
   }
-  
+
   private List<String> filterPropertyNames(Properties p) {
     List<String> ret = new ArrayList<String>();
     for (String s : p.keys()) {
@@ -251,7 +260,7 @@ public class Transitions extends GQuery {
       if (m != null) {
         c = m;
       }
-      // chrome needs transition:-webkit-transform instead of transition:transform 
+      // chrome needs transition:-webkit-transform instead of transition:transform
       c = JsUtils.hyphenize(c);
       if (!ret.contains(c)) {
         ret.add(c);
@@ -259,7 +268,7 @@ public class Transitions extends GQuery {
     }
     return ret;
   }
-  
+
   private Transform getTransform(Element e, String initial) {
     Transform t = data(e, TRANSFORM);
     if (t == null || initial != null && !initial.isEmpty() ) {
@@ -268,11 +277,11 @@ public class Transitions extends GQuery {
     }
     return t;
   }
-  
+
   /**
    * The transition() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color using CSS3 transformations and transitions.
-   * 
+   *
    * It works similar to animate(), supports chainning and queueing and an extra parameter for
    * delaying the animation.
    *
@@ -289,7 +298,7 @@ public class Transitions extends GQuery {
     if (isEmpty()) {
       return this;
     }
-    
+
     final Properties p = (stringOrProperties instanceof String) ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
 
     final String oldTransitions = css(transition);
@@ -297,14 +306,14 @@ public class Transitions extends GQuery {
     if (easing == null) {
       easing = EasingCurve.ease;
     }
-    
+
     String attribs = duration + "ms" + " "  + easing.toString() + " " + delay + "ms";
     List<String> props = filterPropertyNames(p);
     String value  = "";
     for (String s : props) {
       value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
     }
-    
+
     final String transitionValue = value;
 
     // Use gQuery queue, so as we can chain transitions, animations etc.
@@ -313,12 +322,10 @@ public class Transitions extends GQuery {
       $(this)
         // Configure animation using transition property
         .css(transition, transitionValue)
-        // Set all css properties for this transition using the css method in this class 
-        .as(Transitions).css(p)
-        // prevent memory leak
-        .removeData(TRANSFORM);
+        // Set all css properties for this transition using the css method in this class
+        .as(Transitions).css(p);
     }});
-    
+
     // restore oldTransitions in the element, and use the queue to prevent more effects being run.
     // TODO: Use transitionEnd events once GQuery supports non-bit events
     delay(duration + delay, new Function(){public void f() {
@@ -327,7 +334,7 @@ public class Transitions extends GQuery {
         .css(transition, oldTransitions)
         .each(funcs);
     }});
-    
+
     return this;
   }
 
