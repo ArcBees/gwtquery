@@ -183,10 +183,6 @@ public class Effects extends QueuePlugin<Effects> {
     return this;
   }
 
-  private static native void set(Element e) /*-{
-    $wnd.eee = e;
-  }-*/;
-
   /**
    *
    * The animate() method allows you to create animation effects on any numeric
