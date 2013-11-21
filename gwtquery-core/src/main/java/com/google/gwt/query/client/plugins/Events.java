@@ -14,6 +14,7 @@
 package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.Function;
@@ -109,7 +110,7 @@ public class Events extends GQuery {
 
   public GQuery die(int eventbits, String nameSpace) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).die(
-        eventbits, nameSpace, null, currentSelector);
+        eventbits, nameSpace, null, null, currentSelector);
     return this;
   }
 
@@ -136,7 +137,7 @@ public class Events extends GQuery {
 
   public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
-        eventbits, nameSpace, null, currentSelector, data, funcs);
+        eventbits, nameSpace, null, null, currentSelector, data, funcs);
     return this;
 
   }
@@ -165,8 +166,6 @@ public class Events extends GQuery {
 
     return bind("mouseenter", null, f);
   }
-
-  // TODO handle unbind !!
 
   /**
    * Bind an event handler to be fired when the mouse leaves an element, or trigger that handler on
@@ -219,55 +218,45 @@ public class Events extends GQuery {
    */
   public Events trigger(int eventbits, int... keys) {
     if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
-      dispatchEvent(document.createBlurEvent());
+      dispatchEvent(document.createBlurEvent(), null);
     if ((eventbits | Event.ONCHANGE) == Event.ONCHANGE)
-      dispatchEvent(document.createChangeEvent());
+      dispatchEvent(document.createChangeEvent(), null);
     if ((eventbits | Event.ONCLICK) == Event.ONCLICK)
-      dispatchEvent(document.createClickEvent(0, 0, 0, 0, 0, false, false, false, false));
+      dispatchEvent(document.createClickEvent(0, 0, 0, 0, 0, false, false, false, false), null);
     if ((eventbits | Event.ONDBLCLICK) == Event.ONDBLCLICK)
-      dispatchEvent(document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false));
+      dispatchEvent(document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false), null);
     if ((eventbits | Event.ONFOCUS) == Event.ONFOCUS)
-      dispatchEvent(document.createFocusEvent());
+      dispatchEvent(document.createFocusEvent(), null);
     if ((eventbits | Event.ONKEYDOWN) == Event.ONKEYDOWN)
-      dispatchEvent(document.createKeyDownEvent(false, false, false, false, keys[0]));
+      dispatchEvent(document.createKeyDownEvent(false, false, false, false, keys[0]), null);
     if ((eventbits | Event.ONKEYPRESS) == Event.ONKEYPRESS)
-      dispatchEvent(document.createKeyPressEvent(false, false, false, false, keys[0], 0));
+      dispatchEvent(document.createKeyPressEvent(false, false, false, false, keys[0], 0), null);
     if ((eventbits | Event.ONKEYUP) == Event.ONKEYUP)
-      dispatchEvent(document.createKeyUpEvent(false, false, false, false, keys[0]));
+      dispatchEvent(document.createKeyUpEvent(false, false, false, false, keys[0]), null);
     if ((eventbits | Event.ONLOSECAPTURE) == Event.ONLOSECAPTURE)
       triggerHtmlEvent("losecapture");
     if ((eventbits | Event.ONMOUSEDOWN) == Event.ONMOUSEDOWN)
       dispatchEvent(document.createMouseDownEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT));
+          NativeEvent.BUTTON_LEFT), null);
     if ((eventbits | Event.ONMOUSEMOVE) == Event.ONMOUSEMOVE)
       dispatchEvent(document.createMouseMoveEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT));
+          NativeEvent.BUTTON_LEFT), null);
     if ((eventbits | Event.ONMOUSEOUT) == Event.ONMOUSEOUT)
       dispatchEvent(document.createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT, null));
+          NativeEvent.BUTTON_LEFT, null), null);
     if ((eventbits | Event.ONMOUSEOVER) == Event.ONMOUSEOVER)
       dispatchEvent(document.createMouseOverEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT, null));
+          NativeEvent.BUTTON_LEFT, null), null);
     if ((eventbits | Event.ONMOUSEUP) == Event.ONMOUSEUP)
       dispatchEvent(document.createMouseUpEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT));
+          NativeEvent.BUTTON_LEFT), null);
     if ((eventbits | Event.ONSCROLL) == Event.ONSCROLL)
-      dispatchEvent(document.createScrollEvent());
+      dispatchEvent(document.createScrollEvent(), null);
     if ((eventbits | Event.ONERROR) == Event.ONERROR)
-      dispatchEvent(document.createErrorEvent());
+      dispatchEvent(document.createErrorEvent(), null);
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false,
-          false, false, false, NativeEvent.BUTTON_LEFT, null));
-    if (eventbits == EventsListener.ONSUBMIT) {
-      Event evt = document.createHtmlEvent("submit", true, true).cast();
-      dispatchEvent(evt, new Function() {
-        public native void f(Element e) /*-{
-                                        e.submit();
-                                        }-*/;
-      });
-    }
-    if (eventbits == EventsListener.ONRESIZE)
-      triggerHtmlEvent("resize");
+          false, false, false, NativeEvent.BUTTON_LEFT, null), null);
     return this;
   }
 
@@ -277,7 +266,17 @@ public class Events extends GQuery {
    * @param htmlEvent An string representing the html event desired
    * @functions a set of function to run if the event is not canceled.
    */
-  public Events triggerHtmlEvent(String htmlEvent, Function... functions) {
+  public Events triggerHtmlEvent(String htmlEvent, final Function... functions) {
+    return triggerHtmlEvent(htmlEvent, functions, null);
+  }
+
+  /**
+   * Trigger a html event in all matched elements.
+   *
+   * @param htmlEvent An string representing the html event desired
+   * @functions a set of function to run if the event is not canceled.
+   */
+  public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {
     SpecialEvent specialEvent = EventsListener.special.get(htmlEvent);
     boolean isSpecialEvent = specialEvent != null;
 
@@ -289,7 +288,22 @@ public class Events extends GQuery {
     if (isSpecialEvent) {
       GqEvent.setOriginalEventType(e, originalEventName);
     }
-    dispatchEvent(e, functions);
+
+    if ("submit".equals(htmlEvent)){
+      Function submitFonction = new Function() {
+        @Override
+        public void f(Element e) {
+          // first submit the form then call the others functions
+          if (FormElement.is(e)) {
+            e.<FormElement>cast().submit();
+          }
+          callHandlers(e, getEvent(), functions);
+        }
+      };
+      dispatchEvent(e, datas, submitFonction);
+    } else {
+      dispatchEvent(e, datas, functions);
+    }
     return this;
   }
 
@@ -315,7 +329,7 @@ public class Events extends GQuery {
   public Events unbind(int eventbits, String name, Function f) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
-        EventsListener.getInstance(e).unbind(eventbits, name, null, f);
+        EventsListener.getInstance(e).unbind(eventbits, name, null, null, f);
       }
     }
     return this;
@@ -356,17 +370,26 @@ public class Events extends GQuery {
     return this;
   }
 
-  private void dispatchEvent(NativeEvent evt, Function... funcs) {
+  private void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
+        $(e).data("___event_datas", datas);
         e.dispatchEvent(evt);
         if (!JsUtils.isDefaultPrevented(evt)) {
-          for (Function f : funcs) {
-            f.setEvent(Event.as(evt));
-            f.f(e);
-          }
+          callHandlers(e, evt, funcs);
         }
+        $(e).removeData("___event_datas");
       }
+    }
+  }
+
+  private void callHandlers(Element e, NativeEvent evt, Function... functions){
+    if (functions == null) {
+      return;
+    }
+    for (Function f : functions) {
+      f.setEvent(Event.as(evt));
+      f.f(e);
     }
   }
 

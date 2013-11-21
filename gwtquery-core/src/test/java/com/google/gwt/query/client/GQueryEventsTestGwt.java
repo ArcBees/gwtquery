@@ -13,6 +13,23 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
+
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
@@ -30,28 +47,19 @@ import static com.google.gwt.user.client.Event.ONMOUSEOUT;
 import static com.google.gwt.user.client.Event.ONMOUSEOVER;
 import static com.google.gwt.user.client.Event.ONMOUSEUP;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.junit.DoNotRunWith;
-import com.google.gwt.junit.Platform;
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.RGBColor;
-import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
-
 /**
  * Test class for testing gwt events plugin api.
  */
 public class GQueryEventsTestGwt extends GWTTestCase {
+
+  private static class CounterFunction extends Function {
+    private int invokationCounter;
+
+    @Override
+    public void f() {
+      invokationCounter++;
+    }
+  }
 
   static Element e = null;
 
@@ -146,7 +154,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
       assertEquals("", $("#test", e).val());
 
     }
-
   }
 
   public void testBindUnbindSubmitEvent() {
@@ -156,7 +163,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     testSubmitEventCont = 0;
 
     // Add an onsubmit function to the form returning false to cancel the action
-    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+    $("form").bind("submit", null, new Function() {
       public boolean f(Event e) {
         testSubmitEventCont++;
         return false;
@@ -168,7 +175,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(1, testSubmitEventCont);
 
     // Remove the binding
-    $("form").unbind(EventsListener.ONSUBMIT);
+    $("form").unbind("submit");
 
     // Check that on submit function is not called and the form has been
     // submitted
@@ -1024,6 +1031,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
   public void testResizeWindowEvent() {
     GQuery w = $(GQuery.window);
 
+
     delayTestFinish(100);
     w.bind("resize", null, new Function() {
       public void f(Element e) {
@@ -1031,7 +1039,8 @@ public class GQueryEventsTestGwt extends GWTTestCase {
       }
     });
 
-    Window.resizeTo(w.width(), w.height() + 100);
+    w.trigger("resize");
+
   }
 
   /**
@@ -1047,7 +1056,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     testSubmitEventCont = 0;
 
     // Add an onsubmit function to the form returning false to cancel the action
-    $("form").bind(EventsListener.ONSUBMIT, null, new Function() {
+    $("form").bind("submit", null, new Function() {
       public boolean f(Event e) {
         testSubmitEventCont++;
         return false;
@@ -1060,7 +1069,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertFalse($("#miframe").contents().find("body").text().contains("ERROR"));
 
     // Remove the binding
-    $("form").unbind(EventsListener.ONSUBMIT);
+    $("form").unbind("submit");
 
     // Check that on submit function is not called and the form has been
     // submitted
@@ -1313,5 +1322,128 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     div.click();
     assertEquals(1, count[0]);
+  }
+
+  public void testCustomEvent() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    target.bind("mycustomevent", handler);
+
+    target.trigger("mycustomevent");
+
+    assertEquals(1, handler.invokationCounter);
+
+    //  test  custom event unbinding
+    target.unbind("mycustomevent");
+
+    handler.invokationCounter = 0;
+
+    target.trigger("mycustomevent");
+
+    assertEquals(0, handler.invokationCounter);
+  }
+
+  public void testCustomEventWithEventData() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test custom event binding with event data
+    target.bind("mycustomevent", "eventdata", handler);
+
+    target.trigger("mycustomevent");
+
+    assertEquals(1, handler.invokationCounter);
+    assertEquals("eventdata", handler.getArgument(0));
+
+    // unbind
+    target.unbind("mycustomevent");
+    handler.invokationCounter = 0;
+    target.trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    // test custom event binding with event data as array
+    target.bind("mycustomevent", new String[]{"eventdata0", "eventdata1"}, handler);
+
+    target.trigger("mycustomevent");
+
+    assertEquals(1, handler.invokationCounter);
+    assertEquals("eventdata0", handler.getArgument(0));
+    assertEquals("eventdata1", handler.getArgument(1));
+  }
+
+  public void testCustomEventWithHandlerData() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test custom event binding
+    target.bind("mycustomevent", handler);
+
+    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+
+    assertEquals(1, handler.invokationCounter);
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("handlerdata1", handler.getArgument(1));
+
+    // unbind
+    target.unbind("mycustomevent");
+    handler.invokationCounter = 0;
+    target.trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+  }
+
+
+  public void testCustomEventWithEventDataAndHandlerData() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test custom event binding with event data
+    target.bind("mycustomevent", "eventdata", handler);
+
+    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+
+    assertEquals(1, handler.invokationCounter);
+    assertEquals("eventdata", handler.getArgument(0));
+    assertEquals("handlerdata0", handler.getArgument(1));
+    assertEquals("handlerdata1", handler.getArgument(2));
+
+    // unbind
+    target.unbind("mycustomevent");
+    handler.invokationCounter = 0;
+    target.trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    // test custom event binding with event data as array
+    target.bind("mycustomevent", new String[]{"eventdata0", "eventdata1"}, handler);
+
+    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+
+    assertEquals(1, handler.invokationCounter);
+    assertEquals("eventdata0", handler.getArgument(0));
+    assertEquals("eventdata1", handler.getArgument(1));
+    assertEquals("handlerdata0", handler.getArgument(2));
+    assertEquals("handlerdata1", handler.getArgument(3));
+  }
+
+  public void testBitlessEventTriggersWithEventName() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    target.bind(Event.ONCLICK, handler);
+
+    target.trigger("click");
+
+    assertEquals(1, handler.invokationCounter);
   }
 }

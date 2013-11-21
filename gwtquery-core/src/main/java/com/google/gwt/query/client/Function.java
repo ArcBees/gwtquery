@@ -422,7 +422,7 @@ public abstract class Function {
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
    */
-  public boolean f(Event e, Object arg) {
+  public boolean f(Event e, Object... arg) {
     setArguments(arg);
     setEvent(e);
     return f(e);
@@ -527,16 +527,16 @@ public abstract class Function {
    * catch the exception and send it to the GWT UncaughtExceptionHandler
    * They are intentionally final to avoid override them
    */
-  public final boolean fe(Event ev, Object arg) {
+  public final boolean fe(Event ev, Object... args) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        return f(ev, arg);
+        return f(ev, args);
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
       return true;
     }
-    return f(ev, arg);
+    return f(ev, args);
   }
 
   /**

@@ -26,6 +26,8 @@ import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyEffects<T> extends LazyBase<T>{
@@ -413,14 +415,6 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * callback after completion.
    */
   LazyEffects<T> slideUp(int millisecs, Function... f);
-
-  /**
-   * Toggle displaying each of the set of matched elements.
-   *
-   * @param showOrHide A Boolean indicating whether to show or hide the
-   *          elements.
-   */
-  LazyEffects<T> toggle(boolean showOrHide);
 
   /**
    * Toggle displaying each of the set of matched elements by animating the

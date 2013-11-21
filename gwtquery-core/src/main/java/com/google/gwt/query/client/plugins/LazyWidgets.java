@@ -45,10 +45,7 @@ public interface LazyWidgets<T> extends LazyBase<T>{
   <W extends Widget> LazyWidgets<T> widgets(WidgetFactory<W> factory, WidgetInitializer<W> initializers);
 
   /**
-   * Create a {@link Button} widget for each selected element. The
-   * <code>initializers</code> will be called on each new {@link Button} created
-   * by passing them in parameter.
-   *
+   * Create a {@link Button} widget for each selected element.
    */
   LazyWidgets<T> button();
 
@@ -60,8 +57,21 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    */
   LazyWidgets<T> button(WidgetInitializer<Button> initializers);
 
+  /**
+   * Create a {@link Panel} widget for each selected element.
+   */
   LazyWidgets<T> panel();
 
+  /**
+   * Create a {@link Label} widget for each selected element.
+   */
+  LazyWidgets<T> label();
+
+  /**
+   * Create a {@link Label} widget for each selected element. The
+   * <code>initializers</code> will be called on each new {@link Label} created
+   * by passing them in parameter.
+   */
   LazyWidgets<T> label(WidgetInitializer<Label> initializers);
 
   /**

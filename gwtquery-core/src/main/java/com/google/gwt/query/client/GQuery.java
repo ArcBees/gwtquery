@@ -1309,6 +1309,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
+   * Bind Handlers or fire Events for each matched element.
+   */
+  private GQuery bindOrFire(String eventname, final Object data, final Function... funcs) {
+    if (funcs.length == 0) {
+      return as(Events).triggerHtmlEvent(eventname);
+    } else {
+      return bind(eventname, data, funcs);
+    }
+  }
+
+
+  /**
    * Bind a set of functions to the blur event of each matched element. Or trigger the blur event if
    * no functions are provided.
    */
@@ -1453,7 +1465,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * DOM. This method allows retrieving the list of ancestors matching many selectors by traversing
    * the DOM only one time.
    *
-   * @param selector
    * @return
    */
   public JsNamedArray<NodeList<Element>> closest(String[] selectors) {
@@ -1466,7 +1477,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * DOM until reach the <code>context</code> node.. This method allows retrieving the list of
    * ancestors matching many selectors by traversing the DOM only one time.
    *
-   * @param selector
    * @return
    */
   public JsNamedArray<NodeList<Element>> closest(String[] selectors, Node context) {
@@ -3032,7 +3042,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get all following siblings of each element up to but not including the element matched by the
    * DOM node, filtered by a selector.
    *
-   * @param selector
    * @return
    */
   public GQuery nextUntil(Element until, String filter) {
@@ -3043,7 +3052,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get all following siblings of each element up to but not including the element matched by the
    * GQuery object.
    *
-   * @param selector
    * @return
    */
   public GQuery nextUntil(GQuery until) {
@@ -3054,7 +3062,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get all following siblings of each element up to but not including the element matched by the
    * GQuery object, filtered by a selector
    *
-   * @param selector
    * @return
    */
   public GQuery nextUntil(GQuery until, String filter) {
@@ -3904,14 +3911,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    */
   public GQuery resize(Function... f) {
-    return bindOrFire(EventsListener.ONRESIZE, null, f);
+    return bindOrFire("resize", null, f);
   }
 
   /**
    * Bind an event handler to the "resize" JavaScript event, or trigger that event on an element.
    */
   public GQuery resize(final Function f) {
-    return bindOrFire(EventsListener.ONRESIZE, null, f);
+    return bindOrFire("resize", null, f);
   }
 
   /**
@@ -4257,7 +4264,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * functions are provided.
    */
   public GQuery submit(Function... funcs) {
-    return bindOrFire(EventsListener.ONSUBMIT, null, funcs);
+    return bindOrFire("submit", null, funcs);
   }
 
   /**
@@ -4392,6 +4399,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery trigger(int eventbits, int... keys) {
     return as(Events).trigger(eventbits, keys);
+  }
+
+
+  /**
+   * Trigger a event in all matched elements.
+   *
+   * @param eventName An string representing the type of the event desired
+   * @param datas Additional parameters to pass along to the event handlers.
+   */
+  public GQuery trigger(String eventName, Object... datas) {
+    return as(Events).triggerHtmlEvent(eventName, datas);
   }
 
   /**

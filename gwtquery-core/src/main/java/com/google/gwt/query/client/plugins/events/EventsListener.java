@@ -91,7 +91,7 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean f(Event e, Object data) {
+    public boolean f(Event e, Object... data) {
       EventTarget eventTarget = e.getCurrentEventTarget();
       Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
 
@@ -120,32 +120,62 @@ public class EventsListener implements EventListener {
     String originalEventType;
     int times = -1;
     int type;
+    String eventName;
 
-    BindFunction(int t, String n, String originalEventType, Function f, Object d) {
+    BindFunction(int t, String eventName, String nameSpace, String originalEventType, Function f,
+        Object data, int times) {
+      this.times = times;
+      this.eventName = eventName;
       type = t;
       function = f;
-      data = d;
+      this.data = data;
       this.originalEventType = originalEventType;
-      if (n != null) {
-        nameSpace = n;
+      if (nameSpace != null) {
+        this.nameSpace = nameSpace;
       }
     }
 
-    BindFunction(int t, String n, String originalEventType, Function f, Object d, int times) {
-      this(t, n, originalEventType, f, d);
-      this.times = times;
-    }
-
-    public boolean fire(Event event) {
+    public boolean fire(Event event, Object[] eventData) {
       if (times != 0) {
         times--;
-        return function.fe(event, data);
+        Object[] arguments = new Object[0];
+
+        // The argument of the function will be first the data attached to the handler then the
+        // datas attached to the event.
+        if (eventData != null) {
+          if (data != null){
+            Object[] handlerDatas;
+            if (data.getClass().isArray()) {
+              handlerDatas = (Object[]) data;
+            } else {
+              handlerDatas = new Object[] {data};
+            }
+            arguments = new Object[handlerDatas.length + eventData.length];
+            int index = 0;
+            for (int i = 0; i < handlerDatas.length; i++, index++) {
+              arguments[index] = handlerDatas[i];
+            }
+            for (int i = 0; i < eventData.length; i++, index++) {
+              arguments[index] = eventData[i];
+            }
+
+          } else {
+            arguments = eventData;
+          }
+        } else if (data != null){
+          arguments = new Object[] {data};
+        }
+        return function.fe(event, arguments);
       }
       return true;
     }
 
     public boolean hasEventType(int etype) {
-      return (type & etype) != 0;
+      return  type != -1 && (type & etype) != 0;
+    }
+
+    public boolean isTypeOf(String eName) {
+      return eventName != null ? eventName.equalsIgnoreCase(eName) : false;
     }
 
     /**
@@ -190,8 +220,13 @@ public class EventsListener implements EventListener {
 
     JsNamedArray<JsObjectArray<BindFunction>> bindFunctionBySelector;
 
-    LiveBindFunction(int type, String namespace) {
-      super(type, namespace, null, null, -1);
+    LiveBindFunction(String eventName, String namespace, Object data) {
+      super(-1, eventName, namespace, null, null, data, -1);
+      clean();
+    }
+
+    LiveBindFunction(int type, String namespace, Object data) {
+      super(type, null, namespace, null, null, data, -1);
       clean();
     }
 
@@ -213,7 +248,7 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean fire(Event event) {
+    public boolean fire(Event event, Object[] handlerDatas) {
       if (isEmpty()) {
         return true;
       }
@@ -263,7 +298,7 @@ public class EventsListener implements EventListener {
               if (stopElement == null || element.equals(stopElement)) {
                 gqEvent.setCurrentElementTarget(element);
 
-                if (!f.fire(gqEvent)) {
+                if (!f.fire(gqEvent, handlerDatas)) {
                   stopElement = element;
                 }
               }
@@ -354,8 +389,6 @@ public class EventsListener implements EventListener {
 
   }
 
-  public static int ONSUBMIT = GqEvent.ONSUBMIT;
-  public static int ONRESIZE = GqEvent.ONRESIZE;
   public static String MOUSEENTER = "mouseenter";
   public static String MOUSELEAVE = "mouseleave";
 
@@ -382,7 +415,10 @@ public class EventsListener implements EventListener {
   public static void rebind(Element e) {
     EventsListener ret = getGQueryEventListener(e);
     if (ret != null && ret.eventBits != 0) {
-      ret.sink();
+      // rebind bit event
+      ret.sink(ret.eventBits, null);
+
+      // TODO manage bitless event
     }
   }
 
@@ -407,7 +443,7 @@ public class EventsListener implements EventListener {
   }-*/;
 
   // Gwt does't handle submit nor resize events in DOM.sinkEvents
-  private static native void sinkEvent(Element elem, String name) /*-{
+  private static native void sinkBitlessEvent(Element elem, String name) /*-{
 		if (!elem.__gquery)
 			elem.__gquery = [];
 		if (elem.__gquery[name])
@@ -415,7 +451,7 @@ public class EventsListener implements EventListener {
 		elem.__gquery[name] = true;
 
 		var handle = function(event) {
-			elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::dispatchEvent(Lcom/google/gwt/user/client/Event;)(event);
+			elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;)(event);
 		};
 
 		if (elem.addEventListener)
@@ -426,14 +462,12 @@ public class EventsListener implements EventListener {
 
   int eventBits = 0;
   double lastEvnt = 0;
-
-  int lastType = 0;
+  String lastType = "";
 
   private Element element;
-
   private JsObjectArray<BindFunction> elementEvents = JsObjectArray.createArray().cast();
-
   private JsMap<Integer, LiveBindFunction> liveBindFunctionByEventType = JsMap.create();
+  private JsMap<String, LiveBindFunction> liveBindFunctionByEventName = JsMap.create();
 
   private EventsListener(Element element) {
     this.element = element;
@@ -454,16 +488,9 @@ public class EventsListener implements EventListener {
     }
   }
 
-  public void bind(int eventbits, String namespace, String originalEventType, final Object data,
-      final Function function, int times) {
-    if (function == null) {
-      unbind(eventbits, namespace, originalEventType, null);
-      return;
-    }
-    eventBits |= eventbits;
-    sink();
-    elementEvents.add(new BindFunction(eventbits, namespace, originalEventType, function, data,
-        times));
+  public void bind(int eventbits, String namespace, String originalEventType, Object data,
+      Function function, int times) {
+    bind(eventbits, namespace, null, originalEventType, data, function, times);
   }
 
   public void bind(String events, final Object data, Function... funcs) {
@@ -491,9 +518,22 @@ public class EventsListener implements EventListener {
       int b = getTypeInt(eventName);
       for (Function function : funcs) {
         Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        bind(b, nameSpace, originalEventName, data, handler, -1);
+        bind(b, nameSpace, eventName, originalEventName, data, handler, -1);
       }
     }
+  }
+
+  private void bind(int eventbits, String namespace, String eventName, String originalEventType,
+      Object data, Function function, int times) {
+    if (function == null) {
+      unbind(eventbits, namespace, eventName, originalEventType, null);
+      return;
+    }
+
+    sink(eventbits, eventName);
+
+    elementEvents.add(new BindFunction(eventbits, eventName, namespace, originalEventType,
+        function, data, times));
   }
 
   public void die(String eventNames, String cssSelector) {
@@ -512,7 +552,6 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-
       //handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
@@ -520,42 +559,59 @@ public class EventsListener implements EventListener {
 
       int b = getTypeInt(eventName);
 
-      die(b, nameSpace, originalEventName, cssSelector);
+      die(b, nameSpace, eventName, originalEventName, cssSelector);
     }
 
 
   }
 
-  public void die(int eventbits, String nameSpace, String originalEventName,String cssSelector) {
+  public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
+      String cssSelector) {
     if (eventbits <= 0) {
+      if (eventName != null) {
+        LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
+        maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, -1, eventName, nameSpace,
+            originalEventName);
+      }
+
+      // if eventbits == -1 and eventName is null, remove all event handlers for this selector
       for (String k : liveBindFunctionByEventType.keys()) {
-        LiveBindFunction liveBindFunction = liveBindFunctionByEventType.<JsCache> cast().get(k);
-        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, null);
-        if (liveBindFunction.isEmpty()){
-          liveBindFunctionByEventType.<JsCache>cast().delete(k);
-        }
+        int bits = Integer.parseInt(k);
+        LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(bits);
+        maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, bits, null, nameSpace, null);
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
-      if (liveBindFunction != null) {
-        liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, originalEventName);
-      }
+      maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, eventbits, null, nameSpace,
+          originalEventName);
+    }
+  }
+
+  private void maybeRemoveLiveBindFunction(LiveBindFunction liveBindFunction, String cssSelector,
+      int eventbits, String eventName, String nameSpace, String originalEventName) {
+    if (liveBindFunction != null) {
+      liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, originalEventName);
       if (liveBindFunction.isEmpty()){
-        liveBindFunctionByEventType.remove(eventbits);
+        if (eventbits != -1) {
+          liveBindFunctionByEventType.remove(eventbits);
+        } else {
+          liveBindFunctionByEventName.remove(eventName);
+        }
       }
     }
   }
 
   public void dispatchEvent(Event event) {
-    int etype = getTypeInt(event.getType());
+    String ename = event.getType();
+    int etype = getTypeInt(ename);
     String originalEventType = GqEvent.getOriginalEventType(event);
+    Object[] handlerDatas = $(element).data("___event_datas");
 
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener != null && listener.hasEventType(etype)
-          && (originalEventType == null || originalEventType
-              .equals(listener.getOriginalEventType()))) {
-        if (!listener.fire(event)) {
+      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))
+          && (originalEventType == null || originalEventType.equals(listener.getOriginalEventType()))) {
+        if (!listener.fire(event, handlerDatas)) {
           event.stopPropagation();
           event.preventDefault();
         }
@@ -596,12 +652,39 @@ public class EventsListener implements EventListener {
       int b = getTypeInt(eventName);
       for (Function function : funcs) {
         Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        live(b, nameSpace, originalEventName, cssSelector, data, handler);
+        live(b, nameSpace, eventName, originalEventName, cssSelector, data, handler);
       }
     }
   }
 
-  public void live(int eventbits, String nameSpace, String originalEventName, String cssSelector, Object data, Function... funcs) {
+  public void live(int eventbits, String nameSpace, String eventName, String originalEventName,
+      String cssSelector, Object data, Function... funcs) {
+    if (eventbits != -1) {
+      liveBitEvent(eventbits, nameSpace, originalEventName, cssSelector, data, funcs);
+    } else {
+      liveBitlessEvent(eventName, nameSpace, originalEventName, cssSelector, data, funcs);
+    }
+  }
+
+  private void liveBitlessEvent(String eventName, String nameSpace, String originalEventName,
+      String cssSelector, Object data, Function... funcs) {
+    LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
+
+    if (liveBindFunction == null) {
+      liveBindFunction = new LiveBindFunction(eventName, "live", data);
+      sink(-1, eventName);
+      elementEvents.add(liveBindFunction);
+      liveBindFunctionByEventName.put(eventName, liveBindFunction);
+    }
+
+    for (Function f : funcs) {
+      liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(-1, eventName,
+          nameSpace, originalEventName, f, data, -1));
+    }
+  }
+
+  private void liveBitEvent(int eventbits, String nameSpace, String originalEventName,
+      String cssSelector, Object data, Function... funcs) {
     for (int i = 0; i < 28; i++) {
       int event = (int) Math.pow(2, i);
       if ((eventbits & event) == event) {
@@ -609,16 +692,15 @@ public class EventsListener implements EventListener {
         // is a LiveBindFunction already attached for this kind of event
         LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(event);
         if (liveBindFunction == null) {
-          liveBindFunction = new LiveBindFunction(event, "live");
-          eventBits |= event;
-          sink();
+          liveBindFunction = new LiveBindFunction(event, "live", data);
+          sink(eventbits, null);
           elementEvents.add(liveBindFunction);
           liveBindFunctionByEventType.put(event, liveBindFunction);
         }
 
         for (Function f : funcs) {
-          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event, nameSpace,
-              originalEventName, f, data));
+          liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event,
+              null, nameSpace, originalEventName, f, data, -1));
         }
       }
     }
@@ -627,12 +709,12 @@ public class EventsListener implements EventListener {
   public void onBrowserEvent(Event event) {
     double now = Duration.currentTimeMillis();
     // Workaround for Issue_20
-    if (lastType == event.getTypeInt() && now - lastEvnt < 10
+    if (lastType.equals(event.getType()) && now - lastEvnt < 10
         && "body".equalsIgnoreCase(element.getTagName())) {
       return;
     }
     lastEvnt = now;
-    lastType = event.getTypeInt();
+    lastType = event.getType();
 
     // Execute the original Gwt listener
     if (getOriginalEventListener() != null) {
@@ -643,10 +725,11 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits) {
-    unbind(eventbits, null, null, null);
+    unbind(eventbits, null, null, null, null);
   }
 
-  public void unbind(int eventbits, String namespace, String originalEventType, Function f) {
+  public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
+      Function f) {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
@@ -654,13 +737,13 @@ public class EventsListener implements EventListener {
       boolean matchNS =
           namespace == null || namespace.isEmpty() || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
-      boolean matchOEVT =
-          (originalEventType == null && listener.getOriginalEventType() == null)
+      boolean matchEVN = matchEV || listener.isTypeOf(eventName);
+      boolean matchOEVT =  (originalEventType == null && listener.getOriginalEventType() == null)
               || (originalEventType != null && originalEventType.equals(listener
-                  .getOriginalEventType()));
+          .getOriginalEventType()));
       boolean matchFC = f == null || listener.isEquals(f);
 
-      if (matchNS && matchEV && matchFC && matchOEVT) {
+      if (matchNS && matchEV && matchEVN && matchFC && matchOEVT) {
         int currentEventbits = listener.unsink(eventbits);
 
         if (currentEventbits == 0) {
@@ -699,7 +782,7 @@ public class EventsListener implements EventListener {
 
       int b = getTypeInt(eventName);
 
-      unbind(b, nameSpace, originalEventName, f);
+      unbind(b, nameSpace, eventName, originalEventName, f);
     }
   }
 
@@ -709,15 +792,14 @@ public class EventsListener implements EventListener {
     liveBindFunctionByEventType = JsMap.create();
   }
 
-  private void sink() {
+  private void sink(int eventbits, String eventName) {
     // ensure that the gwtQuery's event listener is set as event listener of the element
     DOM.setEventListener((com.google.gwt.user.client.Element) element, this);
-    if (eventBits == ONSUBMIT) {
-      sinkEvent(element, "submit");
-    } else if ((eventBits | ONRESIZE) == ONRESIZE) {
-      sinkEvent(element, "resize");
-    } else {
-      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS 
+
+    if (eventbits != -1) {
+      eventBits |= eventbits;
+
+      if ((eventBits | Event.FOCUSEVENTS) == Event.FOCUSEVENTS
           && JsUtils.isElement(element)
           && element.getAttribute("tabIndex").length() == 0) {
         element.setAttribute("tabIndex", "0");
@@ -725,27 +807,13 @@ public class EventsListener implements EventListener {
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
 
+    } else {
+      sinkBitlessEvent(element, eventName);
     }
-  }
-
-  private int getEventBits(String... events) {
-    int ret = 0;
-    for (String e : events) {
-      String[] parts = e.split("[\\s,]+");
-      for (String s : parts) {
-        int event = getTypeInt(s);
-        if (event > 0) {
-          ret |= event;
-        }
-      }
-    }
-
-    return ret;
   }
 
   private int getTypeInt(String eventName) {
-    return "submit".equals(eventName) ? ONSUBMIT : "resize".equals(eventName) ? ONRESIZE : Event
-        .getTypeInt(eventName);
+    return Event.getTypeInt(eventName);
   }
 
   public void cleanEventDelegation() {
