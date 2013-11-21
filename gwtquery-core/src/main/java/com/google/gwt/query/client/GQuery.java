@@ -1319,7 +1319,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-
   /**
    * Bind a set of functions to the blur event of each matched element. Or trigger the blur event if
    * no functions are provided.

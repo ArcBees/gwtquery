@@ -267,7 +267,7 @@ public class Events extends GQuery {
    * @functions a set of function to run if the event is not canceled.
    */
   public Events triggerHtmlEvent(String htmlEvent, final Function... functions) {
-    return triggerHtmlEvent(htmlEvent, functions, null);
+    return triggerHtmlEvent(htmlEvent, null, functions);
   }
 
   /**
@@ -384,9 +384,6 @@ public class Events extends GQuery {
   }
 
   private void callHandlers(Element e, NativeEvent evt, Function... functions){
-    if (functions == null) {
-      return;
-    }
     for (Function f : functions) {
       f.setEvent(Event.as(evt));
       f.f(e);

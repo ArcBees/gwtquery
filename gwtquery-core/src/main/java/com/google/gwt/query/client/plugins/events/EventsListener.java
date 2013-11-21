@@ -141,19 +141,19 @@ public class EventsListener implements EventListener {
         Object[] arguments = new Object[0];
 
         // The argument of the function will be first the data attached to the handler then the
-        // datas attached to the event.
+        // data attached to the event.
         if (eventData != null) {
           if (data != null){
-            Object[] handlerDatas;
+            Object[] handlerData;
             if (data.getClass().isArray()) {
-              handlerDatas = (Object[]) data;
+              handlerData = (Object[]) data;
             } else {
-              handlerDatas = new Object[] {data};
+              handlerData = new Object[] {data};
             }
-            arguments = new Object[handlerDatas.length + eventData.length];
+            arguments = new Object[handlerData.length + eventData.length];
             int index = 0;
-            for (int i = 0; i < handlerDatas.length; i++, index++) {
-              arguments[index] = handlerDatas[i];
+            for (int i = 0; i < handlerData.length; i++, index++) {
+              arguments[index] = handlerData[i];
             }
             for (int i = 0; i < eventData.length; i++, index++) {
               arguments[index] = eventData[i];
@@ -175,7 +175,7 @@ public class EventsListener implements EventListener {
     }
 
     public boolean isTypeOf(String eName) {
-      return eventName != null ? eventName.equalsIgnoreCase(eName) : false;
+      return eventName != null && eventName.equalsIgnoreCase(eName);
     }
 
     /**
@@ -248,7 +248,7 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean fire(Event event, Object[] eventDatas) {
+    public boolean fire(Event event, Object[] eventData) {
       if (isEmpty()) {
         return true;
       }
@@ -298,8 +298,8 @@ public class EventsListener implements EventListener {
               if (stopElement == null || element.equals(stopElement)) {
                 gqEvent.setCurrentElementTarget(element);
                 // data
-                eventDatas = $(element).data("___event_datas");
-                if (!f.fire(gqEvent, eventDatas)) {
+                eventData = $(element).data("___event_datas");
+                if (!f.fire(gqEvent, eventData)) {
                   stopElement = element;
                 }
               }
@@ -606,13 +606,13 @@ public class EventsListener implements EventListener {
     String ename = event.getType();
     int etype = getTypeInt(ename);
     String originalEventType = GqEvent.getOriginalEventType(event);
-    Object[] handlerDatas = $(element).data("___event_datas");
+    Object[] handlerData = $(element).data("___event_datas");
 
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
       if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))
           && (originalEventType == null || originalEventType.equals(listener.getOriginalEventType()))) {
-        if (!listener.fire(event, handlerDatas)) {
+        if (!listener.fire(event, handlerData)) {
           event.stopPropagation();
           event.preventDefault();
         }
