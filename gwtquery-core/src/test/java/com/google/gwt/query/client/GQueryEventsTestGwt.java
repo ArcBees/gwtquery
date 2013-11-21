@@ -1354,12 +1354,12 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     CounterFunction handler = new CounterFunction();
 
     // test custom event binding with event data
-    target.bind("mycustomevent", "eventdata", handler);
+    target.bind("mycustomevent", "handlerdata0", handler);
 
     target.trigger("mycustomevent");
 
     assertEquals(1, handler.invokationCounter);
-    assertEquals("eventdata", handler.getArgument(0));
+    assertEquals("handlerdata0", handler.getArgument(0));
 
     // unbind
     target.unbind("mycustomevent");
@@ -1368,13 +1368,13 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(0, handler.invokationCounter);
 
     // test custom event binding with event data as array
-    target.bind("mycustomevent", new String[]{"eventdata0", "eventdata1"}, handler);
+    target.bind("mycustomevent", new String[]{"handlerdata0", "handlerdata1"}, handler);
 
     target.trigger("mycustomevent");
 
     assertEquals(1, handler.invokationCounter);
-    assertEquals("eventdata0", handler.getArgument(0));
-    assertEquals("eventdata1", handler.getArgument(1));
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("handlerdata1", handler.getArgument(1));
   }
 
   public void testCustomEventWithHandlerData() {
@@ -1386,11 +1386,11 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     // test custom event binding
     target.bind("mycustomevent", handler);
 
-    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+    target.trigger("mycustomevent", "eventdata0", "eventdata1");
 
     assertEquals(1, handler.invokationCounter);
-    assertEquals("handlerdata0", handler.getArgument(0));
-    assertEquals("handlerdata1", handler.getArgument(1));
+    assertEquals("eventdata0", handler.getArgument(0));
+    assertEquals("eventdata1", handler.getArgument(1));
 
     // unbind
     target.unbind("mycustomevent");
@@ -1407,14 +1407,14 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     CounterFunction handler = new CounterFunction();
 
     // test custom event binding with event data
-    target.bind("mycustomevent", "eventdata", handler);
+    target.bind("mycustomevent", "handlerdata0", handler);
 
-    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+    target.trigger("mycustomevent", "eventdata0", "eventdata1");
 
     assertEquals(1, handler.invokationCounter);
-    assertEquals("eventdata", handler.getArgument(0));
-    assertEquals("handlerdata0", handler.getArgument(1));
-    assertEquals("handlerdata1", handler.getArgument(2));
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("eventdata0", handler.getArgument(1));
+    assertEquals("eventdata1", handler.getArgument(2));
 
     // unbind
     target.unbind("mycustomevent");
@@ -1423,15 +1423,15 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(0, handler.invokationCounter);
 
     // test custom event binding with event data as array
-    target.bind("mycustomevent", new String[]{"eventdata0", "eventdata1"}, handler);
+    target.bind("mycustomevent", new String[]{"handlerdata0", "handlerdata1"}, handler);
 
-    target.trigger("mycustomevent", "handlerdata0", "handlerdata1");
+    target.trigger("mycustomevent", "eventdata0", "eventdata1");
 
     assertEquals(1, handler.invokationCounter);
-    assertEquals("eventdata0", handler.getArgument(0));
-    assertEquals("eventdata1", handler.getArgument(1));
-    assertEquals("handlerdata0", handler.getArgument(2));
-    assertEquals("handlerdata1", handler.getArgument(3));
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("handlerdata1", handler.getArgument(1));
+    assertEquals("eventdata0", handler.getArgument(2));
+    assertEquals("eventdata1", handler.getArgument(3));
   }
 
   public void testBitlessEventTriggersWithEventName() {
@@ -1445,5 +1445,131 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     target.trigger("click");
 
     assertEquals(1, handler.invokationCounter);
+  }
+
+  public void testDelegationEventWithCustomEvent() {
+    $(e).html("<div id='container'></div>");
+    GQuery container = $("#container", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    $(".custom", e).live("mycustomevent", handler);
+
+    container.html("<div class='custom'></div><div class='other'></div>");
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(1, handler.invokationCounter);
+    handler.invokationCounter = 0;
+
+    $(".other").trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    //  test  custom event unbinding
+    $(".custom", e).die("mycustomevent");
+
+    handler.invokationCounter = 0;
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(0, handler.invokationCounter);
+  }
+
+
+  public void testDelegationEventWithCustomEventAndData() {
+    $(e).html("<div id='container'></div>");
+    GQuery container = $("#container", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    $(".custom", e).live("mycustomevent", new String[]{"handlerdata0", "handlerdata1"}, handler);
+
+    container.html("<div class='custom'></div><div class='other'></div>");
+
+    $(".custom").trigger("mycustomevent", "eventdata0", "eventdata1");
+
+    assertEquals(1, handler.invokationCounter);
+    handler.invokationCounter = 0;
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("handlerdata1", handler.getArgument(1));
+    assertEquals("eventdata0", handler.getArgument(2));
+    assertEquals("eventdata1", handler.getArgument(3));
+
+    $(".other").trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    //  test  custom event unbinding
+    $(".custom", e).die("mycustomevent");
+
+    handler.invokationCounter = 0;
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(0, handler.invokationCounter);
+  }
+
+  public void testDelegationEventWithDelegateAndWithCustomEvent() {
+    $(e).html("<div id='container'></div>");
+    GQuery container = $("#container", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    $(e).delegate(".custom", "mycustomevent", handler);
+
+    container.html("<div class='custom'></div><div class='other'></div>");
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(1, handler.invokationCounter);
+    handler.invokationCounter = 0;
+
+    $(".other").trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    //  test  custom event unbinding
+    $(e).undelegate(".custom", "mycustomevent");
+
+    handler.invokationCounter = 0;
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(0, handler.invokationCounter);
+  }
+
+
+  public void testDelegationEventWithDelegateAndWithCustomEventAndData() {
+    $(e).html("<div id='container'></div>");
+    GQuery container = $("#container", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    $(e).delegate(".custom", "mycustomevent", new String[]{"handlerdata0", "handlerdata1"}, handler);
+
+    container.html("<div class='custom'></div><div class='other'></div>");
+
+    $(".custom").trigger("mycustomevent", "eventdata0", "eventdata1");
+
+    assertEquals(1, handler.invokationCounter);
+    handler.invokationCounter = 0;
+    assertEquals("handlerdata0", handler.getArgument(0));
+    assertEquals("handlerdata1", handler.getArgument(1));
+    assertEquals("eventdata0", handler.getArgument(2));
+    assertEquals("eventdata1", handler.getArgument(3));
+
+    $(".other").trigger("mycustomevent");
+    assertEquals(0, handler.invokationCounter);
+
+    //  test  custom event unbinding
+    $(e).undelegate(".custom", "mycustomevent");
+
+    handler.invokationCounter = 0;
+
+    $(".custom").trigger("mycustomevent");
+
+    assertEquals(0, handler.invokationCounter);
   }
 }

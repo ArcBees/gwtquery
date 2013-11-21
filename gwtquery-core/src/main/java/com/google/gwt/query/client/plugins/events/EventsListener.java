@@ -248,7 +248,7 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean fire(Event event, Object[] handlerDatas) {
+    public boolean fire(Event event, Object[] eventDatas) {
       if (isEmpty()) {
         return true;
       }
@@ -268,7 +268,7 @@ public class EventsListener implements EventListener {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
           BindFunction f = bindFunctions.get(i);
-          if (f.hasEventType(event.getTypeInt())) {
+          if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
             validSelectors.add(cssSelector);
             break;
           }
@@ -289,7 +289,7 @@ public class EventsListener implements EventListener {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
           BindFunction f = bindFunctions.get(i);
-          if (f.hasEventType(event.getTypeInt())) {
+          if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
             NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
             for (int j = 0; n != null && j < n.getLength(); j++) {
               Element element = n.getItem(j);
@@ -297,8 +297,9 @@ public class EventsListener implements EventListener {
               // handlers for this element bound to this element
               if (stopElement == null || element.equals(stopElement)) {
                 gqEvent.setCurrentElementTarget(element);
-
-                if (!f.fire(gqEvent, handlerDatas)) {
+                // data
+                eventDatas = $(element).data("___event_datas");
+                if (!f.fire(gqEvent, eventDatas)) {
                   stopElement = element;
                 }
               }
