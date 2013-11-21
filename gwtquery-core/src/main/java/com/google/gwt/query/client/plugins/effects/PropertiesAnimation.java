@@ -140,7 +140,7 @@ public class PropertiesAnimation extends GQAnimation {
   protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
   protected static final RegExp REGEX_NON_PIXEL_ATTRS = 
-      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|^\\$", "i");
+      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotation|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 
@@ -269,17 +269,27 @@ public class PropertiesAnimation extends GQAnimation {
   }
 
   protected Easing easing;
-  protected JsObjectArray<Fx> effects = JsObjectArray.create();
-  protected Function[] funcs;
-  protected Properties prps;
-
+  protected JsObjectArray<Fx> effects;
+  private Function[] funcs;
   private Effects g;
 
+  public PropertiesAnimation(Element elem, Properties p, Function... funcs) {
+    this(null, elem, p, funcs);
+  }
+
   public PropertiesAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-    this.easing = easing != null ? easing : EasingCurve.linear;
-    this.e = elem;
+    if (easing == null) {
+      try {
+        easing = EasingCurve.valueOf(p.getStr("easing"));
+      } catch (Exception e) {
+        easing = EasingCurve.linear;
+      }
+    }
+    this.easing = easing;
     this.funcs = funcs;
-    this.prps = p;
+    setProperties(p);
+    setElement(elem);
+    
     g = $(e).as(Effects.Effects);
   }
 
@@ -314,6 +324,7 @@ public class PropertiesAnimation extends GQAnimation {
 
   @Override
   public void onStart() {
+    effects = JsObjectArray.create();
     boolean resize = false;
     boolean move = false;
     boolean hidden = !g.isVisible();
