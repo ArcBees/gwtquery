@@ -128,7 +128,7 @@ public class Ajax extends GQuery {
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
       ret = new PromiseReqBuilderJSONP(url, null, settings.getTimeout());
-    } else if ("script".equalsIgnoreCase(dataType)){
+    } else if ("loadscript".equalsIgnoreCase(dataType)){
       ret = createPromiseScriptInjector(url);
     } else {
       ret = createPromiseRequestBuilder(settings, httpMethod, url, data)
@@ -144,6 +144,9 @@ public class Ajax extends GQuery {
                 retData = JsUtils.parseJSON(response.getText());
               } else {
                 retData = response.getText();
+                if ("script".equalsIgnoreCase(dataType)) {
+                  ScriptInjector.fromString((String)retData).setWindow(window).inject();
+                }
               }
             } catch (Exception e) {
               if (GWT.getUncaughtExceptionHandler() != null) {
@@ -212,7 +215,8 @@ public class Ajax extends GQuery {
   private static Promise createPromiseScriptInjector(final String url) {
     return new PromiseFunction() {
       public void f(final Deferred dfd) {
-        ScriptInjector.fromUrl(url).setCallback(new Callback<Void, Exception>() {
+        ScriptInjector.fromUrl(url).setWindow(window)
+        .setCallback(new Callback<Void, Exception>() {
           public void onSuccess(Void result) {
             dfd.resolve();
           }
@@ -349,7 +353,7 @@ public class Ajax extends GQuery {
   }
 
   /**
-   * Load a JavaScript file from the server using a GET HTTP request, then execute it.
+   * Get a JavaScript file from the server using a GET HTTP request, then execute it.
    */
   public static Promise getScript(String url) {
     return getScript(url, null);
@@ -360,6 +364,22 @@ public class Ajax extends GQuery {
       .setUrl(url)
       .setType("get")
       .setDataType("script")
+      .setSuccess(success)
+    );
+  }
+
+  /**
+   * Load a JavaScript file from any url using the script tag mechanism
+   */
+  public static Promise loadScript(String url) {
+    return loadScript(url, null);
+  }
+
+  public static Promise loadScript(final String url, Function success) {
+    return ajax(createSettings()
+      .setUrl(url)
+      .setType("get")
+      .setDataType("loadscript")
       .setSuccess(success)
     );
   }

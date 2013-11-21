@@ -42,6 +42,11 @@
         </any>
     </set-property>
     
+    <!-- JSNI Generator -->
+    <generate-with class="com.google.gwt.query.rebind.JsniBundleGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.builders.JsniBundle"/>
+    </generate-with>    
+
     <!-- Browser flags -->
     <generate-with class="com.google.gwt.query.rebind.BrowserGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Browser"/>
