@@ -312,7 +312,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   public void testGetScript() {
     delayTestFinish(5000);
     String url = "http://code.jquery.com/jquery-2.0.3.min.js";
-    Ajax.getScript(url)
+    Ajax.loadScript(url)
       .done(new Function(){
         public void f() {
           finishTest();
