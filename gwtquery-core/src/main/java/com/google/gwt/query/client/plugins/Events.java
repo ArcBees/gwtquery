@@ -263,7 +263,7 @@ public class Events extends GQuery {
   /**
    * Trigger a html event in all matched elements.
    *
-   * @param htmlEvent An string representing the html event desired
+   * @param htmlEvent A string representing the desired html event.
    * @functions a set of function to run if the event is not canceled.
    */
   public Events triggerHtmlEvent(String htmlEvent, Function... functions) {
@@ -273,7 +273,7 @@ public class Events extends GQuery {
   /**
    * Trigger a html event in all matched elements.
    *
-   * @param htmlEvent An string representing the html event desired
+   * @param htmlEvent An string representing the desired html event.
    * @functions a set of function to run if the event is not canceled.
    */
   public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {

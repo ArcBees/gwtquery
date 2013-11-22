@@ -31,6 +31,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -136,32 +137,17 @@ public class EventsListener implements EventListener {
     public boolean fire(Event event, Object[] eventData) {
       if (times != 0) {
         times--;
-        Object[] arguments = new Object[0];
-
+        Object[] arguments;
+        eventData = eventData != null ? eventData : new Object[0];
         // The argument of the function will be first the data attached to the handler then the
         // data attached to the event.
-        if (eventData != null) {
-          if (data != null){
-            Object[] handlerData;
-            if (data.getClass().isArray()) {
-              handlerData = (Object[]) data;
-            } else {
-              handlerData = new Object[] {data};
-            }
-            arguments = new Object[handlerData.length + eventData.length];
-            int index = 0;
-            for (int i = 0; i < handlerData.length; i++, index++) {
-              arguments[index] = handlerData[i];
-            }
-            for (int i = 0; i < eventData.length; i++, index++) {
-              arguments[index] = eventData[i];
-            }
-
-          } else {
-            arguments = eventData;
-          }
-        } else if (data != null){
-          arguments = new Object[] {data};
+        if (data != null) {
+          Object[] handlerData = data.getClass().isArray() ? (Object[]) data : new Object[]{data};
+          arguments = new Object[handlerData.length + eventData.length];
+          System.arraycopy(handlerData, 0, arguments, 0, handlerData.length);
+          System.arraycopy(eventData, 0, arguments, handlerData.length, eventData.length);
+        } else {
+          arguments = eventData;
         }
         return function.fe(event, arguments);
       }
