@@ -1456,11 +1456,12 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     // test  custom event binding
     $(".custom", e).live("mycustomevent", handler);
 
-    container.html("<div class='custom'></div><div class='other'></div>");
+    container.html("<div class='custom'></div><div class='other'></div><div" +
+        " class='custom'>custom2</div>");
 
     $(".custom").trigger("mycustomevent");
 
-    assertEquals(1, handler.invokationCounter);
+    assertEquals(2, handler.invokationCounter);
     handler.invokationCounter = 0;
 
     $(".other").trigger("mycustomevent");
@@ -1549,11 +1550,11 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     // test  custom event binding
     $(e).delegate(".custom", "mycustomevent", new String[]{"handlerdata0", "handlerdata1"}, handler);
 
-    container.html("<div class='custom'></div><div class='other'></div>");
+    container.html("<div class='custom'></div><div class='other'></div><div class='custom'>custom2</div>");
 
     $(".custom").trigger("mycustomevent", "eventdata0", "eventdata1");
 
-    assertEquals(1, handler.invokationCounter);
+    assertEquals(2, handler.invokationCounter);
     handler.invokationCounter = 0;
     assertEquals("handlerdata0", handler.getArgument(0));
     assertEquals("handlerdata1", handler.getArgument(1));
@@ -1571,5 +1572,19 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(".custom").trigger("mycustomevent");
 
     assertEquals(0, handler.invokationCounter);
+  }
+
+  public void testBitlessEvent() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    CounterFunction handler = new CounterFunction();
+
+    // test  custom event binding
+    target.bind("drag", handler);
+
+    target.trigger("drag");
+
+    assertEquals(1, handler.invokationCounter);
   }
 }

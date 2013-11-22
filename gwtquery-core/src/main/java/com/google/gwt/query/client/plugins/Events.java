@@ -266,7 +266,7 @@ public class Events extends GQuery {
    * @param htmlEvent An string representing the html event desired
    * @functions a set of function to run if the event is not canceled.
    */
-  public Events triggerHtmlEvent(String htmlEvent, final Function... functions) {
+  public Events triggerHtmlEvent(String htmlEvent, Function... functions) {
     return triggerHtmlEvent(htmlEvent, null, functions);
   }
 
@@ -290,8 +290,7 @@ public class Events extends GQuery {
     }
 
     if ("submit".equals(htmlEvent)){
-      Function submitFonction = new Function() {
-        @Override
+      Function submitFunction = new Function() {
         public void f(Element e) {
           // first submit the form then call the others functions
           if (FormElement.is(e)) {
@@ -300,7 +299,7 @@ public class Events extends GQuery {
           callHandlers(e, getEvent(), functions);
         }
       };
-      dispatchEvent(e, datas, submitFonction);
+      dispatchEvent(e, datas, submitFunction);
     } else {
       dispatchEvent(e, datas, functions);
     }
@@ -373,12 +372,12 @@ public class Events extends GQuery {
   private void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
-        $(e).data("___event_datas", datas);
+        $(e).data(EventsListener.EVENT_DATA, datas);
         e.dispatchEvent(evt);
         if (!JsUtils.isDefaultPrevented(evt)) {
           callHandlers(e, evt, funcs);
         }
-        $(e).removeData("___event_datas");
+        $(e).removeData(EventsListener.EVENT_DATA);
       }
     }
   }
