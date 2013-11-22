@@ -1859,8 +1859,8 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals("E", g.text());
     g.unbind(Event.ONCLICK).bind(Event.ONCLICK, "D", new Function(){
       @Override
-      public boolean f(Event e, Object o) {
-        $(e).text("E" + o);
+      public boolean f(Event e, Object... o) {
+        $(e).text("E" + o[0]);
         return false;
       }
     }).click();

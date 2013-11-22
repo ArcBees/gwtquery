@@ -485,7 +485,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * DOM. This method allows retrieving the list of ancestors matching many selectors by traversing
    * the DOM only one time.
    *
-   * @param selector
    * @return
    */
   JsNamedArray<NodeList<Element>> closest(String[] selectors);
@@ -496,7 +495,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * DOM until reach the <code>context</code> node.. This method allows retrieving the list of
    * ancestors matching many selectors by traversing the DOM only one time.
    *
-   * @param selector
    * @return
    */
   JsNamedArray<NodeList<Element>> closest(String[] selectors, Node context);
@@ -1522,7 +1520,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Get all following siblings of each element up to but not including the element matched by the
    * DOM node, filtered by a selector.
    *
-   * @param selector
    * @return
    */
   LazyGQuery<T> nextUntil(Element until, String filter);
@@ -1531,7 +1528,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Get all following siblings of each element up to but not including the element matched by the
    * GQuery object.
    *
-   * @param selector
    * @return
    */
   LazyGQuery<T> nextUntil(GQuery until);
@@ -1540,7 +1536,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Get all following siblings of each element up to but not including the element matched by the
    * GQuery object, filtered by a selector
    *
-   * @param selector
    * @return
    */
   LazyGQuery<T> nextUntil(GQuery until, String filter);

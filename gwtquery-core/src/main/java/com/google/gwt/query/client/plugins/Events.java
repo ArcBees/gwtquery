@@ -14,6 +14,7 @@
 package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.Function;
@@ -109,7 +110,7 @@ public class Events extends GQuery {
 
   public GQuery die(int eventbits, String nameSpace) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).die(
-        eventbits, nameSpace, null, currentSelector);
+        eventbits, nameSpace, null, null, currentSelector);
     return this;
   }
 
@@ -136,7 +137,7 @@ public class Events extends GQuery {
 
   public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
-        eventbits, nameSpace, null, currentSelector, data, funcs);
+        eventbits, nameSpace, null, null, currentSelector, data, funcs);
     return this;
 
   }
@@ -165,8 +166,6 @@ public class Events extends GQuery {
 
     return bind("mouseenter", null, f);
   }
-
-  // TODO handle unbind !!
 
   /**
    * Bind an event handler to be fired when the mouse leaves an element, or trigger that handler on
@@ -258,26 +257,26 @@ public class Events extends GQuery {
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false,
           false, false, false, NativeEvent.BUTTON_LEFT, null));
-    if (eventbits == EventsListener.ONSUBMIT) {
-      Event evt = document.createHtmlEvent("submit", true, true).cast();
-      dispatchEvent(evt, new Function() {
-        public native void f(Element e) /*-{
-                                        e.submit();
-                                        }-*/;
-      });
-    }
-    if (eventbits == EventsListener.ONRESIZE)
-      triggerHtmlEvent("resize");
     return this;
   }
 
   /**
    * Trigger a html event in all matched elements.
    *
-   * @param htmlEvent An string representing the html event desired
+   * @param htmlEvent A string representing the desired html event.
    * @functions a set of function to run if the event is not canceled.
    */
   public Events triggerHtmlEvent(String htmlEvent, Function... functions) {
+    return triggerHtmlEvent(htmlEvent, null, functions);
+  }
+
+  /**
+   * Trigger a html event in all matched elements.
+   *
+   * @param htmlEvent An string representing the desired html event.
+   * @functions a set of function to run if the event is not canceled.
+   */
+  public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {
     SpecialEvent specialEvent = EventsListener.special.get(htmlEvent);
     boolean isSpecialEvent = specialEvent != null;
 
@@ -289,7 +288,21 @@ public class Events extends GQuery {
     if (isSpecialEvent) {
       GqEvent.setOriginalEventType(e, originalEventName);
     }
-    dispatchEvent(e, functions);
+
+    if ("submit".equals(htmlEvent)){
+      Function submitFunction = new Function() {
+        public void f(Element e) {
+          // first submit the form then call the others functions
+          if (FormElement.is(e)) {
+            e.<FormElement>cast().submit();
+          }
+          callHandlers(e, getEvent(), functions);
+        }
+      };
+      dispatchEvent(e, datas, submitFunction);
+    } else {
+      dispatchEvent(e, datas, functions);
+    }
     return this;
   }
 
@@ -315,7 +328,7 @@ public class Events extends GQuery {
   public Events unbind(int eventbits, String name, Function f) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
-        EventsListener.getInstance(e).unbind(eventbits, name, null, f);
+        EventsListener.getInstance(e).unbind(eventbits, name, null, null, f);
       }
     }
     return this;
@@ -357,16 +370,26 @@ public class Events extends GQuery {
   }
 
   private void dispatchEvent(NativeEvent evt, Function... funcs) {
+    dispatchEvent(evt, null, funcs);
+  }
+
+  private void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
+        $(e).data(EventsListener.EVENT_DATA, datas);
         e.dispatchEvent(evt);
         if (!JsUtils.isDefaultPrevented(evt)) {
-          for (Function f : funcs) {
-            f.setEvent(Event.as(evt));
-            f.f(e);
-          }
+          callHandlers(e, evt, funcs);
         }
+        $(e).removeData(EventsListener.EVENT_DATA);
       }
+    }
+  }
+
+  private void callHandlers(Element e, NativeEvent evt, Function... functions){
+    for (Function f : functions) {
+      f.setEvent(Event.as(evt));
+      f.f(e);
     }
   }
 
