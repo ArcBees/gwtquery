@@ -218,45 +218,45 @@ public class Events extends GQuery {
    */
   public Events trigger(int eventbits, int... keys) {
     if ((eventbits | Event.ONBLUR) == Event.ONBLUR)
-      dispatchEvent(document.createBlurEvent(), null);
+      dispatchEvent(document.createBlurEvent());
     if ((eventbits | Event.ONCHANGE) == Event.ONCHANGE)
-      dispatchEvent(document.createChangeEvent(), null);
+      dispatchEvent(document.createChangeEvent());
     if ((eventbits | Event.ONCLICK) == Event.ONCLICK)
-      dispatchEvent(document.createClickEvent(0, 0, 0, 0, 0, false, false, false, false), null);
+      dispatchEvent(document.createClickEvent(0, 0, 0, 0, 0, false, false, false, false));
     if ((eventbits | Event.ONDBLCLICK) == Event.ONDBLCLICK)
-      dispatchEvent(document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false), null);
+      dispatchEvent(document.createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false));
     if ((eventbits | Event.ONFOCUS) == Event.ONFOCUS)
-      dispatchEvent(document.createFocusEvent(), null);
+      dispatchEvent(document.createFocusEvent());
     if ((eventbits | Event.ONKEYDOWN) == Event.ONKEYDOWN)
-      dispatchEvent(document.createKeyDownEvent(false, false, false, false, keys[0]), null);
+      dispatchEvent(document.createKeyDownEvent(false, false, false, false, keys[0]));
     if ((eventbits | Event.ONKEYPRESS) == Event.ONKEYPRESS)
-      dispatchEvent(document.createKeyPressEvent(false, false, false, false, keys[0], 0), null);
+      dispatchEvent(document.createKeyPressEvent(false, false, false, false, keys[0], 0));
     if ((eventbits | Event.ONKEYUP) == Event.ONKEYUP)
-      dispatchEvent(document.createKeyUpEvent(false, false, false, false, keys[0]), null);
+      dispatchEvent(document.createKeyUpEvent(false, false, false, false, keys[0]));
     if ((eventbits | Event.ONLOSECAPTURE) == Event.ONLOSECAPTURE)
       triggerHtmlEvent("losecapture");
     if ((eventbits | Event.ONMOUSEDOWN) == Event.ONMOUSEDOWN)
       dispatchEvent(document.createMouseDownEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT), null);
+          NativeEvent.BUTTON_LEFT));
     if ((eventbits | Event.ONMOUSEMOVE) == Event.ONMOUSEMOVE)
       dispatchEvent(document.createMouseMoveEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT), null);
+          NativeEvent.BUTTON_LEFT));
     if ((eventbits | Event.ONMOUSEOUT) == Event.ONMOUSEOUT)
       dispatchEvent(document.createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT, null), null);
+          NativeEvent.BUTTON_LEFT, null));
     if ((eventbits | Event.ONMOUSEOVER) == Event.ONMOUSEOVER)
       dispatchEvent(document.createMouseOverEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT, null), null);
+          NativeEvent.BUTTON_LEFT, null));
     if ((eventbits | Event.ONMOUSEUP) == Event.ONMOUSEUP)
       dispatchEvent(document.createMouseUpEvent(0, 0, 0, 0, 0, false, false, false, false,
-          NativeEvent.BUTTON_LEFT), null);
+          NativeEvent.BUTTON_LEFT));
     if ((eventbits | Event.ONSCROLL) == Event.ONSCROLL)
-      dispatchEvent(document.createScrollEvent(), null);
+      dispatchEvent(document.createScrollEvent());
     if ((eventbits | Event.ONERROR) == Event.ONERROR)
-      dispatchEvent(document.createErrorEvent(), null);
+      dispatchEvent(document.createErrorEvent());
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false,
-          false, false, false, NativeEvent.BUTTON_LEFT, null), null);
+          false, false, false, NativeEvent.BUTTON_LEFT, null));
     return this;
   }
 
@@ -367,6 +367,10 @@ public class Events extends GQuery {
       }
     }
     return this;
+  }
+
+  private void dispatchEvent(NativeEvent evt, Function... funcs) {
+    dispatchEvent(evt, null, funcs);
   }
 
   private void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
