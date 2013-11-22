@@ -202,6 +202,9 @@ public class Transitions extends GQuery {
   }
 
   private static boolean supportsTransform3d() {
+    if (transform == null) {
+      return false;
+    }
     String rotate = "rotateY(1deg)";
     divStyle.setProperty(transform, rotate);
     rotate = divStyle.getProperty(transform);
