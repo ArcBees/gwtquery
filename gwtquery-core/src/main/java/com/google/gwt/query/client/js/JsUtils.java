@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 
@@ -371,7 +372,10 @@ public class JsUtils {
   /**
    * Load an external javascript library. The inserted script replaces the
    * element with the given id in the document.
+   * 
+   * @deprecated use {@link com.google.gwt.query.client.plugins.ajax.Ajax#loadScript(String)}
    */
+  @Deprecated
   public static void loadScript(String url, String id) {
     GQuery gs = GQuery.$(DOM.createElement("script"));
     GQuery gp = GQuery.$("#" + id).parent();
