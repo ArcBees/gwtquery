@@ -216,7 +216,7 @@ public class JsniBundleGenerator extends Generator {
         if (!isCPPComment && !isCComment && !isRegex && !isOper) {
           isCPPComment = c == '/';
           isCComment =  c == '*';
-          isOper = !isCPPComment && !isCComment && !"=()&|\n;,\\}".contains(""+prev);
+          isOper = !isCPPComment && !isCComment && !"=(&|?:\n},".contains(""+prev);
           isRegex = !isCPPComment && !isCComment && !isOper;
         }
         if (isOper) {
@@ -258,12 +258,12 @@ public class JsniBundleGenerator extends Generator {
   }
 
   private String escapeQuotedString(String s, Character quote) {
-    return quote + s.replaceAll("\\*/", "*" + quote + " + " + quote + "/") + quote;
+    return quote + s.replace("*/", "*" + quote + " + " + quote + "/") + quote;
   }
 
   private String escapeInlineRegex(String s, String mod) {
     if (s.endsWith("*")) {
-      return "new RegExp('" + s.replaceAll("\\", "\\\\")  + "','" + mod + "')";
+      return "new RegExp('" + s.replace("\\", "\\\\")  + "','" + mod + "')";
     } else {
       return '/' + s + '/' + mod;
     }
