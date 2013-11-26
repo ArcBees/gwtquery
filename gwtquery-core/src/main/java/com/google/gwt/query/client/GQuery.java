@@ -25,6 +25,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
@@ -176,7 +177,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The window object.
    */
-  public static final Element window = GWT.isClient() ? window() : null;
+  public static final Element window = GWT.isClient() ? ScriptInjector.TOP_WINDOW.<Element>cast() : null;
 
   private static Element windowData = null;
 
@@ -764,10 +765,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static native void setElementValue(Element e, String value) /*-{
 		e.value = value;
-  }-*/;
-
-  private static native Element window() /*-{
-		return $wnd;
   }-*/;
 
   protected Node currentContext;
