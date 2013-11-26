@@ -15,11 +15,15 @@
  */
 package com.google.gwt.query.rebind;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import com.google.gwt.core.ext.Generator;
@@ -81,36 +85,21 @@ public class JsniBundleGenerator extends Generator {
               return null;
             }
           }
-          String file = packageName.replace(".", "/") + "/" + value;
           try {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(file);
-            OutputStream os = new ByteArrayOutputStream();
-            IOUtils.copy(is, os);
+            // Read the javascript content
+            String content = getContent(logger, packageName.replace(".", File.separator) , value);
+
+            // Adjust javascript so as we can introduce it in a JSNI comment block without
+            // breaking java syntax.
+            String jsni = parseJavascriptSource(content);
             
-            String jsni = os.toString()
-                // remove MS <CR>
-                .replace("\r", "")
-                // remove 'c' (/* */) style comments blocks 
-                .replaceAll("/\\*(?>(?:(?>[^\\*]+)|\\*(?!/))*)\\*/", "")
-                // remove 'c++' (//) style comment lines
-                .replaceAll("(?m)^\\s*//.*$", "")
-                // remove 'c++' (//) style comments at the end of a code line
-                .replaceAll("(?m)^(.*)//[^'\"]*?$", "$1")
-                // remove empty lines
-                .replaceAll("\n+", "\n");
-                ;
-            
-            // Using pw instead of sw in order to avoid stack errors because sw.print is a recursive function
-            // and it fails with very long javascript files.
-                
-            // JMethod.toString() prints the java signature of the method, so we just have to replace abstract by native.    
             pw.println(method.toString().replace("abstract", "native") + "/*-{");
             pw.println(prepend);
             pw.println(jsni);
             pw.println(postpend);
             pw.println("}-*/;");
           } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(TreeLogger.ERROR, "Error parsing javascript source: " + value + " "+ e.getMessage());
             throw new UnableToCompleteException();
           }
         }
@@ -120,5 +109,173 @@ public class JsniBundleGenerator extends Generator {
     }
 
     return fullName;
+  }
+
+  /**
+   * Get the content of a javascript source. It supports remote sources hosted in CDN's.
+   */
+  private String getContent(TreeLogger logger, String path, String src) throws UnableToCompleteException {
+    HttpURLConnection connection = null;
+    InputStream in = null;
+    try {
+      if (!src.matches("(?i)https?://.*")) {
+        String file = path + File.separator + src;
+        in = this.getClass().getClassLoader().getResourceAsStream(file);
+        if (in == null) {
+          logger.log(TreeLogger.ERROR, "Unable to read javascript file: " + file);
+        }
+      } else {
+        URL url = new URL(src);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        connection.setRequestProperty("Host", url.getHost());
+        connection.setConnectTimeout(3000);
+        connection.setReadTimeout(3000);
+
+        int status = connection.getResponseCode();
+        if (status != HttpURLConnection.HTTP_OK) {
+          logger.log(TreeLogger.ERROR, "Server Error: " + status + " " + connection.getResponseMessage());
+          throw new UnableToCompleteException();
+        }
+
+        String encoding = connection.getContentEncoding();
+        in = connection.getInputStream();
+        if ("gzip".equalsIgnoreCase(encoding)) {
+          in = new GZIPInputStream(in);
+        } else if ("deflate".equalsIgnoreCase(encoding)) {
+          in = new InflaterInputStream(in);
+        }
+      }
+
+      return inputStreamToString(in);
+    } catch (IOException e) {
+      logger.log(TreeLogger.ERROR, "Error: " + e.getMessage());
+      throw new UnableToCompleteException();
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  /**
+   * Adapt a java-script block which could produce a syntax error when
+   * embedding it a a JSNI block.
+   *
+   * The objective is to replace any 'c' comment-ending occurrence to avoid closing
+   * JSNI comment blocks prematurely.
+   * 
+   * A Regexp based parser is not reliable, this approach is better and faster.
+   */
+  // Note: this comment is intentionally using c++ style to allow writing the '*/' sequence.
+  //
+  // - Remove C comments: /* ... */
+  // - Remove C++ comments: // ...
+  // - Escape certain strings:  '...*/...' to '...*' + '/...'
+  // - Rewrite inline regex:  /...*/igm to new RegExp('...*' + 'igm');
+  private String parseJavascriptSource(String js) throws Exception {
+
+    boolean isJS = true;
+    boolean isSingQuot = false;
+    boolean isDblQuot = false;
+    boolean isSlash = false;
+    boolean isCComment=false;
+    boolean isCPPComment=false;
+    boolean isRegex = false;
+    boolean isOper = false;
+
+    StringBuilder ret = new StringBuilder();
+    String tmp = "";
+    Character last = 0;
+    Character prev = 0;
+
+    for (int i = 0, l = js.length(); i < l ; i++) {
+      Character c = js.charAt(i);
+      String out = c.toString();
+
+      if (isJS) {
+        isDblQuot = c == '"';
+        isSingQuot  = c == '\'';
+        isSlash  = c == '/';
+        isJS  = !isDblQuot && !isSingQuot && !isSlash;
+        if (!isJS) {
+          out = tmp = "";
+          isCPPComment = isCComment = isRegex = false;
+        }
+      } else if (isSingQuot) {
+        isJS = !(isSingQuot = last == '\\' || c != '\'');
+        if (isJS) out = escapeQuotedString(tmp, c);
+        else tmp += c;
+      } else if (isDblQuot) {
+        isJS = !(isDblQuot = last == '\\' || c != '"');
+        if (isJS) out = escapeQuotedString(tmp, c);
+        else tmp += c;
+      } else if (isSlash) {
+        if (!isCPPComment && !isCComment && !isRegex && !isOper) {
+          isCPPComment = c == '/';
+          isCComment =  c == '*';
+          isOper = !isCPPComment && !isCComment && !"=(&|".contains(""+prev);
+          isRegex = !isCPPComment && !isCComment && !isOper;
+        }
+        if (isOper) {
+          isJS = !(isSlash = isOper = false);
+          out = "" + last + c;
+        } else if (isCPPComment) {
+          isJS = !(isSlash = isCPPComment = c != '\n');
+          if (isJS) out = "\n";
+        } else if (isCComment) {
+          isSlash = isCComment = !(isJS = (last == '*' && c == '/'));
+          if (isJS) out = "";
+        } else if (isRegex) {
+          isJS = !(isSlash = isRegex = (last == '\\' || c != '/'));
+          if (isJS) {
+            String mod = "";
+            while (++i < l) {
+              c = js.charAt(i);
+              if ("igm".contains(""+c)) mod += c;
+              else break;
+            }
+            out = escapeInlineRegex(tmp, mod) + c;
+          } else {
+            tmp += c;
+          }
+        } else {
+          isJS = true;
+        }
+      }
+
+      if (isJS) {
+        ret.append(out);
+      }
+      if (last != ' ') {
+        prev = last;
+      }
+      last = prev == '\\' && c == '\\' ? 0 : c;
+    }
+    return ret.toString();
+  }
+
+  private String escapeQuotedString(String s, Character quote) {
+    return quote + s.replaceAll("\\*/", "*" + quote + " + " + quote + "/") + quote;
+  }
+
+  private String escapeInlineRegex(String s, String mod) {
+    if (s.endsWith("*")) {
+      return "new RegExp('" + s  + "', '" + mod + "')";
+    } else {
+      return '/' + s + '/' + mod;
+    }
+  }
+
+  private String inputStreamToString(InputStream in) throws IOException {
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    byte[] buffer = new byte[4096];
+    int read = in.read(buffer);
+    while (read != -1) {
+      bytes.write(buffer, 0, read);
+      read = in.read(buffer);
+    }
+    in.close();
+    return bytes.toString();
   }
 }
