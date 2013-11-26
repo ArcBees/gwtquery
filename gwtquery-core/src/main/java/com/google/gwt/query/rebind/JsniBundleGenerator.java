@@ -162,7 +162,7 @@ public class JsniBundleGenerator extends Generator {
 
   /**
    * Adapt a java-script block which could produce a syntax error when
-   * embedding it a a JSNI block.
+   * embedding it in a JSNI block.
    *
    * The objective is to replace any 'c' comment-ending occurrence to avoid closing
    * JSNI comment blocks prematurely.
@@ -216,7 +216,7 @@ public class JsniBundleGenerator extends Generator {
         if (!isCPPComment && !isCComment && !isRegex && !isOper) {
           isCPPComment = c == '/';
           isCComment =  c == '*';
-          isOper = !isCPPComment && !isCComment && !"=(&|".contains(""+prev);
+          isOper = !isCPPComment && !isCComment && !"=()&|\n;,\\}".contains(""+prev);
           isRegex = !isCPPComment && !isCComment && !isOper;
         }
         if (isOper) {
@@ -263,7 +263,7 @@ public class JsniBundleGenerator extends Generator {
 
   private String escapeInlineRegex(String s, String mod) {
     if (s.endsWith("*")) {
-      return "new RegExp('" + s  + "', '" + mod + "')";
+      return "new RegExp('" + s.replaceAll("\\", "\\\\")  + "','" + mod + "')";
     } else {
       return '/' + s + '/' + mod;
     }
