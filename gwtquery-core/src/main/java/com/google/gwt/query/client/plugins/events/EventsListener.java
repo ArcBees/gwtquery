@@ -31,7 +31,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -400,13 +399,15 @@ public class EventsListener implements EventListener {
     return ret != null ? ret : new EventsListener(e);
   }
 
+  /**
+   * We have to set the gQuery event listener to the element again when
+   * the element is a widget, because when GWT detaches a widget it removes the 
+   * event listener.
+   */
   public static void rebind(Element e) {
     EventsListener ret = getGQueryEventListener(e);
-    if (ret != null && ret.eventBits != 0) {
-      // rebind bit event
-      ret.sink(ret.eventBits, null);
-
-      // TODO manage bitless event
+    if (ret != null) {
+      DOM.setEventListener((com.google.gwt.user.client.Element) e, ret);
     }
   }
 
@@ -427,7 +428,11 @@ public class EventsListener implements EventListener {
 
   private static native void init(Element elem, EventsListener gqevent)/*-{
 		elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
-		elem.__gqueryevent = gqevent;
+    elem.__gqueryevent = gqevent;
+    // Someone has reported that in IE the init can be called multiple times
+    // causing a loop. We need some test to demonstrate this behaviour though.
+    // Anyway we check this condition to avoid looping
+		if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
   // Gwt does't handle submit nor resize events in DOM.sinkEvents
