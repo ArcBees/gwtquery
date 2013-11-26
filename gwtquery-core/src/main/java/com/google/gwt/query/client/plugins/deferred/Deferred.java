@@ -30,7 +30,7 @@ public class Deferred implements Promise.Deferred {
    * Implementation of the Promise interface which is used internally by
    * Deferred.
    */
-  static class DeferredPromiseImpl implements Promise {
+  public static class DeferredPromiseImpl implements Promise {
     // Using 'int' instead of 'enum' because we use them as indexes as well
     private static final int DONE = 0, FAIL = 1, PROGRESS = 2;
 
