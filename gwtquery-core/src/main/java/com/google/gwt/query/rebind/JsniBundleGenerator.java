@@ -120,11 +120,13 @@ public class JsniBundleGenerator extends Generator {
     try {
       if (!src.matches("(?i)https?://.*")) {
         String file = path + File.separator + src;
+        logger.log(TreeLogger.INFO, getClass().getSimpleName() + " - importing external javascript: " + file);
         in = this.getClass().getClassLoader().getResourceAsStream(file);
         if (in == null) {
           logger.log(TreeLogger.ERROR, "Unable to read javascript file: " + file);
         }
       } else {
+        logger.log(TreeLogger.INFO, getClass().getSimpleName() + " - downloading external javascript: " + src);
         URL url = new URL(src);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
