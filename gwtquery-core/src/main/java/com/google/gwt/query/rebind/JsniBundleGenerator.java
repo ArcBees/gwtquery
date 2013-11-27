@@ -216,7 +216,7 @@ public class JsniBundleGenerator extends Generator {
         if (!isCPPComment && !isCComment && !isRegex && !isOper) {
           isCPPComment = c == '/';
           isCComment =  c == '*';
-          isOper = !isCPPComment && !isCComment && !"=(&|?:\n},".contains(""+prev);
+          isOper = !isCPPComment && !isCComment && !"=(&|?:;},".contains(""+prev);
           isRegex = !isCPPComment && !isCComment && !isOper;
         }
         if (isOper) {
