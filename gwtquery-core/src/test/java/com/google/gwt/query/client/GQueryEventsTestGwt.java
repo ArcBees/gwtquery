@@ -1288,6 +1288,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     b.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         b.getElement().getStyle().setBackgroundColor("black");
+        b.setWidth("100px");
       }
     });
     RootPanel.get().add(b);
@@ -1296,6 +1297,9 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(b).click();
     assertEquals("red", $("button").css("color", false));
     assertEquals("black", $("button").css("background-color", false));
+    assertEquals("100px", $("button").css("width", false));
+
+    $(b).bind("custom", lazy().css("width", "200px").done());
     RootPanel.get().remove(b);
 
     $(e).append($(b));
@@ -1303,6 +1307,10 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(b).click();
     assertEquals("red", $("button").css("color", false));
     assertEquals("black", $("button").css("background-color", false));
+    assertEquals("100px", $("button").css("width", false));
+
+    $(b).trigger("custom");
+    assertEquals("200px", $("button").css("width", false));
   }
   
   public void testIssue152() {
