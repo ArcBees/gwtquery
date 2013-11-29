@@ -1595,4 +1595,12 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     assertEquals(1, handler.invokationCounter);
   }
+
+  public void testIssue226() {
+    $(e).html("<div id='target'>");
+    GQuery target = $("#target", e);
+
+    // this should not throw a NPE
+    target.undelegate("li", "click");
+  }
 }
