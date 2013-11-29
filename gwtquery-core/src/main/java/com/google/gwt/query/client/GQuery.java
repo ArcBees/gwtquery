@@ -2483,9 +2483,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 'in' to a frequent task. Whenever the mouse cursor is moved over a matched element, the first
    * specified function is fired. Whenever the mouse moves off of the element, the second specified
    * function fires.
+   *
+   * Since GQuery 1.4.0, this method binds handlers for both mouseenter and mouseleave events.
    */
   public GQuery hover(Function fover, Function fout) {
-    return bind(Event.ONMOUSEOVER, null, fover).bind(Event.ONMOUSEOUT, null, fout);
+    return bind("mouseenter", null, fover).bind("mouseleave", null, fout);
   }
 
   /**
