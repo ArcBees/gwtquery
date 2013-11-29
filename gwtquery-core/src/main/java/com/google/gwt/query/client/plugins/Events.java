@@ -377,7 +377,14 @@ public class Events extends GQuery {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
         $(e).data(EventsListener.EVENT_DATA, datas);
-        e.dispatchEvent(evt);
+
+        // Ie6-8 don't dispatch bitless event
+        if ((browser.ie6 || browser.ie8) && Event.getTypeInt(evt.getType()) == -1) {
+          EventsListener.getInstance(e).dispatchEvent(evt.<Event>cast());
+        } else {
+          e.dispatchEvent(evt);
+        }
+
         if (!JsUtils.isDefaultPrevented(evt)) {
           callHandlers(e, evt, funcs);
         }
@@ -392,5 +399,4 @@ public class Events extends GQuery {
       f.f(e);
     }
   }
-
 }
