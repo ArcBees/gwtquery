@@ -13,7 +13,6 @@
  */
 package com.google.gwt.query.client.plugins;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
@@ -36,8 +35,6 @@ public class Events extends GQuery {
       return new Events(gq);
     }
   });
-
-  private static final EventDispatcher EVENT_DISPATCHER = GWT.create(EventDispatcher.class);
 
   /**
    * Don't apply events on text and comment nodes !!
@@ -381,7 +378,12 @@ public class Events extends GQuery {
       if (isEventCapable(e)) {
         $(e).data(EventsListener.EVENT_DATA, datas);
 
-        EVENT_DISPATCHER.dispatch(e, evt);
+        // Ie6-8 don't dispatch bitless event
+        if ((browser.ie6 || browser.ie8) && Event.getTypeInt(evt.getType()) == -1) {
+          EventsListener.getInstance(e).dispatchEvent(evt.<Event>cast());
+        } else {
+          e.dispatchEvent(evt);
+        }
 
         if (!JsUtils.isDefaultPrevented(evt)) {
           callHandlers(e, evt, funcs);
@@ -397,23 +399,4 @@ public class Events extends GQuery {
       f.f(e);
     }
   }
-
-  static class EventDispatcher {
-    public void dispatch(Element e, NativeEvent evt) {
-        e.dispatchEvent(evt);
-    }
-  }
-
-  @SuppressWarnings("unused")
-  static class EventDispatcherTrident extends EventDispatcher {
-    public void dispatch(Element e, NativeEvent evt) {
-      // bitless event ?
-      if (Event.getTypeInt(evt.getType()) != -1) {
-        super.dispatch(e, evt);
-      } else {
-        EventsListener.getInstance(e).dispatchEvent(evt.<Event>cast());
-      }
-    }
-  }
-
 }
