@@ -2049,4 +2049,18 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(ulParentsNumber + 2, result.size());
   }
 
+  // issue #216 : https://github.com/gwtquery/gwtquery/issues/216
+  public void testDataAsInteger() {
+    $(e).html("<div id='target'></div>");
+
+    GQuery target = $("#target", e);
+
+    $("#target", e).data("intValue", new Integer(1));
+
+    Integer value = $("#target", e).data("intValue", Integer.class);
+
+    assertEquals(1, value.intValue());
+
+  }
+
 }
