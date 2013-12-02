@@ -78,27 +78,29 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       String s1 = s.get(1);
       String s2 = s.get(2);
 
-      boolean noPrefix = s1 == null || s1.length() == 0;
+      boolean afterAttr = "]".equals(s1);
+      String prefix = afterAttr ? s1 : "*";
+      boolean noPrefix = afterAttr || s1 == null || s1.length() == 0 ;
 
       if ("n".equals(s2)) {
         return s1;
       }
       if ("even".equals(s2)) {
-        return "*[position() mod 2=0 and position()>=0]" + (noPrefix ? "" : "/self::" + s1);
+        return prefix + "[position() mod 2=0 and position()>=0]" + (noPrefix ? "" : "/self::" + s1);
       }
       if ("odd".equals(s2)) {
-    	  String prefix = noPrefix ? "" : s1;
+    	  prefix = afterAttr ? prefix : noPrefix ? "" : s1;
         return prefix + "[(count(preceding-sibling::*) + 1) mod 2=1]";
       }
 
       if (!s2.contains("n")){
-    	  return "*[position() = "+s2+"]" + (noPrefix ? "" : "/self::" + s1);
+    	  return prefix + "[position() = "+s2+"]" + (noPrefix ? "" : "/self::" + s1);
       }
 
       String[] t = s2.replaceAll("^([0-9]*)n.*?([0-9]*)?$", "$1+$2").split("\\+");
       String t0 = t[0];
       String t1 = t.length > 1 ? t[1] : "0";
-      return "*[(position()-" + t1 +  ") mod " +  t0 + "=0 and position()>=" +  t1 + "]" + (noPrefix ? "" : "/self::" + s1);
+      return prefix + "[(position()-" + t1 +  ") mod " +  t0 + "=0 and position()>=" +  t1 + "]" + (noPrefix ? "" : "/self::" + s1);
     }
   };
 
@@ -135,7 +137,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     // :not
     "(.+):not\\(([^\\)]*)\\)", rc_Not,
     // :nth-child
-    "([a-zA-Z0-9\\_\\-\\*]*):nth-child\\(([^\\)]*)\\)", rc_nth_child,
+    "([a-zA-Z0-9\\_\\-\\*]*|\\]):nth-child\\(([^\\)]*)\\)", rc_nth_child,
     // :contains(selectors)
     ":contains\\(([^\\)]*)\\)", "[contains(string(.),'$1')]",
     // |= attrib
@@ -270,5 +272,4 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       return elm;
     }
   }
-
 }
