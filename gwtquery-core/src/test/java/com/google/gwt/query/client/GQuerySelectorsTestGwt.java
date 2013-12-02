@@ -15,17 +15,13 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.body;
-import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.*;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.junit.DoNotRunWith;
-import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineImpl;
@@ -407,7 +403,7 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
   public void testOddEvenNthChild(){
 
 	  $(e).append(
-	            "<div id='parent'><div id='first' class='evenClass'>branchA target</div><div id='second' class='oddClass'>branchA target</div><div id='third'  class='evenClass'>branchA target</div><div id='fourth' class='oddClass'>branchA target</div></div>");
+	            "<div id='parent'><div id='first' class='evenClass' role='treeItem'>branchA target</div><div id='second' class='oddClass' role='treeItem'>branchA target</div><div id='third' class='evenClass' role='treeItem'>branchA target</div><div id='fourth' class='oddClass' role='treeItem'>branchA target</div></div>");
 
 	  GQuery odd = $("#parent > div:odd",e);
 	  assertEquals(2, odd.size());
@@ -449,6 +445,14 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
 	  assertEquals("second", secondAndFourth.eq(0).attr("id"));
 	  assertEquals("fourth", secondAndFourth.eq(1).attr("id"));
 
+	  // odd and even with attribute filters
+    secondAndFourth = $("div[role=treeItem]:odd", e);
+    assertEquals("second", secondAndFourth.eq(0).attr("id"));
+    assertEquals("fourth", secondAndFourth.eq(1).attr("id"));
+
+    GQuery treeItemFirstAndThird = $("div[role=treeItem]:even", e);
+    assertEquals("first", treeItemFirstAndThird.eq(0).attr("id"));
+    assertEquals("third", treeItemFirstAndThird.eq(1).attr("id"));
   }
 
   private void assertArrayContains(Object result, Object... array) {
