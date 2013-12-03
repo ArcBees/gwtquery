@@ -376,27 +376,37 @@ public class DeferredTest extends GWTTestCase {
 
   public void testFunctionDeferredCache() {
 
-    FunctionDeferred cachedFunction = new FunctionDeferred() {protected void f(Deferred dfd) {
+    FunctionDeferred cachedFunction = new FunctionDeferred() {
+      protected void f(Deferred dfd) {
         dfd.resolve(deferredData);
-    }};
+      }
+    };
 
-    Function setDeferredDataToTrue = new Function(){public void f() {
-      deferredData = true;
-    }};
+    Function setDeferredDataToTrue = new Function(){
+      public void f() {
+        deferredData = true;
+      }
+    };
 
-    Function setDeferredDataToFalse = new Function(){public void f() {
-      deferredData = false;
-    }};
+    Function setDeferredDataToFalse = new Function() {
+      public void f() {
+        deferredData = false;
+      }
+    };
 
-    Function assertDeferredDataIsFalse = new Function(){public void f() {
-      Boolean data = arguments(0);
-      assertFalse(data);
-    }};
+    Function assertDeferredDataIsFalse = new Function() {
+      public void f() {
+        Boolean data = arguments(0);
+        assertFalse(data);
+      }
+    };
 
-    Function assertDeferredDataIsTrue = new Function(){public void f() {
-      Boolean data = arguments(0);
-      assertTrue(data);
-    }};
+    Function assertDeferredDataIsTrue = new Function() {
+      public void f() {
+        Boolean data = arguments(0);
+        assertTrue(data);
+      }
+    };
 
     when(setDeferredDataToTrue, cachedFunction.withCache(CacheType.ALL))
       .always(setDeferredDataToFalse)
