@@ -24,6 +24,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
+import com.google.gwt.query.client.plugins.deferred.FunctionDeferred.CacheType;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 
@@ -371,4 +372,56 @@ public class DeferredTest extends GWTTestCase {
     });
   }
 
+  private Boolean deferredData;
+
+  public void testFunctionDeferredCache() {
+
+    FunctionDeferred cachedFunction = new FunctionDeferred() {
+      protected void f(Deferred dfd) {
+        dfd.resolve(deferredData);
+      }
+    };
+
+    Function setDeferredDataToTrue = new Function(){
+      public void f() {
+        deferredData = true;
+      }
+    };
+
+    Function setDeferredDataToFalse = new Function() {
+      public void f() {
+        deferredData = false;
+      }
+    };
+
+    Function assertDeferredDataIsFalse = new Function() {
+      public void f() {
+        Boolean data = arguments(0);
+        assertFalse(data);
+      }
+    };
+
+    Function assertDeferredDataIsTrue = new Function() {
+      public void f() {
+        Boolean data = arguments(0);
+        assertTrue(data);
+      }
+    };
+
+    when(setDeferredDataToTrue, cachedFunction.withCache(CacheType.ALL))
+      .always(setDeferredDataToFalse)
+      .done(assertDeferredDataIsTrue)
+      .then(cachedFunction)
+      .done(assertDeferredDataIsTrue)
+      .then(cachedFunction.withCache(CacheType.REJECTED))
+      .done(assertDeferredDataIsFalse)
+      .always(setDeferredDataToTrue)
+      .then(cachedFunction.withCache(CacheType.RESOLVED))
+      .done(assertDeferredDataIsFalse)
+      .then(cachedFunction.resetCache())
+      .done(assertDeferredDataIsTrue)
+      .then(cachedFunction)
+      .done(assertDeferredDataIsTrue)
+    ;
+  }
 }
