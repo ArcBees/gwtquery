@@ -68,6 +68,10 @@ public class ConsoleBrowser implements Console {
    * Default implementation: webkit, opera, FF, ie10
    */
   private static class ConsoleImpl {
+    public native void clear() /*-{
+      $wnd.console.clear();
+    }-*/;
+
     public native void dir(Object arg) /*-{
       $wnd.console.dir(arg);
     }-*/;
@@ -126,7 +130,12 @@ public class ConsoleBrowser implements Console {
   public ConsoleBrowser() {
     impl = GQuery.browser.ie8? new ConsoleIe8(): GQuery.browser.ie9? new ConsoleIe9(): new  ConsoleImpl();
   }
-  
+
+  @Override
+  public void clear() {
+    impl.clear();
+  }
+
   @Override
   public void dir(Object arg) {
     impl.dir(toJs(arg));

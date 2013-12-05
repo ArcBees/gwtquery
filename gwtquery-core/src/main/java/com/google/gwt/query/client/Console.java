@@ -22,6 +22,11 @@ package com.google.gwt.query.client;
 public interface Console {
 
   /**
+   * Clears the console.
+   */
+  void clear();
+
+  /**
    * Displays an interactive listing of the properties of a specified JavaScript object. This
    * listing lets you use disclosure triangles to examine the contents of child objects.
    */
