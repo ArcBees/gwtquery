@@ -22,6 +22,11 @@
         <when-type-assignable class="com.google.gwt.query.client.Browser"/>
     </generate-with>
 
+    <!-- GQuery.console -->
+    <replace-with class="com.google.gwt.query.client.impl.ConsoleBrowser">
+        <when-type-assignable class="com.google.gwt.query.client.Console"/>
+    </replace-with>
+
     <!-- JSNI Generator -->
     <generate-with class="com.google.gwt.query.rebind.JsniBundleGenerator">
         <when-type-assignable class="com.google.gwt.query.client.builders.JsniBundle"/>

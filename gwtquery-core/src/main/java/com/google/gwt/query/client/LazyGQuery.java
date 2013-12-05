@@ -22,6 +22,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
@@ -1116,6 +1117,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * 'in' to a frequent task. Whenever the mouse cursor is moved over a matched element, the first
    * specified function is fired. Whenever the mouse moves off of the element, the second specified
    * function fires.
+   *
+   * Since GQuery 1.4.0, this method binds handlers for both mouseenter and mouseleave events.
    */
   LazyGQuery<T> hover(Function fover, Function fout);
 
@@ -2226,6 +2229,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example: fire(Event.ONCLICK | Event.ONFOCUS) Example: fire(Event.ONKEYDOWN. 'a');
    */
   LazyGQuery<T> trigger(int eventbits, int... keys);
+
+  /**
+   * Trigger a event in all matched elements.
+   *
+   * @param eventName An string representing the type of the event desired
+   * @param datas Additional parameters to pass along to the event handlers.
+   */
+  LazyGQuery<T> trigger(String eventName, Object... datas);
 
   /**
    * Removes all events that match the eventbits.

@@ -820,5 +820,4 @@ public class EventsListener implements EventListener {
       function.clean();
     }
   }
-
 }

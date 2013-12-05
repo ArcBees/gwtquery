@@ -77,6 +77,12 @@ public class SelectorEnginesTest extends GWTTestCase {
 
     assertEquals(".//div[@class='comment' and (contains(string(.),'John'))]",
         sel.css2Xpath("div[@class='comment']:contains('John')"));
+
+    assertEquals(".//div[@role='treeItem' and (position() mod 2=0 and position()>=0)]",
+        sel.css2Xpath("div[role=treeItem]:odd"));
+
+    assertEquals(".//div[@role='treeItem' and ((count(preceding-sibling::*) + 1) mod 2=1)]",
+        sel.css2Xpath("div[role=treeItem]:even"));
   }
 
 }

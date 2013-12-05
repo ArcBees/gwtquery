@@ -123,6 +123,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static final Browser browser = GWT.isClient() ? GWT.<Browser>create(Browser.class) : null;
 
   /**
+   * An object with the same methods than window.console.
+   */
+  public static final Console console = GWT.isClient() ? GWT.<Console>create(Console.class) : null;
+
+  /**
    * Object to store element data (public so as we can access to it from tests).
    */
   public static JsCache dataCache = null;
@@ -702,13 +707,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $().createLazy();
   }
   
-  /**
-   * Dump an object to the window.console.log when available
-   */
-  public static void log(Object o) {
-    JsUtils.log(o);
-  }
-
   /**
    * Perform an ajax request to the server using POST.
    */
@@ -2483,9 +2481,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * 'in' to a frequent task. Whenever the mouse cursor is moved over a matched element, the first
    * specified function is fired. Whenever the mouse moves off of the element, the second specified
    * function fires.
+   *
+   * Since GQuery 1.4.0, this method binds handlers for both mouseenter and mouseleave events.
    */
   public GQuery hover(Function fover, Function fout) {
-    return bind(Event.ONMOUSEOVER, null, fover).bind(Event.ONMOUSEOUT, null, fout);
+    return bind("mouseenter", null, fover).bind("mouseleave", null, fout);
   }
 
   /**
