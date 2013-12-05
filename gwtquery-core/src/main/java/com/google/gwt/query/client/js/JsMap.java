@@ -49,6 +49,12 @@ final public class JsMap<S, T> extends JavaScriptObject {
     return old;
   }
 
+  public T remove(int hashCode){
+    T old = get(hashCode);
+    c().delete(hashCode());
+    return old;
+  }
+
   public final String[] keys() {
     return c().keys();
   }
