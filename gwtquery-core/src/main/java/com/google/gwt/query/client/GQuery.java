@@ -123,6 +123,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static final Browser browser = GWT.isClient() ? GWT.<Browser>create(Browser.class) : null;
 
   /**
+   * An object with the same methods than window.console.
+   */
+  public static final Console console = GWT.isClient() ? GWT.<Console>create(Console.class) : null;
+
+  /**
    * Object to store element data (public so as we can access to it from tests).
    */
   public static JsCache dataCache = null;
@@ -702,13 +707,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $().createLazy();
   }
   
-  /**
-   * Dump an object to the window.console.log when available
-   */
-  public static void log(Object o) {
-    JsUtils.log(o);
-  }
-
   /**
    * Perform an ajax request to the server using POST.
    */
