@@ -13,8 +13,6 @@
  */
 package com.google.gwt.query.client.plugins.events;
 
-import static com.google.gwt.query.client.GQuery.$;
-
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -32,6 +30,8 @@ import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.gwt.query.client.GQuery.$;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
@@ -154,7 +154,7 @@ public class EventsListener implements EventListener {
     }
 
     public boolean hasEventType(int etype) {
-      return  type != BITLESS && (type & etype) != 0;
+      return  type != BITLESS && etype != BITLESS && (type & etype) != 0;
     }
 
     public boolean isTypeOf(String eName) {
@@ -179,7 +179,7 @@ public class EventsListener implements EventListener {
 
     @Override
     public String toString() {
-      return "bind function for event type " + type;
+      return "bind function for event type " + (eventName != null ? eventName : "" + type);
     }
 
     public boolean isEquals(Function f) {
@@ -435,7 +435,6 @@ public class EventsListener implements EventListener {
 		if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
-  // Gwt does't handle submit nor resize events in DOM.sinkEvents
   private static native void sinkBitlessEvent(Element elem, String name) /*-{
 		if (!elem.__gquery)
 			elem.__gquery = [];
@@ -561,17 +560,27 @@ public class EventsListener implements EventListener {
   public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
       String cssSelector) {
     if (eventbits <= 0) {
-      if (eventName != null) {
+      if (eventName != null && eventName.length() > 0) {
         LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
         maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eventName, nameSpace,
             originalEventName);
-      }
+      } else {
+        // if eventbits == -1 and eventName is null, remove all event handlers for this selector
+        for (String k : liveBindFunctionByEventType.keys()) {
+          int bits = Integer.parseInt(k);
+          LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(bits);
+          maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, bits, null, nameSpace, null);
+        }
 
-      // if eventbits == -1 and eventName is null, remove all event handlers for this selector
-      for (String k : liveBindFunctionByEventType.keys()) {
-        int bits = Integer.parseInt(k);
-        LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(bits);
-        maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, bits, null, nameSpace, null);
+        for (String k : liveBindFunctionByEventName.keys()) {
+          int realKey = Integer.parseInt(k);
+          LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(realKey);
+          if (liveBindFunction != null) {
+            String eName = liveBindFunction.eventName;
+            maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eName,
+                nameSpace, originalEventName);
+          }
+        }
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);

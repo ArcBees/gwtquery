@@ -1603,4 +1603,91 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     // this should not throw a NPE
     target.undelegate("li", "click");
   }
+
+  // issue 25 : https://github.com/gwtquery/gwtquery/issues/25
+  public void testDelegateAfterUndelegateWithoutParameter() {
+    $(e).html(
+        "<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+
+    CounterFunction clickFunction = new CounterFunction();
+    CounterFunction mouseOverFunction = new CounterFunction();
+
+    $(".mainDiv", e).delegate(".subDiv", "click", clickFunction);
+
+    $(".mainDiv", e).delegate(".subDiv", Event.ONMOUSEOVER, mouseOverFunction);
+
+    for (Element mainDiv : $(".mainDiv", e).elements()) {
+      for (int i = 0; i < 3; i++) {
+        String html = "<div class='subDiv'>Content " + i + "<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+
+    assertEquals(8, $(".subDiv", e).length());
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER);
+
+    assertEquals(8, clickFunction.invokationCounter);
+    assertEquals(8, mouseOverFunction.invokationCounter);
+
+    clickFunction.invokationCounter = 0;
+    mouseOverFunction.invokationCounter = 0;
+
+    $(".mainDiv", e).undelegate();
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER);
+    assertEquals(0, clickFunction.invokationCounter);
+    assertEquals(0, mouseOverFunction.invokationCounter);
+
+    //reattach the event
+
+    $(".mainDiv", e).delegate(".subDiv", "click", clickFunction);
+    $(".mainDiv", e).delegate(".subDiv", Event.ONMOUSEOVER, mouseOverFunction);
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER);
+
+    assertEquals(8, clickFunction.invokationCounter);
+    assertEquals(8, mouseOverFunction.invokationCounter);
+
+  }
+
+  public void testDelegateAfterUndelegateWithSelectorWithDifferentEvent() {
+    $(e).html(
+        "<div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>Content 0<span>blop</span></div></div>");
+
+    CounterFunction clickFunction = new CounterFunction();
+    CounterFunction mouseOverFunction = new CounterFunction();
+    CounterFunction customEventFunction = new CounterFunction();
+
+    $(".mainDiv", e).delegate(".subDiv", "click", clickFunction)
+        .delegate(".subDiv", Event.ONMOUSEOVER, mouseOverFunction)
+        .delegate(".subDiv", "custom", customEventFunction);
+
+    for (Element mainDiv : $(".mainDiv", e).elements()) {
+      for (int i = 0; i < 3; i++) {
+        String html = "<div class='subDiv'>Content " + i + "<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+
+    assertEquals(8, $(".subDiv", e).length());
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER).trigger("custom");
+
+    assertEquals(8, clickFunction.invokationCounter);
+    assertEquals(8, mouseOverFunction.invokationCounter);
+    assertEquals(8, customEventFunction.invokationCounter);
+
+    $(".mainDiv", e).undelegate(".subDiv");
+
+    clickFunction.invokationCounter = 0;
+    mouseOverFunction.invokationCounter = 0;
+    customEventFunction.invokationCounter = 0;
+
+    $("span", e).click().trigger(Event.ONMOUSEOVER).trigger("custom");
+
+    assertEquals(0, clickFunction.invokationCounter);
+    assertEquals(0, mouseOverFunction.invokationCounter);
+    assertEquals(0, customEventFunction.invokationCounter);
+  }
 }
