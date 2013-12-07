@@ -64,6 +64,23 @@ public class JsUtils {
     }
   }
 
+  /**
+   * Wraps a GQuery function into a native javascript one so as we can
+   * export Java methods without using JSNI.
+   */
+  public static native JavaScriptObject wrapFunction (Function f) /*-{
+    return function(r) {
+      var o = @java.util.ArrayList::new()();
+      for (i in arguments) {
+        r = @com.google.gwt.query.client.js.JsCache::gwtBox(*)([arguments[i]]);
+        o.@java.util.ArrayList::add(Ljava/lang/Object;)(r);
+      }
+      o = o.@java.util.ArrayList::toArray()();
+      f.@com.google.gwt.query.client.Function::setArguments([Ljava/lang/Object;)(o);
+      return f.@com.google.gwt.query.client.Function::fe([Ljava/lang/Object;)(o);
+    }
+  }-*/;
+
   public static class JsUtilsImpl {
     public native Properties parseJSON(String json) /*-{
       return $wnd.JSON.parse(json);
@@ -179,7 +196,7 @@ public class JsUtils {
   }
 
   private static JsUtilsImpl utilsImpl = GWT.create(JsUtilsImpl.class);
-  
+
   /**
    * Returns a property present in a javascript object.
    */
@@ -193,9 +210,9 @@ public class JsUtils {
   public static <T> T prop(JavaScriptObject o, Object id) {
     return o == null ? null : o.<JsCache>cast().<T>get(id);
   }
-  
+
   /**
-   * Set a property to a javascript object 
+   * Set a property to a javascript object
    */
   public static void prop(JavaScriptObject o, Object id, Object val) {
     if (o != null) {
@@ -275,16 +292,16 @@ public class JsUtils {
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
     return o && name in o;
   }-*/;
-  
+
   /**
    * Check whether an element has an attribute, this is here since GWT Element.getAttribute
-   * implementation returns an empty string instead of null when the attribute is not 
+   * implementation returns an empty string instead of null when the attribute is not
    * present
    */
   public static native boolean hasAttribute(Element o, String name)/*-{
     return !!(o && o.getAttribute(name));
   }-*/;
-  
+
   /**
    * Hyphenize style property names. for instance: fontName -> font-name
    */
@@ -363,8 +380,7 @@ public class JsUtils {
    * Check if an element is a DOM or a XML node
    */
   public static boolean isXML(Node o) {
-    return o == null
-        ? false
+    return o == null ? false
         : !"HTML".equals(getOwnerDocument(o).getDocumentElement().getNodeName());
   }
 
@@ -426,7 +442,7 @@ public class JsUtils {
   public static String text(Element e) {
     return utilsImpl.text(e);
   }
-  
+
   /**
    * Call via jsni any arbitrary function present in a Javascript object.
    * 
@@ -449,7 +465,7 @@ public class JsUtils {
   public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
     return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());
   }
-  
+
   private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
     return (f = o && o[meth])
         && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)

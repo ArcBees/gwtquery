@@ -13,7 +13,7 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.plugins.QueuePlugin.*;
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +26,18 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -50,7 +59,6 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
-import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.RegExp;
@@ -116,7 +124,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The body element in the current page.
    */
   public static final BodyElement body = GWT.isClient() ? Document.get().getBody() : null;
-  
+
   /**
    * A Browser object with a set of browser-specific flags.
    */
@@ -136,12 +144,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The document element in the current page.
    */
   public static final Document document = GWT.isClient() ? Document.get() : null;
-  
+
   /**
    * Static reference Effects plugin
    */
   public static Class<Effects> Effects = com.google.gwt.query.client.plugins.Effects.Effects;
-  
+
   /**
    * Implementation engine used for CSS selectors.
    */
@@ -238,14 +246,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
           elms.addNode((Node) obj);
         }
       }
-      return $((NodeList<Element>)elms);
+      return $(elms);
     }
 
     return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) :
       JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
-      JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
-      JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
-        $(jso.<Element> cast());
+        JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
+          JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
+            $(jso.<Element> cast());
   }
 
   /**
@@ -473,10 +481,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     return
-      // return all nodes added to the wrapper
-      $(n.getChildNodes())
-      // detach nodes from their temporary parent
-      .remove(null, false);
+    // return all nodes added to the wrapper
+    $(n.getChildNodes())
+    // detach nodes from their temporary parent
+    .remove(null, false);
   }
 
   /**
@@ -674,7 +682,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     wrapperMap.put("td", trWrapper);
     wrapperMap.put("th", trWrapper);
     wrapperMap.put("col", new TagWrapper(2, "<table><tbody></tbody><colgroup>",
-        "</colgroup></table>"));
+    "</colgroup></table>"));
     wrapperMap.put("area", new TagWrapper(1, "<map>", "</map>"));
 
   }
@@ -706,7 +714,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static LazyGQuery<?> lazy() {
     return $().createLazy();
   }
-  
+
   /**
    * Perform an ajax request to the server using POST.
    */
@@ -2254,17 +2262,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     JsNodeArray array = JsNodeArray.create();
-    /*
-     * StringBuilder filterBuilder = new StringBuilder(); for (int i = 0; i < filters.length ; i++){
-     * filterBuilder.append(filters[i]); if (i < filters.length - 1){ filterBuilder.append(","); } }
-     *
-     * String filter = filterBuilder.toString();
-     */
 
     for (String f : filters) {
       for (Element e : elements) {
         boolean ghostParent = false;
-
+        if (e == window || e.getNodeName() == null) {
+          continue;
+        }
         if (e.getParentNode() == null) {
           DOM.createDiv().appendChild(e);
           ghostParent = true;
@@ -4361,7 +4365,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String toString() {
     return toString(false);
   }
-  
+
   /**
    * Produces a string representation of the matched elements.
    */
@@ -4376,9 +4380,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         elStr = JsUtils.isXML(e) ? JsUtils.XML2String(e) : e.getString();
       } catch (Exception e2) {
         elStr =
-            "< " + (e == null ? "null" : e.getNodeName())
-                + "(gquery, error getting the element string representation: " + e2.getMessage()
-                + ")/>";
+          "< " + (e == null ? "null" : e.getNodeName())
+          + "(gquery, error getting the element string representation: " + e2.getMessage()
+          + ")/>";
       }
       r += (pretty && r.length() > 0 ? "\n " : "") + elStr;
     }
