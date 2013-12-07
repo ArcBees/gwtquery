@@ -49,7 +49,7 @@ public class ClipAnimation extends PropertiesAnimation {
   }
 
   private static final String[] attrsToSave = new String[]{
-      "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
+    "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
 
   private Action action;
   private Corner corner;
@@ -59,7 +59,11 @@ public class ClipAnimation extends PropertiesAnimation {
   private Action currentAction;
 
   public ClipAnimation(Element elem, Properties p, Function... funcs) {
-    super(elem, p, funcs);
+    this(null, elem, p, funcs);
+  }
+
+  public ClipAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
+    super(easing, elem, p, funcs);
     corner = Corner.CENTER;
     try {
       corner = Corner.valueOf(getNormalizedValue("clip-origin", p));
@@ -77,8 +81,8 @@ public class ClipAnimation extends PropertiesAnimation {
     g = GQuery.$(e).as(Effects.Effects);
   }
 
-  private static String getNormalizedValue(String value, Properties p) {
-    return JsUtils.hyphenize(p.getStr("clip-direction")).replace("-", "_").toUpperCase();
+  public static String getNormalizedValue(String value, Properties p) {
+    return JsUtils.hyphenize(p.getStr(value)).replace("-", "_").toUpperCase();
   }
 
   public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
@@ -97,6 +101,9 @@ public class ClipAnimation extends PropertiesAnimation {
   @Override
   public void onComplete() {
     super.onComplete();
+    if (action == null) {
+      return;
+    }
     if (currentAction == Action.HIDE) {
       g.hide();
     }
@@ -110,6 +117,9 @@ public class ClipAnimation extends PropertiesAnimation {
   public void onStart() {
     boolean hidden = !g.isVisible();
     super.onStart();
+    if (action == null) {
+      return;
+    }
     currentAction = action != Action.TOGGLE ? action :  hidden ? Action.SHOW : Action.HIDE;
 
     g.saveCssAttrs(attrsToSave);
@@ -139,6 +149,9 @@ public class ClipAnimation extends PropertiesAnimation {
   @Override
   public void onUpdate(double progress) {
     super.onUpdate(progress);
+    if (action == null) {
+      return;
+    }
     if (currentAction == Action.HIDE) {
       progress = (1 - progress);
     }

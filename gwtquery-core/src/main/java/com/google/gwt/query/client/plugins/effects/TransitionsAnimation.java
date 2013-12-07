@@ -15,7 +15,9 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.plugins.effects.ClipAnimation.getNormalizedValue;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -40,6 +42,28 @@ public class TransitionsAnimation extends PropertiesAnimation {
     private Direction direction;
     private Action currentAction;
 
+    public TransitionsClipAnimation(Element elem, Properties p, Function... funcs) {
+      this(null, elem, p, funcs);
+    }
+
+    public TransitionsClipAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
+      super(easing, elem, p, funcs);
+      corner = Corner.CENTER;
+      try {
+        corner = Corner.valueOf(getNormalizedValue("clip-origin", p));
+      } catch (Exception e) {
+      }
+      direction = Direction.BIDIRECTIONAL;
+      try {
+        direction = Direction.valueOf(getNormalizedValue("clip-direction", p));
+      } catch (Exception e) {
+      }
+      try {
+        action = Action.valueOf(getNormalizedValue("clip-action", p));
+      } catch (Exception e) {
+      }
+    }
+
     public TransitionsClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
         Properties p, final Function... funcs) {
       super(easing, elem, p, funcs);
@@ -52,7 +76,9 @@ public class TransitionsAnimation extends PropertiesAnimation {
       boolean hidden = !g.isVisible();
 
       super.onStart();
-
+      if (action == null) {
+        return;
+      }
       currentAction = action != Action.TOGGLE ? action :  hidden ? Action.SHOW : Action.HIDE;
       int bit = currentAction == Action.HIDE ? 1 : 0;
 
@@ -84,6 +110,9 @@ public class TransitionsAnimation extends PropertiesAnimation {
     @Override
     public void onComplete() {
       super.onComplete();
+      if (action == null) {
+        return;
+      }
       if (currentAction == Action.HIDE) {
         g.hide();
       }

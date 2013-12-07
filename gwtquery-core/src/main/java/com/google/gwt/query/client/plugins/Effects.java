@@ -24,10 +24,8 @@ import com.google.gwt.query.client.plugins.effects.ClipAnimation;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
-import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 
 /**
@@ -169,15 +167,14 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects animate(Object stringOrProperties, final int duration,
       final Easing easing, final Function... funcs) {
 
-
     final Properties p = (stringOrProperties instanceof String)
         ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
 
     for (Element e: elements()) {
       if (Fx.css3) {
-        new TransitionsAnimation(easing, e, p, funcs).run(duration);
+        new TransitionsClipAnimation(easing, e, p, funcs).run(duration);
       } else {
-        queueAnimation(e, new PropertiesAnimation(easing, e, p, funcs), duration);
+        queueAnimation(e, new ClipAnimation(easing, e, p, funcs), duration);
       }
     }
     return this;
