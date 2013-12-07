@@ -77,7 +77,7 @@ public class JsUtils {
       }
       o = o.@java.util.ArrayList::toArray()();
       f.@com.google.gwt.query.client.Function::setArguments([Ljava/lang/Object;)(o);
-      f.@com.google.gwt.query.client.Function::fe()();
+      return f.@com.google.gwt.query.client.Function::fe([Ljava/lang/Object;)(o);
     }
   }-*/;
 
