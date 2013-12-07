@@ -21,7 +21,6 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation;
-import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
@@ -168,7 +167,7 @@ public class Effects extends QueuePlugin<Effects> {
       final Easing easing, final Function... funcs) {
 
     final Properties p = (stringOrProperties instanceof String)
-        ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
+    ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
 
     for (Element e: elements()) {
       if (Fx.css3) {
@@ -301,22 +300,26 @@ public class Effects extends QueuePlugin<Effects> {
   }
 
   /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
+   * Animate the set of matched elements using the clip or scale property. It is possible to show or
+   * hide a set of elements, specify the direction of the animation and the start corner of the
+   * effect. Finally it executes the set of functions passed as arguments.
+   * 
+   * @deprecated use animate() instead
    */
+  @Deprecated
   public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
       ClipAnimation.Direction d, Function... f) {
     return clip(a, c, d, Speed.DEFAULT, f);
   }
 
   /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
+   * Animate the set of matched elements using the clip or scale property. It is possible to show or
+   * hide a set of elements, specify the direction of the animation and the start corner of the
+   * effect. Finally it executes the set of functions passed as arguments.
+   * 
+   * @deprecated use animate() instead
    */
+  @Deprecated
   public Effects clip(final ClipAnimation.Action a,
       final ClipAnimation.Corner c, final ClipAnimation.Direction d,
       final int duration, final Function... f) {
@@ -331,107 +334,96 @@ public class Effects extends QueuePlugin<Effects> {
   }
 
   /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
+   * Animate the set of matched elements using the clip or scale property. It is possible to show or
+   * hide a set of elements, specify the direction of the animation and the start corner of the
+   * effect. Finally it executes the set of functions passed as arguments.
+   * 
+   * @deprecated use animate() instead
    */
+  @Deprecated
   public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
       Function... f) {
     return clip(a, c, Direction.BIDIRECTIONAL, Speed.DEFAULT, f);
   }
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the center to the
-   * perimeter.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the center to the perimeter.
    */
   public Effects clipAppear(Function... f) {
     return clipAppear(Speed.DEFAULT, f);
   }
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the center to the
-   * perimeter.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the center to the perimeter.
    */
   public Effects clipAppear(int millisecs, Function... f) {
-    return clip(ClipAnimation.Action.SHOW, ClipAnimation.Corner.CENTER,
-        ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
+    return animate($$("clip-action: show"), millisecs, f);
   }
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the perimeter to the
-   * center.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the perimeter to the center.
    */
   public Effects clipDisappear(Function... f) {
     return clipDisappear(Speed.DEFAULT, f);
   }
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the perimeter to the
-   * center.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the perimeter to the center.
    */
   public Effects clipDisappear(int millisecs, Function... f) {
-    return clip(ClipAnimation.Action.HIDE, ClipAnimation.Corner.CENTER,
-        ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
+    return animate($$("clip-action: hide"), millisecs, f);
   }
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the top to the
-   * bottom.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the top to the bottom.
    */
   public Effects clipDown(Function... f) {
     return clipDown(Speed.DEFAULT, f);
   }
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the top to the
-   * bottom.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the top to the bottom.
    */
   public Effects clipDown(int millisecs, Function... f) {
-    return clip(Action.SHOW, ClipAnimation.Corner.TOP_LEFT,
-        ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
+    return animate($$("clip-action: show, clip-origin: top-left"), millisecs, f);
   }
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip
-   * property and firing an optional callback after completion. The effect goes
-   * from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip or scale property and
+   * firing an optional callback after completion. The effect goes from the bottom to the top.
    */
   public Effects clipToggle(Function... f) {
     return clipToggle(Speed.DEFAULT, f);
   }
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip
-   * property and firing an optional callback after completion. The effect goes
-   * from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip or scale or scale property
+   * and firing an optional callback after completion. The effect goes from the bottom to the top.
    */
   public Effects clipToggle(int millisecs, Function... f) {
-    return clip(Action.TOGGLE, ClipAnimation.Corner.TOP_LEFT,
-        ClipAnimation.Direction.VERTICAL, millisecs, f);
+    return animate($$("clip-action: toggle, clip-origin: top-left"), millisecs, f);
   }
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the bottom to the top.
    */
   public Effects clipUp(Function... f) {
     return clipUp(Speed.DEFAULT, f);
   }
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the bottom to the top.
    */
   public Effects clipUp(int millisecs, Function... f) {
-    return clip(Action.HIDE, ClipAnimation.Corner.TOP_LEFT,
-        ClipAnimation.Direction.BIDIRECTIONAL, millisecs, f);
+    return animate($$("clip-action: hide, clip-origin: top-left"), millisecs, f);
   }
 
   /**
