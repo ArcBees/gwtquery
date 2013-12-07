@@ -163,11 +163,16 @@ public class Effects extends QueuePlugin<Effects> {
    * @param duration the duration in milliseconds of the animation
    * @param easing the easing function to use for the transition
    */
-  public Effects animate(Object stringOrProperties, final int duration,
-      final Easing easing, final Function... funcs) {
+  public Effects animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
 
     final Properties p = (stringOrProperties instanceof String)
-    ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
+        ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
+
+    if (p.getStr("duration") != null) {
+      duration = p.getInt("duration");
+    }
+
+    duration = Math.abs(duration);
 
     for (Element e: elements()) {
       if (Fx.css3) {
@@ -237,7 +242,7 @@ public class Effects extends QueuePlugin<Effects> {
    *          complete
    */
   public Effects animate(Object stringOrProperties, Function... funcs) {
-    return animate(stringOrProperties, 500, funcs);
+    return animate(stringOrProperties, Speed.DEFAULT, funcs);
   }
 
   /**
@@ -303,7 +308,7 @@ public class Effects extends QueuePlugin<Effects> {
    * Animate the set of matched elements using the clip or scale property. It is possible to show or
    * hide a set of elements, specify the direction of the animation and the start corner of the
    * effect. Finally it executes the set of functions passed as arguments.
-   * 
+   *
    * @deprecated use animate() instead
    */
   @Deprecated
@@ -316,7 +321,7 @@ public class Effects extends QueuePlugin<Effects> {
    * Animate the set of matched elements using the clip or scale property. It is possible to show or
    * hide a set of elements, specify the direction of the animation and the start corner of the
    * effect. Finally it executes the set of functions passed as arguments.
-   * 
+   *
    * @deprecated use animate() instead
    */
   @Deprecated
@@ -337,7 +342,7 @@ public class Effects extends QueuePlugin<Effects> {
    * Animate the set of matched elements using the clip or scale property. It is possible to show or
    * hide a set of elements, specify the direction of the animation and the start corner of the
    * effect. Finally it executes the set of functions passed as arguments.
-   * 
+   *
    * @deprecated use animate() instead
    */
   @Deprecated
