@@ -194,10 +194,11 @@ public class LazyGenerator extends Generator {
       TreeLogger treeLogger) {
     sw.indent();
     sw.println("public Function done() {");
+    sw.indent();
     sw.println("return new Function() {");
     sw.indent();
 
-    sw.println("public void f(Element e) {");
+    sw.println("public void f() {");
     sw.indent();
     String classID = nonLazyType.getSimpleSourceName();
     if ("GQuery".equals(classID)) {
@@ -205,25 +206,14 @@ public class LazyGenerator extends Generator {
     }
 
     sw.println(
-        "ctx = GQuery.$(e).as(" + nonLazyType.getQualifiedSourceName() + "."
-            + classID + ");");
+        "ctx = GQuery.$(getElement()).as(" + nonLazyType.getQualifiedSourceName() + "."
+        + classID + ");");
     sw.println("for (int i = 0; i < closures.length(); i++) {");
     sw.indent();
     sw.println("closures.get(i).invoke();");
     sw.outdent();
     sw.println("}");
     sw.outdent();
-    sw.println("}");
-    sw.println("public boolean f(Event e, Object data) {");
-    sw.indent();
-    sw.println("ctx = GQuery.$(e.getCurrentTarget());");
-    sw.println("for (int i = 0; i < closures.length(); i++) {");
-    sw.indent();
-    sw.println("closures.get(i).invoke();");
-    sw.outdent();
-    sw.println("}");
-    sw.outdent();
-    sw.println("return false;");
     sw.println("}");
     sw.outdent();
     sw.println("};");

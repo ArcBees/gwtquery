@@ -49,28 +49,28 @@ public class PropertiesAnimation extends GQAnimation {
      */
     public Easing SWING = EasingCurve.swing;
   }
-  
+
   /**
    * This is a collection of most popular curves used in web animations
    * implemented using the Bezier Curve instead of a different algorithm per
    * animation.
-   * 
+   *
    * The toString() method returns the string parameter which can be used
    * for CSS3 transition-timing-function properties, example:
    * <pre>
 
    transition-timing-function: ease;
    transition-timing-function: cubic-bezier(0, 0, 1, 1);
-     
+
    * </pre>
-   * 
+   *
    * This enum can be used with customized transitions in this way:
    * <pre>
-    
+
     $("#foo").animate($$("{top:'500px',left:'500px'}"), 400, EasingCurve.custom.with(.02,.01,.47,1));
-     
+
    * </pre>
-   * 
+   *
    */
   public static enum EasingCurve implements Easing {
       linear (0, 0, 1, 1) {
@@ -116,7 +116,7 @@ public class PropertiesAnimation extends GQAnimation {
       easeOutBack (.175, .885,.32,1.275),
       easeInOutBack (.68,-.55,.265,1.55),
       custom(0, 0, 1, 1);
-     
+
      private Bezier c = new Bezier(0, 0, 1, 1);
      EasingCurve(double x1, double y1, double x2, double y2) {
        with(x1, y1, x2, y2);
@@ -134,12 +134,12 @@ public class PropertiesAnimation extends GQAnimation {
    }
 
   protected static final String[] ATTRS_TO_SAVE = new String[]{"overflow"};
-  
+
   private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
 
   protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
-  protected static final RegExp REGEX_NON_PIXEL_ATTRS = 
+  protected static final RegExp REGEX_NON_PIXEL_ATTRS =
       RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotation|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
@@ -277,19 +277,21 @@ public class PropertiesAnimation extends GQAnimation {
     this(null, elem, p, funcs);
   }
 
-  public PropertiesAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-    if (easing == null) {
-      try {
-        easing = EasingCurve.valueOf(p.getStr("easing"));
-      } catch (Exception e) {
-        easing = EasingCurve.linear;
-      }
+  public PropertiesAnimation(Easing ease, Element elem, Properties p, Function... funcs) {
+    try {
+      easing = EasingCurve.valueOf(p.getStr("easing"));
+    } catch (Exception e) {
     }
-    this.easing = easing;
+    if (easing == null) {
+      easing = ease;
+    }
+    if (easing == null) {
+      easing = EasingCurve.swing;
+    }
     this.funcs = funcs;
     setProperties(p);
     setElement(elem);
-    
+
     g = $(e).as(Effects.Effects);
   }
 
