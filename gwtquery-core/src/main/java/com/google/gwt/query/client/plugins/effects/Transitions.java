@@ -96,8 +96,8 @@ public class Transitions extends GQuery {
     }
 
     public void setFromString(String prop, String ...val) {
-      if (val.length == 1 && val[0] instanceof String) {
-        String[] vals = ((String)val[0]).split("[\\s*,\\s*]");
+      if (val.length == 1) {
+        String[] vals = val[0].split("[\\s*,\\s*]");
         set(prop, vals);
       } else {
         set(prop, val);
@@ -165,6 +165,9 @@ public class Transitions extends GQuery {
 
   protected static final RegExp transformRegex = RegExp.compile("^(scale|translate|rotate([XY]|3d)?|perspective|skew[XY]|x|y)$");
   protected static final String transition = getVendorPropertyName("transition");
+
+  // passing an invalid transition property in chrome, makes disable all transitions in the element
+  private static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|easing|clip-.*)$");
 
   private static final String transitionDelay = getVendorPropertyName("transitionDelay");
   private static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "transitionEnd");
@@ -254,9 +257,12 @@ public class Transitions extends GQuery {
     return this;
   }
 
-  private List<String> filterPropertyNames(Properties p) {
+  private List<String> filterTransitionPropertyNames(Properties p) {
     List<String> ret = new ArrayList<String>();
     for (String s : p.keys()) {
+      if (invalidTransitionNamesRegex.test(s)) {
+        continue;
+      }
       String c = JsUtils.camelize(s);
       // marginLeft, marginRight ...  -> margin
       String m = property(c);
@@ -311,7 +317,7 @@ public class Transitions extends GQuery {
     }
 
     String attribs = duration + "ms" + " "  + easing.toString() + " " + delay + "ms";
-    List<String> props = filterPropertyNames(p);
+    List<String> props = filterTransitionPropertyNames(p);
     String value  = "";
     for (String s : props) {
       value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
