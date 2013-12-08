@@ -42,31 +42,35 @@ import com.google.gwt.user.rebind.SourceWriter;
 /**
  * Generates an implementation of a user-defined interface <code>T</code> that
  * extends {@link JsniBundle}.
- * 
+ *
  * The generated implementation includes hand-written external js-files into
  * jsni methods so as those files can take advantage of gwt compiler optimizations.
- * 
+ *
  */
 public class JsniBundleGenerator extends Generator {
 
   public String generate(TreeLogger logger, GeneratorContext context, String requestedClass)
       throws UnableToCompleteException {
-    
+
     TypeOracle oracle = context.getTypeOracle();
     JClassType clazz = oracle.findType(requestedClass);
 
     String packageName = clazz.getPackage().getName();
     String className = clazz.getName().replace('.', '_') + "_Impl";
     String fullName = packageName + "." + className;
-    
-    PrintWriter pw = context.tryCreate(logger, packageName, className);
-    
-    if (pw != null) {
 
+    PrintWriter pw = context.tryCreate(logger, packageName, className);
+
+    if (pw != null) {
       ClassSourceFileComposerFactory fact = new ClassSourceFileComposerFactory(packageName, className);
-      fact.addImplementedInterface(requestedClass);
+      if (clazz.isInterface() != null) {
+        fact.addImplementedInterface(requestedClass);
+      } else {
+        fact.setSuperclass(requestedClass);
+      }
+
       SourceWriter sw = fact.createSourceWriter(context, pw);
-      
+
       if (sw != null) {
         for (JMethod method : clazz.getMethods()) {
           LibrarySource librarySource = method.getAnnotation(LibrarySource.class);
@@ -92,7 +96,7 @@ public class JsniBundleGenerator extends Generator {
             // Adjust javascript so as we can introduce it in a JSNI comment block without
             // breaking java syntax.
             String jsni = parseJavascriptSource(content);
-            
+
             pw.println(method.toString().replace("abstract", "native") + "/*-{");
             pw.println(prepend);
             pw.println(jsni);
@@ -103,9 +107,8 @@ public class JsniBundleGenerator extends Generator {
             throw new UnableToCompleteException();
           }
         }
-        
-        sw.commit(logger);
       }
+      sw.commit(logger);
     }
 
     return fullName;
@@ -166,7 +169,7 @@ public class JsniBundleGenerator extends Generator {
    *
    * The objective is to replace any 'c' comment-ending occurrence to avoid closing
    * JSNI comment blocks prematurely.
-   * 
+   *
    * A Regexp based parser is not reliable, this approach is better and faster.
    */
   // Note: this comment is intentionally using c++ style to allow writing the '*/' sequence.
