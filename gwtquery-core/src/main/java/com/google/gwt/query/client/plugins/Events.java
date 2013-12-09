@@ -40,7 +40,7 @@ public class Events extends GQuery {
    * Don't apply events on text and comment nodes !!
    */
   private static boolean isEventCapable(Node n) {
-    return JsUtils.isWindow(n) || n.getNodeType() != 3 && n.getNodeType() != 8;
+    return JsUtils.isWindow(n) || JsUtils.isElement(n) && n.getNodeType() != 3 && n.getNodeType() != 8;
   }
 
   public Events(GQuery gq) {
