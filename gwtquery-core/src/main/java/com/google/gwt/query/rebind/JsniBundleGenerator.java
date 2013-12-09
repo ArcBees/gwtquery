@@ -75,16 +75,19 @@ public class JsniBundleGenerator extends Generator {
         for (JMethod method : clazz.getMethods()) {
           LibrarySource librarySource = method.getAnnotation(LibrarySource.class);
           String value, prepend, postpend;
+          String replace[];
           if (librarySource != null) {
             value = librarySource.value();
             prepend = librarySource.prepend();
             postpend = librarySource.postpend();
+            replace = librarySource.replace();
           } else {
             MethodSource methodSource = method.getAnnotation(MethodSource.class);
             if (methodSource != null) {
               value = methodSource.value();
               prepend = methodSource.prepend();
               postpend = methodSource.postpend();
+              replace = methodSource.replace();
             } else {
               continue;
             }
@@ -96,6 +99,10 @@ public class JsniBundleGenerator extends Generator {
             // Adjust javascript so as we can introduce it in a JSNI comment block without
             // breaking java syntax.
             String jsni = parseJavascriptSource(content);
+
+            for (int i = 0; i < replace.length - 1; i += 2) {
+              jsni = jsni.replaceAll(replace[i], replace[i+1]);
+            }
 
             pw.println(method.toString().replace("abstract", "native") + "/*-{");
             pw.println(prepend);

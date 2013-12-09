@@ -15,7 +15,7 @@
  */
 package com.google.gwt.query.client.builders;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.METHOD;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -23,11 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A tag interface that is used in the generation of jsni bundles. 
- * 
+ * A tag interface that is used in the generation of jsni bundles.
+ *
  * A jsni-bundle is a class with jsni methods whose content is taken from
  * external handwritten javascript files.
- * 
+ *
  * The goals of using this technique are:
  *   - Use pure javascript files so as we can use IDEs for editing, formating etc,
  *     instead of dealing with code in comment blocks.
@@ -65,13 +65,13 @@ import java.lang.annotation.Target;
  * </pre>
  */
 public interface JsniBundle {
-  
+
   /**
    * Annotation to mark inclusion of third-party libraries.
-   *  
+   *
    * The content is wrapped with an inner javascript function to set
    * the context to the document window instead of the iframe where GWT
-   * code is run. 
+   * code is run.
    */
   @Target({METHOD})
   @Retention(RetentionPolicy.RUNTIME)
@@ -92,12 +92,19 @@ public interface JsniBundle {
      * Fragment of code to include after the external javascript has been
      * written.
      */
-    String postpend() default "\n}.apply($wnd, [$wnd, $doc, $wnd.console]));"; 
+    String postpend() default "\n}.apply($wnd, [$wnd, $doc, $wnd.console]));";
+
+    /**
+     * Regular expression to run over the javascript code to import.
+     *
+     * You should add pairs of values with the same syntax than String.replaceAll.
+     */
+    String[] replace() default {};
   }
-  
+
   /**
    * Annotation to mark inclusion of jsni code writen in external js files.
-   *  
+   *
    * The content is not wrapped by default, so the developer has the responsibility
    * to return the suitable value and to handle correctly parameters.
    */
@@ -120,6 +127,13 @@ public interface JsniBundle {
      * Fragment of code to include after the external javascript has been
      * written.
      */
-    String postpend() default ""; 
+    String postpend() default "";
+
+    /**
+     * Regular expression to run over the javascript code to import.
+     *
+     * You should add pairs of values with the same syntax than String.replaceAll.
+     */
+    String[] replace() default {};
   }
 }
