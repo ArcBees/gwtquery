@@ -86,7 +86,7 @@ public class JsniBundleGenerator extends Generator {
               prepend = methodSource.prepend();
               postpend = methodSource.postpend();
             } else {
-              return null;
+              continue;
             }
           }
           try {
