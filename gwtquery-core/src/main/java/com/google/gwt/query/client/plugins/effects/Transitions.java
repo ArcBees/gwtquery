@@ -308,9 +308,9 @@ public class Transitions extends GQuery {
       return this;
     }
 
-    final Properties p = (stringOrProperties instanceof String) ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
-
-    final String oldTransitions = css(transition);
+    final Properties p = (stringOrProperties instanceof String)
+      ? $$((String) stringOrProperties)
+      : (Properties) stringOrProperties;
 
     if (easing == null) {
       easing = EasingCurve.ease;
@@ -326,23 +326,24 @@ public class Transitions extends GQuery {
     final String transitionValue = value;
 
     // Use gQuery queue, so as we can chain transitions, animations etc.
-    delay(0, new Function(){public void f() {
-      // This is called once per element
-      $(this)
-        // Configure animation using transition property
-        .css(transition, transitionValue)
-        // Set all css properties for this transition using the css method in this class
-        .as(Transitions).css(p);
-    }});
-
-    // restore oldTransitions in the element, and use the queue to prevent more effects being run.
-    // TODO: Use transitionEnd events once GQuery supports non-bit events
-    delay(duration + delay, new Function(){public void f() {
-      // This is called once per element
-      $(this).as(Transitions)
-        .css(transition, oldTransitions)
-        .each(funcs);
-    }});
+    queue(new Function(){
+      public void f() {
+        // This is called once per element
+        final String old = $(this).css(transition);
+        $(this)
+          // Configure animation using transition property
+          .css(transition, transitionValue)
+          // Set all css properties for this transition using the css method in this class
+          .as(Transitions).css(p)
+          // Bind to transitionEnd to unlock the queue and restore old transitions
+          .bind(transitionEnd, new Function(){
+            public void f(){
+              $(this).dequeue().unbind(transitionEnd);
+              $(this).css(transition, old);
+            }
+          });
+      }
+    });
 
     return this;
   }
