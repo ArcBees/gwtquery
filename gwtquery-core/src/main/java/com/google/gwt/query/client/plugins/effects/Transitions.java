@@ -310,12 +310,12 @@ public class Transitions extends GQuery {
       return this;
     }
 
-    final Properties p = (stringOrProperties instanceof String)
+    final Properties cssProps = (stringOrProperties instanceof String)
       ? $$((String) stringOrProperties)
       : (Properties) stringOrProperties;
 
     final String ease = easing == null ? "ease" : easing.toString();
-    final List<String> props = filterTransitionPropertyNames(p);
+    final List<String> transProps = filterTransitionPropertyNames(cssProps);
     final double queuedAt = delay > 0 ? Duration.currentTimeMillis() : 0;
 
     // Use gQuery queue, so as we can chain transitions, animations etc.
@@ -328,24 +328,23 @@ public class Transitions extends GQuery {
         // Generate transition value
         String attribs = duration + "ms" + " "  + ease + " " + d + "ms";
         String newTransitionValue  = "";
-        for (String s : props) {
+        for (String s : transProps) {
           newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
         }
 
-        final Transitions g = $(this).as(Transitions);
+        final Transitions $this = $(this).as(Transitions);
         // Configure animation using transition property
-        g.css(transition, newTransitionValue);
+        $this.css(transition, newTransitionValue);
         // Set all css properties for this transition using the css method in this class
-        g.css(p);
+        $this.css(cssProps);
 
         // TODO: Use transitionEnd events once GQuery supports non-bit events
         // last time I tried, setting  'transitionEnd' made custom events fail (slideEnter)
         new Timer() {
           public void run() {
-            g.css(transition, oldTransitionValue).each(funcs);
-            dequeue();
+            $this.css(transition, oldTransitionValue).each(funcs).dequeue();
           }
-        }.schedule(d + duration);
+        }.schedule(d);
       }
     });
 
