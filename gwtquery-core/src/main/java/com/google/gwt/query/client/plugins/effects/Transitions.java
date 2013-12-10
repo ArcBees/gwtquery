@@ -344,7 +344,7 @@ public class Transitions extends GQuery {
           public void run() {
             $this.css(transition, oldTransitionValue).each(funcs).dequeue();
           }
-        }.schedule(d);
+        }.schedule(d + duration);
       }
     });
 
