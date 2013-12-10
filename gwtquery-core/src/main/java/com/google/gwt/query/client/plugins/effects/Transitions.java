@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.Function;
@@ -167,7 +168,7 @@ public class Transitions extends GQuery {
   protected static final String transition = getVendorPropertyName("transition");
 
   // passing an invalid transition property in chrome, makes disable all transitions in the element
-  private static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|easing|clip-.*)$");
+  private static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|easing|delay|clip-.*)$");
 
   private static final String transitionDelay = getVendorPropertyName("transitionDelay");
   private static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "transitionEnd");
@@ -251,7 +252,7 @@ public class Transitions extends GQuery {
         t.setFromString(prop, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else {
+    } else if (!invalidTransitionNamesRegex.test(prop)){
       super.css(prop, value);
     }
     return this;
@@ -303,7 +304,7 @@ public class Transitions extends GQuery {
        .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
    * </pre>
    */
-  public Transitions transition(Object stringOrProperties, int duration, Easing easing, int delay, final Function... funcs) {
+  public Transitions transition(Object stringOrProperties, final int duration, final Easing easing, final int delay, final Function... funcs) {
     if (isEmpty()) {
       return this;
     }
@@ -312,34 +313,36 @@ public class Transitions extends GQuery {
       ? $$((String) stringOrProperties)
       : (Properties) stringOrProperties;
 
-    if (easing == null) {
-      easing = EasingCurve.ease;
-    }
-
-    String attribs = duration + "ms" + " "  + easing.toString() + " " + delay + "ms";
-    List<String> props = filterTransitionPropertyNames(p);
-    String value  = "";
-    for (String s : props) {
-      value += (value.isEmpty() ? "" : ", ") + s + " " + attribs;
-    }
-
-    final String transitionValue = value;
+    final String ease = easing == null ? "ease" : easing.toString();
+    final List<String> props = filterTransitionPropertyNames(p);
+    final double queuedAt = delay > 0 ? Duration.currentTimeMillis() : 0;
 
     // Use gQuery queue, so as we can chain transitions, animations etc.
     queue(new Function(){
       public void f() {
         // This is called once per element
-        final String old = $(this).css(transition);
+        final String oldTransitionValue = $(this).css(transition);
+        // Recompute delay based on the time spent in the queue
+        double d = Math.max(0, delay - (int)(Duration.currentTimeMillis() - queuedAt));
+        // Generate transition value
+        String attribs = duration + "ms" + " "  + ease + " " + d + "ms";
+        String newTransitionValue  = "";
+        for (String s : props) {
+          newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
+        }
+
         $(this)
           // Configure animation using transition property
-          .css(transition, transitionValue)
+          .css(transition, newTransitionValue)
           // Set all css properties for this transition using the css method in this class
           .as(Transitions).css(p)
           // Bind to transitionEnd to unlock the queue and restore old transitions
           .bind(transitionEnd, new Function(){
             public void f(){
-              $(this).dequeue().unbind(transitionEnd);
-              $(this).css(transition, old);
+              $(this).dequeue()
+              .unbind(transitionEnd)
+              .css(transition, oldTransitionValue)
+              .each(funcs);
             }
           });
       }

@@ -186,6 +186,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
   }
 
   protected Transitions g;
+  protected int delay = 0;
 
   public TransitionsAnimation(Element elem, Properties p, Function... funcs) {
     this(null, elem, p, funcs);
@@ -193,6 +194,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   public TransitionsAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
     super(easing, elem, p, funcs);
+    delay = p.getInt("delay");
     g = $(e).as(Transitions.Transitions);
   }
 
@@ -244,7 +246,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
     // TODO: Reflow, it seems it is not needed in chrome and FF, check other browsers
     // g.css("offsetHeight");
     p = getFxProperties(false);
-    g.transition(p, duration, easing, 0, new Function(){public void f() {
+    g.transition(p, duration, easing, delay, new Function(){public void f() {
       onComplete();
     }});
   }
