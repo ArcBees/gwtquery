@@ -12,7 +12,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.compiler.source>1.6</maven.compiler.source>
       <maven.compiler.target>1.6</maven.compiler.target>
-      <gQueryVersion>1.4.0-SNAPSHOT</gQueryVersion>
+      <gQueryVersion>1.4.0</gQueryVersion>
       <gwtversion>2.5.1</gwtversion>
       <gwtmaven>2.5.1</gwtmaven>
     </properties>
