@@ -281,7 +281,7 @@ public class JsUtils {
    * Returns the owner document element of an element.
    */
   public static Document getOwnerDocument(Node n) {
-    return n == null ? null : n.getNodeType() == Node.DOCUMENT_NODE
+    return n == null || !isElement(n) ? null : n.getNodeType() == Node.DOCUMENT_NODE
         ? n.<Document> cast() : n.getOwnerDocument();
   }
 
@@ -343,7 +343,7 @@ public class JsUtils {
    * Check is a javascript object can be cast to an Element
    */
   public static boolean isElement(JavaScriptObject o) {
-    return hasProperty(o, "nodeName");
+    return hasProperty(o, "nodeType") && hasProperty(o, "nodeName");
   }
 
   /**
@@ -387,7 +387,7 @@ public class JsUtils {
   /**
    * Load an external javascript library. The inserted script replaces the
    * element with the given id in the document.
-   * 
+   *
    * @deprecated use {@link com.google.gwt.query.client.plugins.ajax.Ajax#loadScript(String)}
    */
   @Deprecated
@@ -445,10 +445,10 @@ public class JsUtils {
 
   /**
    * Call via jsni any arbitrary function present in a Javascript object.
-   * 
+   *
    * It's thought for avoiding to create jsni methods to call external functions and
    * facilitate the writing of js wrappers.
-   * 
+   *
    * Example
    * <pre>
    *  // Create a svg node in our document.
@@ -456,7 +456,7 @@ public class JsUtils {
    *  // Append it to the dom
    *  $(svg).appendTo(document);
    * </pre>
-   * 
+   *
    * @param o  the javascript object where the function is.
    * @param meth the literal name of the function to call.
    * @param args an array with the arguments to pass to the function.

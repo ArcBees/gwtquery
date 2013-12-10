@@ -82,14 +82,14 @@ public class Deferred implements Promise.Deferred {
           settle(type, oldArgs);
         }
       }
-      
+
       private void settle(int action, Object... args) {
         if (action == DONE) dfd.resolve(args);
         if (action == FAIL) dfd.reject(args);
-        if (action == PROGRESS) dfd.notify(args);          
+        if (action == PROGRESS) dfd.notify(args);
       }
     }
-    
+
     protected com.google.gwt.query.client.plugins.deferred.Deferred dfd;
 
     /**
@@ -142,11 +142,11 @@ public class Deferred implements Promise.Deferred {
     public Promise always(Function... f) {
       return done(f).fail(f);
     }
-    
+
     public Promise and(Function f) {
       return then(f);
     }
-    
+
     public Promise done(Function... f) {
       dfd.resolve.add(f);
       return this;
@@ -156,11 +156,11 @@ public class Deferred implements Promise.Deferred {
       dfd.reject.add(f);
       return this;
     }
-    
+
     public Promise or(final Function f) {
       return then(true, null, f);
-    }   
-    
+    }
+
     public Promise pipe(Function... f) {
       return then(f);
     }
@@ -181,7 +181,7 @@ public class Deferred implements Promise.Deferred {
       progress(new ThenFunction(newDfd, f, PROGRESS, continueFlow));
       return newDfd.promise();
     }
-    
+
     public Promise then(final Function... f) {
       return then(false, f);
     }
@@ -273,7 +273,7 @@ public class Deferred implements Promise.Deferred {
     }
     return when(p);
   }
-  
+
   private static Promise makePromise(final Object o) {
     if (o instanceof Promise) {
       return (Promise)o;
@@ -289,7 +289,7 @@ public class Deferred implements Promise.Deferred {
       };
     }
   }
-  
+
   public static Promise when(Promise... d) {
     final int n = d.length;
     switch (n) {
@@ -334,7 +334,7 @@ public class Deferred implements Promise.Deferred {
    * Call the progressCallbacks on a Deferred object with the given args.
    */
   public Deferred notify(Object... o) {
-    notify.fire(o);
+    if (state == PENDING) notify.fire(o);
     return this;
   }
 
@@ -352,7 +352,7 @@ public class Deferred implements Promise.Deferred {
    * Reject a Deferred object and call any failCallbacks with the given args.
    */
   public Deferred reject(Object... o) {
-    reject.fire(o);
+    if (state == PENDING) reject.fire(o);
     return this;
   }
 
@@ -360,7 +360,7 @@ public class Deferred implements Promise.Deferred {
    * Resolve a Deferred object and call any doneCallbacks with the given args.
    */
   public Deferred resolve(Object... o) {
-    resolve.fire(o);
+    if (state == PENDING) resolve.fire(o);
     return this;
   }
 
