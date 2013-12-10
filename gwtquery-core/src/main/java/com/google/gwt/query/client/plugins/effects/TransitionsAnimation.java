@@ -148,16 +148,14 @@ public class TransitionsAnimation extends PropertiesAnimation {
     } else {
       MatchResult parts = REGEX_SYMBOL_NUMBER_UNIT.exec(val);
       if (parts != null) {
-        unit = REGEX_NON_PIXEL_ATTRS.test(key) || Transitions.transformRegex.test(key) ? "" : "px";
 
         String part1 = parts.getGroup(1);
         String part2 = parts.getGroup(2);
         String part3 = parts.getGroup(3);
         trsEnd = "" + Double.parseDouble(part2);
 
-        if (unit.isEmpty() && part3 != null) {
-          unit = part3;
-        }
+        unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" :  part3 == null || part3.isEmpty() ? "px" : part3;
+
         if (trsStart.isEmpty()) {
           trsStart = key.matches("scale") ? "1" : "0";
         }
@@ -168,6 +166,17 @@ public class TransitionsAnimation extends PropertiesAnimation {
           double en = Double.parseDouble(trsEnd);
           trsEnd = "" + (st + (n*en));
         }
+
+        // Deal with non px units like "%"
+        if (!unit.isEmpty() && !"px".equals(unit) && trsStart.matches("\\d+")) {
+          double start = Double.parseDouble(trsStart);
+          double to = Double.parseDouble(trsEnd);
+          g.css(key, to + unit);
+          start = to * start / g.cur(key, true);
+          trsStart = start + unit;
+          g.css(key, start + unit);
+        }
+
       } else {
         trsStart = "";
         trsEnd = val;
