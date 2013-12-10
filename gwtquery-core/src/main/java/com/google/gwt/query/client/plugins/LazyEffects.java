@@ -20,13 +20,10 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation;
-import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx;
-import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
-import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.query.client.LazyBase;
 
@@ -203,94 +200,62 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> animate(Object stringOrProperties, int duration, Function... funcs);
 
   /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
-   */
-  LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, Function... f);
-
-  /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
-   */
-  LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, ClipAnimation.Direction d, int duration, Function... f);
-
-  /**
-   * Animate the set of matched elements using the clip property. It is possible
-   * to show or hide a set of elements, specify the direction of the animation
-   * and the start corner of the effect. Finally it executes the set of
-   * functions passed as arguments.
-   */
-  LazyEffects<T> clip(ClipAnimation.Action a, ClipAnimation.Corner c, Function... f);
-
-  /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the center to the
-   * perimeter.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the center to the perimeter.
    */
   LazyEffects<T> clipAppear(Function... f);
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the center to the
-   * perimeter.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the center to the perimeter.
    */
   LazyEffects<T> clipAppear(int millisecs, Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the perimeter to the
-   * center.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the perimeter to the center.
    */
   LazyEffects<T> clipDisappear(Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the perimeter to the
-   * center.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the perimeter to the center.
    */
   LazyEffects<T> clipDisappear(int millisecs, Function... f);
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the top to the
-   * bottom.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the top to the bottom.
    */
   LazyEffects<T> clipDown(Function... f);
 
   /**
-   * Reveal all matched elements by adjusting the clip property firing an
-   * optional callback after completion. The effect goes from the top to the
-   * bottom.
+   * Reveal all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the top to the bottom.
    */
   LazyEffects<T> clipDown(int millisecs, Function... f);
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip
-   * property and firing an optional callback after completion. The effect goes
-   * from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip or scale property and
+   * firing an optional callback after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipToggle(Function... f);
 
   /**
-   * Toggle the visibility of all matched elements by adjusting the clip
-   * property and firing an optional callback after completion. The effect goes
-   * from the bottom to the top.
+   * Toggle the visibility of all matched elements by adjusting the clip or scale or scale property
+   * and firing an optional callback after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipToggle(int millisecs, Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipUp(Function... f);
 
   /**
-   * Hide all matched elements by adjusting the clip property firing an optional
-   * callback after completion. The effect goes from the bottom to the top.
+   * Hide all matched elements by adjusting the clip or scale property firing an optional callback
+   * after completion. The effect goes from the bottom to the top.
    */
   LazyEffects<T> clipUp(int millisecs, Function... f);
 
