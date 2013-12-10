@@ -332,17 +332,17 @@ public class Transitions extends GQuery {
           newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
         }
 
-        final Transitions $this = $(this).as(Transitions);
+        final Transitions thisTrans = $(this).as(Transitions);
         // Configure animation using transition property
-        $this.css(transition, newTransitionValue);
+        thisTrans.css(transition, newTransitionValue);
         // Set all css properties for this transition using the css method in this class
-        $this.css(cssProps);
+        thisTrans.css(cssProps);
 
         // TODO: Use transitionEnd events once GQuery supports non-bit events
         // last time I tried, setting  'transitionEnd' made custom events fail (slideEnter)
         new Timer() {
           public void run() {
-            $this.css(transition, oldTransitionValue).each(funcs).dequeue();
+            thisTrans.css(transition, oldTransitionValue).each(funcs).dequeue();
           }
         }.schedule(d + duration);
       }
