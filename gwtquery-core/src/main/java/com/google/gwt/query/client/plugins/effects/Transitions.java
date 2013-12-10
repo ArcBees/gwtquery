@@ -32,6 +32,7 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCur
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 
 /**
  * Transitions and transformation plugin for gQuery.
@@ -323,7 +324,7 @@ public class Transitions extends GQuery {
         // This is called once per element
         final String oldTransitionValue = $(this).css(transition);
         // Recompute delay based on the time spent in the queue
-        double d = Math.max(0, delay - (int)(Duration.currentTimeMillis() - queuedAt));
+        int d = Math.max(0, delay - (int)(Duration.currentTimeMillis() - queuedAt));
         // Generate transition value
         String attribs = duration + "ms" + " "  + ease + " " + d + "ms";
         String newTransitionValue  = "";
@@ -331,20 +332,20 @@ public class Transitions extends GQuery {
           newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
         }
 
-        $(this)
-          // Configure animation using transition property
-          .css(transition, newTransitionValue)
-          // Set all css properties for this transition using the css method in this class
-          .as(Transitions).css(p)
-          // Bind to transitionEnd to unlock the queue and restore old transitions
-          .bind(transitionEnd, new Function(){
-            public void f(){
-              $(this).dequeue()
-              .unbind(transitionEnd)
-              .css(transition, oldTransitionValue)
-              .each(funcs);
-            }
-          });
+        final Transitions g = $(this).as(Transitions);
+        // Configure animation using transition property
+        g.css(transition, newTransitionValue);
+        // Set all css properties for this transition using the css method in this class
+        g.css(p);
+
+        // TODO: Use transitionEnd events once GQuery supports non-bit events
+        // last time I tried, setting  'transitionEnd' made custom events fail (slideEnter)
+        new Timer() {
+          public void run() {
+            g.css(transition, oldTransitionValue).each(funcs);
+            dequeue();
+          }
+        }.schedule(d + duration);
       }
     });
 
