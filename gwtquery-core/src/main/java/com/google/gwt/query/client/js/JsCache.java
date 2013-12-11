@@ -79,7 +79,7 @@ public class JsCache extends JavaScriptObject {
     }
     return (T)o;
   }
-  
+
   public final native <T> T get(Object id) /*-{
     return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ this && this[id] ]);
   }-*/;
@@ -129,11 +129,11 @@ public class JsCache extends JavaScriptObject {
     for (k in this) return false;
     return true;
   }-*/;
-  
+
   public final native boolean contains(Object o)/*-{
     return this.indexOf(o) >= 0;
   }-*/;
-  
+
   public final native void remove(Object o) /*-{
     var i = this.indexOf(o);
     if (i >= 0) this.splice(i, 1);
@@ -229,8 +229,9 @@ public class JsCache extends JavaScriptObject {
 
   private final native JsArrayString keysImpl() /*-{
     var key, keys=[];
-    // Chrome in DevMode injects a property to JS objects
-    for(key in this) if (key != '__gwt_ObjectId') keys.push(String(key));
+    // Chrome in DevMode sets '__gwt_ObjectId' to JS objects
+    // GWT sets '$H' when calling getHashCode (see com/google/gwt/core/client/impl/Impl.java)
+    for(key in this) if (key != '__gwt_ObjectId' && key != '$H') keys.push(String(key));
     return keys;
   }-*/;
 
