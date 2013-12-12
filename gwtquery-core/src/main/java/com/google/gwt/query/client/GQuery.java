@@ -13,20 +13,12 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dev.Link;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
@@ -69,6 +61,13 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -3234,6 +3233,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery off() {
     return as(Effects).off();
+  }
+
+  /**
+   * Remove an event handler
+   */
+  public GQuery off(String eventName) {
+    return unbind(eventName, null);
   }
   
   /**
