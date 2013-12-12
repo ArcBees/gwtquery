@@ -26,6 +26,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dev.Link;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Document;
@@ -1827,6 +1828,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <pre>
    *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
    * </pre>
+   * @deprecated use {@link #on(String, String, Function...)}
    */
   public GQuery delegate(String selector, int eventbits, Function... handlers) {
     return delegate(selector, eventbits, null, handlers);
@@ -1867,6 +1869,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <pre>
    *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
    * </pre>
+   * @deprecated use {@link #on(String, String, Object, Function...)}
    */
   public GQuery delegate(String selector, int eventbits, Object data, Function... handlers) {
 
@@ -1914,6 +1917,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </pre>
    *
    * </pre>
+   * @deprecated use {@link #on(String, String, Function...)}
    */
   public GQuery delegate(String selector, String eventType, Function... handlers) {
     return delegate(selector, eventType, null, handlers);
@@ -1954,6 +1958,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * </pre>
    *
    * </pre>
+   * @deprecated use {@link #on(String, String, Object, Function...)}
    */
   public GQuery delegate(String selector, String eventType, Object data, Function... handlers) {
     for (Element e : elements) {
@@ -2007,6 +2012,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove all event handlers previously attached using {@link #live(String, Function)}. In order
    * for this method to function correctly, the selector used with it must match exactly the
    * selector initially used with {@link #live(String, Function)}
+   * @deprecated use {@link #off(String, String)} instead
    */
   public GQuery die() {
     return die(0);
@@ -2016,6 +2022,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove an event handlers previously attached using {@link #live(int, Function)} In order for
    * this method to function correctly, the selector used with it must match exactly the selector
    * initially used with {@link #live(int, Function)}
+   * @deprecated use {@link #off(String)}
    */
   public GQuery die(int eventbits) {
     return as(Events).die(eventbits);
@@ -2705,6 +2712,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
+   * @deprecated use {@link #on(String, Function...)}
    */
   public GQuery live(int eventbits, Function... funcs) {
     return as(Events).live(eventbits, null, funcs);
@@ -2713,6 +2721,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
+   * @deprecated use {@link #on(String, Object, Function...)}
    */
   public GQuery live(int eventbits, Object data, Function... funcs) {
     return as(Events).live(eventbits, data, funcs);
@@ -2767,6 +2776,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * descendant of myElement.</li>
    * </ul>
    * </p>
+   * @deprecated use {@link #on(String, Function...)}
    */
   public GQuery live(String eventName, Function... funcs) {
     return as(Events).live(eventName, null, funcs);
@@ -2821,6 +2831,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * descendant of myElement.</li>
    * </ul>
    * </p>
+   * @deprecated use {@link #on(String, Object, Function...)}
    */
   public GQuery live(String eventName, Object data, Function... funcs) {
     return as(Events).live(eventName, data, funcs);
@@ -3189,7 +3200,56 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return new GQuery(offParent);
   }
+  
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  public GQuery on(String eventName, Function... funcs) {
+    return bind(eventName, funcs);
+  }
+  
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  public GQuery on(String eventName, Object data, Function... funcs) {
+    return bind(eventName, data, funcs);
+  }
 
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  public GQuery on(String eventName, String selector, Function... funcs) {
+    return delegate(selector, eventName, funcs);
+  }
+
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  public GQuery on(String eventName, String selector, Object data, Function... funcs) {
+    return delegate(selector, eventName, data, funcs);
+  }
+ 
+  /**
+   * Remove all event handlers.
+   */
+  public GQuery off() {
+    return as(Effects).off();
+  }
+  
+  /**
+   * Remove an event handler
+   */
+  public GQuery off(String eventName, Function f) {
+    return unbind(eventName, f);
+  }
+
+  /**
+   * Remove an event handler
+   */
+  public GQuery off(String eventName, String selector) {
+    return undelegate(selector, eventName);
+  }
+    
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched element. The
    * handler is executed only once for each element.
@@ -4443,6 +4503,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Remove all event delegation that have been bound using
    * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
+   * @deprecated use {@link #off()}
    */
   public GQuery undelegate() {
     return as(Events).undelegate();
@@ -4451,6 +4512,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String)}
    */
   public GQuery undelegate(String selector) {
     for (Element e : elements) {
@@ -4463,6 +4525,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String)}
    */
   public GQuery undelegate(String selector, int eventBit) {
     for (Element e : elements) {
@@ -4475,6 +4538,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String, String)}
    */
   public GQuery undelegate(String selector, String eventName) {
     for (Element e : elements) {

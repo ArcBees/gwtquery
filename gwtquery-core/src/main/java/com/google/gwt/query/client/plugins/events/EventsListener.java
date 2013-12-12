@@ -732,6 +732,7 @@ public class EventsListener implements EventListener {
 
   public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
       Function f) {
+    
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
@@ -788,10 +789,11 @@ public class EventsListener implements EventListener {
     }
   }
 
-  private void clean() {
+  public void clean() {
     cleanGQListeners(element);
     elementEvents = JsObjectArray.createArray().cast();
     liveBindFunctionByEventType = JsMap.create();
+    eventBits = 0;
   }
 
   private void sink(int eventbits, String eventName) {
