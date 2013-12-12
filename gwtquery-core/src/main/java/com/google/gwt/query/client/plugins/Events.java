@@ -320,6 +320,15 @@ public class Events extends GQuery {
     return this;
   }
 
+  public Events off() {
+    for (Element e : elements()) {
+      if (isEventCapable(e)) {
+        EventsListener.getInstance(e).clean();
+      }
+    }
+    return this;
+  }
+
   /**
    * Removes all handlers, that matches the events bits and the namespace passed, from each element.
    *
