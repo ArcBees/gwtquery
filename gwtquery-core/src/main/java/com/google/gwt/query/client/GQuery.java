@@ -2545,6 +2545,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return -1;
   }
+  
+  /**
+   * Return the position of the first matched element in relation with its sibblings.
+   */
+  public int index() {
+    return prevAll().size();
+  }
 
   /**
    * Returns the inner height of the first matched element, including padding but not the vertical
