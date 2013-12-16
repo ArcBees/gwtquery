@@ -95,7 +95,9 @@ public class JsonBuilderGenerator extends Generator {
         String name = nameAnnotation != null
           ? nameAnnotation.value()
           : methName.replaceFirst("^(get|set)", "");
-        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        if (nameAnnotation != null) {
+          name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        }
         attrs.add(name);
         generateMethod(sw, method, name, treeLogger);
       }

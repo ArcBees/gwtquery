@@ -83,7 +83,11 @@ public class XmlBuilderGenerator extends Generator {
       throws UnableToCompleteException {
     Name nameAnnotation = method.getAnnotation(Name.class);
     String name = nameAnnotation != null ? nameAnnotation.value()
-        : method.getName().replaceFirst("^(get|set)", "").toLowerCase();
+        : method.getName().replaceFirst("^(get|set)", "");
+
+    if (nameAnnotation != null) {
+      name = name.substring(0, 1).toLowerCase() + name.substring(1);
+    }
 
     String retType = method.getReturnType().getParameterizedQualifiedSourceName();
 
