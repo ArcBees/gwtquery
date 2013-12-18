@@ -85,7 +85,7 @@ public class XmlBuilderGenerator extends Generator {
     String name = nameAnnotation != null ? nameAnnotation.value()
         : method.getName().replaceFirst("^(get|set)", "");
 
-    if (nameAnnotation != null) {
+    if (nameAnnotation == null) {
       name = name.substring(0, 1).toLowerCase() + name.substring(1);
     }
 
