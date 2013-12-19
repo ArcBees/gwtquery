@@ -131,7 +131,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     c.setItems(Arrays.asList(items));
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
-    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]
+    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]";
     assertEquals(s, c.toString().replaceAll("\"", "'"));
   }
   
