@@ -20,6 +20,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.Predicate;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -99,6 +101,37 @@ public class SelectorEngine implements HasSelector {
 
   public static final boolean hasQuerySelector = hasQuerySelectorAll();
 
+  public static JsMap<String, Predicate> filters;
+
+  static {
+    filters = JsMap.create();
+    filters.put("visible", new Predicate(){
+      public boolean f(Element e, int index) {
+        return (e.getOffsetWidth() + e.getOffsetHeight()) > 0 && styleImpl.isVisible(e);
+      }
+    });
+    filters.put("hidden", new Predicate() {
+      public boolean f(Element e, int index) {
+        return !filters.get("visible").f(e, index);
+      }
+    });
+    filters.put("selected", new Predicate() {
+      public boolean f(Element e, int index) {
+        return e.getPropertyBoolean("selected");
+      }
+    });
+    filters.put("input", new Predicate(){
+      public boolean f(Element e, int index) {
+        return e.getNodeName().toLowerCase().matches("input|select|textarea|button");
+      }
+    });
+    filters.put("header", new Predicate(){
+      public boolean f(Element e, int index) {
+        return e.getNodeName().toLowerCase().matches("h\\d");
+      }
+    });
+  }
+
   public SelectorEngine() {
     impl = (SelectorEngineImpl) GWT.create(SelectorEngineImpl.class);
     GWT.log("GQuery - Created SelectorEngineImpl: " + impl.getClass().getName());
@@ -110,33 +143,51 @@ public class SelectorEngine implements HasSelector {
     return root;
   }
 
-  public NodeList<Element> filterByVisibility (NodeList<Element> nodes, boolean visible) {
+  public NodeList<Element> filter(NodeList<Element> nodes, Predicate p) {
     JsNodeArray res = JsNodeArray.create();
     for (int i = 0, l = nodes.getLength(), j = 0; i < l; i++) {
       Element e = nodes.getItem(i);
-      if (visible == ((e.getOffsetWidth() + e.getOffsetHeight()) > 0 && styleImpl.isVisible(e))) {
+      if (p.f(e, i)) {
         res.addNode(e, j++);
       }
     }
     return res;
   }
 
-  // pseudo selectors which are computed by gquery
-  RegExp p = RegExp.compile("(.*):((visible|hidden)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
+  // pseudo selectors which are computed by gquery in runtime
+  RegExp gQueryPseudo = RegExp.compile("(.*):((visible|hidden|selected|input|header)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
+  // pseudo selectors which work in engine
+  RegExp nativePseudo = RegExp.compile("(.*):([\\w]+):(disabled|checked|enabled|empty|focus)\\s*([:,].*|$)", "i");
 
   public NodeList<Element> select(String selector, Node ctx) {
-    if (p.test(selector)) {
+
+    if (nativePseudo.test(selector)) {
+      // move gQuery filters at the end to improve performance, and deal with issue #220
+      MatchResult r;
+      while ((r = nativePseudo.exec(selector)) != null) {
+        selector = r.getGroup(1) + ":" + r.getGroup(3);
+        if (!r.getGroup(3).equals(r.getGroup(2))) {
+          selector += ":" + r.getGroup(2);
+        }
+        selector += r.getGroup(4);
+      }
+    }
+
+    if (gQueryPseudo.test(selector)) {
       JsNodeArray res = JsNodeArray.create();
       for (String s : selector.trim().split("\\s*,\\s*")) {
         NodeList<Element> nodes;
-        MatchResult a = p.exec(s);
+        MatchResult a = gQueryPseudo.exec(s);
         if (a != null) {
-          if (s.endsWith(":visible")) {
-            nodes = filterByVisibility(select(s.substring(0, s.length() - 8), ctx), true);
-          } else if (s.endsWith(":hidden")) {
-            nodes = filterByVisibility(select(s.substring(0, s.length() - 7), ctx), false);
+          String select = a.getGroup(1).isEmpty() ? "*" : a.getGroup(1);
+          String pseudo = a.getGroup(2);
+          Predicate pred = filters.get(pseudo.toLowerCase());
+          if (pred != null) {
+            nodes = filter(select(select, ctx), pred);
+          } else if (nativePseudo.test(pseudo)) {
+            nodes =  select(select, ctx);
           } else {
-            nodes = select((a.getGroup(1) != null ? a.getGroup(1) : "") + "[type=" + a.getGroup(2) + "]", ctx);
+            nodes = select(select + "[type=" + pseudo + "]", ctx);
           }
         } else {
           nodes = select(s, ctx);

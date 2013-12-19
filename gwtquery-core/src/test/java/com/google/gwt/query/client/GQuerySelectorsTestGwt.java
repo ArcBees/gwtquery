@@ -215,6 +215,34 @@ public class GQuerySelectorsTestGwt extends GWTTestCase {
     assertEquals(1, $("input:checkbox ", e).size());
     assertEquals(1, $(":radio ", e).size());
     assertEquals(2, $("*:radio, *:checkbox", e).size());
+    assertEquals(2, $(":input", e).size());
+    assertEquals(0, $(":checked", e).size());
+
+    // issue #220
+    $(":checkbox", e).prop("checked", true);
+    assertEquals(1, $(":checked", e).size());
+    assertEquals(1, $(":checkbox", e).size());
+    assertEquals(1, $(":checkbox:checked", e).size());
+
+    // issue #184
+    $(e).html("<p style=\"display: none; \">");
+    assertEquals(1, $("p:hidden ", e).size());
+    assertTrue($("p").is(":hidden"));
+
+    // issue #206
+    $(e).html("<h3></h3><select multiple=multiple><option value='1'>1</option><option value='2'>1</option><option value='3'>3</option></select>");
+    assertEquals(0, $("*:selected ", e).size());
+    $("option", e).eq(2).prop("selected", true);
+    assertEquals(1, $(":selected", e).size());
+    $("option", e).eq(1).prop("selected", true);
+    assertEquals(2, $("option:selected", e).size());
+
+    // Extra selectors
+    assertEquals(1, $(":header", e).size());
+
+    // disabling this because querySelectorAll of htmlunit does not support :empty
+    // it works in chrome and FF
+    // assertEquals(1, $(":empty", e).size());
   }
 
   public void testCompiledSelectors() {
