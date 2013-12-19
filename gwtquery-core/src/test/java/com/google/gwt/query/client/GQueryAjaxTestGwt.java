@@ -72,6 +72,8 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
   interface JsonExample extends JsonBuilder {
     int getA();
     JsonExample getB();
+    @Name("M")
+    int getM();
     @Name("u")
     String getUrl();
     long getD();
@@ -87,14 +89,14 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     Function getF();
     void setF(Function f);
   }
-
-
+  
   boolean functionRun = false;
   public void testJsonBuilder() {
-    String json = "{a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}";
+    String json = "{M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}";
     JsonExample c = GWT.create(JsonExample.class);
     assertEquals(0, c.getA());
     c.parse(json, true);
+    assertEquals(0, c.getM());
     assertEquals(1, c.getA());
     assertNotNull(c.getB());
     assertEquals(2, c.getB().getA());
@@ -129,12 +131,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     c.setItems(Arrays.asList(items));
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
-    String s = "{'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]}";
+    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]
     assertEquals(s, c.toString().replaceAll("\"", "'"));
-
-
   }
-
+  
   interface XmlExample extends XmlBuilder {
     interface T extends XmlBuilder {
     }
