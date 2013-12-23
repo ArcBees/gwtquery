@@ -66,7 +66,6 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
    */
   public PromiseReqBuilder(Settings settings, String httpMethod, String url, Object data) {
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
-System.out.println("AQUI");
     try {
       if (settings.getUsername() != null && settings.getPassword() != null) {
         xmlHttpRequest.open(httpMethod, url, settings.getUsername(), settings.getPassword());
@@ -122,7 +121,6 @@ System.out.println("AQUI");
           ctype = FormPanel.ENCODING_URLENCODED;
         }
       }
-      System.out.println(ctype);
       xmlHttpRequest.setRequestHeader("Content-Type", ctype);
     }
 
@@ -140,7 +138,6 @@ System.out.println("AQUI");
     });
 
     try {
-      System.out.println("DATA " + data.getClass().getName());
       JsUtils.runJavascriptFunction(xmlHttpRequest, "send", data);
     } catch (JavaScriptException e) {
       onError(null, e);
