@@ -31,7 +31,11 @@ public class ConsoleBrowser implements Console {
   private static class ConsoleIe8 extends ConsoleIe9 {
     @Override
     protected native void init()/*-{
-      Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
+      try {
+        Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
+      } catch(e) {
+        this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initFallBack()();
+      }
     }-*/;
   }
 
@@ -39,15 +43,33 @@ public class ConsoleBrowser implements Console {
    * See: http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object
    */
   private static class ConsoleIe9 extends ConsoleImpl {
+    
     public ConsoleIe9(){
       init();
     }
     
     protected native void init()/*-{
+      try {
 				[ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
 				  .forEach(function(method) {
 					  $wnd.console[method] = this.call($wnd.console[method], $wnd.console);
 				  }, Function.prototype.bind);
+      } catch(e) {
+        this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initFallBack()();
+      }
+    }-*/;
+    
+    /**
+     * Dummy implementation of console if IE8 or IE9 fail using dev tools.
+     */
+    private native void initFallBack() /*-{
+      if (!$wnd.console || !$wnd.console.log) {
+        $wnd.console = {};
+        [ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
+          .forEach(function(method) {
+            $wnd.console[method] = function(){};
+          });
+      }
     }-*/;
 
     @Override
