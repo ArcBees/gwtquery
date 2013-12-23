@@ -171,6 +171,6 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
    * Using violator pattern to use protected constructor
    */
   private native Request createRequestVltr(XMLHttpRequest rq, int ms, RequestCallback cb) /*-{
-    return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq, 
+    return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq,cb);
   }-*/;
 }
