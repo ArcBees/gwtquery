@@ -316,6 +316,13 @@ public class JsUtils {
     return Object.prototype.toString.call(o) == '[object Array]'
         || typeof o.length == 'number';
   }-*/;
+  
+  /**
+   * Check is a javascript object is a FormData
+   */
+  public static native boolean isFormData(JavaScriptObject o) /*-{
+    return Object.prototype.toString.call(o) == '[object FormData]';
+  }-*/;
 
   /**
    * Return whether the event was prevented

@@ -5,8 +5,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -18,7 +16,6 @@ import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
-import com.google.gwt.user.client.ui.FormPanel;
 
 /**
  * Ajax class for GQuery.
@@ -119,8 +116,8 @@ public class Ajax extends GQuery {
       onError.setElement(settings.getContext());
     }
 
-    Method httpMethod = resolveHttpMethod(settings);
-    String data = resolveData(settings, httpMethod);
+    String httpMethod = settings.getType() == null ? "POST" : settings.getType().toUpperCase();
+    Object data = resolveData(settings, httpMethod);
     final String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
 
@@ -131,7 +128,7 @@ public class Ajax extends GQuery {
     } else if ("loadscript".equalsIgnoreCase(dataType)){
       ret = createPromiseScriptInjector(url);
     } else {
-      ret = createPromiseRequestBuilder(settings, httpMethod, url, data)
+      ret = new PromiseReqBuilder(settings, httpMethod, url, data)
         .then(new Function() {
           public Object f(Object...args) {
             Response response = (Response)args[0];
@@ -172,45 +169,6 @@ public class Ajax extends GQuery {
     return ret;
   }
   
-  private static Promise createPromiseRequestBuilder(Settings settings, Method httpMethod, String url, String data) {
-
-    RequestBuilder requestBuilder = new RequestBuilder(httpMethod, url);
-
-    if (data != null && httpMethod != RequestBuilder.GET) {
-      String ctype = settings.getContentType();
-      if (ctype == null) {
-        String type = settings.getDataType();
-        if (type != null && type.toLowerCase().startsWith("json")) {
-          ctype = "application/json; charset=utf-8";
-        } else {
-          ctype = FormPanel.ENCODING_URLENCODED;
-        }
-      }
-      requestBuilder.setHeader("Content-Type", ctype);
-      requestBuilder.setRequestData(data);
-    }
-
-    requestBuilder.setTimeoutMillis(settings.getTimeout());
-
-    String user = settings.getUsername();
-    if (user != null) {
-      requestBuilder.setUser(user);
-    }
-
-    String password = settings.getPassword();
-    if (password != null) {
-      requestBuilder.setPassword(password);
-    }
-
-    Properties headers = settings.getHeaders();
-    if (headers != null) {
-      for (String headerKey : headers.keys()) {
-        requestBuilder.setHeader(headerKey, headers.getStr(headerKey));
-      }
-    }
-
-    return new PromiseReqBuilder(requestBuilder);
-  }
 
   private static Promise createPromiseScriptInjector(final String url) {
     return new PromiseFunction() {
@@ -228,46 +186,31 @@ public class Ajax extends GQuery {
     };
   }
 
-  private static String resolveUrl(Settings settings, Method httpMethod, String data) {
+  private static String resolveUrl(Settings settings, String httpMethod, Object data) {
     String url = settings.getUrl();
     assert url != null : "no url found in settings";
-    if (httpMethod == RequestBuilder.GET && data != null) {
+    if ("GET".equals(httpMethod) && data instanceof String) {
       url += (url.contains("?") ? "&" : "?") + data;
     }
     return url;
   }
 
-  private static String resolveData(Settings settings, Method httpMethod) {
-    String data = settings.getDataString();
-    if (data == null && settings.getData() != null) {
+  private static Object resolveData(Settings settings, String httpMethod) {
+    Object data = settings.getDataString();
+    Properties sdata = settings.getData();
+    if (data == null && sdata != null) {
       String type = settings.getDataType();
       if (type != null
-          && (httpMethod == RequestBuilder.POST || httpMethod == RequestBuilder.PUT)
+          && (httpMethod.matches("(POST|PUT)"))
           && type.equalsIgnoreCase("json")) {
-        data = settings.getData().toJsonString();
+        data = sdata.toJsonString();
+      } else if (JsUtils.isFormData(sdata)) {
+        data = sdata;
       } else {
-        data = settings.getData().toQueryString();
+        data = sdata.toQueryString();
       }
     }
     return data;
-  }
-
-  private static Method resolveHttpMethod(Settings settings) {
-    String method = settings.getType();
-    if ("get".equalsIgnoreCase(method)) {
-      return RequestBuilder.GET;
-    } else if ("post".equalsIgnoreCase(method)) {
-      return RequestBuilder.POST;
-    } else if ("put".equalsIgnoreCase(method)) {
-      return RequestBuilder.PUT;
-    } else if ("delete".equalsIgnoreCase(method)) {
-      return RequestBuilder.DELETE;
-    } else if ("head".equalsIgnoreCase(method)) {
-      return RequestBuilder.HEAD;
-    }
-
-    GWT.log("GQuery.Ajax: no method type provided, using POST as default method");
-    return RequestBuilder.POST;
   }
 
   public static Promise ajax(String url, Function onSuccess, Function onError) {
@@ -384,6 +327,10 @@ public class Ajax extends GQuery {
     );
   }
 
+  public static Promise post(String url, Properties data) {
+    return post(url, data, null);
+  }
+  
   public static Promise post(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -398,6 +345,10 @@ public class Ajax extends GQuery {
     super(gq);
   }
 
+  public Ajax load(String url, Properties data) {
+    return load(url, data);
+  }
+  
   public Ajax load(String url, Properties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
