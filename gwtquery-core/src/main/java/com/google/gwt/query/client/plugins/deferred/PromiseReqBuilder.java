@@ -124,7 +124,9 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       xmlHttpRequest.setRequestHeader("Content-Type", ctype);
     }
 
-    xmlHttpRequest.setWithCredentials(true);
+    // Using gQuery to set credentials since this method was added in 2.5.1
+    // xmlHttpRequest.setWithCredentials(true);
+    JsUtils.prop(xmlHttpRequest, "withCredentials", true);
     
     final Request request = createRequestVltr(xmlHttpRequest, settings.getTimeout(), this);
     
@@ -169,6 +171,6 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
    * Using violator pattern to use protected constructor
    */
   private native Request createRequestVltr(XMLHttpRequest rq, int ms, RequestCallback cb) /*-{
-    return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq, 
+    return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq,cb);
   }-*/;
 }

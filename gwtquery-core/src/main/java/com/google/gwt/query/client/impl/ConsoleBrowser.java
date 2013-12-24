@@ -31,7 +31,11 @@ public class ConsoleBrowser implements Console {
   private static class ConsoleIe8 extends ConsoleIe9 {
     @Override
     protected native void init()/*-{
-      Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
+      try {
+        Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
+        this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initialized = true;
+      } catch(e) {
+      }
     }-*/;
   }
 
@@ -39,17 +43,52 @@ public class ConsoleBrowser implements Console {
    * See: http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object
    */
   private static class ConsoleIe9 extends ConsoleImpl {
+    
+    private boolean initialized = false;
+    
     public ConsoleIe9(){
       init();
     }
     
     protected native void init()/*-{
+      try {
 				[ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
 				  .forEach(function(method) {
 					  $wnd.console[method] = this.call($wnd.console[method], $wnd.console);
 				  }, Function.prototype.bind);
+        this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initialized = true;
+      } catch(e) {
+      }
     }-*/;
-
+    
+    @Override
+    public void clear() {
+      if (initialized) super.clear();
+    }
+    @Override
+    public void dir(Object arg) {
+      if (initialized) super.dir(arg);
+    }
+    @Override
+    public void error(Object arg) {
+      if (initialized) super.error(arg);
+    }
+    @Override
+    public void info(Object arg) {
+      if (initialized) super.info(arg);
+    }
+    @Override
+    public void profile(String title) {
+      if (initialized) super.profile(title);
+    }
+    @Override
+    public void profileEnd(String title) {
+      if (initialized) super.profileEnd(title);
+    }
+    @Override
+    public void warn(Object arg) {
+      if (initialized) super.warn(arg);
+    }
     @Override
     public void group(Object arg) {}
     @Override
