@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.builders;
 
-import com.google.gwt.query.client.Properties;
 
 /**
  * Tagging interface used to generate JsonBuilder classes.
@@ -40,9 +39,10 @@ public interface JsonBuilder {
   <J> J parse(String json, boolean fix);
 
   /**
-   * Returns the javascript properties object.
+   * Returns the wrapped object, normally a Properties jso in client
+   * but can be used to return the underlying Json implementation in JVM
    */
-  Properties getProperties();
+  <J> J getProperties();
 
   /**
    * return a list of field names.

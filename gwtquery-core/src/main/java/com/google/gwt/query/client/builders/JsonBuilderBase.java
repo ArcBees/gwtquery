@@ -51,7 +51,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).getProperties());
+        a.push(((JsonBuilder)o).<Properties>getProperties());
       }
       p.set(n, a);
     } else {
@@ -88,6 +88,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     return p.tostring();
   }
 
+  @SuppressWarnings("unchecked")
   public Properties getProperties() {
     return p;
   }

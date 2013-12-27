@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, The gwtquery team.
+ * Copyright 2013, The gwtquery team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,16 +18,11 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
@@ -64,77 +59,6 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     }
   }
 
-  interface Item extends JsonBuilder {
-    Date getDate();
-    void setDate(Date d);
-  }
-
-  interface JsonExample extends JsonBuilder {
-    int getA();
-    JsonExample getB();
-    @Name("M")
-    int getM();
-    @Name("u")
-    String getUrl();
-    long getD();
-    Boolean getZ();
-    String[] getT();
-    JsonExample setT(String[] strings);
-    JsonExample setZ(Boolean b);
-    JsonExample setD(long l);
-    List<Item> getItems();
-    void setItems(List<Item> a);
-    String y();
-    void y(String s);
-    Function getF();
-    void setF(Function f);
-  }
-  
-  boolean functionRun = false;
-  public void testJsonBuilder() {
-    String json = "{M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true}";
-    JsonExample c = GWT.create(JsonExample.class);
-    assertEquals(0, c.getA());
-    c.parse(json, true);
-    assertEquals(0, c.getM());
-    assertEquals(1, c.getA());
-    assertNotNull(c.getB());
-    assertEquals(2, c.getB().getA());
-    assertEquals(3, c.getB().getB().getA());
-    assertTrue(c.getZ());
-    assertEquals("hola", c.getT()[0]);
-    assertEquals("adios", c.getT()[1]);
-    assertEquals("url", c.getUrl());
-    c.setT(new String[]{"foo", "bar"})
-     .setZ(false).setD(1234);
-    assertFalse(c.getZ());
-    assertEquals("foo", c.getT()[0]);
-    assertEquals("bar", c.getT()[1]);
-    assertEquals(1234l, c.getD());
-    c.y("y");
-    assertEquals("y", c.y());
-
-    c.setF(new Function() {
-      public void f() {
-        functionRun = true;
-      }
-    });
-    assertFalse(functionRun);
-    c.getF().f();
-    assertTrue(functionRun);
-
-    Item i1 = GWT.create(Item.class);
-    Item i2 = GWT.create(Item.class);
-    i1.setDate(new Date(2000));
-    i2.setDate(new Date(3000));
-    Item[] items = new Item[]{i1, i2};
-    c.setItems(Arrays.asList(items));
-    assertEquals(2000l, c.getItems().get(0).getDate().getTime());
-    assertEquals(3000l, c.getItems().get(1).getDate().getTime());
-    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]";
-    assertEquals(s, c.toString().replaceAll("\"", "'"));
-  }
-  
   interface XmlExample extends XmlBuilder {
     interface T extends XmlBuilder {
     }
@@ -292,11 +216,11 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
 
     Ajax.ajax(s);
   }
-  
+
   public void testAjaxError() {
     delayTestFinish(5000);
     String url = "http://127.0.0.1/nopage";
-    
+
     Ajax.ajax(Ajax.createSettings().setTimeout(1000).setUrl(url))
       .done(new Function(){
         public void f() {

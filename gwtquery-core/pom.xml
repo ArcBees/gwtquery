@@ -51,7 +51,7 @@
                 <directory>${basedir}/src/main/java</directory>
             </resource>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${basedir}/src/main/super</directory>
             </resource>
         </resources>
         <testResources>

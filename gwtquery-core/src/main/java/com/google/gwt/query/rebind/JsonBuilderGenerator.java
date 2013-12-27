@@ -15,10 +15,19 @@
  */
 package com.google.gwt.query.rebind;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -30,16 +39,11 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
+import com.google.gwt.query.client.builders.JsonBuilderBase;
+import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  */
@@ -50,6 +54,9 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType jsType;
   static JClassType listType;
   static JClassType stringType;
+  static JClassType jsonCreatorType;
+
+
   public static String capitalize(String s) {
     if (s.length() == 0)
       return s;
@@ -70,39 +77,47 @@ public class JsonBuilderGenerator extends Generator {
   public String generate(TreeLogger treeLogger,
       GeneratorContext generatorContext, String requestedClass)
       throws UnableToCompleteException {
+
     oracle = generatorContext.getTypeOracle();
     JClassType clazz =  oracle.findType(requestedClass);
+
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
     functionType = oracle.findType(Function.class.getName());
+    jsonCreatorType = oracle.findType(JsonFactory.class.getName());
 
     String t[] = generateClassName(clazz);
 
-    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1],
-        requestedClass);
-    if (sw != null) {
-      Set<String> attrs = new HashSet<String>();
-      for (JMethod method : clazz.getInheritableMethods()) {
-        String methName = method.getName();
-        //skip method from JsonBuilder
-        if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
-        	continue;
-        }
+    boolean isFactory = clazz.isAssignableTo(jsonCreatorType);
 
-        Name nameAnnotation = method.getAnnotation(Name.class);
-        String name = nameAnnotation != null
-          ? nameAnnotation.value()
-          : methName.replaceFirst("^(get|set)", "");
-        if (nameAnnotation == null) {
-          name = name.substring(0, 1).toLowerCase() + name.substring(1);
+    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1], isFactory, requestedClass);
+    if (sw != null) {
+      if (isFactory) {
+        generateCreateMethod(sw, treeLogger);
+      } else {
+        Set<String> attrs = new HashSet<String>();
+        for (JMethod method : clazz.getInheritableMethods()) {
+          String methName = method.getName();
+          //skip method from JsonBuilder
+          if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null) {
+            continue;
+          }
+
+          Name nameAnnotation = method.getAnnotation(Name.class);
+          String name = nameAnnotation != null
+            ? nameAnnotation.value()
+            : methName.replaceFirst("^(get|set)", "");
+          if (nameAnnotation == null) {
+            name = name.substring(0, 1).toLowerCase() + name.substring(1);
+          }
+          attrs.add(name);
+          generateMethod(sw, method, name, treeLogger);
         }
-        attrs.add(name);
-        generateMethod(sw, method, name, treeLogger);
+        generateFieldNamesMethod(sw, attrs, treeLogger);
+        generateToJsonMethod(sw, t[3], treeLogger);
       }
-      generateFieldNamesMethod(sw, attrs, treeLogger);
-      generateToJsonMethod(sw, t[3], treeLogger);
       sw.commit(treeLogger);
     }
     return t[2];
@@ -255,7 +270,7 @@ public class JsonBuilderGenerator extends Generator {
   }
 
   protected SourceWriter getSourceWriter(TreeLogger logger,
-      GeneratorContext context, String packageName, String className,
+      GeneratorContext context, String packageName, String className, boolean isFactory,
       String... interfaceNames) {
     PrintWriter printWriter = context.tryCreate(logger, packageName, className);
     if (printWriter == null) {
@@ -263,8 +278,10 @@ public class JsonBuilderGenerator extends Generator {
     }
     ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
         packageName, className);
-    composerFactory.setSuperclass("com.google.gwt.query.client.builders.JsonBuilderBase<"
-        + packageName + "." + className + ">");
+    if (!isFactory) {
+      composerFactory.setSuperclass(JsonBuilderBase.class.getName() +
+          "<" + packageName + "." + className + ">");
+    }
     composerFactory.addImport("com.google.gwt.query.client.js.*");
     composerFactory.addImport("com.google.gwt.query.client.*");
     composerFactory.addImport("com.google.gwt.core.client.*");
@@ -280,5 +297,24 @@ public class JsonBuilderGenerator extends Generator {
   public boolean isTypeAssignableTo(JType t, JClassType o) {
     JClassType c = t.isClassOrInterface();
     return (c != null && c.isAssignableTo(o));
+  }
+
+  private void generateCreateMethod(SourceWriter sw, TreeLogger logger) {
+    sw.println("public <T extends " + JsonBuilder.class.getName() + "> T create(Class<T> clz) {");
+    sw.indent();
+    ArrayList<JClassType> types = new ArrayList<JClassType>();
+    for (JClassType t : oracle.getTypes()) {
+      if (t.isInterface() != null && t.isAssignableTo(jsonBuilderType) ) {
+        if (t.isPublic()) {
+          sw.println("if (clz == " + t.getQualifiedSourceName() + ".class) return GWT.<T>create(" + t.getQualifiedSourceName() + ".class);");
+        } else {
+          logger.log(Type.WARN, t.getQualifiedSourceName() + " is not public");
+        }
+        types.add(t);
+      }
+    }
+    sw.println("return null;");
+    sw.outdent();
+    sw.println("}");
   }
 }

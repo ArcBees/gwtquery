@@ -17,6 +17,9 @@
 <module>
     <inherits name='com.google.gwt.user.User'/>
     
+    <source path="client"/>
+    <super-source path="super"/>
+    
     <!-- Browser flags -->
     <generate-with class="com.google.gwt.query.rebind.BrowserGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Browser"/>
@@ -35,6 +38,9 @@
     <!-- Json and Xml builders -->
     <generate-with class="com.google.gwt.query.rebind.JsonBuilderGenerator">
         <when-type-assignable class="com.google.gwt.query.client.builders.JsonBuilder"/>
+    </generate-with>
+    <generate-with class="com.google.gwt.query.rebind.JsonBuilderGenerator">
+        <when-type-assignable class="com.google.gwt.query.client.builders.JsonFactory"/>
     </generate-with>
     <generate-with class="com.google.gwt.query.rebind.XmlBuilderGenerator">
         <when-type-assignable class="com.google.gwt.query.client.builders.XmlBuilder"/>
