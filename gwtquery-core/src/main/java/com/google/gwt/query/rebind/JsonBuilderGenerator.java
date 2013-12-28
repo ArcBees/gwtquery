@@ -270,7 +270,7 @@ public class JsonBuilderGenerator extends Generator {
 
   public void generateToJsonMethod(SourceWriter sw, String name, TreeLogger logger) {
     sw.println("public final String getJsonName() {return \"" + name + "\";}");
-    sw.println("public final String toJson() {return \"{\\\"\" + getJsonName() + \"\\\":\" + toString() + \"}\";}");
+    sw.println("public final String getName() {return \"" + name + "\";}");
   }
 
   protected SourceWriter getSourceWriter(TreeLogger logger,

@@ -38,8 +38,7 @@ public interface JsonBuilder extends Binder {
   <J> J getProperties();
 
   /**
-   * return the Json name for this class
-   * @deprecated use getName() instead;
+   * return the short name of this class, to use in json structures.
    */
-  String getJsonName();
+  String getName();
 }

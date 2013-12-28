@@ -91,6 +91,11 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     return p.tostring();
   }
 
+  @Override
+  public String toJson() {
+    return "{\"" + getName() + "\":" + p.tostring() + "}";
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public Properties getProperties() {
@@ -100,11 +105,6 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   @Override
   public String toQueryString() {
     return p.toQueryString();
-  }
-  
-  @Override
-  public String getName() {
-    return getJsonName();
   }
   
   @SuppressWarnings("unchecked")
