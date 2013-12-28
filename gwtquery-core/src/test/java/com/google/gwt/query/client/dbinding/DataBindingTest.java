@@ -102,8 +102,6 @@ public class DataBindingTest extends GWTTestCase {
     i2.setDate(new Date(3000));
     Item[] items = new Item[]{i1, i2};
     c.setItems(Arrays.asList(items));
-    System.out.println(c.toJson());
-    System.out.println(c.getItems().get(0).getDate());
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
 
