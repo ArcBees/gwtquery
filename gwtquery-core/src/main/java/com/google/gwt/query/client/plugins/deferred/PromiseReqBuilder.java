@@ -21,8 +21,8 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.RequestPermissionException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
@@ -102,10 +102,10 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       }
     }));
     
-    Properties headers = settings.getHeaders();
+    Binder headers = settings.getHeaders();
     if (headers != null) {
-      for (String headerKey : headers.keys()) {
-        xmlHttpRequest.setRequestHeader(headerKey, headers.getStr(headerKey));
+      for (String headerKey : headers.getFieldNames()) {
+        xmlHttpRequest.setRequestHeader(headerKey, String.valueOf(headers.get(headerKey)));
       }
     }
     

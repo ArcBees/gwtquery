@@ -184,6 +184,9 @@ public class JsonBuilderGenerator extends Generator {
         String q = method.getReturnType().getQualifiedSourceName();
         sw.println("return " + "((" + q + ")GWT.create(" + q + ".class))"
             + ".load(p.getJavaScriptObject(\"" + name + "\"));");
+      } else if (isTypeAssignableTo(method.getReturnType(), settingsType)) {
+        String q = method.getReturnType().getQualifiedSourceName();
+        sw.println("return " + "((" + q + ")p.getJavaScriptObject(\"" + name + "\"));");
       } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
@@ -218,8 +221,8 @@ public class JsonBuilderGenerator extends Generator {
           sw.println("return Arrays.asList(" + ret + ");");
         }
       } else if (method.getReturnType().isEnum() != null){
-    	 sw.println("return "+method.getReturnType().getQualifiedSourceName()+".valueOf(p.getStr(\"" + name + "\"));");
-      }else {
+    	  sw.println("return "+ method.getReturnType().getQualifiedSourceName() + ".valueOf(p.getStr(\"" + name + "\"));");
+      } else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type "
             + retType + " " + ifaceName + "." + name + "()\"); ");
         // We return the object because probably the user knows how to handle it

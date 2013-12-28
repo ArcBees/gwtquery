@@ -179,8 +179,10 @@ public class Properties extends JavaScriptObject implements Binder {
     this[name].__f = f;
   }-*/;
 
-  public final <T, O> void set(T name, O val) {
+  @SuppressWarnings("unchecked")
+  public final Properties set(Object name, Object val) {
     c().put(String.valueOf(name), val);
+    return this;
   }
 
   public final String tostring() {

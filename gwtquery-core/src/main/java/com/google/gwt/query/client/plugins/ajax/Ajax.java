@@ -4,12 +4,15 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
@@ -39,11 +42,11 @@ public class Ajax extends GQuery {
   public interface Settings extends JsonBuilder {
     String getContentType();
     Element getContext();
-    Properties getData();
+    Binder getData();
     String getDataString();
     String getDataType();
     Function getError();
-    Properties getHeaders();
+    Binder getHeaders();
     String getPassword();
     Function getSuccess();
     int getTimeout();
@@ -52,11 +55,11 @@ public class Ajax extends GQuery {
     String getUsername();
     Settings setContentType(String t);
     Settings setContext(Element e);
-    Settings setData(Properties p);
+    Settings setData(Object p);
     Settings setDataString(String d);
     Settings setDataType(String t);
     Settings setError(Function f);
-    Settings setHeaders(Properties p);
+    Settings setHeaders(Binder p);
     Settings setPassword(String p);
     Settings setSuccess(Function f);
     Settings setTimeout(int t);
@@ -172,16 +175,21 @@ public class Ajax extends GQuery {
 
   private static Promise createPromiseScriptInjector(final String url) {
     return new PromiseFunction() {
+      private ScriptElement scriptElement;
       public void f(final Deferred dfd) {
-        ScriptInjector.fromUrl(url).setWindow(window)
+        scriptElement = ScriptInjector.fromUrl(url).setWindow(window)
         .setCallback(new Callback<Void, Exception>() {
           public void onSuccess(Void result) {
-            dfd.resolve();
+            $(window).delay(0, new Function(){
+              public void f() {
+                dfd.resolve(scriptElement);
+              }
+            });
           }
           public void onFailure(Exception reason) {
             dfd.reject(reason);
           }
-        }).inject();
+        }).inject().cast();
       }
     };
   }
@@ -197,15 +205,15 @@ public class Ajax extends GQuery {
 
   private static Object resolveData(Settings settings, String httpMethod) {
     Object data = settings.getDataString();
-    Properties sdata = settings.getData();
+    Binder sdata = settings.getData();
     if (data == null && sdata != null) {
       String type = settings.getDataType();
       if (type != null
           && (httpMethod.matches("(POST|PUT)"))
           && type.equalsIgnoreCase("json")) {
-        data = sdata.toJsonString();
-      } else if (JsUtils.isFormData(sdata)) {
-        data = sdata;
+        data = sdata.toString();
+//      } else if (JsUtils.isFormData(sdata)) {
+//        data = sdata;
       } else {
         data = sdata.toQueryString();
       }
@@ -244,9 +252,9 @@ public class Ajax extends GQuery {
     return createSettings($$(prop));
   }
 
-  public static Settings createSettings(Properties p) {
-    Settings s = GWT.create(Settings.class);
-    s.load(p);
+  public static Settings createSettings(Binder p) {
+    Settings s = GQ.create(Settings.class);
+    s.load(p.getBound());
     return s;
   }
 

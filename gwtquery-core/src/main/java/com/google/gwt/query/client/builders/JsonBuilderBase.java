@@ -116,4 +116,10 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public <T> T get(Object key) {
     return p.get(key);
   }
+  
+  @SuppressWarnings("unchecked")
+  public <T> T set(Object key, Object val) {
+    p.set(key, val);
+    return (T)this;
+  }
 }

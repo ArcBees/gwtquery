@@ -1,0 +1,68 @@
+/*
+ * Copyright 2013, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.google.gwt.query.client;
+
+
+/**
+ * Interface using for Data Binders valid for JVM and JS.
+ */
+public interface Binder {
+  /**
+   * load a properties object.
+   */
+  <J> J load(Object prp);
+
+  /**
+   * parses a json string and loads the resulting properties object.
+   */
+  <J> J parse(String json);
+
+  /**
+   * Returns the underlying object, normally a Properties jso in client
+   * and a Json implementation in JVM.
+   */
+  <J> J getBound();
+  
+  /**
+   * Return the Object with the given key.
+   */
+  <T> T get(Object key);
+  
+  /**
+   * Set an Object with the given key.
+   */
+  <T> T set(Object key, Object val);
+
+  /**
+   * return a list of field names.
+   */
+  String[] getFieldNames();
+
+  /**
+   * return a string which represents the object with an alias for the className
+   */
+  String toJson();
+
+  /**
+   * return a string which represents the object in a queryString format.
+   */
+  String toQueryString();
+
+  /**
+   * return the name for this type
+   */
+  String getName();
+}
