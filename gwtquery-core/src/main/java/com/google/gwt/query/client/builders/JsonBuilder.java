@@ -15,21 +15,13 @@
  */
 package com.google.gwt.query.client.builders;
 
+import com.google.gwt.query.client.Binder;
+
 
 /**
  * Tagging interface used to generate JsonBuilder classes.
  */
-public interface JsonBuilder {
-
-  /**
-   * load a properties object.
-   */
-  <J> J load(Object prp);
-
-  /**
-   * parses a json string and loads the resulting properties object.
-   */
-  <J> J parse(String json);
+public interface JsonBuilder extends Binder {
 
   /**
    * parses a json string and loads the resulting properties object,
@@ -41,21 +33,13 @@ public interface JsonBuilder {
   /**
    * Returns the wrapped object, normally a Properties jso in client
    * but can be used to return the underlying Json implementation in JVM
+   * @deprecated use asObject() instead
    */
   <J> J getProperties();
 
   /**
-   * return a list of field names.
-   */
-  String[] getFieldNames();
-
-  /**
-   * return a string which represents the object with an alias for the className
-   */
-  String toJson();
-
-  /**
    * return the Json name for this class
+   * @deprecated use getName() instead;
    */
   String getJsonName();
 }

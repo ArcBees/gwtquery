@@ -15,16 +15,16 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
  */
-public class Properties extends JavaScriptObject {
+public class Properties extends JavaScriptObject implements Binder {
 
   public static Properties create() {
     return JsCache.create().cast();
@@ -197,6 +197,35 @@ public class Properties extends JavaScriptObject {
 
   public final boolean isEmpty(){
     return c().length() == 0;
+  }
+
+  public final <J> J load(Object prp) {
+    c().clear();
+    if (prp instanceof JsCache) {
+      c().copy((JsCache)prp);
+    }
+    return getBound();
+  }
+
+  public final <J> J parse(String json) {
+    return load(JsUtils.parseJSON(json));
+  }
+
+  public final String[] getFieldNames() {
+    return c().keys();
+  }
+
+  public final String toJson() {
+    return toJsonString();
+  }
+
+  @SuppressWarnings("unchecked")
+  public final <J> J getBound() {
+    return (J)this;
+  }
+
+  public final String getName() {
+    return "jso";
   }
 
 }

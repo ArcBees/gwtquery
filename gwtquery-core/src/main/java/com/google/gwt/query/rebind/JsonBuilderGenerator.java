@@ -38,6 +38,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonBuilderBase;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -51,6 +52,7 @@ public class JsonBuilderGenerator extends Generator {
 
   static JClassType functionType;
   static JClassType jsonBuilderType;
+  static JClassType settingsType;
   static JClassType jsType;
   static JClassType listType;
   static JClassType stringType;
@@ -82,6 +84,7 @@ public class JsonBuilderGenerator extends Generator {
     JClassType clazz =  oracle.findType(requestedClass);
 
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
+    settingsType = oracle.findType(Binder.class.getName());
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
@@ -101,7 +104,8 @@ public class JsonBuilderGenerator extends Generator {
         for (JMethod method : clazz.getInheritableMethods()) {
           String methName = method.getName();
           //skip method from JsonBuilder
-          if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null) {
+          if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null ||
+              settingsType.findMethod(method.getName(), method.getParameterTypes()) != null ) {
             continue;
           }
 

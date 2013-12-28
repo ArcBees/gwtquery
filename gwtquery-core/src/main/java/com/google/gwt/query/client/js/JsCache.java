@@ -36,6 +36,12 @@ public class JsCache extends JavaScriptObject {
     if (ary) this.concat(ary);
   }-*/;
 
+  public final void copy(JsCache jso) {
+    for (String k : jso.keys()) {
+      put(k, jso.get(k));
+    }
+  }
+
   public final void pushAll(JavaScriptObject prevElem) {
     checkNull();
     JsCache c = prevElem.cast();
@@ -47,14 +53,12 @@ public class JsCache extends JavaScriptObject {
   public final native void delete(Object name) /*-{
     delete this[name];
   }-*/;
-
-  public final native <T> void clear() /*-{
-    if (this.length) {
-      for (i = this.length - 1; i >= 0; i--)
-        delete this[i];
-      this.length = 0;
+  
+  public final void clear() {
+    for (String k : keys()) {
+      delete(k);
     }
-  }-*/;
+  }
 
   public final native boolean exists(Object name) /*-{
     return !!this[name];

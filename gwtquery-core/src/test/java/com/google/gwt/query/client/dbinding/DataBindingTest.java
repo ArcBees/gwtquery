@@ -107,5 +107,9 @@ public class DataBindingTest extends GWTTestCase {
 
     assertTrue(c.toJson().startsWith("{\"jsonExample\":{"));
     assertTrue(c.toJson().contains("\"items\":[{\"date\":"));
+    assertTrue(c.toQueryString().contains("t[]=bar"));
+    assertTrue(c.toQueryString().contains("a=2"));
+    
+    assertEquals(1, c.<Number>get("a").intValue());
   }
 }

@@ -26,16 +26,19 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   protected Properties p = Properties.create();
 
   @SuppressWarnings("unchecked")
+  @Override
   public J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public J load(Object prp) {
     assert prp == null || prp instanceof JavaScriptObject || prp instanceof String;
     if (prp != null && prp instanceof String) {
@@ -51,7 +54,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).<Properties>getProperties());
+        a.push(((JsonBuilder)o).<Properties>getBound());
       }
       p.set(n, a);
     } else {
@@ -89,8 +92,28 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public Properties getProperties() {
     return p;
   }
-
+  
+  @Override
+  public String toQueryString() {
+    return p.toQueryString();
+  }
+  
+  @Override
+  public String getName() {
+    return getJsonName();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public Properties getBound() {
+    return p;
+  }
+  
+  public <T> T get(Object key) {
+    return p.get(key);
+  }
 }
