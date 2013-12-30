@@ -330,10 +330,6 @@ public class Ajax extends GQuery {
     );
   }
   
-  public static Promise post(Settings s) {
-    return ajax(s);
-  }
-
   public static Promise post(String url, Properties data) {
     return post(url, data, null);
   }
