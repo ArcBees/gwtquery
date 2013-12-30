@@ -2,6 +2,7 @@ package com.google.gwt.query.client.plugins.ajax;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ScriptElement;
@@ -119,23 +120,22 @@ public class Ajax extends GQuery {
       onError.setElement(settings.getContext());
     }
 
-    String httpMethod = settings.getType() == null ? "POST" : settings.getType().toUpperCase();
-    Object data = resolveData(settings, httpMethod);
-    final String url = resolveUrl(settings, httpMethod, data);
+    resolveSettings(settings);
+    
     final String dataType = settings.getDataType();
 
     Promise ret = null;
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      ret = new PromiseReqBuilderJSONP(url, null, settings.getTimeout());
+      ret = new PromiseReqBuilderJSONP(settings.getUrl(), null, settings.getTimeout());
     } else if ("loadscript".equalsIgnoreCase(dataType)){
-      ret = createPromiseScriptInjector(url);
+      ret = createPromiseScriptInjector(settings.getUrl());
     } else {
-      ret = new PromiseReqBuilder(settings, httpMethod, url, data)
+      ret = new PromiseReqBuilder(settings)
         .then(new Function() {
           public Object f(Object...args) {
-            Response response = (Response)args[0];
-            Request request = (Request)args[1];
+            Response response = arguments(0);
+            Request request = arguments(1);
             Object retData = null;
             try {
               if ("xml".equalsIgnoreCase(dataType)) {
@@ -172,7 +172,29 @@ public class Ajax extends GQuery {
     return ret;
   }
   
+  private static void resolveSettings(Settings settings) {
+    String url = settings.getUrl();
+    assert settings != null && settings.getUrl() != null: "no url found in settings";
 
+    settings.setType(settings.getType() == null ? "POST" : settings.getType().toUpperCase());
+    
+    Binder data = settings.getData();
+    if (data != null) {
+      if (data.getBound() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getBound())) {
+        settings.setDataString(null);
+      } else if (settings.getType().matches("(POST|PUT)") && "json".equalsIgnoreCase(settings.getDataType())) {
+        settings.setDataString(data.toJson());
+      } else {
+        settings.setDataString(data.toQueryString());
+      }
+    }
+
+    if ("GET".equals(settings.getType()) && settings.getDataString() != null) {
+      url += (url.contains("?") ? "&" : "?") + settings.getDataString();
+      settings.setUrl(url);
+    }
+  }
+  
   private static Promise createPromiseScriptInjector(final String url) {
     return new PromiseFunction() {
       private ScriptElement scriptElement;
@@ -192,33 +214,6 @@ public class Ajax extends GQuery {
         }).inject().cast();
       }
     };
-  }
-
-  private static String resolveUrl(Settings settings, String httpMethod, Object data) {
-    String url = settings.getUrl();
-    assert url != null : "no url found in settings";
-    if ("GET".equals(httpMethod) && data instanceof String) {
-      url += (url.contains("?") ? "&" : "?") + data;
-    }
-    return url;
-  }
-
-  private static Object resolveData(Settings settings, String httpMethod) {
-    Object data = settings.getDataString();
-    Binder sdata = settings.getData();
-    if (data == null && sdata != null) {
-      String type = settings.getDataType();
-      if (type != null
-          && (httpMethod.matches("(POST|PUT)"))
-          && type.equalsIgnoreCase("json")) {
-        data = sdata.toString();
-//      } else if (JsUtils.isFormData(sdata)) {
-//        data = sdata;
-      } else {
-        data = sdata.toQueryString();
-      }
-    }
-    return data;
   }
 
   public static Promise ajax(String url, Function onSuccess, Function onError) {
@@ -333,6 +328,10 @@ public class Ajax extends GQuery {
       .setDataType("loadscript")
       .setSuccess(success)
     );
+  }
+  
+  public static Promise post(Settings s) {
+    return ajax(s);
   }
 
   public static Promise post(String url, Properties data) {

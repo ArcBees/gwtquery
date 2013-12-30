@@ -64,7 +64,13 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
    * which are not available in GWT, like adding progress handles or sending
    * javascript data (like forms in modern html5 file api)
    */
-  public PromiseReqBuilder(Settings settings, String httpMethod, String url, Object data) {
+  public PromiseReqBuilder(Settings settings) {
+    String httpMethod = settings.getType();
+    String url = settings.getUrl();
+    Binder data = settings.getData();
+    String ctype = settings.getContentType();
+    Boolean isFormData = data != null && data.getBound() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getBound());
+    
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
     try {
       if (settings.getUsername() != null && settings.getPassword() != null) {
@@ -86,7 +92,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
         JsCache p = arguments(0);
         double total = p.getDouble("total");
         double loaded = p.getDouble("loaded");
-        double percent = 100 * loaded / total;
+        double percent = loaded == 0 ? 0 : total == 0 ? 100 : (100 * loaded / total);
         dfd.notify(total, loaded, percent, "download");
       }
     }));
@@ -109,17 +115,12 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       }
     }
     
-    if (data != null && !"GET".equalsIgnoreCase(httpMethod)) {
-      String ctype = settings.getContentType();
-      if (data instanceof JavaScriptObject && JsUtils.isFormData((JavaScriptObject)data)) {
-        ctype = FormPanel.ENCODING_MULTIPART;;
-      } else if (ctype == null) {
-        String type = settings.getDataType();
-        if (type != null && type.toLowerCase().startsWith("json")) {
-          ctype = "application/json; charset=utf-8";
-        } else {
-          ctype = FormPanel.ENCODING_URLENCODED;
-        }
+    if (data != null && !isFormData && !"GET".equalsIgnoreCase(httpMethod)) {
+      String type = settings.getDataType();
+      if (type != null && type.toLowerCase().startsWith("json")) {
+        ctype = "application/json; charset=utf-8";
+      } else {
+        ctype = FormPanel.ENCODING_URLENCODED;
       }
       xmlHttpRequest.setRequestHeader("Content-Type", ctype);
     }
@@ -140,7 +141,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     });
 
     try {
-      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", data);
+      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getBound() : settings.getDataString());
     } catch (JavaScriptException e) {
       onError(null, e);
     }
