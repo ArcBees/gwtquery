@@ -1,25 +1,20 @@
 package com.google.gwt.query.client.plugins.ajax;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
-import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
-import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 
 /**
  * Ajax class for GQuery.
@@ -36,6 +31,17 @@ import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
  *
  */
 public class Ajax extends GQuery {
+  
+  public static interface AjaxTransport {
+
+    Promise getJsonP(Settings settings);
+
+    Promise getLoadScript(Settings settings);
+
+    Promise getXhr(Settings settings);
+  }
+  
+  static AjaxTransport transport = GQ.getAjaxTransport();
   
   /**
    * Ajax Settings object
@@ -109,7 +115,8 @@ public class Ajax extends GQuery {
    * @param settings a Properties object with the configuration of the Ajax request.
    */
   public static Promise ajax(Settings settings) {
-
+    resolveSettings(settings);
+    
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
@@ -120,28 +127,26 @@ public class Ajax extends GQuery {
       onError.setElement(settings.getContext());
     }
 
-    resolveSettings(settings);
-    
     final String dataType = settings.getDataType();
 
     Promise ret = null;
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      ret = new PromiseReqBuilderJSONP(settings.getUrl(), null, settings.getTimeout());
+      ret = transport.getJsonP(settings);
     } else if ("loadscript".equalsIgnoreCase(dataType)){
-      ret = createPromiseScriptInjector(settings.getUrl());
+      ret = transport.getLoadScript(settings);
     } else {
-      ret = new PromiseReqBuilder(settings)
+      ret = transport.getXhr(settings)
         .then(new Function() {
           public Object f(Object...args) {
             Response response = arguments(0);
             Request request = arguments(1);
-            Object retData = null;
+            Object retData = response.getText();
             try {
               if ("xml".equalsIgnoreCase(dataType)) {
                 retData = JsUtils.parseXML(response.getText());
               } else if ("json".equalsIgnoreCase(dataType)) {
-                retData = JsUtils.parseJSON(response.getText());
+                retData = GQ.create(response.getText());
               } else {
                 retData = response.getText();
                 if ("script".equalsIgnoreCase(dataType)) {
@@ -149,17 +154,20 @@ public class Ajax extends GQuery {
                 }
               }
             } catch (Exception e) {
-              if (GWT.getUncaughtExceptionHandler() != null) {
+              if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
                 GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+              } else {
+                e.printStackTrace();
               }
             }
             return new Object[]{retData, "success", request, response};
           }
         }, new Function() {
           public Object f(Object...args) {
-            Throwable exception = (Throwable)args[0];
-            Request request = (Request)args[1];
-            return new Object[]{null, exception.getMessage(), request, null, exception};
+            Throwable exception = getArgument(0, Throwable.class);
+            Request request = getArgument(0, Request.class);
+            String msg = String.valueOf(exception);
+            return new Object[]{null, msg, request, null, exception};
           }
         });
     }
@@ -175,9 +183,16 @@ public class Ajax extends GQuery {
   private static void resolveSettings(Settings settings) {
     String url = settings.getUrl();
     assert settings != null && settings.getUrl() != null: "no url found in settings";
-
-    settings.setType(settings.getType() == null ? "POST" : settings.getType().toUpperCase());
     
+    String type = "POST";
+    if (settings.getType() != null) {
+      type = settings.getType().toUpperCase();
+    }
+    if ("jsonp".equalsIgnoreCase(settings.getDataType())) {
+      type = "GET";
+    }
+    settings.setType(type);
+
     Binder data = settings.getData();
     if (data != null) {
       if (data.getBound() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getBound())) {
@@ -195,27 +210,6 @@ public class Ajax extends GQuery {
     }
   }
   
-  private static Promise createPromiseScriptInjector(final String url) {
-    return new PromiseFunction() {
-      private ScriptElement scriptElement;
-      public void f(final Deferred dfd) {
-        scriptElement = ScriptInjector.fromUrl(url).setWindow(window)
-        .setCallback(new Callback<Void, Exception>() {
-          public void onSuccess(Void result) {
-            $(window).delay(0, new Function(){
-              public void f() {
-                dfd.resolve(scriptElement);
-              }
-            });
-          }
-          public void onFailure(Exception reason) {
-            dfd.reject(reason);
-          }
-        }).inject().cast();
-      }
-    };
-  }
-
   public static Promise ajax(String url, Function onSuccess, Function onError) {
     return ajax(url, onSuccess, onError, (Settings) null);
   }
@@ -240,11 +234,14 @@ public class Ajax extends GQuery {
   }
 
   public static Settings createSettings() {
-    return createSettings($$(""));
+    return createSettings("");
   }
 
   public static Settings createSettings(String prop) {
-    return createSettings($$(prop));
+    Settings s = GQ.create(Settings.class);
+    if (prop != null && !prop.isEmpty()) 
+      s.parse(prop);
+    return s;
   }
 
   public static Settings createSettings(Binder p) {
@@ -366,7 +363,7 @@ public class Ajax extends GQuery {
           // Note: using '\s\S' instead of '.' because gwt String emulation does
           // not support java embedded flag expressions (?s) and javascript does
           // not have multidot flag.
-          String s = getArguments()[0].toString().replaceAll("<![^>]+>\\s*", "")
+          String s = arguments(0).toString().replaceAll("<![^>]+>\\s*", "")
             .replaceAll("</?html[\\s\\S]*?>\\s*", "")
             .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
             .replaceAll("<script[\\s\\S]*?</script>\\s*", "")

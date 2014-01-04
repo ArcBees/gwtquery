@@ -56,7 +56,7 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType jsType;
   static JClassType listType;
   static JClassType stringType;
-  static JClassType jsonCreatorType;
+  static JClassType jsonFactoryType;
 
 
   public static String capitalize(String s) {
@@ -89,11 +89,11 @@ public class JsonBuilderGenerator extends Generator {
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());
     functionType = oracle.findType(Function.class.getName());
-    jsonCreatorType = oracle.findType(JsonFactory.class.getName());
+    jsonFactoryType = oracle.findType(JsonFactory.class.getName());
 
     String t[] = generateClassName(clazz);
 
-    boolean isFactory = clazz.isAssignableTo(jsonCreatorType);
+    boolean isFactory = clazz.isAssignableTo(jsonFactoryType);
 
     SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1], isFactory, requestedClass);
     if (sw != null) {
@@ -321,6 +321,11 @@ public class JsonBuilderGenerator extends Generator {
       }
     }
     sw.println("return null;");
+    sw.outdent();
+    sw.println("}");
+    sw.println("public <T extends Binder> T create(String s) {");
+    sw.indent();
+    sw.println("return (T)" + Properties.class.getName() + ".create(s);");
     sw.outdent();
     sw.println("}");
   }

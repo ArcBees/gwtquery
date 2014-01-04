@@ -18,24 +18,45 @@ package com.google.gwt.query.client;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
+import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
+import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
+import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
 
 public class GQ {
 
   private static JsonFactory jsonFactory;
+  private static AjaxTransport ajaxTransport;
 
   public static <T extends JsonBuilder> T create(Class<T> clz) {
-    if (jsonFactory == null) {
-      jsonFactory = GWT.isClient() ?
-          GWT.<JsonFactory>create(JsonFactory.class) :
-          new JsonFactoryJre();
-    }
-    return jsonFactory.create(clz);
+    return getFactory().create(clz);
   }
 
   public static <T extends JsonBuilder> T create(Class<T> clz, String payload) {
     T ret = create(clz);
     ret.load(payload);
     return ret;
+  }
+  
+  public static <T extends Binder> T create(String s) {
+    return getFactory().create(s);
+  }
+  
+  public static AjaxTransport getAjaxTransport() {
+    if (ajaxTransport == null) {
+      ajaxTransport = GWT.isClient() ?
+          new AjaxTransportJs() :
+            new AjaxTransportJre();    
+     }
+    return ajaxTransport;
+  }
+  
+  private static JsonFactory getFactory() {
+    if (jsonFactory == null) {
+      jsonFactory = GWT.isClient() ?
+          GWT.<JsonFactory>create(JsonFactory.class) :
+          new JsonFactoryJre();
+    }
+    return jsonFactory;
   }
 }

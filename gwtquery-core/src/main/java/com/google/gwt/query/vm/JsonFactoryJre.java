@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.builders.Name;
@@ -94,7 +95,7 @@ public class JsonFactoryJre implements JsonFactory  {
           }
         } else {
           ret = obj != null ? obj.get(attr): arr.get(idx);
-          if (ret instanceof JSONObject && JsonBuilder.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
+          if (ret instanceof JSONObject && Binder.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
             ret = jsonFactory.create(clz, (JSONObject)ret);
           }
         }
@@ -125,8 +126,8 @@ public class JsonFactoryJre implements JsonFactory  {
           return obj != null ? obj.put(attr, o) : arr.put(o);
         } else if (o instanceof Date) {
           return obj != null ? obj.put(attr, ((Date) o).getTime()) : arr.put(((Date) o).getTime());
-        } else if (o instanceof JsonBuilder) {
-          return obj != null ? obj.put(attr, ((JsonBuilder) o).getBound()) : arr.put(((JsonBuilder) o).getBound());
+        } else if (o instanceof Binder) {
+          return obj != null ? obj.put(attr, ((Binder) o).getBound()) : arr.put(((Binder) o).getBound());
         } else if (o.getClass().isArray() || o instanceof List) {
           Object[] arg;
           if (o.getClass().isArray()) {
@@ -166,8 +167,9 @@ public class JsonFactoryJre implements JsonFactory  {
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJson")) {
-        String jsonName = JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
-        return "{\"" + jsonName + "\":"+ jsonObject.toString() + "}";
+//        String jsonName = JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
+//        return "{\"" + jsonName + "\":"+ jsonObject.toString() + "}";
+        return jsonObject.toString() ;
       } else if ("toQueryString".equals(mname)) {
         return param(jsonObject);
       } else if (largs == 1 && mname.equals("get")) {
@@ -237,7 +239,7 @@ public class JsonFactoryJre implements JsonFactory  {
             }
           }
           if (p != null) {
-            ret += param(p);
+            ret += k + "=" + p.toString();
           } else if (s != null) {
             if (!s.isEmpty() && !"null".equalsIgnoreCase(s)) {
               ret += k + "=" + s;
@@ -264,5 +266,12 @@ public class JsonFactoryJre implements JsonFactory  {
   public Binder createBinder() {
     InvocationHandler handler = new JsonBuilderHandler();
     return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Binder> T create(String s) {
+    Binder ret = createBinder();
+    ret.parse(Properties.wrapPropertiesString(s));
+    return (T)ret;
   }
 }

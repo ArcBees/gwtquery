@@ -15,40 +15,86 @@
  */
 package com.google.gwt.query.client.ajax;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.Function;
+import javax.servlet.Servlet;
+
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.HandlerWrapper;
+import org.mortbay.jetty.servlet.DefaultServlet;
+import org.mortbay.jetty.webapp.WebAppClassLoader;
+import org.mortbay.jetty.webapp.WebAppContext;
+
 import com.google.gwt.query.client.GQ;
-import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.builders.Name;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.servlet.GQAjaxTestServlet;
 
 /**
  * Tests for Deferred which can run either in JVM and GWT
  */
-public class AjaxTest extends GWTTestCase {
+public class AjaxTest extends AjaxCommon {
+  
+  static Server server;
+  int port = 3333;
 
   public String getModuleName() {
     return null;
   }
   
-  public void testJsonValidService() {
-    delayTestFinish(5000);
-    // Use a public json service
-    String testJsonpUrl = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
-    Ajax.getJSONP(testJsonpUrl, new Function(){
-      public void f() {
-        Properties p = getDataProperties();
-        // It should return error since we do not use a valid key
-        // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
-        assertEquals(400, p.getJavaScriptObject("error").<Properties>cast().getInt("code"));
-        finishTest();
+  protected void gwtSetUp() throws Exception {
+    echoUrl = "http://127.0.0.1:" + port + "/" + servletPath;
+    corsUrl = "http://localhost:" + port + "/" + servletPath;
+    jsonData = GQ.create("data: {a: abc, d: ddd}");
+    json = GQ.create("a: abc, d: ddd");
+    startWebServer();
+  }
+  
+  protected void startWebServer() throws Exception {
+    if (server == null) {
+      final Map<String, Class<? extends Servlet>> servlets = new HashMap<String, Class<? extends Servlet>>();
+      servlets.put("/" + servletPath, GQAjaxTestServlet.class);
+      server = createWebServer(port, ".", null, servlets, null);
+    }
+  }
+
+  public static Server createWebServer(final int port, final String resourceBase, final String[] classpath,
+      final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
+    
+    final Server server = new Server(port);
+
+    final WebAppContext context = new WebAppContext();
+    context.setContextPath("/");
+    context.setResourceBase(resourceBase);
+
+    if (servlets != null) {
+      for (final Map.Entry<String, Class<? extends Servlet>> entry : servlets.entrySet()) {
+        final String pathSpec = entry.getKey();
+        final Class<? extends Servlet> servlet = entry.getValue();
+        context.addServlet(servlet, pathSpec);
+
+        // disable defaults if someone likes to register his own root servlet
+        if ("/".equals(pathSpec)) {
+          context.setDefaultsDescriptor(null);
+          context.addServlet(DefaultServlet.class, "/favicon.ico");
+        }
       }
-    }, null, 0);
+    }
+
+    final WebAppClassLoader loader = new WebAppClassLoader(context);
+    if (classpath != null) {
+      for (final String path : classpath) {
+        loader.addClassPath(path);
+      }
+    }
+    context.setClassLoader(loader);
+    if (handler != null) {
+      handler.setHandler(context);
+      server.setHandler(handler);
+    } else {
+      server.setHandler(context);
+    }
+    server.start();
+    return server;
   }
 
 }

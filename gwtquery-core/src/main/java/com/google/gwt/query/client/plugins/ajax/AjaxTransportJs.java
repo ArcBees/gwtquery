@@ -6,20 +6,24 @@ import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
+import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
 
 /**
  * Ajax transport for Client side.
  */
-public class AjaxTransportJs {
+public class AjaxTransportJs implements AjaxTransport {
   
-  
+  @Override
   public Promise getJsonP(Settings settings) {
     return new PromiseReqBuilderJSONP(settings.getUrl(), settings.getTimeout());
   }
   
+  @Override
   public Promise getLoadScript(final Settings settings) {
     return new PromiseFunction() {
       private ScriptElement scriptElement;
@@ -39,6 +43,10 @@ public class AjaxTransportJs {
         }).inject().cast();
       }
     };
+  }
+
+  public Promise getXhr(Settings settings) {
+    return new PromiseReqBuilder(settings);
   }
   
 }
