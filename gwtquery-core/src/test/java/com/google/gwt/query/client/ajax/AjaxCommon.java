@@ -15,45 +15,61 @@
  */
 package com.google.gwt.query.client.ajax;
 
-import static com.google.gwt.query.client.GQuery.*;
-
-import org.mortbay.jetty.Server;
-
-import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
-
-import com.gargoylesoftware.htmlunit.javascript.host.xml.XMLHttpRequest;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
-import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 
 /**
- * Tests for Deferred which can run either in JVM and GWT
+ * Common Tests for Data Binding and Ajax which can run either in JVM and GWT
  */
 public abstract class AjaxCommon extends GWTTestCase {
 
-  public String getModuleName() {
-    return null;
-  }
-  
-  protected String echoUrl, corsUrl;
-  protected Binder json, jsonData;
+  protected String echoUrl, echoUrlCORS;
+  protected Binder json, jsonGET;
   protected String servletPath = "test.json";
   
-  private void performAjaxJsonTest(Settings s) {
-    delayTestFinish(5000);
-    Ajax.ajax(s).done(new Function(){public void f() {
-      Binder p = arguments(0);
-      assertEquals("abc", p.get("a"));
-      finishTest();
-    }}).fail(new Function(){public void f() {
+  private Function failFunction = new Function() {
+    public void f() {
       fail();
-    }});
+    }
+  };
+  
+  private Function finishFunction = new Function() {
+    public void f() {
+      finishTest();
+    }
+  };
+  
+  public AjaxCommon() {
+    jsonGET = GQ.create("data: {a: abc, d: def}");
+    json = GQ.create("a: abc, d: def");
+  }
+  
+  private Promise performAjaxJsonTest(Settings s) {
+    delayTestFinish(5000);
+    return Ajax.ajax(s)
+      .done(new Function(){public void f() {
+        Binder p = arguments(0);
+        assertEquals("abc", p.get("a"));
+        finishTest();
+      }})
+      .fail(failFunction);
+  }
+  
+  private Promise performAjaxJsonTest_CORS(Settings s) {
+    return performAjaxJsonTest(s)
+      .done(new Function() {public void f() {
+        Response r = arguments(3);
+        assertNotNull(r.getHeader("Access-Control-Allow-Origin"));
+        assertTrue(r.getHeader("Access-Control-Allow-Origin").contains(GQ.domain));
+      }});
   }
 
   public void testAjaxJsonPost() {
@@ -63,26 +79,26 @@ public abstract class AjaxCommon extends GWTTestCase {
       .setData(json)
       .setDataType("json")
       .setUsername("testuser")
-      .setPassword("testpassword")
-      ;
+      .setPassword("testpassword");
+
     performAjaxJsonTest(s);
   }
   
   public void testAjaxJsonPost_CORS() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
-      .setUrl(corsUrl)
+      .setUrl(echoUrlCORS)
       .setData(json)
       .setDataType("json");
     
-    performAjaxJsonTest(s);
+    performAjaxJsonTest_CORS(s);
   }
   
   public void testAjaxJsonGet() {
     Settings s = Ajax.createSettings()
       .setType("get")
       .setUrl(echoUrl)
-      .setData(jsonData)
+      .setData(jsonGET)
       .setDataType("json");
 
     performAjaxJsonTest(s);
@@ -91,66 +107,136 @@ public abstract class AjaxCommon extends GWTTestCase {
   public void testAjaxJsonGet_CORS() {
     Settings s = Ajax.createSettings()
       .setType("get")
-      .setUrl(corsUrl)
-      .setData(jsonData)
+      .setUrl(echoUrlCORS)
+      .setData(jsonGET)
       .setDataType("json");
 
-    performAjaxJsonTest(s);
+    performAjaxJsonTest_CORS(s);
   }
   
   public void testAjaxGetJsonP() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
       .setType("post")
-      .setUrl(echoUrl)
-      .setData(jsonData)
+      .setUrl(echoUrlCORS)
+      .setData(jsonGET)
       .setDataType("jsonp");
 
     performAjaxJsonTest(s);
   }
   
-  public void testAjaxGetJsonP_CORS() {
-    delayTestFinish(5000);
-    Settings s = Ajax.createSettings()
-      .setType("post")
-      .setUrl(corsUrl)
-      .setData(jsonData)
-      .setDataType("jsonp");
-
-    performAjaxJsonTest(s);
-  }
-  
-  
-  
-//  public void testAjaxJson() {
-//    delayTestFinish(5000);
-//    Settings s = Ajax.createSettings()
-//      .setType("get")
-//      .setUrl(GWT.getModuleBaseURL() + "test.json")
-//      .setData($$("data: {a: abc, d: ddd}"))
-//      .setDataType("json");
-//
-//    Ajax.ajax(s).done(new Function(){public void f() {
-//      Binder p = arguments(0);
-//      assertEquals("abc", p.get("a"));
-//      finishTest();
-//    }}).fail(new Function(){public void f() {
-//      fail();
-//    }});
-//  }
   public void testJsonValidService() {
     delayTestFinish(5000);
-    // Use a public json service
-    String testJsonpUrl = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
-    Ajax.getJSONP(testJsonpUrl, new Function(){
-      public void f() {
-        Binder p = arguments(0);
-        // It should return error since we do not use a valid key
-        // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
-        assertEquals(400, p.<Binder>get("error").get("code"));
-        finishTest();
-      }
-    }, null, 0);
+    // Use a public json service supporting callback parameter
+    Ajax.getJSONP("https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY")
+      .done(new Function(){
+        public void f() {
+          Binder p = arguments(0);
+          // It should return error since we do not use a valid key
+          // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
+          assertEquals(400, p.<Binder>get("error").<Number>get("code").intValue());
+          finishTest();
+        }
+      })
+      .fail(failFunction);
+  }
+  
+  public void testInvalidOrigin() {
+    delayTestFinish(5000);
+    Settings s = Ajax.createSettings()
+      // Use a public json service non CORS enabled
+      .setUrl("https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?key=NO-KEY")
+      .setDataType("json")
+      .setTimeout(1000);
+    
+    Ajax.ajax(s)
+      .done(failFunction)
+      .fail(finishFunction);
+  }
+  
+  public void testJsonInvalidService() {
+    delayTestFinish(5000);
+    Settings s = Ajax.createSettings()
+      // Use a valid javascript which does not wrap content in a callback
+      .setUrl("http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js")
+      .setDataType("jsonp")
+      .setTimeout(1000);
+    
+    Ajax.ajax(s)
+      .done(failFunction)
+      .fail(finishFunction);
+  }
+  
+  @DoNotRunWith(Platform.HtmlUnitBug)
+  public void testAjaxTimeout() {
+    delayTestFinish(5000);
+    Settings s = Ajax.createSettings()
+      .setTimeout(100)
+      .setType("get")
+      // Connecting to private networks out of our LAN raises a timeout because
+      // there is no route for them in public networks.  
+      .setUrl("http://10.32.45.67:7654");
+
+    Ajax.ajax(s)
+      .done(failFunction)
+      .fail(finishFunction);
+  }
+  
+  public void testJsonpTimeout() {
+    delayTestFinish(5000);
+    Settings s = Ajax.createSettings()
+      .setTimeout(1000)
+      .setDataType("jsonp")
+      .setUrl(echoUrl + "?timeout=2000");
+
+    Ajax.ajax(s)
+      .done(failFunction)
+      .fail(finishFunction);     
+  }
+  
+  public void testAjaxError() {
+    delayTestFinish(5000);
+    String url = "http://127.0.0.1/nopage";
+
+    Ajax.ajax(Ajax.createSettings().setTimeout(1000).setUrl(url))
+      .done(new Function(){
+        public void f() {
+          fail();
+        }
+      }).fail(new Function(){
+        public void f() {
+          finishTest();
+        }
+      });
+  }
+  
+  public void testLoadScript() {
+    delayTestFinish(5000);
+    String url = "http://code.jquery.com/jquery-2.0.3.min.js";
+    Ajax.loadScript(url)
+      .done(new Function(){
+        public void f() {
+          finishTest();
+        }
+      }).fail(new Function(){
+        public void f() {
+          fail();
+        }
+      });
   }
 
+  public void testGetScriptFail() {
+    delayTestFinish(5000);
+    String url = "http://127.0.0.1/nopage";
+    Ajax.getScript(url)
+      .done(new Function(){
+        public void f() {
+          fail();
+        }
+      }).fail(new Function(){
+        public void f() {
+          finishTest();
+        }
+      });
+  }  
 }

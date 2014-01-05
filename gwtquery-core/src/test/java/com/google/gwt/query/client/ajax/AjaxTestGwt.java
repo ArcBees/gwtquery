@@ -16,23 +16,20 @@
 package com.google.gwt.query.client.ajax;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.query.client.GQ;
 
 
 /**
- * Test for data binding shared code run in gwt
+ * Test for data binding and Ajax which is run in gwt
  */
 public class AjaxTestGwt extends AjaxCommon {
+
   @Override
   public String getModuleName() {
     return "com.google.gwt.query.QueryTest";
   }
   
-  @Override
-  protected void gwtSetUp() throws Exception {
+  public AjaxTestGwt() {
     echoUrl = (GWT.isClient() ? GWT.getHostPageBaseURL() : "http://localhost:3333/") + servletPath;
-    corsUrl = echoUrl.replaceFirst("http://[\\d\\.]+:", "http://localhost:") + "?cors=true";
-    jsonData = GQ.create("data: {a: abc, d: ddd}");
-    json = GQ.create("a: abc, d: ddd");
+    echoUrlCORS = echoUrl.replaceFirst("http://[\\d\\.]+:", "http://localhost:") + "?cors=true";
   }
 }

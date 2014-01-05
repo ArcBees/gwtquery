@@ -11,9 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -40,7 +42,7 @@ public class JsonFactoryJre implements JsonFactory  {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Object jsonArrayToList(JSONArray j, Class<T> ctype, boolean isArray) throws Throwable {
+    private <T> Object jsonArrayToList(JSONArray j, Class<T> ctype, boolean isArray) {
       List<T> l = new ArrayList<T>();
       for (int i = 0; j != null && i < j.length() ; i++) {
         l.add((T)getValue(j, i, null, null, ctype, null));
@@ -95,12 +97,15 @@ public class JsonFactoryJre implements JsonFactory  {
           }
         } else {
           ret = obj != null ? obj.get(attr): arr.get(idx);
-          if (ret instanceof JSONObject && Binder.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
-            ret = jsonFactory.create(clz, (JSONObject)ret);
+          if (ret instanceof JSONObject) {
+            if (clz == Object.class) {
+              ret = jsonFactory.createBinder((JSONObject)ret);
+            } else if (Binder.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
+              ret = jsonFactory.create(clz, (JSONObject)ret);
+            }
           }
         }
-      } catch (Throwable e) {
-         System.out.println(this.getClass().getSimpleName() + " ERROR getting attr=" + attr + " idx=" + idx + " Exception=" + e.getMessage());
+      } catch (JSONException e) {
       }
       return ret;
     }
@@ -138,7 +143,9 @@ public class JsonFactoryJre implements JsonFactory  {
           JSONArray a = listToJsonArray(arg);
           return obj != null ? obj.put(attr, a) : arr.put(a);
         } else {
-          System.out.println("Unkown setter object " + attr + " " + o.getClass().getName() + " " + o);
+          if (!(o instanceof Function)) {
+            System.out.println("Unkown setter object " + attr + " " + o.getClass().getName() + " " + o);
+          }
           return obj != null ? obj.put(attr, o) : arr.put(o);
         }
       } catch (Throwable e) {
@@ -267,7 +274,12 @@ public class JsonFactoryJre implements JsonFactory  {
     InvocationHandler handler = new JsonBuilderHandler();
     return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
   }
-
+  
+  public Binder createBinder(JSONObject jso) {
+    InvocationHandler handler = new JsonBuilderHandler(jso);
+    return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
+  }
+  
   @SuppressWarnings("unchecked")
   public <T extends Binder> T create(String s) {
     Binder ret = createBinder();

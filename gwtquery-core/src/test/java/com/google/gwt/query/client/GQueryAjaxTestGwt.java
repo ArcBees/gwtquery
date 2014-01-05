@@ -167,21 +167,6 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     assertEquals("AName", f.getEntry()[0].getAuthor().getName().getText());
   }
 
-  public void testJsonValidService() {
-    delayTestFinish(5000);
-    // Use a public json service
-    String testJsonpUrl = "https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY";
-    Ajax.getJSONP(testJsonpUrl, new Function(){
-      public void f() {
-        Properties p = getDataProperties();
-        // It should return error since we do not use a valid key
-        // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
-        assertEquals(400, p.getJavaScriptObject("error").<Properties>cast().getInt("code"));
-        finishTest();
-      }
-    }, null, 0);
-  }
-
   @DoNotRunWith({Platform.HtmlUnitLayout})
   public void testJsonNonCallbackResponse() {
     delayTestFinish(5000);
@@ -194,73 +179,4 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
       }
     }, 500);
   }
-
-  public void testJsonpTimeout() {
-    delayTestFinish(5000);
-    String nonJsonpUrl = "http://127.0.0.1/nopage";
-
-    Settings s = Ajax.createSettings();
-    s.setTimeout(1000);
-    s.setSuccess(new Function(){
-      public void f() {
-        fail();
-      }
-    });
-    s.setError(new Function(){
-      public void f() {
-        finishTest();
-      }
-    });
-    s.setDataType("jsonp");
-    s.setUrl(nonJsonpUrl);
-
-    Ajax.ajax(s);
-  }
-
-  public void testAjaxError() {
-    delayTestFinish(5000);
-    String url = "http://127.0.0.1/nopage";
-
-    Ajax.ajax(Ajax.createSettings().setTimeout(1000).setUrl(url))
-      .done(new Function(){
-        public void f() {
-          fail();
-        }
-      }).fail(new Function(){
-        public void f() {
-          finishTest();
-        }
-      });
-  }
-
-  public void testGetScript() {
-    delayTestFinish(5000);
-    String url = "http://code.jquery.com/jquery-2.0.3.min.js";
-    Ajax.loadScript(url)
-      .done(new Function(){
-        public void f() {
-          finishTest();
-        }
-      }).fail(new Function(){
-        public void f() {
-          fail();
-        }
-      });
-  }
-
-  public void testGetScriptFail() {
-    delayTestFinish(5000);
-    String url = "http://127.0.0.1/nopage";
-    Ajax.getScript(url)
-      .done(new Function(){
-        public void f() {
-          fail();
-        }
-      }).fail(new Function(){
-        public void f() {
-          finishTest();
-        }
-      });
-  }
-
 }

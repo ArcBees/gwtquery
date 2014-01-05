@@ -23,8 +23,11 @@ import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
+import com.google.gwt.user.client.Window;
 
 public class GQ {
+  
+  public static final String domain = Window.Location.getHost();
 
   private static JsonFactory jsonFactory;
   private static AjaxTransport ajaxTransport;

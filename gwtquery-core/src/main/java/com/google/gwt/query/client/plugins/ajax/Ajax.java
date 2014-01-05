@@ -33,7 +33,6 @@ import com.google.gwt.query.client.plugins.Plugin;
 public class Ajax extends GQuery {
   
   public static interface AjaxTransport {
-
     Promise getJsonP(Settings settings);
 
     Promise getLoadScript(Settings settings);

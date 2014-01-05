@@ -15,15 +15,20 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
+import com.google.gwt.user.client.Window;
 
-public class GQ {
+public abstract class GQ {
+  
+  public static String domain = GWT.isClient() 
+      ? (Window.Location.getProtocol() + Window.Location.getHost()) 
+      : "http://127.0.0.1";
 
   private static JsonFactory jsonFactory;
   private static AjaxTransport ajaxTransport;

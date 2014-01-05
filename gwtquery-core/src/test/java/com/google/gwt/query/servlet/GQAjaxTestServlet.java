@@ -33,6 +33,8 @@ public class GQAjaxTestServlet extends HttpServlet {
         Thread.sleep(ms);
       } catch (Exception e) {
       }
+      System.out.println(name + "timeout");
+      return;
     }
 
     String data = "";

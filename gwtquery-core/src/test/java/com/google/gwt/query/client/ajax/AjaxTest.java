@@ -17,6 +17,7 @@ package com.google.gwt.query.client.ajax;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.Servlet;
 
@@ -26,30 +27,27 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.webapp.WebAppClassLoader;
 import org.mortbay.jetty.webapp.WebAppContext;
 
-import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.servlet.GQAjaxTestServlet;
 
 /**
- * Tests for Deferred which can run either in JVM and GWT
+ * Tests for Data Binders and Ajax run in the JVM
  */
 public class AjaxTest extends AjaxCommon {
   
   static Server server;
-  int port = 3333;
+  static int port = new Random().nextInt(1000) + 2000;
 
   public String getModuleName() {
     return null;
   }
   
-  protected void gwtSetUp() throws Exception {
+  public AjaxTest() throws Exception {
     echoUrl = "http://127.0.0.1:" + port + "/" + servletPath;
-    corsUrl = "http://localhost:" + port + "/" + servletPath;
-    jsonData = GQ.create("data: {a: abc, d: ddd}");
-    json = GQ.create("a: abc, d: ddd");
-    startWebServer();
+    echoUrlCORS = "http://localhost:" + port + "/" + servletPath + "?cors=true";
+    startWebServer(port);
   }
   
-  protected void startWebServer() throws Exception {
+  protected void startWebServer(int port) throws Exception {
     if (server == null) {
       final Map<String, Class<? extends Servlet>> servlets = new HashMap<String, Class<? extends Servlet>>();
       servlets.put("/" + servletPath, GQAjaxTestServlet.class);

@@ -130,6 +130,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     JsUtils.prop(xmlHttpRequest, "withCredentials", true);
     
     final Request request = createRequestVltr(xmlHttpRequest, settings.getTimeout(), this);
+    System.out.println("REQ timeout " + settings.getTimeout());
     
     xmlHttpRequest.setOnReadyStateChange(new ReadyStateChangeHandler() {
       public void onReadyStateChange(XMLHttpRequest xhr) {
