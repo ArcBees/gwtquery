@@ -105,10 +105,12 @@ public class DataBindingTest extends GWTTestCase {
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
 
-    assertTrue(c.toJson().startsWith("{\"jsonExample\":{"));
+    assertFalse(c.toJson().startsWith("{\"jsonExample\":"));
+    assertTrue(c.toJsonWithName().startsWith("{\"jsonExample\":"));
     assertTrue(c.toJson().contains("\"items\":[{\"date\":"));
     assertTrue(c.toQueryString().contains("t[]=bar"));
-    assertTrue(c.toQueryString().contains("a=2"));
+    assertTrue(c.toQueryString().contains("a=1"));
+    assertTrue(c.toQueryString().contains("\"a\":2"));
     
     assertEquals(1, c.<Number>get("a").intValue());
   }

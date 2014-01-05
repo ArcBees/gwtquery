@@ -83,7 +83,15 @@ public abstract class AjaxCommon extends GWTTestCase {
 
     performAjaxJsonTest(s);
   }
-  
+
+  // This test needs htmlunit at least 2.11
+  // https://groups.google.com/forum/#!msg/google-web-toolkit/dmyTt1Bh0pM/lBTIFiTyrpkJ
+  //
+  // It is necessary to patch RunStyleHtmlUnit because GWT default browser is FF3 since
+  // minimun version in htmlunit-2.1x is FF3.6
+  // It is necessary to patch BrowserChannel as well because convertFromJavaValue receives
+  // non string objects under certain circumstances.
+  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxJsonPost_CORS() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
@@ -104,6 +112,7 @@ public abstract class AjaxCommon extends GWTTestCase {
     performAjaxJsonTest(s);
   }
   
+  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxJsonGet_CORS() {
     Settings s = Ajax.createSettings()
       .setType("get")
@@ -167,7 +176,9 @@ public abstract class AjaxCommon extends GWTTestCase {
       .fail(finishFunction);
   }
   
-  @DoNotRunWith(Platform.HtmlUnitBug)
+  // For some reason htmlunit 2.16 does not raises a timeout, 2.9 does though, 
+  // when server sleeps or connection lasts a while. Tested with htmlunit 2.16
+  //  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxTimeout() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()

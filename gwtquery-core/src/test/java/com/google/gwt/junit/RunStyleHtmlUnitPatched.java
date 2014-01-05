@@ -52,7 +52,7 @@ import java.util.Set;
 /**
  * Launches a web-mode test via HTMLUnit.
  */
-public class RunStyleHtmlUnit extends RunStyle {
+public class RunStyleHtmlUnitPatched extends RunStyle {
 
   /**
    * Runs HTMLUnit in a separate thread.
@@ -248,7 +248,7 @@ public class RunStyleHtmlUnit extends RunStyle {
   /**
    * Create a RunStyle instance with the passed-in browser targets.
    */
-  public RunStyleHtmlUnit(JUnitShell shell) {
+  public RunStyleHtmlUnitPatched(JUnitShell shell) {
     super(shell);
   }
 

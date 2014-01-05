@@ -15,9 +15,9 @@
  */
 package com.google.gwt.dev.shell;
 
-import com.google.gwt.dev.shell.BrowserChannel.SessionHandler.ExceptionOrReturnValue;
-import com.google.gwt.dev.shell.BrowserChannel.SessionHandler.SpecialDispatchId;
-import com.google.gwt.dev.shell.BrowserChannel.Value.ValueType;
+import com.google.gwt.dev.shell.BrowserChannelPatched.SessionHandler.ExceptionOrReturnValue;
+import com.google.gwt.dev.shell.BrowserChannelPatched.SessionHandler.SpecialDispatchId;
+import com.google.gwt.dev.shell.BrowserChannelPatched.Value.ValueType;
 import com.google.gwt.util.tools.Utility;
 
 import java.io.BufferedInputStream;
@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * 
  */
-public abstract class BrowserChannel {
+public abstract class BrowserChannelPatched {
 
   /**
    * An error indicating that the remote side died and we should unroll the
@@ -197,7 +197,7 @@ public abstract class BrowserChannel {
   /**
    * Hook interface for responding to messages.
    */
-  public abstract static class SessionHandler<T extends BrowserChannel> {
+  public abstract static class SessionHandler<T extends BrowserChannelPatched> {
 
     /**
      * Wrapper to return both a return value/exception and a flag as to whether
@@ -612,7 +612,7 @@ public abstract class BrowserChannel {
    */
   protected static class CheckVersionsMessage extends Message {
     
-    public static CheckVersionsMessage receive(BrowserChannel channel)
+    public static CheckVersionsMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       int minVersion = stream.readInt();
@@ -628,7 +628,7 @@ public abstract class BrowserChannel {
 
     private final int minVersion;
 
-    public CheckVersionsMessage(BrowserChannel channel, int minVersion,
+    public CheckVersionsMessage(BrowserChannelPatched channel, int minVersion,
         int maxVersion, String hostedHtmlVersion) {
       super(channel);
       this.minVersion = minVersion;
@@ -665,7 +665,7 @@ public abstract class BrowserChannel {
    */
   protected static class ChooseTransportMessage extends Message {
     
-    public static ChooseTransportMessage receive(BrowserChannel channel)
+    public static ChooseTransportMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       int n = stream.readInt();
@@ -678,7 +678,7 @@ public abstract class BrowserChannel {
 
     private final String[] transports;
 
-    public ChooseTransportMessage(BrowserChannel channel,
+    public ChooseTransportMessage(BrowserChannelPatched channel,
         String[] transports) {
       super(channel);
       this.transports = transports;
@@ -704,7 +704,7 @@ public abstract class BrowserChannel {
    */
   protected static class FatalErrorMessage extends Message {
 
-    public static FatalErrorMessage receive(BrowserChannel channel)
+    public static FatalErrorMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       // NOTE: Tag has already been read.
@@ -714,7 +714,7 @@ public abstract class BrowserChannel {
 
     private final String error;
 
-    public FatalErrorMessage(BrowserChannel channel, String error) {
+    public FatalErrorMessage(BrowserChannelPatched channel, String error) {
       super(channel);
       this.error = error;
     }
@@ -737,7 +737,7 @@ public abstract class BrowserChannel {
    * before an Invoke or Return message.
    */
   protected static class FreeMessage extends Message {
-    public static FreeMessage receive(BrowserChannel channel)
+    public static FreeMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       int numIds = stream.readInt();
@@ -749,7 +749,7 @@ public abstract class BrowserChannel {
       return new FreeMessage(channel, ids);
     }
 
-    public static void send(BrowserChannel channel, int[] ids)
+    public static void send(BrowserChannelPatched channel, int[] ids)
         throws IOException {
       DataOutputStream stream = channel.getStreamToOtherSide();
       stream.writeByte(MessageType.FREE_VALUE.getId());
@@ -762,7 +762,7 @@ public abstract class BrowserChannel {
 
     private final int ids[];
 
-    public FreeMessage(BrowserChannel channel, int[] ids) {
+    public FreeMessage(BrowserChannelPatched channel, int[] ids) {
       super(channel);
       this.ids = ids;
     }
@@ -791,7 +791,7 @@ public abstract class BrowserChannel {
    * name).
    */
   protected static class InvokeOnClientMessage extends Message {
-    public static InvokeOnClientMessage receive(BrowserChannel channel)
+    public static InvokeOnClientMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       // NOTE: Tag has already been read.
@@ -809,7 +809,7 @@ public abstract class BrowserChannel {
     private final String methodName;
     private final Value thisRef;
 
-    public InvokeOnClientMessage(BrowserChannel channel, String methodName,
+    public InvokeOnClientMessage(BrowserChannelPatched channel, String methodName,
         Value thisRef, Value[] args) {
       super(channel);
       this.thisRef = thisRef;
@@ -853,7 +853,7 @@ public abstract class BrowserChannel {
    * name).
    */
   protected static class InvokeOnServerMessage extends Message {
-    public static InvokeOnServerMessage receive(BrowserChannel channel)
+    public static InvokeOnServerMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       // NOTE: Tag has already been read.
@@ -872,7 +872,7 @@ public abstract class BrowserChannel {
     private final int methodDispatchId;
     private final Value thisRef;
 
-    public InvokeOnServerMessage(BrowserChannel channel, int methodDispatchId,
+    public InvokeOnServerMessage(BrowserChannelPatched channel, int methodDispatchId,
         Value thisRef, Value[] args) {
       super(channel);
       this.thisRef = thisRef;
@@ -911,7 +911,7 @@ public abstract class BrowserChannel {
    * A request from the to invoke a function on the other side.
    */
   protected static class InvokeSpecialMessage extends Message {
-    public static InvokeSpecialMessage receive(BrowserChannel channel)
+    public static InvokeSpecialMessage receive(BrowserChannelPatched channel)
         throws IOException, BrowserChannelException {
       final DataInputStream stream = channel.getStreamFromOtherSide();
       // NOTE: Tag has already been read.
@@ -933,7 +933,7 @@ public abstract class BrowserChannel {
     private final Value[] args;
     private final SpecialDispatchId dispatchId;
 
-    public InvokeSpecialMessage(BrowserChannel channel,
+    public InvokeSpecialMessage(BrowserChannelPatched channel,
         SpecialDispatchId dispatchId, Value[] args) {
       super(channel);
       this.dispatchId = dispatchId;
@@ -968,14 +968,14 @@ public abstract class BrowserChannel {
    * Return message.
    */
   protected static class LoadJsniMessage extends Message {
-    public static LoadJsniMessage receive(BrowserChannel channel)
+    public static LoadJsniMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       String js = readUtf8String(stream);
       return new LoadJsniMessage(channel, js);
     }
 
-    public static void send(BrowserChannel channel, String js)
+    public static void send(BrowserChannelPatched channel, String js)
         throws IOException {
       DataOutputStream stream = channel.getStreamToOtherSide();
       stream.write(MessageType.LOAD_JSNI.getId());
@@ -985,7 +985,7 @@ public abstract class BrowserChannel {
 
     private final String js;
 
-    public LoadJsniMessage(BrowserChannel channel, String js) {
+    public LoadJsniMessage(BrowserChannelPatched channel, String js) {
       super(channel);
       this.js = js;
     }
@@ -1010,7 +1010,7 @@ public abstract class BrowserChannel {
    * module.
    */
   protected static class LoadModuleMessage extends Message {
-    public static LoadModuleMessage receive(BrowserChannel channel)
+    public static LoadModuleMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       String url = readUtf8String(stream);
@@ -1044,7 +1044,7 @@ public abstract class BrowserChannel {
      * @param moduleName name of GWT module to load - may not be null
      * @param userAgent user agent identifier of the browser - may not be null
      */
-    public LoadModuleMessage(BrowserChannel channel, String url,
+    public LoadModuleMessage(BrowserChannelPatched channel, String url,
         String tabKey, String sessionKey, String moduleName, String userAgent) {
       super(channel);
       assert url != null;
@@ -1108,13 +1108,13 @@ public abstract class BrowserChannel {
       return types[type];
     }
 
-    private final BrowserChannel channel;
+    private final BrowserChannelPatched channel;
 
-    public Message(BrowserChannel channel) {
+    public Message(BrowserChannelPatched channel) {
       this.channel = channel;
     }
 
-    public final BrowserChannel getBrowserChannel() {
+    public final BrowserChannelPatched getBrowserChannel() {
       return channel;
     }
 
@@ -1154,7 +1154,7 @@ public abstract class BrowserChannel {
    * module (original v1 version).
    */
   protected static class OldLoadModuleMessage extends Message {
-    public static OldLoadModuleMessage receive(BrowserChannel channel)
+    public static OldLoadModuleMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       int protoVersion = stream.readInt();
@@ -1170,7 +1170,7 @@ public abstract class BrowserChannel {
 
     private final String userAgent;
     
-    public OldLoadModuleMessage(BrowserChannel channel, int protoVersion,
+    public OldLoadModuleMessage(BrowserChannelPatched channel, int protoVersion,
         String moduleName, String userAgent) {
       super(channel);
       this.protoVersion = protoVersion;
@@ -1206,7 +1206,7 @@ public abstract class BrowserChannel {
    */
   protected static class ProtocolVersionMessage extends Message {
     
-    public static ProtocolVersionMessage receive(BrowserChannel channel)
+    public static ProtocolVersionMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       int protocolVersion = stream.readInt();
@@ -1215,7 +1215,7 @@ public abstract class BrowserChannel {
 
     private final int protocolVersion;
 
-    public ProtocolVersionMessage(BrowserChannel channel, int protocolVersion) {
+    public ProtocolVersionMessage(BrowserChannelPatched channel, int protocolVersion) {
       super(channel);
       this.protocolVersion = protocolVersion;
     }
@@ -1237,17 +1237,17 @@ public abstract class BrowserChannel {
    * A message signifying a soft close of the communications channel.
    */
   protected static class QuitMessage extends Message {
-    public static QuitMessage receive(BrowserChannel channel) {
+    public static QuitMessage receive(BrowserChannelPatched channel) {
       return new QuitMessage(channel);
     }
 
-    public static void send(BrowserChannel channel) throws IOException {
+    public static void send(BrowserChannelPatched channel) throws IOException {
       final DataOutputStream stream = channel.getStreamToOtherSide();
       stream.writeByte(MessageType.QUIT.getId());
       stream.flush();
     }
 
-    public QuitMessage(BrowserChannel channel) {
+    public QuitMessage(BrowserChannelPatched channel) {
       super(channel);
     }
 
@@ -1269,19 +1269,19 @@ public abstract class BrowserChannel {
      * 
      * @throws IOException
      */
-    public static RequestIconMessage receive(BrowserChannel channel)
+    public static RequestIconMessage receive(BrowserChannelPatched channel)
         throws IOException {
       return new RequestIconMessage(channel);
     }
 
-    public static void send(BrowserChannel channel)
+    public static void send(BrowserChannelPatched channel)
         throws IOException {
       DataOutputStream stream = channel.getStreamToOtherSide();
       stream.writeByte(MessageType.REQUEST_ICON.getId());
       stream.flush();
     }
 
-    public RequestIconMessage(BrowserChannel channel) {
+    public RequestIconMessage(BrowserChannelPatched channel) {
       super(channel);
     }
 
@@ -1295,7 +1295,7 @@ public abstract class BrowserChannel {
    * Signifies a return from a previous invoke.
    */
   protected static class ReturnMessage extends Message {
-    public static ReturnMessage receive(BrowserChannel channel)
+    public static ReturnMessage receive(BrowserChannelPatched channel)
         throws IOException {
       final DataInputStream stream = channel.getStreamFromOtherSide();
       final boolean isException = stream.readBoolean();
@@ -1303,7 +1303,7 @@ public abstract class BrowserChannel {
       return new ReturnMessage(channel, isException, returnValue);
     }
 
-    public static void send(BrowserChannel channel, boolean isException,
+    public static void send(BrowserChannelPatched channel, boolean isException,
         Value returnValue) throws IOException {
       final DataOutputStream stream = channel.getStreamToOtherSide();
       stream.writeByte(MessageType.RETURN.getId());
@@ -1312,7 +1312,7 @@ public abstract class BrowserChannel {
       stream.flush();
     }
 
-    public static void send(BrowserChannel channel,
+    public static void send(BrowserChannelPatched channel,
         ExceptionOrReturnValue returnOrException) throws IOException {
       send(channel, returnOrException.isException(),
           returnOrException.getReturnValue());
@@ -1321,7 +1321,7 @@ public abstract class BrowserChannel {
     private final boolean isException;
     private final Value returnValue;
 
-    public ReturnMessage(BrowserChannel channel, boolean isException,
+    public ReturnMessage(BrowserChannelPatched channel, boolean isException,
         Value returnValue) {
       super(channel);
       this.returnValue = returnValue;
@@ -1348,7 +1348,7 @@ public abstract class BrowserChannel {
    */
   protected static class SwitchTransportMessage extends Message {
     
-    public static SwitchTransportMessage receive(BrowserChannel channel)
+    public static SwitchTransportMessage receive(BrowserChannelPatched channel)
         throws IOException {
       DataInputStream stream = channel.getStreamFromOtherSide();
       String transport = readUtf8String(stream);
@@ -1360,7 +1360,7 @@ public abstract class BrowserChannel {
 
     private final String transportArgs;
 
-    public SwitchTransportMessage(BrowserChannel channel,
+    public SwitchTransportMessage(BrowserChannelPatched channel,
         String transport, String transportArgs) {
       super(channel);
       // Change nulls to empty strings
@@ -1398,7 +1398,7 @@ public abstract class BrowserChannel {
    * <p>See {@link RequestIconMessage}.
    */
   protected static class UserAgentIconMessage extends Message {
-    public static UserAgentIconMessage receive(BrowserChannel channel)
+    public static UserAgentIconMessage receive(BrowserChannelPatched channel)
         throws IOException {
       byte[] iconBytes = null;
       DataInputStream stream = channel.getStreamFromOtherSide();
@@ -1412,7 +1412,7 @@ public abstract class BrowserChannel {
       return new UserAgentIconMessage(channel, iconBytes);
     }
 
-    public static void send(BrowserChannel channel, byte[] iconBytes)
+    public static void send(BrowserChannelPatched channel, byte[] iconBytes)
         throws IOException {
       DataOutputStream stream = channel.getStreamToOtherSide();
       stream.writeByte(MessageType.USER_AGENT_ICON.getId());
@@ -1429,7 +1429,7 @@ public abstract class BrowserChannel {
 
     private byte[] iconBytes;
 
-    public UserAgentIconMessage(BrowserChannel channel, byte[] iconBytes) {
+    public UserAgentIconMessage(BrowserChannelPatched channel, byte[] iconBytes) {
       super(channel);
       this.iconBytes = iconBytes;
     }
@@ -1574,7 +1574,7 @@ public abstract class BrowserChannel {
 
   private final DataOutputStream streamToOtherSide;
 
-  public BrowserChannel(Socket socket, ObjectRefFactory objectRefFactory)
+  public BrowserChannelPatched(Socket socket, ObjectRefFactory objectRefFactory)
       throws IOException {
     this(new BufferedInputStream(socket.getInputStream()),
         new BufferedOutputStream(socket.getOutputStream()),
@@ -1582,7 +1582,7 @@ public abstract class BrowserChannel {
     this.socket = socket;
   }
 
-  protected BrowserChannel(InputStream inputStream, OutputStream outputStream,
+  protected BrowserChannelPatched(InputStream inputStream, OutputStream outputStream,
       ObjectRefFactory objectRefFactory) {
     streamFromOtherSide = new DataInputStream(inputStream);
     streamToOtherSide = new DataOutputStream(outputStream);

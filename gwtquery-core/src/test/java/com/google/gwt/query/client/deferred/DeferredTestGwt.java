@@ -23,7 +23,7 @@ public class DeferredTestGwt extends DeferredTest {
 
   @Override
   public String getModuleName() {
-    return "com.google.gwt.query.Query";
+    return "com.google.gwt.query.QueryTest";
   }
 
 }

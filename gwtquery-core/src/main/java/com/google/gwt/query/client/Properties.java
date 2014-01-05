@@ -220,6 +220,10 @@ public class Properties extends JavaScriptObject implements Binder {
   public final String toJson() {
     return toJsonString();
   }
+  
+  public final String toJsonWithName() {
+    return "{\"properties\":{" + toJson() + "}";
+  }
 
   @SuppressWarnings("unchecked")
   public final <J> J getBound() {

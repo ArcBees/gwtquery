@@ -52,9 +52,18 @@ public interface Binder {
   String[] getFieldNames();
 
   /**
-   * return a string which represents the object with an alias for the className
+   * return a json string which represents the object.
+   * Example {"name":"manolo","surname":"carrasco"}
    */
   String toJson();
+
+  /**
+   * return a string which represents the object with an alias for the 
+   * className useful for serialization.
+   * 
+   * Example {"user":{"name":"manolo","surname":"carrasco"}}
+   */
+  String toJsonWithName();
 
   /**
    * return a string which represents the object in a queryString format.

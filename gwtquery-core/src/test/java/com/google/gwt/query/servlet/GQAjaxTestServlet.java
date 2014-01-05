@@ -13,17 +13,22 @@ import javax.servlet.http.HttpServletResponse;
 public class GQAjaxTestServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
-  String name = this.getClass().getSimpleName() + " ";
-
-  @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  private String name = this.getClass().getSimpleName() + " ";
+  
+  @SuppressWarnings("unused")
+  private void dumpHeaders(HttpServletRequest req) {
     System.out.println(name + req.getMethod() + " " + req.getContentType());
+    
+    @SuppressWarnings("unchecked")
     Enumeration<String> en = req.getHeaderNames();
     while (en.hasMoreElements()) {
       String s = (String) en.nextElement();
       System.out.println(name + s + " " + req.getHeader(s));
     }
-    
+  }
+
+  @Override
+  protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     
     String t = req.getParameter("timeout");
     if (t != null && t.matches("\\d+")) {

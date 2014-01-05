@@ -93,6 +93,10 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
 
   @Override
   public String toJson() {
+    return p.tostring();
+  }
+  
+  public String toJsonWithName() {
     return "{\"" + getName() + "\":" + p.tostring() + "}";
   }
 

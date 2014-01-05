@@ -173,9 +173,10 @@ public class JsonFactoryJre implements JsonFactory  {
         jsonObject = new JSONObject(String.valueOf(args[0]));
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
+      } else if (mname.matches("toJsonWithName")) {
+        String jsonName = JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
+        return "{\"" + jsonName + "\":"+ jsonObject.toString() + "}";
       } else if (mname.matches("toJson")) {
-//        String jsonName = JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
-//        return "{\"" + jsonName + "\":"+ jsonObject.toString() + "}";
         return jsonObject.toString() ;
       } else if ("toQueryString".equals(mname)) {
         return param(jsonObject);

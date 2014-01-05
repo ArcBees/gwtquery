@@ -82,7 +82,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   int done = 0;
 
   public String getModuleName() {
-    return "com.google.gwt.query.Query";
+    return "com.google.gwt.query.QueryTest";
   }
 
   public void gwtTearDown() {
