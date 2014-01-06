@@ -26,10 +26,6 @@ import com.google.gwt.user.client.Window;
 
 public abstract class GQ {
   
-  public static String domain = GWT.isClient() 
-      ? (Window.Location.getProtocol() + Window.Location.getHost()) 
-      : "http://127.0.0.1";
-
   private static JsonFactory jsonFactory;
   private static AjaxTransport ajaxTransport;
 

@@ -28,7 +28,7 @@ import com.google.gwt.query.client.builders.Name;
 /**
  * Tests for Deferred which can run either in JVM and GWT
  */
-public class DataBindingTest extends GWTTestCase {
+public class DataBindingTestJre extends GWTTestCase {
 
   public String getModuleName() {
     return null;

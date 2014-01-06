@@ -21,7 +21,7 @@ import com.google.gwt.core.client.GWT;
 /**
  * Test for data binding and Ajax which is run in gwt
  */
-public class AjaxTestGwt extends AjaxCommon {
+public class AjaxTestGwt extends AjaxTests {
 
   @Override
   public String getModuleName() {

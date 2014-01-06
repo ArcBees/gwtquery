@@ -27,8 +27,6 @@ import com.google.gwt.user.client.Window;
 
 public class GQ {
   
-  public static final String domain = Window.Location.getHost();
-
   private static JsonFactory jsonFactory;
   private static AjaxTransport ajaxTransport;
 

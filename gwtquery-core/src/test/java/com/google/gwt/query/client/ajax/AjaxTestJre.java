@@ -28,11 +28,12 @@ import org.mortbay.jetty.webapp.WebAppClassLoader;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 import com.google.gwt.query.servlet.GQAjaxTestServlet;
+import com.google.gwt.query.vm.AjaxTransportJre;
 
 /**
  * Tests for Data Binders and Ajax run in the JVM
  */
-public class AjaxTest extends AjaxCommon {
+public class AjaxTestJre extends AjaxTests {
   
   static Server server;
   static int port = new Random().nextInt(1000) + 2000;
@@ -41,9 +42,13 @@ public class AjaxTest extends AjaxCommon {
     return null;
   }
   
-  public AjaxTest() throws Exception {
-    echoUrl = "http://127.0.0.1:" + port + "/" + servletPath;
-    echoUrlCORS = "http://localhost:" + port + "/" + servletPath + "?cors=true";
+  public AjaxTestJre() throws Exception {
+    String localDomain = "http://127.0.0.1:" + port;
+    AjaxTransportJre.enableCORS(localDomain);
+    String corsDomain = "http://localhost:" + port;
+    
+    echoUrl = localDomain + "/" + servletPath;
+    echoUrlCORS = corsDomain + "/" + servletPath + "?cors=true";
     startWebServer(port);
   }
   

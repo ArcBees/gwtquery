@@ -29,7 +29,7 @@ import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 /**
  * Common Tests for Data Binding and Ajax which can run either in JVM and GWT
  */
-public abstract class AjaxCommon extends GWTTestCase {
+public abstract class AjaxTests extends GWTTestCase {
 
   protected String echoUrl, echoUrlCORS;
   protected Binder json, jsonGET;
@@ -47,7 +47,7 @@ public abstract class AjaxCommon extends GWTTestCase {
     }
   };
   
-  public AjaxCommon() {
+  public AjaxTests() {
     jsonGET = GQ.create("data: {a: abc, d: def}");
     json = GQ.create("a: abc, d: def");
   }
@@ -68,7 +68,6 @@ public abstract class AjaxCommon extends GWTTestCase {
       .done(new Function() {public void f() {
         Response r = arguments(3);
         assertNotNull(r.getHeader("Access-Control-Allow-Origin"));
-        assertTrue(r.getHeader("Access-Control-Allow-Origin").contains(GQ.domain));
       }});
   }
 

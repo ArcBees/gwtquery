@@ -19,7 +19,7 @@ package com.google.gwt.query.client.dbinding;
 /**
  * Test for data binding shared code run in gwt
  */
-public class DataBindingTestGwt extends DataBindingTest {
+public class DataBindingTestGwt extends DataBindingTestJre {
 
   @Override
   public String getModuleName() {

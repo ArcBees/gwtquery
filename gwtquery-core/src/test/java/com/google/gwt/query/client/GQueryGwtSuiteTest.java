@@ -3,7 +3,9 @@ package com.google.gwt.query.client;
 import junit.framework.Test;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
+import com.google.gwt.query.client.ajax.AjaxTestJre;
 import com.google.gwt.query.client.ajax.AjaxTestGwt;
+import com.google.gwt.query.client.dbinding.DataBindingTestJre;
 import com.google.gwt.query.client.dbinding.DataBindingTestGwt;
 import com.google.gwt.query.client.deferred.DeferredTestGwt;
 import com.google.gwt.query.client.impl.SelectorEnginesTestGwt;
@@ -15,6 +17,8 @@ import com.google.gwt.query.client.impl.SelectorEnginesTestGwt;
 public class GQueryGwtSuiteTest extends GWTTestSuite {
   public static Test suite() {
       GWTTestSuite suite = new GWTTestSuite( "GQuery Suite" );
+      suite.addTestSuite(AjaxTestJre.class);
+      suite.addTestSuite(DataBindingTestJre.class);
       suite.addTestSuite(DataBindingTestGwt.class);
       suite.addTestSuite(GQueryAjaxTestGwt.class);
       suite.addTestSuite(AjaxTestGwt.class);

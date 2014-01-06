@@ -25,7 +25,10 @@ import com.google.gwt.user.server.Base64Utils;
  */
 public class AjaxTransportJre implements AjaxTransport {
   
-  public AjaxTransportJre() {
+  private static String localDomain = null;
+  
+  public static void enableCORS(String domain) {
+    localDomain = domain;
     System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
   }
   
@@ -83,9 +86,8 @@ public class AjaxTransportJre implements AjaxTransport {
 
   private Response httpClient(Settings s, boolean cors) throws Exception {
     String url = s.getUrl();
-    if (!url.toLowerCase().startsWith("http")) {
-      url = GQ.domain + (url.startsWith("/") ? "" : "/") + url;
-    }
+    assert url.toLowerCase().startsWith("http");
+    
     URL u = new URL(url);
     HttpURLConnection c = (HttpURLConnection) u.openConnection();
     c.setRequestMethod(s.getType());
@@ -94,7 +96,7 @@ public class AjaxTransportJre implements AjaxTransport {
       c.setRequestProperty ("Authorization", "Basic " + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
     }
     
-    boolean isCORS = cors && !s.getUrl().contains(GQ.domain);
+    boolean isCORS = cors && localDomain != null && !s.getUrl().contains(localDomain);
     if (isCORS) {
       // TODO: fetch options previously to the request
       // >> OPTIONS
@@ -111,7 +113,7 @@ public class AjaxTransportJre implements AjaxTransport {
       // Origin: http://127.0.0.1:8888
       //   Access-Control-Allow-Origin: http://127.0.0.1:8888
       //   Access-Control-Allow-Credentials: true
-      c.setRequestProperty("Origin", GQ.domain);
+      c.setRequestProperty("Origin", localDomain);
     }
     
     if (s.getTimeout() > 0) {
@@ -141,8 +143,8 @@ public class AjaxTransportJre implements AjaxTransport {
     }
     
     int code = c.getResponseCode();
-    if (isCORS && !GQ.domain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
-        code = 0;
+    if (isCORS && !localDomain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
+      code = 0;
     }
     
     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
