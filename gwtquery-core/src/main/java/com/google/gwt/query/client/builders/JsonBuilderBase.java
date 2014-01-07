@@ -17,6 +17,7 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -123,7 +124,11 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   
   @SuppressWarnings("unchecked")
   public <T> T set(Object key, Object val) {
-    p.set(key, val);
+    if (val instanceof Binder) {
+      p.set(key, ((Binder)val).getBound());
+    } else {
+      p.set(key, val);
+    }
     return (T)this;
   }
   

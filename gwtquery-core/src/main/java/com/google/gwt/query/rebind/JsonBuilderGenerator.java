@@ -256,7 +256,7 @@ public class JsonBuilderGenerator extends Generator {
       } else if (type.isEnum() != null){
         sw.println("p.set(\"" + name + "\", a.name());");
       }else {
-        sw.println("p.set(\"" + name + "\", a);");
+        sw.println("set(\"" + name + "\", a);");
       }
       if (!"void".equals(retType)) {
         if (isTypeAssignableTo(method.getReturnType(),
