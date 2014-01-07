@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.query.client.builders.JsonBuilder;
+
 
 /**
  * Interface using for Data Binders valid for JVM and JS.
@@ -73,5 +75,8 @@ public interface Binder {
   /**
    * return the name for this type
    */
-  String getName();
+  String getJsonName();
+  
+  
+  <T extends JsonBuilder> T as (Class<T> clz);
 }

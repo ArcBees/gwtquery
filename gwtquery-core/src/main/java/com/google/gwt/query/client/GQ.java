@@ -22,7 +22,6 @@ import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
-import com.google.gwt.user.client.Window;
 
 public abstract class GQ {
   
@@ -36,6 +35,12 @@ public abstract class GQ {
   public static <T extends JsonBuilder> T create(Class<T> clz, String payload) {
     T ret = create(clz);
     ret.load(payload);
+    return ret;
+  }
+  
+  public static <T extends JsonBuilder> T create(Class<T> clz, Binder obj) {
+    T ret = create(clz);
+    ret.load(obj.getBound());
     return ret;
   }
   

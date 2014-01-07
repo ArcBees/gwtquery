@@ -40,5 +40,5 @@ public interface JsonBuilder extends Binder {
   /**
    * return the short name of this class, to use in json structures.
    */
-  String getName();
+  String getJsonName();
 }

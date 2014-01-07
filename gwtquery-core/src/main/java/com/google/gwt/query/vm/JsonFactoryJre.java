@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import com.google.gwt.query.client.Binder;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -165,7 +166,10 @@ public class JsonFactoryJre implements JsonFactory  {
 
       if ("getFieldNames".equals(mname)) {
         return JSONObject.getNames(jsonObject);
-      } else if ("getName".equals(mname)) {
+      } else if ("as".equals(mname)) {
+        Class<? extends JsonBuilder> clz = (Class<? extends JsonBuilder>)args[0];
+        return jsonFactory.create(clz, jsonObject);
+      } else if ("getJsonName".equals(mname)) {
         return JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
       } else if (mname.matches("getProperties|getBound")) {
         return jsonObject;

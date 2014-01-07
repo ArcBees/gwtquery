@@ -18,6 +18,7 @@ package com.google.gwt.query.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 
@@ -230,8 +231,13 @@ public class Properties extends JavaScriptObject implements Binder {
     return (J)this;
   }
 
-  public final String getName() {
+  public final String getJsonName() {
     return "jso";
   }
 
+  public final <T extends JsonBuilder> T as(Class<T> clz) {
+    T ret = GQ.create(clz);
+    ret.load(this);
+    return ret;
+  }
 }

@@ -97,7 +97,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
   
   public String toJsonWithName() {
-    return "{\"" + getName() + "\":" + p.tostring() + "}";
+    return "{\"" + getJsonName() + "\":" + p.tostring() + "}";
   }
 
   @SuppressWarnings("unchecked")
@@ -125,5 +125,9 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public <T> T set(Object key, Object val) {
     p.set(key, val);
     return (T)this;
+  }
+  
+  public <T extends JsonBuilder> T as(Class<T> clz) {
+    return p.as(clz);
   }
 }
