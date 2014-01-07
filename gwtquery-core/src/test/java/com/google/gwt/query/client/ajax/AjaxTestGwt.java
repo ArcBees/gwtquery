@@ -28,8 +28,8 @@ public class AjaxTestGwt extends AjaxTests {
     return "com.google.gwt.query.QueryTest";
   }
   
-  public AjaxTestGwt() {
-    echoUrl = (GWT.isClient() ? GWT.getHostPageBaseURL() : "http://localhost:3333/") + servletPath;
+  protected void gwtSetUp() throws Exception {
+    echoUrl = GWT.getHostPageBaseURL() + servletPath;
     echoUrlCORS = echoUrl.replaceFirst("http://[\\d\\.]+:", "http://localhost:") + "?cors=true";
   }
 }
