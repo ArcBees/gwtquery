@@ -16,12 +16,6 @@
 package com.google.gwt.query.client;
 
 
-import static com.google.gwt.query.client.GQuery.$;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.DoNotRunWith;
@@ -34,6 +28,12 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static com.google.gwt.query.client.GQuery.$;
 
 /**
  * Test class for testing ajax stuff.
@@ -131,7 +131,8 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     c.setItems(Arrays.asList(items));
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
-    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar'],'z':false,'y':'y','items':[{'date':2000},{'date':3000}]";
+    String s = "{'M':0,'a':1,'b':{'a':2,'b':{'a':3}},'u':'url','d':1234,'t':['foo','bar']," +
+        "'z':false,'y':'y','items':[{'date':2000},{'date':3000}]}";
     assertEquals(s, c.toString().replaceAll("\"", "'"));
   }
   
