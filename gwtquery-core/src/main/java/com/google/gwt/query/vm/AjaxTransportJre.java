@@ -128,7 +128,7 @@ public class AjaxTransportJre implements AjaxTransport {
       }
     }
     
-    if (!s.getType().equals("GET")) {
+    if (s.getType().matches("POST|PUT")) {
       String ctype = s.getDataType();
       if (s.getDataType().toLowerCase().startsWith("json")) {
         ctype = "application/json; charset=utf-8";
