@@ -284,11 +284,16 @@ public class JsonFactoryJre implements JsonFactory  {
     InvocationHandler handler = new JsonBuilderHandler(jso);
     return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
   }
-  
-  @SuppressWarnings("unchecked")
-  public <T extends Binder> T create(String s) {
+
+  @Override
+  public Binder create(String s) {
     Binder ret = createBinder();
     ret.parse(Properties.wrapPropertiesString(s));
-    return (T)ret;
+    return ret;
+  }
+
+  @Override
+  public Binder create() {
+    return createBinder();
   }
 }

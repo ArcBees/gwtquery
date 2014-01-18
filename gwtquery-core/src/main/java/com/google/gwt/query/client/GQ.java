@@ -44,8 +44,12 @@ public abstract class GQ {
     return ret;
   }
   
-  public static <T extends Binder> T create(String s) {
+  public static Binder create(String s) {
     return getFactory().create(s);
+  }
+
+  public static Binder create() {
+    return getFactory().create();
   }
   
   public static AjaxTransport getAjaxTransport() {
