@@ -292,11 +292,11 @@ public class Ajax extends GQuery {
   }
 
   public static Promise getJSONP(String url) {
-    return getJSONP(url, null, null);
+    return getJSONP(url, null);
   }
 
   public static Promise getJSONP(String url, Binder data) {
-    return getJSONP(url, data, null);
+    return getJSONP(url, (Binder)data, null);
   }
 
   public static Promise getJSONP(String url, Binder data, Function onSuccess) {
