@@ -27,7 +27,6 @@ import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 
@@ -116,12 +115,6 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     }
     
     if (data != null && !isFormData && !"GET".equalsIgnoreCase(httpMethod)) {
-      String type = settings.getDataType();
-      if (type != null && type.toLowerCase().startsWith("json")) {
-        ctype = "application/json; charset=utf-8";
-      } else {
-        ctype = FormPanel.ENCODING_URLENCODED;
-      }
       xmlHttpRequest.setRequestHeader("Content-Type", ctype);
     }
 
@@ -130,7 +123,6 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     JsUtils.prop(xmlHttpRequest, "withCredentials", true);
     
     final Request request = createRequestVltr(xmlHttpRequest, settings.getTimeout(), this);
-    System.out.println("REQ timeout " + settings.getTimeout());
     
     xmlHttpRequest.setOnReadyStateChange(new ReadyStateChangeHandler() {
       public void onReadyStateChange(XMLHttpRequest xhr) {

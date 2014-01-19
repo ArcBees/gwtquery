@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+
 public class GQAjaxTestServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
@@ -29,16 +31,14 @@ public class GQAjaxTestServlet extends HttpServlet {
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    
     String t = req.getParameter("timeout");
     if (t != null && t.matches("\\d+")) {
       try {
         int ms = Integer.parseInt(t);
-        System.out.println("  Sleeping: " + ms);
+        System.out.println(name + "sleeping: " + ms);
         Thread.sleep(ms);
       } catch (Exception e) {
       }
-      System.out.println(name + "timeout");
       return;
     }
 
@@ -49,11 +49,13 @@ public class GQAjaxTestServlet extends HttpServlet {
         data = req.getParameter("callback")  + "(" + data + ");";
       }
     } else if (req.getMethod().equalsIgnoreCase("post") 
-        && req.getContentType().toLowerCase().startsWith("application/json")) {
+        && req.getContentType() != null
+        && req.getContentType().toLowerCase().startsWith(Ajax.JSON_CONTENT_TYPE)) {
       BufferedReader reader = req.getReader();
       String line;
-      while ((line = reader.readLine()) != null)
+      while ((line = reader.readLine()) != null) {
         data += line;
+      }
     }
     
     String origin = req.getHeader("Origin");
