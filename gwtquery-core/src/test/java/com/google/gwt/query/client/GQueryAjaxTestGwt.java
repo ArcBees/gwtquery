@@ -26,7 +26,6 @@ import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -173,7 +172,7 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     String testJsonpUrl = "http://www.google.com";
     Ajax.getJSONP(testJsonpUrl, null, new Function(){
       public void f() {
-        Properties p = getDataProperties();
+        Properties p = arguments(0);
         assertNull(p);
         finishTest();
       }
