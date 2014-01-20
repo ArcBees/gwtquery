@@ -191,6 +191,9 @@ public class JsonFactoryJre implements JsonFactory  {
       } else if (largs == 0 || mname.startsWith("get")) {
         Class<?> ret = method.getReturnType();
         return getValue(null, 0, jsonObject, attr, ret, method);
+      } else if (largs == 2 && mname.equals("set")) {
+        setValue(null, jsonObject, String.valueOf(args[0]), args[1], method);
+        return proxy;
       } else if (largs == 1 || mname.startsWith("set")) {
         setValue(null, jsonObject, attr, args[0], method);
         return proxy;

@@ -123,7 +123,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
   
   @SuppressWarnings("unchecked")
-  public <T> T set(Object key, Object val) {
+  public <T extends Binder> T set(Object key, Object val) {
     if (val instanceof Binder) {
       p.set(key, ((Binder)val).getBound());
     } else {

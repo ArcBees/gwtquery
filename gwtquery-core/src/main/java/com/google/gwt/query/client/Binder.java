@@ -25,18 +25,18 @@ public interface Binder {
   /**
    * load a properties object.
    */
-  <J> J load(Object prp);
+  <T extends Binder> T load(Object prp);
 
   /**
    * parses a json string and loads the resulting properties object.
    */
-  <J> J parse(String json);
+  <T extends Binder> T parse(String json);
 
   /**
    * Returns the underlying object, normally a Properties jso in client
    * and a Json implementation in JVM.
    */
-  <J> J getBound();
+  <T> T getBound();
   
   /**
    * Return the Object with the given key.
@@ -46,7 +46,7 @@ public interface Binder {
   /**
    * Set an Object with the given key.
    */
-  <T> T set(Object key, Object val);
+  <T extends Binder> T set(Object key, Object val);
 
   /**
    * return a list of field names.

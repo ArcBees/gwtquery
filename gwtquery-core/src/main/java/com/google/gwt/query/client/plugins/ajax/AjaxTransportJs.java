@@ -8,7 +8,6 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
 import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;

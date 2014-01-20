@@ -202,7 +202,7 @@ public class Properties extends JavaScriptObject implements Binder {
     return c().length() == 0;
   }
 
-  public final <J> J load(Object prp) {
+  public final <J extends Binder> J load(Object prp) {
     c().clear();
     if (prp instanceof JsCache) {
       c().copy((JsCache)prp);
@@ -210,7 +210,7 @@ public class Properties extends JavaScriptObject implements Binder {
     return getBound();
   }
 
-  public final <J> J parse(String json) {
+  public final <J extends Binder> J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }
 
