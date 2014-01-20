@@ -260,11 +260,11 @@ public class Ajax extends GQuery {
   }
 
   public static Promise get(String url) {
-    return get(url, null, null);
+    return get(url, null);
   }
 
   public static Promise get(String url, Binder data) {
-    return get(url, data, null);
+    return get(url, (Binder)data, null);
   }
 
   public static Promise get(String url, Binder data, Function onSuccess) {
@@ -353,7 +353,7 @@ public class Ajax extends GQuery {
   }
 
   public static Promise post(String url, Binder data) {
-    return post(url, data, null);
+    return post(url, (Binder)data, null);
   }
 
   public static Promise post(String url, Binder data, final Function onSuccess) {
