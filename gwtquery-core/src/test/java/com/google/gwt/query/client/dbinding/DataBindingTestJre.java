@@ -35,8 +35,12 @@ public class DataBindingTestJre extends GWTTestCase {
   }
 
   public interface Item extends JsonBuilder {
+    public static enum Type {BIG, SMALL}
+    
     Date getDate();
     void setDate(Date d);
+    Type getType();
+    void setType(Type t);
   }
 
   public interface JsonExample extends JsonBuilder {
