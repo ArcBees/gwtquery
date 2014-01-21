@@ -105,6 +105,10 @@ public class JsonFactoryJre implements JsonFactory  {
               ret = jsonFactory.create(clz, (JSONObject)ret);
             }
           }
+          // Javascript always returns a double
+          if (ret instanceof Number) {
+            ret = Double.valueOf(((Number) ret).doubleValue());
+          }
         }
       } catch (JSONException e) {
       }
