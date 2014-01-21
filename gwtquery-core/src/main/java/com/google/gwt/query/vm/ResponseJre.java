@@ -52,7 +52,11 @@ public class ResponseJre extends Response {
     return ret;
   }
   public String getHeadersAsString() {
-    return null;
+    String ret = "";
+    for (Header h : getHeaders()) {
+      ret += h.getName() + ":"  + h.getValue() + "\n";
+    }
+    return ret;
   }
   public int getStatusCode() {
     return status;

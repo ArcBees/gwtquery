@@ -256,7 +256,7 @@ public class JsonFactoryJre implements JsonFactory  {
           if (p != null) {
             ret += k + "=" + p.toString();
           } else if (s != null) {
-            if (!s.isEmpty() && !"null".equalsIgnoreCase(s)) {
+            if (!"null".equalsIgnoreCase(s)) {
               ret += k + "=" + s;
             }
           }
