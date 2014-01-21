@@ -3,7 +3,6 @@ package com.google.gwt.query.vm;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,6 +38,10 @@ public class CookieManager {
     return cookieManager;
   }
   
+  public void clear() {
+    store.clear();
+  }
+  
   public void removeDomainCookies(String domain) {
     store.remove(domain);
   }
@@ -52,7 +55,11 @@ public class CookieManager {
     }
   }
   
-  public void setDomcainCookieProp(String host, String name, String prop, String value) {
+  public void setDomcainCookie(String host, String name, String value) {
+    setDomcainCookieProperty(host, name, name, value);
+  }
+    
+  public void setDomcainCookieProperty(String host, String name, String prop, String value) {
     String domain = getDomainFromHost(host);
     Map<String, Map<String, String>> domainStore =  store.get(domain);
     if (domainStore == null) {
@@ -169,7 +176,6 @@ public class CookieManager {
     }
     try {
       conn.setRequestProperty(COOKIE, cookieStringBuffer.toString());
-      System.err.println(">>> SET cookie:  " + COOKIE + " " + cookieStringBuffer.toString());
     } catch (java.lang.IllegalStateException ise) {
       IOException ioe =
           new IOException(
@@ -180,6 +186,7 @@ public class CookieManager {
   }
 
   private String getDomainFromHost(String host) {
+    host = host.toLowerCase().replaceFirst("https?://", "").replaceAll("[/?:].*$", "");
     if (host.indexOf(DOT) != host.lastIndexOf(DOT)) {
       return host.substring(host.indexOf(DOT) + 1);
     } else {

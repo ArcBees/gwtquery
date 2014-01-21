@@ -212,8 +212,6 @@ public class Ajax extends GQuery {
       settings.setDataString(dataString);
       settings.setContentType(contentType);
     }
-    
-    System.out.println(settings.getDataString());
 
     if ("GET".equals(settings.getType()) && settings.getDataString() != null) {
       url += (url.contains("?") ? "&" : "?") + settings.getDataString();

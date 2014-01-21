@@ -26,6 +26,7 @@ import com.google.gwt.user.server.Base64Utils;
 public class AjaxTransportJre implements AjaxTransport {
   
   private static String localDomain = null;
+  
   private static CookieManager cookieManager = CookieManager.getInstance();
   
   public static void enableCORS(String domain) {
@@ -96,7 +97,6 @@ public class AjaxTransportJre implements AjaxTransport {
     if (s.getUsername() != null && s.getPassword() != null) {
       c.setRequestProperty ("Authorization", "Basic " + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
     }
-    System.err.println("SET COOK");
     cookieManager.setCookies(c);
     
     boolean isCORS = cors && localDomain != null && !s.getUrl().contains(localDomain);
@@ -144,7 +144,6 @@ public class AjaxTransportJre implements AjaxTransport {
     if (isCORS && !localDomain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
       code = 0;
     }
-    System.err.println(c.getResponseCode());
     
     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
     String inputLine;
@@ -155,8 +154,6 @@ public class AjaxTransportJre implements AjaxTransport {
     in.close();
     
     cookieManager.storeCookies(c);
-    
     return new ResponseJre(code, c.getResponseMessage(), response.toString(), c.getHeaderFields());
   }
-  
 }
