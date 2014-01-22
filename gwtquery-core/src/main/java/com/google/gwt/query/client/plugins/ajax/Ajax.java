@@ -168,7 +168,7 @@ public class Ajax extends GQuery {
         }, new Function() {
           public Object f(Object...args) {
             Throwable exception = arguments(0);
-            Request request = arguments(1);
+            Request request = getArgument(1, Request.class);
             String msg = String.valueOf(exception);
             return new Object[]{null, msg, request, null, exception};
           }
@@ -212,8 +212,6 @@ public class Ajax extends GQuery {
       settings.setDataString(dataString);
       settings.setContentType(contentType);
     }
-    
-    System.out.println(settings.getDataString());
 
     if ("GET".equals(settings.getType()) && settings.getDataString() != null) {
       url += (url.contains("?") ? "&" : "?") + settings.getDataString();
