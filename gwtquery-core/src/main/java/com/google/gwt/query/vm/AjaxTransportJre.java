@@ -29,11 +29,25 @@ public class AjaxTransportJre implements AjaxTransport {
   
   private static CookieManager cookieManager = CookieManager.getInstance();
 
-  public static boolean debugOutput = false;
+  private static boolean debugOutput = false;
+  
+  private static boolean followRedirections = true;
   
   public static void enableCORS(String domain) {
     localDomain = domain;
     System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+  }
+  
+  public static void enableDebug(boolean b) {
+    debugOutput = b;
+  }
+  
+  public static void enableCookies(boolean b) {
+    cookieManager = b ? CookieManager.getInstance() : null;
+  }
+  
+  public static void enableRedirections(boolean b) {
+    followRedirections = b;
   }
   
   private final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
@@ -95,12 +109,17 @@ public class AjaxTransportJre implements AjaxTransport {
     
     URL u = new URL(url);
     HttpURLConnection c = (HttpURLConnection) u.openConnection();
+    
+    c.setInstanceFollowRedirects(followRedirections);
+    
     c.setRequestMethod(s.getType());
     c.setRequestProperty("User-Agent", USER_AGENT);
     if (s.getUsername() != null && s.getPassword() != null) {
       c.setRequestProperty ("Authorization", "Basic " + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
     }
-    cookieManager.setCookies(c);
+    if (cookieManager != null) {
+      cookieManager.setCookies(c);
+    }
     
     boolean isCORS = cors && localDomain != null && !s.getUrl().contains(localDomain);
     if (isCORS) {
@@ -160,8 +179,11 @@ public class AjaxTransportJre implements AjaxTransport {
       response.append(inputLine + "\n");
     }
     in.close();
-    
-    cookieManager.storeCookies(c);
+
+    if (cookieManager != null) {
+      cookieManager.storeCookies(c);
+    }
+
     return new ResponseJre(code, c.getResponseMessage(), response.toString(), c.getHeaderFields());
   }
   
