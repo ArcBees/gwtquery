@@ -26,14 +26,17 @@ import com.google.gwt.user.server.Base64Utils;
 public class AjaxTransportJre implements AjaxTransport {
   
   private static String localDomain = null;
+  
   private static CookieManager cookieManager = CookieManager.getInstance();
+
+  public static boolean debugOutput = false;
   
   public static void enableCORS(String domain) {
     localDomain = domain;
     System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
   }
   
-  private final String USER_AGENT = "Mozilla/5.0";
+  private final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
   private final String jsonpCbRexp = "(?ms)^.*jre_callback\\((.*)\\).*$";
 
   public Promise getJsonP(final Settings settings) {
@@ -79,6 +82,7 @@ public class AjaxTransportJre implements AjaxTransport {
             dfd.resolve(response, null);
           }
         } catch (Exception e) {
+          e.printStackTrace();
           dfd.reject(e, null);
         }
       }
@@ -96,7 +100,6 @@ public class AjaxTransportJre implements AjaxTransport {
     if (s.getUsername() != null && s.getPassword() != null) {
       c.setRequestProperty ("Authorization", "Basic " + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
     }
-    System.err.println("SET COOK");
     cookieManager.setCookies(c);
     
     boolean isCORS = cors && localDomain != null && !s.getUrl().contains(localDomain);
@@ -133,18 +136,22 @@ public class AjaxTransportJre implements AjaxTransport {
     
     if (s.getType().matches("POST|PUT")) {
       c.setRequestProperty("Content-Type", s.getContentType());
+      
+      debugRequest(c, s.getDataString());
+      
       c.setDoOutput(true);
       DataOutputStream wr = new DataOutputStream(c.getOutputStream());
       wr.writeBytes(s.getDataString());
       wr.flush();
       wr.close();
+    } else {
+      debugRequest(c, null);
     }
     
     int code = c.getResponseCode();
     if (isCORS && !localDomain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
       code = 0;
     }
-    System.err.println(c.getResponseCode());
     
     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
     String inputLine;
@@ -155,8 +162,29 @@ public class AjaxTransportJre implements AjaxTransport {
     in.close();
     
     cookieManager.storeCookies(c);
-    
     return new ResponseJre(code, c.getResponseMessage(), response.toString(), c.getHeaderFields());
   }
   
+  private void debugRequest(HttpURLConnection c, String payload) {
+    if (debugOutput) {
+      System.out.println(c.getRequestMethod() + " " + c.getURL().getPath());
+      for (String s : c.getRequestProperties().keySet()) {
+        String v = c.getRequestProperties().get(s).get(0);
+        if ("Cookie".equals(s)) {
+          System.out.println(s + ":");
+          for (String y : v.split("; ")) {
+            System.out.println("        " + y);
+          }
+        } else {
+          System.out.println(s + ": " + v);
+        }
+      }
+      if (payload != null) {
+        for (String y : payload.split("&")) {
+          System.out.println(" " + y);
+        }
+      }
+      System.out.println("");
+    }
+  }
 }
