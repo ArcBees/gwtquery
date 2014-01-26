@@ -43,13 +43,13 @@ public class ConsoleBrowser implements Console {
    * See: http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object
    */
   private static class ConsoleIe9 extends ConsoleImpl {
-    
+
     private boolean initialized = false;
-    
+
     public ConsoleIe9(){
       init();
     }
-    
+
     protected native void init()/*-{
       try {
 				[ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
@@ -60,7 +60,7 @@ public class ConsoleBrowser implements Console {
       } catch(e) {
       }
     }-*/;
-    
+
     @Override
     public void clear() {
       if (initialized) super.clear();
@@ -102,7 +102,7 @@ public class ConsoleBrowser implements Console {
     @Override
     public void timeEnd(String title) {}
   }
-  
+
   /**
    * Default implementation: webkit, opera, FF, ie10
    */
@@ -163,9 +163,9 @@ public class ConsoleBrowser implements Console {
       $wnd.console.warn(arg);
     }-*/;
   }
-  
+
   private ConsoleImpl impl;
-  
+
   public ConsoleBrowser() {
     impl = GQuery.browser.ie8? new ConsoleIe8(): GQuery.browser.ie9? new ConsoleIe9(): new  ConsoleImpl();
   }
@@ -239,7 +239,7 @@ public class ConsoleBrowser implements Console {
   public void warn(Object arg) {
     impl.warn(toJs(arg));
   }
-  
+
   /**
    * Don't pass GWT Objects to JS methods
    */
