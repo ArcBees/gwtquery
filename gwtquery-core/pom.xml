@@ -18,14 +18,6 @@
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
-        <!-- Commented in order not to depend on it, but useful when we want test ajax CORS
-          <dependency>
-              <groupId>net.sourceforge.htmlunit</groupId>
-              <artifactId>htmlunit</artifactId>
-              <version>2.13</version>
-              <scope>test</scope>
-          </dependency>        
-         -->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>

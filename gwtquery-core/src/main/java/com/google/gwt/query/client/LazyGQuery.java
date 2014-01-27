@@ -12,23 +12,61 @@
  * the License.
  */
 package com.google.gwt.query.client;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
+import com.google.gwt.query.client.impl.AttributeImpl;
+import com.google.gwt.query.client.impl.DocumentStyleImpl;
+import com.google.gwt.query.client.impl.SelectorEngine;
+import com.google.gwt.query.client.js.JsCache;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
+import com.google.gwt.query.client.js.JsObjectArray;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.Widgets;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
+import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
 
@@ -705,6 +743,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre>
    *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
    * </pre>
+   * @deprecated use {@link #on(String, String, Function...)}
    */
   LazyGQuery<T> delegate(String selector, int eventbits, Function... handlers);
 
@@ -743,6 +782,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre>
    *  $("div.main").delegate(".subMain", Event.ONCLICK | Event.ONDBLCLICK, new Function(){...});
    * </pre>
+   * @deprecated use {@link #on(String, String, Object, Function...)}
    */
   LazyGQuery<T> delegate(String selector, int eventbits, Object data, Function... handlers);
 
@@ -783,6 +823,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </pre>
    *
    * </pre>
+   * @deprecated use {@link #on(String, String, Function...)}
    */
   LazyGQuery<T> delegate(String selector, String eventType, Function... handlers);
 
@@ -821,6 +862,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * </pre>
    *
    * </pre>
+   * @deprecated use {@link #on(String, String, Object, Function...)}
    */
   LazyGQuery<T> delegate(String selector, String eventType, Object data, Function... handlers);
 
@@ -860,6 +902,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Remove all event handlers previously attached using {@link #live(String, Function)}. In order
    * for this method to function correctly, the selector used with it must match exactly the
    * selector initially used with {@link #live(String, Function)}
+   * @deprecated use {@link #off(String, String)} instead
    */
   LazyGQuery<T> die();
 
@@ -867,6 +910,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Remove an event handlers previously attached using {@link #live(int, Function)} In order for
    * this method to function correctly, the selector used with it must match exactly the selector
    * initially used with {@link #live(int, Function)}
+   * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> die(int eventbits);
 
@@ -1119,6 +1163,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   int index(Element element);
 
   /**
+   * Return the position of the first matched element in relation with its sibblings.
+   */
+  int index();
+
+  /**
    * Returns the inner height of the first matched element, including padding but not the vertical
    * scrollbar height, border, or margin.
    */
@@ -1237,12 +1286,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
+   * @deprecated use {@link #on(String, Function...)}
    */
   LazyGQuery<T> live(int eventbits, Function... funcs);
 
   /**
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
+   * @deprecated use {@link #on(String, Object, Function...)}
    */
   LazyGQuery<T> live(int eventbits, Object data, Function... funcs);
 
@@ -1295,6 +1346,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * descendant of myElement.</li>
    * </ul>
    * </p>
+   * @deprecated use {@link #on(String, Function...)}
    */
   LazyGQuery<T> live(String eventName, Function... funcs);
 
@@ -1347,6 +1399,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * descendant of myElement.</li>
    * </ul>
    * </p>
+   * @deprecated use {@link #on(String, Object, Function...)}
    */
   LazyGQuery<T> live(String eventName, Object data, Function... funcs);
 
@@ -1553,6 +1606,46 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * only works with visible elements.
    */
   LazyGQuery<T> offsetParent();
+
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  LazyGQuery<T> on(String eventName, Function... funcs);
+
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  LazyGQuery<T> on(String eventName, Object data, Function... funcs);
+
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  LazyGQuery<T> on(String eventName, String selector, Function... funcs);
+
+  /**
+   * Attach an event handler function for one or more events to the selected elements.
+   */
+  LazyGQuery<T> on(String eventName, String selector, Object data, Function... funcs);
+
+  /**
+   * Remove all event handlers.
+   */
+  LazyGQuery<T> off();
+
+  /**
+   * Remove an event handler
+   */
+  LazyGQuery<T> off(String eventName);
+
+  /**
+   * Remove an event handler
+   */
+  LazyGQuery<T> off(String eventName, Function f);
+
+  /**
+   * Remove an event handler
+   */
+  LazyGQuery<T> off(String eventName, String selector);
 
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched element. The
@@ -2232,24 +2325,28 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Remove all event delegation that have been bound using
    * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
+   * @deprecated use {@link #off()}
    */
   LazyGQuery<T> undelegate();
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> undelegate(String selector);
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> undelegate(String selector, int eventBit);
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
    * {@link #delegate(String, int, Function...)} method
+   * @deprecated use {@link #off(String, String)}
    */
   LazyGQuery<T> undelegate(String selector, String eventName);
 

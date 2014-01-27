@@ -25,6 +25,7 @@ import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyEffects<T> extends LazyBase<T>{
