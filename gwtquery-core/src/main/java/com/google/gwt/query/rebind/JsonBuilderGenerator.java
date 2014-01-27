@@ -322,12 +322,12 @@ public class JsonBuilderGenerator extends Generator {
     sw.println("return null;");
     sw.outdent();
     sw.println("}");
-    sw.println("public Binder create(String s) {");
+    sw.println("public " + IsProperties.class.getName() + " create(String s) {");
     sw.indent();
     sw.println("return " + Properties.class.getName() + ".create(s);");
     sw.outdent();
     sw.println("}");
-    sw.println("public Binder create() {");
+    sw.println("public " + IsProperties.class.getName() + " create() {");
     sw.indent();
     sw.println("return " + Properties.class.getName() + ".create();");
     sw.outdent();
