@@ -21,7 +21,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.Promise;
@@ -34,7 +34,7 @@ import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 public abstract class AjaxTests extends GWTTestCase {
 
   protected String echoUrl, echoUrlCORS;
-  protected Binder json, jsonGET;
+  protected IsProperties json, jsonGET;
   protected String servletPath = "test.json";
   
   private Function failFunction = new Function() {
@@ -58,7 +58,7 @@ public abstract class AjaxTests extends GWTTestCase {
     delayTestFinish(5000);
     return Ajax.ajax(s)
       .done(new Function(){public void f() {
-        Binder p = arguments(0);
+        IsProperties p = arguments(0);
         assertEquals("abc", p.get("a"));
         finishTest();
       }})
@@ -183,10 +183,10 @@ public abstract class AjaxTests extends GWTTestCase {
     Ajax.getJSONP("https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?callback=?&key=NO-KEY")
       .done(new Function(){
         public void f() {
-          Binder p = arguments(0);
+          IsProperties p = arguments(0);
           // It should return error since we do not use a valid key
           // {"error":{"errors":[{"domain":"usageLimits","reason":"keyInvalid","message":"Bad Request"}],"code":400,"message":"Bad Request"}}
-          assertEquals(400, p.<Binder>get("error").<Number>get("code").intValue());
+          assertEquals(400, p.<IsProperties>get("error").<Number>get("code").intValue());
           finishTest();
         }
       })

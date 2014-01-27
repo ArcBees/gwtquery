@@ -21,22 +21,22 @@ import com.google.gwt.query.client.builders.JsonBuilder;
 /**
  * Interface using for Data Binders valid for JVM and JS.
  */
-public interface Binder {
+public interface IsProperties {
   /**
    * load a properties object.
    */
-  <T extends Binder> T load(Object prp);
+  <T extends IsProperties> T load(Object prp);
 
   /**
    * parses a json string and loads the resulting properties object.
    */
-  <T extends Binder> T parse(String json);
+  <T extends IsProperties> T parse(String json);
 
   /**
    * Returns the underlying object, normally a Properties jso in client
-   * and a Json implementation in JVM.
+   * and a Json implementation in the JVM.
    */
-  <T> T getBound();
+  <T> T getDataImpl();
   
   /**
    * Return the Object with the given key.
@@ -46,7 +46,7 @@ public interface Binder {
   /**
    * Set an Object with the given key.
    */
-  <T extends Binder> T set(Object key, Object val);
+  <T extends IsProperties> T set(Object key, Object val);
 
   /**
    * return a list of field names.

@@ -1,9 +1,9 @@
 package com.google.gwt.query.client.builders;
 
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 
 public interface JsonFactory {
   <T extends JsonBuilder> T create(Class<T> clz);
-  Binder create(String s);
-  Binder create();
+  IsProperties create(String s);
+  IsProperties create();
 }

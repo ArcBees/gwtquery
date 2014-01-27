@@ -17,7 +17,7 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -55,7 +55,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).<Properties>getBound());
+        a.push(((JsonBuilder)o).<Properties>getDataImpl());
       }
       p.set(n, a);
     } else {
@@ -114,7 +114,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   
   @SuppressWarnings("unchecked")
   @Override
-  public Properties getBound() {
+  public Properties getDataImpl() {
     return p;
   }
   
@@ -123,9 +123,9 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
   
   @SuppressWarnings("unchecked")
-  public <T extends Binder> T set(Object key, Object val) {
-    if (val instanceof Binder) {
-      p.set(key, ((Binder)val).getBound());
+  public <T extends IsProperties> T set(Object key, Object val) {
+    if (val instanceof IsProperties) {
+      p.set(key, ((IsProperties)val).getDataImpl());
     } else {
       p.set(key, val);
     }

@@ -25,7 +25,7 @@ import com.google.gwt.query.client.js.JsUtils;
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
  */
-public class Properties extends JavaScriptObject implements Binder {
+public class Properties extends JavaScriptObject implements IsProperties {
 
   public static Properties create() {
     return JsCache.create().cast();
@@ -202,15 +202,15 @@ public class Properties extends JavaScriptObject implements Binder {
     return c().length() == 0;
   }
 
-  public final <J extends Binder> J load(Object prp) {
+  public final <J extends IsProperties> J load(Object prp) {
     c().clear();
     if (prp instanceof JsCache) {
       c().copy((JsCache)prp);
     }
-    return getBound();
+    return getDataImpl();
   }
 
-  public final <J extends Binder> J parse(String json) {
+  public final <J extends IsProperties> J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }
 
@@ -227,7 +227,7 @@ public class Properties extends JavaScriptObject implements Binder {
   }
 
   @SuppressWarnings("unchecked")
-  public final <J> J getBound() {
+  public final <J> J getDataImpl() {
     return (J)this;
   }
 

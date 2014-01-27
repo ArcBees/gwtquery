@@ -38,7 +38,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonBuilderBase;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -84,7 +84,7 @@ public class JsonBuilderGenerator extends Generator {
     JClassType clazz =  oracle.findType(requestedClass);
 
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
-    settingsType = oracle.findType(Binder.class.getName());
+    settingsType = oracle.findType(IsProperties.class.getName());
     stringType = oracle.findType(String.class.getName());
     jsType = oracle.findType(JavaScriptObject.class.getName());
     listType = oracle.findType(List.class.getName());

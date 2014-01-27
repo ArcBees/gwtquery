@@ -10,7 +10,7 @@ import java.net.URL;
 
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
@@ -146,7 +146,7 @@ public class AjaxTransportJre implements AjaxTransport {
       c.setReadTimeout(s.getTimeout());
     }
     
-    Binder headers = s.getHeaders();
+    IsProperties headers = s.getHeaders();
     if (headers != null) {
       for (String h : headers.getFieldNames()) {
         c.setRequestProperty(h, "" + headers.get(h));

@@ -6,7 +6,7 @@ import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
@@ -52,11 +52,11 @@ public class Ajax extends GQuery {
   public interface Settings extends JsonBuilder {
     String getContentType();
     Element getContext();
-    Binder getData();
+    IsProperties getData();
     String getDataString();
     String getDataType();
     Function getError();
-    Binder getHeaders();
+    IsProperties getHeaders();
     String getPassword();
     Function getSuccess();
     int getTimeout();
@@ -70,7 +70,7 @@ public class Ajax extends GQuery {
     Settings setDataString(String d);
     Settings setDataType(String t);
     Settings setError(Function f);
-    Settings setHeaders(Binder p);
+    Settings setHeaders(IsProperties p);
     Settings setPassword(String p);
     Settings setSuccess(Function f);
     Settings setTimeout(int t);
@@ -86,7 +86,7 @@ public class Ajax extends GQuery {
     }
   });
 
-  public static Promise ajax(Binder p) {
+  public static Promise ajax(IsProperties p) {
     Settings s = createSettings();
     s.load(p);
     return ajax(s);
@@ -198,10 +198,10 @@ public class Ajax extends GQuery {
     }
     settings.setType(type);
 
-    Binder data = settings.getData();
+    IsProperties data = settings.getData();
     if (data != null) {
       String dataString = null, contentType = null;
-      if (data.getBound() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getBound())) {
+      if (data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl())) {
         dataString = null;
         contentType = FormPanel.ENCODING_URLENCODED;
       } else if (settings.getType().matches("(POST|PUT)") && "json".equalsIgnoreCase(settings.getDataType())) {
@@ -233,7 +233,7 @@ public class Ajax extends GQuery {
     return ajax(s);
   }
 
-  public static Promise ajax(String url, Binder p) {
+  public static Promise ajax(String url, IsProperties p) {
     Settings s = createSettings();
     s.load(p);
     s.setUrl(url);
@@ -255,9 +255,9 @@ public class Ajax extends GQuery {
     return s;
   }
 
-  public static Settings createSettings(Binder p) {
+  public static Settings createSettings(IsProperties p) {
     Settings s = GQ.create(Settings.class);
-    s.load(p.getBound());
+    s.load(p.getDataImpl());
     return s;
   }
 
@@ -265,11 +265,11 @@ public class Ajax extends GQuery {
     return get(url, null);
   }
 
-  public static Promise get(String url, Binder data) {
-    return get(url, (Binder)data, null);
+  public static Promise get(String url, IsProperties data) {
+    return get(url, (IsProperties)data, null);
   }
 
-  public static Promise get(String url, Binder data, Function onSuccess) {
+  public static Promise get(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("txt");
@@ -279,11 +279,11 @@ public class Ajax extends GQuery {
     return ajax(s);
   }
 
-  public static Promise getJSON(String url, Binder data) {
+  public static Promise getJSON(String url, IsProperties data) {
     return getJSON(url, data, null);
   }
 
-  public static Promise getJSON(String url, Binder data, Function onSuccess) {
+  public static Promise getJSON(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("json");
@@ -297,11 +297,11 @@ public class Ajax extends GQuery {
     return getJSONP(url, null);
   }
 
-  public static Promise getJSONP(String url, Binder data) {
-    return getJSONP(url, (Binder)data, null);
+  public static Promise getJSONP(String url, IsProperties data) {
+    return getJSONP(url, (IsProperties)data, null);
   }
 
-  public static Promise getJSONP(String url, Binder data, Function onSuccess) {
+  public static Promise getJSONP(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("jsonp");
@@ -354,11 +354,11 @@ public class Ajax extends GQuery {
     );
   }
 
-  public static Promise post(String url, Binder data) {
-    return post(url, (Binder)data, null);
+  public static Promise post(String url, IsProperties data) {
+    return post(url, (IsProperties)data, null);
   }
 
-  public static Promise post(String url, Binder data, final Function onSuccess) {
+  public static Promise post(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("txt");
@@ -372,11 +372,11 @@ public class Ajax extends GQuery {
     super(gq);
   }
 
-  public Ajax load(String url, Binder data) {
+  public Ajax load(String url, IsProperties data) {
     return load(url, data);
   }
   
-  public Ajax load(String url, Binder data, final Function onSuccess) {
+  public Ajax load(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
     s.setUrl(url.replaceAll("\\s+.+$", ""));

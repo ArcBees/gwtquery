@@ -21,7 +21,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.RequestPermissionException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
@@ -66,9 +66,9 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
   public PromiseReqBuilder(Settings settings) {
     String httpMethod = settings.getType();
     String url = settings.getUrl();
-    Binder data = settings.getData();
+    IsProperties data = settings.getData();
     String ctype = settings.getContentType();
-    Boolean isFormData = data != null && data.getBound() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getBound());
+    Boolean isFormData = data != null && data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl());
 
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
     try {
@@ -107,7 +107,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       }
     }));
 
-    Binder headers = settings.getHeaders();
+    IsProperties headers = settings.getHeaders();
     if (headers != null) {
       for (String headerKey : headers.getFieldNames()) {
         xmlHttpRequest.setRequestHeader(headerKey, String.valueOf(headers.get(headerKey)));
@@ -134,7 +134,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     });
 
     try {
-      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getBound() : settings.getDataString());
+      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl() : settings.getDataString());
     } catch (JavaScriptException e) {
       onError(null, e);
     }

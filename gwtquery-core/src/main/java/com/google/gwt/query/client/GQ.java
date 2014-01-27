@@ -38,17 +38,17 @@ public abstract class GQ {
     return ret;
   }
   
-  public static <T extends JsonBuilder> T create(Class<T> clz, Binder obj) {
+  public static <T extends JsonBuilder> T create(Class<T> clz, IsProperties obj) {
     T ret = create(clz);
-    ret.load(obj.getBound());
+    ret.load(obj.getDataImpl());
     return ret;
   }
   
-  public static Binder create(String s) {
+  public static IsProperties create(String s) {
     return getFactory().create(s);
   }
 
-  public static Binder create() {
+  public static IsProperties create() {
     return getFactory().create();
   }
   

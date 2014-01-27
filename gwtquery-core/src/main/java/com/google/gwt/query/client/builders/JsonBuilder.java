@@ -15,13 +15,13 @@
  */
 package com.google.gwt.query.client.builders;
 
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 
 
 /**
  * Tagging interface used to generate JsonBuilder classes.
  */
-public interface JsonBuilder extends Binder {
+public interface JsonBuilder extends IsProperties {
 
   /**
    * parses a json string and loads the resulting properties object,

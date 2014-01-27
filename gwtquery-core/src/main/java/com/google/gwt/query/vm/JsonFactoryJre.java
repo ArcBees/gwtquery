@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gwt.query.client.Binder;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.Properties;
@@ -101,7 +101,7 @@ public class JsonFactoryJre implements JsonFactory  {
           if (ret instanceof JSONObject) {
             if (clz == Object.class) {
               ret = jsonFactory.createBinder((JSONObject)ret);
-            } else if (Binder.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
+            } else if (IsProperties.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
               ret = jsonFactory.create(clz, (JSONObject)ret);
             }
           }
@@ -136,8 +136,8 @@ public class JsonFactoryJre implements JsonFactory  {
           return obj != null ? obj.put(attr, o) : arr.put(o);
         } else if (o instanceof Date) {
           return obj != null ? obj.put(attr, ((Date) o).getTime()) : arr.put(((Date) o).getTime());
-        } else if (o instanceof Binder) {
-          return obj != null ? obj.put(attr, ((Binder) o).getBound()) : arr.put(((Binder) o).getBound());
+        } else if (o instanceof IsProperties) {
+          return obj != null ? obj.put(attr, ((IsProperties) o).getDataImpl()) : arr.put(((IsProperties) o).getDataImpl());
         } else if (o.getClass().isArray() || o instanceof List) {
           Object[] arg;
           if (o.getClass().isArray()) {
@@ -175,7 +175,7 @@ public class JsonFactoryJre implements JsonFactory  {
         return jsonFactory.create(clz, jsonObject);
       } else if ("getJsonName".equals(mname)) {
         return JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
-      } else if (mname.matches("getProperties|getBound")) {
+      } else if (mname.matches("getProperties|getDataImpl")) {
         return jsonObject;
       } else if (largs > 0 && ("parse".equals(mname) || "load".equals(mname))) {
         jsonObject = new JSONObject(String.valueOf(args[0]));
@@ -282,25 +282,25 @@ public class JsonFactoryJre implements JsonFactory  {
     return (T) Proxy.newProxyInstance(clz.getClassLoader(), new Class[] {clz}, handler);
   }
   
-  public Binder createBinder() {
+  public IsProperties createBinder() {
     InvocationHandler handler = new JsonBuilderHandler();
-    return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
+    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
   }
   
-  public Binder createBinder(JSONObject jso) {
+  public IsProperties createBinder(JSONObject jso) {
     InvocationHandler handler = new JsonBuilderHandler(jso);
-    return (Binder)Proxy.newProxyInstance(Binder.class.getClassLoader(), new Class[] {Binder.class}, handler);
+    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
   }
 
   @Override
-  public Binder create(String s) {
-    Binder ret = createBinder();
+  public IsProperties create(String s) {
+    IsProperties ret = createBinder();
     ret.parse(Properties.wrapPropertiesString(s));
     return ret;
   }
 
   @Override
-  public Binder create() {
+  public IsProperties create() {
     return createBinder();
   }
 }
