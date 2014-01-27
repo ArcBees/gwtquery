@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.ajax;
 
+import junit.framework.Assert;
+
 import com.google.gwt.http.client.Response;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
@@ -119,7 +121,49 @@ public abstract class AjaxTests extends GWTTestCase {
       .setData(jsonGET)
       .setDataType("json");
 
-    performAjaxJsonTest_CORS(s);
+    performAjaxJsonTest_CORS(s)
+      .done(new Function() {
+          public void f() {
+            Response r = arguments(3);
+            Assert.assertNotNull(r.getHeader("Access-Control-Allow-Origin"));
+            Assert.assertNull(r.getHeader("Access-Control-Allow-Credentials"));
+          }
+        });
+  }
+  
+  @DoNotRunWith(Platform.HtmlUnitBug)
+  public void testAjaxJsonGet_CORS_WithCredentials_Supported() {
+    Settings s = Ajax.createSettings()
+      .setType("get")
+      // Enable credentials in servlet 
+      .setUrl(echoUrlCORS + "&credentials=true")
+      .setData(jsonGET)
+      .setDataType("json")
+      .setWithCredentials(true);
+
+    performAjaxJsonTest_CORS(s)
+      .done(new Function() {
+        public void f() {
+          Response r = arguments(3);
+          Assert.assertNotNull(r.getHeader("Access-Control-Allow-Origin"));
+          Assert.assertNotNull(r.getHeader("Access-Control-Allow-Credentials"));
+        }
+      });
+  }
+  
+  @DoNotRunWith(Platform.HtmlUnitBug)
+  public void testAjaxJsonGet_CORS_WithCredentials_Unsupported() {
+    Settings s = Ajax.createSettings()
+      .setType("get")
+      // Disable credentials in servlet 
+      .setUrl(echoUrlCORS)
+      .setData(jsonGET)
+      .setDataType("json")
+      .setWithCredentials(true);
+    
+    Ajax.ajax(s)
+      .fail(finishFunction)
+      .done(failFunction);
   }
   
   public void testAjaxGetJsonP() {

@@ -63,6 +63,7 @@ public class Ajax extends GQuery {
     String getType();
     String getUrl();
     String getUsername();
+    boolean getWithCredentials();
     Settings setContentType(String t);
     Settings setContext(Element e);
     Settings setData(Object p);
@@ -76,6 +77,7 @@ public class Ajax extends GQuery {
     Settings setType(String t);
     Settings setUrl(String u);
     Settings setUsername(String u);
+    Settings setWithCredentials(boolean b);
   }
 
   public static final Class<Ajax> Ajax = registerPlugin(Ajax.class, new Plugin<Ajax>() {

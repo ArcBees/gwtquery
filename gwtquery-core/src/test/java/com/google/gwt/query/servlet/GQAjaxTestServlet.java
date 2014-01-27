@@ -61,7 +61,9 @@ public class GQAjaxTestServlet extends HttpServlet {
     String origin = req.getHeader("Origin");
     if ("true".equals(req.getParameter("cors")) && origin != null) {
       resp.addHeader("Access-Control-Allow-Origin", origin);
-      resp.addHeader("Access-Control-Allow-Credentials", "true");
+      if ("true".equals(req.getParameter("credentials"))) {
+        resp.addHeader("Access-Control-Allow-Credentials", "true");
+      }
       String method = req.getHeader("Access-Control-Request-Method");
       if (method != null) {
         resp.addHeader("Access-Control-Allow-Methods", method);

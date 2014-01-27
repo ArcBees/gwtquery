@@ -120,7 +120,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
 
     // Using gQuery to set credentials since this method was added in 2.5.1
     // xmlHttpRequest.setWithCredentials(true);
-    JsUtils.prop(xmlHttpRequest, "withCredentials", true);
+    JsUtils.prop(xmlHttpRequest, "withCredentials", settings.getWithCredentials());
     
     final Request request = createRequestVltr(xmlHttpRequest, settings.getTimeout(), this);
     

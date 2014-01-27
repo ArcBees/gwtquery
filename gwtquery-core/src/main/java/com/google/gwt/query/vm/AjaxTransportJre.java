@@ -168,8 +168,13 @@ public class AjaxTransportJre implements AjaxTransport {
     }
     
     int code = c.getResponseCode();
-    if (isCORS && !localDomain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
-      code = 0;
+    if (isCORS) {
+      if (!localDomain.equals(c.getHeaderField("Access-Control-Allow-Origin"))) {
+        code = 0;
+      }
+      if (s.getWithCredentials() && c.getHeaderField("Access-Control-Allow-Credentials") == null) {
+        code = 0;
+      }
     }
     
     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));

@@ -49,6 +49,7 @@ public class AjaxTestJre extends AjaxTests {
     
     echoUrl = localDomain + "/" + servletPath;
     echoUrlCORS = corsDomain + "/" + servletPath + "?cors=true";
+
     startWebServer(port);
   }
   
