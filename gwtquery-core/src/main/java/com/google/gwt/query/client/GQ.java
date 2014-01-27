@@ -23,35 +23,58 @@ import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
 
+/**
+ * A set of useful methods for gQuery which can be run in browser or JVM.
+ */
 public abstract class GQ {
   
-  private static JsonFactory jsonFactory;
   private static AjaxTransport ajaxTransport;
+  
+  private static JsonFactory jsonFactory;
 
+  public static IsProperties create() {
+    return getFactory().create();
+  }
+
+  /**
+   * Create an instance of a JsonBuilder object whose type is <T>
+   */
   public static <T extends JsonBuilder> T create(Class<T> clz) {
     return getFactory().create(clz);
   }
 
+  /**
+   * Create an instance of a JsonBuilder object whose type is <T>
+   * and set the the underlying properties object.
+   */
+  public static <T extends JsonBuilder> T create(Class<T> clz, IsProperties obj) {
+    T ret = create(clz);
+    ret.load(obj.getDataImpl());
+    return ret;
+  }
+
+  /**
+   * Create an instance of a JsonBuilder object whose type is <T>
+   * and load all its properties from a json string.
+   */
   public static <T extends JsonBuilder> T create(Class<T> clz, String payload) {
     T ret = create(clz);
     ret.load(payload);
     return ret;
   }
   
-  public static <T extends JsonBuilder> T create(Class<T> clz, IsProperties obj) {
-    T ret = create(clz);
-    ret.load(obj.getDataImpl());
-    return ret;
-  }
-  
+  /**
+   * Create an instance of IsProperties. Normally a Properties javascript 
+   * object in client side, or a proxy object in the JVM
+   */
   public static IsProperties create(String s) {
     return getFactory().create(s);
   }
-
-  public static IsProperties create() {
-    return getFactory().create();
-  }
   
+  /**
+   * Return the appropriate transport implementation depending on the runtime
+   * environment: browser or JVM 
+   */
   public static AjaxTransport getAjaxTransport() {
     if (ajaxTransport == null) {
       ajaxTransport = GWT.isClient() ?
@@ -60,7 +83,7 @@ public abstract class GQ {
      }
     return ajaxTransport;
   }
-  
+
   private static JsonFactory getFactory() {
     if (jsonFactory == null) {
       jsonFactory = GWT.isClient() ?
@@ -69,4 +92,13 @@ public abstract class GQ {
     }
     return jsonFactory;
   }
+  
+  /**
+   * Change the default Ajax transport by a customized one, useful for 
+   * testing purposes.
+   */
+  public static void setAjaxTransport(AjaxTransport transport) {
+    ajaxTransport = transport;
+  }
+  
 }
