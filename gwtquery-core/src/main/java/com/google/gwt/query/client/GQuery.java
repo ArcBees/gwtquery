@@ -290,6 +290,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
       }
     }
+
     return $();
   }
 
@@ -491,6 +492,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the element b is contained in a.
    */
   public static boolean contains(Element a, Element b) {
+    maybeInitializeSelectorEngine();
     return engine.contains(a, b);
   }
 
@@ -762,6 +764,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static Promise.Deferred Deferred() {
     return new Deferred();
+  }
+
+  private static void maybeInitializeSelectorEngine() {
+    if (engine == null) {
+      engine = new SelectorEngine();
+    }
   }
 
   private static native void scrollIntoViewImpl(Node n) /*-{
@@ -2408,7 +2416,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery has(final Element elem) {
     return filter(new Predicate() {
       public boolean f(Element e, int index) {
-        return engine.contains(e, elem);
+        return contains(e, elem);
       }
     });
   }
@@ -4137,9 +4145,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery select(String selector, Node context) {
-    if (engine == null) {
-      engine = new SelectorEngine();
-    }
+    maybeInitializeSelectorEngine();
 
     NodeList<Element> n = engine.select(selector, context == null ? document : context);
     currentSelector = selector;
