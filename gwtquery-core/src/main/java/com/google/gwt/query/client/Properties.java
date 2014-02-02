@@ -223,7 +223,11 @@ public class Properties extends JavaScriptObject implements IsProperties {
   }
   
   public final String toJsonWithName() {
-    return "{\"properties\":{" + toJson() + "}";
+    return toJsonWithName(getJsonName());
+  }
+  
+  public final String toJsonWithName(String name) {
+    return "{\"" + name + "\":{" + toJson() + "}";
   }
 
   @SuppressWarnings("unchecked")

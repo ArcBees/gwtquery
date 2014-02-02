@@ -66,7 +66,7 @@ public interface IsProperties {
    * Example {"user":{"name":"manolo","surname":"carrasco"}}
    */
   String toJsonWithName();
-
+  
   /**
    * return a string which represents the object in a queryString format.
    */
@@ -78,5 +78,9 @@ public interface IsProperties {
   String getJsonName();
   
   
+  /**
+   * converts a JsonBuilder instance into another JsonBuilder type but
+   * preserving the underlying data object. 
+   */
   <T extends JsonBuilder> T as (Class<T> clz);
 }

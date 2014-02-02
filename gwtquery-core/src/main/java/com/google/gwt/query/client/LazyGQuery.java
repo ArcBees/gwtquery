@@ -65,7 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
-import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.query.client.GQuery.*;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyGQuery<T> extends LazyBase<T>{
