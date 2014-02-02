@@ -492,8 +492,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Return true if the element b is contained in a.
    */
   public static boolean contains(Element a, Element b) {
-    maybeInitializeSelectorEngine();
-    return engine.contains(a, b);
+    return getSelectorEngine().contains(a, b);
   }
 
   /**
@@ -766,10 +765,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new Deferred();
   }
 
-  private static void maybeInitializeSelectorEngine() {
+  private static SelectorEngine getSelectorEngine() {
     if (engine == null) {
       engine = new SelectorEngine();
     }
+
+    return engine;
   }
 
   private static native void scrollIntoViewImpl(Node n) /*-{
@@ -4145,9 +4146,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private GQuery select(String selector, Node context) {
-    maybeInitializeSelectorEngine();
-
-    NodeList<Element> n = engine.select(selector, context == null ? document : context);
+    NodeList<Element> n = getSelectorEngine().select(selector, context == null ? document :
+        context);
     currentSelector = selector;
     currentContext = context != null ? context : document;
     return setArray(n);
