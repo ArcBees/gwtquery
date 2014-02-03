@@ -21,13 +21,12 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.RequestPermissionException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 
@@ -36,7 +35,7 @@ import com.google.gwt.xhr.client.XMLHttpRequest;
  * <pre>
  *        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "http://127.0.0.1:8888/whatever");
  *        PromiseRequest gettingResponse = new PromiseReqBuilder(builder);
- *        
+ *
  *        gettingResponse.fail(new Function() {
  *          public void f() {
  *            Throwable exception = arguments(0);
@@ -49,7 +48,7 @@ import com.google.gwt.xhr.client.XMLHttpRequest;
  * </pre>
  */
 public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCallback {
-  
+
   public PromiseReqBuilder(RequestBuilder builder) {
     builder.setCallback(this);
     try {
@@ -58,13 +57,19 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       onError(null, e);
     }
   }
-  
+
   /**
    * Using this constructor we access to some things in the xmlHttpRequest
    * which are not available in GWT, like adding progress handles or sending
    * javascript data (like forms in modern html5 file api)
    */
-  public PromiseReqBuilder(Settings settings, String httpMethod, String url, Object data) {
+  public PromiseReqBuilder(Settings settings) {
+    String httpMethod = settings.getType();
+    String url = settings.getUrl();
+    IsProperties data = settings.getData();
+    String ctype = settings.getContentType();
+    Boolean isFormData = data != null && data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl());
+
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
     try {
       if (settings.getUsername() != null && settings.getPassword() != null) {
@@ -80,17 +85,17 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       onError(null, e);
       return;
     }
-    
+
     JsUtils.prop(xmlHttpRequest, "onprogress", JsUtils.wrapFunction(new Function() {
       public void f() {
         JsCache p = arguments(0);
         double total = p.getDouble("total");
         double loaded = p.getDouble("loaded");
-        double percent = 100 * loaded / total;
+        double percent = loaded == 0 ? 0 : total == 0 ? 100 : (100 * loaded / total);
         dfd.notify(total, loaded, percent, "download");
       }
     }));
-    
+
     JavaScriptObject upload = JsUtils.prop(xmlHttpRequest, "upload");
     JsUtils.prop(upload, "onprogress", JsUtils.wrapFunction(new Function() {
       public void f() {
@@ -101,35 +106,24 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
         dfd.notify(total, loaded, percent, "upload");
       }
     }));
-    
-    Properties headers = settings.getHeaders();
+
+    IsProperties headers = settings.getHeaders();
     if (headers != null) {
-      for (String headerKey : headers.keys()) {
-        xmlHttpRequest.setRequestHeader(headerKey, headers.getStr(headerKey));
+      for (String headerKey : headers.getFieldNames()) {
+        xmlHttpRequest.setRequestHeader(headerKey, String.valueOf(headers.get(headerKey)));
       }
     }
-    
-    if (data != null && !"GET".equalsIgnoreCase(httpMethod)) {
-      String ctype = settings.getContentType();
-      if (data instanceof JavaScriptObject && JsUtils.isFormData((JavaScriptObject)data)) {
-        ctype = FormPanel.ENCODING_MULTIPART;;
-      } else if (ctype == null) {
-        String type = settings.getDataType();
-        if (type != null && type.toLowerCase().startsWith("json")) {
-          ctype = "application/json; charset=utf-8";
-        } else {
-          ctype = FormPanel.ENCODING_URLENCODED;
-        }
-      }
+
+    if (data != null && !isFormData && !"GET".equalsIgnoreCase(httpMethod)) {
       xmlHttpRequest.setRequestHeader("Content-Type", ctype);
     }
 
     // Using gQuery to set credentials since this method was added in 2.5.1
     // xmlHttpRequest.setWithCredentials(true);
-    JsUtils.prop(xmlHttpRequest, "withCredentials", true);
-    
+    JsUtils.prop(xmlHttpRequest, "withCredentials", settings.getWithCredentials());
+
     final Request request = createRequestVltr(xmlHttpRequest, settings.getTimeout(), this);
-    
+
     xmlHttpRequest.setOnReadyStateChange(new ReadyStateChangeHandler() {
       public void onReadyStateChange(XMLHttpRequest xhr) {
         if (xhr.getReadyState() == XMLHttpRequest.DONE) {
@@ -140,7 +134,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     });
 
     try {
-      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", data);
+      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl() : settings.getDataString());
     } catch (JavaScriptException e) {
       onError(null, e);
     }
@@ -159,14 +153,14 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
       dfd.resolve(response, request);
     }
   }
-  
+
   /**
    * Using violator pattern to execute private method
    */
   private native void fireOnResponseReceivedVltr(Request rq, RequestCallback cb) /*-{
     rq.@com.google.gwt.http.client.Request::fireOnResponseReceived(Lcom/google/gwt/http/client/RequestCallback;)(cb);
   }-*/;
-  
+
   /**
    * Using violator pattern to use protected constructor
    */

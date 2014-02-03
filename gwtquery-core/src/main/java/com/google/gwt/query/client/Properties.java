@@ -15,16 +15,17 @@
  */
 package com.google.gwt.query.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * JSO for accessing Javascript objective literals used by GwtQuery functions.
  */
-public class Properties extends JavaScriptObject {
+public class Properties extends JavaScriptObject implements IsProperties {
 
   public static Properties create() {
     return JsCache.create().cast();
@@ -179,8 +180,10 @@ public class Properties extends JavaScriptObject {
     this[name].__f = f;
   }-*/;
 
-  public final <T, O> void set(T name, O val) {
+  @SuppressWarnings("unchecked")
+  public final Properties set(Object name, Object val) {
     c().put(String.valueOf(name), val);
+    return this;
   }
 
   public final String tostring() {
@@ -199,4 +202,46 @@ public class Properties extends JavaScriptObject {
     return c().length() == 0;
   }
 
+  public final <J extends IsProperties> J load(Object prp) {
+    c().clear();
+    if (prp instanceof JsCache) {
+      c().copy((JsCache)prp);
+    }
+    return getDataImpl();
+  }
+
+  public final <J extends IsProperties> J parse(String json) {
+    return load(JsUtils.parseJSON(json));
+  }
+
+  public final String[] getFieldNames() {
+    return c().keys();
+  }
+
+  public final String toJson() {
+    return toJsonString();
+  }
+  
+  public final String toJsonWithName() {
+    return toJsonWithName(getJsonName());
+  }
+  
+  public final String toJsonWithName(String name) {
+    return "{\"" + name + "\":{" + toJson() + "}";
+  }
+
+  @SuppressWarnings("unchecked")
+  public final <J> J getDataImpl() {
+    return (J)this;
+  }
+
+  public final String getJsonName() {
+    return "jso";
+  }
+
+  public final <T extends JsonBuilder> T as(Class<T> clz) {
+    T ret = GQ.create(clz);
+    ret.load(this);
+    return ret;
+  }
 }

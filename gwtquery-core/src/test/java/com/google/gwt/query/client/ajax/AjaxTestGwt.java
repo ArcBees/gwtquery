@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, The gwtquery team.
+ * Copyright 2013, The gwtquery team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,17 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.google.gwt.query.client.impl;
+package com.google.gwt.query.client.ajax;
+
+import com.google.gwt.core.client.GWT;
 
 
 /**
- * Test for selector engine implementations run in gwt
+ * Test for data binding and Ajax which is run in gwt
  */
-public class SelectorEnginesTestGwt extends SelectorEnginesTest {
+public class AjaxTestGwt extends AjaxTests {
 
   @Override
   public String getModuleName() {
     return "com.google.gwt.query.QueryTest";
   }
-
+  
+  protected void gwtSetUp() throws Exception {
+    echoUrl = GWT.getHostPageBaseURL() + servletPath;
+    echoUrlCORS = echoUrl.replaceFirst("http://[\\d\\.]+:", "http://localhost:") + "?cors=true";
+  }
 }

@@ -311,7 +311,7 @@ public class Transitions extends GQuery {
     }
 
     final Properties cssProps = (stringOrProperties instanceof String)
-      ? $$((String) stringOrProperties)
+      ? (Properties) $$((String) stringOrProperties)
       : (Properties) stringOrProperties;
 
     final String ease = easing == null ? "ease" : easing.toString();

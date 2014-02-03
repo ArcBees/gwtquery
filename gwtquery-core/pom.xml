@@ -16,7 +16,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
-            <type>jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -51,7 +50,7 @@
                 <directory>${basedir}/src/main/java</directory>
             </resource>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${basedir}/src/main/super</directory>
             </resource>
         </resources>
         <testResources>

@@ -23,6 +23,7 @@ import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.events.EventsListener.SpecialEvent;
 import com.google.gwt.query.client.plugins.events.GqEvent;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.query.client.GQuery.*;
 import com.google.gwt.query.client.LazyBase;
 
 public interface LazyEvents<T> extends LazyBase<T>{
@@ -152,6 +153,8 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * Example: unbind(Event.ONCLICK | Event.ONMOUSEOVER)
    */
   LazyEvents<T> unbind(int eventbits);
+
+  LazyEvents<T> off();
 
   /**
    * Removes all handlers, that matches the events bits and the namespace passed, from each element.

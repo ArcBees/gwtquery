@@ -1,21 +1,20 @@
 package com.google.gwt.query.client.plugins.ajax;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
-import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilder;
-import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
+import com.google.gwt.user.client.ui.FormPanel;
 
 /**
  * Ajax class for GQuery.
@@ -32,6 +31,20 @@ import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
  *
  */
 public class Ajax extends GQuery {
+
+  public static final String JSON_CONTENT_TYPE = "application/json";
+
+  public static final String JSON_CONTENT_TYPE_UTF8 = JSON_CONTENT_TYPE + "; charset=utf-8";
+  
+  public static interface AjaxTransport {
+    Promise getJsonP(Settings settings);
+
+    Promise getLoadScript(Settings settings);
+
+    Promise getXhr(Settings settings);
+  }
+  
+  static AjaxTransport transport = GQ.getAjaxTransport();
   
   /**
    * Ajax Settings object
@@ -39,30 +52,32 @@ public class Ajax extends GQuery {
   public interface Settings extends JsonBuilder {
     String getContentType();
     Element getContext();
-    Properties getData();
+    IsProperties getData();
     String getDataString();
     String getDataType();
     Function getError();
-    Properties getHeaders();
+    IsProperties getHeaders();
     String getPassword();
     Function getSuccess();
     int getTimeout();
     String getType();
     String getUrl();
     String getUsername();
+    boolean getWithCredentials();
     Settings setContentType(String t);
     Settings setContext(Element e);
-    Settings setData(Properties p);
+    Settings setData(Object p);
     Settings setDataString(String d);
     Settings setDataType(String t);
     Settings setError(Function f);
-    Settings setHeaders(Properties p);
+    Settings setHeaders(IsProperties p);
     Settings setPassword(String p);
     Settings setSuccess(Function f);
     Settings setTimeout(int t);
     Settings setType(String t);
     Settings setUrl(String u);
     Settings setUsername(String u);
+    Settings setWithCredentials(boolean b);
   }
 
   public static final Class<Ajax> Ajax = registerPlugin(Ajax.class, new Plugin<Ajax>() {
@@ -71,7 +86,7 @@ public class Ajax extends GQuery {
     }
   });
 
-  public static Promise ajax(Properties p) {
+  public static Promise ajax(IsProperties p) {
     Settings s = createSettings();
     s.load(p);
     return ajax(s);
@@ -105,7 +120,8 @@ public class Ajax extends GQuery {
    * @param settings a Properties object with the configuration of the Ajax request.
    */
   public static Promise ajax(Settings settings) {
-
+    resolveSettings(settings);
+    
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
@@ -116,29 +132,26 @@ public class Ajax extends GQuery {
       onError.setElement(settings.getContext());
     }
 
-    String httpMethod = settings.getType() == null ? "POST" : settings.getType().toUpperCase();
-    Object data = resolveData(settings, httpMethod);
-    final String url = resolveUrl(settings, httpMethod, data);
     final String dataType = settings.getDataType();
 
     Promise ret = null;
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      ret = new PromiseReqBuilderJSONP(url, null, settings.getTimeout());
+      ret = transport.getJsonP(settings);
     } else if ("loadscript".equalsIgnoreCase(dataType)){
-      ret = createPromiseScriptInjector(url);
+      ret = transport.getLoadScript(settings);
     } else {
-      ret = new PromiseReqBuilder(settings, httpMethod, url, data)
+      ret = transport.getXhr(settings)
         .then(new Function() {
           public Object f(Object...args) {
-            Response response = (Response)args[0];
-            Request request = (Request)args[1];
-            Object retData = null;
+            Response response = arguments(0);
+            Request request = arguments(1);
+            Object retData = response.getText();
             try {
               if ("xml".equalsIgnoreCase(dataType)) {
                 retData = JsUtils.parseXML(response.getText());
               } else if ("json".equalsIgnoreCase(dataType)) {
-                retData = JsUtils.parseJSON(response.getText());
+                retData = GQ.create(response.getText());
               } else {
                 retData = response.getText();
                 if ("script".equalsIgnoreCase(dataType)) {
@@ -146,17 +159,20 @@ public class Ajax extends GQuery {
                 }
               }
             } catch (Exception e) {
-              if (GWT.getUncaughtExceptionHandler() != null) {
+              if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
                 GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+              } else {
+                e.printStackTrace();
               }
             }
             return new Object[]{retData, "success", request, response};
           }
         }, new Function() {
           public Object f(Object...args) {
-            Throwable exception = (Throwable)args[0];
-            Request request = (Request)args[1];
-            return new Object[]{null, exception.getMessage(), request, null, exception};
+            Throwable exception = arguments(0);
+            Request request = getArgument(1, Request.class);
+            String msg = String.valueOf(exception);
+            return new Object[]{null, msg, request, null, exception};
           }
         });
     }
@@ -169,50 +185,42 @@ public class Ajax extends GQuery {
     return ret;
   }
   
-
-  private static Promise createPromiseScriptInjector(final String url) {
-    return new PromiseFunction() {
-      public void f(final Deferred dfd) {
-        ScriptInjector.fromUrl(url).setWindow(window)
-        .setCallback(new Callback<Void, Exception>() {
-          public void onSuccess(Void result) {
-            dfd.resolve();
-          }
-          public void onFailure(Exception reason) {
-            dfd.reject(reason);
-          }
-        }).inject();
-      }
-    };
-  }
-
-  private static String resolveUrl(Settings settings, String httpMethod, Object data) {
+  private static void resolveSettings(Settings settings) {
     String url = settings.getUrl();
-    assert url != null : "no url found in settings";
-    if ("GET".equals(httpMethod) && data instanceof String) {
-      url += (url.contains("?") ? "&" : "?") + data;
+    assert settings != null && settings.getUrl() != null: "no url found in settings";
+    
+    String type = "POST";
+    if (settings.getType() != null) {
+      type = settings.getType().toUpperCase();
     }
-    return url;
-  }
+    if ("jsonp".equalsIgnoreCase(settings.getDataType())) {
+      type = "GET";
+    }
+    settings.setType(type);
 
-  private static Object resolveData(Settings settings, String httpMethod) {
-    Object data = settings.getDataString();
-    Properties sdata = settings.getData();
-    if (data == null && sdata != null) {
-      String type = settings.getDataType();
-      if (type != null
-          && (httpMethod.matches("(POST|PUT)"))
-          && type.equalsIgnoreCase("json")) {
-        data = sdata.toJsonString();
-      } else if (JsUtils.isFormData(sdata)) {
-        data = sdata;
+    IsProperties data = settings.getData();
+    if (data != null) {
+      String dataString = null, contentType = null;
+      if (data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl())) {
+        dataString = null;
+        contentType = FormPanel.ENCODING_URLENCODED;
+      } else if (settings.getType().matches("(POST|PUT)") && "json".equalsIgnoreCase(settings.getDataType())) {
+        dataString = data.toJson();
+        contentType = JSON_CONTENT_TYPE_UTF8;
       } else {
-        data = sdata.toQueryString();
+        dataString = data.toQueryString();
+        contentType = FormPanel.ENCODING_URLENCODED;
       }
+      settings.setDataString(dataString);
+      settings.setContentType(contentType);
     }
-    return data;
-  }
 
+    if ("GET".equals(settings.getType()) && settings.getDataString() != null) {
+      url += (url.contains("?") ? "&" : "?") + settings.getDataString();
+      settings.setUrl(url);
+    }
+  }
+  
   public static Promise ajax(String url, Function onSuccess, Function onError) {
     return ajax(url, onSuccess, onError, (Settings) null);
   }
@@ -225,7 +233,7 @@ public class Ajax extends GQuery {
     return ajax(s);
   }
 
-  public static Promise ajax(String url, Properties p) {
+  public static Promise ajax(String url, IsProperties p) {
     Settings s = createSettings();
     s.load(p);
     s.setUrl(url);
@@ -237,20 +245,31 @@ public class Ajax extends GQuery {
   }
 
   public static Settings createSettings() {
-    return createSettings($$(""));
+    return createSettings("");
   }
 
   public static Settings createSettings(String prop) {
-    return createSettings($$(prop));
-  }
-
-  public static Settings createSettings(Properties p) {
-    Settings s = GWT.create(Settings.class);
-    s.load(p);
+    Settings s = GQ.create(Settings.class);
+    if (prop != null && !prop.isEmpty()) 
+      s.parse(prop);
     return s;
   }
 
-  public static Promise get(String url, Properties data, Function onSuccess) {
+  public static Settings createSettings(IsProperties p) {
+    Settings s = GQ.create(Settings.class);
+    s.load(p.getDataImpl());
+    return s;
+  }
+
+  public static Promise get(String url) {
+    return get(url, null);
+  }
+
+  public static Promise get(String url, IsProperties data) {
+    return get(url, (IsProperties)data, null);
+  }
+
+  public static Promise get(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("txt");
@@ -260,7 +279,11 @@ public class Ajax extends GQuery {
     return ajax(s);
   }
 
-  public static Promise getJSON(String url, Properties data, Function onSuccess) {
+  public static Promise getJSON(String url, IsProperties data) {
+    return getJSON(url, data, null);
+  }
+
+  public static Promise getJSON(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("json");
@@ -269,12 +292,16 @@ public class Ajax extends GQuery {
     s.setSuccess(onSuccess);
     return ajax(s);
   }
-  
+
   public static Promise getJSONP(String url) {
-    return getJSONP(url, null, null);
+    return getJSONP(url, null);
   }
 
-  public static Promise getJSONP(String url, Properties data, Function onSuccess) {
+  public static Promise getJSONP(String url, IsProperties data) {
+    return getJSONP(url, (IsProperties)data, null);
+  }
+
+  public static Promise getJSONP(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("jsonp");
@@ -327,11 +354,11 @@ public class Ajax extends GQuery {
     );
   }
 
-  public static Promise post(String url, Properties data) {
-    return post(url, data, null);
+  public static Promise post(String url, IsProperties data) {
+    return post(url, (IsProperties)data, null);
   }
-  
-  public static Promise post(String url, Properties data, final Function onSuccess) {
+
+  public static Promise post(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
     s.setDataType("txt");
@@ -345,11 +372,11 @@ public class Ajax extends GQuery {
     super(gq);
   }
 
-  public Ajax load(String url, Properties data) {
+  public Ajax load(String url, IsProperties data) {
     return load(url, data);
   }
   
-  public Ajax load(String url, Properties data, final Function onSuccess) {
+  public Ajax load(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
     s.setUrl(url.replaceAll("\\s+.+$", ""));
@@ -363,7 +390,7 @@ public class Ajax extends GQuery {
           // Note: using '\s\S' instead of '.' because gwt String emulation does
           // not support java embedded flag expressions (?s) and javascript does
           // not have multidot flag.
-          String s = getArguments()[0].toString().replaceAll("<![^>]+>\\s*", "")
+          String s = arguments(0).toString().replaceAll("<![^>]+>\\s*", "")
             .replaceAll("</?html[\\s\\S]*?>\\s*", "")
             .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
             .replaceAll("<script[\\s\\S]*?</script>\\s*", "")

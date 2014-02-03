@@ -166,7 +166,8 @@ public class Effects extends QueuePlugin<Effects> {
   public Effects animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
 
     final Properties p = (stringOrProperties instanceof String)
-        ? $$((String) stringOrProperties) : (Properties) stringOrProperties;
+        ? (Properties) $$((String) stringOrProperties)
+        : (Properties) stringOrProperties;
 
     if (p.getStr("duration") != null) {
       duration = p.getInt("duration");

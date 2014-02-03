@@ -531,7 +531,7 @@ public class JsUtils {
       } else {
         Properties p = prop.getJavaScriptObject(k);
         if (p != null) {
-          ret += p.toQueryString();
+          ret += k + "=" + p.tostring();
         } else {
           String v = prop.getStr(k);
           if (v != null && !v.isEmpty() && !"null".equalsIgnoreCase(v)) {

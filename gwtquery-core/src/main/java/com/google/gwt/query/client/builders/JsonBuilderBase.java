@@ -17,6 +17,7 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
@@ -26,16 +27,19 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   protected Properties p = Properties.create();
 
   @SuppressWarnings("unchecked")
+  @Override
   public J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public J load(Object prp) {
     assert prp == null || prp instanceof JavaScriptObject || prp instanceof String;
     if (prp != null && prp instanceof String) {
@@ -51,7 +55,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).getProperties());
+        a.push(((JsonBuilder)o).<Properties>getDataImpl());
       }
       p.set(n, a);
     } else {
@@ -88,8 +92,47 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     return p.tostring();
   }
 
+  @Override
+  public String toJson() {
+    return p.tostring();
+  }
+  
+  public String toJsonWithName() {
+    return "{\"" + getJsonName() + "\":" + p.tostring() + "}";
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
   public Properties getProperties() {
     return p;
   }
-
+  
+  @Override
+  public String toQueryString() {
+    return p.toQueryString();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public Properties getDataImpl() {
+    return p;
+  }
+  
+  public <T> T get(Object key) {
+    return p.get(key);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public <T extends IsProperties> T set(Object key, Object val) {
+    if (val instanceof IsProperties) {
+      p.set(key, ((IsProperties)val).getDataImpl());
+    } else {
+      p.set(key, val);
+    }
+    return (T)this;
+  }
+  
+  public <T extends JsonBuilder> T as(Class<T> clz) {
+    return p.as(clz);
+  }
 }
