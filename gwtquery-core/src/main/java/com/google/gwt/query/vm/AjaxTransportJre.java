@@ -4,6 +4,7 @@ package com.google.gwt.query.vm;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -177,19 +178,25 @@ public class AjaxTransportJre implements AjaxTransport {
       }
     }
     
-    BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
-    String inputLine;
-    StringBuffer response = new StringBuffer();
-    while ((inputLine = in.readLine()) != null) {
-      response.append(inputLine + "\n");
+    String payload = "";
+    
+    InputStream is = code >= 400 ? c.getErrorStream() : c.getInputStream();
+    if (is != null) {
+      BufferedReader in = new BufferedReader(new InputStreamReader(is));
+      String inputLine;
+      StringBuffer response = new StringBuffer();
+      while ((inputLine = in.readLine()) != null) {
+        response.append(inputLine + "\n");
+      }
+      in.close();
+      payload = response.toString();
     }
-    in.close();
-
+    
     if (cookieManager != null) {
       cookieManager.storeCookies(c);
     }
 
-    return new ResponseJre(code, c.getResponseMessage(), response.toString(), c.getHeaderFields());
+    return new ResponseJre(code, c.getResponseMessage(), payload, c.getHeaderFields());
   }
   
   private void debugRequest(HttpURLConnection c, String payload) {
