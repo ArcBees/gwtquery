@@ -156,7 +156,11 @@
     </replace-with>
 
     <!-- IE8 needs the iframe where the js of app is loaded set to standard in order
-         to use the queryAll native selector -->
+         to use the queryAll native selector.
+
+         If your app is not using the standard linker, define it after inheriting gQuery
+         module in your .gwt.xml file. See issue #213
+     -->
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
     <add-linker name="stddoctype"/>
 
