@@ -44,8 +44,6 @@ public class Ajax extends GQuery {
     Promise getXhr(Settings settings);
   }
   
-  static AjaxTransport transport = GQ.getAjaxTransport();
-  
   /**
    * Ajax Settings object
    */
@@ -137,11 +135,11 @@ public class Ajax extends GQuery {
     Promise ret = null;
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
-      ret = transport.getJsonP(settings);
+      ret = GQ.getAjaxTransport().getJsonP(settings);
     } else if ("loadscript".equalsIgnoreCase(dataType)){
-      ret = transport.getLoadScript(settings);
+      ret = GQ.getAjaxTransport().getLoadScript(settings);
     } else {
-      ret = transport.getXhr(settings)
+      ret = GQ.getAjaxTransport().getXhr(settings)
         .then(new Function() {
           public Object f(Object...args) {
             Response response = arguments(0);
