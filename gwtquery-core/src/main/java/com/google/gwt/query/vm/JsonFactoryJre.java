@@ -67,7 +67,7 @@ public class JsonFactoryJre implements JsonFactory  {
         } else if (clz.equals(Date.class)) {
           ret = new Date(obj != null ? obj.getLong(attr): arr.getLong(idx));
         } else if (clz.equals(String.class)) {
-          ret = obj != null ? obj.getString(attr) : arr.getString(idx);
+          ret = String.valueOf(obj != null ? obj.get(attr) : arr.get(idx));
         } else if (clz.equals(Boolean.class) || clz.isPrimitive() && clz == Boolean.TYPE) {
           try {
             ret = obj != null ? obj.getBoolean(attr): arr.getBoolean(idx);
