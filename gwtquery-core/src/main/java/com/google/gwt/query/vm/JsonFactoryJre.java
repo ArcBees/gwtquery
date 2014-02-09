@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -148,7 +147,7 @@ public class JsonFactoryJre implements JsonFactory  {
           JSONArray a = listToJsonArray(arg);
           return obj != null ? obj.put(attr, a) : arr.put(a);
         } else {
-          if (!(o instanceof Function)) {
+          if (!(o instanceof Function) && !(o instanceof JSONObject)) {
             System.out.println("Unkown setter object " + attr + " " + o.getClass().getName() + " " + o);
           }
           return obj != null ? obj.put(attr, o) : arr.put(o);
