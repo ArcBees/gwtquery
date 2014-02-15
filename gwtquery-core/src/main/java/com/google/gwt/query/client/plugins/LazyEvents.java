@@ -16,6 +16,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
@@ -130,6 +131,14 @@ public interface LazyEvents<T> extends LazyBase<T>{
    * Example: fire(Event.ONCLICK | Event.ONFOCUS) Example: fire(Event.ONKEYDOWN. 'a');
    */
   LazyEvents<T> trigger(int eventbits, int... keys);
+
+  /**
+   * Trigger a native event in all matched elements.
+   *
+   * @param nativeEvent the browser native event.
+   * @functions a set of function to run if the event is not canceled.
+   */
+  LazyEvents<T> trigger(NativeEvent nativeEvent, Function... functions);
 
   /**
    * Trigger a html event in all matched elements.

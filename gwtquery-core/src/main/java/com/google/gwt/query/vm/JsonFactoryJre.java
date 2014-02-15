@@ -16,7 +16,6 @@ import org.json.JSONObject;
 
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
@@ -68,7 +67,7 @@ public class JsonFactoryJre implements JsonFactory  {
         } else if (clz.equals(Date.class)) {
           ret = new Date(obj != null ? obj.getLong(attr): arr.getLong(idx));
         } else if (clz.equals(String.class)) {
-          ret = obj != null ? obj.getString(attr) : arr.getString(idx);
+          ret = String.valueOf(obj != null ? obj.get(attr) : arr.get(idx));
         } else if (clz.equals(Boolean.class) || clz.isPrimitive() && clz == Boolean.TYPE) {
           try {
             ret = obj != null ? obj.getBoolean(attr): arr.getBoolean(idx);
@@ -148,7 +147,7 @@ public class JsonFactoryJre implements JsonFactory  {
           JSONArray a = listToJsonArray(arg);
           return obj != null ? obj.put(attr, a) : arr.put(a);
         } else {
-          if (!(o instanceof Function)) {
+          if (!(o instanceof Function) && !(o instanceof JSONObject)) {
             System.out.println("Unkown setter object " + attr + " " + o.getClass().getName() + " " + o);
           }
           return obj != null ? obj.put(attr, o) : arr.put(o);

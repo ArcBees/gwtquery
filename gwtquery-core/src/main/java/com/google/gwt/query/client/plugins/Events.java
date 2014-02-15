@@ -17,6 +17,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
@@ -257,6 +258,17 @@ public class Events extends GQuery {
     if ((eventbits | Event.ONMOUSEWHEEL) == Event.ONMOUSEWHEEL)
       dispatchEvent(document.createMouseEvent("mousewheel", true, true, 0, 0, 0, 0, 0, false,
           false, false, false, NativeEvent.BUTTON_LEFT, null));
+    return this;
+  }
+
+  /**
+   * Trigger a native event in all matched elements.
+   *
+   * @param nativeEvent the browser native event.
+   * @functions a set of function to run if the event is not canceled.
+   */
+  public Events trigger(NativeEvent nativeEvent, Function... functions) {
+    dispatchEvent(nativeEvent, null, functions);
     return this;
   }
 

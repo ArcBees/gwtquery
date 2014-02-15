@@ -92,7 +92,7 @@ public class AjaxTransportJre implements AjaxTransport {
           int status = response.getStatusCode();
           if (status <= 0 || status >= 400) {
             String statusText = status <= 0 ? "Bad CORS" : response.getStatusText();
-            dfd.reject(null, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()));
+            dfd.reject(new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()), null);
           } else {
             dfd.resolve(response, null);
           }

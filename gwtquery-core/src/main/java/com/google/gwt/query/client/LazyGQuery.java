@@ -12,24 +12,20 @@
  * the License.
  */
 package com.google.gwt.query.client;
+import static com.google.gwt.query.client.plugins.QueuePlugin.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -60,11 +56,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 import com.google.gwt.query.client.GQuery.*;
 import com.google.gwt.query.client.LazyBase;
 
@@ -2283,6 +2274,11 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Produces a string representation of the matched elements.
    */
   String toString(boolean pretty);
+
+  /**
+   * Trigger a browser native event on each matched element.
+   */
+  LazyGQuery<T> trigger(NativeEvent event);
 
   /**
    * Trigger a set of events on each matched element.
