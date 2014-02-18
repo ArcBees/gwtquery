@@ -45,6 +45,15 @@ public class Properties extends JavaScriptObject implements IsProperties {
     return create();
   }
 
+  /**
+   * Allows using a more relaxed syntax for creating json objects from strings.
+   *
+   * It is very useful in java, since we dont have to use escaped double quotes,
+   * and we can pass directly css strings.
+   *
+   * Example:
+   * $$("a: b; c: 'n'; d: null") is the same than $$("\"a\": \"b\", "\b\":\"n\"n, \"d\":null)")
+   */
   public static String wrapPropertiesString(String s) {
     String ret = s //
         .replaceAll("\\s*/\\*[\\s\\S]*?\\*/\\s*", "") // Remove comments

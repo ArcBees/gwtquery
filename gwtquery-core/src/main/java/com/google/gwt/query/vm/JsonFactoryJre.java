@@ -179,7 +179,11 @@ public class JsonFactoryJre implements JsonFactory  {
       } else if (mname.matches("getProperties|getDataImpl")) {
         return jsonObject;
       } else if (largs > 0 && ("parse".equals(mname) || "load".equals(mname))) {
-        jsonObject = new JSONObject(String.valueOf(args[0]));
+        String json = String.valueOf(args[0]);
+        if (largs > 1 && Boolean.TRUE.equals(args[0])) {
+          json = Properties.wrapPropertiesString(json);
+        }
+        jsonObject = new JSONObject(json);
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
@@ -296,7 +300,7 @@ public class JsonFactoryJre implements JsonFactory  {
   @Override
   public IsProperties create(String s) {
     IsProperties ret = createBinder();
-    ret.parse(Properties.wrapPropertiesString(s));
+    ret.parse(s);
     return ret;
   }
 

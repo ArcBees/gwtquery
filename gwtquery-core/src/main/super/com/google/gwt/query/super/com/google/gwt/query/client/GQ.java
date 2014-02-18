@@ -17,6 +17,7 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.client.IsProperties;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
@@ -42,6 +43,10 @@ public class GQ {
   
   public static IsProperties create(String s) {
     return getFactory().create(s);
+  }
+
+  public static IsProperties create(String s, boolean fix) {
+    return getFactory().create(fix ? Properties.wrapPropertiesString(s) : s);
   }
 
   public static IsProperties create() {
