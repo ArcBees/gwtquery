@@ -62,16 +62,18 @@ public class DataBindingTestJre extends GWTTestCase {
     void y(String s);
     Function getF();
     void setF(Function f);
+    String getN();
   }
 
   boolean functionRun = false;
   public void testJsonBuilder() {
-    String json = "{M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true, 'items':[{'date':100}]}";
+    String json = "{n: null, M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true, 'items':[{'date':100}]}";
 
     JsonExample c = GQ.create(JsonExample.class);
     assertEquals(0, c.getA());
     c.parse(json, true);
 
+    assertNull(c.getN());
     assertEquals(0, c.getM());
     assertEquals(1, c.getA());
     assertNotNull(c.getB());

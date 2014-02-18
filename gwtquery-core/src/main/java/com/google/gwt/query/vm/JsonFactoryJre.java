@@ -66,8 +66,6 @@ public class JsonFactoryJre implements JsonFactory  {
           ret = jsonArrayToList(obj.getJSONArray(attr), ctype, clz.isArray());
         } else if (clz.equals(Date.class)) {
           ret = new Date(obj != null ? obj.getLong(attr): arr.getLong(idx));
-        } else if (clz.equals(String.class)) {
-          ret = String.valueOf(obj != null ? obj.get(attr) : arr.get(idx));
         } else if (clz.equals(Boolean.class) || clz.isPrimitive() && clz == Boolean.TYPE) {
           try {
             ret = obj != null ? obj.getBoolean(attr): arr.getBoolean(idx);
@@ -97,15 +95,19 @@ public class JsonFactoryJre implements JsonFactory  {
           }
         } else {
           ret = obj != null ? obj.get(attr): arr.get(idx);
-          if (ret instanceof JSONObject) {
+          if (ret == JSONObject.NULL ) {
+            // org.json returns an Null object instead of null when parsing.
+            ret = null;
+          } else if (clz.equals(String.class)) {
+            ret = String.valueOf(ret);
+          } else if (ret instanceof JSONObject) {
             if (clz == Object.class) {
               ret = jsonFactory.createBinder((JSONObject)ret);
             } else if (IsProperties.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
               ret = jsonFactory.create(clz, (JSONObject)ret);
             }
-          }
-          // Javascript always returns a double
-          if (ret instanceof Number) {
+          } else if (ret instanceof Number) {
+            // Javascript always returns a double
             ret = Double.valueOf(((Number) ret).doubleValue());
           }
         }
