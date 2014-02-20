@@ -432,7 +432,6 @@ public class JsUtils {
     } catch (Exception e) {
       if (!GWT.isProdMode()) {
         System.err.println("Error while parsing json: " + e.getMessage() + ".\n" + json);
-        new RuntimeException().printStackTrace();
       }
       return Properties.create();
     }
