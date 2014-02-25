@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -94,7 +93,7 @@ public class JsniBundleGenerator extends Generator {
           }
           try {
             // Read the javascript content
-            String content = getContent(logger, packageName.replace(".", File.separator) , value);
+            String content = getContent(logger, packageName.replace(".", "/") , value);
 
             // Adjust javascript so as we can introduce it in a JSNI comment block without
             // breaking java syntax.
@@ -129,8 +128,9 @@ public class JsniBundleGenerator extends Generator {
     InputStream in = null;
     try {
       if (!src.matches("(?i)https?://.*")) {
-        String file = path + File.separator + src;
+        String file = path + "/" + src;
         logger.log(TreeLogger.INFO, getClass().getSimpleName() + " - importing external javascript: " + file);
+
         in = this.getClass().getClassLoader().getResourceAsStream(file);
         if (in == null) {
           logger.log(TreeLogger.ERROR, "Unable to read javascript file: " + file);
