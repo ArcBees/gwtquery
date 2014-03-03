@@ -50,8 +50,8 @@ public abstract class AjaxTests extends GWTTestCase {
   };
   
   public AjaxTests() {
-    jsonGET = GQ.create("data: {a: abc, d: def}");
-    json = GQ.create("a: abc, d: def");
+    jsonGET = GQ.create("data: {a: abc, d: def}", true);
+    json = GQ.create("a: abc, d: def", true);
   }
   
   private Promise performAjaxJsonTest(Settings s) {

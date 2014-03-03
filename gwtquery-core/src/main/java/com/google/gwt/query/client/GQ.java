@@ -64,13 +64,25 @@ public abstract class GQ {
   }
   
   /**
-   * Create an instance of IsProperties. Normally a Properties javascript 
-   * object in client side, or a proxy object in the JVM
+   * Create an instance of IsProperties, a Properties JavaScriptObject in the client
+   * side and a proxy object in the JVM.
    */
   public static IsProperties create(String s) {
     return getFactory().create(s);
   }
-  
+
+  /**
+   * Create an instance of IsProperties, a Properties JavaScriptObject in the client
+   * side and a proxy object in the JVM.
+   *
+   * If fixJson is set, we correct certain errors in the Json string. It is useful
+   * for generating Properties using java strings, so as we can use a more relaxed 
+   * syntax.
+   */
+  public static IsProperties create(String s, boolean fixJson) {
+    return getFactory().create(fixJson ? Properties.wrapPropertiesString(s) : s);
+  }
+
   /**
    * Return the appropriate transport implementation depending on the runtime
    * environment: browser or JVM 

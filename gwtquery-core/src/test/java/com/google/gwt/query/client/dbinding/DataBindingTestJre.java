@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 
@@ -32,6 +33,26 @@ public class DataBindingTestJre extends GWTTestCase {
 
   public String getModuleName() {
     return null;
+  }
+
+  public void testPropertiesCreate() {
+    IsProperties p1 = GQ.create();
+    p1.set("a", "1");
+    p1.set("b", 1);
+    p1.set("c", "null");
+    p1.set("d", null);
+
+    assertEquals("1", p1.get("a"));
+    assertEquals(Double.valueOf(1), p1.get("b"));
+    assertEquals("null", p1.get("c"));
+    assertNull(p1.get("d"));
+
+    p1 = GQ.create(p1.toJson());
+
+    assertEquals("1", p1.get("a"));
+    assertEquals(Double.valueOf(1), p1.get("b"));
+    assertEquals("null", p1.get("c"));
+    assertNull(p1.get("d"));
   }
 
   public interface Item extends JsonBuilder {
@@ -62,16 +83,18 @@ public class DataBindingTestJre extends GWTTestCase {
     void y(String s);
     Function getF();
     void setF(Function f);
+    String getN();
   }
 
   boolean functionRun = false;
   public void testJsonBuilder() {
-    String json = "{M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true, 'items':[{'date':100}]}";
+    String json = "{n: null, M:0, a:1, b:{a:2,b:{a:3}},u:url, d:'2','t':['hola','adios'], 'z': true, 'items':[{'date':100}]}";
 
     JsonExample c = GQ.create(JsonExample.class);
     assertEquals(0, c.getA());
     c.parse(json, true);
 
+    assertNull(c.getN());
     assertEquals(0, c.getM());
     assertEquals(1, c.getA());
     assertNotNull(c.getB());

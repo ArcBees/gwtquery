@@ -66,8 +66,6 @@ public class JsonFactoryJre implements JsonFactory  {
           ret = jsonArrayToList(obj.getJSONArray(attr), ctype, clz.isArray());
         } else if (clz.equals(Date.class)) {
           ret = new Date(obj != null ? obj.getLong(attr): arr.getLong(idx));
-        } else if (clz.equals(String.class)) {
-          ret = String.valueOf(obj != null ? obj.get(attr) : arr.get(idx));
         } else if (clz.equals(Boolean.class) || clz.isPrimitive() && clz == Boolean.TYPE) {
           try {
             ret = obj != null ? obj.getBoolean(attr): arr.getBoolean(idx);
@@ -97,15 +95,19 @@ public class JsonFactoryJre implements JsonFactory  {
           }
         } else {
           ret = obj != null ? obj.get(attr): arr.get(idx);
-          if (ret instanceof JSONObject) {
+          if (ret == JSONObject.NULL ) {
+            // org.json returns an Null object instead of null when parsing.
+            ret = null;
+          } else if (clz.equals(String.class)) {
+            ret = String.valueOf(ret);
+          } else if (ret instanceof JSONObject) {
             if (clz == Object.class) {
               ret = jsonFactory.createBinder((JSONObject)ret);
             } else if (IsProperties.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
               ret = jsonFactory.create(clz, (JSONObject)ret);
             }
-          }
-          // Javascript always returns a double
-          if (ret instanceof Number) {
+          } else if (ret instanceof Number) {
+            // Javascript always returns a double
             ret = Double.valueOf(((Number) ret).doubleValue());
           }
         }
@@ -177,7 +179,11 @@ public class JsonFactoryJre implements JsonFactory  {
       } else if (mname.matches("getProperties|getDataImpl")) {
         return jsonObject;
       } else if (largs > 0 && ("parse".equals(mname) || "load".equals(mname))) {
-        jsonObject = new JSONObject(String.valueOf(args[0]));
+        String json = String.valueOf(args[0]);
+        if (largs > 1 && Boolean.TRUE.equals(args[0])) {
+          json = Properties.wrapPropertiesString(json);
+        }
+        jsonObject = new JSONObject(json);
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
@@ -294,7 +300,7 @@ public class JsonFactoryJre implements JsonFactory  {
   @Override
   public IsProperties create(String s) {
     IsProperties ret = createBinder();
-    ret.parse(Properties.wrapPropertiesString(s));
+    ret.parse(s);
     return ret;
   }
 

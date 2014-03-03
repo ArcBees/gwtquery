@@ -43,6 +43,7 @@ import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonBuilderBase;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.builders.Name;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -324,7 +325,7 @@ public class JsonBuilderGenerator extends Generator {
     sw.println("}");
     sw.println("public " + IsProperties.class.getName() + " create(String s) {");
     sw.indent();
-    sw.println("return " + Properties.class.getName() + ".create(s);");
+    sw.println("return (" + IsProperties.class.getName() + ")" + JsUtils.class.getName() + ".parseJSON(s);");
     sw.outdent();
     sw.println("}");
     sw.println("public " + IsProperties.class.getName() + " create() {");
