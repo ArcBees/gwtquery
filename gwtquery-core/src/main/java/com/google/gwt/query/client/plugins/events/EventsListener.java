@@ -14,6 +14,7 @@
 package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.dev.util.Strings;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NodeList;
@@ -737,13 +738,12 @@ public class EventsListener implements EventListener {
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
 
-      boolean matchNS =
-          namespace == null || namespace.isEmpty() || listener.nameSpace.equals(namespace);
+      boolean matchNS = isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
       boolean matchEVN = matchEV || listener.isTypeOf(eventName);
-      boolean matchOEVT =  (originalEventType == null && listener.getOriginalEventType() == null)
-              || (originalEventType != null && originalEventType.equals(listener
-          .getOriginalEventType()));
+      boolean matchOEVT = (isNullOrEmpty(eventName) && !isNullOrEmpty(namespace) && matchNS)
+          || (originalEventType == null && listener.getOriginalEventType() == null)
+          || (originalEventType != null && originalEventType.equals(listener.getOriginalEventType()));
       boolean matchFC = f == null || listener.isEquals(f);
 
       if (matchNS && matchEV && matchEVN && matchFC && matchOEVT) {
@@ -759,6 +759,10 @@ public class EventsListener implements EventListener {
     }
     elementEvents = newList;
 
+  }
+
+  private boolean isNullOrEmpty(String s) {
+    return s == null || s.isEmpty();
   }
 
   public void unbind(String events, Function f) {
