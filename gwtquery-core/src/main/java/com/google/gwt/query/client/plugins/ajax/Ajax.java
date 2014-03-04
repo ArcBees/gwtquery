@@ -145,6 +145,9 @@ public class Ajax extends GQuery {
             Response response = arguments(0);
             Request request = arguments(1);
             Object retData = response.getText();
+            if (response.getText() == null || response.getText().isEmpty()) {
+              return new Object[]{response.getText(), "success", request, response};
+            }
             try {
               if ("xml".equalsIgnoreCase(dataType)) {
                 retData = JsUtils.parseXML(response.getText());
