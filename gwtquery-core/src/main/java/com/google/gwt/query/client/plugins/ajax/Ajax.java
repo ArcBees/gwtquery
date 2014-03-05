@@ -145,22 +145,24 @@ public class Ajax extends GQuery {
             Response response = arguments(0);
             Request request = arguments(1);
             Object retData = response.getText();
-            try {
-              if ("xml".equalsIgnoreCase(dataType)) {
-                retData = JsUtils.parseXML(response.getText());
-              } else if ("json".equalsIgnoreCase(dataType)) {
-                retData = GQ.create(response.getText());
-              } else {
-                retData = response.getText();
-                if ("script".equalsIgnoreCase(dataType)) {
-                  ScriptInjector.fromString((String)retData).setWindow(window).inject();
+            if (retData != null && !"".equals(retData)) {
+              try {
+                if ("xml".equalsIgnoreCase(dataType)) {
+                  retData = JsUtils.parseXML(response.getText());
+                } else if ("json".equalsIgnoreCase(dataType)) {
+                  retData = GQ.create(response.getText());
+                } else {
+                  retData = response.getText();
+                  if ("script".equalsIgnoreCase(dataType)) {
+                    ScriptInjector.fromString((String)retData).setWindow(window).inject();
+                  }
                 }
-              }
-            } catch (Exception e) {
-              if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
-                GWT.getUncaughtExceptionHandler().onUncaughtException(e);
-              } else {
-                e.printStackTrace();
+              } catch (Exception e) {
+                if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
+                  GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+                } else {
+                  e.printStackTrace();
+                }
               }
             }
             return new Object[]{retData, "success", request, response};
