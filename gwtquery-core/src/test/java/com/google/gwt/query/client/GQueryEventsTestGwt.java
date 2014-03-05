@@ -1687,4 +1687,27 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(0, mouseOverFunction.invokationCounter);
     assertEquals(0, customEventFunction.invokationCounter);
   }
+
+  public void testUnbindSpecialEventWithNameSpace() {
+    $(e).html("<div id='mainDiv'>blop</div>");
+
+    CounterFunction mouseEnterFunction = new CounterFunction();
+
+    $("#mainDiv", e).on("mouseenter.mynamespace", mouseEnterFunction);
+    $("#mainDiv", e).mouseenter();
+    assertEquals(1, mouseEnterFunction.invokationCounter);
+
+    $("#mainDiv", e).off(".mynamespace");
+    $("#mainDiv", e).mouseenter();
+    assertEquals(1, mouseEnterFunction.invokationCounter);
+
+    $("#mainDiv", e).on("mouseenter.mynamespace", mouseEnterFunction);
+    $("#mainDiv", e).mouseenter();
+    assertEquals(2, mouseEnterFunction.invokationCounter);
+
+    $("#mainDiv", e).off("mouseenter.mynamespace");
+    $("#mainDiv", e).mouseenter();
+    assertEquals(2, mouseEnterFunction.invokationCounter);
+  }
+
 }
