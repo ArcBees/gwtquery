@@ -162,9 +162,17 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
         if (part1 != null && !part1.isEmpty()) {
           double n = "-=".equals(part1) ? -1 : 1;
-          double st = Double.parseDouble(trsStart);
+          
+          double st = 0;
+          MatchResult sparts = REGEX_SYMBOL_NUMBER_UNIT.exec(trsStart);
+          if (sparts != null) {
+            st = Double.parseDouble(sparts.getGroup(2));
+            unit = sparts.getGroup(3).isEmpty() ? unit : sparts.getGroup(3);
+          }
+          trsStart = "" + st + unit;
+          
           double en = Double.parseDouble(trsEnd);
-          trsEnd = "" + (st + (n*en));
+          trsEnd = "" + (st + n*en) + unit;
         }
 
         // Deal with non px units like "%"

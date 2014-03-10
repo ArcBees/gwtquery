@@ -23,8 +23,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
+import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -368,6 +370,16 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
       }
     };
     timer.schedule(duration * 2);
+  }
+  
+  public void testComputeFxPropTransitions() {
+    $(e).html("<table border=1 id=idtest><tr><td width=200px>A</td><td width=100px>B</td></tr></table>");
+    $("#idtest").css("position", "absolute").find("td");
+    final GQuery g = $("#idtest td");
+    
+    TransitFx fx = (TransitFx)TransitionsAnimation.computeFxProp(g.get(0), "width", "+=100", false);
+    assertEquals("10px", fx.transitStart.replace(".0",""));
+    assertEquals("110px", fx.transitEnd.replace(".0",""));
   }
 
   public void testStop() {
