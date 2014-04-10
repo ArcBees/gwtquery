@@ -17,7 +17,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.event.dom.client.HasNativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
@@ -401,7 +400,7 @@ public class Events extends GQuery {
 
         // Ie6-8 don't dispatch bitless event
         if ((browser.ie6 || browser.ie8) && Event.getTypeInt(evt.getType()) == -1) {
-          EventsListener.getInstance(e).dispatchEvent(evt.<Event>cast());
+          bubbleEventForIE(e, evt.<Event>cast());
         } else {
           e.dispatchEvent(evt);
         }
@@ -413,6 +412,25 @@ public class Events extends GQuery {
       }
     }
   }
+
+  private void bubbleEventForIE(Element e, Event event) {
+    if (e == null || "html".equalsIgnoreCase(e.getTagName()) || isEventPropagationStopped(event)) {
+      return;
+    }
+
+    EventsListener.getInstance(e).dispatchEvent(event);
+
+    bubbleEventForIE(e.getParentElement(), event);
+  }
+
+  /**
+   * Only valid for IE6-8
+   * @param event
+   * @return
+   */
+  private native boolean isEventPropagationStopped(Event event)/*-{
+      return !!event.cancelBubble;
+  }-*/;
 
   private void callHandlers(Element e, NativeEvent evt, Function... functions){
     for (Function f : functions) {
