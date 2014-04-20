@@ -2873,7 +2873,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * selector that determines the content to be loaded.
    *
    */
-  public GQuery load(String url, Properties data, final Function onSuccess) {
+  public GQuery load(String url, IsProperties data, final Function onSuccess) {
     return as(Ajax.Ajax).load(url, data, onSuccess);
   }
 
