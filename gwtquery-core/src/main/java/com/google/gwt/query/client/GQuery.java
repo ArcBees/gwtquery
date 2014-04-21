@@ -2458,7 +2458,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   /**
    * Set the height style property of every matched element. It's useful for using 'percent' or 'em'
-   * units Example: $(".a").width("100%")
+   * units Example: $(".a").height("100%")
    */
   public GQuery height(String height) {
     return css("height", height);
@@ -4269,6 +4269,15 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * callback after completion. Only the height is adjusted for this animation, causing all matched
    * elements to be hidden or shown in a "sliding" manner
    */
+  public Effects slideToggle(Function... f) {
+    return as(Effects).slideToggle(f);
+  }
+
+  /**
+   * Toggle the visibility of all matched elements by adjusting their height and firing an optional
+   * callback after completion. Only the height is adjusted for this animation, causing all matched
+   * elements to be hidden or shown in a "sliding" manner
+   */
   public Effects slideToggle(int millisecs, Function... f) {
     return as(Effects).slideToggle(millisecs, f);
   }
@@ -4820,6 +4829,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       e.getStyle().setPropertyPx("width", width);
     }
     return this;
+  }
+
+  /**
+   * Set the width style property of every matched element. It's useful for using 'percent' or 'em'
+   * units Example: $(".a").width("100%")
+   */
+  public GQuery width(String width) {
+    return css("width", width);
   }
 
   /**
