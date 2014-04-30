@@ -563,6 +563,15 @@ public class Effects extends QueuePlugin<Effects> {
   }
 
   /**
+   * Toggle the visibility of all matched elements by adjusting their height and firing an optional
+   * callback after completion. Only the height is adjusted for this animation, causing all matched
+   * elements to be hidden or shown in a "sliding" manner
+   */
+  public Effects slideToggle(Function... f) {
+    return as(Effects).slideToggle(Speed.DEFAULT, f);
+  }
+
+  /**
    * Toggle the visibility of all matched elements by adjusting their height and
    * firing an optional callback after completion. Only the height is adjusted
    * for this animation, causing all matched elements to be hidden or shown in a
