@@ -428,9 +428,10 @@ public class Events extends GQuery {
    * @param event
    * @return
    */
-  private native boolean isEventPropagationStopped(Event event)/*-{
-      return !!event.cancelBubble;
-  }-*/;
+  private boolean isEventPropagationStopped(Event event) {
+    // trick to avoid jnsi
+    return event.<Element>cast().getPropertyBoolean("cancelBubble");
+  }
 
   private void callHandlers(Element e, NativeEvent evt, Function... functions){
     for (Function f : functions) {
