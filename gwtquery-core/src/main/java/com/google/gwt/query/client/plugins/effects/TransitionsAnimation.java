@@ -249,10 +249,14 @@ public class TransitionsAnimation extends PropertiesAnimation {
   @Override
   public void run(int duration) {
     onStart();
+
+    // Compute initial properties
     Properties p = getFxProperties(true);
-    g.css(p);
-    // TODO: Reflow, it seems it is not needed in chrome and FF, check other browsers
-    // g.css("offsetHeight");
+    g.css(p)
+      // Some browsers need after setting initial properties re-flow (FF 24.4.0).
+      .offset();
+
+    // Compute final properties
     p = getFxProperties(false);
     g.transition(p, duration, easing, delay, new Function(){public void f() {
       onComplete();

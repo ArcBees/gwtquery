@@ -1108,7 +1108,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Set the height style property of every matched element. It's useful for using 'percent' or 'em'
-   * units Example: $(".a").width("100%")
+   * units Example: $(".a").height("100%")
    */
   LazyGQuery<T> height(String height);
 
@@ -1414,7 +1414,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * selector that determines the content to be loaded.
    *
    */
-  LazyGQuery<T> load(String url, Properties data, Function onSuccess);
+  LazyGQuery<T> load(String url, IsProperties data, Function onSuccess);
 
   /**
    * Reduce the set of matched elements to all elements before a given position. The position of the
@@ -2172,6 +2172,13 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * callback after completion. Only the height is adjusted for this animation, causing all matched
    * elements to be hidden or shown in a "sliding" manner
    */
+  Effects slideToggle(Function... f);
+
+  /**
+   * Toggle the visibility of all matched elements by adjusting their height and firing an optional
+   * callback after completion. Only the height is adjusted for this animation, causing all matched
+   * elements to be hidden or shown in a "sliding" manner
+   */
   Effects slideToggle(int millisecs, Function... f);
 
   /**
@@ -2457,6 +2464,12 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Set the width of every matched element.
    */
   LazyGQuery<T> width(int width);
+
+  /**
+   * Set the width style property of every matched element. It's useful for using 'percent' or 'em'
+   * units Example: $(".a").width("100%")
+   */
+  LazyGQuery<T> width(String width);
 
   /**
    * Wrap each matched element with the specified HTML content. This wrapping process is most useful
