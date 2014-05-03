@@ -13,6 +13,11 @@
  */
 package com.google.gwt.query.client.plugins.events;
 
+import static com.google.gwt.query.client.GQuery.$;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -27,11 +32,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.gwt.query.client.GQuery.$;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
