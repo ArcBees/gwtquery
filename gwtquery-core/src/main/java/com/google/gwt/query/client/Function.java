@@ -323,6 +323,7 @@ public abstract class Function {
    * @param e takes a com.google.gwt.user.client.Element.
    *
    */
+  @Deprecated
   public void cancel(com.google.gwt.user.client.Element e) {
     setElement(e);
   }
@@ -356,6 +357,7 @@ public abstract class Function {
    * @param e takes a com.google.gwt.user.client.Element.
    *
    */
+  @Deprecated
   public Object f(com.google.gwt.user.client.Element e, int i) {
     setElement(e);
     setIndex(i);
@@ -458,6 +460,7 @@ public abstract class Function {
    * @param elem takes a com.google.gwt.user.client.Element
    */
   private boolean loop = false;
+  @Deprecated
   public void f(com.google.gwt.user.client.Element e) {
     setElement(e);
     Widget w = e != null ? GQuery.getAssociatedWidget(e) : null;
