@@ -3,7 +3,7 @@
     <groupId>com.googlecode.gwtquery</groupId>
     <artifactId>gwtquery-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.3-SNAPSHOT</version>
     <name>Gwt Query Project</name>
     <url>http://gwtquery.com</url>
     <description>GwtQuery is a jQuery clone written in GWT.</description>
@@ -64,6 +64,7 @@
 
     <modules>
         <module>gwtquery-core</module>
+        <module>archetype</module>
     </modules>
 
     <pluginRepositories>

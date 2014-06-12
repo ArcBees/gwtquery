@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.gwtquery</groupId>
   <artifactId>gquery-archetype</artifactId>
-  <version>1.4.2</version>
+  <version>1.4.3-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>GwtQuery Archetype</name>
 

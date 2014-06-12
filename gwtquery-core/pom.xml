@@ -3,12 +3,11 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.4.1</version>
+        <version>1.4.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>gwtquery</artifactId>
     <packaging>jar</packaging>
-    <version>1.4.2-SNAPSHOT</version>
     <name>Gwt Query Core API</name>
     <url>http://gquery.org</url>
     <dependencies>
