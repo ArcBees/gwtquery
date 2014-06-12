@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.gwtquery</groupId>
   <artifactId>gquery-archetype</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2</version>
   <packaging>maven-archetype</packaging>
   <name>GwtQuery Archetype</name>
 
@@ -14,7 +14,7 @@
     <version>3</version>
   </parent>
 
-  <description>This archetype generates a Gwt-2.5.0-rc1 project with all set to use GwtQuery and its plugins.</description>
+  <description>This archetype generates a GWT-2.6.1 project with all set to use GwtQuery and its plugins.</description>
 
   <scm>
     <connection>scm:git:https://code.google.com/p/gwtquery/</connection>
