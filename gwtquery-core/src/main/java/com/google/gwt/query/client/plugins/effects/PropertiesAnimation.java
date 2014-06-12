@@ -334,7 +334,7 @@ public class PropertiesAnimation extends GQAnimation {
     // g.show();
     for (String key : prps.keys()) {
       String val = prps.getStr(key);
-      if ((fx = computeFxProp(e, key, val, hidden)) != null) {
+      if ((fx = getFx(e, key, val, hidden)) != null) {
         effects.add(fx);
         resize = resize || "height".equals(key) || "width".equals(key);
         move = move || "top".equals(key) || "left".equals(key);
@@ -348,6 +348,10 @@ public class PropertiesAnimation extends GQAnimation {
       g.css("position", "relative");
     }
     super.onStart();
+  }
+
+  protected Fx getFx(Element e, String key, String val, boolean hidden) {
+    return computeFxProp(e, key, val, hidden);
   }
 
   @Override

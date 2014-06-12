@@ -22,7 +22,6 @@ import static com.google.gwt.query.client.plugins.effects.ClipAnimation.getNorma
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Corner;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
@@ -162,17 +161,17 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
         if (part1 != null && !part1.isEmpty()) {
           double n = "-=".equals(part1) ? -1 : 1;
-          
+
           double st = 0;
           MatchResult sparts = REGEX_SYMBOL_NUMBER_UNIT.exec(trsStart);
           if (sparts != null) {
             st = Double.parseDouble(sparts.getGroup(2));
             unit = sparts.getGroup(3).isEmpty() ? unit : sparts.getGroup(3);
           }
-          trsStart = "" + st + unit;
-          
+          trsStart = "" + st;
+
           double en = Double.parseDouble(trsEnd);
-          trsEnd = "" + (st + n*en) + unit;
+          trsEnd = "" + (st + n*en);
         }
 
         // Deal with non px units like "%"
@@ -181,7 +180,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
           double to = Double.parseDouble(trsEnd);
           g.css(key, to + unit);
           start = to * start / g.cur(key, true);
-          trsStart = start + unit;
+          trsStart = "" + start;
           g.css(key, start + unit);
         }
 
@@ -219,27 +218,8 @@ public class TransitionsAnimation extends PropertiesAnimation {
   }
 
   @Override
-  public void onStart() {
-    effects = JsObjectArray.create();
-    boolean resize = false;
-    boolean move = false;
-    boolean hidden = !g.isVisible();
-    Fx fx;
-    for (String key : prps.keys()) {
-      String val = prps.getStr(key);
-      if ((fx = computeFxProp(e, key, val, hidden)) != null) {
-        effects.add(fx);
-        resize = resize || "height".equals(key) || "width".equals(key);
-        move = move || "top".equals(key) || "left".equals(key);
-      }
-    }
-    g.saveCssAttrs(ATTRS_TO_SAVE);
-    if (resize) {
-      g.css("overflow", "hidden");
-    }
-    if (move && !g.css("position", true).matches("absolute|relative|fixed")) {
-      g.css("position", "relative");
-    }
+  protected Fx getFx(Element e, String key, String val, boolean hidden) {
+    return computeFxProp(e, key, val, hidden);
   }
 
   @Override
