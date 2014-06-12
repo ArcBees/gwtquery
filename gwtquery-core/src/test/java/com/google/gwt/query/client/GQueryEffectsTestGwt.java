@@ -378,8 +378,9 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     final GQuery g = $("#idtest td");
     
     TransitFx fx = (TransitFx)TransitionsAnimation.computeFxProp(g.get(0), "width", "+=100", false);
-    assertEquals("10px", fx.transitStart.replace(".0",""));
-    assertEquals("110px", fx.transitEnd.replace(".0",""));
+    assertEquals("10", fx.transitStart.replace(".0",""));
+    assertEquals("110", fx.transitEnd.replace(".0",""));
+    assertEquals("px", fx.unit);
   }
 
   public void testStop() {
