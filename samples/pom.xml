@@ -38,6 +38,7 @@
                 <artifactId>gwt-maven-plugin</artifactId>
                 <version>${gwtmaven}</version>
                 <configuration>
+                    <runTarget>index.html</runTarget>
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
