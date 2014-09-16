@@ -19,6 +19,9 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
+import com.google.gwt.query.client.functions.Func1;
+import com.google.gwt.query.client.functions.FuncN;
+import com.google.gwt.query.client.functions.Functions;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
 import com.google.web.bindery.requestfactory.shared.Receiver;
@@ -50,7 +53,7 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
  *      }); 
  * </pre>
  */
-public class PromiseRF extends DeferredPromiseImpl {
+public class PromiseRF<T> extends DeferredPromiseImpl<T> {
   private int total = 0;
   private List<Object> responses = new ArrayList<Object>();
   private List<RequestContext> contexts = new ArrayList<RequestContext>();
@@ -58,8 +61,13 @@ public class PromiseRF extends DeferredPromiseImpl {
   /**
    * Fire a RF Request.
    */
-  public <T> PromiseRF(Request<T> request) {
-    this(new Request<?>[] {request});
+  public PromiseRF(Request<T> request) {
+    this(new Request<?>[] {request}, new FuncN<T>() {
+      @Override
+      public T call(Object... args) {
+        return (T) args[0];
+      }
+    });
   }
 
   /**
@@ -69,6 +77,15 @@ public class PromiseRF extends DeferredPromiseImpl {
    * we can append any kind of requestContexts here.
    */
   public PromiseRF(Request<?>[] requests) {
+    this(requests, new FuncN<T>() {
+      @Override
+      public T call(Object... args) {
+        return (T) args;
+      }
+    });
+  }
+
+  public PromiseRF(Request<?>[] requests, final FuncN<T> doneFunc) {
     for (Request<?> request : requests) {
       total ++;
       request.to(new Receiver<Object>() {
@@ -82,7 +99,7 @@ public class PromiseRF extends DeferredPromiseImpl {
           responses.add(response);
           // Resolve only when all requests have been received
           if (responses.size() == total) {
-            dfd.resolve(responses.toArray(new Object[responses.size()]));
+            dfd.resolve(doneFunc.call(responses.toArray(new Object[responses.size()])));
           }
         }
       });

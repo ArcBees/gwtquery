@@ -38,7 +38,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl
  *    });
  * </pre>
  */
-public abstract class PromiseFunction extends DeferredPromiseImpl {
+public abstract class PromiseFunction<T> extends DeferredPromiseImpl<T> {
   public PromiseFunction() {
     f(dfd);
   }
@@ -47,5 +47,5 @@ public abstract class PromiseFunction extends DeferredPromiseImpl {
    * This function is called once when the promise is created and the
    * new deferred is available.
    */
-  public abstract void f(Deferred dfd);
+  public abstract void f(Deferred<T> dfd);
 }
