@@ -171,7 +171,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   private static DocumentStyleImpl styleImpl;
 
-  private static RegExp tagNameRegex = RegExp.compile("<([\\w:]+)");
+  private static RegExp tagNameRegex = RegExp.compile("<([\\w:-]+)");
 
   /**
    * Static reference to the Widgets plugin
@@ -3848,9 +3848,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (name != null) {
       if (dataCache.exists(id)) {
         dataCache.getCache(id).delete(name);
-      }
-      if (dataCache.getCache(id).isEmpty()) {
-        removeData(item, null);
+        if (dataCache.getCache(id).isEmpty()) {
+          // Save memory
+          removeData(item, null);
+        }
       }
     } else {
       // when the element cache is empty we remove its entry to save memory (issue 132)
