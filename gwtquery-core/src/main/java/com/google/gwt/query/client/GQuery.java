@@ -52,6 +52,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -172,6 +173,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static DocumentStyleImpl styleImpl;
 
   private static RegExp tagNameRegex = RegExp.compile("<([\\w:-]+)");
+
+  private static RegExp simpleAttrFilter = RegExp.compile("\\[([\\w-]+)(\\^|\\$|\\*|\\||~)?=?[\\\"']?([\\w\\u00C0-\\uFFFF\\s\\-_\\.]+)?\\]");
 
   /**
    * Static reference to the Widgets plugin
@@ -2278,11 +2281,52 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     JsNodeArray array = JsNodeArray.create();
 
     for (String f : filters) {
+      final MatchResult simpleAttrMatch = simpleAttrFilter.exec(f);
       for (Element e : elements) {
         boolean ghostParent = false;
         if (e == window || e.getNodeName() == null) {
           continue;
         }
+
+        if (simpleAttrMatch != null) {
+          String attrName = simpleAttrMatch.getGroup(1);
+          String matchOp = simpleAttrMatch.getGroup(2);
+          String matchVal = simpleAttrMatch.getGroup(3);
+          boolean match;
+          switch (matchOp == null || matchOp.length() == 0 ? '0' : matchOp.charAt(0)) {
+            case '0':
+              match = e.hasAttribute(attrName);
+              break;
+            case '=':
+              match = e.getAttribute(attrName).equals(matchVal);
+              break;
+            case '^':
+              match = e.getAttribute(attrName).startsWith(matchVal);
+              break;
+            case '$':
+              match = e.getAttribute(attrName).endsWith(matchVal);
+              break;
+            case '*':
+              match = e.getAttribute(attrName).contains(matchVal);
+              break;
+            case '|':
+              match = (e.getAttribute(attrName) + "-").startsWith(matchVal + "-");
+              break;
+            case '~':
+              match = (" " + e.getAttribute(attrName) + " ").contains(" " + matchVal + " ");
+              break;
+            case '!':
+              match = !e.getAttribute(attrName).equals(matchVal);
+              break;
+            default:
+              match = false;
+          }
+          if (match) {
+            array.addNode(e);
+          }
+          continue;
+        }
+
         if (e.getParentNode() == null) {
           DOM.createDiv().appendChild(e);
           ghostParent = true;
