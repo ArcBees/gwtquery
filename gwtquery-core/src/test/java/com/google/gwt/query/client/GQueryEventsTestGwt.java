@@ -567,6 +567,27 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
   }
 
+  public void testLiveWithEventBitPredicate() {
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+
+    EventsListener.getInstance(e).live(Event.ONCLICK, null, null, null, new Predicate() {
+      @Override
+      public boolean f(Element e, int index) {
+        return e.getClassName().contains("clickable");
+      }
+    }, null, new Function() {
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+
+    $("#div1", e).addClass("clickable");
+    $("#span1", e).click();
+
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+
+  }
+
   public void testLiveWithMultipleEvent() {
 
     $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");

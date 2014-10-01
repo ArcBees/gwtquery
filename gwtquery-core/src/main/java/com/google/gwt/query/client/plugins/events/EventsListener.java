@@ -19,6 +19,7 @@ import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
@@ -121,6 +122,8 @@ public class EventsListener implements EventListener {
     int times;
     int type;
     String eventName;
+    // for predicate selector
+    Predicate predicateSelector;
 
     BindFunction(int type, String eventName, String nameSpace, String originalEventType,
         Function function, Object data, int times) {
@@ -201,7 +204,17 @@ public class EventsListener implements EventListener {
    */
   private static class LiveBindFunction extends BindFunction {
 
-    JsNamedArray<JsObjectArray<BindFunction>> bindFunctionBySelector;
+    static class Entry {
+      JsObjectArray<BindFunction> functions;
+      Predicate predicate;
+
+      Entry(JsObjectArray<BindFunction> functions, Predicate predicate) {
+        this.functions = functions;
+        this.predicate = predicate;
+      }
+    }
+
+    JsNamedArray<Entry> bindFunctionBySelector;
 
     LiveBindFunction(String eventName, String namespace, Object data) {
       super(BITLESS, eventName, namespace, null, null, data, -1);
@@ -216,14 +229,16 @@ public class EventsListener implements EventListener {
     /**
      * Add a {@link BindFunction} for a specific css selector
      */
-    public void addBindFunctionForSelector(String cssSelector, BindFunction f) {
-      JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+    public void addBindFunctionForSelector(Object selector, BindFunction f) {
+      Predicate predicateSelector = selector instanceof Predicate ? (Predicate) selector : null;
+      String cssSelector = predicateSelector == null ? (String) selector : "!" + selector;
+      Entry bindFunctions = bindFunctionBySelector.get(cssSelector);
       if (bindFunctions == null) {
-        bindFunctions = JsObjectArray.create();
+        bindFunctions = new Entry(JsObjectArray.<BindFunction>create(), predicateSelector);
         bindFunctionBySelector.put(cssSelector, bindFunctions);
       }
 
-      bindFunctions.add(f);
+      bindFunctions.functions.add(f);
     }
 
     public void clean() {
@@ -247,12 +262,14 @@ public class EventsListener implements EventListener {
 
       // Compute the live selectors which respond to this event type
       List<String> validSelectors = new ArrayList<String>();
-      for (String cssSelector : bindFunctionBySelector.keys()) {
-        JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
-        for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
-          BindFunction f = bindFunctions.get(i);
+      List<String> validPredicates = new ArrayList<String>();
+      for (String selector : bindFunctionBySelector.keys()) {
+        Entry bindFunctions = bindFunctionBySelector.get(selector);
+        for (int i = 0; bindFunctions != null && i < bindFunctions.functions.length(); i++) {
+          BindFunction f = bindFunctions.functions.get(i);
           if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
-            validSelectors.add(cssSelector);
+            if (selector.startsWith("!")) validPredicates.add(selector);
+            else validSelectors.add(selector);
             break;
           }
         }
@@ -261,6 +278,13 @@ public class EventsListener implements EventListener {
       // Create a structure of elements which matches the selectors
       JsNamedArray<NodeList<Element>> realCurrentTargetBySelector =
           $(eventTarget).closest(validSelectors.toArray(new String[0]), liveContextElement);
+
+      for (String selector : validPredicates) {
+        final Entry entry = bindFunctionBySelector.get(selector);
+        NodeList<Element> match = $(eventTarget).closest(entry.predicate, liveContextElement).get();
+        if (match.getLength() > 0) realCurrentTargetBySelector.put(selector, match);
+      }
+
       // nothing matches the selectors
       if (realCurrentTargetBySelector.length() == 0) {
         return true;
@@ -269,7 +293,7 @@ public class EventsListener implements EventListener {
       Element stopElement = null;
       GqEvent gqEvent = GqEvent.create(event);
       for (String cssSelector : realCurrentTargetBySelector.keys()) {
-        JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
+        JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector).functions;
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
           BindFunction f = bindFunctions.get(i);
           if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
@@ -303,7 +327,7 @@ public class EventsListener implements EventListener {
       if (nameSpace == null && originalEventName == null) {
         bindFunctionBySelector.delete(cssSelector);
       } else {
-        JsObjectArray<BindFunction> functions = bindFunctionBySelector.get(cssSelector);
+        JsObjectArray<BindFunction> functions = bindFunctionBySelector.get(cssSelector).functions;
 
         if (functions == null || functions.length() == 0) {
           return;
@@ -320,9 +344,10 @@ public class EventsListener implements EventListener {
           }
         }
 
-        bindFunctionBySelector.delete(cssSelector);
         if (newFunctions.length() > 0) {
-          bindFunctionBySelector.put(cssSelector, newFunctions);
+          bindFunctionBySelector.get(cssSelector).functions = newFunctions;
+        } else {
+          bindFunctionBySelector.delete(cssSelector);
         }
 
       }
@@ -660,7 +685,7 @@ public class EventsListener implements EventListener {
   }
 
   public void live(int eventbits, String nameSpace, String eventName, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+      Object cssSelector, Object data, Function... funcs) {
     if (eventbits != BITLESS) {
       liveBitEvent(eventbits, nameSpace, originalEventName, cssSelector, data, funcs);
     } else {
@@ -669,7 +694,7 @@ public class EventsListener implements EventListener {
   }
 
   private void liveBitlessEvent(String eventName, String nameSpace, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+      Object cssSelector, Object data, Function... funcs) {
     LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
 
     if (liveBindFunction == null) {
@@ -686,7 +711,7 @@ public class EventsListener implements EventListener {
   }
 
   private void liveBitEvent(int eventbits, String nameSpace, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+      Object cssSelector, Object data, Function... funcs) {
     for (int i = 0; i < 28; i++) {
       int event = (int) Math.pow(2, i);
       if ((eventbits & event) == event) {
