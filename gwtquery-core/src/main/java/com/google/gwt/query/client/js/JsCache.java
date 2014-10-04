@@ -67,7 +67,7 @@ public class JsCache extends JavaScriptObject {
   @SuppressWarnings("unchecked")
   public final <T> T get(Object id, Class<? extends T> clz) {
     Object o = get(id);
-    if (clz != null) {
+    if (o != null && clz != null) {
       if (o instanceof Double) {
         Double d = (Double)o;
         if (clz == Float.class) o = d.floatValue();

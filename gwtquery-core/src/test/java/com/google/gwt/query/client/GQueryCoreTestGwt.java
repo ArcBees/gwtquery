@@ -15,6 +15,11 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -49,11 +54,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.window;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -1555,6 +1555,16 @@ public class GQueryCoreTestGwt extends GWTTestCase {
 
     $(parent).click();
     assertEquals("red", $(parent).css(CSS.BACKGROUND_COLOR, false));
+  }
+
+  public void testDataString() {
+    // put something in the cache for the element
+    $(e).data("initCache", "initCache");
+
+    assertNotNull($(e).data("initCache", String.class));
+
+    // returned the string "null" before the patch
+    assertNull($(e).data("nonExistingKey", String.class));
   }
 
   public void testData() {
