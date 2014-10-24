@@ -42,6 +42,13 @@
           <classifier>sources</classifier>
           <scope>provided</scope>
         </dependency>
+        <!-- needed in server side if we don't include gwt-servlet
+             we will remove this when using elemental.json or android.json -->
+        <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>20140107</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
