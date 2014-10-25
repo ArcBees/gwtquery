@@ -15,7 +15,11 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.core.client.GWT;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.apache.http.MethodNotSupportedException;
+
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
@@ -27,10 +31,12 @@ import com.google.gwt.query.vm.JsonFactoryJre;
  * A set of useful methods for gQuery which can be run in browser or JVM.
  */
 public abstract class GQ {
-  
+
   private static AjaxTransport ajaxTransport;
-  
+
   private static JsonFactory jsonFactory;
+
+  private static Boolean isClient;
 
   public static IsProperties create() {
     return getFactory().create();
@@ -62,7 +68,7 @@ public abstract class GQ {
     ret.load(payload);
     return ret;
   }
-  
+
   /**
    * Create an instance of IsProperties, a Properties JavaScriptObject in the client
    * side and a proxy object in the JVM.
@@ -76,7 +82,7 @@ public abstract class GQ {
    * side and a proxy object in the JVM.
    *
    * If fixJson is set, we correct certain errors in the Json string. It is useful
-   * for generating Properties using java strings, so as we can use a more relaxed 
+   * for generating Properties using java strings, so as we can use a more relaxed
    * syntax.
    */
   public static IsProperties create(String s, boolean fixJson) {
@@ -85,32 +91,61 @@ public abstract class GQ {
 
   /**
    * Return the appropriate transport implementation depending on the runtime
-   * environment: browser or JVM 
+   * environment: browser or JVM
    */
   public static AjaxTransport getAjaxTransport() {
-    if (ajaxTransport == null) {
-      ajaxTransport = GWT.isClient() ?
-          new AjaxTransportJs() :
-            new AjaxTransportJre();    
-     }
+    initFactory();
     return ajaxTransport;
   }
 
   private static JsonFactory getFactory() {
-    if (jsonFactory == null) {
-      jsonFactory = GWT.isClient() ?
-          GWT.<JsonFactory>create(JsonFactory.class) :
-          new JsonFactoryJre();
-    }
+    initFactory();
     return jsonFactory;
   }
-  
+
   /**
-   * Change the default Ajax transport by a customized one, useful for 
+   * Change the default Ajax transport by a customized one, useful for
    * testing purposes.
    */
   public static void setAjaxTransport(AjaxTransport transport) {
     ajaxTransport = transport;
   }
-  
+
+  /*
+   * Create the appropriate version of factories depending
+   * if whether we are running dev-mode
+   */
+  private static void initFactory() {
+    if (jsonFactory == null) {
+      try {
+        // We use reflection because the server side should not
+        // depend on gwt-servlet nor gwt-dev. Hence if GWT is not 
+        // in our classpath means that we are in server side, otherwise
+        // we use GWT to figure out if we are running devmode.
+        // This is run once, so no performance issues to worry about.
+        Class.forName("com.google.gwt.core.shared.GWTBridge");
+        Class<?> gwt = Class.forName("com.google.gwt.core.shared.GWT");
+        Method method = gwt.getMethod("isClient");
+        Object ret = method.invoke(null);
+        if (ret instanceof Boolean && ((Boolean) ret)) {
+          // We are running DevMode, so create Js versions of the factories
+          method = gwt.getMethod("create", Class.class);
+          ret = method.invoke(null,
+          new Object[] {JsonFactory.class});
+          jsonFactory = (JsonFactory) ret;
+          ajaxTransport = new AjaxTransportJs();
+          return;
+        }
+      } catch (ClassNotFoundException ignore) {
+      } catch (NoSuchMethodException ignore) {
+      } catch (SecurityException ignore) {
+      } catch (IllegalAccessException ignore) {
+      } catch (IllegalArgumentException ignore) {
+      } catch (InvocationTargetException ignore) {
+      }
+      // We are running in the JVM, so create Jre versions.
+      jsonFactory = new JsonFactoryJre();
+      ajaxTransport = new AjaxTransportJre();
+    }
+  }
 }
