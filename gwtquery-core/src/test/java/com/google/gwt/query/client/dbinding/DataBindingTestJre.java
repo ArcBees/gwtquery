@@ -15,16 +15,19 @@
  */
 package com.google.gwt.query.client.dbinding;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Tests for Deferred which can run either in JVM and GWT
@@ -41,11 +44,13 @@ public class DataBindingTestJre extends GWTTestCase {
     p1.set("b", 1);
     p1.set("c", "null");
     p1.set("d", null);
+    p1.set("e", true);
 
     assertEquals("1", p1.get("a"));
     assertEquals(Double.valueOf(1), p1.get("b"));
     assertEquals("null", p1.get("c"));
     assertNull(p1.get("d"));
+    assertTrue((Boolean)p1.get("e"));
 
     p1 = GQ.create(p1.toJson());
 
@@ -57,7 +62,7 @@ public class DataBindingTestJre extends GWTTestCase {
 
   public interface Item extends JsonBuilder {
     public static enum Type {BIG, SMALL}
-    
+
     Date getDate();
     void setDate(Date d);
     Type getType();
@@ -79,6 +84,8 @@ public class DataBindingTestJre extends GWTTestCase {
     JsonExample setD(long l);
     List<Item> getItems();
     void setItems(List<Item> a);
+    Item getI();
+    void setI(Item i);
     String y();
     void y(String s);
     Function getF();
@@ -124,21 +131,25 @@ public class DataBindingTestJre extends GWTTestCase {
     assertTrue(functionRun);
 
     Item i1 = GQ.create(Item.class);
-    Item i2 = GQ.create(Item.class);
     i1.setDate(new Date(2000));
+    c.setI(i1);
+    assertEquals(2000l, c.getI().getDate().getTime());
+
+    Item i2 = GQ.create(Item.class);
     i2.setDate(new Date(3000));
     Item[] items = new Item[]{i1, i2};
     c.setItems(Arrays.asList(items));
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
 
+
     assertFalse(c.toJson().startsWith("{\"jsonExample\":"));
     assertTrue(c.toJsonWithName().startsWith("{\"jsonExample\":"));
     assertTrue(c.toJson().contains("\"items\":[{\"date\":"));
-    assertTrue(c.toQueryString().contains("t[]=bar"));
+    assertTrue(c.toQueryString().replace("\"bar\"", "bar").contains("t[]=bar"));
     assertTrue(c.toQueryString().contains("a=1"));
     assertTrue(c.toQueryString().contains("\"a\":2"));
-    
+
     assertEquals(1, c.<Number>get("a").intValue());
   }
 }

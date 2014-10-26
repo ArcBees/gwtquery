@@ -30,6 +30,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-elemental</artifactId>
+            <version>${gwtversion}</version>
+        </dependency>
+        <dependency>
           <groupId>javax.validation</groupId>
           <artifactId>validation-api</artifactId>
           <version>1.0.0.GA</version>
@@ -42,13 +47,6 @@
           <classifier>sources</classifier>
           <scope>provided</scope>
         </dependency>
-        <!-- needed in server side if we don't include gwt-servlet
-             we will remove this when using elemental.json or android.json -->
-        <dependency>
-          <groupId>org.json</groupId>
-          <artifactId>json</artifactId>
-          <version>20140107</version>
-        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -57,6 +55,9 @@
             </resource>
             <resource>
                 <directory>${basedir}/src/main/super</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources</directory>
             </resource>
         </resources>
         <testResources>
@@ -99,8 +100,28 @@
                   <includes>**/GQueryGwtSuiteTest.java</includes>
               </configuration>
             </plugin>
+            <!-- We include elemental json implementation for JVM so as people
+                 using GQuery json builders and ajax in server side don't have
+                 to include that dependency -->
+            <plugin>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>unpack-dependencies</goal>
+                  </goals>
+                  <phase>generate-resources</phase>
+                  <configuration>
+                    <includeGroupIds>com.google.gwt</includeGroupIds>
+                    <includeArtifactIds>gwt-elemental</includeArtifactIds>
+                    <excludeTransitive>true</excludeTransitive>
+                    <includes>elemental/json/**/*</includes>
+                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
 
         </plugins>
     </build>
-
 </project>

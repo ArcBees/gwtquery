@@ -15,11 +15,9 @@
  */
 package com.google.gwt.query.client.ajax;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import javax.servlet.Servlet;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.query.servlet.GQAjaxTestServlet;
+import com.google.gwt.query.vm.AjaxTransportJre;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.HandlerWrapper;
@@ -27,32 +25,41 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.webapp.WebAppClassLoader;
 import org.mortbay.jetty.webapp.WebAppContext;
 
-import com.google.gwt.query.servlet.GQAjaxTestServlet;
-import com.google.gwt.query.vm.AjaxTransportJre;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.Servlet;
 
 /**
  * Tests for Data Binders and Ajax run in the JVM
  */
 public class AjaxTestJre extends AjaxTests {
-  
+
   static Server server;
   static int port = new Random().nextInt(1000) + 2000;
 
   public String getModuleName() {
     return null;
   }
-  
+
   public AjaxTestJre() throws Exception {
+    // Disable stderr, so as stack traces of expected failures do not
+    // mess the output.
+    System.setErr(new PrintStream(new ByteArrayOutputStream()));
+
     String localDomain = "http://127.0.0.1:" + port;
     AjaxTransportJre.enableCORS(localDomain);
     String corsDomain = "http://localhost:" + port;
-    
+
     echoUrl = localDomain + "/" + servletPath;
     echoUrlCORS = corsDomain + "/" + servletPath + "?cors=true";
 
     startWebServer(port);
   }
-  
+
   protected void startWebServer(int port) throws Exception {
     if (server == null) {
       final Map<String, Class<? extends Servlet>> servlets = new HashMap<String, Class<? extends Servlet>>();
@@ -63,7 +70,7 @@ public class AjaxTestJre extends AjaxTests {
 
   public static Server createWebServer(final int port, final String resourceBase, final String[] classpath,
       final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
-    
+
     final Server server = new Server(port);
 
     final WebAppContext context = new WebAppContext();
