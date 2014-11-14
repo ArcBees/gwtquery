@@ -98,7 +98,6 @@
                   <productionMode>false</productionMode>
                   <timeOut>300</timeOut>
                   <includes>**/GQueryGwtSuiteTest.java</includes>
-                  <mode>htmlunit</mode>
               </configuration>
             </plugin>
 
