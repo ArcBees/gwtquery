@@ -286,7 +286,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Create a new GQuery given a list of nodes, elements or widgets
+   * Create a new GQuery given a list of {@link com.google.gwt.dom.client.Node} or
+   * {@link com.google.gwt.user.client.ui.IsWidget}
    */
   public static GQuery $(List<?> nodesOrWidgets) {
     JsNodeArray elms = JsNodeArray.create();
@@ -405,6 +406,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static GQuery $(Widget... widgets) {
     return $(Arrays.asList(widgets));
+  }
+
+  /**
+   * Wrap a GQuery around one node or an array of existing ones.
+   */
+  public static GQuery $(Node... nodes) {
+    return $(Arrays.asList(nodes));
   }
 
   /**
@@ -2545,7 +2553,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return -1;
   }
-  
+
   /**
    * Return the position of the first matched element in relation with its sibblings.
    */
@@ -3206,14 +3214,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
     return new GQuery(offParent);
   }
-  
+
   /**
    * Attach an event handler function for one or more events to the selected elements.
    */
   public GQuery on(String eventName, Function... funcs) {
     return bind(eventName, funcs);
   }
-  
+
   /**
    * Attach an event handler function for one or more events to the selected elements.
    */
@@ -3234,7 +3242,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery on(String eventName, String selector, Object data, Function... funcs) {
     return delegate(selector, eventName, data, funcs);
   }
- 
+
   /**
    * Remove all event handlers.
    */
@@ -3248,7 +3256,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery off(String eventName) {
     return unbind(eventName, null);
   }
-  
+
   /**
    * Remove an event handler
    */
@@ -3262,7 +3270,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery off(String eventName, String selector) {
     return undelegate(selector, eventName);
   }
-    
+
   /**
    * Binds a handler to a particular Event (like Event.ONCLICK) for each matched element. The
    * handler is executed only once for each element.
