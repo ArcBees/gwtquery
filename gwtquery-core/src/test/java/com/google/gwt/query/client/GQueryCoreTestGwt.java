@@ -1301,7 +1301,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
      assertEquals(3, $inner.filter("div").length());
   }
 
-  public void testFilterMethodWithSimpleAttrShortcut(){
+  public void testFilterMethodAsPredicateFilter() {
     // first test filter on element attached to the DOM
     String content = "" +
       "<div>" +
@@ -1318,15 +1318,24 @@ public class GQueryCoreTestGwt extends GWTTestCase {
 
     $(e).html(content);
 
-    assertEquals(10, $("*", e).length());
-    assertEquals(1, $("*", e).filter("[data-exists]").length());
-    assertEquals(1, $("*", e).filter("[data-equal='val']").length());
-    assertEquals(1, $("*", e).filter("[data-starts-with^='v']").length());
-    assertEquals(1, $("*", e).filter("[data-ends-with$='l']").length());
-    assertEquals(1, $("*", e).filter("[data-contains*='a']").length());
-    assertEquals(1, $("*", e).filter("[data-hyphen|='val']").length());
-    assertEquals(1, $("*", e).filter("[data-word~='val']").length());
-    assertEquals(9, $("*", e).filter("[data-not!='val']").length());
+    final List<Predicate> predicates = new ArrayList<Predicate>();
+    final GQuery $ = new GQuery($("*", e)) {
+      @Override
+      public GQuery filter(Predicate filterFn) {
+        predicates.add(filterFn);
+        return super.filter(filterFn);
+      }
+    };
+    assertEquals(10, $.length());
+    assertEquals(1, $.filter("[data-exists]").length());
+    assertEquals(1, $.filter("[data-equal='val']").length());
+    assertEquals(1, $.filter("[data-starts-with^='v']").length());
+    assertEquals(1, $.filter("[data-ends-with$='l']").length());
+    assertEquals(1, $.filter("[data-contains*='a']").length());
+    assertEquals(1, $.filter("[data-hyphen|='val']").length());
+    assertEquals(1, $.filter("[data-word~='val']").length());
+    assertEquals(9, $.filter("[data-not!='val']").length());
+    assertEquals(8, predicates.size());
 
     // second test filter on element non attached to the DOM
     GQuery $html = $("<div data=val>div1</div><div data=val>div2</div><div data=val>div3</div><span>span1</span>");

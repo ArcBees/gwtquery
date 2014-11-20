@@ -174,8 +174,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static RegExp tagNameRegex = RegExp.compile("<([\\w:-]+)");
 
-  private static RegExp simpleAttrFilter = RegExp.compile("\\[([\\w-]+)(\\^|\\$|\\*|\\||~)?=?[\\\"']?([\\w\\u00C0-\\uFFFF\\s\\-_\\.]+)?\\]");
-
   /**
    * Static reference to the Widgets plugin
    */
@@ -2272,80 +2270,63 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
    */
-  // TODO performance bad...
   public GQuery filter(String... filters) {
-    if (filters.length == 0 || filters[0] == null) {
+    String sel = "";
+    for (String f : filters) {
+      sel += (!sel.isEmpty() ? "," : "") + f;
+    }
+    return filter(sel);
+  }
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   */
+  public GQuery filter(String selector) {
+    if (selector.isEmpty()) {
       return this;
     }
 
+    Predicate predicateFilter = Filters.asPredicateFilter(selector);
+    if (predicateFilter != null) {
+      return filter(predicateFilter);
+    }
+
+    Element ghostParent = null;
+    ArrayList<Element> parents = new ArrayList<Element>();
+    List<Element> elmList = new ArrayList<Element>();
+    for (Element e : elements()) {
+      if (e == window || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
+        continue;
+      }
+      elmList.add(e);
+      Element p = e.getParentElement();
+      if (p == null) {
+        if (ghostParent == null) {
+          ghostParent = Document.get().createDivElement();
+          parents.add(ghostParent);
+        }
+        p = ghostParent;
+        p.appendChild(e);
+      } else if (!parents.contains(p)) {
+        parents.add(p);
+      }
+    }
     JsNodeArray array = JsNodeArray.create();
-
-    for (String f : filters) {
-      final MatchResult simpleAttrMatch = simpleAttrFilter.exec(f);
-      for (Element e : elements) {
-        boolean ghostParent = false;
-        if (e == window || e.getNodeName() == null) {
-          continue;
-        }
-
-        if (simpleAttrMatch != null) {
-          String attrName = simpleAttrMatch.getGroup(1);
-          String matchOp = simpleAttrMatch.getGroup(2);
-          String matchVal = simpleAttrMatch.getGroup(3);
-          boolean match;
-          switch (matchOp == null || matchOp.length() == 0 ? '0' : matchOp.charAt(0)) {
-            case '0':
-              match = e.hasAttribute(attrName);
-              break;
-            case '=':
-              match = e.getAttribute(attrName).equals(matchVal);
-              break;
-            case '^':
-              match = e.getAttribute(attrName).startsWith(matchVal);
-              break;
-            case '$':
-              match = e.getAttribute(attrName).endsWith(matchVal);
-              break;
-            case '*':
-              match = e.getAttribute(attrName).contains(matchVal);
-              break;
-            case '|':
-              match = (e.getAttribute(attrName) + "-").startsWith(matchVal + "-");
-              break;
-            case '~':
-              match = (" " + e.getAttribute(attrName) + " ").contains(" " + matchVal + " ");
-              break;
-            case '!':
-              match = !e.getAttribute(attrName).equals(matchVal);
-              break;
-            default:
-              match = false;
-          }
-          if (match) {
-            array.addNode(e);
-          }
-          continue;
-        }
-
-        if (e.getParentNode() == null) {
-          DOM.createDiv().appendChild(e);
-          ghostParent = true;
-        }
-
-        for (Element c : $(f, e.getParentNode()).elements) {
-          if (c == e) {
-            array.addNode(c);
-            break;
-          }
-        }
-
-        if (ghostParent) {
-          e.removeFromParent();
+    for (Element e : parents) {
+      NodeList<Element> n  = engine.select(selector, e);
+      for (int i = 0, l = n.getLength(); i < l; i++) {
+        Element el = n.getItem(i);
+        if (elmList.contains(el)) {
+          elmList.remove(el);
+          array.addNode(el);
         }
       }
     }
-
-    return pushStack(unique(array), "filter", filters[0]);
+    if (ghostParent != null) {
+      $(ghostParent).empty();
+    }
+    return pushStack(array, "filter", selector);
   }
 
   /**
