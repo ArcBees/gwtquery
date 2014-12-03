@@ -160,6 +160,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static final String OLD_DISPLAY = OLD_DATA_PREFIX + "display";
 
+  /**
+   * Set it to false if all your elements are attached to the DOM and you want to
+   * increase filter performance.
+   */
+  public static boolean filterDetached = true;
+
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
   // Sizzle POS regex : usefull in some methods
@@ -2268,40 +2274,76 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
+   * By default it works for either detached and attached elements unless the static
+   * {@link #filterDetached} is set to false.
    */
-  // TODO performance bad...
   public GQuery filter(String... filters) {
-    if (filters.length == 0 || filters[0] == null) {
+    return filter(filterDetached, filters);
+  }
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   * Setting considerDetached parameter to true, means that we should consider detached elements
+   * as well which implies some performance penalties.
+   */
+  public GQuery filter(boolean filterDetached, String... filters) {
+    String sel = "";
+    for (String f : filters) {
+      sel += (sel.isEmpty() ? "" : ",") + f;
+    }
+    return filter(filterDetached, sel);
+  }
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   * Setting considerDetached parameter to true, means that we should consider detached elements
+   * as well which implies some performance penalties.
+   */
+  public GQuery filter(boolean filterDetached, String selector) {
+    if (selector.isEmpty()) {
       return this;
     }
-
-    JsNodeArray array = JsNodeArray.create();
-
-    for (String f : filters) {
-      for (Element e : elements) {
-        boolean ghostParent = false;
-        if (e == window || e.getNodeName() == null) {
-          continue;
-        }
-        if (e.getParentNode() == null) {
-          DOM.createDiv().appendChild(e);
-          ghostParent = true;
-        }
-
-        for (Element c : $(f, e.getParentNode()).elements) {
-          if (c == e) {
-            array.addNode(c);
-            break;
+    Element ghostParent = null;
+    ArrayList<Node> parents = new ArrayList<Node>();
+    List<Node> elmList = new ArrayList<Node>();
+    for (Node e : elements()) {
+      if (e == window || e == document || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
+        continue;
+      }
+      elmList.add(e);
+      if (filterDetached) {
+        Element p = e.getParentElement();
+        if (p == null) {
+          if (ghostParent == null) {
+            ghostParent = Document.get().createDivElement();
+            parents.add(ghostParent);
           }
+          p = ghostParent;
+          p.appendChild(e);
+        } else if (!parents.contains(p)) {
+          parents.add(p);
         }
-
-        if (ghostParent) {
-          e.removeFromParent();
+      } else if (parents.isEmpty()) {
+         parents.add(document);
+      }
+    }
+    JsNodeArray array = JsNodeArray.create();
+    for (Node e : parents) {
+      NodeList<Element> n  = getSelectorEngine().select(selector, e);
+      for (int i = 0, l = n.getLength(); i < l; i++) {
+        Element el = n.getItem(i);
+        if (elmList.contains(el)) {
+          elmList.remove(el);
+          array.addNode(el);
         }
       }
     }
-
-    return pushStack(unique(array), "filter", filters[0]);
+    if (ghostParent != null) {
+      $(ghostParent).empty();
+    }
+    return pushStack(array, "filter", selector);
   }
 
   /**
