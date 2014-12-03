@@ -65,6 +65,8 @@ public class BrowserGenerator extends Generator {
       writer.println("protected boolean isIe6() {return " + "ie6".equals(ua) + ";}");
       writer.println("protected boolean isIe8() {return " + "ie8".equals(ua) + ";}");
       writer.println("protected boolean isIe9() {return " + "ie9".equals(ua) + ";}");
+      writer.println("protected boolean isIe10() {return " + "ie10".equals(ua) + ";}");
+      writer.println("protected boolean isIe11() {return " + "gecko1_8".equals(ua) + ";}");
       writer.println("public String toString() {return \"Browser:\"" +
       		" + \" webkit=\" + webkit" +
           " + \" mozilla=\" + mozilla" +

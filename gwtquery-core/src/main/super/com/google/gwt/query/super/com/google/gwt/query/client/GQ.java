@@ -40,6 +40,12 @@ public class GQ {
     ret.load(payload);
     return ret;
   }
+
+  public static <T extends JsonBuilder> T create(Class<T> clz, IsProperties obj) {
+    T ret = create(clz);
+    ret.load(obj.getDataImpl());
+    return ret;
+  }
   
   public static IsProperties create(String s) {
     return getFactory().create(s);

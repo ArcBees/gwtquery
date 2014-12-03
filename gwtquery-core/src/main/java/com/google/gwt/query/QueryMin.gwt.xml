@@ -31,8 +31,7 @@
     <property-provider name="selectorCapability">
         <![CDATA[
          return !/_force_no_native/.test(document.location.search) &&
-                document.querySelectorAll &&
-                /native/.test(String(document.querySelectorAll)) ? "native" : "js";
+                typeof document.querySelectorAll == 'function';
         ]]>
     </property-provider>
 
@@ -69,6 +68,7 @@
         <any>
             <when-property-is name="user.agent" value="ie8"/>
             <when-property-is name="user.agent" value="ie9"/>
+            <when-property-is name="user.agent" value="ie10"/>
         </any>
         <when-property-is name="selectorCapability" value="native"/>
     </replace-with>
