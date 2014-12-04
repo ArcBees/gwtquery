@@ -1301,6 +1301,47 @@ public class GQueryCoreTestGwt extends GWTTestCase {
      assertEquals(3, $inner.filter("div").length());
   }
 
+  public void testFilterMethodAsPredicateFilter() {
+    // first test filter on element attached to the DOM
+    String content = "" +
+      "<div>" +
+      "  <div data-exists='val'/>" +
+      "  <div data-equal='val'/>" +
+      "  <div data-starts-with='val'/>" +
+      "  <div data-ends-with='val'/>" +
+      "  <div data-contains='val-ue'/>" +
+      "  <div data-hyphen='val'/>" +
+      "  <div data-word='val ue'/>" +
+      "  <div data-not='val'/>" +
+      "  <div/>" +
+      "</div>";
+
+    $(e).html(content);
+
+    final List<Predicate> predicates = new ArrayList<Predicate>();
+    final GQuery $ = new GQuery($("*", e)) {
+      @Override
+      public GQuery filter(Predicate filterFn) {
+        predicates.add(filterFn);
+        return super.filter(filterFn);
+      }
+    };
+    assertEquals(10, $.length());
+    assertEquals(1, $.filter("[data-exists]").length());
+    assertEquals(1, $.filter("[data-equal='val']").length());
+    assertEquals(1, $.filter("[data-starts-with^='v']").length());
+    assertEquals(1, $.filter("[data-ends-with$='l']").length());
+    assertEquals(1, $.filter("[data-contains*='a']").length());
+    assertEquals(1, $.filter("[data-hyphen|='val']").length());
+    assertEquals(1, $.filter("[data-word~='val']").length());
+    assertEquals(9, $.filter("[data-not!='val']").length());
+    assertEquals(8, predicates.size());
+
+    // second test filter on element non attached to the DOM
+    GQuery $html = $("<div data=val>div1</div><div data=val>div2</div><div data=val>div3</div><span>span1</span>");
+    assertEquals(3, $html.filter("[data=val]").length());
+  }
+
   public void testGQueryWidgets() {
     final Button b1 = new Button("click-me");
     RootPanel.get().add(b1);

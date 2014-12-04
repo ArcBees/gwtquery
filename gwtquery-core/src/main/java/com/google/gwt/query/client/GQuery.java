@@ -52,6 +52,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -2269,39 +2270,63 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
    */
-  // TODO performance bad...
   public GQuery filter(String... filters) {
-    if (filters.length == 0 || filters[0] == null) {
+    String sel = "";
+    for (String f : filters) {
+      sel += (!sel.isEmpty() ? "," : "") + f;
+    }
+    return filter(sel);
+  }
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   */
+  public GQuery filter(String selector) {
+    if (selector.isEmpty()) {
       return this;
     }
 
+    Predicate predicateFilter = Filters.asPredicateFilter(selector);
+    if (predicateFilter != null) {
+      return filter(predicateFilter);
+    }
+
+    Element ghostParent = null;
+    ArrayList<Element> parents = new ArrayList<Element>();
+    List<Element> elmList = new ArrayList<Element>();
+    for (Element e : elements()) {
+      if (e == window || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
+        continue;
+      }
+      elmList.add(e);
+      Element p = e.getParentElement();
+      if (p == null) {
+        if (ghostParent == null) {
+          ghostParent = Document.get().createDivElement();
+          parents.add(ghostParent);
+        }
+        p = ghostParent;
+        p.appendChild(e);
+      } else if (!parents.contains(p)) {
+        parents.add(p);
+      }
+    }
     JsNodeArray array = JsNodeArray.create();
-
-    for (String f : filters) {
-      for (Element e : elements) {
-        boolean ghostParent = false;
-        if (e == window || e.getNodeName() == null) {
-          continue;
-        }
-        if (e.getParentNode() == null) {
-          DOM.createDiv().appendChild(e);
-          ghostParent = true;
-        }
-
-        for (Element c : $(f, e.getParentNode()).elements) {
-          if (c == e) {
-            array.addNode(c);
-            break;
-          }
-        }
-
-        if (ghostParent) {
-          e.removeFromParent();
+    for (Element e : parents) {
+      NodeList<Element> n  = engine.select(selector, e);
+      for (int i = 0, l = n.getLength(); i < l; i++) {
+        Element el = n.getItem(i);
+        if (elmList.contains(el)) {
+          elmList.remove(el);
+          array.addNode(el);
         }
       }
     }
-
-    return pushStack(unique(array), "filter", filters[0]);
+    if (ghostParent != null) {
+      $(ghostParent).empty();
+    }
+    return pushStack(array, "filter", selector);
   }
 
   /**
