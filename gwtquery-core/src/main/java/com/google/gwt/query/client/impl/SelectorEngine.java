@@ -107,7 +107,8 @@ public class SelectorEngine implements HasSelector {
     filters = JsMap.create();
     filters.put("visible", new Predicate(){
       public boolean f(Element e, int index) {
-        return (e.getOffsetWidth() + e.getOffsetHeight()) > 0 && styleImpl.isVisible(e);
+        return (e.getOffsetWidth() + e.getOffsetHeight()) > 0 &&
+          !"none".equalsIgnoreCase(styleImpl.curCSS(e, "display", true));
       }
     });
     filters.put("hidden", new Predicate() {

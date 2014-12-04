@@ -16,6 +16,7 @@
 package com.google.gwt.query.client.impl;
 
 import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -211,7 +212,7 @@ public class DocumentStyleImpl {
    * Return whether the element is visible
    */
   public boolean isVisible(Element e) {
-    return !"none".equalsIgnoreCase(curCSS(e, "display", true));
+    return SelectorEngine.filters.get("visible").f(e, 0);
   }
 
   public double num(String val) {
