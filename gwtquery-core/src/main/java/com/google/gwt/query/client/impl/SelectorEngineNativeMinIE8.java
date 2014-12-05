@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.impl;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -33,7 +35,9 @@ public class SelectorEngineNativeMinIE8 extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      GWT.log("GwtQuery: Selector '" + selector + "' is unsupported in this IE8 engine, check that you are in 'standards mode' or configure your module to use JS fallback");
+      console.error("GwtQuery: Selector '" + selector + "' is unsupported in this SelectorEngineNativeMinIE8 engine,"
+          + " check that you are in 'standards mode' or configure your module to use JS fallback. "
+          + e.getMessage());
       return null;
     }
   }

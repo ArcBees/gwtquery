@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.impl;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.GWT;
@@ -265,9 +267,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         if (!SelectorEngine.hasXpathEvaluate()) {
           throw new RuntimeException("This Browser does not support Xpath selectors.", e);
         }
-        System.err.println("ERROR: xpathEvaluate invalid xpath expression:"
-          + xsel + " css-selector:" + sel + "\n");
-        e.printStackTrace();
+        console.error("ERROR: xpathEvaluate invalid xpath expression:"
+          + xsel + " css-selector:" + sel + " " + e.getMessage() + "\n");
       }
       return elm;
     }

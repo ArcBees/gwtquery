@@ -15,6 +15,8 @@
  */
 package com.google.gwt.query.client.impl;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -64,7 +66,7 @@ public class SelectorEngineNative extends SelectorEngineImpl {
       try {
         return SelectorEngine.querySelectorAllImpl(selector, ctx);
       } catch (Exception e) {
-        System.err.println("ERROR SelectorEngineNative " + e.getMessage()
+        console.info("ERROR SelectorEngineNative " + e.getMessage()
             + " " + selector + ", falling back to "
             + impl.getClass().getName().replaceAll(".*\\.", ""));
         return impl.select(selector, ctx);

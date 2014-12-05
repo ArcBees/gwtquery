@@ -15,7 +15,8 @@
  */
 package com.google.gwt.query.client.impl;
 
-import com.google.gwt.core.client.GWT;
+import static com.google.gwt.query.client.GQuery.console;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -33,7 +34,9 @@ public class SelectorEngineNativeMin extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      GWT.log("GwtQuery: Selector '" + selector + "' is unsupported in this Native engine, do not use this syntax or configure your module to use JS fallback");
+      console.error("GwtQuery: Selector '" + selector + 
+          "' is unsupported in this SelectorEngineNativeMin engine."
+          + " Do not use this syntax or configure your module to use a JS fallback. " + e.getMessage());
       return null;
     }
   }
