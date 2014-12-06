@@ -18,6 +18,7 @@ package com.google.gwt.query.client.impl;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Console;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsObjectArray;
 
 /**
  * Implementation of the Console interface based on the
@@ -70,11 +71,11 @@ public class ConsoleBrowser implements Console {
       if (initialized) super.dir(arg);
     }
     @Override
-    public void error(Object arg) {
+    public void error(JavaScriptObject arg) {
       if (initialized) super.error(arg);
     }
     @Override
-    public void info(Object arg) {
+    public void info(JavaScriptObject arg) {
       if (initialized) super.info(arg);
     }
     @Override
@@ -86,7 +87,7 @@ public class ConsoleBrowser implements Console {
       if (initialized) super.profileEnd(title);
     }
     @Override
-    public void warn(Object arg) {
+    public void warn(JavaScriptObject arg) {
       if (initialized) super.warn(arg);
     }
     @Override
@@ -115,8 +116,8 @@ public class ConsoleBrowser implements Console {
       $wnd.console.dir(arg);
     }-*/;
 
-    public native void error(Object arg) /*-{
-      $wnd.console.error(arg);
+    public native void error(JavaScriptObject arg) /*-{
+      $wnd.console.error.apply($wnd.console, arg);
     }-*/;
 
     public native void group(Object arg) /*-{
@@ -131,12 +132,12 @@ public class ConsoleBrowser implements Console {
       $wnd.console.groupEnd();
     }-*/;
 
-    public native void info(Object arg) /*-{
-      $wnd.console.info(arg);
+    public native void info(JavaScriptObject arg) /*-{
+      $wnd.console.info.apply($wnd.console, arg);
     }-*/;
 
-    public native void log(Object arg) /*-{
-      $wnd.console.log(arg);
+    public native void log(JavaScriptObject arg) /*-{
+      $wnd.console.log.apply($wnd.console, arg);
     }-*/;
 
     public native void profile(String title) /*-{
@@ -159,8 +160,8 @@ public class ConsoleBrowser implements Console {
       $wnd.console.timeStamp(arg);
     }-*/;
 
-    public native void warn(Object arg) /*-{
-      $wnd.console.warn(arg);
+    public native void warn(JavaScriptObject arg) /*-{
+      $wnd.console.warn.apply($wnd.console, arg);
     }-*/;
   }
 
@@ -186,6 +187,11 @@ public class ConsoleBrowser implements Console {
   }
 
   @Override
+  public void error(Object... args) {
+    impl.error(toJs(args));
+  }
+
+  @Override
   public void group(Object arg) {
     impl.group(toJs(arg));
   }
@@ -206,8 +212,18 @@ public class ConsoleBrowser implements Console {
   }
 
   @Override
+  public void info(Object... args) {
+    impl.info(toJs(args));
+  }
+
+  @Override
   public void log(Object arg) {
     impl.log(toJs(arg));
+  }
+
+  @Override
+  public void log(Object... args) {
+    impl.log(toJs(args));
   }
 
   @Override
@@ -240,14 +256,16 @@ public class ConsoleBrowser implements Console {
     impl.warn(toJs(arg));
   }
 
-  /**
-   * Don't pass GWT Objects to JS methods
-   */
-  private Object toJs(Object arg) {
-    if (arg instanceof JavaScriptObject || arg instanceof String) {
-      return arg;
-    } else {
-      return String.valueOf(arg);
+  @Override
+  public void warn(Object... arg) {
+    impl.warn(toJs(arg));
+  }
+
+  private JsObjectArray<?> toJs(Object... arg) {
+    JsObjectArray<Object> ret = JsObjectArray.createArray().cast();
+    for (Object o : arg) {
+      ret.add(o);
     }
+    return ret;
   }
 }

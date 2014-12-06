@@ -38,6 +38,11 @@ public interface Console {
   void error(Object arg);
 
   /**
+   * Outputs an error message. You may use string substitution and additional arguments with this method.
+   */
+  void error(Object... args);
+
+  /**
    * Creates a new inline group, indenting all following output by another level. To move back out a
    * level, call groupEnd().
    */
@@ -62,10 +67,22 @@ public interface Console {
   void info(Object arg);
 
   /**
+   * Informative logging information. You may use string substitution and additional arguments with
+   * this method.
+   */
+  void info(Object... args);
+
+  /**
    * For general output of logging information. You may use string substitution and additional
    * arguments with this method.
    */
   void log(Object arg);
+
+  /**
+   * For general output of logging information. You may use string substitution and additional
+   * arguments with this method.
+   */
+  void log(Object... args);
 
   /**
    * Starts a JavaScript CPU profile with a name. To complete the profile, call console.profileEnd().
@@ -84,7 +101,7 @@ public interface Console {
   void time(String title);
 
   /**
-   * Stops the specified timer and logs the elapsed time in seconds since its start. 
+   * Stops the specified timer and logs the elapsed time in seconds since its start.
    */
   void timeEnd(String title);
 
@@ -98,4 +115,10 @@ public interface Console {
    * method.
    */
   void warn(Object arg);
+
+  /**
+   * Outputs a warning message. You may use string substitution and additional arguments with this
+   * method.
+   */
+  void warn(Object... args);
 }
