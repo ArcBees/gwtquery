@@ -13,12 +13,7 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.plugins.QueuePlugin.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -26,9 +21,19 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.HasCssName;
+import com.google.gwt.dom.client.TextAreaElement;
 import com.google.gwt.query.client.css.CSS;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
@@ -59,6 +64,11 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GwtQuery is a GWT clone of the popular jQuery library.
@@ -159,12 +169,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   private static final String OLD_DATA_PREFIX = "old-";
 
   private static final String OLD_DISPLAY = OLD_DATA_PREFIX + "display";
-
-  /**
-   * Set it to false if all your elements are attached to the DOM and you want to
-   * increase filter performance.
-   */
-  public static boolean filterDetached = true;
 
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
@@ -770,11 +774,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return new Deferred();
   }
 
-  private static SelectorEngine getSelectorEngine() {
+  public static SelectorEngine getSelectorEngine() {
     if (engine == null) {
-      engine = new SelectorEngine();
+      engine = GWT.create(SelectorEngine.class);
     }
-
     return engine;
   }
 
@@ -836,7 +839,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery add(GQuery elementsToAdd) {
     return pushStack(JsUtils.copyNodeList(nodeList, elementsToAdd.nodeList, true)
-        .<JsNodeArray> cast(), "add", getSelector() + "," + elementsToAdd.getSelector());
+        .<JsNodeArray> cast(), "add", join(",", getSelector(), elementsToAdd.getSelector()));
   }
 
   /**
@@ -2261,38 +2264,32 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * false, then the element is removed - anything else and the element is kept.
    */
   public GQuery filter(Predicate filterFn) {
-    JsNodeArray result = JsNodeArray.create();
-    int i = 0;
-    for (Element e : elements) {
-      if (filterFn.f(e, i++)) {
-        result.addNode(e);
-      }
-    }
+    JsNodeArray result = getSelectorEngine().filter(nodeList, filterFn).cast();
     return pushStack(result, "filter", currentSelector);
   }
 
   /**
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
-   * By default it works for either detached and attached elements unless the static
-   * {@link #filterDetached} is set to false.
+   * By default it works for either detached and attached elements unless
+   * {@link SelectorEngine#filterDetached} is set to false.
    */
   public GQuery filter(String... filters) {
-    return filter(filterDetached, filters);
+    String selector = join(", ", filters);
+    JsNodeArray result = getSelectorEngine().filter(nodeList, selector).cast();
+    return pushStack(result, "filter", selector);
   }
 
   /**
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
-   * Setting considerDetached parameter to true, means that we should consider detached elements
-   * as well which implies some performance penalties.
+   * Setting filterDetached parameter to true, means that we should consider detached elements
+   * as well which implies some performance penalty.
    */
   public GQuery filter(boolean filterDetached, String... filters) {
-    String sel = "";
-    for (String f : filters) {
-      sel += (sel.isEmpty() ? "" : ",") + f;
-    }
-    return filter(filterDetached, sel);
+    String selector = join(", ", filters);
+    JsNodeArray result = getSelectorEngine().filter(nodeList, selector, filterDetached).cast();
+    return pushStack(result, "filter", selector);
   }
 
   /**
@@ -2305,45 +2302,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     if (selector.isEmpty()) {
       return this;
     }
-    Element ghostParent = null;
-    ArrayList<Node> parents = new ArrayList<Node>();
-    List<Node> elmList = new ArrayList<Node>();
-    for (Node e : elements()) {
-      if (e == window || e == document || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
-        continue;
-      }
-      elmList.add(e);
-      if (filterDetached) {
-        Element p = e.getParentElement();
-        if (p == null) {
-          if (ghostParent == null) {
-            ghostParent = Document.get().createDivElement();
-            parents.add(ghostParent);
-          }
-          p = ghostParent;
-          p.appendChild(e);
-        } else if (!parents.contains(p)) {
-          parents.add(p);
-        }
-      } else if (parents.isEmpty()) {
-         parents.add(document);
-      }
-    }
-    JsNodeArray array = JsNodeArray.create();
-    for (Node e : parents) {
-      NodeList<Element> n  = getSelectorEngine().select(selector, e);
-      for (int i = 0, l = n.getLength(); i < l; i++) {
-        Element el = n.getItem(i);
-        if (elmList.contains(el)) {
-          elmList.remove(el);
-          array.addNode(el);
-        }
-      }
-    }
-    if (ghostParent != null) {
-      $(ghostParent).empty();
-    }
-    return pushStack(array, "filter", selector);
+    JsNodeArray result = getSelectorEngine().filter(nodeList, selector, filterDetached).cast();
+    return pushStack(result, "filter", selector);
   }
 
   /**
@@ -4716,10 +4676,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * $(...).val(new String[]{"value"});
    */
   public GQuery val(String... values) {
-    String value = values.length > 0 ? values[0] : "";
-    for (int i = 1; i < values.length; i++) {
-      value += "," + values[i];
-    }
+    String value = join(",", values);
     for (Element e : elements) {
       String name = e.getNodeName();
       if ("select".equalsIgnoreCase(name)) {
@@ -5018,5 +4975,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery wrapInner(String html) {
     return wrapInner($(html));
+  }
+
+  private String join(String chr, String... values) {
+    String value = "";
+    for (int i = 0; i < values.length; i++) {
+      value += i > 0 ? chr + values[i] : values[i];
+    }
+    return value;
   }
 }
