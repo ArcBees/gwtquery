@@ -16,10 +16,10 @@
 
 <module>
     <inherits name='com.google.gwt.user.User'/>
-    
+
     <source path="client"/>
     <super-source path="super"/>
-    
+
     <!-- Browser flags -->
     <generate-with class="com.google.gwt.query.rebind.BrowserGenerator">
         <when-type-assignable class="com.google.gwt.query.client.Browser"/>
@@ -122,6 +122,11 @@
         <any>
             <when-property-is name="user.agent" value="ie8"/>
         </any>
+    </replace-with>
+
+    <!-- GQuery uses GWT.create to create the selector engine so as it can be overriden by users -->
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngine">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngine"/>
     </replace-with>
 
     <!-- UI implementations -->

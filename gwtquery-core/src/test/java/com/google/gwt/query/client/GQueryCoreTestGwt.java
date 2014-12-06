@@ -877,7 +877,6 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   public void testShowHide() {
     $(e).html(
         "<p id='id1' style='display: inline'>Content 1</p><p id='id2'>Content 2</p><p id='id3'>Content 3</p>");
-
     final GQuery sectA = $("#id1");
     final GQuery sectB = $("#id2");
     final GQuery sectC = $("#id3");

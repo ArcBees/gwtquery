@@ -1015,8 +1015,25 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Removes all elements from the set of matched elements that do not pass the specified css
    * expression. This method is used to narrow down the results of a search.
+   * {@link #filterDetached} is set to false.
    */
   LazyGQuery<T> filter(String... filters);
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   * Setting considerDetached parameter to true, means that we should consider detached elements
+   * as well which implies some performance penalties.
+   */
+  LazyGQuery<T> filter(boolean filterDetached, String... filters);
+
+  /**
+   * Removes all elements from the set of matched elements that do not pass the specified css
+   * expression. This method is used to narrow down the results of a search.
+   * Setting considerDetached parameter to true, means that we should consider detached elements
+   * as well which implies some performance penalties.
+   */
+  LazyGQuery<T> filter(boolean filterDetached, String selector);
 
   /**
    * Searches for all elements that match the specified css expression. This method is a good way to

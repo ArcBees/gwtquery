@@ -15,11 +15,17 @@
  */
 package com.google.gwt.query.client.impl;
 
+import static com.google.gwt.query.client.GQuery.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNodeArray;
@@ -97,6 +103,13 @@ public class SelectorEngine implements HasSelector {
 
   public final SelectorEngineImpl impl;
 
+  /**
+   * Set it to false if all your elements are attached to the DOM and you want to
+   * increase filter performance using {@link GQuery#getSelectorEngine()}
+   * method.
+   */
+  public boolean filterDetached = true;
+
   protected Node root = Document.get();
 
   public static final boolean hasQuerySelector = hasQuerySelectorAll();
@@ -151,6 +164,55 @@ public class SelectorEngine implements HasSelector {
       if (p.f(e, i)) {
         res.addNode(e, j++);
       }
+    }
+    return res;
+  }
+
+  public NodeList<Element> filter(NodeList<Element> nodes, String selector) {
+    return filter(nodes, selector, filterDetached);
+  }
+
+  public NodeList<Element> filter(NodeList<Element> nodes, String selector, boolean filterDetached) {
+    JsNodeArray res = JsNodeArray.create();
+    if (selector.isEmpty()){
+      return res;
+    }
+    Element ghostParent = null;
+    ArrayList<Node> parents = new ArrayList<Node>();
+    List<Node> elmList = new ArrayList<Node>();
+    for (int i = 0, l = nodes.getLength(); i < l; i++) {
+      Node e = nodes.getItem(i);
+      if (e == window || e == document || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
+        continue;
+      }
+      elmList.add(e);
+      if (filterDetached) {
+        Element p = e.getParentElement();
+        if (p == null) {
+          if (ghostParent == null) {
+            ghostParent = Document.get().createDivElement();
+            parents.add(ghostParent);
+          }
+          p = ghostParent;
+          p.appendChild(e);
+        } else if (!parents.contains(p)) {
+          parents.add(p);
+        }
+      } else if (parents.isEmpty()) {
+         parents.add(document);
+      }
+    }
+    for (Node e : parents) {
+      NodeList<Element> n  = select(selector, e);
+      for (int i = 0, l = n.getLength(); i < l; i++) {
+        Element el = n.getItem(i);
+        if (elmList.remove(el)) {
+          res.addNode(el);
+        }
+      }
+    }
+    if (ghostParent != null) {
+      ghostParent.setInnerHTML(null);
     }
     return res;
   }
@@ -223,12 +285,10 @@ public class SelectorEngine implements HasSelector {
    */
   public static native boolean hasQuerySelectorAll() /*-{
     return $doc.location.href.indexOf("_force_no_native") < 0 &&
-           $doc.querySelectorAll &&
-           /native/.test(String($doc.querySelectorAll)) ? true : false;
+           typeof $doc.querySelectorAll == 'function';
   }-*/;
 
   public static native boolean hasXpathEvaluate() /*-{
-    return $doc.evaluate ? true : false;
+    return !!$doc.evaluate;
   }-*/;
-
 }

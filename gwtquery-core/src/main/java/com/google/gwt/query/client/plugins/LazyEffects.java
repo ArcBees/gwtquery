@@ -363,6 +363,13 @@ public interface LazyEffects<T> extends LazyBase<T>{
   LazyEffects<T> slideRight(int millisecs, Function... f);
 
   /**
+   * Toggle the visibility of all matched elements by adjusting their height and firing an optional
+   * callback after completion. Only the height is adjusted for this animation, causing all matched
+   * elements to be hidden or shown in a "sliding" manner
+   */
+  LazyEffects<T> slideToggle(Function... f);
+
+  /**
    * Toggle the visibility of all matched elements by adjusting their height and
    * firing an optional callback after completion. Only the height is adjusted
    * for this animation, causing all matched elements to be hidden or shown in a
