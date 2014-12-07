@@ -70,6 +70,7 @@
     <generate-with class="com.google.gwt.query.rebind.SelectorGeneratorNativeIE9">
         <when-type-assignable class="com.google.gwt.query.client.Selectors"/>
         <when-property-is name="user.agent" value="ie9"/>
+        <when-property-is name="user.agent" value="ie10"/>
     </generate-with>
 
     <!--  Document Style -->
@@ -95,6 +96,7 @@
             <when-property-is name="user.agent" value="ie6"/>
             <when-property-is name="user.agent" value="ie8"/>
             <when-property-is name="user.agent" value="ie9"/>
+            <when-property-is name="user.agent" value="ie10"/>
         </any>
     </replace-with>
 
@@ -115,6 +117,7 @@
             <when-property-is name="user.agent" value="opera"/>
             <when-property-is name="user.agent" value="safari"/>
             <when-property-is name="user.agent" value="ie9"/>
+            <when-property-is name="user.agent" value="ie10"/>
         </any>
     </replace-with>
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeIE8">
@@ -139,6 +142,7 @@
             <when-property-is name="user.agent" value="ie6" />
             <when-property-is name="user.agent" value="ie8" />
             <when-property-is name="user.agent" value="ie9" />
+            <when-property-is name="user.agent" value="ie10" />
         </any>
     </replace-with>
 
@@ -167,6 +171,5 @@
          module in your .gwt.xml file. See issue #213
      -->
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
-    <add-linker name="stddoctype"/>
 
 </module>

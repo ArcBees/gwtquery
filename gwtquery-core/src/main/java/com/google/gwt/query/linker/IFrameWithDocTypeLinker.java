@@ -17,6 +17,7 @@ package com.google.gwt.query.linker;
 
 import com.google.gwt.core.ext.LinkerContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.linker.LinkerOrder;
 import com.google.gwt.core.ext.linker.Shardable;
@@ -32,15 +33,20 @@ public class IFrameWithDocTypeLinker extends IFrameLinker {
 
   private static final String DOCTYPE = "<!doctype html>\n";
 
+  @Deprecated
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
       String strongName) throws UnableToCompleteException {
+    logger.log(Type.WARN,
+        "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
     return DOCTYPE + super.getModulePrefix(logger, context, strongName);
-
   }
 
   @Override
+  @Deprecated
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
       String strongName, int numFragments) throws UnableToCompleteException {
+    logger.log(Type.WARN,
+        "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
     return DOCTYPE
         + super.getModulePrefix(logger, context, strongName, numFragments);
 
