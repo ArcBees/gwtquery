@@ -31,7 +31,7 @@
     <property-provider name="selectorCapability">
         <![CDATA[
          return !/_force_no_native/.test(document.location.search) &&
-                typeof document.querySelectorAll == 'function';
+                typeof document.querySelectorAll == 'function' ? 'native' : 'js';
         ]]>
     </property-provider>
 
