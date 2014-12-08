@@ -17,8 +17,7 @@ package com.google.gwt.query.client.impl;
 
 import static com.google.gwt.query.client.GQuery.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -178,8 +177,8 @@ public class SelectorEngine implements HasSelector {
       return res;
     }
     Element ghostParent = null;
-    ArrayList<Node> parents = new ArrayList<Node>();
-    List<Node> elmList = new ArrayList<Node>();
+    HashSet<Node> parents = new HashSet<Node>();
+    HashSet<Node> elmList = new HashSet<Node>();
     for (int i = 0, l = nodes.getLength(); i < l; i++) {
       Node e = nodes.getItem(i);
       if (e == window || e == document || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
