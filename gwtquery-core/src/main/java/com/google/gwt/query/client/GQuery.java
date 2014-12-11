@@ -3361,7 +3361,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * for the root element).
    */
   public GQuery parents() {
-    return parentsUntil(null);
+    return parentsUntil((String) null);
   }
 
   /**
@@ -3376,7 +3376,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Get the ancestors of each element in the current set of matched elements, up to but not
    * including the element matched by the selector.
-   *
    */
   public GQuery parentsUntil(String selector) {
     JsNodeArray result = JsNodeArray.create();
@@ -3384,6 +3383,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       Node par = e.getParentNode();
       while (par != null && par != document) {
         if (selector != null && $(par).is(selector)) {
+          break;
+        }
+        result.addNode(par);
+        par = par.getParentNode();
+      }
+    }
+    return new GQuery(unique(result)).setPreviousObject(this);
+  }
+
+  /**
+   * Get the ancestors of each element in the current set of matched elements, up to but not
+   * including the element matched by the selector.
+   */
+  public GQuery parentsUntil(Node selector) {
+    JsNodeArray result = JsNodeArray.create();
+    for (Element e : elements) {
+      Node par = e.getParentNode();
+      while (par != null && par != document) {
+        if (selector != null && par == selector) {
           break;
         }
         result.addNode(par);
