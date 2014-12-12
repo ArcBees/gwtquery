@@ -3405,7 +3405,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       int i = 0;
       Node par = e.getParentNode();
       while (par != null && par != document) {
-        if (!predicate.f(par, i)) {
+        if (predicate.f(par, i)) {
           break;
         }
         result.addNode(par);
