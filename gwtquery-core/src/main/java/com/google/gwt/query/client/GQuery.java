@@ -3377,35 +3377,40 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Get the ancestors of each element in the current set of matched elements, up to but not
    * including the element matched by the selector.
    */
-  public GQuery parentsUntil(String selector) {
-    JsNodeArray result = JsNodeArray.create();
-    for (Element e : elements) {
-      Node par = e.getParentNode();
-      while (par != null && par != document) {
-        if (selector != null && $(par).is(selector)) {
-          break;
-        }
-        result.addNode(par);
-        par = par.getParentNode();
+  public GQuery parentsUntil(final String selector) {
+    return parentsUntil(new Predicate(){
+      @Override
+      public boolean f(Element e, int index) {
+        return $(e).is(selector);
       }
-    }
-    return new GQuery(unique(result)).setPreviousObject(this);
+    });
   }
 
   /**
    * Get the ancestors of each element in the current set of matched elements, up to but not
-   * including the element matched by the selector.
+   * including the node.
    */
-  public GQuery parentsUntil(Node selector) {
+  public GQuery parentsUntil(final Node node) {
+    return parentsUntil(new Predicate() {
+      @Override
+      public boolean f(Element e, int index) {
+        return e == node;
+      }
+    });
+  }
+
+  private GQuery parentsUntil(Predicate predicate) {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
+      int i = 0;
       Node par = e.getParentNode();
       while (par != null && par != document) {
-        if (selector != null && par == selector) {
+        if (!predicate.f(par, i)) {
           break;
         }
         result.addNode(par);
         par = par.getParentNode();
+        i++;
       }
     }
     return new GQuery(unique(result)).setPreviousObject(this);
