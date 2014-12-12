@@ -3380,7 +3380,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery parentsUntil(final String selector) {
     return parentsUntil(new Predicate(){
       @Override
-      public boolean f(Element e, int index) {
+      public <T> boolean f(T e, int index) {
         return selector != null && $(e).is(selector);
       }
     });
@@ -3393,7 +3393,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery parentsUntil(final Node node) {
     return parentsUntil(new Predicate() {
       @Override
-      public boolean f(Element e, int index) {
+      public <T> boolean f(T e, int index) {
         return node != null && e == node;
       }
     });
