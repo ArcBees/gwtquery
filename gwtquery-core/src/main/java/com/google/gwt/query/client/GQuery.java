@@ -3361,7 +3361,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * for the root element).
    */
   public GQuery parents() {
-    return parentsUntil(null);
+    return parentsUntil((String) null);
   }
 
   /**
@@ -3376,18 +3376,41 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * Get the ancestors of each element in the current set of matched elements, up to but not
    * including the element matched by the selector.
-   *
    */
-  public GQuery parentsUntil(String selector) {
+  public GQuery parentsUntil(final String selector) {
+    return parentsUntil(new Predicate(){
+      @Override
+      public <T> boolean f(T e, int index) {
+        return selector != null && $(e).is(selector);
+      }
+    });
+  }
+
+  /**
+   * Get the ancestors of each element in the current set of matched elements, up to but not
+   * including the node.
+   */
+  public GQuery parentsUntil(final Node node) {
+    return parentsUntil(new Predicate() {
+      @Override
+      public <T> boolean f(T e, int index) {
+        return node != null && e == node;
+      }
+    });
+  }
+
+  private GQuery parentsUntil(Predicate predicate) {
     JsNodeArray result = JsNodeArray.create();
     for (Element e : elements) {
+      int i = 0;
       Node par = e.getParentNode();
       while (par != null && par != document) {
-        if (selector != null && $(par).is(selector)) {
+        if (predicate.f(par, i)) {
           break;
         }
         result.addNode(par);
         par = par.getParentNode();
+        i++;
       }
     }
     return new GQuery(unique(result)).setPreviousObject(this);

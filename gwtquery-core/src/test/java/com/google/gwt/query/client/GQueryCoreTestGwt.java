@@ -667,7 +667,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     //parentsUntil()
     content = "<div id='mainDiv'><div id='subDiv1' class='subDiv'><div id='subSubDiv1'><p id='p1'>child1</p></div></div><div id='subDiv2' class='subDiv'><div id='subSubDiv2'><p id='p2'>child2</p></div></div></div>";
     $(e).html(content);
-    $("p",e).parentsUntil("#mainDiv").css(CSS.COLOR.with(RGBColor.RED));
+    $("p", e).parentsUntil("#mainDiv").css(CSS.COLOR.with(RGBColor.RED));
     assertEquals("red", $("#subDiv1", e).css(CSS.COLOR, false));
     assertEquals("red", $("#subSubDiv1", e).css(CSS.COLOR, false));
     assertEquals("red", $("#subDiv2", e).css(CSS.COLOR, false));
@@ -679,6 +679,19 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     $("#p1",e).parentsUntil(".subDiv").css(CSS.COLOR.with(RGBColor.YELLOW));
     assertEquals("red", $("#subDiv1", e).css(CSS.COLOR, false));
     assertEquals("yellow", $("#subSubDiv1", e).css(CSS.COLOR, false));
+
+    //parentsUntil()
+    content = "<div id='mainDiv'><div id='subDiv1' class='subDiv'><div id='subSubDiv1'><p id='p1'>child1</p></div></div><div id='subDiv2' class='subDiv'><div id='subSubDiv2'><p id='p2'>child2</p></div></div></div>";
+    $(e).html(content);
+    Element node = $("#mainDiv", e).get(0);
+    $("p", e).parentsUntil(node).css(CSS.COLOR.with(RGBColor.RED));
+    assertEquals("red", $("#subDiv1", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subSubDiv1", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subDiv2", e).css(CSS.COLOR, false));
+    assertEquals("red", $("#subSubDiv2", e).css(CSS.COLOR, false));
+    assertEquals("", $("#mainDiv", e).css(CSS.COLOR, false));
+    assertEquals("", $("#p1", e).css(CSS.COLOR, false));
+    assertEquals("", $("#p2", e).css(CSS.COLOR, false));
 
     // is()
     content = "<form><input type=\"checkbox\"></form>";

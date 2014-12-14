@@ -1728,9 +1728,14 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Get the ancestors of each element in the current set of matched elements, up to but not
    * including the element matched by the selector.
-   *
    */
   LazyGQuery<T> parentsUntil(String selector);
+
+  /**
+   * Get the ancestors of each element in the current set of matched elements, up to but not
+   * including the element matched by the selector.
+   */
+  LazyGQuery<T> parentsUntil(Node selector);
 
   /**
    * Gets the top and left position of an element relative to its offset parent. The returned object
