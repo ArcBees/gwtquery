@@ -166,7 +166,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
           MatchResult sparts = REGEX_SYMBOL_NUMBER_UNIT.exec(trsStart);
           if (sparts != null) {
             st = Double.parseDouble(sparts.getGroup(2));
-            unit = sparts.getGroup(3).isEmpty() ? unit : sparts.getGroup(3);
+            unit = sparts.getGroup(3) == null || sparts.getGroup(3).isEmpty() ? unit : sparts.getGroup(3);
           }
           trsStart = "" + st;
 
@@ -175,7 +175,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
         }
 
         // Deal with non px units like "%"
-        if (!unit.isEmpty() && !"px".equals(unit) && trsStart.matches("\\d+")) {
+        if (!unit.isEmpty() && !"px".equals(unit) && trsStart.matches("[-+]?[\\d.]+")) {
           double start = Double.parseDouble(trsStart);
           double to = Double.parseDouble(trsEnd);
           g.css(key, to + unit);

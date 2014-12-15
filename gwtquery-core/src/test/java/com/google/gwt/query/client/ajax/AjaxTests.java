@@ -36,24 +36,24 @@ public abstract class AjaxTests extends GWTTestCase {
   protected String echoUrl, echoUrlCORS;
   protected IsProperties json, jsonGET;
   protected String servletPath = "test.json";
-  
+
   private Function failFunction = new Function() {
     public void f() {
       fail();
     }
   };
-  
+
   private Function finishFunction = new Function() {
     public void f() {
       finishTest();
     }
   };
-  
+
   public AjaxTests() {
     jsonGET = GQ.create("data: {a: abc, d: def}", true);
     json = GQ.create("a: abc, d: def", true);
   }
-  
+
   private Promise performAjaxJsonTest(Settings s) {
     delayTestFinish(5000);
     return Ajax.ajax(s)
@@ -64,7 +64,7 @@ public abstract class AjaxTests extends GWTTestCase {
       }})
       .fail(failFunction);
   }
-  
+
   private Promise performAjaxJsonTest_CORS(Settings s) {
     return performAjaxJsonTest(s)
       .done(new Function() {public void f() {
@@ -99,10 +99,10 @@ public abstract class AjaxTests extends GWTTestCase {
       .setUrl(echoUrlCORS)
       .setData(json)
       .setDataType("json");
-    
+
     performAjaxJsonTest_CORS(s);
   }
-  
+
   public void testAjaxJsonGet() {
     Settings s = Ajax.createSettings()
       .setType("get")
@@ -112,7 +112,7 @@ public abstract class AjaxTests extends GWTTestCase {
 
     performAjaxJsonTest(s);
   }
-  
+
   @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxJsonGet_CORS() {
     Settings s = Ajax.createSettings()
@@ -130,12 +130,12 @@ public abstract class AjaxTests extends GWTTestCase {
           }
         });
   }
-  
+
   @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxJsonGet_CORS_WithCredentials_Supported() {
     Settings s = Ajax.createSettings()
       .setType("get")
-      // Enable credentials in servlet 
+      // Enable credentials in servlet
       .setUrl(echoUrlCORS + "&credentials=true")
       .setData(jsonGET)
       .setDataType("json")
@@ -150,22 +150,22 @@ public abstract class AjaxTests extends GWTTestCase {
         }
       });
   }
-  
+
   @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxJsonGet_CORS_WithCredentials_Unsupported() {
     Settings s = Ajax.createSettings()
       .setType("get")
-      // Disable credentials in servlet 
+      // Disable credentials in servlet
       .setUrl(echoUrlCORS)
       .setData(jsonGET)
       .setDataType("json")
       .setWithCredentials(true);
-    
+
     Ajax.ajax(s)
       .fail(finishFunction)
       .done(failFunction);
   }
-  
+
   public void testAjaxGetJsonP() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
@@ -176,7 +176,7 @@ public abstract class AjaxTests extends GWTTestCase {
 
     performAjaxJsonTest(s);
   }
-  
+
   public void testJsonValidService() {
     delayTestFinish(5000);
     // Use a public json service supporting callback parameter
@@ -192,7 +192,7 @@ public abstract class AjaxTests extends GWTTestCase {
       })
       .fail(failFunction);
   }
-  
+
   public void testInvalidOrigin() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
@@ -200,12 +200,12 @@ public abstract class AjaxTests extends GWTTestCase {
       .setUrl("https://www.googleapis.com/blogger/v2/blogs/user_id/posts/post_id?key=NO-KEY")
       .setDataType("json")
       .setTimeout(1000);
-    
+
     Ajax.ajax(s)
       .done(failFunction)
       .fail(finishFunction);
   }
-  
+
   public void testJsonInvalidService() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
@@ -213,29 +213,29 @@ public abstract class AjaxTests extends GWTTestCase {
       .setUrl("http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js")
       .setDataType("jsonp")
       .setTimeout(1000);
-    
+
     Ajax.ajax(s)
       .done(failFunction)
       .fail(finishFunction);
   }
-  
-  // For some reason htmlunit 2.16 does not raises a timeout, 2.9 does though, 
+
+  // For some reason htmlunit 2.16 does not raises a timeout, 2.9 does though,
   // when server sleeps or connection lasts a while. Tested with htmlunit 2.16
-  //  @DoNotRunWith(Platform.HtmlUnitBug)
+  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testAjaxTimeout() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
       .setTimeout(100)
       .setType("get")
       // Connecting to private networks out of our LAN raises a timeout because
-      // there is no route for them in public networks.  
+      // there is no route for them in public networks.
       .setUrl("http://10.32.45.67:7654");
 
     Ajax.ajax(s)
       .done(failFunction)
       .fail(finishFunction);
   }
-  
+
   public void testJsonpTimeout() {
     delayTestFinish(5000);
     Settings s = Ajax.createSettings()
@@ -245,9 +245,9 @@ public abstract class AjaxTests extends GWTTestCase {
 
     Ajax.ajax(s)
       .done(failFunction)
-      .fail(finishFunction);     
+      .fail(finishFunction);
   }
-  
+
   public void testAjaxError() {
     delayTestFinish(5000);
     String url = "http://127.0.0.1/nopage";
@@ -263,7 +263,7 @@ public abstract class AjaxTests extends GWTTestCase {
         }
       });
   }
-  
+
   public void testLoadScript() {
     delayTestFinish(5000);
     String url = "http://code.jquery.com/jquery-2.0.3.min.js";
@@ -292,5 +292,5 @@ public abstract class AjaxTests extends GWTTestCase {
           finishTest();
         }
       });
-  }  
+  }
 }

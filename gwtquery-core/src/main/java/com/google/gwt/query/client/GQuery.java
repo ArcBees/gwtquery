@@ -57,6 +57,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -461,11 +462,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   protected static GQuery cleanHtmlString(String elem, Document doc) {
-
-    String tag = tagNameRegex.exec(elem).getGroup(1);
-    if (tag == null) {
+    MatchResult mResult = tagNameRegex.exec(elem);
+    if (mResult == null) {
       return $(doc.createTextNode(elem));
     }
+    String tag = mResult.getGroup(1);
 
     if (wrapperMap == null) {
       initWrapperMap();

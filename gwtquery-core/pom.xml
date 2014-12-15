@@ -6,6 +6,29 @@
         <version>1.4.3-SNAPSHOT</version>
     </parent>
 
+    <profiles>
+        <profile>
+           <!-- example:
+                  $ mvn clean test -Ptest-prod
+                  $ mvn clean test -Ptest-prod -Dgwt.test.htmlunit=FF17
+                valid emulations are FF17 IE8 IE9 Chrome, but only FF17 works.
+             -->
+           <id>test-prod</id>
+           <properties>
+              <productionMode>true</productionMode>
+           </properties>
+        </profile>
+        <profile>
+           <id>test-browser</id>
+           <properties>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
+              <productionMode>true</productionMode>
+              <mode>manual</mode>
+           </properties>
+        </profile>
+    </profiles>
+
     <artifactId>gwtquery</artifactId>
     <packaging>jar</packaging>
     <name>Gwt Query Core API</name>
@@ -34,19 +57,6 @@
             <artifactId>gwt-elemental</artifactId>
             <version>${gwtversion}</version>
         </dependency>
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
-          <classifier>sources</classifier>
-          <scope>provided</scope>
-        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -74,32 +84,37 @@
                 <artifactId>emma-maven-plugin</artifactId>
                 <version>1.0-alpha-1</version>
             </plugin>
-
+            <!-- Skip normal test execution, we use gwt:test instead -->
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.18</version>
-              <configuration>
-                 <additionalClasspathElements>
-                   <additionalClasspathElement>${basedir}/src/main/java</additionalClasspathElement>
-                   <additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
-                 </additionalClasspathElements>
-                 <!-- <useManifestOnlyJar>false</useManifestOnlyJar> -->
-                 <!-- <forkMode>always</forkMode> -->
-                 <useSystemClassLoader>false</useSystemClassLoader>
-              </configuration>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18</version>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
             </plugin>
-
             <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>gwt-maven-plugin</artifactId>
-              <version>${gwtmaven}</version>
-              <configuration>
-                  <gwtVersion>${gwtversion}</gwtVersion>
-                  <productionMode>false</productionMode>
-                  <timeOut>300</timeOut>
-                  <includes>**/GQueryGwtSuiteTest.java</includes>
-              </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwtmaven}</version>
+                <executions>
+                  <execution>
+                    <id>gwt-tests</id>
+                    <phase>test</phase>
+                    <goals>
+                      <goal>test</goal>
+                    </goals>
+                    <configuration>
+                      <checkAssertions>true</checkAssertions>
+                      <draftCompile>true</draftCompile>
+                      <gwtVersion>${gwtversion}</gwtVersion>
+                      <productionMode>${productionMode}</productionMode>
+                      <timeOut>300</timeOut>
+                      <includes>**/GQueryGwtSuiteTest.java</includes>
+                      <style>${style}</style>
+                      <mode>${mode}</mode>
+                    </configuration>
+                  </execution>
+                </executions>
             </plugin>
             <!-- We include elemental json implementation for JVM so as people
                  using GQuery json builders and ajax in server side don't have
@@ -122,7 +137,6 @@
                 </execution>
               </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>

@@ -15,15 +15,14 @@
  */
 package com.google.gwt.query.client.ajax;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.query.servlet.GQAjaxTestServlet;
 import com.google.gwt.query.vm.AjaxTransportJre;
 
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.HandlerWrapper;
-import org.mortbay.jetty.servlet.DefaultServlet;
-import org.mortbay.jetty.webapp.WebAppClassLoader;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.webapp.WebAppClassLoader;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

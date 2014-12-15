@@ -22,6 +22,7 @@ import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
+import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
@@ -52,6 +53,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
   }
 
   public void gwtSetUp() {
+    Fx.css3 = false;
     if (e == null) {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
@@ -87,7 +89,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         finishTest();
       }
     };
-    
+
     Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
       int c = 0;
       // Run until we detect the rect has been changed or timeout
@@ -104,7 +106,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
         return true;
       }
     }, 100);
-    
+
     g.as(Effects).clipDisappear(duration);
 
     // Check that the back div has been created
@@ -371,12 +373,12 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     };
     timer.schedule(duration * 2);
   }
-  
+
   public void testComputeFxPropTransitions() {
     $(e).html("<table border=1 id=idtest><tr><td width=200px>A</td><td width=100px>B</td></tr></table>");
     $("#idtest").css("position", "absolute").find("td");
     final GQuery g = $("#idtest td");
-    
+
     TransitFx fx = (TransitFx)TransitionsAnimation.computeFxProp(g.get(0), "width", "+=100", false);
     assertEquals("10", fx.transitStart.replace(".0",""));
     assertEquals("110", fx.transitEnd.replace(".0",""));

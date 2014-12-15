@@ -146,8 +146,8 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.5.1</gwtversion>
-        <gwtmaven>2.5.1</gwtmaven>
+        <gwtversion>2.7.0</gwtversion>
+        <gwtmaven>2.7.0</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>

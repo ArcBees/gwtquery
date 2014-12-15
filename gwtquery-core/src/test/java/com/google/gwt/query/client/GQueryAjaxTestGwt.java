@@ -20,6 +20,7 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.jsonp.client.TimeoutException;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -172,8 +173,10 @@ public class GQueryAjaxTestGwt extends GWTTestCase {
     String testJsonpUrl = "http://www.google.com";
     Ajax.getJSONP(testJsonpUrl, null, new Function(){
       public void f() {
-        Properties p = arguments(0);
-        assertNull(p);
+        Object response = arguments(0);
+        if (response != null) {
+          assertTrue("Unknown response: " + response, response instanceof TimeoutException);
+        }
         finishTest();
       }
     }, 500);
