@@ -106,5 +106,5 @@ public class AjaxTestJre extends AjaxTests {
     server.start();
     return server;
   }
-
 }
+
