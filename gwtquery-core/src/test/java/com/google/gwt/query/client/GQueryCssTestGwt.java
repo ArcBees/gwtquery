@@ -275,7 +275,6 @@ public class GQueryCssTestGwt extends GWTTestCase {
   }
 
   public void testBorderColorProperty() {
-
     $(e).html("<div id='test'>Content</div>");
 
     $("#test").css(CSS.BORDER_COLOR.with(RGBColor.AQUA));
@@ -286,10 +285,9 @@ public class GQueryCssTestGwt extends GWTTestCase {
     assertEquals("black", $("#test").css("borderBottomColor", false));
     assertEquals("black", $("#test").css(CSS.BORDER_BOTTOM_COLOR, false));
 
-    // FIXME: for some reason FUSCHIA is not a valid color in Chrome
-//    $("#test").css(CSS.BORDER_TOP_COLOR.with(RGBColor.FUSCHIA));
-//    assertEquals("fuschia", $("#test").css("borderTopColor", false));
-//    assertEquals("fuschia", $("#test").css(CSS.BORDER_TOP_COLOR, false));
+    $("#test").css(CSS.BORDER_TOP_COLOR.with(RGBColor.RED));
+    assertEquals("red", $("#test").css("borderTopColor", false));
+    assertEquals("red", $("#test").css(CSS.BORDER_TOP_COLOR, false));
 
     $("#test").css(CSS.BORDER_LEFT_COLOR.with(RGBColor.GRAY));
     assertEquals("gray", $("#test").css("borderLeftColor", false));
@@ -703,8 +701,9 @@ public class GQueryCssTestGwt extends GWTTestCase {
 
   }
 
+  // Modern HtmlUnit for (2.6.0) seems not supporting line-height
+  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testLineHeightProperty() {
-
     $(e).html("<div id='test'>Content</div>");
 
     $("#test").css(CSS.LINE_HEIGHT.with(Length.px(15)));
@@ -718,7 +717,6 @@ public class GQueryCssTestGwt extends GWTTestCase {
     $("#test").css(CSS.LINE_HEIGHT.with(2.5));
     assertEquals("2.5", $("#test").css("lineHeight", false));
     assertEquals("2.5", $("#test").css(CSS.LINE_HEIGHT, false));
-
   }
 
   public void testListStyleImageProperty() {
@@ -1001,8 +999,9 @@ public class GQueryCssTestGwt extends GWTTestCase {
     assertEquals("capitalize", $("#test").css("textTransform", false));
   }
 
+  // HtmlUnit in 2.6.0 returns '-moz-isolate' always when asking css(unicode-bidi)
+  @DoNotRunWith(Platform.HtmlUnitBug)
   public void testUnicodeBidiProperty() {
-
     $(e).html("<div id='test'>Content</div>");
 
     $("#test").css(CSS.UNICODE_BIDI.with(UnicodeBidi.BIDI_OVERRIDE));

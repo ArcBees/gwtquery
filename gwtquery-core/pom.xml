@@ -6,6 +6,32 @@
         <version>1.4.3-SNAPSHOT</version>
     </parent>
 
+
+    <properties>
+        <!--  valid emulations are FF17 IE8 IE9 Chrome, but only FF17 works. -->
+        <gwt.test.htmlunit>FF17</gwt.test.htmlunit>
+        <gwt.test.default>-ea -out ${basedir}/target/gwt-junit -checkAssertions</gwt.test.default>
+        <gwt.args></gwt.args>
+    </properties>
+    <profiles>
+        <profile>
+           <!-- example:
+                  $ mvn clean test -Ptest-prod
+                  $ mvn clean test -Ptest-prod -Dgwt.test.htmlunit=FF17
+             -->
+           <id>test-prod</id>
+           <properties>
+              <gwt.args>-prod -runStyle HtmlUnit:${gwt.test.htmlunit}</gwt.args>
+           </properties>
+        </profile>
+        <profile>
+           <id>test-browser</id>
+           <properties>
+              <gwt.args>-draftCompile -style PRETTY -prod -runStyle Manual:1</gwt.args>
+           </properties>
+        </profile>
+    </profiles>
+
     <artifactId>gwtquery</artifactId>
     <packaging>jar</packaging>
     <name>Gwt Query Core API</name>
@@ -34,19 +60,6 @@
             <artifactId>gwt-elemental</artifactId>
             <version>${gwtversion}</version>
         </dependency>
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-          <version>1.0.0.GA</version>
-          <classifier>sources</classifier>
-          <scope>provided</scope>
-        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -69,38 +82,35 @@
             </testResource>
         </testResources>
         <plugins>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>emma-maven-plugin</artifactId>
                 <version>1.0-alpha-1</version>
             </plugin>
 
+            <!-- We use standard surefire plugin to run gwt tests instead of
+                 gwt-maven so as we can run coverage analysis with emma:emma -->
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.18</version>
-              <configuration>
-                 <additionalClasspathElements>
-                   <additionalClasspathElement>${basedir}/src/main/java</additionalClasspathElement>
-                   <additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
-                 </additionalClasspathElements>
-                 <!-- <useManifestOnlyJar>false</useManifestOnlyJar> -->
-                 <!-- <forkMode>always</forkMode> -->
-                 <useSystemClassLoader>false</useSystemClassLoader>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${basedir}/src/main/java</additionalClasspathElement>
+                        <additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <systemPropertyVariables>
+                        <java.awt.headless>true</java.awt.headless>
+                        <gwt.args>${gwt.test.default} ${gwt.args}</gwt.args>
+                    </systemPropertyVariables>
+                    <forkMode>always</forkMode>
+                    <includes>
+                        <include>**/*SuiteTest.class</include>
+                    </includes>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                </configuration>
             </plugin>
 
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>gwt-maven-plugin</artifactId>
-              <version>${gwtmaven}</version>
-              <configuration>
-                  <gwtVersion>${gwtversion}</gwtVersion>
-                  <productionMode>false</productionMode>
-                  <timeOut>300</timeOut>
-                  <includes>**/GQueryGwtSuiteTest.java</includes>
-              </configuration>
-            </plugin>
             <!-- We include elemental json implementation for JVM so as people
                  using GQuery json builders and ajax in server side don't have
                  to include that dependency -->
@@ -122,7 +132,6 @@
                 </execution>
               </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
