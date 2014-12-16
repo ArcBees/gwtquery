@@ -74,19 +74,20 @@ public class EventsListener implements EventListener {
       return originalType;
     }
 
-    public Function createDelegateHandler(Function originalHandler) {
-      return new SpecialMouseEventHandler(originalHandler);
+    public HandlerWrapperFunction createDelegateHandler(Function originalHandler) {
+      return new HandlerWrapperFunction(originalHandler);
     }
   }
 
-  private interface HandlerWrapper {
+  public interface HandlerWrapper {
     Function getOriginalHandler();
   }
-  private static class SpecialMouseEventHandler extends Function implements HandlerWrapper {
+
+  public static class HandlerWrapperFunction extends Function implements HandlerWrapper {
 
     private Function delegateHandler;
 
-    public SpecialMouseEventHandler(Function originalHandler) {
+    public HandlerWrapperFunction(Function originalHandler) {
       this.delegateHandler = originalHandler;
     }
 
@@ -401,7 +402,7 @@ public class EventsListener implements EventListener {
 
   /**
    * We have to set the gQuery event listener to the element again when
-   * the element is a widget, because when GWT detaches a widget it removes the 
+   * the element is a widget, because when GWT detaches a widget it removes the
    * event listener.
    */
   public static void rebind(Element e) {
@@ -732,7 +733,7 @@ public class EventsListener implements EventListener {
 
   public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
       Function f) {
-    
+
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
