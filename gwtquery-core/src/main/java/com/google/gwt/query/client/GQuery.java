@@ -651,7 +651,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   protected static DocumentStyleImpl getStyleImpl() {
     if (styleImpl == null) {
-      styleImpl = GWT.create(DocumentStyleImpl.class);
+      styleImpl = getSelectorEngine().getDocumentStyleImpl();
     }
     return styleImpl;
   }

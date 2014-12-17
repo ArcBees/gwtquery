@@ -16,8 +16,8 @@ package com.google.gwt.query.client.impl;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * Helper class for setting and getting attribute on an element.
@@ -128,7 +128,7 @@ public class AttributeImpl {
    */
   private static class TypeAttrSetter extends DefaultSetter {
     private static AttributeSetter INSTANCE;
-    private static JsRegexp NOT_AUTHORIZED_NODE = new JsRegexp(
+    private static RegExp NOT_AUTHORIZED_NODE = RegExp.compile(
         "^(?:button|input)$", "i");
 
     public static AttributeSetter getInstance() {
@@ -161,7 +161,7 @@ public class AttributeImpl {
     }
   }
 
-  private static final JsRegexp BOOLEAN_ATTR_REGEX = new JsRegexp(
+  private static final RegExp BOOLEAN_ATTR_REGEX = RegExp.compile(
       "^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$",
       "i");
 
@@ -198,7 +198,7 @@ public class AttributeImpl {
     }
   }
 
-  protected Object fixValue(String key, Object value) {
+  protected Object fixValue(@SuppressWarnings("unused") String key, Object value) {
     return value;
   }
 
