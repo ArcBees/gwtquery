@@ -290,4 +290,11 @@ public class SelectorEngine implements HasSelector {
   public static native boolean hasXpathEvaluate() /*-{
     return !!$doc.evaluate;
   }-*/;
+
+  /**
+   * Return the DocumentStyleImpl used by this selector engine.
+   */
+  public DocumentStyleImpl getDocumentStyleImpl() {
+    return styleImpl;
+  }
 }

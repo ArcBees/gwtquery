@@ -22,8 +22,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsNamedArray;
-import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.DOM;
 
 /**
@@ -31,8 +31,8 @@ import com.google.gwt.user.client.DOM;
  */
 public class DocumentStyleImpl {
 
-  private static final JsRegexp cssNumberRegex = new JsRegexp("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
-  private static final JsRegexp sizeRegex = new JsRegexp("^(client|offset|)(width|height)$", "i");
+  private static final RegExp cssNumberRegex = RegExp.compile("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
+  private static final RegExp sizeRegex = RegExp.compile("^(client|offset|)(width|height)$", "i");
 
 
   /**
