@@ -13,24 +13,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.junit.DoNotRunWith;
-import com.google.gwt.junit.Platform;
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.query.client.css.CSS;
-import com.google.gwt.query.client.css.Length;
-import com.google.gwt.query.client.css.RGBColor;
-import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
-
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.lazy;
@@ -47,6 +29,23 @@ import static com.google.gwt.user.client.Event.ONMOUSEMOVE;
 import static com.google.gwt.user.client.Event.ONMOUSEOUT;
 import static com.google.gwt.user.client.Event.ONMOUSEOVER;
 import static com.google.gwt.user.client.Event.ONMOUSEUP;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.css.Length;
+import com.google.gwt.query.client.css.RGBColor;
+import com.google.gwt.query.client.plugins.Events;
+import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Test class for testing gwt events plugin api.
@@ -1183,6 +1182,134 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     for (Element el : $(".subDiv", e).elements()) {
       assertEquals("black", $(el).css(CSS.COLOR, false));
       assertEquals("white", $(el).css(CSS.BACKGROUND_COLOR, false));
+    }
+  }
+
+  public void testOnOff() {
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content</div></div>");
+
+    $(".mainDiv", e).on("click", new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+
+    $(".mainDiv", e).click();
+
+    assertEquals("red", $(".mainDiv", e).css("color", false));
+    
+    // reset
+    $(".mainDiv", e).css("color", "black");
+    
+    $(".mainDiv", e).off("click");
+
+    $(".mainDiv", e).click();
+
+    assertEquals("black", $(".mainDiv", e).css("color", false));
+
+    // try with other signatures by passing null to extra parameters
+    $(".mainDiv", e).on("click", (String) null, new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+
+    $(".mainDiv", e).click();
+
+    assertEquals("red", $(".mainDiv", e).css("color", false));
+    
+    // reset
+    $(".mainDiv", e).css("color", "black");
+
+    $(".mainDiv", e).off("click");
+
+    // try with other signatures by passing null to extra parameters
+    $(".mainDiv", e).on("click", null,  new Object(), new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+
+    $(".mainDiv", e).click();
+
+    assertEquals("red", $(".mainDiv", e).css("color", false));
+  }
+
+
+  public void testOff() {
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content</div></div>");
+
+    $(".mainDiv", e).on("click", new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+
+    $(".mainDiv", e).on("mouseover", new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("background-color", "yellow");
+      }
+    });
+
+    $(".mainDiv", e).click().trigger(Event.ONMOUSEOVER);
+
+    assertEquals("red", $(".mainDiv", e).css("color", false));
+    assertEquals("yellow", $(".mainDiv", e).css("background-color", false));
+
+    // reset
+    $(".mainDiv", e).css("color", "black");
+    $(".mainDiv", e).css("background-color", "white");
+
+    $(".mainDiv", e).off();
+
+    $(".mainDiv", e).click().trigger(Event.ONMOUSEOVER);
+
+    assertEquals("black", $(".mainDiv", e).css("color", false));
+    assertEquals("white", $(".mainDiv", e).css("background-color", false));
+  }
+
+  
+  public void testOnOffWithSelector() {
+    $(e).html("<div class='mainDiv'><div class='subDiv'>Content " +
+        "0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>" +
+        "Content 0<span>blop</span></div></div>");
+
+    $(".mainDiv", e).on("click", ".subDiv", new Function() {
+      @Override
+      public void f(Element e) {
+        $(e).css("color", "red");
+      }
+    });
+    
+
+    for (Element mainDiv : $(".mainDiv", e).elements()) {
+      for (int i = 0; i < 3; i++) {
+        String html = "<div class='subDiv'>Content " + i + "<span>blop</span></div>";
+        $(mainDiv).append(html);
+      }
+    }
+
+    assertEquals(8, $(".subDiv", e).length());
+
+    $("span", e).click();
+
+    for (Element el : $(".subDiv", e).elements()) {
+      assertEquals("red", $(el).css("color", false));
+      // reset
+      $(el).css("color", "black");
+    }
+
+    $(".mainDiv", e).off("click", ".subDiv");
+
+    $("span", e).click();
+
+    for (Element el : $(".subDiv", e).elements()) {
+      assertEquals("black", $(el).css(CSS.COLOR, false));
     }
   }
 

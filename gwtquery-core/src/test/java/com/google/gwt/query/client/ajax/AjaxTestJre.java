@@ -107,4 +107,3 @@ public class AjaxTestJre extends AjaxTests {
     return server;
   }
 }
-

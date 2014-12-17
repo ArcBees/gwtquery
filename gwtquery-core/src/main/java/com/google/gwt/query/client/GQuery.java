@@ -3236,6 +3236,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attach an event handler function for one or more events to the selected elements.
    */
   public GQuery on(String eventName, String selector, Function... funcs) {
+    if (selector == null || selector.isEmpty()) {
+      return on(eventName, funcs);
+    }
+
     return delegate(selector, eventName, funcs);
   }
 
@@ -3243,6 +3247,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attach an event handler function for one or more events to the selected elements.
    */
   public GQuery on(String eventName, String selector, Object data, Function... funcs) {
+    if (selector == null || selector.isEmpty()) {
+      return on(eventName, data, funcs);
+    }
+
     return delegate(selector, eventName, data, funcs);
   }
 
@@ -3250,7 +3258,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove all event handlers.
    */
   public GQuery off() {
-    return as(Effects).off();
+    return as(Events).off();
   }
 
   /**
@@ -3271,6 +3279,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Remove an event handler
    */
   public GQuery off(String eventName, String selector) {
+    if (selector == null || selector.isEmpty()) {
+      return off(eventName);
+    }
     return undelegate(selector, eventName);
   }
 
