@@ -17,9 +17,11 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.window;
 
+import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -47,6 +49,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
+
 import junit.framework.Assert;
 
 import java.util.ArrayList;
@@ -1224,28 +1227,6 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     assertEquals(122, g.outerWidth());
     assertEquals(142, g.outerHeight(true));
     assertEquals(142, g.outerWidth(true));
-
-    // When hiding the element we should get the same sizes
-    $(e).hide();
-
-    assertEquals(100, g.width());
-    assertEquals(100, g.height());
-    assertEquals(100d, g.cur("width", false));
-    assertEquals(100d, g.cur("height", false));
-    assertEquals(100d, g.cur("width", true));
-    assertEquals(100d, g.cur("height", true));
-    assertEquals("100px", g.css("width"));
-    assertEquals("100px", g.css("height"));
-    assertEquals("100px", g.get(0).getStyle().getProperty("width"));
-    assertEquals("100px", g.get(0).getStyle().getProperty("height"));
-
-    // Modern browsers report 0 size when element is hidden
-    assertTrue(g.innerWidth() == 120 || g.innerWidth() == 0);
-    assertTrue(g.innerHeight() == 120 || g.innerHeight() == 0);
-    assertTrue(g.outerHeight() == 122 || g.outerHeight() == 0);
-    assertTrue(g.outerWidth() == 122 || g.outerWidth() == 0);
-    assertTrue(g.outerHeight() == 142 || g.outerHeight() == 0);
-    assertTrue(g.outerWidth() == 142 || g.outerWidth() == 0);
   }
 
   public void testWidthHeightInlineElement() {
@@ -2082,7 +2063,5 @@ public class GQueryCoreTestGwt extends GWTTestCase {
     Integer value = $("#target", e).data("intValue", Integer.class);
 
     assertEquals(1, value.intValue());
-
   }
-
 }

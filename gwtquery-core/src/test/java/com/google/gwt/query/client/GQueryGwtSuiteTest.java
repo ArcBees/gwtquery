@@ -18,6 +18,7 @@ public class GQueryGwtSuiteTest extends GWTTestSuite {
   public static Test suite() {
       GWTTestSuite suite = new GWTTestSuite( "GQuery Suite" );
       suite.addTestSuite(AjaxTestJre.class);
+      suite.addTestSuite(GQueryJsInteropTestGwt.class);
       suite.addTestSuite(DataBindingTestJre.class);
       suite.addTestSuite(DataBindingTestGwt.class);
       suite.addTestSuite(GQueryAjaxTestGwt.class);

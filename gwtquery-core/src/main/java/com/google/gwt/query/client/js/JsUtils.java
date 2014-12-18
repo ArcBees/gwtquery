@@ -19,6 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -316,7 +317,7 @@ public class JsUtils {
     return Object.prototype.toString.call(o) == '[object Array]'
         || typeof o.length == 'number';
   }-*/;
-  
+
   /**
    * Check is a javascript object is a FormData
    */
@@ -349,9 +350,9 @@ public class JsUtils {
   /**
    * Check is a javascript object can be cast to an Element
    */
-  public static boolean isElement(JavaScriptObject o) {
-    return hasProperty(o, "nodeType") && hasProperty(o, "nodeName");
-  }
+  public static native boolean isElement(Object o) /*-{
+    return o && o.nodeType && o.nodeName ? true : false;
+  }-*/;
 
   /**
    * Check is a javascript object can be cast to an Event
@@ -449,6 +450,22 @@ public class JsUtils {
   public static String text(Element e) {
     return utilsImpl.text(e);
   }
+
+  /**
+   * Utility method to cast objects in production.
+   * Useful for casting native implementations to interfaces like JsInterop
+   */
+  public static native <T> T cast(Object o) /*-{
+    return o;
+  }-*/;
+
+  /**
+   * Utility method to cast objects to array of string in production.
+   */
+  public static native String[] castArrayString(Object a)/*-{
+    return a
+  }-*/;
+
 
   /**
    * Call via jsni any arbitrary function present in a Javascript object.

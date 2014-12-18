@@ -27,7 +27,7 @@
         <profile>
            <id>test-browser</id>
            <properties>
-              <gwt.args>-draftCompile -style PRETTY -prod -runStyle Manual:1</gwt.args>
+              <gwt.args>-draftCompile -style PRETTY -optimize 9 -prod -runStyle Manual:1 -XjsInteropMode JS</gwt.args>
            </properties>
         </profile>
     </profiles>
