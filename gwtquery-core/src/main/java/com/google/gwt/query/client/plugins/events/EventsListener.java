@@ -566,17 +566,15 @@ public class EventsListener implements EventListener {
 
   public void die(String events, String cssSelector) {
     for (EvPart ev : EvPart.split(events)) {
+      die(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, cssSelector);
+
       SpecialEvent hook = special.get(ev.eventName);
       if (hook != null) {
         hook.remove(this, ev.nameSpace, null);
         if (!hook.hasHandlers(this)) {
           hook.tearDown(this);
         }
-        // TODO: MCM handle correctly this
-        return;
       }
-      int b = Event.getTypeInt(ev.eventName);
-      die(b, ev.nameSpace, ev.eventName, cssSelector);
     }
   }
 
@@ -648,14 +646,16 @@ public class EventsListener implements EventListener {
   public void live(String events, String cssSelector, Object data, Function... funcs) {
     for (EvPart ev : EvPart.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
-      if (hook != null) {
-        // FIXME: MCM handle live
-        return;
+      if (hook != null && !hook.hasHandlers(this)) {
+        hook.setup(this);
       }
 
       int b = Event.getTypeInt(ev.eventName);
       for (Function function : funcs) {
         live(b, ev.nameSpace, ev.eventName, cssSelector, data, function);
+        if (hook != null) {
+          hook.add(this, ev.nameSpace, data, function);
+        }
       }
     }
   }
