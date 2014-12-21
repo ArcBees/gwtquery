@@ -26,6 +26,7 @@ import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.events.SpecialEvent.AbstractSpecialEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -46,76 +47,10 @@ import java.util.List;
  */
 public class EventsListener implements EventListener {
 
-  public interface SpecialEvent {
-    /**
-     * The last unbind call triggers the tearDown method.
-     */
-    boolean tearDown(EventsListener l);
-
-    /**
-     * When the first event handler is bound for an EventsListener
-     * gQuery executes the setup function.
-     */
-    boolean setup(EventsListener l);
-
-    /**
-     * For each unbind call the remove function is called.
-     */
-    void remove(EventsListener l, String nameSpace, Function f);
-
-    /**
-     * For each bind call the add function is called.
-     */
-    void add(EventsListener l, String nameSpace, Object data, Function f);
-
-    /**
-     * Return true if there are handlers bound to this special event.
-     */
-    boolean hasHandlers(EventsListener l);
-  }
-
-  public static abstract class AbstractSpecialEvent implements SpecialEvent {
-    protected String type;
-    protected String delegateType;
-    protected Function handler = null;
-
-    public AbstractSpecialEvent(String type, String delegateType) {
-      this.type = type;
-      this.delegateType = delegateType;
-    }
-
-    @Override
-    public void add(EventsListener l, String nameSpace, Object data, Function f) {
-      // Nothing to do, let gQuery use default elementEvents mechanism
-    }
-
-    @Override
-    public void remove(EventsListener l, String nameSpace, Function f) {
-      // Nothing to do, let gQuery use default elementEvents mechanism
-    }
-
-    @Override
-    public boolean setup(EventsListener l) {
-      l.bind(Event.getTypeInt(delegateType), null, delegateType, null, handler, -1);
-      return false;
-    }
-
-    @Override
-    public boolean tearDown(EventsListener l) {
-      l.unbind(Event.getTypeInt(delegateType), null, delegateType, handler);
-      return false;
-    }
-
-    @Override
-    public boolean hasHandlers(EventsListener l) {
-      return l.hasHandlers(BITLESS, type);
-    }
-  }
-
   /**
    * Used for simulating mouseenter and mouseleave events
    */
-  public static class MouseSpecialEvent extends AbstractSpecialEvent {
+  private static class MouseSpecialEvent extends AbstractSpecialEvent {
     public MouseSpecialEvent(final String type, String delegateType) {
       super(type, delegateType);
       handler =  new Function() {
@@ -138,7 +73,7 @@ public class EventsListener implements EventListener {
   /**
    * Used for simulating mouseenter and mouseleave events
    */
-  public static class FocusSpecialEvent extends AbstractSpecialEvent {
+  private static class FocusSpecialEvent extends AbstractSpecialEvent {
     public FocusSpecialEvent(final String type, String delegateType) {
       super(type, delegateType);
       handler =  new Function() {
@@ -175,6 +110,9 @@ public class EventsListener implements EventListener {
     }
   }
 
+  /**
+   * The function used per each element event.
+   */
   private static class BindFunction {
     Object data;
     Function function;
@@ -438,11 +376,12 @@ public class EventsListener implements EventListener {
   public static HashMap<String, SpecialEvent> special;
 
   static {
+    // Register some special events which already exist in jQuery
     special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
-    special.put(FOCUSIN, new MouseSpecialEvent(FOCUSIN, "focus"));
-    special.put(FOCUSOUT, new MouseSpecialEvent(FOCUSOUT, "blur"));
+    special.put(FOCUSIN, new FocusSpecialEvent(FOCUSIN, "focus"));
+    special.put(FOCUSOUT, new FocusSpecialEvent(FOCUSOUT, "blur"));
   }
 
   public static void clean(Element e) {
@@ -549,14 +488,14 @@ public class EventsListener implements EventListener {
 
     for (EvPart ev : EvPart.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
-      if (hook != null && !hook.hasHandlers(this)) {
-        hook.setup(this);
-      }
+      boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
         int b = Event.getTypeInt(ev.eventName);
-        bind(b, ev.nameSpace, ev.eventName, data, function, -1);
+        if (bind) {
+          bind(b, ev.nameSpace, ev.eventName, data, function, -1);
+        }
         if (hook != null) {
-          hook.add(this, ev.nameSpace, data, function);
+          hook.add(element, ev.eventName, ev.nameSpace, data, function);
         }
       }
     }
@@ -569,14 +508,13 @@ public class EventsListener implements EventListener {
 
   public void die(String events, String cssSelector) {
     for (EvPart ev : EvPart.split(events)) {
-      die(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, cssSelector);
-
       SpecialEvent hook = special.get(ev.eventName);
+      boolean unbind = hook == null || hook.tearDown(element) == false;
+      if (unbind) {
+        die(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, cssSelector);
+      }
       if (hook != null) {
-        hook.remove(this, ev.nameSpace, null);
-        if (!hook.hasHandlers(this)) {
-          hook.tearDown(this);
-        }
+        hook.remove(element, ev.eventName, ev.nameSpace, null);
       }
     }
   }
@@ -659,15 +597,14 @@ public class EventsListener implements EventListener {
   public void live(String events, String cssSelector, Object data, Function... funcs) {
     for (EvPart ev : EvPart.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
-      if (hook != null && !hook.hasHandlers(this)) {
-        hook.setup(this);
-      }
-
-      int b = Event.getTypeInt(ev.eventName);
+      boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
-        live(b, ev.nameSpace, ev.eventName, cssSelector, data, function);
+        int b = Event.getTypeInt(ev.eventName);
+        if (bind) {
+          live(b, ev.nameSpace, ev.eventName, cssSelector, data, function);
+        }
         if (hook != null) {
-          hook.add(this, ev.nameSpace, data, function);
+          hook.add(element, ev.eventName, ev.nameSpace, data, function);
         }
       }
     }
@@ -785,15 +722,13 @@ public class EventsListener implements EventListener {
 
   public void unbind(String events, Function f) {
     for (EvPart ev : EvPart.split(events)) {
-      int b = Event.getTypeInt(ev.eventName);
-      unbind(b, ev.nameSpace, ev.eventName, f);
-      //handle special event
       SpecialEvent hook = special.get(ev.eventName);
+      boolean unbind = hook == null || hook.tearDown(element) == false;
+      if (unbind) {
+        unbind(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, f);
+      }
       if (hook != null) {
-        hook.remove(this, ev.nameSpace, f);
-        if (!hook.hasHandlers(this)) {
-          hook.tearDown(this);
-        }
+        hook.remove(element, ev.eventName, ev.nameSpace, f);
       }
     }
   }
@@ -829,6 +764,12 @@ public class EventsListener implements EventListener {
     for (String k : liveBindFunctionByEventType.keys()) {
       LiveBindFunction function = liveBindFunctionByEventType.<JsCache> cast().get(k);
       function.clean();
+    }
+  }
+
+  public void list() {
+    for (int i = 0, l = elementEvents.length(); i < l; i++) {
+      GQuery.console.log(elementEvents.get(i).toString());
     }
   }
 }

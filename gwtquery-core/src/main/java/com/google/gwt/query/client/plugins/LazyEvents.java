@@ -20,7 +20,6 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.query.client.plugins.events.EventsListener.SpecialEvent;
 import com.google.gwt.query.client.plugins.events.GqEvent;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.query.client.GQuery.*;
