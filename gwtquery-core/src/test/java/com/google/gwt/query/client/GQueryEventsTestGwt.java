@@ -43,7 +43,6 @@ import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -454,6 +453,28 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     });
     $("p", e).blur();
     assertEquals("", $("p", e).css("border", false));
+  }
+
+  @DoNotRunWith({Platform.HtmlUnitLayout})
+  public void testSpecialFocusInOut() {
+    $(e).html("<p>Content</p>");
+    $("p", e).on(EventsListener.FOCUSIN, new Function() {
+      public void f(Element elem) {
+        GQuery.console.log("focus");
+        $(elem).css("background-color", "red");
+      }
+    });
+    $("p", e).focus();
+    assertEquals("red", $("p", e).css("background-color", false));
+
+    // blur
+    $("p", e).on(EventsListener.FOCUSOUT, new Function() {
+      public void f(Element elem) {
+        $(elem).css("background-color", "white");
+      }
+    });
+    $("p", e).blur();
+    assertEquals("white", $("p", e).css("background-color", false));
   }
 
   public void testLazyMethods() {

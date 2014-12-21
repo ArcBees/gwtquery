@@ -74,41 +74,12 @@ public class EventsListener implements EventListener {
     boolean hasHandlers(EventsListener l);
   }
 
-  /**
-   * Used for simulating mouseenter and mouseleave events
-   */
-  public static class MouseSpecialEvent implements SpecialEvent {
-    private String type;
-    private String delegateType;
+  public static abstract class AbstractSpecialEvent implements SpecialEvent {
+    protected String type;
+    protected String delegateType;
+    protected Function handler = null;
 
-    HashMap<EventListener, MouseSpecialFunction> registeredHandlers = new HashMap<EventListener, MouseSpecialFunction>();
-
-    private class MouseSpecialFunction extends Function {
-      final EventsListener listener;
-      public MouseSpecialFunction(EventsListener l) {
-        listener = l;
-      }
-
-      public boolean f(Event e, Object... arg) {
-        EventTarget eventTarget = e.getCurrentEventTarget();
-        Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
-
-        EventTarget relatedEventTarget = e.getRelatedEventTarget();
-        Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
-
-        if (related == null || (related != target && !GQuery.contains(target, related))) {
-          for (int i = 0, l = listener.elementEvents.length(); i < l ; i ++) {
-            BindFunction function = listener.elementEvents.get(i);
-            if (function.isTypeOf(type) && !function.fire(e, arg)) {
-              return false;
-            }
-          }
-        }
-        return true;
-      };
-    }
-
-    public MouseSpecialEvent(String type, String delegateType) {
+    public AbstractSpecialEvent(String type, String delegateType) {
       this.type = type;
       this.delegateType = delegateType;
     }
@@ -125,24 +96,58 @@ public class EventsListener implements EventListener {
 
     @Override
     public boolean setup(EventsListener l) {
-      MouseSpecialFunction handler = new MouseSpecialFunction(l);
-      registeredHandlers.put(l, handler);
       l.bind(Event.getTypeInt(delegateType), null, delegateType, null, handler, -1);
       return false;
     }
 
     @Override
     public boolean tearDown(EventsListener l) {
-      MouseSpecialFunction handler = registeredHandlers.remove(l);
-      if (handler != null) {
-        l.unbind(Event.getTypeInt(delegateType), null, delegateType, handler);
-      }
+      l.unbind(Event.getTypeInt(delegateType), null, delegateType, handler);
       return false;
     }
 
     @Override
     public boolean hasHandlers(EventsListener l) {
       return l.hasHandlers(BITLESS, type);
+    }
+  }
+
+  /**
+   * Used for simulating mouseenter and mouseleave events
+   */
+  public static class MouseSpecialEvent extends AbstractSpecialEvent {
+    public MouseSpecialEvent(final String type, String delegateType) {
+      super(type, delegateType);
+      handler =  new Function() {
+        public boolean f(Event e, Object... arg) {
+          EventTarget eventTarget = e.getCurrentEventTarget();
+          Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
+
+          EventTarget relatedEventTarget = e.getRelatedEventTarget();
+          Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
+
+          if (related == null || (related != target && !GQuery.contains(target, related))) {
+            getInstance(target).dispatchEvent(e, type);
+          }
+          return true;
+        };
+      };
+    }
+  }
+
+  /**
+   * Used for simulating mouseenter and mouseleave events
+   */
+  public static class FocusSpecialEvent extends AbstractSpecialEvent {
+    public FocusSpecialEvent(final String type, String delegateType) {
+      super(type, delegateType);
+      handler =  new Function() {
+        public boolean f(Event e, Object... arg) {
+          setEvent(e);
+          getInstance(getElement()).dispatchEvent(e, type);
+          return true;
+        };
+      };
     }
   }
 
@@ -427,6 +432,8 @@ public class EventsListener implements EventListener {
 
   public static String MOUSEENTER = "mouseenter";
   public static String MOUSELEAVE = "mouseleave";
+  public static String FOCUSIN = "focusin";
+  public static String FOCUSOUT = "focusout";
 
   public static HashMap<String, SpecialEvent> special;
 
@@ -434,6 +441,8 @@ public class EventsListener implements EventListener {
     special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
+    special.put(FOCUSIN, new MouseSpecialEvent(FOCUSIN, "focus"));
+    special.put(FOCUSOUT, new MouseSpecialEvent(FOCUSOUT, "blur"));
   }
 
   public static void clean(Element e) {
@@ -614,13 +623,23 @@ public class EventsListener implements EventListener {
     }
   }
 
+  /**
+   * Dispatch an event in this element.
+   */
   public void dispatchEvent(Event event) {
-    String ename = event.getType();
-    int etype = Event.getTypeInt(ename);
+    dispatchEvent(event, event.getType());
+  }
+
+  /**
+   * Dispatch an event in this element but changing the type,
+   * it's useful for special events.
+   */
+  public void dispatchEvent(Event event, String eventName) {
+    int etype = Event.getTypeInt(eventName);
     Object[] handlerData = $(element).data(EVENT_DATA);
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))) {
+      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(eventName))) {
         if (!listener.fire(event, handlerData)) {
           event.stopPropagation();
           event.preventDefault();
