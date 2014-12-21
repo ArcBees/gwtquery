@@ -61,12 +61,12 @@ public class EventsListener implements EventListener {
     /**
      * For each unbind call the remove function is called.
      */
-    boolean remove(EventsListener l, String nameSpace, Function f);
+    void remove(EventsListener l, String nameSpace, Function f);
 
     /**
      * For each bind call the add function is called.
      */
-    boolean add(EventsListener l, String nameSpace, Object data, Function f);
+    void add(EventsListener l, String nameSpace, Object data, Function f);
 
     /**
      * Return true if there are handlers bound to this special event.
@@ -114,15 +114,13 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean add(EventsListener l, String nameSpace, Object data, Function f) {
-      l.bind(BITLESS, nameSpace, type, null, f, -1);
-      return false;
+    public void add(EventsListener l, String nameSpace, Object data, Function f) {
+      // Nothing to do, let gQuery use default elementEvents mechanism
     }
 
     @Override
-    public boolean remove(EventsListener l, String nameSpace, Function f) {
-      l.elementEvents = unbindFunctions(l.elementEvents, BITLESS, nameSpace, null, f);
-      return false;
+    public void remove(EventsListener l, String nameSpace, Function f) {
+      // Nothing to do, let gQuery use default elementEvents mechanism
     }
 
     @Override
@@ -154,6 +152,29 @@ public class EventsListener implements EventListener {
     }
   }
 
+  /**
+   * Utility class to split a list of events with or without namespaces
+   */
+  private static class EvPart {
+    String nameSpace;
+    String eventName;
+    public EvPart(String n, String e) {
+      nameSpace = n;
+      eventName = e;
+    }
+
+    static List<EvPart> split(String events) {
+      List<EvPart> ret = new ArrayList<EvPart>();
+      String[] parts = events.split("[\\s,]+");
+      for (String event : parts) {
+        String[] tmp = event.split("\\.", 2);
+        String eventName = tmp[0];
+        String nameSpace = tmp.length > 1 ? tmp[1] : null;
+        ret.add(new EvPart(nameSpace, eventName));
+      }
+      return ret;
+    }
+  }
 
   private static class BindFunction {
     Object data;
@@ -519,41 +540,20 @@ public class EventsListener implements EventListener {
   }
 
   public void bind(String events, final Object data, Function... funcs) {
-    String[] parts = events.split("[\\s,]+");
+    if (funcs.length == 0 || funcs[0] == null) {
+      unbind(events, null);
+    }
 
-    for (String event : parts) {
-
-      String nameSpace = null;
-      String eventName = event;
-
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2){
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
-      //handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
+    for (EvPart ev : EvPart.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
       if (hook != null && !hook.hasHandlers(this)) {
         hook.setup(this);
       }
       for (Function function : funcs) {
-        if (hook == null) {
-          int b = Event.getTypeInt(eventName);
-          if (function != null) {
-            bind(b, nameSpace, eventName, data, function, -1);
-          } else {
-            unbind(b, nameSpace, eventName, null);
-          }
-        } else {
-          if (function != null) {
-            hook.add(this, nameSpace, data, function);
-          } else {
-            hook.remove(this, nameSpace, function);
-          }
+        int b = Event.getTypeInt(ev.eventName);
+        bind(b, ev.nameSpace, ev.eventName, data, function, -1);
+        if (hook != null) {
+          hook.add(this, ev.nameSpace, data, function);
         }
       }
     }
@@ -564,34 +564,19 @@ public class EventsListener implements EventListener {
     elementEvents.add(new BindFunction(eventbits, eventName, namespace, function, data, times));
   }
 
-  public void die(String eventNames, String cssSelector) {
-    String[] parts = eventNames.split("[\\s,]+");
-
-    for (String event : parts) {
-      String nameSpace = null;
-      String eventName = event;
-
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2) {
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
-      //handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
+  public void die(String events, String cssSelector) {
+    for (EvPart ev : EvPart.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
       if (hook != null) {
-        hook.remove(this, nameSpace, null);
+        hook.remove(this, ev.nameSpace, null);
         if (!hook.hasHandlers(this)) {
           hook.tearDown(this);
         }
         // TODO: MCM handle correctly this
         return;
       }
-      int b = Event.getTypeInt(eventName);
-      die(b, nameSpace, eventName, cssSelector);
+      int b = Event.getTypeInt(ev.eventName);
+      die(b, ev.nameSpace, ev.eventName, cssSelector);
     }
   }
 
@@ -661,32 +646,16 @@ public class EventsListener implements EventListener {
   }
 
   public void live(String events, String cssSelector, Object data, Function... funcs) {
-
-    String[] parts = events.split("[\\s,]+");
-
-    for (String event : parts) {
-
-      String nameSpace = null;
-      String eventName = event;
-
-
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2) {
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
-      //handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
+    for (EvPart ev : EvPart.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
       if (hook != null) {
         // FIXME: MCM handle live
         return;
       }
 
-      int b = Event.getTypeInt(eventName);
+      int b = Event.getTypeInt(ev.eventName);
       for (Function function : funcs) {
-        live(b, nameSpace, eventName, cssSelector, data, function);
+        live(b, ev.nameSpace, ev.eventName, cssSelector, data, function);
       }
     }
   }
@@ -795,44 +764,17 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(String events, Function f) {
-
-    String[] parts = events.split("[\\s,]+");
-
-    for (String event : parts) {
-      String nameSpace = null;
-      String eventName = event;
-
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2){
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
+    for (EvPart ev : EvPart.split(events)) {
+      int b = Event.getTypeInt(ev.eventName);
+      unbind(b, ev.nameSpace, ev.eventName, f);
       //handle special event
-      // TODO(manolo): maybe we can remove this
-      if (!isNullOrEmpty(nameSpace) && isNullOrEmpty(eventName)) {
-        for (SpecialEvent hook : special.values()) {
-          hook.remove(this, nameSpace, f);
-          if (!hook.hasHandlers(this)) {
-            hook.tearDown(this);
-          }
-        }
-      } else {
-        SpecialEvent hook = special.get(eventName);
-        if (hook != null) {
-          hook.remove(this, nameSpace, f);
-          if (!hook.hasHandlers(this)) {
-            hook.tearDown(this);
-          }
-          return;
+      SpecialEvent hook = special.get(ev.eventName);
+      if (hook != null) {
+        hook.remove(this, ev.nameSpace, f);
+        if (!hook.hasHandlers(this)) {
+          hook.tearDown(this);
         }
       }
-
-      int b = Event.getTypeInt(eventName);
-      unbind(b, nameSpace, eventName, f);
     }
   }
 
