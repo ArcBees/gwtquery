@@ -142,13 +142,7 @@ public class EventsListener implements EventListener {
 
     @Override
     public boolean hasHandlers(EventsListener l) {
-      for (int i = 0, j = l.elementEvents.length(); i < j; i++) {
-        BindFunction function = l.elementEvents.get(i);
-        if (function.isTypeOf(delegateType)) {
-          return true;
-        }
-      }
-      return false;
+      return l.hasHandlers(BITLESS, type);
     }
   }
 
@@ -732,15 +726,9 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits, String namespace, String eventName, Function f) {
-    elementEvents = unbindFunctions(elementEvents, eventbits, namespace, eventName, f);
-  }
-
-  public static JsObjectArray<BindFunction> unbindFunctions(JsObjectArray<BindFunction> list,
-      int eventbits, String namespace, String eventName, Function f) {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
-    for (int i = 0; i < list.length(); i++) {
-      BindFunction listener = list.get(i);
-
+    for (int i = 0; i < elementEvents.length(); i++) {
+      BindFunction listener = elementEvents.get(i);
       boolean matchNS = isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
       boolean matchEVN = matchEV || listener.isTypeOf(eventName);
@@ -753,10 +741,23 @@ public class EventsListener implements EventListener {
           continue;
         }
       }
-
       newList.add(listener);
     }
-    return newList;
+    elementEvents =  newList;
+  }
+
+  /**
+   * Return true if the element is listening for the
+   * given eventBit or eventName.
+   */
+  public boolean hasHandlers(int eventBits, String eventName) {
+    for (int i = 0, j = elementEvents.length(); i < j; i++) {
+      BindFunction function = elementEvents.get(i);
+      if (function.hasEventType(eventBits) || function.isTypeOf(eventName)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static boolean isNullOrEmpty(String s) {
