@@ -13,6 +13,8 @@
  */
 package com.google.gwt.query.client.plugins.events;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -29,9 +31,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.google.gwt.query.client.GQuery.$;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
@@ -46,78 +47,112 @@ import static com.google.gwt.query.client.GQuery.$;
 public class EventsListener implements EventListener {
 
   public interface SpecialEvent {
+    boolean tearDown(EventsListener l);
+
+    boolean setup(EventsListener l);
+
+    boolean remove(EventsListener l, String nameSpace, Function f);
+
+    boolean add(EventsListener l, String nameSpace, Object data, Function f);
+
     String getDelegateType();
-
-    String getOriginalType();
-
-    Function createDelegateHandler(Function originalHandler);
+    
+    boolean hasHandlers(EventsListener l);
   }
 
   /**
    * Used for simulating mouseenter and mouseleave events
    */
   public static class MouseSpecialEvent implements SpecialEvent {
-
     private String originalType;
     private String delegateType;
+    
+    HashMap<EventListener, MouseSpecialFunction> handlers = new HashMap<EventListener, MouseSpecialFunction>();
+    
+    private class MouseSpecialFunction extends Function {
+      final EventsListener listener;
+      public MouseSpecialFunction(EventsListener l) {
+        listener = l;
+      }
+      
+      public boolean f(Event e, Object... arg) {
+        EventTarget eventTarget = e.getCurrentEventTarget();
+        Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
 
+        EventTarget relatedEventTarget = e.getRelatedEventTarget();
+        Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
+
+        if (related == null || (related != target && !GQuery.contains(target, related))) {
+          for (int i = 0, l = listener.elementEvents.length(); i < l ; i ++) {
+            BindFunction function = listener.elementEvents.get(i);
+            if (function.isTypeOf(originalType) && !function.fire(e, arg)) {
+              return false;
+            }
+          }
+        }
+        return true;
+      };
+    }
+    
     public MouseSpecialEvent(String originalType, String delegateType) {
       this.originalType = originalType;
       this.delegateType = delegateType;
     }
 
+    @Override
+    public boolean add(EventsListener l, String nameSpace, Object data, Function f) {
+      l.bind(BITLESS, nameSpace, originalType, null, null, f, -1);
+      return false;
+    }
+
+    @Override
+    public boolean remove(EventsListener l, String nameSpace, Function f) {
+      l.elementEvents = unbindFunctions(l.elementEvents, BITLESS, nameSpace, delegateType, null, f);
+      return false;
+    }
+    
+    @Override
+    public boolean setup(EventsListener l) {
+      MouseSpecialFunction handler = new MouseSpecialFunction(l);
+      handlers.put(l, handler);
+      int b = Event.getTypeInt(delegateType);
+      l.bind(b, null, delegateType, originalType, null, handler, -1);
+      return false;
+    }
+    
+    @Override
+    public boolean tearDown(EventsListener l) {
+      MouseSpecialFunction handler = handlers.remove(l);
+      if (handler != null) {
+        int b = Event.getTypeInt(delegateType);
+        l.unbind(b, null, delegateType, originalType, handler);
+      }
+      return false;
+    }
+
+    @Override
     public String getDelegateType() {
       return delegateType;
     }
 
-    public String getOriginalType() {
-      return originalType;
-    }
-
-    public HandlerWrapperFunction createDelegateHandler(Function originalHandler) {
-      return new HandlerWrapperFunction(originalHandler);
-    }
-  }
-
-  public interface HandlerWrapper {
-    Function getOriginalHandler();
-  }
-
-  public static class HandlerWrapperFunction extends Function implements HandlerWrapper {
-
-    private Function delegateHandler;
-
-    public HandlerWrapperFunction(Function originalHandler) {
-      this.delegateHandler = originalHandler;
-    }
-
     @Override
-    public boolean f(Event e, Object... data) {
-      EventTarget eventTarget = e.getCurrentEventTarget();
-      Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
-
-      EventTarget relatedEventTarget = e.getRelatedEventTarget();
-      Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
-
-      // For mousenter/leave call the handler if related is outside the target.
-      if (related == null || (related != target && !GQuery.contains(target, related))) {
-        return delegateHandler != null ? delegateHandler.f(e, data) : false;
+    public boolean hasHandlers(EventsListener l) {
+      for (int i = 0, j = l.elementEvents.length(); i < j; i++) {
+        BindFunction function = l.elementEvents.get(i);
+        if (function.isTypeOf(delegateType)) {
+          return true;
+        }
       }
-
       return false;
     }
-
-    public Function getOriginalHandler() {
-      return delegateHandler;
-    }
   }
+  
 
   private static class BindFunction {
 
     Object data;
     Function function;
     String nameSpace;
-    // for special event like mouseleave, mouseenter
     String originalEventType;
     int times;
     int type;
@@ -130,7 +165,7 @@ public class EventsListener implements EventListener {
       this.type = type;
       this.function = function;
       this.data = data;
-      this.originalEventType = originalEventType;
+//      this.originalEventType = originalEventType;
       this.nameSpace = nameSpace != null ? nameSpace : "";
     }
 
@@ -149,7 +184,10 @@ public class EventsListener implements EventListener {
         } else {
           arguments = eventData;
         }
-        return function.fe(event, arguments);
+        // FIXME(manolo): figure out when this is null, and fix or comment it.
+        if (function != null) {
+          return function.fe(event, arguments);
+        }
       }
       return true;
     }
@@ -157,6 +195,7 @@ public class EventsListener implements EventListener {
     public boolean hasEventType(int etype) {
       return  type != BITLESS && etype != BITLESS && (type & etype) != 0;
     }
+    
 
     public boolean isTypeOf(String eName) {
       return eventName != null && eventName.equalsIgnoreCase(eName);
@@ -185,10 +224,7 @@ public class EventsListener implements EventListener {
 
     public boolean isEquals(Function f) {
       assert f != null : "function f cannot be null";
-      Function functionToCompare =
-          function instanceof HandlerWrapper ? ((HandlerWrapper) function).getOriginalHandler()
-              : function;
-      return f.equals(functionToCompare);
+      return f.equals(function);
     }
 
     public Object getOriginalEventType() {
@@ -380,10 +416,10 @@ public class EventsListener implements EventListener {
   public static String MOUSEENTER = "mouseenter";
   public static String MOUSELEAVE = "mouseleave";
 
-  public static JsMap<String, SpecialEvent> special;
+  public static HashMap<String, SpecialEvent> special;
 
   static {
-    special = JsMap.create();
+    special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
   }
@@ -505,26 +541,31 @@ public class EventsListener implements EventListener {
 
       //handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
-      int b = Event.getTypeInt(eventName);
+      if (hook != null && !hook.hasHandlers(this)) {
+        hook.setup(this);
+      }
       for (Function function : funcs) {
-        Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        bind(b, nameSpace, eventName, originalEventName, data, handler, -1);
+        if (hook == null) {
+          int b = Event.getTypeInt(eventName);
+          if (function != null) {
+            bind(b, nameSpace, eventName, null, data, function, -1);
+          } else {
+            unbind(b, nameSpace, eventName, null, null);
+          }
+        } else {
+          if (function != null) {
+            hook.add(this, nameSpace, data, function);
+          } else {
+            hook.remove(this, nameSpace, function);
+          }
+        }
       }
     }
   }
 
-  private void bind(int eventbits, String namespace, String eventName, String originalEventType,
+  public void bind(int eventbits, String namespace, String eventName, String originalEventType,
       Object data, Function function, int times) {
-    if (function == null) {
-      unbind(eventbits, namespace, eventName, originalEventType, null);
-      return;
-    }
-
     sink(eventbits, eventName);
-
     elementEvents.add(new BindFunction(eventbits, eventName, namespace, originalEventType,
         function, data, times));
   }
@@ -547,15 +588,17 @@ public class EventsListener implements EventListener {
 
       //handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
+      if (hook != null) {
+        hook.remove(this, nameSpace, null);
+        if (!hook.hasHandlers(this)) {
+          hook.tearDown(this);
+        }
+        // TODO: MCM handle correctly this
+        return;
+      }
       int b = Event.getTypeInt(eventName);
-
-      die(b, nameSpace, eventName, originalEventName, cssSelector);
+      die(b, nameSpace, eventName, null, cssSelector);
     }
-
-
   }
 
   public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
@@ -607,13 +650,10 @@ public class EventsListener implements EventListener {
   public void dispatchEvent(Event event) {
     String ename = event.getType();
     int etype = Event.getTypeInt(ename);
-    String originalEventType = GqEvent.getOriginalEventType(event);
     Object[] handlerData = $(element).data(EVENT_DATA);
-
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))
-          && (originalEventType == null || originalEventType.equals(listener.getOriginalEventType()))) {
+      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))) {
         if (!listener.fire(event, handlerData)) {
           event.stopPropagation();
           event.preventDefault();
@@ -649,13 +689,16 @@ public class EventsListener implements EventListener {
 
       //handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
+      if (hook != null) {
+//        eventName = hook != null ? hook.getDelegateType() : eventName;
+//        String originalEventName = hook != null ? hook.getOriginalType() : null;
+        // FIXME: MCM handle live
+        return;
+      }
 
       int b = Event.getTypeInt(eventName);
       for (Function function : funcs) {
-        Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        live(b, nameSpace, eventName, originalEventName, cssSelector, data, handler);
+        live(b, nameSpace, eventName, null, cssSelector, data, function);
       }
     }
   }
@@ -730,13 +773,17 @@ public class EventsListener implements EventListener {
   public void unbind(int eventbits) {
     unbind(eventbits, null, null, null, null);
   }
-
+  
   public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
       Function f) {
+    elementEvents = unbindFunctions(elementEvents, eventbits, namespace, eventName, originalEventType, f);
+  }
 
+  public static JsObjectArray<BindFunction> unbindFunctions(JsObjectArray<BindFunction> list,
+      int eventbits, String namespace, String eventName, String originalEventType, Function f) {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
-    for (int i = 0; i < elementEvents.length(); i++) {
-      BindFunction listener = elementEvents.get(i);
+    for (int i = 0; i < list.length(); i++) {
+      BindFunction listener = list.get(i);
 
       boolean matchNS = isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
@@ -748,7 +795,6 @@ public class EventsListener implements EventListener {
 
       if (matchNS && matchEV && matchEVN && matchFC && matchOEVT) {
         int currentEventbits = listener.unsink(eventbits);
-
         if (currentEventbits == 0) {
           // the BindFunction doesn't listen anymore on any events
           continue;
@@ -757,11 +803,10 @@ public class EventsListener implements EventListener {
 
       newList.add(listener);
     }
-    elementEvents = newList;
-
+    return newList;
   }
 
-  private boolean isNullOrEmpty(String s) {
+  private static boolean isNullOrEmpty(String s) {
     return s == null || s.isEmpty();
   }
 
@@ -783,13 +828,27 @@ public class EventsListener implements EventListener {
       }
 
       //handle special event
-      SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
+      // TODO(manolo): maybe we can remove this
+      if (!isNullOrEmpty(nameSpace) && isNullOrEmpty(eventName)) {
+        for (SpecialEvent hook : special.values()) {
+          hook.remove(this, nameSpace, f);
+          if (!hook.hasHandlers(this)) {
+            hook.tearDown(this);
+          }
+        }
+      } else {
+        SpecialEvent hook = special.get(eventName);
+        if (hook != null) {
+          hook.remove(this, nameSpace, f);
+          if (!hook.hasHandlers(this)) {
+            hook.tearDown(this);
+          }
+          return;
+        }
+      }
+      
       int b = Event.getTypeInt(eventName);
-
-      unbind(b, nameSpace, eventName, originalEventName, f);
+      unbind(b, nameSpace, eventName, null, f);
     }
   }
 

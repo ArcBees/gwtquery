@@ -288,18 +288,7 @@ public class Events extends GQuery {
    * @functions a set of function to run if the event is not canceled.
    */
   public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {
-    SpecialEvent specialEvent = EventsListener.special.get(htmlEvent);
-    boolean isSpecialEvent = specialEvent != null;
-
-    String originalEventName = htmlEvent;
-    String delegateEventName = isSpecialEvent ? specialEvent.getDelegateType() : htmlEvent;
-
-    NativeEvent e = document.createHtmlEvent(delegateEventName, true, true);
-
-    if (isSpecialEvent) {
-      GqEvent.setOriginalEventType(e, originalEventName);
-    }
-
+    NativeEvent e = document.createHtmlEvent(htmlEvent, true, true);
     if ("submit".equals(htmlEvent)){
       Function submitFunction = new Function() {
         public void f(Element e) {

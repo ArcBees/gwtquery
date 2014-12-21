@@ -43,6 +43,7 @@ import com.google.gwt.query.client.plugins.Events;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -383,7 +384,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).click();
     assertEquals("white", $("p", e).css("color", false));
 
-    // hover (mouseover, mouseout)
+    // hover (mouseenter, mouseleave)
     $("p", e).hover(new Function() {
       public void f(Element elem) {
         $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
@@ -396,6 +397,11 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).trigger(Event.ONMOUSEOVER);
     assertEquals("yellow", $("p", e).css("background-color", false));
     $("p", e).trigger(Event.ONMOUSEOUT);
+    assertEquals("white", $("p", e).css("background-color", false));
+    
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
+    $("p", e).hover(null, null);
+    $("p", e).trigger(Event.ONMOUSEOVER);
     assertEquals("white", $("p", e).css("background-color", false));
 
     // key events

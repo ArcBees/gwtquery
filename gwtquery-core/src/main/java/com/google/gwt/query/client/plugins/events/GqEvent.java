@@ -23,14 +23,6 @@ import com.google.gwt.user.client.Event;
  */
 public class GqEvent extends Event {
 
-  public static native void setOriginalEventType(NativeEvent evt, String originalEventName)/*-{
-    evt["__gwtquery_originalEventName"] = originalEventName;
-  }-*/;
-
-  public static native String getOriginalEventType(Event evt)/*-{
-   return evt["__gwtquery_originalEventName"] || null;
-  }-*/;
-
   // Gwt Events class has not this event defined,
   // so we have to select one power of 2 which is unused in Event class
   public static int ONSUBMIT = 0x10000000;
