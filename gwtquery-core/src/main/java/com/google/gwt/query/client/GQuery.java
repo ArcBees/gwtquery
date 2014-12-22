@@ -282,17 +282,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof Function) {
         return $((Function)o);
       }
+      if (JsUtils.isElement(o)) {
+        return $(JsUtils.<Element>cast(o));
+      }
       if (o instanceof JavaScriptObject) {
         return $((JavaScriptObject)o);
       }
       if (o instanceof IsWidget) {
         return $(Arrays.asList(o));
       }
-      if (!GWT.isProdMode()) {
-        System.err.println("GQuery.$(Object o) could not wrap the type : " + o.getClass());
-      }
+      console.log("Error: GQuery.$(Object o) could not wrap the type : ", o.getClass().getName(), o);
     }
-
     return $();
   }
 
@@ -704,7 +704,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   protected static String[] jsArrayToString(JsArrayString array) {
     if (GWT.isScript()) {
-      return jsArrayToString0(array);
+      return JsUtils.castArrayString(array);
     } else {
       String result[] = new String[array.length()];
       for (int i = 0, l = result.length; i < l; i++) {
@@ -714,9 +714,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-  private static native String[] jsArrayToString0(JsArrayString array) /*-{
-		return array;
-  }-*/;
 
   /**
    * Return a lazy version of the GQuery interface. Lazy function calls are simply queued up and not
