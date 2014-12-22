@@ -184,10 +184,10 @@ public class JsonBuilderGenerator extends Generator {
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
         sw.println("return " + "((" + q + ")GWT.create(" + q + ".class))"
-            + ".load(p.getJavaScriptObject(\"" + name + "\"));");
+            + ".load(getPropertiesBase(\"" + name + "\"));");
       } else if (isTypeAssignableTo(method.getReturnType(), settingsType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " + "((" + q + ")p.getJavaScriptObject(\"" + name + "\"));");
+        sw.println("return " + "((" + q + ")getPropertiesBase(\"" + name + "\"));");
       } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
