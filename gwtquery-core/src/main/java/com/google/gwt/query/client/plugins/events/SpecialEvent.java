@@ -25,14 +25,23 @@ import com.google.gwt.user.client.Event;
 public interface SpecialEvent {
 
   /**
-   * Abstract implementation of SpecialEvents
+   * Default implementation of SpecialEvents for simple cases like
+   * creating event aliases. Extend this for creating more complex
+   * cases.
    */
-  public static abstract class AbstractSpecialEvent implements SpecialEvent {
+  public static class DefaultSpecialEvent implements SpecialEvent {
     protected final String delegateType;
     protected final String type;
-    protected Function handler = null;
 
-    public AbstractSpecialEvent(String type, String delegateType) {
+    protected Function handler = new Function() {
+      public boolean f(Event e, Object... arg) {
+        setEvent(e);
+        EventsListener.getInstance(getElement()).dispatchEvent(e, type);
+        return true;
+      };
+    };
+
+    public DefaultSpecialEvent(String type, String delegateType) {
       this.type = type;
       this.delegateType = delegateType;
     }
@@ -43,7 +52,7 @@ public interface SpecialEvent {
 
     @Override
     public void add(Element e, String eventType, String nameSpace, Object data, Function f) {
-      // Nothing to do, let gQuery use default eentEvents mechanism
+      // Nothing to do, let gQuery use default events mechanism
     }
 
     @Override
@@ -53,13 +62,13 @@ public interface SpecialEvent {
 
     @Override
     public void remove(Element e, String eventType, String nameSpace, Function f) {
-      // Nothing to do, let gQuery use default eentEvents mechanism
+      // Nothing to do, let gQuery use default events mechanism
     }
 
     @Override
     public boolean setup(Element e) {
       if (!hasHandlers(e)) {
-        listener(e).bind(Event.getTypeInt(delegateType), null, delegateType, null, handler, -1);
+        listener(e).bind(delegateType, null, handler);
       }
       return false;
     }
@@ -67,7 +76,7 @@ public interface SpecialEvent {
     @Override
     public boolean tearDown(Element e) {
       if (!hasHandlers(e)) {
-        listener(e).unbind(Event.getTypeInt(delegateType), null, delegateType, handler);
+        listener(e).unbind(delegateType, handler);
       }
       return false;
     }

@@ -26,7 +26,7 @@ import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.events.SpecialEvent.AbstractSpecialEvent;
+import com.google.gwt.query.client.plugins.events.SpecialEvent.DefaultSpecialEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -50,7 +50,7 @@ public class EventsListener implements EventListener {
   /**
    * Used for simulating mouseenter and mouseleave events
    */
-  private static class MouseSpecialEvent extends AbstractSpecialEvent {
+  private static class MouseSpecialEvent extends DefaultSpecialEvent {
     public MouseSpecialEvent(final String type, String delegateType) {
       super(type, delegateType);
       handler =  new Function() {
@@ -64,22 +64,6 @@ public class EventsListener implements EventListener {
           if (related == null || (related != target && !GQuery.contains(target, related))) {
             getInstance(target).dispatchEvent(e, type);
           }
-          return true;
-        };
-      };
-    }
-  }
-
-  /**
-   * Used for simulating mouseenter and mouseleave events
-   */
-  private static class FocusSpecialEvent extends AbstractSpecialEvent {
-    public FocusSpecialEvent(final String type, String delegateType) {
-      super(type, delegateType);
-      handler =  new Function() {
-        public boolean f(Event e, Object... arg) {
-          setEvent(e);
-          getInstance(getElement()).dispatchEvent(e, type);
           return true;
         };
       };
@@ -380,8 +364,8 @@ public class EventsListener implements EventListener {
     special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
-    special.put(FOCUSIN, new FocusSpecialEvent(FOCUSIN, "focus"));
-    special.put(FOCUSOUT, new FocusSpecialEvent(FOCUSOUT, "blur"));
+    special.put(FOCUSIN, new DefaultSpecialEvent(FOCUSIN, "focus"));
+    special.put(FOCUSOUT, new DefaultSpecialEvent(FOCUSOUT, "blur"));
   }
 
   public static void clean(Element e) {
@@ -764,12 +748,6 @@ public class EventsListener implements EventListener {
     for (String k : liveBindFunctionByEventType.keys()) {
       LiveBindFunction function = liveBindFunctionByEventType.<JsCache> cast().get(k);
       function.clean();
-    }
-  }
-
-  public void list() {
-    for (int i = 0, l = elementEvents.length(); i < l; i++) {
-      GQuery.console.log(elementEvents.get(i).toString());
     }
   }
 }
