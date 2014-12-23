@@ -84,8 +84,10 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
 
   protected Properties getPropertiesBase(String n) {
-    Properties r = p.getJavaScriptObject(n);
-    return r != null ? r : Properties.create();
+    if (p.getJavaScriptObject(n) == null) {
+      p.set(n, Properties.create());
+    }
+    return p.getJavaScriptObject(n);
   }
 
   public String toString() {
