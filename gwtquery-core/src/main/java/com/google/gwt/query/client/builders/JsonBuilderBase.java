@@ -19,12 +19,18 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.Window;
+
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements JsonBuilder {
 
   protected Properties p = Properties.create();
+  protected String[] fieldNames = new String[] {};
 
   @SuppressWarnings("unchecked")
   @Override
@@ -37,13 +43,16 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public J strip() {
-    String[] methods = getFieldNames(); //EXCEPTION
-    String[] jsonMethods = p.getFieldNames(); // OK
-    System.out.println(methods);
+    List<String> names = Arrays.asList(getFieldNames());
+    for (String jsonName : p.getFieldNames()) {
+      if (!names.contains(jsonName)) {
+        p.<JsCache>cast().delete(jsonName);
+      }
+    }
     return (J)this;
   }
 
@@ -107,7 +116,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public String toJson() {
     return p.tostring();
   }
-  
+
   public String toJsonWithName() {
     return "{\"" + getJsonName() + "\":" + p.tostring() + "}";
   }
@@ -117,22 +126,22 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public Properties getProperties() {
     return p;
   }
-  
+
   @Override
   public String toQueryString() {
     return p.toQueryString();
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public Properties getDataImpl() {
     return p;
   }
-  
+
   public <T> T get(Object key) {
     return p.get(key);
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
@@ -142,8 +151,12 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     }
     return (T)this;
   }
-  
+
   public <T extends JsonBuilder> T as(Class<T> clz) {
     return p.as(clz);
+  }
+
+  public final String[] getFieldNames() {
+    return fieldNames;
   }
 }
