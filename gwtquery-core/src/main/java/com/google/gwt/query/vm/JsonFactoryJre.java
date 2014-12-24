@@ -15,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -220,11 +221,10 @@ public class JsonFactoryJre implements JsonFactory  {
           json = Properties.wrapPropertiesString(json);
         }
         jsonObject = Json.parse(json);
-      } else if (largs > 1 && ("parseStrict".equals(mname))) {
-        Class<? extends JsonBuilder> clz = (Class<? extends JsonBuilder>) args[1];
-        Class<? extends JsonBuilder> proxie = (Class<? extends JsonBuilder>) Proxy.getProxyClass(clz.getClassLoader(), new Class[] {clz});
-        JsonObject jsonArg = Json.parse((String)args[0]);
-        parseStrict(proxie, jsonArg, regexGetOrSet);
+      } else if ("strip".equals(mname)) {
+        List<String> keys = Arrays.asList(jsonObject.keys());
+        Class<?> type = proxy.getClass().getInterfaces()[0];
+        strip(keys, type.getMethods());    
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
@@ -251,19 +251,28 @@ public class JsonFactoryJre implements JsonFactory  {
       return null;
     }
 
-    public void parseStrict(Class<? extends JsonBuilder> proxie, JsonObject jsonArg,
-        String regexGetOrSet) {
-      for(Method m: proxie.getMethods()) {
-        if (!m.getName().matches("^set.+")) {
-          continue;
+    private void strip(List<String> keys, Method[] methods) {
+      for (String key: keys) {
+        boolean isInType = isInType(key, methods);
+        if (!isInType) {
+          jsonObject.remove(key);
         }
-        String attrJs = deCapitalize(m.getName().replaceFirst(regexGetOrSet, ""));
-        Object value = jsonArg.get(attrJs);
-        setValue(null, jsonObject, attrJs, value);
+      }
+    }
+
+    private boolean isInType(String key, Method[] methods) {
+      if (methods == null || methods.length == 0) {
+        return false;
       }
       
+      for(Method m : methods) {
+        if (m.getName().toLowerCase().contains(key)) {
+          return true;
+        }
+      }
+      return false;
     }
-    
+
     private String deCapitalize(String s) {
       return s != null && s.length() > 0 ? s.substring(0, 1).toLowerCase() + s.substring(1) : s;
     }

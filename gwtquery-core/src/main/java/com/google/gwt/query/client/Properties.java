@@ -219,6 +219,12 @@ public class Properties extends JavaScriptObject implements IsProperties {
     return getDataImpl();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public final <J extends IsProperties> J strip() {
+    return getDataImpl();
+  }
+  
   public final <J extends IsProperties> J parse(String json) {
     return load(JsUtils.parseJSON(json));
   }

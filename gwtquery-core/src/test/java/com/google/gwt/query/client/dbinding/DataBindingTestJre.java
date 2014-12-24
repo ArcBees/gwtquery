@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * Tests for Deferred which can run either in JVM and GWT
  */
@@ -151,5 +152,50 @@ public class DataBindingTestJre extends GWTTestCase {
     assertTrue(c.toQueryString().contains("\"a\":2"));
 
     assertEquals(1, c.<Number>get("a").intValue());
+  }
+  
+  public interface GUser extends JsonBuilder{
+    int getAge();
+    void setAge(int age);
+
+    String getName();
+    void setName(String name);
+    
+    GUser address(String address);
+    String address();
+  }
+  
+  public static final String JSON_USER_EXAMPLE = " { " +
+                                                 "   'email': 'foo@bar.com', " +
+                                                 "   'age': 27, " +
+                                                 "   'name': 'Foo Bar', " +
+                                                 "   'address': 'Street Foo N6' " +
+                                                 " }";
+      
+  public void
+  test_parse_json() {
+    GUser entity = GQ.create(GUser.class);
+    entity.parse(JSON_USER_EXAMPLE, true);
+      
+    assertEquals(27, entity.getAge());
+    assertEquals("Foo Bar", entity.getName());
+    assertEquals("Street Foo N6", entity.address());
+    assertTrue(entity.toJson().contains("email"));
+  }
+  
+  public void
+  test_parse_strict_json() {
+    GUser entity = GQ.create(GUser.class);
+    entity.parse(JSON_USER_EXAMPLE, true);
+    for(String s: entity.getFieldNames()) {
+      System.out.println("Moe: "+s);
+    }
+      
+    entity.strip();
+    System.out.println(entity.toJson());
+    assertEquals(27, entity.getAge());
+    assertEquals("Foo Bar", entity.getName());
+    assertEquals("Street Foo N6", entity.address());
+    assertFalse(entity.toJson().contains("email"));
   }
 }

@@ -37,6 +37,15 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
   }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public J strip() {
+    String[] methods = getFieldNames(); //EXCEPTION
+    String[] jsonMethods = p.getFieldNames(); // OK
+    System.out.println(methods);
+    return (J)this;
+  }
 
   @SuppressWarnings("unchecked")
   @Override
