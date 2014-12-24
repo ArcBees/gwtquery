@@ -1904,4 +1904,16 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals(2, mouseEnterFunction.invokationCounter);
   }
 
+  public void testBindAndTriggerWithNameSpace() {
+    $(e).html("<div id='mainDiv'>blop</div>");
+    CounterFunction counter = new CounterFunction();
+    $("#mainDiv", e).on("click.mynamespace;foo", counter);
+    $("#mainDiv").trigger("click");
+    assertEquals(1, counter.invokationCounter);
+    $("#mainDiv").trigger("click.mynamespace;bar");
+    assertEquals(1, counter.invokationCounter);
+    $("#mainDiv").trigger("click.mynamespace;foo");
+    assertEquals(2, counter.invokationCounter);
+  }
+
 }

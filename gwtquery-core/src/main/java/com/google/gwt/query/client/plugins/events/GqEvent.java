@@ -96,4 +96,7 @@ public class GqEvent extends Event {
     }
   }
 
+  public static final GqEvent as(Event e) {
+    return e.cast();
+  }
 }

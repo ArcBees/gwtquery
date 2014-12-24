@@ -73,15 +73,15 @@ public class EventsListener implements EventListener {
   /**
    * Utility class to split a list of events with or without namespaces
    */
-  private static class EvPart {
-    String nameSpace;
-    String eventName;
+  public static class EvPart {
+    public final String nameSpace;
+    public final String eventName;
     public EvPart(String n, String e) {
       nameSpace = n;
       eventName = e;
     }
 
-    static List<EvPart> split(String events) {
+    public static List<EvPart> split(String events) {
       List<EvPart> ret = new ArrayList<EvPart>();
       String[] parts = events.split("[\\s,]+");
       for (String event : parts) {
@@ -561,7 +561,10 @@ public class EventsListener implements EventListener {
     Object[] handlerData = $(element).data(EVENT_DATA);
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(eventName))) {
+      String namespace = JsUtils.prop(event, "namespace");
+      boolean matchEV = listener != null && (listener.hasEventType(etype) || listener.isTypeOf(eventName));
+      boolean matchNS = matchEV && (isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace));
+      if (matchEV && matchNS) {
         if (!listener.fire(event, handlerData)) {
           event.stopPropagation();
           event.preventDefault();

@@ -21,6 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.events.EventsListener;
+import com.google.gwt.query.client.plugins.events.EventsListener.EvPart;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -264,8 +265,20 @@ public class Events extends GQuery {
    * @param nativeEvent the browser native event.
    * @functions a set of function to run if the event is not canceled.
    */
-  public Events trigger(NativeEvent nativeEvent, Function... functions) {
-    dispatchEvent(nativeEvent, null, functions);
+  public Events trigger(NativeEvent nativeEvent, Function... fcns) {
+    dispatchEvent(nativeEvent, null, fcns);
+    return this;
+  }
+
+  /**
+   * Trigger a native event in all matched elements.
+   *
+   * @param nativeEvent the browser native event.
+   * @param datas a set of object passed as data when executed the handlers
+   * @param functions a set of function to run if the event is not canceled.
+   */
+  public Events trigger(NativeEvent nativeEvent, Object[] datas, Function... functions) {
+    dispatchEvent(nativeEvent, datas, functions);
     return this;
   }
 
@@ -273,7 +286,7 @@ public class Events extends GQuery {
    * Trigger a html event in all matched elements.
    *
    * @param htmlEvent A string representing the desired html event.
-   * @functions a set of function to run if the event is not canceled.
+   * @param functions a set of function to run.
    */
   public Events triggerHtmlEvent(String htmlEvent, Function... functions) {
     return triggerHtmlEvent(htmlEvent, null, functions);
@@ -283,24 +296,29 @@ public class Events extends GQuery {
    * Trigger a html event in all matched elements.
    *
    * @param htmlEvent An string representing the desired html event.
-   * @functions a set of function to run if the event is not canceled.
+   * @param datas a set of object passed as data when executed the handlers
+   * @param functions a set of function to run.
    */
   public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {
-    NativeEvent e = document.createHtmlEvent(htmlEvent, true, true);
-    if ("submit".equals(htmlEvent)){
-      Function submitFunction = new Function() {
-        public void f(Element e) {
-          // first submit the form then call the others functions
-          if (FormElement.is(e)) {
-            e.<FormElement>cast().submit();
+    for (EvPart part : EvPart.split(htmlEvent)) {
+      NativeEvent e = document.createHtmlEvent(part.eventName, true, true);
+      JsUtils.prop(e, "namespace", part.nameSpace);
+      if ("submit".equals(part.eventName)){
+        Function submitFunction = new Function() {
+          public void f(Element e) {
+            // first submit the form then call the others functions
+            if (FormElement.is(e)) {
+              e.<FormElement>cast().submit();
+            }
+            callHandlers(e, getEvent(), functions);
           }
-          callHandlers(e, getEvent(), functions);
-        }
-      };
-      dispatchEvent(e, datas, submitFunction);
-    } else {
-      dispatchEvent(e, datas, functions);
+        };
+        dispatchEvent(e, datas, submitFunction);
+      } else {
+        dispatchEvent(e, datas, functions);
+      }
     }
+
     return this;
   }
 
