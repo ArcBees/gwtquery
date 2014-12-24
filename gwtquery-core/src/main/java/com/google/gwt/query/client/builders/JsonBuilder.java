@@ -31,6 +31,12 @@ public interface JsonBuilder extends IsProperties {
   <J> J parse(String json, boolean fix);
 
   /**
+   * Parses a json string and loads the resulting properties object.
+   * It will parse only the json's properties which are in clz.
+   */
+  <J> J parseStrict(String json, Class<J> clz);
+  
+  /**
    * Returns the wrapped object, normally a Properties jso in client
    * but can be used to return the underlying Json implementation in JVM
    * @deprecated use asObject() instead

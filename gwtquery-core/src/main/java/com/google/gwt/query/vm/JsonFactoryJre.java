@@ -199,8 +199,10 @@ public class JsonFactoryJre implements JsonFactory  {
       Class<?>[] classes = method.getParameterTypes();
       int largs = classes.length;
 
+      String regexGetOrSet = "^[gs]et";
+      
       Name name = method.getAnnotation(Name.class);
-      String attr = name != null ? name.value() : deCapitalize(mname.replaceFirst("^[gs]et", ""));
+      String attr = name != null ? name.value() : deCapitalize(mname.replaceFirst(regexGetOrSet, ""));
 
       if ("getFieldNames".equals(mname)) {
         return jsonObject.keys();
@@ -218,6 +220,11 @@ public class JsonFactoryJre implements JsonFactory  {
           json = Properties.wrapPropertiesString(json);
         }
         jsonObject = Json.parse(json);
+      } else if (largs > 1 && ("parseStrict".equals(mname))) {
+        Class<? extends JsonBuilder> clz = (Class<? extends JsonBuilder>) args[1];
+        Class<? extends JsonBuilder> proxie = (Class<? extends JsonBuilder>) Proxy.getProxyClass(clz.getClassLoader(), new Class[] {clz});
+        JsonObject jsonArg = Json.parse((String)args[0]);
+        parseStrict(proxie, jsonArg, regexGetOrSet);
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
@@ -244,6 +251,19 @@ public class JsonFactoryJre implements JsonFactory  {
       return null;
     }
 
+    public void parseStrict(Class<? extends JsonBuilder> proxie, JsonObject jsonArg,
+        String regexGetOrSet) {
+      for(Method m: proxie.getMethods()) {
+        if (!m.getName().matches("^set.+")) {
+          continue;
+        }
+        String attrJs = deCapitalize(m.getName().replaceFirst(regexGetOrSet, ""));
+        Object value = jsonArg.get(attrJs);
+        setValue(null, jsonObject, attrJs, value);
+      }
+      
+    }
+    
     private String deCapitalize(String s) {
       return s != null && s.length() > 0 ? s.substring(0, 1).toLowerCase() + s.substring(1) : s;
     }
