@@ -13,6 +13,8 @@
  */
 package com.google.gwt.query.client;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 import com.google.gwt.core.client.GWT;
@@ -54,6 +56,7 @@ import com.google.gwt.query.client.plugins.Widgets;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
 import com.google.gwt.query.client.plugins.deferred.Deferred;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
@@ -3810,6 +3813,30 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery queue(String queueName, Function... f) {
     return as(Queue).queue(queueName, f);
+  }
+
+  /**
+   * Specify a function to execute when the DOM is fully loaded.
+   *
+   * While JavaScript provides the load event for executing code when a page is rendered, this event
+   * is not seen if we attach an event listener after the document has been loaded.
+   * This guarantees that our gwt code will be executed either it's executed synchronously before the
+   * DOM has been rendered (ie: single script linker in header) or asynchronously.
+   */
+  public Promise ready(Function... fncs) {
+    return new PromiseFunction() {
+      public void f(final com.google.gwt.query.client.Promise.Deferred dfd) {
+        if ("complete" == $(document).prop("readyState")) {
+          dfd.resolve();
+        } else {
+          $(document).on("load", new Function() {
+            public void f() {
+              dfd.resolve();
+            }
+          });
+        }
+      }
+    }.done(fncs);
   }
 
   /**
