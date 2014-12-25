@@ -49,6 +49,8 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public J strip() {
     List<String> names = Arrays.asList(getFieldNames());
     for (String jsonName : p.getFieldNames()) {
+      // TODO: figure out a way so as we can generate some marks in generated class in
+      // order to call getters to return JsonBuilder object given an an attribute name
       if (!names.contains(jsonName)) {
         p.<JsCache>cast().delete(jsonName);
       }

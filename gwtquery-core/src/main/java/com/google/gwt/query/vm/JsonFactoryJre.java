@@ -1,13 +1,5 @@
 package com.google.gwt.query.vm;
 
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.IsProperties;
-import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.builders.JsonFactory;
-import com.google.gwt.query.client.builders.Name;
-import com.google.gwt.query.rebind.JsonBuilderGenerator;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -15,9 +7,18 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.IsProperties;
+import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.builders.JsonBuilder;
+import com.google.gwt.query.client.builders.JsonFactory;
+import com.google.gwt.query.client.builders.Name;
+import com.google.gwt.query.rebind.JsonBuilderGenerator;
 
 import elemental.json.Json;
 import elemental.json.JsonArray;
@@ -200,10 +201,8 @@ public class JsonFactoryJre implements JsonFactory  {
       Class<?>[] classes = method.getParameterTypes();
       int largs = classes.length;
 
-      String regexGetOrSet = "^[gs]et";
-      
       Name name = method.getAnnotation(Name.class);
-      String attr = name != null ? name.value() : deCapitalize(mname.replaceFirst(regexGetOrSet, ""));
+      String attr = name != null ? name.value() : methodName2AttrName(mname);
 
       if ("getFieldNames".equals(mname)) {
         return jsonObject.keys();
@@ -222,9 +221,7 @@ public class JsonFactoryJre implements JsonFactory  {
         }
         jsonObject = Json.parse(json);
       } else if ("strip".equals(mname)) {
-        List<String> keys = Arrays.asList(jsonObject.keys());
-        Class<?> type = proxy.getClass().getInterfaces()[0];
-        strip(keys, type.getMethods());    
+        stripProxy((JsonBuilder)proxy);
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
@@ -251,26 +248,40 @@ public class JsonFactoryJre implements JsonFactory  {
       return null;
     }
 
-    private void strip(List<String> keys, Method[] methods) {
-      for (String key: keys) {
-        boolean isInType = isInType(key, methods);
-        if (!isInType) {
+    /**
+     * @param proxy
+     */
+    private void stripProxy(JsonBuilder proxy) {
+      Class<?> type = proxy.getClass().getInterfaces()[0];
+      HashSet<String> valid = new HashSet<String>();
+      Hashtable<String, Method> getters = new Hashtable<String, Method>();
+      for (Method m : type.getMethods()) {
+        String attr = methodName2AttrName(m.getName());
+        valid.add(attr);
+        Class<?>[] classes = m.getParameterTypes();
+        if (classes.length == 0) {
+          if (IsProperties.class.isAssignableFrom(m.getReturnType())) {
+            getters.put(attr, m);
+          }
+        }
+      }
+      for (String key: jsonObject.keys()) {
+        String name = methodName2AttrName(key);
+        Method getter = getters.get(name);
+        if (!valid.contains(name)) {
           jsonObject.remove(key);
+        } else if (getter != null) {
+          try {
+            ((IsProperties)invoke(proxy, getter, new Object[]{})).strip();
+          } catch (Throwable e) {
+            e.printStackTrace();
+          }
         }
       }
     }
 
-    private boolean isInType(String key, Method[] methods) {
-      if (methods == null || methods.length == 0) {
-        return false;
-      }
-      
-      for(Method m : methods) {
-        if (m.getName().toLowerCase().contains(key)) {
-          return true;
-        }
-      }
-      return false;
+    private String methodName2AttrName(String s) {
+      return deCapitalize(s.replaceFirst("^[gs]et", ""));
     }
 
     private String deCapitalize(String s) {

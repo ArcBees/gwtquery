@@ -15,6 +15,7 @@
  */
 package com.google.gwt.query.client.dbinding;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
@@ -151,33 +152,38 @@ public class DataBindingTestJre extends GWTTestCase {
     assertEquals(1, c.<Number>get("a").intValue());
   }
 
-  public interface GUser extends JsonBuilder{
-    int getAge();
-    void setAge(int age);
-
-    String getName();
-    void setName(String name);
-
-    GUser address(String address);
-    String address();
+  public interface GAddress extends JsonBuilder {
+    String street();
+    String city();
   }
 
-  public static final String JSON_USER_EXAMPLE = " { " +
-                                                 "   'email': 'foo@bar.com', " +
-                                                 "   'age': 27, " +
-                                                 "   'name': 'Foo Bar', " +
-                                                 "   'address': 'Street Foo N6' " +
-                                                 " }";
+  public interface GUser extends JsonBuilder {
+    int getAge();
+    String getName();
+    GAddress address();
+  }
+
+  public static final String JSON_USER_EXAMPLE = " { "
+                                                 + "   'email': 'foo@bar.com', "
+                                                 + "   'age': 27, "
+                                                 + "   'name': 'Foo Bar', "
+                                                 + "   'address': {"
+                                                 + "      'street': 'Street Foo N6', "
+                                                 + "      'phone': '670'"
+                                                 + "   }"
+                                                 + "}";
 
   public void
   test_parse_json() {
     GUser entity = GQ.create(GUser.class);
     entity.parse(JSON_USER_EXAMPLE, true);
 
+    assertNotNull(entity.get("email"));
     assertEquals(27, entity.getAge());
     assertEquals("Foo Bar", entity.getName());
-    assertEquals("Street Foo N6", entity.address());
-    assertTrue(entity.toJson().contains("email"));
+    assertNotNull(entity.address());
+    assertEquals("Street Foo N6", entity.address().street());
+    assertNotNull(entity.address().get("phone"));
   }
 
   public void
@@ -185,9 +191,16 @@ public class DataBindingTestJre extends GWTTestCase {
     GUser entity = GQ.create(GUser.class);
     entity.parse(JSON_USER_EXAMPLE, true);
     entity.strip();
+
+    assertNull(entity.get("email"));
     assertEquals(27, entity.getAge());
     assertEquals("Foo Bar", entity.getName());
-    assertEquals("Street Foo N6", entity.address());
-    assertFalse(entity.toJson().contains("email"));
+    assertNotNull(entity.address());
+    assertEquals("Street Foo N6", entity.address().street());
+
+    // Recursion not implemented in client side
+    if (GWT.isScript()) {
+      assertNull(entity.address().get("phone"));
+    }
   }
 }
