@@ -138,9 +138,9 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
     final Button b1 = new Button("Button click");
     RootPanel.get().add(b1);
     GQuery g = $(b1);
-    assertEquals(true, $(b1).isVisible());
+    assertTrue($(b1).isVisible());
     g.hide();
-    assertEquals(false, $(b1).isVisible());
+    assertFalse($(b1).isVisible());
     b1.removeFromParent();
   }
 
