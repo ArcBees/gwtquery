@@ -23,11 +23,10 @@ import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * Tests for Deferred which can run either in JVM and GWT
@@ -151,5 +150,63 @@ public class DataBindingTestJre extends GWTTestCase {
     assertTrue(c.toQueryString().contains("\"a\":2"));
 
     assertEquals(1, c.<Number>get("a").intValue());
+  }
+
+  public interface GAddress extends JsonBuilder {
+    String street();
+    String city();
+  }
+
+  public interface GUser extends JsonBuilder {
+    @Name("_id")
+    String getId(); 
+    
+    int getAge();
+    String getName();
+    GAddress address();
+  }
+
+  public static final String JSON_USER_EXAMPLE = " { "
+                                                 + "   '_id': 'aaabbbccc', "
+                                                 + "   'email': 'foo@bar.com', "
+                                                 + "   'age': 27, "
+                                                 + "   'name': 'Foo Bar', "
+                                                 + "   'address': {"
+                                                 + "      'street': 'Street Foo N6', "
+                                                 + "      'phone': '670'"
+                                                 + "   }"
+                                                 + "}";
+
+  public void
+  test_parse_json() {
+    GUser entity = GQ.create(GUser.class);
+    entity.parse(JSON_USER_EXAMPLE, true);
+
+    assertNotNull(entity.get("email"));
+    assertEquals("aaabbbccc", entity.getId());
+    assertEquals(27, entity.getAge());
+    assertEquals("Foo Bar", entity.getName());
+    assertNotNull(entity.address());
+    assertEquals("Street Foo N6", entity.address().street());
+    assertNotNull(entity.address().get("phone"));
+  }
+
+  public void
+  test_parse_strict_json() {
+    GUser entity = GQ.create(GUser.class);
+    entity.parse(JSON_USER_EXAMPLE, true);
+    entity.strip();
+
+    assertEquals("aaabbbccc", entity.getId());
+    assertNull(entity.get("email"));
+    assertEquals(27, entity.getAge());
+    assertEquals("Foo Bar", entity.getName());
+    assertNotNull(entity.address());
+    assertEquals("Street Foo N6", entity.address().street());
+
+    // Recursion not implemented in client side
+    if (GWT.isScript()) {
+      assertNull(entity.address().get("phone"));
+    }
   }
 }

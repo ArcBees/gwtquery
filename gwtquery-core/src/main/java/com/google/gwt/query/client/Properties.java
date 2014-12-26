@@ -142,7 +142,7 @@ public class Properties extends JavaScriptObject implements IsProperties {
   public final Object getObject(Object name) {
     return c().get(String.valueOf(name));
   }
-  
+
   public final Properties getProperties(Object name) {
     return getJavaScriptObject(name);
   }
@@ -176,9 +176,9 @@ public class Properties extends JavaScriptObject implements IsProperties {
   /**
    * Adds a new native js function to the properties object.
    * This native function will wrap the passed java Function.
-   * 
+   *
    * Its useful for exporting or importing to javascript.
-   * 
+   *
    */
   public final native <T> void setFunction(T name, Function f) /*-{
     if (!f) return;
@@ -218,6 +218,11 @@ public class Properties extends JavaScriptObject implements IsProperties {
     }
     return getDataImpl();
   }
+  
+  @SuppressWarnings("unchecked")
+  public final <J extends IsProperties> J strip() {
+    return (J)this;
+  }
 
   public final <J extends IsProperties> J parse(String json) {
     return load(JsUtils.parseJSON(json));
@@ -230,11 +235,11 @@ public class Properties extends JavaScriptObject implements IsProperties {
   public final String toJson() {
     return toJsonString();
   }
-  
+
   public final String toJsonWithName() {
     return toJsonWithName(getJsonName());
   }
-  
+
   public final String toJsonWithName(String name) {
     return "{\"" + name + "\":{" + toJson() + "}";
   }

@@ -143,7 +143,7 @@ public class JsonBuilderGenerator extends Generator {
     for (Iterator<String> it = attrs.iterator(); it.hasNext();) {
       ret += (ret.isEmpty() ? "" : ",") + "\"" + it.next() + "\"";
     }
-    sw.println("public final String[] getFieldNames() {return new String[]{" + ret + "};}");
+    sw.println("{ fieldNames = new String[]{" + ret + "}; }");
   }
 
   public void generateMethod(SourceWriter sw, JMethod method, String name, TreeLogger logger)
