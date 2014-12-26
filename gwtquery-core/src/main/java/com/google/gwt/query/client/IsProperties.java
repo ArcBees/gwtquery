@@ -35,6 +35,8 @@ public interface IsProperties {
   /**
    * Removes the extra JSON and leaves only the setters/getters described 
    * in the JsonBuilder interface.
+   * If the object contains another IsProperties attributes the method strip()
+   * is called on them.
    */
   <T extends IsProperties> T strip();
 

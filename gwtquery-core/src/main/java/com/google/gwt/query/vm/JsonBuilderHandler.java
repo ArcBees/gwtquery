@@ -231,33 +231,28 @@ public class JsonBuilderHandler implements InvocationHandler {
     return s != null && s.length() > 0 ? s.substring(0, 1).toLowerCase() + s.substring(1) : s;
   }
 
-  /**
-   * @param proxy
+  /*
+   * This method removes all the json which is not mapped into a 
+   * method inside the JsonBuilder Object.
+   * Also if the proxy contains another JsonBuilder in their methods
+   * the method strip() is called.
    */
-  private void stripProxy(JsonBuilder proxy) {
+  private void stripProxy(JsonBuilder proxy) throws Throwable {
     Class<?> type = proxy.getClass().getInterfaces()[0];
 
-    HashSet<String> valid = getValidMethodsFrom(type.getMethods());
-    Hashtable<String, Method> recursiveBuilders = getJsonBuildersFrom(type.getMethods());
+    HashSet<String> validAttrs = getAttributeNames(type.getMethods());
+    Hashtable<String, Method> ispropertyGetters = getJsonBuilders(type.getMethods());
 
     for (String key : jsonObject.keys()) {
       String name = methodName2AttrName(key);
-      if (!valid.contains(name)) {
+      if (!validAttrs.contains(name)) {
         jsonObject.remove(key);
         continue;
       }
-      Method recursiveBuilder = recursiveBuilders.get(name);
-      if (recursiveBuilder != null) {
-        callRecursiveStrip(proxy, recursiveBuilder);
+      Method ispropertyGetter = ispropertyGetters.get(name);
+      if (ispropertyGetter != null) {
+        ((IsProperties) invoke(proxy, ispropertyGetter, new Object[] {})).strip();
       }
-    }
-  }
-
-  private void callRecursiveStrip(JsonBuilder proxy, Method recursiveBuilder) {
-    try {
-      ((IsProperties) invoke(proxy, recursiveBuilder, new Object[] {})).strip();
-    } catch (Throwable e) {
-      e.printStackTrace();
     }
   }
 
@@ -292,7 +287,7 @@ public class JsonBuilderHandler implements InvocationHandler {
     return ret;
   }
 
-  private HashSet<String> getValidMethodsFrom(Method[] methods) {
+  private HashSet<String> getAttributeNames(Method[] methods) {
     HashSet<String> valid = new HashSet<String>();
 
     if (methods == null || methods.length == 0) {
@@ -311,23 +306,23 @@ public class JsonBuilderHandler implements InvocationHandler {
     return valid;
   }
 
-  private Hashtable<String, Method> getJsonBuildersFrom(Method[] methods) {
-    Hashtable<String, Method> recursiveBuilders = new Hashtable<String, Method>();
+  private Hashtable<String, Method> getJsonBuilders(Method[] methods) {
+    Hashtable<String, Method> ispropertyGetters = new Hashtable<String, Method>();
 
     if (methods == null || methods.length == 0) {
-      return recursiveBuilders;
+      return ispropertyGetters;
     }
 
     for (Method m : methods) {
       Class<?>[] classes = m.getParameterTypes();
-      boolean isRecursiveJsonBuilder =
+      boolean isJsonBuilder =
           classes.length == 0 && IsProperties.class.isAssignableFrom(m.getReturnType());
-      if (isRecursiveJsonBuilder) {
+      if (isJsonBuilder) {
         String attr = methodName2AttrName(m.getName());
-        recursiveBuilders.put(attr, m);
+        ispropertyGetters.put(attr, m);
       }
     }
 
-    return recursiveBuilders;
+    return ispropertyGetters;
   }
 }
