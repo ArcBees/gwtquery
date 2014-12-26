@@ -135,12 +135,13 @@ public class GQueryWidgetsTestGwt extends GWTTestCase {
   }
   
   public void testSelectorWidget() {
-    final Button b1 = new Button("click-me");
+    final Button b1 = new Button("Button click");
     RootPanel.get().add(b1);
     GQuery g = $(b1);
-    assertEquals("inline-block", $(b1).css("display"));
+    assertEquals(true, $(b1).isVisible());
     g.hide();
-    assertEquals("none", $(b1).css("display"));
+    assertEquals(false, $(b1).isVisible());
+    b1.removeFromParent();
   }
 
 }
