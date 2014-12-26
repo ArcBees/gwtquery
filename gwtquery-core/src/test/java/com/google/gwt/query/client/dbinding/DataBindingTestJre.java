@@ -158,12 +158,16 @@ public class DataBindingTestJre extends GWTTestCase {
   }
 
   public interface GUser extends JsonBuilder {
+    @Name("_id")
+    String getId(); 
+    
     int getAge();
     String getName();
     GAddress address();
   }
 
   public static final String JSON_USER_EXAMPLE = " { "
+                                                 + "   '_id': 'aaabbbccc', "
                                                  + "   'email': 'foo@bar.com', "
                                                  + "   'age': 27, "
                                                  + "   'name': 'Foo Bar', "
@@ -179,6 +183,7 @@ public class DataBindingTestJre extends GWTTestCase {
     entity.parse(JSON_USER_EXAMPLE, true);
 
     assertNotNull(entity.get("email"));
+    assertEquals("aaabbbccc", entity.getId());
     assertEquals(27, entity.getAge());
     assertEquals("Foo Bar", entity.getName());
     assertNotNull(entity.address());
@@ -192,6 +197,7 @@ public class DataBindingTestJre extends GWTTestCase {
     entity.parse(JSON_USER_EXAMPLE, true);
     entity.strip();
 
+    assertEquals("aaabbbccc", entity.getId());
     assertNull(entity.get("email"));
     assertEquals(27, entity.getAge());
     assertEquals("Foo Bar", entity.getName());

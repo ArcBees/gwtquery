@@ -1,5 +1,15 @@
 package com.google.gwt.query.vm;
 
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.IsProperties;
+import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.builders.JsonBuilder;
+import com.google.gwt.query.client.builders.JsonFactory;
+import com.google.gwt.query.client.builders.Name;
+import com.google.gwt.query.rebind.JsonBuilderGenerator;
+import com.google.gwt.query.vm.strip.JsonStripJre;
+import com.google.gwt.query.vm.util.MethodNameParser;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -11,14 +21,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.IsProperties;
-import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.builders.JsonFactory;
-import com.google.gwt.query.client.builders.Name;
-import com.google.gwt.query.rebind.JsonBuilderGenerator;
 
 import elemental.json.Json;
 import elemental.json.JsonArray;
@@ -202,7 +204,7 @@ public class JsonFactoryJre implements JsonFactory  {
       int largs = classes.length;
 
       Name name = method.getAnnotation(Name.class);
-      String attr = name != null ? name.value() : methodName2AttrName(mname);
+      String attr = name != null ? name.value() : MethodNameParser.methodName2AttrName(mname);
 
       if ("getFieldNames".equals(mname)) {
         return jsonObject.keys();
@@ -253,39 +255,29 @@ public class JsonFactoryJre implements JsonFactory  {
      */
     private void stripProxy(JsonBuilder proxy) {
       Class<?> type = proxy.getClass().getInterfaces()[0];
-      HashSet<String> valid = new HashSet<String>();
-      Hashtable<String, Method> getters = new Hashtable<String, Method>();
-      for (Method m : type.getMethods()) {
-        String attr = methodName2AttrName(m.getName());
-        valid.add(attr);
-        Class<?>[] classes = m.getParameterTypes();
-        if (classes.length == 0) {
-          if (IsProperties.class.isAssignableFrom(m.getReturnType())) {
-            getters.put(attr, m);
-          }
-        }
-      }
+      
+      HashSet<String> valid = JsonStripJre.getValidMethodsFrom(type.getMethods());
+      Hashtable<String, Method> recursiveBuilders = JsonStripJre.getJsonBuildersFrom(type.getMethods());
+      
       for (String key: jsonObject.keys()) {
-        String name = methodName2AttrName(key);
-        Method getter = getters.get(name);
+        String name = MethodNameParser.methodName2AttrName(key);
         if (!valid.contains(name)) {
           jsonObject.remove(key);
-        } else if (getter != null) {
-          try {
-            ((IsProperties)invoke(proxy, getter, new Object[]{})).strip();
-          } catch (Throwable e) {
-            e.printStackTrace();
-          }
+          continue;
+        }
+        Method recursiveBuilder = recursiveBuilders.get(name);
+        if (recursiveBuilder != null) {
+          callRecursiveStrip(proxy,recursiveBuilder);
         }
       }
     }
 
-    private String methodName2AttrName(String s) {
-      return deCapitalize(s.replaceFirst("^[gs]et", ""));
-    }
-
-    private String deCapitalize(String s) {
-      return s != null && s.length() > 0 ? s.substring(0, 1).toLowerCase() + s.substring(1) : s;
+    private void callRecursiveStrip(JsonBuilder proxy, Method recursiveBuilder) {
+      try {
+        ((IsProperties)invoke(proxy, recursiveBuilder, new Object[]{})).strip();
+      } catch (Throwable e) {
+        e.printStackTrace();
+      }      
     }
 
     private String getDataBindingClassName(Class<?> type) {
