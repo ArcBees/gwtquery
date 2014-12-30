@@ -455,28 +455,6 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals("", $("p", e).css("border", false));
   }
 
-  @DoNotRunWith({Platform.HtmlUnitLayout})
-  public void testSpecialFocusInOut() {
-    $(e).html("<p>Content</p>");
-    $("p", e).on(EventsListener.FOCUSIN, new Function() {
-      public void f(Element elem) {
-        GQuery.console.log("focus");
-        $(elem).css("background-color", "red");
-      }
-    });
-    $("p", e).focus();
-    assertEquals("red", $("p", e).css("background-color", false));
-
-    // blur
-    $("p", e).on(EventsListener.FOCUSOUT, new Function() {
-      public void f(Element elem) {
-        $(elem).css("background-color", "white");
-      }
-    });
-    $("p", e).blur();
-    assertEquals("white", $("p", e).css("background-color", false));
-  }
-
   public void testLazyMethods() {
     $(e).css(CSS.COLOR.with(RGBColor.WHITE));
     assertEquals("white", $(e).css("color", false));

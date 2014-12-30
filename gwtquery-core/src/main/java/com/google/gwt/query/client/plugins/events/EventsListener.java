@@ -34,6 +34,7 @@ import com.google.gwt.user.client.EventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
@@ -73,22 +74,22 @@ public class EventsListener implements EventListener {
   /**
    * Utility class to split a list of events with or without namespaces
    */
-  public static class EvPart {
+  public static class EventName {
     public final String nameSpace;
     public final String eventName;
-    public EvPart(String n, String e) {
+    public EventName(String n, String e) {
       nameSpace = n;
       eventName = e;
     }
 
-    public static List<EvPart> split(String events) {
-      List<EvPart> ret = new ArrayList<EvPart>();
+    public static List<EventName> split(String events) {
+      List<EventName> ret = new ArrayList<EventName>();
       String[] parts = events.split("[\\s,]+");
       for (String event : parts) {
         String[] tmp = event.split("\\.", 2);
         String eventName = tmp[0];
         String nameSpace = tmp.length > 1 ? tmp[1] : null;
-        ret.add(new EvPart(nameSpace, eventName));
+        ret.add(new EventName(nameSpace, eventName));
       }
       return ret;
     }
@@ -354,18 +355,14 @@ public class EventsListener implements EventListener {
 
   public static String MOUSEENTER = "mouseenter";
   public static String MOUSELEAVE = "mouseleave";
-  public static String FOCUSIN = "focusin";
-  public static String FOCUSOUT = "focusout";
 
-  public static HashMap<String, SpecialEvent> special;
+  public static Map<String, SpecialEvent> special;
 
   static {
     // Register some special events which already exist in jQuery
     special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
-    special.put(FOCUSIN, new DefaultSpecialEvent(FOCUSIN, "focus"));
-    special.put(FOCUSOUT, new DefaultSpecialEvent(FOCUSOUT, "blur"));
   }
 
   public static void clean(Element e) {
@@ -470,7 +467,7 @@ public class EventsListener implements EventListener {
       unbind(events, null);
     }
 
-    for (EvPart ev : EvPart.split(events)) {
+    for (EventName ev : EventName.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
       boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
@@ -491,7 +488,7 @@ public class EventsListener implements EventListener {
   }
 
   public void die(String events, String cssSelector) {
-    for (EvPart ev : EvPart.split(events)) {
+    for (EventName ev : EventName.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
       boolean unbind = hook == null || hook.tearDown(element) == false;
       if (unbind) {
@@ -582,7 +579,7 @@ public class EventsListener implements EventListener {
   }
 
   public void live(String events, String cssSelector, Object data, Function... funcs) {
-    for (EvPart ev : EvPart.split(events)) {
+    for (EventName ev : EventName.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
       boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
@@ -708,7 +705,7 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(String events, Function f) {
-    for (EvPart ev : EvPart.split(events)) {
+    for (EventName ev : EventName.split(events)) {
       SpecialEvent hook = special.get(ev.eventName);
       boolean unbind = hook == null || hook.tearDown(element) == false;
       if (unbind) {

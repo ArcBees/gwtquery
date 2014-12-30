@@ -21,7 +21,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.query.client.plugins.events.EventsListener.EvPart;
+import com.google.gwt.query.client.plugins.events.EventsListener.EventName;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -300,7 +300,7 @@ public class Events extends GQuery {
    * @param functions a set of function to run.
    */
   public Events triggerHtmlEvent(String htmlEvent, Object[] datas, final Function... functions) {
-    for (EvPart part : EvPart.split(htmlEvent)) {
+    for (EventName part : EventName.split(htmlEvent)) {
       NativeEvent e = document.createHtmlEvent(part.eventName, true, true);
       JsUtils.prop(e, "namespace", part.nameSpace);
       if ("submit".equals(part.eventName)){
