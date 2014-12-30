@@ -1479,6 +1479,32 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   }
 
+  public GQuery closest(Predicate predicate, Node context) {
+    assert predicate != null;
+
+    if (context == null) {
+      context = currentContext;
+    }
+
+    JsNodeArray result = JsNodeArray.create();
+
+    for (Element e : elements) {
+      Element current = e;
+      while (current != null && current.getOwnerDocument() != null && current != context) {
+        boolean match = predicate.f(current, 0);
+        if (match) {
+          result.addNode(current);
+          break;
+        } else {
+          current = current.getParentElement();
+        }
+      }
+    }
+
+    return $(unique(result));
+
+  }
+
   /**
    * Returns a {@link Map} object as key a selector and as value the list of ancestor elements
    * matching this selectors, beginning at the first matched element and progressing up through the
