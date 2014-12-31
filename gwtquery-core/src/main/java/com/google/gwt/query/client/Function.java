@@ -30,7 +30,7 @@ public abstract class Function {
   private Event event = null;
   private int index = -1;
   protected Object[] arguments = new Object[0];
-  
+
   /**
    * Utility method to get a string representation with the content
    * of the arguments array. It recursively visits arrays and inspect
@@ -51,7 +51,7 @@ public abstract class Function {
   protected String dumpArguments() {
     return dumpArguments(arguments, "\n");
   }
-  
+
   private String dumpArguments(Object[] arguments, String sep) {
     StringBuilder b = new StringBuilder();
     for (int i = 0, l = arguments.length; i < l; i++ ) {
@@ -99,7 +99,7 @@ public abstract class Function {
     index = i;
     return this;
   }
-  
+
   /**
    * @deprecated use getArguments instead.
    */
@@ -111,7 +111,7 @@ public abstract class Function {
   public Object[] getArguments() {
     return arguments;
   }
-  
+
   /**
    * Set the list of arguments to be passed to the function
    */
@@ -146,7 +146,7 @@ public abstract class Function {
   public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
     return (T)getArgument(argIdx, pos, JavaScriptObject.class);
   }
-  
+
   /**
    * Utility method for safety getting a JavaScriptObject present at a certain
    * position in the list of arguments.
@@ -154,7 +154,7 @@ public abstract class Function {
   public <T extends JavaScriptObject> T getArgumentJSO(int idx) {
     return getArgumentJSO(-1, idx);
   }
-  
+
   /**
    * Utility method for safety getting an array present at a certain
    * position in the list of arguments.
@@ -191,14 +191,14 @@ public abstract class Function {
   public <T> T arguments(int idx) {
     return getArgument(idx);
   }
-  
+
   /**
    * Convenience alias for the getArguments(argIdx, pos) method;
    */
   public <T> T arguments(int argIdx, int pos) {
     return getArgument(argIdx, pos);
   }
-  
+
   /**
    * Safety return the argument in the position idx.
    * 
@@ -208,7 +208,7 @@ public abstract class Function {
   public <T> T getArgument(int argIdx, int pos) {
     return getArgument(argIdx, pos, null);
   }
-  
+
   /**
    * Safety return the argument in the position idx.
    * 
@@ -249,7 +249,6 @@ public abstract class Function {
     return null;
   }
 
-  
   /**
    * @deprecated use: getArgument()
    */
@@ -281,7 +280,7 @@ public abstract class Function {
   public void setData(double b) {
     setArguments(b);
   }
-  
+
   /**
    * @deprecated use use setArguments instead
    */

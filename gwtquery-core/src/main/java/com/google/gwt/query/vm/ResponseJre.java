@@ -14,14 +14,14 @@ public class ResponseJre extends Response {
   private Map<String,List<String>> headers;
   private String responseText;
   private String statusText;
-  
+
   public ResponseJre(int status, String statusText, String text, Map<String,List<String>> headers) {
     this.status = status;
     this.headers = headers;
     this.responseText = text;
     this.statusText = statusText;
   }
-  
+
   public String getHeader(String header) {
     List<String> l = headers.get(header);
     if (l != null && !l.isEmpty()) {

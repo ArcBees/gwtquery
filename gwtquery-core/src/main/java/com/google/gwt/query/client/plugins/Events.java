@@ -107,13 +107,11 @@ public class Events extends GQuery {
     return this;
   }
 
-
   public GQuery die(int eventbits, String nameSpace) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).die(
         eventbits, nameSpace, null, null, currentSelector);
     return this;
   }
-
 
   public GQuery die(int eventbits) {
    return die(eventbits, null);

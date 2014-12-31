@@ -39,7 +39,7 @@ import com.google.gwt.query.rebind.BrowserGenerator;
  *
  */
 public abstract class Browser {
-  
+
   /**
    * @return true if ie6
    */
@@ -75,7 +75,7 @@ public abstract class Browser {
    * @return true if webkit
    */
   public final boolean webkit = isWebkit();
-  
+
   protected abstract boolean isIe6();
   protected abstract boolean isIe8();
   protected abstract boolean isIe9();

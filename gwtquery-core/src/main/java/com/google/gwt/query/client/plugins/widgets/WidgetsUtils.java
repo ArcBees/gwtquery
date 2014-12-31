@@ -40,7 +40,6 @@ public class WidgetsUtils {
   static final String[] appendingTags = {
     "td", "th", "li"};
 
-
   /**
     * Append a widget to a dom element, and hide it.
     * Element classes will be copied to the new widget.

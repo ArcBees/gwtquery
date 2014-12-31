@@ -36,9 +36,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * </pre>
  */
 public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
-  
+
   private static final RegExp callbackRegex = RegExp.compile("^(.+[\\?&])([^=]+)=\\?(.*)$");
-  
+
   public PromiseReqBuilderJSONP(String url) {
     this(url, null, 0);
   }

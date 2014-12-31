@@ -59,7 +59,6 @@ public class JsonBuilderGenerator extends Generator {
   static JClassType stringType;
   static JClassType jsonFactoryType;
 
-
   public static String capitalize(String s) {
     if (s.length() == 0)
       return s;

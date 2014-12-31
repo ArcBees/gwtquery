@@ -31,21 +31,21 @@ public class CookieManager {
   private static final char DOT = '.';
 
   private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);;
-  
+
   private static CookieManager cookieManager = new CookieManager();
 
   public static CookieManager getInstance() {
     return cookieManager;
   }
-  
+
   public void clear() {
     store.clear();
   }
-  
+
   public void removeDomainCookies(String domain) {
     store.remove(domain);
   }
-  
+
   public void removeDomainCookie(String domain, String... cookies) {
     Map<String, Map<String, String>> domainStore =  store.get(domain);
     if (domainStore != null) {
@@ -54,11 +54,11 @@ public class CookieManager {
       }
     }
   }
-  
+
   public void setDomcainCookie(String host, String name, String value) {
     setDomcainCookieProperty(host, name, name, value);
   }
-    
+
   public void setDomcainCookieProperty(String host, String name, String prop, String value) {
     String domain = getDomainFromHost(host);
     Map<String, Map<String, String>> domainStore =  store.get(domain);

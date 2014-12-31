@@ -16,12 +16,12 @@ import com.google.gwt.query.client.plugins.deferred.PromiseReqBuilderJSONP;
  * Ajax transport for Client side.
  */
 public class AjaxTransportJs implements AjaxTransport {
-  
+
   @Override
   public Promise getJsonP(Settings settings) {
     return new PromiseReqBuilderJSONP(settings.getUrl(), settings.getTimeout());
   }
-  
+
   @Override
   public Promise getLoadScript(final Settings settings) {
     return new PromiseFunction() {
@@ -47,5 +47,5 @@ public class AjaxTransportJs implements AjaxTransport {
   public Promise getXhr(Settings settings) {
     return new PromiseReqBuilder(settings);
   }
-  
+
 }

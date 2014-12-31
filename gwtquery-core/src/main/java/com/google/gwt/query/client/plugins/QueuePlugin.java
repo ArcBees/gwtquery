@@ -140,7 +140,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   public Promise promise() {
     return promise(DEFAULT_NAME);
   }
-  
+
   /**
    * Returns a dynamically generated Promise that is resolved once all actions 
    * in the named queue have ended.
@@ -162,17 +162,17 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
           }
         }
       }
-      
+
       public void f() {
         if (--count == 0) {
           dfd.resolve(QueuePlugin.this);
         }
       }
     };
-    
+
     // Run the function and resolve it in case there are not elements with active queue
     resolve.f(this, name);
-    
+
     return dfd.promise();
   }
 
@@ -315,7 +315,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       runNext(elem, name, q);
     }
   }
-  
+
   private void runNext(Element elem, String name, Queue<? extends Function> q) {
     assert q != null;
     Function f = q.peek();
@@ -365,7 +365,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       data(elem, name, queue);
     }
   }
-  
+
   private Callbacks emptyHooks(Element elem, String name) {
     String key = name + EMPTY_HOOKS;
     Callbacks c = (Callbacks)data(elem, key, null);

@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.css;
 
-
 /**
  * Specify position of element's edges.
  */

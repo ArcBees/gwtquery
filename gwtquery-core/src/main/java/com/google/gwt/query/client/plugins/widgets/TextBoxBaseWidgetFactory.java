@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
  *
- *
  */
 public abstract class TextBoxBaseWidgetFactory<T extends TextBoxBase>
     implements WidgetFactory<T> {

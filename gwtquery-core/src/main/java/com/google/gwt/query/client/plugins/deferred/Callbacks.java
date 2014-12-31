@@ -23,7 +23,7 @@ import com.google.gwt.query.client.Function;
  * Implementation of jQuery.Callbacks for gwtquery.
  */
 public class Callbacks {
-  
+
   /**
    * Iterface used for callbacks which could cancel the execution 
    * when returning false;
@@ -35,19 +35,19 @@ public class Callbacks {
      */
     boolean f(Object ...objects);
   }
-  
+
   private List<Object> stack = new ArrayList<Object>();
-  
+
   private boolean done = false;
-    
+
   private List<Object> memory = null;
-  
+
   private boolean isOnce, isMemory, isUnique, stopOnFalse;
-  
+
   public Callbacks() {
     this("");
   }
-  
+
   /**
    * Create a new Callbacks object with options given as a space delimited string.
    * 
@@ -61,7 +61,7 @@ public class Callbacks {
     isUnique = options.contains("unique");
     stopOnFalse = options.contains("stopOnFalse");
   }
-  
+
   /**
    * Add a Callback or a collection of callbacks to a callback list.
    * 
@@ -70,7 +70,7 @@ public class Callbacks {
     addAll((Object[])c);
     return this;
   }
-  
+
   /**
    * Add a Callback or a collection of callbacks to a callback list.
    */
@@ -86,7 +86,7 @@ public class Callbacks {
     addAll((Object[])f);
     return this;
   }
-  
+
   /**
    * Disable a callback list from doing anything more.
    */
@@ -95,7 +95,7 @@ public class Callbacks {
     done = true;
     return this;
   }
-  
+
   /**
    * lock
    */
@@ -124,7 +124,7 @@ public class Callbacks {
     }
     return this;
   }
-  
+
   /**
    * Remove a callback or a collection of callbacks from a callback list.
    */
@@ -132,7 +132,7 @@ public class Callbacks {
     stack.removeAll(Arrays.asList(o));
     return this;
   }
-  
+
   private void addAll(Object...o) {
     for (Object c : o) {
       if (!done && stack != null && c != null && (!isUnique || !stack.contains(c))) {
@@ -162,7 +162,7 @@ public class Callbacks {
     }
     return true;
   }
-  
+
   public String status() {
     return "stack=" + (stack == null ? "null" : stack.size()) + " " + done;
   }

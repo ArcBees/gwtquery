@@ -34,7 +34,6 @@ public class DocumentStyleImpl {
   private static final RegExp cssNumberRegex = RegExp.compile("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
   private static final RegExp sizeRegex = RegExp.compile("^(client|offset|)(width|height)$", "i");
 
-
   /**
    * Returns the numeric value of a css property.
    *
@@ -123,14 +122,14 @@ public class DocumentStyleImpl {
 
   private Element attachTemporary(Element elem) {
     Element  lastParent = $(elem).parents().last().get(0);
-  
+
     if (lastParent == null){
       //the element itself is detached
       lastParent = elem;
     }
-  
+
     Document.get().getBody().appendChild(lastParent);
-  
+
     return lastParent;
   }
 

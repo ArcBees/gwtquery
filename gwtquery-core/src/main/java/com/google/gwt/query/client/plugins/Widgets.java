@@ -62,7 +62,6 @@ public class Widgets extends QueuePlugin<Widgets> {
     super(gq);
   }
 
-
   /**
    * Try to create a widget using the given factory and the given options for
    * each element of the query. Returns a new gquery set of elements with the
@@ -139,7 +138,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   public Widgets label() {
     return widgets(new LabelWidgetFactory(), null);
   }
-  
+
   /**
    * Create a {@link Label} widget for each selected element. The
    * <code>initializers</code> will be called on each new {@link Label} created
@@ -165,7 +164,6 @@ public class Widgets extends QueuePlugin<Widgets> {
   public Widgets passwordBox(WidgetInitializer<PasswordTextBox> initializers) {
     return widgets(new PasswordTextBoxWidgetFactory(), initializers);
   }
-
 
   /**
    * Create a {@link TextBox} widget for each selected element. The

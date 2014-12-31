@@ -14,11 +14,8 @@ import com.google.gwt.user.client.Event;
  * element. So, we cannot keep a copy of the MouseDownEvent during a dragging
  * for example.
  *
- *
- *
  * Be Careful : the methods preventDefault() and stopPropagation must be called directly on the
  * original event.
- *
  *
  */
 public class GqEvent extends Event {
@@ -52,7 +49,6 @@ public class GqEvent extends Event {
     }
     gQueryEvent.originalEvent = originalEvent;
   }-*/;
-
 
   protected GqEvent() {
   }

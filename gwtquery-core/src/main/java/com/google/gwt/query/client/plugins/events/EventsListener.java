@@ -554,7 +554,6 @@ public class EventsListener implements EventListener {
       die(b, nameSpace, eventName, originalEventName, cssSelector);
     }
 
-
   }
 
   public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
@@ -637,7 +636,6 @@ public class EventsListener implements EventListener {
 
       String nameSpace = null;
       String eventName = event;
-
 
       String[] subparts = event.split("\\.", 2);
 
@@ -732,7 +730,7 @@ public class EventsListener implements EventListener {
 
   public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
       Function f) {
-    
+
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);

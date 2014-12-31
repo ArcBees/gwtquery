@@ -17,7 +17,6 @@ package com.google.gwt.query.client;
 
 import com.google.gwt.query.client.builders.JsonBuilder;
 
-
 /**
  * Interface using for Data Binders valid for JVM and JS.
  */
@@ -37,12 +36,12 @@ public interface IsProperties {
    * and a Json implementation in the JVM.
    */
   <T> T getDataImpl();
-  
+
   /**
    * Return the Object with the given key.
    */
   <T> T get(Object key);
-  
+
   /**
    * Set an Object with the given key.
    */
@@ -66,7 +65,7 @@ public interface IsProperties {
    * Example {"user":{"name":"manolo","surname":"carrasco"}}
    */
   String toJsonWithName();
-  
+
   /**
    * return a string which represents the object in a queryString format.
    */
@@ -76,8 +75,7 @@ public interface IsProperties {
    * return the name for this type
    */
   String getJsonName();
-  
-  
+
   /**
    * converts a JsonBuilder instance into another JsonBuilder type but
    * preserving the underlying data object. 

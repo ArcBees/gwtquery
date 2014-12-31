@@ -714,7 +714,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
   }
 
-
   /**
    * Return a lazy version of the GQuery interface. Lazy function calls are simply queued up and not
    * executed immediately.
@@ -949,7 +948,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -1010,7 +1008,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -1067,7 +1064,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -1098,7 +1094,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *  });
    * </pre>
    *
-   *
    * For color css properties, values can be specified via hexadecimal or rgb or literal values.
    *
    * Example:
@@ -1106,7 +1101,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
-   *
    *
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is complete
@@ -1284,7 +1278,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The event handlers are passed as Functions that you can use to prevent default behavior. To
    * stop both default action and event bubbling, the function event handler has to return false.
    *
-   *
    */
   public GQuery bind(int eventbits, final Function... funcs) {
     return as(Events).bind(eventbits, null, funcs);
@@ -1308,7 +1301,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    * The event handlers are passed as Functions that you can use to prevent default behavior. To
    * stop both default action and event bubbling, the function event handler has to return false.
-   *
    *
    */
   public GQuery bind(String eventType, final Function... funcs) {
@@ -1578,7 +1570,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * The best way to use this method (i.e. to generate a CssSetter) is to take the desired css
    * property defined in {@link CSS} class and call the {@link TakesCssValue#with(HasCssName)}
    * method on it.
-   *
    *
    * ex :
    *
@@ -2746,7 +2737,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
    * <p>
-   * <p>
    * Ex :
    *
    * <pre>
@@ -2800,7 +2790,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * <p>
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future. The <code>data</code> parameter allows us to pass data to the handler.
-   * <p>
    * <p>
    * Ex :
    *
@@ -4529,7 +4518,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery trigger(int eventbits, int... keys) {
     return as(Events).trigger(eventbits, keys);
   }
-
 
   /**
    * Trigger a event in all matched elements.

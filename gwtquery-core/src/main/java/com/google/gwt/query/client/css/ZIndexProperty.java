@@ -38,7 +38,6 @@ public class ZIndexProperty implements TakesInteger {
   private ZIndexProperty() {
   }
 
-
   public String getCssName() {
     return CSS_PROPERTY;
   }

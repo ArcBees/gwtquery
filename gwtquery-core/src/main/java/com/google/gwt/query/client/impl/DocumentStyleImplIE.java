@@ -67,7 +67,6 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
       e.style.removeAttribute(prop);
   }-*/;
 
-
   /**
    * Set the value of a style property of an element.
    * IE needs a special workaround to handle opacity

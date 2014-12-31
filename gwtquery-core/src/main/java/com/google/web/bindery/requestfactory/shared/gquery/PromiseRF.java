@@ -54,7 +54,7 @@ public class PromiseRF extends DeferredPromiseImpl {
   private int total = 0;
   private List<Object> responses = new ArrayList<Object>();
   private List<RequestContext> contexts = new ArrayList<RequestContext>();
-  
+
   /**
    * Fire a RF Request.
    */

@@ -71,7 +71,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public void pushAll(JavaScriptObject prevElem) {
     c().pushAll(prevElem);
   }
-  
+
   public boolean contains(Object o) {
     return c().contains(o);
   }
@@ -81,7 +81,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
       c().remove(o);
     }
   }
-  
+
   public Object[] elements() {
     return c().elements();
   }

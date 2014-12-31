@@ -42,7 +42,7 @@ public abstract class PromiseFunction extends DeferredPromiseImpl {
   public PromiseFunction() {
     f(dfd);
   }
-  
+
   /**
    * This function is called once when the promise is created and the
    * new deferred is available.

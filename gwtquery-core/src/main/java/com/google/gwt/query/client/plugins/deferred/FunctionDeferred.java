@@ -89,7 +89,7 @@ public abstract class FunctionDeferred extends Function {
     cache = type;
     return this;
   }
-  
+
   /**
    * Reset the cache so as a new invocation to this function will
    * execute it instead of restoring old values from cache.

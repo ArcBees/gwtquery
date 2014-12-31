@@ -142,7 +142,7 @@ public class Properties extends JavaScriptObject implements IsProperties {
   public final Object getObject(Object name) {
     return c().get(String.valueOf(name));
   }
-  
+
   public final Properties getProperties(Object name) {
     return getJavaScriptObject(name);
   }
@@ -230,11 +230,11 @@ public class Properties extends JavaScriptObject implements IsProperties {
   public final String toJson() {
     return toJsonString();
   }
-  
+
   public final String toJsonWithName() {
     return toJsonWithName(getJsonName());
   }
-  
+
   public final String toJsonWithName(String name) {
     return "{\"" + name + "\":{" + toJson() + "}";
   }

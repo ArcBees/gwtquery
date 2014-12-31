@@ -182,7 +182,6 @@ public interface LazyEffects<T> extends LazyBase<T>{
    *  });
    * </pre>
    *
-   *
    * For color css properties, values can be specified via hexadecimal or rgb or
    * literal values.
    *
@@ -191,7 +190,6 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
-   *
    *
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is

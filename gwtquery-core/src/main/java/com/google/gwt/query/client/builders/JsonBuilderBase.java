@@ -98,7 +98,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public String toJson() {
     return p.tostring();
   }
-  
+
   public String toJsonWithName() {
     return "{\"" + getJsonName() + "\":" + p.tostring() + "}";
   }
@@ -108,22 +108,22 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public Properties getProperties() {
     return p;
   }
-  
+
   @Override
   public String toQueryString() {
     return p.toQueryString();
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public Properties getDataImpl() {
     return p;
   }
-  
+
   public <T> T get(Object key) {
     return p.get(key);
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
@@ -133,7 +133,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     }
     return (T)this;
   }
-  
+
   public <T extends JsonBuilder> T as(Class<T> clz) {
     return p.as(clz);
   }

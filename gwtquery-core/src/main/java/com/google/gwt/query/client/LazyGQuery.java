@@ -127,7 +127,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -186,7 +185,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -241,7 +239,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * NOTE: The ability of animating attribute values is only available in gquery but not jquery
    *
-   *
    * Example:
    *
    * <pre class="code">
@@ -272,7 +269,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  });
    * </pre>
    *
-   *
    * For color css properties, values can be specified via hexadecimal or rgb or literal values.
    *
    * Example:
@@ -280,7 +276,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <pre class="code">
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
-   *
    *
    * @param prop the property to animate : "cssName:'value'"
    * @param funcs an array of {@link Function} called once the animation is complete
@@ -398,7 +393,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * The event handlers are passed as Functions that you can use to prevent default behavior. To
    * stop both default action and event bubbling, the function event handler has to return false.
    *
-   *
    */
   LazyGQuery<T> bind(int eventbits, Function... funcs);
 
@@ -418,7 +412,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *
    * The event handlers are passed as Functions that you can use to prevent default behavior. To
    * stop both default action and event bubbling, the function event handler has to return false.
-   *
    *
    */
   LazyGQuery<T> bind(String eventType, Function... funcs);
@@ -527,7 +520,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * The best way to use this method (i.e. to generate a CssSetter) is to take the desired css
    * property defined in {@link CSS} class and call the {@link TakesCssValue#with(HasCssName)}
    * method on it.
-   *
    *
    * ex :
    *
@@ -1321,7 +1313,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future.
    * <p>
-   * <p>
    * Ex :
    *
    * <pre>
@@ -1373,7 +1364,6 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * <p>
    * Attach a handler for this event to all elements which match the current selector, now and in
    * the future. The <code>data</code> parameter allows us to pass data to the handler.
-   * <p>
    * <p>
    * Ex :
    *

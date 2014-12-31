@@ -20,5 +20,4 @@ package com.google.gwt.query.client.impl;
  */
 public abstract class SelectorEngineImpl implements HasSelector {
 
-
 }

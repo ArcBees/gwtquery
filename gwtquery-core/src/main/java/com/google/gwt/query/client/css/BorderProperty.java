@@ -27,7 +27,6 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
  * cannot set different values on the four borders. To do so, one or more of the
  * other border properties must be used.
  *
- *
  */
 public class BorderProperty implements HasCssValue {
 

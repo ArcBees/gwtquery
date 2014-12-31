@@ -35,7 +35,7 @@ public class Ajax extends GQuery {
   public static final String JSON_CONTENT_TYPE = "application/json";
 
   public static final String JSON_CONTENT_TYPE_UTF8 = JSON_CONTENT_TYPE + "; charset=utf-8";
-  
+
   public static interface AjaxTransport {
     Promise getJsonP(Settings settings);
 
@@ -43,7 +43,7 @@ public class Ajax extends GQuery {
 
     Promise getXhr(Settings settings);
   }
-  
+
   /**
    * Ajax Settings object
    */
@@ -93,7 +93,6 @@ public class Ajax extends GQuery {
   /**
    * Perform an ajax request to the server.
    *
-   *
    * Example:
    *
    * <pre>
@@ -119,7 +118,7 @@ public class Ajax extends GQuery {
    */
   public static Promise ajax(Settings settings) {
     resolveSettings(settings);
-    
+
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
@@ -184,11 +183,11 @@ public class Ajax extends GQuery {
     }
     return ret;
   }
-  
+
   private static void resolveSettings(Settings settings) {
     String url = settings.getUrl();
     assert settings != null && settings.getUrl() != null: "no url found in settings";
-    
+
     String type = "POST";
     if (settings.getType() != null) {
       type = settings.getType().toUpperCase();
@@ -220,7 +219,7 @@ public class Ajax extends GQuery {
       settings.setUrl(url);
     }
   }
-  
+
   public static Promise ajax(String url, Function onSuccess, Function onError) {
     return ajax(url, onSuccess, onError, (Settings) null);
   }
@@ -375,7 +374,7 @@ public class Ajax extends GQuery {
   public Ajax load(String url, IsProperties data) {
     return load(url, data);
   }
-  
+
   public Ajax load(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";
