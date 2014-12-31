@@ -15,18 +15,20 @@
  */
 package com.google.gwt.query.client.deferred;
 
-import static com.google.gwt.query.client.GQuery.*;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise.Deferred;
+import com.google.gwt.query.client.functions.Action1;
+import com.google.gwt.query.client.functions.Func2;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.query.client.plugins.deferred.Callbacks.Callback;
-import com.google.gwt.query.client.plugins.deferred.FunctionDeferred.CacheType;
 import com.google.gwt.query.client.plugins.deferred.FunctionDeferred;
+import com.google.gwt.query.client.plugins.deferred.FunctionDeferred.CacheType;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+
+import static com.google.gwt.query.client.GQuery.when;
 
 /**
  * Tests for Deferred which can run either in JVM and GWT
@@ -197,6 +199,43 @@ public class DeferredTest extends GWTTestCase {
       done = true;
     }});
     
+    if (!GWT.isClient()) {
+      assertTrue(done);
+    }
+  }
+  
+  public void testTypedDone() {
+    done = false;
+    delayTestFinish(5000);
+
+    com.google.gwt.query.client.plugins.deferred.Deferred
+      .when(
+        new PromiseFunction<String>() {
+          public void f(Deferred<String> dfd) {
+            dfd.onResolve("Hi");
+          }
+        },
+        new PromiseFunction<Integer>() {
+          @Override
+          public void f(Deferred<Integer> dfd) {
+            dfd.onResolve(101);
+          }
+        },
+        new Func2<String, Integer, String>() {
+          @Override
+          public String call(String s, Integer integer) {
+            return s + " " + integer;
+          }
+        })
+      .done(new Action1<String>() {
+        @Override
+        public void call(String o) {
+          assertEquals("Hi 101", o);
+          finishTest();
+          done = true;
+        }
+      });
+
     if (!GWT.isClient()) {
       assertTrue(done);
     }

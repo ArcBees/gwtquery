@@ -13,36 +13,38 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.functions.Action1;
 
 /**
  * Definition of jquery Promise interface used in gquery. 
  */
-public interface Promise {
+public interface Promise<T> {
   
   /**
    * Definition of jquery Deferred interface used in gquery. 
    */
-  public interface Deferred {
+  public interface Deferred<T> {
     /**
      * Call the progressCallbacks on a Deferred object with the given args.
      */
-    Deferred notify(Object... o);
+    Deferred<T> notify(Object... o);
     
     /**
      * Return a Deferred’s Promise object.
      */
-    Promise promise();
+    Promise<T> promise();
     
     /**
      * Reject a Deferred object and call any failCallbacks with the given args.
      */
-    Deferred reject(Object... o);
+    Deferred<T> reject(Object... o);
     
     /**
      * Resolve a Deferred object and call any doneCallbacks with the given args.
      */
-    Deferred resolve(Object... o);
+    Deferred<T> resolve(Object... o);
+
+    Deferred<T> onResolve(T o);
   }
 
   public static final String PENDING = "pending";
@@ -58,6 +60,8 @@ public interface Promise {
    * Add handlers to be called when the Deferred object is resolved.
    */
   Promise done(Function... o);
+
+  Promise<T> done(Action1<T> doneAction);
 
   /**
    * Add handlers to be called when the Deferred object is rejected.
@@ -100,12 +104,12 @@ public interface Promise {
    *   3rd one will be called when progress notifications are sent.  
    */
   Promise then(Function... f);
-  
+
   /**
    * Add filters to be called just in case the Deferred object is rejected returning
    * a new valid promise so as we can continue the flow control of the chain.
    *
-   * It works in the same way than adding a second parameter to {@link then} method but 
+   * It works in the same way than adding a second parameter to {@link #then} method but
    * continuing the flow and making more readable the code.
    *
    * Example:
@@ -122,7 +126,7 @@ public interface Promise {
   /**
    * Add filters to be called just in case the Deferred object is resolved.
    *
-   * It works in the same way than {@link then} does but making more readable
+   * It works in the same way than {@link #then} does but making more readable
    * the code flow.
    *
    * NOTE: this method is in gQuery but not in jQuery.
