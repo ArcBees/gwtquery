@@ -47,10 +47,10 @@ public class GqEvent extends Event {
 
   private static native void copy(
       Event originalEvent, GqEvent gQueryEvent) /*-{
-		for ( var field in originalEvent) {
-			gQueryEvent[field] = originalEvent[field];
-		}
-		gQueryEvent.originalEvent = originalEvent;
+    for ( var field in originalEvent) {
+      gQueryEvent[field] = originalEvent[field];
+    }
+    gQueryEvent.originalEvent = originalEvent;
   }-*/;
 
 
@@ -61,7 +61,7 @@ public class GqEvent extends Event {
    * Return the original event (the one created by the browser)
    */
   public final native Event getOriginalEvent()/*-{
-		return this.originalEvent;
+    return this.originalEvent;
   }-*/;
 
   public final native void setCurrentElementTarget(Element e)/*-{

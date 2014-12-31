@@ -64,8 +64,8 @@ public class ZIndexProperty implements TakesInteger {
    * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
    */
   private native String getZIndex(Style s) /*-{
-		//force to return a string
-		return "" + s["zIndex"];
+    //force to return a string
+    return "" + s["zIndex"];
   }-*/;
 
 }

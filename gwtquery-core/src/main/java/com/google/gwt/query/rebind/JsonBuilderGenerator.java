@@ -170,15 +170,15 @@ public class JsonBuilderGenerator extends Generator {
       } else if (retType.equals("java.lang.Byte")) {
         sw.println("return (byte) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Integer")) {
-    	  sw.println("return (int) p.getFloat(\"" + name + "\");");
+        sw.println("return (int) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Float")) {
-    	  sw.println("return p.getFloat(\"" + name + "\");");
+        sw.println("return p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Double")) {
-    	  sw.println("return (double) p.getFloat(\"" + name + "\");");
+        sw.println("return (double) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Long")) {
-    	  sw.println("return (long) p.getFloat(\"" + name + "\");");
+        sw.println("return (long) p.getFloat(\"" + name + "\");");
       } else if (retType.equals("java.lang.Byte")) {
-    	  sw.println("return (byte) p.getFloat(\"" + name + "\");");
+        sw.println("return (byte) p.getFloat(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), stringType)) {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
@@ -222,7 +222,7 @@ public class JsonBuilderGenerator extends Generator {
           sw.println("return Arrays.asList(" + ret + ");");
         }
       } else if (method.getReturnType().isEnum() != null){
-    	  sw.println("return "+ method.getReturnType().getQualifiedSourceName() + ".valueOf(p.getStr(\"" + name + "\"));");
+        sw.println("return "+ method.getReturnType().getQualifiedSourceName() + ".valueOf(p.getStr(\"" + name + "\"));");
       } else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type "
             + retType + " " + ifaceName + "." + name + "()\"); ");

@@ -780,12 +780,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private static native void scrollIntoViewImpl(Node n) /*-{
-		if (n)
-			n.scrollIntoView()
+    if (n)
+      n.scrollIntoView()
   }-*/;
 
   private static native void setElementValue(Element e, String value) /*-{
-		e.value = value;
+    e.value = value;
   }-*/;
 
   protected Node currentContext;
@@ -2388,10 +2388,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   private native Element getPreviousSiblingElement(Element elem) /*-{
-		var sib = elem.previousSibling;
-		while (sib && sib.nodeType != 1)
-			sib = sib.previousSibling;
-		return sib;
+    var sib = elem.previousSibling;
+    while (sib && sib.nodeType != 1)
+      sib = sib.previousSibling;
+    return sib;
   }-*/;
 
   /**
