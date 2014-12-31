@@ -466,7 +466,6 @@ public class JsUtils {
     return a
   }-*/;
 
-
   /**
    * Call via jsni any arbitrary function present in a Javascript object.
    *

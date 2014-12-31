@@ -162,7 +162,6 @@ public class UiPlugin extends GQuery {
     super(gq);
   }
 
-
   /**
    * Return the immediate scrolling parent.
    */

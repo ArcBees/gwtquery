@@ -53,10 +53,10 @@ public class ConsoleBrowser implements Console {
 
     protected native void init()/*-{
       try {
-				[ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
-				  .forEach(function(method) {
-					  $wnd.console[method] = this.call($wnd.console[method], $wnd.console);
-				  }, Function.prototype.bind);
+        [ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
+          .forEach(function(method) {
+            $wnd.console[method] = this.call($wnd.console[method], $wnd.console);
+          }, Function.prototype.bind);
         this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initialized = true;
       } catch(e) {
       }

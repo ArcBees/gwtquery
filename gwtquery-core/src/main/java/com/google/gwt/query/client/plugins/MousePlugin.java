@@ -281,12 +281,12 @@ public abstract class MousePlugin extends UiPlugin {
   }
 
   private native boolean isEventAlreadyHandled(GqEvent event)/*-{
-		var result = event.mouseHandled ? event.mouseHandled : false;
-		return result;
+    var result = event.mouseHandled ? event.mouseHandled : false;
+    return result;
   }-*/;
 
   private native void markEventAsHandled(GqEvent event)/*-{
-		event.mouseHandled = true;
+    event.mouseHandled = true;
   }-*/;
 
   private boolean notHandleMouseDown(Element element, GqEvent mouseDownEvent) {

@@ -53,7 +53,7 @@ public class JsCache extends JavaScriptObject {
   public final native void delete(Object name) /*-{
     delete this[name];
   }-*/;
-  
+
   public final void clear() {
     for (String k : keys()) {
       delete(k);

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.dom.client.Element;
@@ -13,11 +28,8 @@ import com.google.gwt.user.client.Event;
  * element. So, we cannot keep a copy of the MouseDownEvent during a dragging
  * for example.
  *
- *
- *
  * Be Careful : the methods preventDefault() and stopPropagation must be called directly on the
  * original event.
- *
  *
  */
 public class GqEvent extends Event {
@@ -38,12 +50,11 @@ public class GqEvent extends Event {
 
   private static native void copy(
       Event originalEvent, GqEvent gQueryEvent) /*-{
-		for ( var field in originalEvent) {
-			gQueryEvent[field] = originalEvent[field];
-		}
-		gQueryEvent.originalEvent = originalEvent;
+    for ( var field in originalEvent) {
+      gQueryEvent[field] = originalEvent[field];
+    }
+    gQueryEvent.originalEvent = originalEvent;
   }-*/;
-
 
   protected GqEvent() {
   }
@@ -52,7 +63,7 @@ public class GqEvent extends Event {
    * Return the original event (the one created by the browser)
    */
   public final native Event getOriginalEvent()/*-{
-		return this.originalEvent;
+    return this.originalEvent;
   }-*/;
 
   public final native void setCurrentElementTarget(Element e)/*-{

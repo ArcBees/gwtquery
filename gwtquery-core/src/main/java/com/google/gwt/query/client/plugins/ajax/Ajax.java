@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.ajax;
 
 import com.google.gwt.core.client.GWT;
@@ -35,7 +50,7 @@ public class Ajax extends GQuery {
   public static final String JSON_CONTENT_TYPE = "application/json";
 
   public static final String JSON_CONTENT_TYPE_UTF8 = JSON_CONTENT_TYPE + "; charset=utf-8";
-  
+
   public static interface AjaxTransport {
     Promise getJsonP(Settings settings);
 
@@ -43,7 +58,7 @@ public class Ajax extends GQuery {
 
     Promise getXhr(Settings settings);
   }
-  
+
   /**
    * Ajax Settings object
    */
@@ -93,7 +108,6 @@ public class Ajax extends GQuery {
   /**
    * Perform an ajax request to the server.
    *
-   *
    * Example:
    *
    * <pre>
@@ -119,7 +133,7 @@ public class Ajax extends GQuery {
    */
   public static Promise ajax(Settings settings) {
     resolveSettings(settings);
-    
+
     final Function onSuccess = settings.getSuccess();
     if (onSuccess != null) {
       onSuccess.setElement(settings.getContext());
@@ -184,11 +198,11 @@ public class Ajax extends GQuery {
     }
     return ret;
   }
-  
+
   private static void resolveSettings(Settings settings) {
     String url = settings.getUrl();
     assert settings != null && settings.getUrl() != null: "no url found in settings";
-    
+
     String type = "POST";
     if (settings.getType() != null) {
       type = settings.getType().toUpperCase();
@@ -220,7 +234,7 @@ public class Ajax extends GQuery {
       settings.setUrl(url);
     }
   }
-  
+
   public static Promise ajax(String url, Function onSuccess, Function onError) {
     return ajax(url, onSuccess, onError, (Settings) null);
   }
@@ -250,7 +264,7 @@ public class Ajax extends GQuery {
 
   public static Settings createSettings(String prop) {
     Settings s = GQ.create(Settings.class);
-    if (prop != null && !prop.isEmpty()) 
+    if (prop != null && !prop.isEmpty())
       s.parse(prop);
     return s;
   }
@@ -375,7 +389,7 @@ public class Ajax extends GQuery {
   public Ajax load(String url, IsProperties data) {
     return load(url, data);
   }
-  
+
   public Ajax load(String url, IsProperties data, final Function onSuccess) {
     Settings s = createSettings();
     final String filter = url.contains(" ") ? url.replaceFirst("^[^\\s]+\\s+", "") : "";

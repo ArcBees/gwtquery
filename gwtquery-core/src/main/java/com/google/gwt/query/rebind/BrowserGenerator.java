@@ -36,7 +36,7 @@ public class BrowserGenerator extends Generator {
   public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
     TypeOracle oracle = context.getTypeOracle();
     PropertyOracle propOracle = context.getPropertyOracle();
-    
+
     String ua = null;
     try {
       ua = propOracle.getSelectionProperty(logger, "user.agent").getCurrentValue();
@@ -44,19 +44,19 @@ public class BrowserGenerator extends Generator {
       logger.log(TreeLogger.ERROR, "Can not resolve user.agent property", e);
       throw new UnableToCompleteException();
     }
-    
+
     JClassType clz = oracle.findType(typeName);
     String pName = clz.getPackage().getName();
     String cName = clz.getName() + "_" + ua;
-    
+
     PrintWriter pWriter = context.tryCreate(logger, pName, cName);
-    
+
     if (pWriter != null) {
       ClassSourceFileComposerFactory cFact = new ClassSourceFileComposerFactory(pName, cName);
       cFact.setSuperclass(pName + "." + clz.getName());
-      
+
       SourceWriter writer = cFact.createSourceWriter(context, pWriter);
-      
+
       writer.println("protected boolean isWebkit() {return " + "safari".equals(ua) + ";}");
       writer.println("protected boolean isSafari() {return " + "safari".equals(ua) + ";}");
       writer.println("protected boolean isOpera() {return " + "opera".equals(ua) + ";}");
@@ -68,17 +68,17 @@ public class BrowserGenerator extends Generator {
       writer.println("protected boolean isIe10() {return " + "ie10".equals(ua) + ";}");
       writer.println("protected boolean isIe11() {return " + "gecko1_8".equals(ua) + ";}");
       writer.println("public String toString() {return \"Browser:\"" +
-      		" + \" webkit=\" + webkit" +
+          " + \" webkit=\" + webkit" +
           " + \" mozilla=\" + mozilla" +
           " + \" opera=\" + opera" +
           " + \" msie=\" + msie" +
           " + \" ie6=\" + ie6" +
           " + \" ie8=\" + ie8" +
-          " + \" ie9=\" + ie9" +  
+          " + \" ie9=\" + ie9" +
           ";}");
       writer.commit(logger);
     }
-    
+
     return pName + "." + cName;
   }
 }

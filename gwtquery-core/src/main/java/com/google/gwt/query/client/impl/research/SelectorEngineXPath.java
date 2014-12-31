@@ -31,7 +31,6 @@ import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsRegexp;
 import com.google.gwt.query.client.js.JsUtils;
 
-
 /**
  * Runtime selector engine implementation which translates selectors to XPath
  * and delegates to document.evaluate().

@@ -106,7 +106,6 @@ public class CSS {
    * This property takes a {@link UriValue} object as value.
    * </p>
    *
-   *
    */
   public static BackgroundImageProperty BACKGROUND_IMAGE;
 

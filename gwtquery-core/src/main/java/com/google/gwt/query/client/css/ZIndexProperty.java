@@ -38,7 +38,6 @@ public class ZIndexProperty implements TakesInteger {
   private ZIndexProperty() {
   }
 
-
   public String getCssName() {
     return CSS_PROPERTY;
   }
@@ -64,8 +63,8 @@ public class ZIndexProperty implements TakesInteger {
    * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
    */
   private native String getZIndex(Style s) /*-{
-		//force to return a string
-		return "" + s["zIndex"];
+    //force to return a string
+    return "" + s["zIndex"];
   }-*/;
 
 }

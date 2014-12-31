@@ -17,7 +17,6 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.query.client.IsProperties;
 
-
 /**
  * Tagging interface used to generate JsonBuilder classes.
  */

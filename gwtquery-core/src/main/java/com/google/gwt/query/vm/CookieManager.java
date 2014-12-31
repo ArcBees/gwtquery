@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.vm;
 
 import java.io.IOException;
@@ -31,21 +46,21 @@ public class CookieManager {
   private static final char DOT = '.';
 
   private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);;
-  
+
   private static CookieManager cookieManager = new CookieManager();
 
   public static CookieManager getInstance() {
     return cookieManager;
   }
-  
+
   public void clear() {
     store.clear();
   }
-  
+
   public void removeDomainCookies(String domain) {
     store.remove(domain);
   }
-  
+
   public void removeDomainCookie(String domain, String... cookies) {
     Map<String, Map<String, String>> domainStore =  store.get(domain);
     if (domainStore != null) {
@@ -54,11 +69,11 @@ public class CookieManager {
       }
     }
   }
-  
+
   public void setDomcainCookie(String host, String name, String value) {
     setDomcainCookieProperty(host, name, name, value);
   }
-    
+
   public void setDomcainCookieProperty(String host, String name, String prop, String value) {
     String domain = getDomainFromHost(host);
     Map<String, Map<String, String>> domainStore =  store.get(domain);

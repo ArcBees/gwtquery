@@ -28,7 +28,6 @@ public class OutlineColorProperty extends CssProperty<RGBColor> {
     CSS.OUTLINE_COLOR = new OutlineColorProperty();
   }
 
-
   private OutlineColorProperty() {
     super(CSS_PROPERTY);
   }

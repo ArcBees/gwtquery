@@ -37,7 +37,6 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineJS extends SelectorEngineImpl {
 
-
   /**
    * Internal class.
    */

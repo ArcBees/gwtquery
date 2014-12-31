@@ -60,5 +60,4 @@ public class OutlineProperty implements
     return new MultipleValueCssSetter(CSS_PROPERTY, outlineColor, outlineStyle, outlineWidth);
   }
 
-
 }

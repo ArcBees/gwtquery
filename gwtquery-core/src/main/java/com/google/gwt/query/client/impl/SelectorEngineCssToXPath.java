@@ -91,12 +91,12 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         return prefix + "[position() mod 2=0 and position()>=0]" + (noPrefix ? "" : "/self::" + s1);
       }
       if ("odd".equals(s2)) {
-    	  prefix = afterAttr ? prefix : noPrefix ? "" : s1;
+        prefix = afterAttr ? prefix : noPrefix ? "" : s1;
         return prefix + "[(count(preceding-sibling::*) + 1) mod 2=1]";
       }
 
       if (!s2.contains("n")){
-    	  return prefix + "[position() = "+s2+"]" + (noPrefix ? "" : "/self::" + s1);
+        return prefix + "[position() = "+s2+"]" + (noPrefix ? "" : "/self::" + s1);
       }
 
       String[] t = s2.replaceAll("^([0-9]*)n.*?([0-9]*)?$", "$1+$2").split("\\+");

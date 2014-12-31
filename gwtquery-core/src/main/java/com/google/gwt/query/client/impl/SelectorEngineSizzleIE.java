@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client.impl;
 
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
@@ -40,7 +39,6 @@ import com.google.gwt.dom.client.NodeList;
  *    IE are coming.
  */
 public class SelectorEngineSizzleIE extends SelectorEngineImpl {
-
 
   public static native void initialize() /*-{
 (function(){
@@ -935,7 +933,6 @@ $wnd.IES = IES;
 })();
 
   }-*/;
-
 
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     return $wnd.IES(selector, context, results, seed);

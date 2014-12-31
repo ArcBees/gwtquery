@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.effects;
 
 import com.google.gwt.dom.client.Element;
@@ -39,7 +54,7 @@ public class Fx {
     }
 
     public String toString() {
-      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd; 
+      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd;
     }
   }
 
@@ -90,7 +105,7 @@ public class Fx {
     private static JsNamedArray<int[]> htmlColorToRgb;
 
     // rgb and rgba regex
-    public static RegExp REGEX_RGB_COLOR_PATTERN = 
+    public static RegExp REGEX_RGB_COLOR_PATTERN =
         RegExp.compile("rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
 
     static {

@@ -390,44 +390,44 @@ public class EventsListener implements EventListener {
   }
 
   private static native void cleanGQListeners(Element elem) /*-{
-		if (elem.__gwtlistener) {
+    if (elem.__gwtlistener) {
       @com.google.gwt.user.client.DOM::setEventListener(*)(elem, elem.__gwtlistener);
-		}
-		elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
+    }
+    elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
   }-*/;
 
   private static native EventsListener getGQueryEventListener(Element elem) /*-{
-		return elem.__gqueryevent;
+    return elem.__gqueryevent;
   }-*/;
 
   private static native EventListener getGwtEventListener(Element elem) /*-{
-		return elem.__gwtlistener;
+    return elem.__gwtlistener;
   }-*/;
 
   private static native void init(Element elem, EventsListener gqevent)/*-{
-		elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
+    elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
     elem.__gqueryevent = gqevent;
     // Someone has reported that in IE the init can be called multiple times
     // causing a loop. We need some test to demonstrate this behaviour though.
     // Anyway we check this condition to avoid looping
-		if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
+    if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
   private static native void sinkBitlessEvent(Element elem, String name) /*-{
-		if (!elem.__gquery)
-			elem.__gquery = [];
-		if (elem.__gquery[name])
-			return;
-		elem.__gquery[name] = true;
+    if (!elem.__gquery)
+      elem.__gquery = [];
+    if (elem.__gquery[name])
+      return;
+    elem.__gquery[name] = true;
 
-		var handle = function(event) {
-			elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;)(event);
-		};
+    var handle = function(event) {
+      elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;)(event);
+    };
 
-		if (elem.addEventListener)
-			elem.addEventListener(name, handle, true);
-		else
-			elem.attachEvent("on" + name, handle);
+    if (elem.addEventListener)
+      elem.addEventListener(name, handle, true);
+    else
+      elem.attachEvent("on" + name, handle);
   }-*/;
 
   int eventBits = 0;

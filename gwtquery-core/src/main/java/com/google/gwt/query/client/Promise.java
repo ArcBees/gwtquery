@@ -16,29 +16,29 @@ package com.google.gwt.query.client;
 import com.google.gwt.query.client.Function;
 
 /**
- * Definition of jquery Promise interface used in gquery. 
+ * Definition of jquery Promise interface used in gquery.
  */
 public interface Promise {
-  
+
   /**
-   * Definition of jquery Deferred interface used in gquery. 
+   * Definition of jquery Deferred interface used in gquery.
    */
   public interface Deferred {
     /**
      * Call the progressCallbacks on a Deferred object with the given args.
      */
     Deferred notify(Object... o);
-    
+
     /**
      * Return a Deferred’s Promise object.
      */
     Promise promise();
-    
+
     /**
      * Reject a Deferred object and call any failCallbacks with the given args.
      */
     Deferred reject(Object... o);
-    
+
     /**
      * Resolve a Deferred object and call any doneCallbacks with the given args.
      */
@@ -67,7 +67,7 @@ public interface Promise {
   /**
    * Utility method to filter and/or chain Deferreds.
    * 
-   * @deprecated use 'then' instead. 
+   * @deprecated use 'then' instead.
    *   it was deprecated in jquery, and we maintain it here for compatibility.
    */
   @Deprecated
@@ -97,15 +97,15 @@ public interface Promise {
    * @param f a list of 1, 2, or 3 functions, which will be used in this way:
    *   1st function will be called when the deferred is resolved.
    *   2nd function that is called when the deferred is rejected.
-   *   3rd one will be called when progress notifications are sent.  
+   *   3rd one will be called when progress notifications are sent.
    */
   Promise then(Function... f);
-  
+
   /**
    * Add filters to be called just in case the Deferred object is rejected returning
    * a new valid promise so as we can continue the flow control of the chain.
    *
-   * It works in the same way than adding a second parameter to {@link then} method but 
+   * It works in the same way than adding a second parameter to {@link then} method but
    * continuing the flow and making more readable the code.
    *
    * Example:
@@ -142,7 +142,7 @@ public interface Promise {
    * Determine whether a Deferred object has been resolved.
    */
   boolean isResolved();
-  
+
   /**
    * Determine whether a Deferred object has been rejected.
    */

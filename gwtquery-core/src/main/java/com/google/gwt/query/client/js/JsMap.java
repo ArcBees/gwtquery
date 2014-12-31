@@ -17,7 +17,6 @@ package com.google.gwt.query.client.js;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-
 /**
  * Lightweight JSO backed implemented of a Map, using Object.hashCode() as key.
  */

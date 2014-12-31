@@ -45,7 +45,6 @@ public class TextAreaWidgetFactory extends TextBoxBaseWidgetFactory<TextArea> {
     return "textarea";
   }
 
-
   protected TextArea createWidget() {
     return new TextArea();
   }

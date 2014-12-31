@@ -30,13 +30,13 @@ public abstract class Function {
   private Event event = null;
   private int index = -1;
   protected Object[] arguments = new Object[0];
-  
+
   /**
    * Utility method to get a string representation with the content
    * of the arguments array. It recursively visits arrays and inspect
    * object to print an appropriate representation of them.
    * 
-   * It is very useful to debug arguments passed in nested promises. 
+   * It is very useful to debug arguments passed in nested promises.
    * 
    * It is protected so as it can be used in Inner functions.
    * 
@@ -51,7 +51,7 @@ public abstract class Function {
   protected String dumpArguments() {
     return dumpArguments(arguments, "\n");
   }
-  
+
   private String dumpArguments(Object[] arguments, String sep) {
     StringBuilder b = new StringBuilder();
     for (int i = 0, l = arguments.length; i < l; i++ ) {
@@ -99,7 +99,7 @@ public abstract class Function {
     index = i;
     return this;
   }
-  
+
   /**
    * @deprecated use getArguments instead.
    */
@@ -111,7 +111,7 @@ public abstract class Function {
   public Object[] getArguments() {
     return arguments;
   }
-  
+
   /**
    * Set the list of arguments to be passed to the function
    */
@@ -130,7 +130,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use getArgument instead 
+   * @deprecated use getArgument instead
    */
   @Deprecated
   public Object getDataObject(int idx) {
@@ -146,7 +146,7 @@ public abstract class Function {
   public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
     return (T)getArgument(argIdx, pos, JavaScriptObject.class);
   }
-  
+
   /**
    * Utility method for safety getting a JavaScriptObject present at a certain
    * position in the list of arguments.
@@ -154,12 +154,12 @@ public abstract class Function {
   public <T extends JavaScriptObject> T getArgumentJSO(int idx) {
     return getArgumentJSO(-1, idx);
   }
-  
+
   /**
    * Utility method for safety getting an array present at a certain
    * position in the list of arguments.
    * 
-   * Useful for Deferred chains where result of each resolved 
+   * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
    * 
    * Always returns an array.
@@ -178,27 +178,27 @@ public abstract class Function {
    * Return the argument in the position idx or null if it doesn't exist.
    * 
    * Note: if the return type doesn't match the object, you
-   * will get a casting exception. 
+   * will get a casting exception.
    */
   public <T> T getArgument(int idx) {
     return getArgument(-1, idx, null);
   }
 
   /**
-   * Convenience alias for the getArguments(idx) method thought just to 
+   * Convenience alias for the getArguments(idx) method thought just to
    * make gQuery code look closed to jQuery.
    */
   public <T> T arguments(int idx) {
     return getArgument(idx);
   }
-  
+
   /**
    * Convenience alias for the getArguments(argIdx, pos) method;
    */
   public <T> T arguments(int argIdx, int pos) {
     return getArgument(argIdx, pos);
   }
-  
+
   /**
    * Safety return the argument in the position idx.
    * 
@@ -208,7 +208,7 @@ public abstract class Function {
   public <T> T getArgument(int argIdx, int pos) {
     return getArgument(argIdx, pos, null);
   }
-  
+
   /**
    * Safety return the argument in the position idx.
    * 
@@ -223,13 +223,13 @@ public abstract class Function {
    * Utility method for safety getting an object present at a certain
    * position in the list of arguments composed by arrays.
    * 
-   * Useful for Deferred chains where result of each resolved 
+   * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
    * 
    * When the object found in the array doesn't match the type required it returns a null.
    * 
    * Note: If type is null, we don't check the class of the object found andd you could
-   * eventually get a casting exception. 
+   * eventually get a casting exception.
    * 
    */
   @SuppressWarnings("unchecked")
@@ -249,7 +249,6 @@ public abstract class Function {
     return null;
   }
 
-  
   /**
    * @deprecated use: getArgument()
    */
@@ -281,7 +280,7 @@ public abstract class Function {
   public void setData(double b) {
     setArguments(b);
   }
-  
+
   /**
    * @deprecated use use setArguments instead
    */

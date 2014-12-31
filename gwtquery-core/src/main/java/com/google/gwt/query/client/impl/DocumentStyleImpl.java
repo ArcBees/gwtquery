@@ -34,7 +34,6 @@ public class DocumentStyleImpl {
   private static final RegExp cssNumberRegex = RegExp.compile("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
   private static final RegExp sizeRegex = RegExp.compile("^(client|offset|)(width|height)$", "i");
 
-
   /**
    * Returns the numeric value of a css property.
    *
@@ -100,8 +99,8 @@ public class DocumentStyleImpl {
 
       Element toDetach = null;
       if (JsUtils.isDetached(elem)) {
-    	// If the element is detached to the DOM we attach temporary to it
-    	toDetach = attachTemporary(elem);
+        // If the element is detached to the DOM we attach temporary to it
+        toDetach = attachTemporary(elem);
       }
 
       if (sizeRegex.test(name)) {
@@ -114,7 +113,7 @@ public class DocumentStyleImpl {
 
       // If the element was previously attached, detached it.
       if (toDetach != null) {
-    	  toDetach.removeFromParent();
+        toDetach.removeFromParent();
       }
     }
 
@@ -122,17 +121,17 @@ public class DocumentStyleImpl {
   }
 
   private Element attachTemporary(Element elem) {
-	Element  lastParent = $(elem).parents().last().get(0);
+    Element  lastParent = $(elem).parents().last().get(0);
 
-	if (lastParent == null){
-		//the element itself is detached
-  		lastParent = elem;
-  	}
+    if (lastParent == null){
+      //the element itself is detached
+      lastParent = elem;
+    }
 
-	Document.get().getBody().appendChild(lastParent);
+    Document.get().getBody().appendChild(lastParent);
 
-	return lastParent;
-}
+    return lastParent;
+  }
 
   /**
    * Fix style property names.

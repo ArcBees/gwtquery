@@ -84,8 +84,10 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   }
 
   protected Properties getPropertiesBase(String n) {
-    Properties r = p.getJavaScriptObject(n);
-    return r != null ? r : Properties.create();
+    if (p.getJavaScriptObject(n) == null) {
+      p.set(n, Properties.create());
+    }
+    return p.getJavaScriptObject(n);
   }
 
   public String toString() {
@@ -96,7 +98,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public String toJson() {
     return p.tostring();
   }
-  
+
   public String toJsonWithName() {
     return "{\"" + getJsonName() + "\":" + p.tostring() + "}";
   }
@@ -106,22 +108,22 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public Properties getProperties() {
     return p;
   }
-  
+
   @Override
   public String toQueryString() {
     return p.toQueryString();
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   public Properties getDataImpl() {
     return p;
   }
-  
+
   public <T> T get(Object key) {
     return p.get(key);
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
@@ -131,7 +133,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
     }
     return (T)this;
   }
-  
+
   public <T extends JsonBuilder> T as(Class<T> clz) {
     return p.as(clz);
   }

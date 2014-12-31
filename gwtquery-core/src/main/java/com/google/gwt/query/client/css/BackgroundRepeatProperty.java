@@ -54,7 +54,6 @@ public class BackgroundRepeatProperty extends
 
   private static final String CSS_PROPERTY = "backgroundRepeat";
 
-
   public static void init() {
     CSS.BACKGROUND_REPEAT = new BackgroundRepeatProperty();
   }

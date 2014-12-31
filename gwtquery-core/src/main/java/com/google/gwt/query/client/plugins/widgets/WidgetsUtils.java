@@ -40,7 +40,6 @@ public class WidgetsUtils {
   static final String[] appendingTags = {
     "td", "th", "li"};
 
-
   /**
     * Append a widget to a dom element, and hide it.
     * Element classes will be copied to the new widget.
@@ -257,7 +256,7 @@ public class WidgetsUtils {
 
    /**
     * Return the first widget parent of the element, or null if it is not
-    * attached to any widget yet. 
+    * attached to any widget yet.
     */
    private static Widget getFirstParentWidgetElement(Element element) {
      return $(element).parents().widget();

@@ -119,7 +119,7 @@ public abstract class GQ {
     if (jsonFactory == null) {
       try {
         // We use reflection because the server side should not
-        // depend on gwt-servlet nor gwt-dev. Hence if GWT is not 
+        // depend on gwt-servlet nor gwt-dev. Hence if GWT is not
         // in our classpath means that we are in server side, otherwise
         // we use GWT to figure out if we are running devmode.
         // This is run once, so no performance issues to worry about.
