@@ -54,7 +54,7 @@ public class Fx {
     }
 
     public String toString() {
-      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd; 
+      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd;
     }
   }
 
@@ -105,7 +105,7 @@ public class Fx {
     private static JsNamedArray<int[]> htmlColorToRgb;
 
     // rgb and rgba regex
-    public static RegExp REGEX_RGB_COLOR_PATTERN = 
+    public static RegExp REGEX_RGB_COLOR_PATTERN =
         RegExp.compile("rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
 
     static {

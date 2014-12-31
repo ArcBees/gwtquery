@@ -25,13 +25,13 @@ import com.google.gwt.query.client.Function;
 public class Callbacks {
 
   /**
-   * Iterface used for callbacks which could cancel the execution 
+   * Iterface used for callbacks which could cancel the execution
    * when returning false;
    *
    */
   public static interface Callback {
     /**
-     * Return false to avoid executing the rest of functions 
+     * Return false to avoid executing the rest of functions
      */
     boolean f(Object ...objects);
   }
@@ -143,7 +143,7 @@ public class Callbacks {
         run(c, memory.toArray());
       }
     }
-  }  
+  }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private boolean run(Object c, Object...o) {

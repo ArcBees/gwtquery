@@ -36,7 +36,7 @@ public abstract class Function {
    * of the arguments array. It recursively visits arrays and inspect
    * object to print an appropriate representation of them.
    * 
-   * It is very useful to debug arguments passed in nested promises. 
+   * It is very useful to debug arguments passed in nested promises.
    * 
    * It is protected so as it can be used in Inner functions.
    * 
@@ -130,7 +130,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use getArgument instead 
+   * @deprecated use getArgument instead
    */
   @Deprecated
   public Object getDataObject(int idx) {
@@ -159,7 +159,7 @@ public abstract class Function {
    * Utility method for safety getting an array present at a certain
    * position in the list of arguments.
    * 
-   * Useful for Deferred chains where result of each resolved 
+   * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
    * 
    * Always returns an array.
@@ -178,14 +178,14 @@ public abstract class Function {
    * Return the argument in the position idx or null if it doesn't exist.
    * 
    * Note: if the return type doesn't match the object, you
-   * will get a casting exception. 
+   * will get a casting exception.
    */
   public <T> T getArgument(int idx) {
     return getArgument(-1, idx, null);
   }
 
   /**
-   * Convenience alias for the getArguments(idx) method thought just to 
+   * Convenience alias for the getArguments(idx) method thought just to
    * make gQuery code look closed to jQuery.
    */
   public <T> T arguments(int idx) {
@@ -223,13 +223,13 @@ public abstract class Function {
    * Utility method for safety getting an object present at a certain
    * position in the list of arguments composed by arrays.
    * 
-   * Useful for Deferred chains where result of each resolved 
+   * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
    * 
    * When the object found in the array doesn't match the type required it returns a null.
    * 
    * Note: If type is null, we don't check the class of the object found andd you could
-   * eventually get a casting exception. 
+   * eventually get a casting exception.
    * 
    */
   @SuppressWarnings("unchecked")

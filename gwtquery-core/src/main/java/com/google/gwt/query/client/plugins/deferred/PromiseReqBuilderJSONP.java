@@ -23,7 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Utility class used to create promises for JsonpRequestBuilder.
  * <pre>
  *    Promise p = new PromiseJsonpReqBuilder(url, 4000);
- *    
+ * 
  *    p.done(new Function() {
  *      public void f() {
  *        Properties p = arguments(0);

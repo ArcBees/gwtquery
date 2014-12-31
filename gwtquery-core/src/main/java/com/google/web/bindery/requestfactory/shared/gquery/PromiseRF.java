@@ -31,12 +31,12 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
  * <pre>
  *    Request<SessionProxy> req1 = loginFact.api().login(null, null);
  *    Request<UserProxy> req2 = srvFact.api().getCurrentUser();
- *    
+ * 
  *    // We can use `when` to append different requests
  *    Promise requestingAll = Deferred.when(new PromiseRF(req1), new PromiseRF(req2);
  *    // Or we can use just one promise for multiple RF requests
  *    Promise requestingAll = new PromiseRF(req1, req2);
- *    
+ * 
  *    requestingAll.done(new Function() {
  *        public void f() {
  *          SessionProxy session = arguments(0, 0);
@@ -47,7 +47,7 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
  *        public void f() {
  *          ServerFailure failure = arguments(0);
  *        }
- *      }); 
+ *      });
  * </pre>
  */
 public class PromiseRF extends DeferredPromiseImpl {

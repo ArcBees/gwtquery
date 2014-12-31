@@ -26,7 +26,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl
  *        dfd.resolve("done");
  *      }
  *    };
- *    
+ * 
  *    doSomething.progress(new Function() {
  *      public void f() {
  *        String hi = arguments(0);

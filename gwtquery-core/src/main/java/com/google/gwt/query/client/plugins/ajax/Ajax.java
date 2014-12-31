@@ -264,7 +264,7 @@ public class Ajax extends GQuery {
 
   public static Settings createSettings(String prop) {
     Settings s = GQ.create(Settings.class);
-    if (prop != null && !prop.isEmpty()) 
+    if (prop != null && !prop.isEmpty())
       s.parse(prop);
     return s;
   }

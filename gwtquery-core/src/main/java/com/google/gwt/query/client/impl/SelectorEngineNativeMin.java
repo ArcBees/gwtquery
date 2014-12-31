@@ -34,7 +34,7 @@ public class SelectorEngineNativeMin extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      console.error("GwtQuery: Selector '" + selector + 
+      console.error("GwtQuery: Selector '" + selector +
           "' is unsupported in this SelectorEngineNativeMin engine."
           + " Do not use this syntax or configure your module to use a JS fallback. " + e.getMessage());
       return null;

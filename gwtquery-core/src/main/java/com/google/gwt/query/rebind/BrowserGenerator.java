@@ -74,7 +74,7 @@ public class BrowserGenerator extends Generator {
           " + \" msie=\" + msie" +
           " + \" ie6=\" + ie6" +
           " + \" ie8=\" + ie8" +
-          " + \" ie9=\" + ie9" +  
+          " + \" ie9=\" + ie9" +
           ";}");
       writer.commit(logger);
     }

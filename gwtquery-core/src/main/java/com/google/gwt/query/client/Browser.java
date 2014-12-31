@@ -29,12 +29,12 @@ import com.google.gwt.query.rebind.BrowserGenerator;
  * Example:
  * <pre>
       if (GQuery.browser.ie6) {
-        // this code will be removed on non-ie6 permutations 
+        // this code will be removed on non-ie6 permutations
         Window.alert("IE6");
       } else if (!browser.webkit) {
-        // this code will be only in the webkit permutation 
+        // this code will be only in the webkit permutation
         Window.alert("NOT WEBKIT");
-      } 
+      }
  * </pre>
  *
  */
@@ -69,7 +69,7 @@ public abstract class Browser {
    * @return true if webkit
    * @deprecated use webkit() instead
    */
-  @Deprecated 
+  @Deprecated
   public final boolean safari = isWebkit();
   /**
    * @return true if webkit

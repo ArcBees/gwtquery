@@ -59,7 +59,7 @@ public interface IsProperties {
   String toJson();
 
   /**
-   * return a string which represents the object with an alias for the 
+   * return a string which represents the object with an alias for the
    * className useful for serialization.
    * 
    * Example {"user":{"name":"manolo","surname":"carrasco"}}
@@ -78,7 +78,7 @@ public interface IsProperties {
 
   /**
    * converts a JsonBuilder instance into another JsonBuilder type but
-   * preserving the underlying data object. 
+   * preserving the underlying data object.
    */
   <T extends JsonBuilder> T as (Class<T> clz);
 }

@@ -401,7 +401,7 @@ public class EventsListener implements EventListener {
 
   /**
    * We have to set the gQuery event listener to the element again when
-   * the element is a widget, because when GWT detaches a widget it removes the 
+   * the element is a widget, because when GWT detaches a widget it removes the
    * event listener.
    */
   public static void rebind(Element e) {
