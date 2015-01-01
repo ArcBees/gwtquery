@@ -63,7 +63,6 @@ public class UnicodeBidiProperty extends
     public String getCssName() {
       return name().toLowerCase().replace('_', '-');
     }
-
   }
 
   private static final String CSS_PROPERTY = "unicodeBidi";

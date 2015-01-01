@@ -17,8 +17,6 @@ package com.google.gwt.query.client.impl;
 
 import static com.google.gwt.query.client.GQuery.console;
 
-import java.util.ArrayList;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
@@ -29,6 +27,8 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+
+import java.util.ArrayList;
 
 /**
  * Runtime selector engine implementation which translates selectors to XPath

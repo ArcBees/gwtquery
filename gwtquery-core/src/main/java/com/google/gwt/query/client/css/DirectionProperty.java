@@ -46,7 +46,6 @@ public class DirectionProperty extends
     public String getCssName() {
       return name().toLowerCase();
     }
-
   }
 
   private static final String CSS_PROPERTY = "direction";

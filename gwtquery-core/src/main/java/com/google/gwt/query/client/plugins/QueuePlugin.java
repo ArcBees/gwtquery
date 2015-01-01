@@ -15,15 +15,15 @@
  */
 package com.google.gwt.query.client.plugins;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.plugins.deferred.Callbacks;
 import com.google.gwt.user.client.Timer;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Class used in plugins which need a queue system.

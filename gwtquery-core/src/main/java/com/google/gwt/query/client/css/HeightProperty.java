@@ -34,5 +34,4 @@ public class HeightProperty extends CssProperty<Length> {
   private HeightProperty(String cssName) {
     super(cssName);
   }
-
 }

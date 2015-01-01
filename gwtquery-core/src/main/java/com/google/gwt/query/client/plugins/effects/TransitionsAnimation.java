@@ -183,7 +183,6 @@ public class TransitionsAnimation extends PropertiesAnimation {
           trsStart = "" + start;
           g.css(key, start + unit);
         }
-
       } else {
         trsStart = "";
         trsEnd = val;

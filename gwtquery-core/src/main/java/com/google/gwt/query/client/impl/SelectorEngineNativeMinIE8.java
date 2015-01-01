@@ -17,7 +17,6 @@ package com.google.gwt.query.client.impl;
 
 import static com.google.gwt.query.client.GQuery.console;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -41,5 +40,4 @@ public class SelectorEngineNativeMinIE8 extends SelectorEngineImpl {
       return null;
     }
   }
-
 }

@@ -111,7 +111,6 @@ public class UiPlugin extends GQuery {
           + e.css("overflow-y", true);
       return overflow.contains("auto") || overflow.contains("scroll");
     }
-
   }
 
   @SuppressWarnings("unused")
@@ -123,7 +122,6 @@ public class UiPlugin extends GQuery {
       return ("absolute".equals(position) || "relative".equals(position) || "static"
           .equals(position));
     }
-
   }
 
   public static Class<UiPlugin> GQueryUi = UiPlugin.class;
@@ -176,5 +174,4 @@ public class UiPlugin extends GQuery {
   protected void trigger(GwtEvent<?> e, Function callback, Element element) {
     trigger(e, callback, element, eventBus);
   }
-
 }

@@ -14,27 +14,15 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
-import java.util.ArrayList;
-import java.util.List;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.HtmlPanelWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.LabelWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.PasswordTextBoxWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.TextAreaWidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.TextBoxWidgetFactory;
+import com.google.gwt.query.client.LazyBase;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.query.client.GQuery.*;
-import com.google.gwt.query.client.LazyBase;
 
 public interface LazyWidgets<T> extends LazyBase<T>{
 

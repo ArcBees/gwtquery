@@ -15,17 +15,15 @@
  */
 package com.google.gwt.query.client;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.apache.http.MethodNotSupportedException;
-
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * A set of useful methods for gQuery which can be run in browser or JVM.

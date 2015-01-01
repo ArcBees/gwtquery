@@ -115,5 +115,4 @@ public class GqEvent extends Event {
       return getClientY() + GQuery.document.getScrollTop();
     }
   }
-
 }

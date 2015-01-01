@@ -36,5 +36,4 @@ public class MultipleValueCssSetter extends SimpleCssSetter {
   private static String notNull(HasCssName value) {
     return value != null ? value.getCssName() + " " : "";
   }
-
 }

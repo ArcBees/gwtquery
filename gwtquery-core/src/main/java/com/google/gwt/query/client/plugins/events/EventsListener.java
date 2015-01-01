@@ -13,6 +13,8 @@
  */
 package com.google.gwt.query.client.plugins.events;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -30,8 +32,6 @@ import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.google.gwt.query.client.GQuery.$;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
@@ -324,7 +324,6 @@ public class EventsListener implements EventListener {
         if (newFunctions.length() > 0) {
           bindFunctionBySelector.put(cssSelector, newFunctions);
         }
-
       }
     }
 
@@ -370,7 +369,6 @@ public class EventsListener implements EventListener {
 
       return Element.as(eventTarget);
     }
-
   }
 
   public static final String EVENT_DATA = "___event_datas";
@@ -553,7 +551,6 @@ public class EventsListener implements EventListener {
 
       die(b, nameSpace, eventName, originalEventName, cssSelector);
     }
-
   }
 
   public void die(int eventbits, String nameSpace, String eventName, String originalEventName,

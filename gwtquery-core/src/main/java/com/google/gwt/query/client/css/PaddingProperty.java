@@ -72,7 +72,6 @@ public class PaddingProperty extends CssProperty<Length> {
           padding3, padding4);
 
     }
-
   }
 
   private static String PADDING_BOTTOM_PROPERTY = "paddingBottom";
@@ -92,5 +91,4 @@ public class PaddingProperty extends CssProperty<Length> {
   private PaddingProperty(String cssName) {
     super(cssName);
   }
-
 }

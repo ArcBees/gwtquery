@@ -17,24 +17,24 @@ package com.google.gwt.query.vm;
 
 // import org.apache.http.impl.client.HttpClientBuilder;
 
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQ;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.IsProperties;
+import com.google.gwt.query.client.Promise;
+import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
+import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.user.server.Base64Utils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.query.client.IsProperties;
-import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQ;
-import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.Promise;
-import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
-import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
-import com.google.gwt.user.server.Base64Utils;
 
 /**
  * 

@@ -365,5 +365,4 @@ public class PropertiesAnimation extends GQAnimation {
   protected double interpolate(double progress) {
     return easing.interpolate(progress);
   }
-
 }

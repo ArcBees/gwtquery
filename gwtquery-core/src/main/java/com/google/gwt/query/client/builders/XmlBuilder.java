@@ -15,9 +15,9 @@
  */
 package com.google.gwt.query.client.builders;
 
-import java.util.Date;
-
 import com.google.gwt.dom.client.Element;
+
+import java.util.Date;
 
 /**
  * Tagging interface used to generate XmlBuilder classes.

@@ -42,5 +42,4 @@ public class SelectorEngineNativeIE8 extends SelectorEngineSizzleIE {
       }
     }
   }
-
 }

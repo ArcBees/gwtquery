@@ -110,7 +110,6 @@ public class WidgetsHtmlPanel extends HTMLPanel {
       if (RootPanel.isInDetachList(w)) {
         RootPanel.detachNow(w);
       }
-
     } else if (parent instanceof HTMLPanel) {
       WidgetsUtils.doLogicalDetachFromHtmlPanel(w);
     } else {

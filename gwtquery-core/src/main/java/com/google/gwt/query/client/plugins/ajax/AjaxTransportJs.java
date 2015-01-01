@@ -62,5 +62,4 @@ public class AjaxTransportJs implements AjaxTransport {
   public Promise getXhr(Settings settings) {
     return new PromiseReqBuilder(settings);
   }
-
 }

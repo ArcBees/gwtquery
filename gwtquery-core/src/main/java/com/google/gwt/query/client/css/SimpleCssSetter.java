@@ -43,5 +43,4 @@ public class SimpleCssSetter implements CssSetter {
     e.getStyle().setProperty(property, value != null ? value : "");
 
   }
-
 }

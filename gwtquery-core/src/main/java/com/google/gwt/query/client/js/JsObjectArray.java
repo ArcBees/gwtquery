@@ -85,5 +85,4 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public Object[] elements() {
     return c().elements();
   }
-
 }

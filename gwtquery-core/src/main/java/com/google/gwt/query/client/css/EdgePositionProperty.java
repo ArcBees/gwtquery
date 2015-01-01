@@ -30,5 +30,4 @@ public class EdgePositionProperty extends CssProperty<Length> {
   private EdgePositionProperty(String value) {
     super(value);
   }
-
 }

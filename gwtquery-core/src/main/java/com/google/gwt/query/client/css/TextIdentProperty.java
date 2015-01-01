@@ -33,5 +33,4 @@ public class TextIdentProperty extends CssProperty<Length> {
   private TextIdentProperty() {
     super(CSS_PROPERTY);
   }
-
 }

@@ -106,5 +106,4 @@ public class BorderStyleProperty extends
   private BorderStyleProperty(String value) {
     super(value);
   }
-
 }

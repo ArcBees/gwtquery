@@ -1037,7 +1037,6 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
               match = true;
               break;
             }
-
           } else if ( GQS.filter( cur, [elem] ).length > 0 ) {
             match = elem;
             break;

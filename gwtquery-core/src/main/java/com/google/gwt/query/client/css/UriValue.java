@@ -38,5 +38,4 @@ public class UriValue implements HasCssName {
   public String getCssName() {
     return value;
   }
-
 }

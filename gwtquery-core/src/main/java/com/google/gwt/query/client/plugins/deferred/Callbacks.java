@@ -13,11 +13,11 @@
  */
 package com.google.gwt.query.client.plugins.deferred;
 
+import com.google.gwt.query.client.Function;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.gwt.query.client.Function;
 
 /**
  * Implementation of jQuery.Callbacks for gwtquery.

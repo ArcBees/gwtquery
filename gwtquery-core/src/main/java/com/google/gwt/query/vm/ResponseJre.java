@@ -15,11 +15,11 @@
  */
 package com.google.gwt.query.vm;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Response;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of `Response` in the JVM

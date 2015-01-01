@@ -15,15 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.util.ArrayList;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -32,6 +23,15 @@ import com.google.gwt.query.client.impl.SelectorEngineCssToXPath;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.ReplaceCallback;
 import com.google.gwt.query.client.impl.SelectorEngineCssToXPath.Replacer;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import java.util.ArrayList;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * Compile time selector generator which translates selector into XPath at

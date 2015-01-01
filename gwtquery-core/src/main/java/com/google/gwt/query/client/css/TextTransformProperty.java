@@ -55,5 +55,4 @@ public class TextTransformProperty extends
   private TextTransformProperty() {
     super(CSS_PROPERTY);
   }
-
 }

@@ -17,14 +17,14 @@ package com.google.gwt.query.client.builders;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsDate;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
+
+import java.util.Date;
 
 public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements XmlBuilder {
 

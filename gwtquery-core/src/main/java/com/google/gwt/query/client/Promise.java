@@ -13,7 +13,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.query.client.Function;
 
 /**
  * Definition of jquery Promise interface used in gquery.

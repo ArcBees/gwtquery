@@ -26,5 +26,4 @@ public class LabelWidgetFactory implements WidgetFactory<Label> {
     WidgetsUtils.replaceOrAppend(e, label);
     return label;
   }
-
 }

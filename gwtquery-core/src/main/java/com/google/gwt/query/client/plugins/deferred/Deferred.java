@@ -15,7 +15,9 @@
  */
 package com.google.gwt.query.client.plugins.deferred;
 
-import static com.google.gwt.query.client.Promise.*;
+import static com.google.gwt.query.client.Promise.PENDING;
+import static com.google.gwt.query.client.Promise.REJECTED;
+import static com.google.gwt.query.client.Promise.RESOLVED;
 
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;

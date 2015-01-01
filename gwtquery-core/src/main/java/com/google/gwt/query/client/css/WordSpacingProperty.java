@@ -29,5 +29,4 @@ public class WordSpacingProperty extends CssProperty<Length> {
   private WordSpacingProperty() {
     super(CSS_PROPERTY);
   }
-
 }

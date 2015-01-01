@@ -96,7 +96,6 @@ public abstract class MousePlugin extends UiPlugin {
         }
       });
     }
-
   }
 
   /**
@@ -255,7 +254,6 @@ public abstract class MousePlugin extends UiPlugin {
           });
 
     }
-
   }
 
   private boolean delayConditionMet() {
@@ -333,5 +331,4 @@ public abstract class MousePlugin extends UiPlugin {
       return e.getClientY();
     }
   }
-
 }

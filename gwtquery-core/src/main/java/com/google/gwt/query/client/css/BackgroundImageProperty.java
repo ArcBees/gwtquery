@@ -29,5 +29,4 @@ public class BackgroundImageProperty extends CssProperty<UriValue> {
   private BackgroundImageProperty() {
     super(CSS_PROPERTY);
   }
-
 }

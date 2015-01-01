@@ -246,7 +246,6 @@ public class Fx {
       }
       return result;
     }
-
   }
 
   public String cssprop;
@@ -288,5 +287,4 @@ public class Fx {
         + " value=" + value + " start=" + start + " end="
         + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
   }
-
 }

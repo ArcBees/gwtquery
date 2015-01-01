@@ -59,5 +59,4 @@ public class OutlineProperty implements
       Length outlineWidth) {
     return new MultipleValueCssSetter(CSS_PROPERTY, outlineColor, outlineStyle, outlineWidth);
   }
-
 }

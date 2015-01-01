@@ -41,5 +41,4 @@ public class TextDecorationProperty extends CssProperty<TextDecoration> {
   private TextDecorationProperty() {
     super(CSS_PROPERTY);
   }
-
 }

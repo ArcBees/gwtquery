@@ -15,37 +15,20 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.FontStyle;
-import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.dom.client.Style.ListStyleType;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.TextDecoration;
 import com.google.gwt.dom.client.Style.VerticalAlign;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
 import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
 import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
 import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
 import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
-import com.google.gwt.query.client.css.BorderStyleProperty.BorderStyle;
 import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
 import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
-import com.google.gwt.query.client.css.ClearProperty.Clear;
-import com.google.gwt.query.client.css.ClipProperty.Shape;
-import com.google.gwt.query.client.css.DirectionProperty.Direction;
 import com.google.gwt.query.client.css.EmptyCellsProperty.EmptyCells;
-import com.google.gwt.query.client.css.FontSizeProperty.FontSize;
 import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
 import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
 import com.google.gwt.query.client.css.MarginProperty.ShorthandMarginProperty;
 import com.google.gwt.query.client.css.PaddingProperty.ShorthandPaddingProperty;
-import com.google.gwt.query.client.css.TextAlignProperty.TextAlign;
-import com.google.gwt.query.client.css.TextTransformProperty.TextTransform;
 import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
-import com.google.gwt.query.client.css.WhiteSpaceProperty.WhiteSpace;
 
 /**
  * This class lists all CSS properties.
@@ -1315,5 +1298,4 @@ public class CSS {
     ZIndexProperty.init();
 
   }
-
 }

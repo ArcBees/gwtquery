@@ -60,5 +60,4 @@ public class BackgroundAttachmentProperty extends
   private BackgroundAttachmentProperty() {
     super(CSS_PROPERTY);
   }
-
 }

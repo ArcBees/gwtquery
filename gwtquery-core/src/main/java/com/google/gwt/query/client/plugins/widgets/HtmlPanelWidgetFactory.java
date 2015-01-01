@@ -23,5 +23,4 @@ public class HtmlPanelWidgetFactory implements WidgetFactory<HTMLPanel> {
   public HTMLPanel create(Element e) {
     return new WidgetsHtmlPanel(e);
   }
-
 }

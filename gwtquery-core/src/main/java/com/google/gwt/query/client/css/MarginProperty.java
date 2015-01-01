@@ -70,7 +70,6 @@ public class MarginProperty extends CssProperty<Length> {
           margin3, margin4);
 
     }
-
   }
 
   private static String MARGIN_BOTTOM_PROPERTY = "marginBottom";
@@ -90,5 +89,4 @@ public class MarginProperty extends CssProperty<Length> {
   private MarginProperty(String cssName) {
     super(cssName);
   }
-
 }

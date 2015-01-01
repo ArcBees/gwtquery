@@ -71,5 +71,4 @@ public class BorderProperty implements HasCssValue {
       RGBColor borderColor) {
     return new MultipleValueCssSetter(getCssName(), borderWidth, borderStyle, borderColor);
   }
-
 }

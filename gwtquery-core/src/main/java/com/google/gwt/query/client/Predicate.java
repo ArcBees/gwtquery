@@ -38,5 +38,4 @@ public class Predicate {
   public <T> boolean f(T e, int index) {
     return false;
   }
-
 }

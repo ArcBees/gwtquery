@@ -17,8 +17,6 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.ui.Button;
 
 /**

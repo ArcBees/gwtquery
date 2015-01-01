@@ -15,9 +15,8 @@
  */
 package com.google.gwt.query.client.impl;
 
-import static com.google.gwt.query.client.GQuery.*;
-
-import java.util.HashSet;
+import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -31,6 +30,8 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+
+import java.util.HashSet;
 
 /**
  * Core Selector engine functions, and native JS utility functions.

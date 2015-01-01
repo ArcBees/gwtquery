@@ -33,5 +33,4 @@ public class WidthProperty extends CssProperty<Length> {
   private WidthProperty(String cssName) {
     super(cssName);
   }
-
 }

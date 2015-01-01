@@ -15,16 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -37,6 +27,16 @@ import com.google.gwt.query.client.builders.JsniBundle.LibrarySource;
 import com.google.gwt.query.client.builders.JsniBundle.MethodSource;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Generates an implementation of a user-defined interface <code>T</code> that

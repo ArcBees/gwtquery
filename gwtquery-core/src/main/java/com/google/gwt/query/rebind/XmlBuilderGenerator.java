@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.PrintWriter;
-
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -32,6 +30,8 @@ import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import java.io.PrintWriter;
 
 /**
  */

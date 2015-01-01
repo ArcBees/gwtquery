@@ -73,5 +73,4 @@ public class WhiteSpaceProperty extends
   private WhiteSpaceProperty() {
     super(CSS_PROPERTY);
   }
-
 }
