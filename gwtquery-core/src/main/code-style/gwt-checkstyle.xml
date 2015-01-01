@@ -156,6 +156,7 @@ Description:
         </module>
         <module name="MethodName">
             <property name="severity" value="error"/>
+            <property name="format" value="^[a-z$][a-zA-Z0-9]*$"/>
         </module>
         <module name="MemberName">
             <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Field names must start with [a-z], may not start with f[A-Z], and should not contain '_''s."/>
