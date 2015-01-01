@@ -41,15 +41,21 @@ public class SelectorEngine implements HasSelector {
   private static DocumentStyleImpl styleImpl;
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
-      Node ctx) /*-{
+      Node ctx)
+  /*-{
+
         return ctx.getElementsByClassName(clazz);
   }-*/;
 
-  public static native Node getNextSibling(Node n) /*-{
+  public static native Node getNextSibling(Node n)
+  /*-{
+
        return n.nextSibling || null;
   }-*/;
 
-  public static native Node getPreviousSibling(Node n) /*-{
+  public static native Node getPreviousSibling(Node n)
+  /*-{
+
        return n.previousSibling || null;
   }-*/;
 
@@ -65,17 +71,23 @@ public class SelectorEngine implements HasSelector {
   }
 
   public static native NodeList<Element> querySelectorAllImpl(String selector,
-      Node ctx) /*-{
+      Node ctx)
+  /*-{
+
       return ctx.querySelectorAll(selector);
   }-*/;
 
   public static native NodeList<Element> elementsByTagName(String selector,
-      Node ctx) /*-{
+      Node ctx)
+  /*-{
+
       return ctx.getElementsByTagName(selector);
   }-*/;
 
   public static native NodeList<Element> elementsByClassName(String selector,
-      Node ctx) /*-{
+      Node ctx)
+  /*-{
+
       return ctx.getElementsByClassName(selector);
   }-*/;
 
@@ -90,7 +102,9 @@ public class SelectorEngine implements HasSelector {
   }
 
   public static native NodeList<Element> xpathEvaluate(String selector,
-      Node ctx, JsNodeArray r) /*-{
+      Node ctx, JsNodeArray r)
+  /*-{
+
       var node;
       var ownerDoc = ctx && (ctx.ownerDocument || ctx );
       var evalDoc = ownerDoc ? ownerDoc : $doc;
@@ -263,7 +277,9 @@ public class SelectorEngine implements HasSelector {
     }
   }
 
-  public native boolean contains(Element a, Element b) /*-{
+  public native boolean contains(Element a, Element b)
+  /*-{
+
     return a.contains ? a != b && a.contains(b) : !!(a.compareDocumentPosition(b) & 16)
   }-*/;
 
@@ -283,12 +299,16 @@ public class SelectorEngine implements HasSelector {
   /**
    * Check if the browser has native support for css selectors
    */
-  public static native boolean hasQuerySelectorAll() /*-{
+  public static native boolean hasQuerySelectorAll()
+  /*-{
+
     return $doc.location.href.indexOf("_force_no_native") < 0 &&
            typeof $doc.querySelectorAll == 'function';
   }-*/;
 
-  public static native boolean hasXpathEvaluate() /*-{
+  public static native boolean hasXpathEvaluate()
+  /*-{
+
     return !!$doc.evaluate;
   }-*/;
 

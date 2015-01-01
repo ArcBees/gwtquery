@@ -27,5 +27,4 @@ public interface TakesCssValue<T> extends HasCssValue {
   }
 
   CssSetter with(T value);
-
 }

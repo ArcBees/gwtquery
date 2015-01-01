@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.plugins;
 
 /**
- * Object use to configure a Plugin extending {@link MousePlugin}
+ * Object use to configure a Plugin extending {@link MousePlugin}.
  *
  */
 public class MouseOptions {

@@ -29,5 +29,4 @@ public interface HasSelector {
    * @return a list of matched nodes
    */
   NodeList<Element> select(String selector, Node ctx);
-
 }

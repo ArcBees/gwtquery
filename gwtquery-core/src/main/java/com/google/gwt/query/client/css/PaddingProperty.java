@@ -41,7 +41,6 @@ public class PaddingProperty extends CssProperty<Length> {
      */
     public CssSetter with(Length padding) {
       return new MultipleValueCssSetter(getCssName(), padding);
-
     }
 
     /**
@@ -51,7 +50,6 @@ public class PaddingProperty extends CssProperty<Length> {
     public CssSetter with(Length topAndBottom, Length leftAndRight) {
       return new MultipleValueCssSetter(getCssName(), topAndBottom,
           leftAndRight);
-
     }
 
     /**
@@ -60,7 +58,6 @@ public class PaddingProperty extends CssProperty<Length> {
      */
     public CssSetter with(Length top, Length leftAndRight, Length bottom) {
       return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
-
     }
 
     /**
@@ -70,7 +67,6 @@ public class PaddingProperty extends CssProperty<Length> {
         Length padding4) {
       return new MultipleValueCssSetter(getCssName(), padding1, padding2,
           padding3, padding4);
-
     }
   }
 

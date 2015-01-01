@@ -28,7 +28,9 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineSizzle extends SelectorEngineImpl {
 
-  public static native void initialize() /*-{
+  public static native void initialize()
+  /*-{
+
 (function(){
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
@@ -1088,12 +1090,12 @@ var posProcess = function(selector, context){
 
 window.GQS = GQS;
 $wnd.GQS = GQS;
-
 })();
-
   }-*/;
 
-  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
+  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed)
+  /*-{
+
     return $wnd.GQS(selector, context, results, seed);
   }-*/;
 

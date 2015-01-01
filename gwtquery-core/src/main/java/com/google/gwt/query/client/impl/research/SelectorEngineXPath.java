@@ -234,16 +234,19 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
     return xpath;
   }
 
-  private native String replaceAttr(String allAttr) /*-{
+  private native String replaceAttr(String allAttr)
+  /*-{
+
         if(!allAttr) return "";
         return allAttr.replace(/["']+/g,'').replace(/(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?/g,
             function(a,b,c,d) {
               return @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
             });
-
     }-*/;
 
-  private native String replaceAttr2(String allAttr) /*-{
+  private native String replaceAttr2(String allAttr)
+  /*-{
+
         if(!allAttr) return "";
         return allAttr.replace(/\[(\w+)(\^|\$|\*|\||~)?=?([\w\u00C0-\uFFFF\s\-_\.]+)?\]/g, @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;));
     }-*/;

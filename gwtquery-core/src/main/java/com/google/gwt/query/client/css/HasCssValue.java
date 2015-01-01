@@ -19,7 +19,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Minimal contract for an object defining a css property
+ * Minimal contract for an object defining a css property.
  *
  */
 public interface HasCssValue extends HasCssName {

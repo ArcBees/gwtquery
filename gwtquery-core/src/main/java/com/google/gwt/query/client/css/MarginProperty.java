@@ -40,7 +40,6 @@ public class MarginProperty extends CssProperty<Length> {
      */
     public CssSetter with(Length margin) {
       return new MultipleValueCssSetter(getCssName(), margin);
-
     }
 
     /**
@@ -49,7 +48,6 @@ public class MarginProperty extends CssProperty<Length> {
      */
     public CssSetter with(Length topAndBottom, Length leftAndRight) {
       return new MultipleValueCssSetter(getCssName(), topAndBottom, leftAndRight);
-
     }
 
     /**
@@ -58,7 +56,6 @@ public class MarginProperty extends CssProperty<Length> {
      */
     public CssSetter with(Length top, Length leftAndRight, Length bottom) {
       return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
-
     }
 
     /**
@@ -68,7 +65,6 @@ public class MarginProperty extends CssProperty<Length> {
         Length margin4) {
       return new MultipleValueCssSetter(getCssName(), margin1, margin2,
           margin3, margin4);
-
     }
   }
 

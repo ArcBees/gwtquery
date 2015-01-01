@@ -134,7 +134,6 @@ public class BackgroundPositionProperty extends
       RIGHT_TOP = new BackgroundPosition(RIGHT_VALUE + " " + TOP_VALUE);
       TOP = new BackgroundPosition(TOP_VALUE);
       BOTTOM = new BackgroundPosition(BOTTOM_VALUE);
-
     }
 
     /**

@@ -180,5 +180,4 @@ public interface LazyEvents<T> extends LazyBase<T>{
   LazyEvents<T> unbind(String name, Function f);
 
   LazyEvents<T> undelegate();
-
 }

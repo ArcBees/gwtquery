@@ -23,7 +23,9 @@ import com.google.gwt.dom.client.Element;
  */
 public class SelectorEngineJSIE extends SelectorEngineJS {
 
-  public native String getAttr(Element elm, String attr) /*-{
+  public native String getAttr(Element elm, String attr)
+  /*-{
+
        switch (attr) {
    case "id":
      return elm.id;

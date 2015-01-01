@@ -45,7 +45,6 @@ public class BorderCollapseProperty extends
 
   public static void init() {
     CSS.BORDER_COLLAPSE = new BorderCollapseProperty();
-
   }
 
   private BorderCollapseProperty() {

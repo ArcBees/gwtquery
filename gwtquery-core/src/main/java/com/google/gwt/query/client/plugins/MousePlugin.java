@@ -67,7 +67,6 @@ public abstract class MousePlugin extends UiPlugin {
             return true;
           }
           return mouseDown(e, GqEvent.create(event));
-
         }
       }).bind(Event.ONTOUCHSTART, getPluginName(), (Object) null, new Function() {
         public boolean f(com.google.gwt.user.client.Event event) {
@@ -77,7 +76,6 @@ public abstract class MousePlugin extends UiPlugin {
 
           touchSupported = true;
           return mouseDown(e, GqEvent.create(event));
-
         }
       }).bind(Event.ONCLICK, getPluginName(), (Object) null, new Function() {
         @Override
@@ -219,7 +217,6 @@ public abstract class MousePlugin extends UiPlugin {
     }
 
     return true;
-
   }
 
   private void bindOtherEvents(final Element element) {
@@ -252,7 +249,6 @@ public abstract class MousePlugin extends UiPlugin {
               return false;
             }
           });
-
     }
   }
 
@@ -278,12 +274,16 @@ public abstract class MousePlugin extends UiPlugin {
     return mouseDistance >= neededDistance;
   }
 
-  private native boolean isEventAlreadyHandled(GqEvent event)/*-{
+  private native boolean isEventAlreadyHandled(GqEvent event)
+  /*-{
+
     var result = event.mouseHandled ? event.mouseHandled : false;
     return result;
   }-*/;
 
-  private native void markEventAsHandled(GqEvent event)/*-{
+  private native void markEventAsHandled(GqEvent event)
+  /*-{
+
     event.mouseHandled = true;
   }-*/;
 
@@ -298,7 +298,6 @@ public abstract class MousePlugin extends UiPlugin {
     }
 
     return isNotBoutonLeft || isElementCancel || !mouseCapture(element, mouseDownEvent);
-
   }
 
   private void reset(GqEvent nativeEvent) {

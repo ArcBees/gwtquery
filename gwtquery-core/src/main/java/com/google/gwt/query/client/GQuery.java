@@ -695,7 +695,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     wrapperMap.put("col", new TagWrapper(2, "<table><tbody></tbody><colgroup>",
     "</colgroup></table>"));
     wrapperMap.put("area", new TagWrapper(1, "<map>", "</map>"));
-
   }
 
   private static GQuery innerHtml(String html, Document doc) {
@@ -778,12 +777,16 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return engine;
   }
 
-  private static native void scrollIntoViewImpl(Node n) /*-{
+  private static native void scrollIntoViewImpl(Node n)
+  /*-{
+
     if (n)
       n.scrollIntoView()
   }-*/;
 
-  private static native void setElementValue(Element e, String value) /*-{
+  private static native void setElementValue(Element e, String value)
+  /*-{
+
     e.value = value;
   }-*/;
 
@@ -1465,7 +1468,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     return $(unique(result));
-
   }
 
   /**
@@ -2378,7 +2380,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return end();
   }
 
-  private native Element getPreviousSiblingElement(Element elem) /*-{
+  private native Element getPreviousSiblingElement(Element elem)
+  /*-{
+
     var sib = elem.previousSibling;
     while (sib && sib.nodeType != 1)
       sib = sib.previousSibling;
@@ -3982,7 +3986,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       $(el).remove();
     }
     return this;
-
   }
 
   /**

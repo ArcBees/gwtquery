@@ -76,7 +76,6 @@ public class WidgetsUtils {
     regExp.append(")$");
 
     return e.getTagName().toUpperCase().matches(regExp.toString());
-
   }
 
    /**
@@ -140,7 +139,6 @@ public class WidgetsUtils {
       newElement.setId(oldElement.getId());
       //ensure no duplicate id
       oldElement.setId("");
-
     }
    }
 
@@ -262,19 +260,27 @@ public class WidgetsUtils {
      return $(element).parents().widget();
    }
 
-   private static native void widgetOnAttach(Widget w) /*-{
+   private static native void widgetOnAttach(Widget w)
+  /*-{
+
      w.@com.google.gwt.user.client.ui.Widget::onAttach()();
    }-*/;
 
-   private static native void widgetSetParent(Widget w, Widget p) /*-{
+   private static native void widgetSetParent(Widget w, Widget p)
+  /*-{
+
     w.@com.google.gwt.user.client.ui.Widget::setParent(Lcom/google/gwt/user/client/ui/Widget;)(p);
    }-*/;
 
-   private static native Widget compositeGetWidget(Composite w) /*-{
+   private static native Widget compositeGetWidget(Composite w)
+  /*-{
+
     return w.@com.google.gwt.user.client.ui.Composite::getWidget()();
    }-*/;
 
-   private static native WidgetCollection complexPanelGetChildren(ComplexPanel w) /*-{
+   private static native WidgetCollection complexPanelGetChildren(ComplexPanel w)
+  /*-{
+
     return w.@com.google.gwt.user.client.ui.ComplexPanel::getChildren()();
    }-*/;
 }

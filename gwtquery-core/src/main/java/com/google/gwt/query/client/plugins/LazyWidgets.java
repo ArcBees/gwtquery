@@ -107,5 +107,4 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    *
    */
   LazyWidgets<T> textArea(WidgetInitializer<TextArea> initializers);
-
 }

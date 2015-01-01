@@ -21,7 +21,7 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * Simple implementation of {@link CssSetter} interface. It does its job for the
- * most CSS property
+ * most CSS property.
  *
  */
 public class SimpleCssSetter implements CssSetter {
@@ -41,6 +41,5 @@ public class SimpleCssSetter implements CssSetter {
   public void applyCss(Element e) {
     assert e != null : "Impossible to apply css to a null object";
     e.getStyle().setProperty(property, value != null ? value : "");
-
   }
 }

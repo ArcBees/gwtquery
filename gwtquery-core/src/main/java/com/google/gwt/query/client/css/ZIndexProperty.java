@@ -62,9 +62,10 @@ public class ZIndexProperty implements TakesInteger {
    * See GWT issue 5548
    * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
    */
-  private native String getZIndex(Style s) /*-{
+  private native String getZIndex(Style s)
+  /*-{
+
     //force to return a string
     return "" + s["zIndex"];
   }-*/;
-
 }

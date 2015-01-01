@@ -25,7 +25,7 @@ import com.google.gwt.query.client.Predicate;
 
 /**
  * GWT clone of jQueryUi-core. This class define some function present in the
- * jQuery-ui core and not directly in jQuery
+ * jQuery-ui core and not directly in jQuery.
  *
  */
 public class UiPlugin extends GQuery {
@@ -83,7 +83,6 @@ public class UiPlugin extends GQuery {
                 && isOverflowEnabled($e);
           }
         });
-
       } else {
         scrollParent = gQueryUi.parents().filter(new Predicate() {
 
@@ -94,7 +93,6 @@ public class UiPlugin extends GQuery {
       }
       return scrollParent.length() > 0 ? $(scrollParent.get(0))
           : $(getViewportElement());
-
     }
 
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {

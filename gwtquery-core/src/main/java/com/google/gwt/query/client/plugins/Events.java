@@ -130,14 +130,12 @@ public class Events extends GQuery {
 
   public GQuery live(int eventbits, final Object data, Function... funcs) {
     return live(eventbits, null, data, funcs);
-
   }
 
   public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
         eventbits, nameSpace, null, null, currentSelector, data, funcs);
     return this;
-
   }
 
   public GQuery live(String eventName, final Object data, Function... funcs) {
@@ -183,7 +181,6 @@ public class Events extends GQuery {
     }
 
     return bind("mouseleave", null, fs);
-
   }
 
   /**

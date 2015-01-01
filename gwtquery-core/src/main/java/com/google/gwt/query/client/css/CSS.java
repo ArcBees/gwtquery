@@ -15,17 +15,6 @@
  */
 package com.google.gwt.query.client.css;
 
-import com.google.gwt.dom.client.Style.VerticalAlign;
-import com.google.gwt.query.client.css.BackgroundAttachmentProperty.BackgroundAttachment;
-import com.google.gwt.query.client.css.BackgroundPositionProperty.BackgroundPosition;
-import com.google.gwt.query.client.css.BackgroundRepeatProperty.BackgroundRepeat;
-import com.google.gwt.query.client.css.BorderCollapseProperty.BorderCollapse;
-import com.google.gwt.query.client.css.BorderSpacingProperty.BorderSpacing;
-import com.google.gwt.query.client.css.BorderWidthProperty.BorderWidth;
-import com.google.gwt.query.client.css.CaptionSideProperty.CaptionSide;
-import com.google.gwt.query.client.css.EmptyCellsProperty.EmptyCells;
-import com.google.gwt.query.client.css.FontVariantProperty.FontVariant;
-import com.google.gwt.query.client.css.ListStylePositionProperty.ListStylePosition;
 import com.google.gwt.query.client.css.MarginProperty.ShorthandMarginProperty;
 import com.google.gwt.query.client.css.PaddingProperty.ShorthandPaddingProperty;
 import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
@@ -1296,6 +1285,5 @@ public class CSS {
     WhiteSpaceProperty.init();
     WordSpacingProperty.init();
     ZIndexProperty.init();
-
   }
 }

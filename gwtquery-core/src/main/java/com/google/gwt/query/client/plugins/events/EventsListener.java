@@ -37,7 +37,7 @@ import java.util.List;
  * This class implements an event queue instance for one Element. The queue instance is configured
  * as the default event listener in GWT.
  *
- * The reference to this queue is stored as a unique variable in the element's DOM
+ * The reference to this queue is stored as a unique variable in the element's DOM.
  *
  * The class takes care of calling the appropriate functions for each browser event and it also
  * calls sinkEvents method.
@@ -409,22 +409,30 @@ public class EventsListener implements EventListener {
     }
   }
 
-  private static native void cleanGQListeners(Element elem) /*-{
+  private static native void cleanGQListeners(Element elem)
+  /*-{
+
     if (elem.__gwtlistener) {
       @com.google.gwt.user.client.DOM::setEventListener(*)(elem, elem.__gwtlistener);
     }
     elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
   }-*/;
 
-  private static native EventsListener getGQueryEventListener(Element elem) /*-{
+  private static native EventsListener getGQueryEventListener(Element elem)
+  /*-{
+
     return elem.__gqueryevent;
   }-*/;
 
-  private static native EventListener getGwtEventListener(Element elem) /*-{
+  private static native EventListener getGwtEventListener(Element elem)
+  /*-{
+
     return elem.__gwtlistener;
   }-*/;
 
-  private static native void init(Element elem, EventsListener gqevent)/*-{
+  private static native void init(Element elem, EventsListener gqevent)
+  /*-{
+
     elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
     elem.__gqueryevent = gqevent;
     // Someone has reported that in IE the init can be called multiple times
@@ -433,7 +441,9 @@ public class EventsListener implements EventListener {
     if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
-  private static native void sinkBitlessEvent(Element elem, String name) /*-{
+  private static native void sinkBitlessEvent(Element elem, String name)
+  /*-{
+
     if (!elem.__gquery)
       elem.__gquery = [];
     if (elem.__gquery[name])
@@ -752,7 +762,6 @@ public class EventsListener implements EventListener {
       newList.add(listener);
     }
     elementEvents = newList;
-
   }
 
   private boolean isNullOrEmpty(String s) {
@@ -808,7 +817,6 @@ public class EventsListener implements EventListener {
       }
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-
     } else {
       sinkBitlessEvent(element, eventName);
     }

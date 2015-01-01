@@ -386,5 +386,4 @@ public interface LazyEffects<T> extends LazyBase<T>{
    * layout of the page.
    */
   LazyEffects<T> toggle(int millisecs, Function... f);
-
 }

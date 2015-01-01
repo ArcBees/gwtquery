@@ -139,24 +139,34 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  public static native void clearAdded(Node node) /*-{
+  public static native void clearAdded(Node node)
+  /*-{
+
       node.added = null;
     }-*/;
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
-      Node ctx) /*-{
+      Node ctx)
+  /*-{
+
       return ctx.getElementsByClassName(clazz);
   }-*/;
 
-  public static native boolean isAdded(Node prevRef) /*-{
+  public static native boolean isAdded(Node prevRef)
+  /*-{
+
       return prevRef.added || false;
     }-*/;
 
-  public static native void setAdded(Node prevRef, boolean added) /*-{
+  public static native void setAdded(Node prevRef, boolean added)
+  /*-{
+
       prevRef.added = added;
     }-*/;
 
-  public static native void setSkipTag(JsNodeArray prevElem, boolean skip) /*-{
+  public static native void setSkipTag(JsNodeArray prevElem, boolean skip)
+  /*-{
+
       prevElem.skipTag = skip;
     }-*/;
 
@@ -179,7 +189,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     return JsUtils.truth(attrVal) ? "^" + attrVal + "$" : null;
   }
 
-  private static native boolean checked(Node previous) /*-{
+  private static native boolean checked(Node previous)
+  /*-{
+
     return previous.checked || false;
   }-*/;
 
@@ -189,7 +201,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private static native boolean enabled(Node node) /*-{
+  private static native boolean enabled(Node node)
+  /*-{
+
     return !node.disabled;
   }-*/;
 
@@ -238,20 +252,28 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     }
   }
 
-  private static native boolean hasChildElms(Node prevParent) /*-{
+  private static native boolean hasChildElms(Node prevParent)
+  /*-{
+
       return prevParent.childElms || false;
     }-*/;
 
-  private static native boolean isSkipped(JsNodeArray prevElem) /*-{
+  private static native boolean isSkipped(JsNodeArray prevElem)
+  /*-{
+
        return prevElem.skipTag || false;
     }-*/;
 
-  private static native void setHasChildElms(Node prevParent, boolean bool) /*-{
+  private static native void setHasChildElms(Node prevParent, boolean bool)
+  /*-{
+
       prevParent.childElms = bool ? bool : null;
     }-*/;
 
   private static native JsNodeArray subtractArray(JsNodeArray previousMatch,
-      JsNodeArray elementsByPseudo) /*-{
+      JsNodeArray elementsByPseudo)
+  /*-{
+
       for (var i=0, src1; (src1=arr1[i]); i++) {
         var found = false;
         for (var j=0, src2; (src2=arr2[j]); j++) {

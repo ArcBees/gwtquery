@@ -218,7 +218,6 @@ public class Fx {
           color += color;
         }
         result[i] = Math.max(0, Math.min(255, Integer.parseInt(color, 16)));
-
       }
 
       return result;

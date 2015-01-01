@@ -2549,5 +2549,4 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * everything else.
    */
   LazyGQuery<T> wrapInner(String html);
-
 }

@@ -52,7 +52,7 @@ import java.util.Map.Entry;
 /**
  * Transitions and transformation plugin for gQuery.
  *
- * It is inspired on jquery.transit (http://github.com/rstacruz/jquery.transit)
+ * It is inspired on jquery.transit (http://github.com/rstacruz/jquery.transit).
  *
  * Usage examples:
  * <pre>

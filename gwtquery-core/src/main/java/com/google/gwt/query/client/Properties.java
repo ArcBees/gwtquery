@@ -89,7 +89,9 @@ public class Properties extends JavaScriptObject implements IsProperties {
     return this.<JsCache>cast();
   }
 
-  public final native Properties cloneProps() /*-{
+  public final native Properties cloneProps()
+  /*-{
+
     var props = {};
     for(p in this) {
       props[p] =  this[p];
@@ -180,7 +182,9 @@ public class Properties extends JavaScriptObject implements IsProperties {
    * Its useful for exporting or importing to javascript.
    * 
    */
-  public final native <T> void setFunction(T name, Function f) /*-{
+  public final native <T> void setFunction(T name, Function f)
+  /*-{
+
     if (!f) return;
     this[name] = function() {
       f.@com.google.gwt.query.client.Function::fe(Ljava/lang/Object;)(arguments);

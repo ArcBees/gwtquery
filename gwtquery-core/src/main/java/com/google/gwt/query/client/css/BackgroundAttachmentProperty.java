@@ -46,7 +46,6 @@ public class BackgroundAttachmentProperty extends
     };
 
     public abstract String getCssName();
-
   }
 
   private static final String CSS_PROPERTY = "backgroundAttachment";

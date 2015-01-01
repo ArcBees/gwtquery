@@ -31,7 +31,9 @@ public class ConsoleBrowser implements Console {
    */
   private static class ConsoleIe8 extends ConsoleIe9 {
     @Override
-    protected native void init()/*-{
+    protected native void init()
+  /*-{
+
       try {
         Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
         this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initialized = true;
@@ -51,7 +53,9 @@ public class ConsoleBrowser implements Console {
       init();
     }
 
-    protected native void init()/*-{
+    protected native void init()
+  /*-{
+
       try {
         [ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
           .forEach(function(method) {
@@ -108,59 +112,87 @@ public class ConsoleBrowser implements Console {
    * Default implementation: webkit, opera, FF, ie10
    */
   private static class ConsoleImpl {
-    public native void clear() /*-{
+    public native void clear()
+  /*-{
+
       $wnd.console.clear();
     }-*/;
 
-    public native void dir(Object arg) /*-{
+    public native void dir(Object arg)
+  /*-{
+
       $wnd.console.dir(arg);
     }-*/;
 
-    public native void error(JavaScriptObject arg) /*-{
+    public native void error(JavaScriptObject arg)
+  /*-{
+
       $wnd.console.error.apply($wnd.console, arg);
     }-*/;
 
-    public native void group(Object arg) /*-{
+    public native void group(Object arg)
+  /*-{
+
       $wnd.console.group(arg);
     }-*/;
 
-    public native void groupCollapsed(Object arg) /*-{
+    public native void groupCollapsed(Object arg)
+  /*-{
+
       $wnd.console.groupCollapsed(arg);
     }-*/;
 
-    public native void groupEnd() /*-{
+    public native void groupEnd()
+  /*-{
+
       $wnd.console.groupEnd();
     }-*/;
 
-    public native void info(JavaScriptObject arg) /*-{
+    public native void info(JavaScriptObject arg)
+  /*-{
+
       $wnd.console.info.apply($wnd.console, arg);
     }-*/;
 
-    public native void log(JavaScriptObject arg) /*-{
+    public native void log(JavaScriptObject arg)
+  /*-{
+
       $wnd.console.log.apply($wnd.console, arg);
     }-*/;
 
-    public native void profile(String title) /*-{
+    public native void profile(String title)
+  /*-{
+
       $wnd.console.profile(title);
     }-*/;
 
-    public native void profileEnd(String title) /*-{
+    public native void profileEnd(String title)
+  /*-{
+
       $wnd.console.profileEnd(title);
     }-*/;
 
-    public native void time(String title) /*-{
+    public native void time(String title)
+  /*-{
+
       $wnd.console.time(title);
     }-*/;
 
-    public native void timeEnd(String title) /*-{
+    public native void timeEnd(String title)
+  /*-{
+
       $wnd.console.timeEnd(title);
     }-*/;
 
-    public native void timeStamp(Object arg) /*-{
+    public native void timeStamp(Object arg)
+  /*-{
+
       $wnd.console.timeStamp(arg);
     }-*/;
 
-    public native void warn(JavaScriptObject arg) /*-{
+    public native void warn(JavaScriptObject arg)
+  /*-{
+
       $wnd.console.warn.apply($wnd.console, arg);
     }-*/;
   }

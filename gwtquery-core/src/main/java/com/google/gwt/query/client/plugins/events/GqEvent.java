@@ -35,11 +35,15 @@ import com.google.gwt.user.client.Event;
  */
 public class GqEvent extends Event {
 
-  public static native void setOriginalEventType(NativeEvent evt, String originalEventName)/*-{
+  public static native void setOriginalEventType(NativeEvent evt, String originalEventName)
+  /*-{
+
     evt["__gwtquery_originalEventName"] = originalEventName;
   }-*/;
 
-  public static native String getOriginalEventType(Event evt)/*-{
+  public static native String getOriginalEventType(Event evt)
+  /*-{
+
    return evt["__gwtquery_originalEventName"] || null;
   }-*/;
 
@@ -58,7 +62,9 @@ public class GqEvent extends Event {
   }
 
   private static native void copy(
-      Event originalEvent, GqEvent gQueryEvent) /*-{
+      Event originalEvent, GqEvent gQueryEvent)
+  /*-{
+
     for ( var field in originalEvent) {
       gQueryEvent[field] = originalEvent[field];
     }
@@ -71,11 +77,15 @@ public class GqEvent extends Event {
   /**
    * Return the original event (the one created by the browser)
    */
-  public final native Event getOriginalEvent()/*-{
+  public final native Event getOriginalEvent()
+  /*-{
+
     return this.originalEvent;
   }-*/;
 
-  public final native void setCurrentElementTarget(Element e)/*-{
+  public final native void setCurrentElementTarget(Element e)
+  /*-{
+
     this.currentTarget = e;
 
     //ie don't have a currentEventTarget field on event

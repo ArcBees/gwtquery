@@ -66,7 +66,6 @@ public class BorderSpacingProperty extends
 
   public static void init() {
     CSS.BORDER_SPACING = new BorderSpacingProperty();
-
   }
 
   private BorderSpacingProperty() {

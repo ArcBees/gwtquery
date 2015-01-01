@@ -29,7 +29,9 @@ public class JsNodeArray extends NodeList<Element> {
     return create((Node)null);
   }
 
-  public static native JsNodeArray create(Node node) /*-{
+  public static native JsNodeArray create(Node node)
+  /*-{
+
     return node ? [node] : [];
   }-*/;
 

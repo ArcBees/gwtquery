@@ -49,7 +49,6 @@ public class IFrameWithDocTypeLinker extends IFrameLinker {
         "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
     return DOCTYPE
         + super.getModulePrefix(logger, context, strongName, numFragments);
-
   }
 }
 

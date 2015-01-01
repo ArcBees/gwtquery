@@ -19,7 +19,7 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
 
 /**
  * Interface to be implemented by properties which take a number as defined in
- * css2 specification
+ * css2 specification.
  *
  * @see http://www.w3.org/TR/CSS21/syndata.html#value-def-number
  */
