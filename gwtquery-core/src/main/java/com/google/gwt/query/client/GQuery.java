@@ -130,12 +130,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * A Browser object with a set of browser-specific flags.
    */
-  public static final Browser browser = GWT.isClient() ? GWT.<Browser> create(Browser.class) : null;
+  public static final Browser browser = GWT.isClient() ? GWT.<Browser>create(Browser.class) : null;
 
   /**
    * An object with the same methods than window.console.
    */
-  public static final Console console = GWT.isClient() ? GWT.<Console> create(Console.class) : null;
+  public static final Console console = GWT.isClient() ? GWT.<Console>create(Console.class) : null;
 
   /**
    * Object to store element data (public so as we can access to it from tests).
