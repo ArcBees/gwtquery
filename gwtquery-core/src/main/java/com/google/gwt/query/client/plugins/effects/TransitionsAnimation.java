@@ -85,8 +85,8 @@ public class TransitionsAnimation extends PropertiesAnimation {
       int bit = currentAction == Action.HIDE ? 1 : 0;
 
       String originX = "left", originY = "top";
-      int scaleXini = 0^bit, scaleYini = scaleXini;
-      int scaleXend = 1^bit, scaleYend = scaleXend;
+      int scaleXini = 0 ^ bit, scaleYini = scaleXini;
+      int scaleXend = 1 ^ bit, scaleYend = scaleXend;
 
       if (direction == Direction.VERTICAL) {
         scaleXini = scaleXend = 1;
@@ -174,7 +174,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
           trsStart = "" + st;
 
           double en = Double.parseDouble(trsEnd);
-          trsEnd = "" + (st + n*en);
+          trsEnd = "" + (st + n * en);
         }
 
         // Deal with non px units like "%"
@@ -210,7 +210,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
   private Properties getFxProperties(boolean isStart) {
     Properties p = $$();
     for (int i = 0; i < effects.length(); i++) {
-      TransitFx fx = (TransitFx)effects.get(i);
+      TransitFx fx = (TransitFx) effects.get(i);
       String val = isStart ? fx.transitStart : fx.transitEnd;
       if (!val.isEmpty()) {
         p.set(fx.cssprop, val + fx.unit);
@@ -240,8 +240,10 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
     // Compute final properties
     p = getFxProperties(false);
-    g.transition(p, duration, easing, delay, new Function(){public void f() {
-      onComplete();
-    }});
+    g.transition(p, duration, easing, delay, new Function() {
+      public void f() {
+        onComplete();
+      }
+    });
   }
 }

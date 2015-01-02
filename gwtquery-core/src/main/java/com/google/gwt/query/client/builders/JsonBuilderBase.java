@@ -22,7 +22,6 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.user.client.Window;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +59,7 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
         p.<JsCache>cast().delete(jsonName);
       }
     }
-    return (J)this;
+    return (J) this;
   }
 
   @SuppressWarnings("unchecked")

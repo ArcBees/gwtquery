@@ -221,7 +221,7 @@ public class Properties extends JavaScriptObject implements IsProperties {
   
   @SuppressWarnings("unchecked")
   public final <J extends IsProperties> J strip() {
-    return (J)this;
+    return (J) this;
   }
 
   public final <J extends IsProperties> J parse(String json) {

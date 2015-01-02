@@ -34,8 +34,6 @@ import elemental.json.impl.JreJsonNull;
  */
 public class JsonFactoryJre implements JsonFactory {
 
- 
-
   /**
    * Although functions cannot be serialized to json we use JsonBuilders
    * or IsProperties objects which can be used as settings in Ajax.

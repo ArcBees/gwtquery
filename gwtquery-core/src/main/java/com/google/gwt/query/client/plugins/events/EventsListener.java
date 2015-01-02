@@ -26,12 +26,15 @@ import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.events.SpecialEvent.DefaultSpecialEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
@@ -45,91 +48,71 @@ import java.util.List;
  */
 public class EventsListener implements EventListener {
 
-  public interface SpecialEvent {
-    String getDelegateType();
+  /**
+   * Used for simulating mouseenter and mouseleave events.
+   */
+  private static class MouseSpecialEvent extends DefaultSpecialEvent {
+    public MouseSpecialEvent(final String type, String delegateType) {
+      super(type, delegateType);
+      handler =  new Function() {
+        public boolean f(Event e, Object... arg) {
+          EventTarget eventTarget = e.getCurrentEventTarget();
+          Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
 
-    String getOriginalType();
+          EventTarget relatedEventTarget = e.getRelatedEventTarget();
+          Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
 
-    Function createDelegateHandler(Function originalHandler);
+          if (related == null || (related != target && !GQuery.contains(target, related))) {
+            getInstance(target).dispatchEvent(e, type);
+          }
+          return true;
+        };
+      };
+    }
   }
 
   /**
-   * Used for simulating mouseenter and mouseleave events
+   * Utility class to split a list of events with or without namespaces.
    */
-  public static class MouseSpecialEvent implements SpecialEvent {
-
-    private String originalType;
-    private String delegateType;
-
-    public MouseSpecialEvent(String originalType, String delegateType) {
-      this.originalType = originalType;
-      this.delegateType = delegateType;
+  public static class EventName {
+    public final String nameSpace;
+    public final String eventName;
+    public EventName(String n, String e) {
+      nameSpace = n;
+      eventName = e;
     }
 
-    public String getDelegateType() {
-      return delegateType;
-    }
-
-    public String getOriginalType() {
-      return originalType;
-    }
-
-    public Function createDelegateHandler(Function originalHandler) {
-      return new SpecialMouseEventHandler(originalHandler);
-    }
-  }
-
-  private interface HandlerWrapper {
-    Function getOriginalHandler();
-  }
-  private static class SpecialMouseEventHandler extends Function implements HandlerWrapper {
-
-    private Function delegateHandler;
-
-    public SpecialMouseEventHandler(Function originalHandler) {
-      this.delegateHandler = originalHandler;
-    }
-
-    @Override
-    public boolean f(Event e, Object... data) {
-      EventTarget eventTarget = e.getCurrentEventTarget();
-      Element target = eventTarget != null ? eventTarget.<Element> cast() : null;
-
-      EventTarget relatedEventTarget = e.getRelatedEventTarget();
-      Element related = relatedEventTarget != null ? relatedEventTarget.<Element> cast() : null;
-
-      // For mousenter/leave call the handler if related is outside the target.
-      if (related == null || (related != target && !GQuery.contains(target, related))) {
-        return delegateHandler != null ? delegateHandler.f(e, data) : false;
+    public static List<EventName> split(String events) {
+      List<EventName> ret = new ArrayList<EventName>();
+      String[] parts = events.split("[\\s,]+");
+      for (String event : parts) {
+        String[] tmp = event.split("\\.", 2);
+        String eventName = tmp[0];
+        String nameSpace = tmp.length > 1 ? tmp[1] : null;
+        ret.add(new EventName(nameSpace, eventName));
       }
-
-      return false;
-    }
-
-    public Function getOriginalHandler() {
-      return delegateHandler;
+      return ret;
     }
   }
 
+  /**
+   * The function used per each element event.
+   */
   private static class BindFunction {
-
     Object data;
     Function function;
     String nameSpace;
-    // for special event like mouseleave, mouseenter
-    String originalEventType;
     int times;
     int type;
     String eventName;
 
-    BindFunction(int type, String eventName, String nameSpace, String originalEventType,
-        Function function, Object data, int times) {
+    BindFunction(int type, String eventName, String nameSpace, Function function, Object data,
+        int times) {
       this.times = times;
       this.eventName = eventName;
       this.type = type;
       this.function = function;
       this.data = data;
-      this.originalEventType = originalEventType;
       this.nameSpace = nameSpace != null ? nameSpace : "";
     }
 
@@ -148,7 +131,10 @@ public class EventsListener implements EventListener {
         } else {
           arguments = eventData;
         }
-        return function.fe(event, arguments);
+        // FIXME(manolo): figure out when this is null, and fix or comment it.
+        if (function != null) {
+          return function.fe(event, arguments);
+        }
       }
       return true;
     }
@@ -184,14 +170,7 @@ public class EventsListener implements EventListener {
 
     public boolean isEquals(Function f) {
       assert f != null : "function f cannot be null";
-      Function functionToCompare =
-          function instanceof HandlerWrapper ? ((HandlerWrapper) function).getOriginalHandler()
-              : function;
-      return f.equals(functionToCompare);
-    }
-
-    public Object getOriginalEventType() {
-      return originalEventType;
+      return f.equals(function);
     }
   }
 
@@ -204,17 +183,17 @@ public class EventsListener implements EventListener {
     JsNamedArray<JsObjectArray<BindFunction>> bindFunctionBySelector;
 
     LiveBindFunction(String eventName, String namespace, Object data) {
-      super(BITLESS, eventName, namespace, null, null, data, -1);
+      super(BITLESS, eventName, namespace, null, data, -1);
       clean();
     }
 
     LiveBindFunction(int type, String namespace, Object data) {
-      super(type, null, namespace, null, null, data, -1);
+      super(type, null, namespace, null, data, -1);
       clean();
     }
 
     /**
-     * Add a {@link BindFunction} for a specific css selector
+     * Add a {@link BindFunction} for a specific css selector.
      */
     public void addBindFunctionForSelector(String cssSelector, BindFunction f) {
       JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
@@ -297,10 +276,10 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Remove the BindFunction associated to this cssSelector
+     * Remove the BindFunction associated to this cssSelector.
      */
-    public void removeBindFunctionForSelector(String cssSelector, String nameSpace, String originalEventName) {
-      if (nameSpace == null && originalEventName == null) {
+    public void removeBindFunctionForSelector(String cssSelector, String nameSpace) {
+      if (nameSpace == null) {
         bindFunctionBySelector.delete(cssSelector);
       } else {
         JsObjectArray<BindFunction> functions = bindFunctionBySelector.get(cssSelector);
@@ -312,10 +291,7 @@ public class EventsListener implements EventListener {
 
         for (int i = 0; i < functions.length(); i++) {
           BindFunction f = functions.get(i);
-          boolean matchNamespace = nameSpace == null || nameSpace.equals(f.nameSpace);
-          boolean matchOriginalEventName = originalEventName == null || originalEventName.equals(f.originalEventType);
-
-          if (!matchNamespace || !matchOriginalEventName) {
+          if (nameSpace != null && !nameSpace.equals(f.nameSpace)) {
             newFunctions.add(f);
           }
         }
@@ -328,7 +304,7 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Tell if no {@link BindFunction} are linked to this object
+     * Tell if no {@link BindFunction} are linked to this object.
      *
      * @return
      */
@@ -344,7 +320,7 @@ public class EventsListener implements EventListener {
 
     /**
      * Return the element whose the listener fired last. It represent the context element where the
-     * {@link LiveBindFunction} was binded
+     * {@link LiveBindFunction} was binded.
      *
      */
     private Element getCurrentEventTarget(Event e) {
@@ -358,7 +334,7 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Return the element that was the actual target of the element
+     * Return the element that was the actual target of the element.
      */
     private Element getEventTarget(Event e) {
       EventTarget eventTarget = e.getEventTarget();
@@ -377,10 +353,11 @@ public class EventsListener implements EventListener {
   public static String MOUSEENTER = "mouseenter";
   public static String MOUSELEAVE = "mouseleave";
 
-  public static JsMap<String, SpecialEvent> special;
+  public static Map<String, SpecialEvent> special;
 
   static {
-    special = JsMap.create();
+    // Register some special events which already exist in jQuery
+    special = new HashMap<String, SpecialEvent>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
   }
@@ -478,94 +455,59 @@ public class EventsListener implements EventListener {
     }
   }
 
-  public void bind(int eventbits, String namespace, String originalEventType, Object data,
-      Function function, int times) {
-    bind(eventbits, namespace, null, originalEventType, data, function, times);
+  public void bind(int eventbits, String namespace, Object data, Function function, int times) {
+    bind(eventbits, namespace, null, data, function, times);
   }
 
   public void bind(String events, final Object data, Function... funcs) {
-    String[] parts = events.split("[\\s,]+");
+    if (funcs.length == 0 || funcs[0] == null) {
+      unbind(events, null);
+    }
 
-    for (String event : parts) {
-
-      String nameSpace = null;
-      String eventName = event;
-
-      // seperate possible namespace
-      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2){
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
-      // handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
-      int b = Event.getTypeInt(eventName);
+    for (EventName ev : EventName.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
+      boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
-        Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        bind(b, nameSpace, eventName, originalEventName, data, handler, -1);
+        int b = Event.getTypeInt(ev.eventName);
+        if (bind) {
+          bind(b, ev.nameSpace, ev.eventName, data, function, -1);
+        }
+        if (hook != null) {
+          hook.add(element, ev.eventName, ev.nameSpace, data, function);
+        }
       }
     }
   }
 
-  private void bind(int eventbits, String namespace, String eventName, String originalEventType,
-      Object data, Function function, int times) {
-    if (function == null) {
-      unbind(eventbits, namespace, eventName, originalEventType, null);
-      return;
-    }
-
+  public void bind(int eventbits, String namespace, String eventName, Object data, Function function, int times) {
     sink(eventbits, eventName);
-
-    elementEvents.add(new BindFunction(eventbits, eventName, namespace, originalEventType,
-        function, data, times));
+    elementEvents.add(new BindFunction(eventbits, eventName, namespace, function, data, times));
   }
 
-  public void die(String eventNames, String cssSelector) {
-    String[] parts = eventNames.split("[\\s,]+");
-
-    for (String event : parts) {
-      String nameSpace = null;
-      String eventName = event;
-
-      // seperate possible namespace
-      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2) {
-        nameSpace = subparts[1];
-        eventName = subparts[0];
+  public void die(String events, String cssSelector) {
+    for (EventName ev : EventName.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
+      boolean unbind = hook == null || hook.tearDown(element) == false;
+      if (unbind) {
+        die(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, cssSelector);
       }
-
-      // handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
-      int b = Event.getTypeInt(eventName);
-
-      die(b, nameSpace, eventName, originalEventName, cssSelector);
+      if (hook != null) {
+        hook.remove(element, ev.eventName, ev.nameSpace, null);
+      }
     }
   }
 
-  public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
-      String cssSelector) {
+  public void die(int eventbits, String nameSpace, String eventName, String cssSelector) {
     if (eventbits <= 0) {
       if (eventName != null && eventName.length() > 0) {
         LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
-        maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eventName, nameSpace,
-            originalEventName);
+        maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eventName, nameSpace);
       } else {
         // if eventbits == -1 and eventName is null, remove all event handlers for this selector
         for (String k : liveBindFunctionByEventType.keys()) {
           int bits = Integer.parseInt(k);
           LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(bits);
-          maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, bits, null, nameSpace, null);
+          maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, bits, null, nameSpace);
         }
 
         for (String k : liveBindFunctionByEventName.keys()) {
@@ -573,23 +515,21 @@ public class EventsListener implements EventListener {
           LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(realKey);
           if (liveBindFunction != null) {
             String eName = liveBindFunction.eventName;
-            maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eName,
-                nameSpace, originalEventName);
+            maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, BITLESS, eName, nameSpace);
           }
         }
       }
     } else {
       LiveBindFunction liveBindFunction = liveBindFunctionByEventType.get(eventbits);
-      maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, eventbits, null, nameSpace,
-          originalEventName);
+      maybeRemoveLiveBindFunction(liveBindFunction, cssSelector, eventbits, null, nameSpace);
     }
   }
 
   private void maybeRemoveLiveBindFunction(LiveBindFunction liveBindFunction, String cssSelector,
-      int eventbits, String eventName, String nameSpace, String originalEventName) {
+      int eventbits, String eventName, String nameSpace) {
     if (liveBindFunction != null) {
-      liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace, originalEventName);
-      if (liveBindFunction.isEmpty()){
+      liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace);
+      if (liveBindFunction.isEmpty()) {
         if (eventbits != BITLESS) {
           liveBindFunctionByEventType.remove(eventbits);
         } else {
@@ -599,16 +539,26 @@ public class EventsListener implements EventListener {
     }
   }
 
+  /**
+   * Dispatch an event in this element.
+   */
   public void dispatchEvent(Event event) {
-    String ename = event.getType();
-    int etype = Event.getTypeInt(ename);
-    String originalEventType = GqEvent.getOriginalEventType(event);
-    Object[] handlerData = $(element).data(EVENT_DATA);
+    dispatchEvent(event, event.getType());
+  }
 
+  /**
+   * Dispatch an event in this element but changing the type,
+   * it's useful for special events.
+   */
+  public void dispatchEvent(Event event, String eventName) {
+    int etype = Event.getTypeInt(eventName);
+    Object[] handlerData = $(element).data(EVENT_DATA);
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
-      if (listener != null && (listener.hasEventType(etype) || listener.isTypeOf(ename))
-          && (originalEventType == null || originalEventType.equals(listener.getOriginalEventType()))) {
+      String namespace = JsUtils.prop(event, "namespace");
+      boolean matchEV = listener != null && (listener.hasEventType(etype) || listener.isTypeOf(eventName));
+      boolean matchNS = matchEV && (isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace));
+      if (matchEV && matchNS) {
         if (!listener.fire(event, handlerData)) {
           event.stopPropagation();
           event.preventDefault();
@@ -626,45 +576,32 @@ public class EventsListener implements EventListener {
   }
 
   public void live(String events, String cssSelector, Object data, Function... funcs) {
-
-    String[] parts = events.split("[\\s,]+");
-
-    for (String event : parts) {
-
-      String nameSpace = null;
-      String eventName = event;
-
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2) {
-        nameSpace = subparts[1];
-        eventName = subparts[0];
-      }
-
-      // handle special event like mouseenter or mouseleave
-      SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
-      int b = Event.getTypeInt(eventName);
+    for (EventName ev : EventName.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
+      boolean bind = hook == null || hook.setup(element) == false;
       for (Function function : funcs) {
-        Function handler = hook != null ? hook.createDelegateHandler(function) : function;
-        live(b, nameSpace, eventName, originalEventName, cssSelector, data, handler);
+        int b = Event.getTypeInt(ev.eventName);
+        if (bind) {
+          live(b, ev.nameSpace, ev.eventName, cssSelector, data, function);
+        }
+        if (hook != null) {
+          hook.add(element, ev.eventName, ev.nameSpace, data, function);
+        }
       }
     }
   }
 
-  public void live(int eventbits, String nameSpace, String eventName, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+  public void live(int eventbits, String nameSpace, String eventName, String cssSelector,
+      Object data, Function... funcs) {
     if (eventbits != BITLESS) {
-      liveBitEvent(eventbits, nameSpace, originalEventName, cssSelector, data, funcs);
+      liveBitEvent(eventbits, nameSpace, cssSelector, data, funcs);
     } else {
-      liveBitlessEvent(eventName, nameSpace, originalEventName, cssSelector, data, funcs);
+      liveBitlessEvent(eventName, nameSpace, cssSelector, data, funcs);
     }
   }
 
-  private void liveBitlessEvent(String eventName, String nameSpace, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+  private void liveBitlessEvent(String eventName, String nameSpace, String cssSelector,
+      Object data, Function... funcs) {
     LiveBindFunction liveBindFunction = liveBindFunctionByEventName.get(eventName);
 
     if (liveBindFunction == null) {
@@ -676,12 +613,12 @@ public class EventsListener implements EventListener {
 
     for (Function f : funcs) {
       liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(BITLESS, eventName,
-          nameSpace, originalEventName, f, data, -1));
+          nameSpace, f, data, -1));
     }
   }
 
-  private void liveBitEvent(int eventbits, String nameSpace, String originalEventName,
-      String cssSelector, Object data, Function... funcs) {
+  private void liveBitEvent(int eventbits, String nameSpace, String cssSelector, Object data,
+      Function... funcs) {
     for (int i = 0; i < 28; i++) {
       int event = (int) Math.pow(2, i);
       if ((eventbits & event) == event) {
@@ -697,7 +634,7 @@ public class EventsListener implements EventListener {
 
         for (Function f : funcs) {
           liveBindFunction.addBindFunctionForSelector(cssSelector, new BindFunction(event,
-              null, nameSpace, originalEventName, f, data, -1));
+              null, nameSpace, f, data, -1));
         }
       }
     }
@@ -722,67 +659,58 @@ public class EventsListener implements EventListener {
   }
 
   public void unbind(int eventbits) {
-    unbind(eventbits, null, null, null, null);
+    unbind(eventbits, null, null, null);
   }
 
-  public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
-      Function f) {
-
+  public void unbind(int eventbits, String namespace, String eventName, Function f) {
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
-
       boolean matchNS = isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace);
       boolean matchEV = eventbits <= 0 || listener.hasEventType(eventbits);
       boolean matchEVN = matchEV || listener.isTypeOf(eventName);
-      boolean matchOEVT = (isNullOrEmpty(eventName) && !isNullOrEmpty(namespace) && matchNS)
-          || (originalEventType == null && listener.getOriginalEventType() == null)
-          || (originalEventType != null && originalEventType.equals(listener.getOriginalEventType()));
       boolean matchFC = f == null || listener.isEquals(f);
 
-      if (matchNS && matchEV && matchEVN && matchFC && matchOEVT) {
+      if (matchNS && matchEV && matchEVN && matchFC) {
         int currentEventbits = listener.unsink(eventbits);
-
         if (currentEventbits == 0) {
           // the BindFunction doesn't listen anymore on any events
           continue;
         }
       }
-
       newList.add(listener);
     }
-    elementEvents = newList;
+    elementEvents =  newList;
   }
 
-  private boolean isNullOrEmpty(String s) {
+  /**
+   * Return true if the element is listening for the
+   * given eventBit or eventName.
+   */
+  public boolean hasHandlers(int eventBits, String eventName) {
+    for (int i = 0, j = elementEvents.length(); i < j; i++) {
+      BindFunction function = elementEvents.get(i);
+      if (function.hasEventType(eventBits) || function.isTypeOf(eventName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static boolean isNullOrEmpty(String s) {
     return s == null || s.isEmpty();
   }
 
   public void unbind(String events, Function f) {
-
-    String[] parts = events.split("[\\s,]+");
-
-    for (String event : parts) {
-      String nameSpace = null;
-      String eventName = event;
-
-      // seperate possible namespace
-      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
-      String[] subparts = event.split("\\.", 2);
-
-      if (subparts.length == 2){
-        nameSpace = subparts[1];
-        eventName = subparts[0];
+    for (EventName ev : EventName.split(events)) {
+      SpecialEvent hook = special.get(ev.eventName);
+      boolean unbind = hook == null || hook.tearDown(element) == false;
+      if (unbind) {
+        unbind(Event.getTypeInt(ev.eventName), ev.nameSpace, ev.eventName, f);
       }
-
-      // handle special event
-      SpecialEvent hook = special.get(eventName);
-      eventName = hook != null ? hook.getDelegateType() : eventName;
-      String originalEventName = hook != null ? hook.getOriginalType() : null;
-
-      int b = Event.getTypeInt(eventName);
-
-      unbind(b, nameSpace, eventName, originalEventName, f);
+      if (hook != null) {
+        hook.remove(element, ev.eventName, ev.nameSpace, f);
+      }
     }
   }
 

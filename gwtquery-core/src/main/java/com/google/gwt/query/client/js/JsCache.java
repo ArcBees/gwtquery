@@ -236,7 +236,7 @@ public class JsCache extends JavaScriptObject {
     checkNull(this);
   }
 
-  private final native JsArrayString keysImpl() /*-{
+  private native JsArrayString keysImpl() /*-{
     var key, keys=[];
     // Chrome in DevMode sets '__gwt_ObjectId' to JS objects
     // GWT sets '$H' when calling getHashCode (see com/google/gwt/core/client/impl/Impl.java)

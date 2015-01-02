@@ -268,7 +268,7 @@ public class Transitions extends GQuery {
         t.setFromString(prop, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else if (!invalidTransitionNamesRegex.test(prop)){
+    } else if (!invalidTransitionNamesRegex.test(prop)) {
       super.css(prop, value);
     }
     return this;
@@ -297,7 +297,7 @@ public class Transitions extends GQuery {
 
   private Transform getTransform(Element e, String initial) {
     Transform t = data(e, TRANSFORM);
-    if (t == null || initial != null && !initial.isEmpty() ) {
+    if (t == null || initial != null && !initial.isEmpty()) {
       t = new Transform(initial);
       data(e, TRANSFORM, t);
     }
@@ -334,12 +334,12 @@ public class Transitions extends GQuery {
     final double queuedAt = delay > 0 ? Duration.currentTimeMillis() : 0;
 
     // Use gQuery queue, so as we can chain transitions, animations etc.
-    queue(new Function(){
+    queue(new Function() {
       public void f() {
         // This is called once per element
         final String oldTransitionValue = $(this).css(transition);
         // Recompute delay based on the time spent in the queue
-        int d = Math.max(0, delay - (int)(Duration.currentTimeMillis() - queuedAt));
+        int d = Math.max(0, delay - (int) (Duration.currentTimeMillis() - queuedAt));
         // Generate transition value
         String attribs = duration + "ms" + " "  + ease + " " + d + "ms";
         String newTransitionValue  = "";

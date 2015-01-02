@@ -2495,7 +2495,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Since GQuery 1.4.0, this method binds handlers for both mouseenter and mouseleave events.
    */
   public GQuery hover(Function fover, Function fout) {
-    return bind("mouseenter", null, fover).bind("mouseleave", null, fout);
+    return bind("mouseenter", fover).bind("mouseleave", fout);
   }
 
   /**
@@ -2846,7 +2846,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @Deprecated
   public GQuery load(Function f) {
-    return bind(Event.ONLOAD, null, f);
+    return bind(Event.ONLOAD, f);
   }
 
   /**

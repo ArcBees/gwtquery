@@ -383,7 +383,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).click();
     assertEquals("white", $("p", e).css("color", false));
 
-    // hover (mouseover, mouseout)
+    // hover (mouseenter, mouseleave)
     $("p", e).hover(new Function() {
       public void f(Element elem) {
         $(elem).css(CSS.BACKGROUND_COLOR.with(RGBColor.YELLOW));
@@ -396,6 +396,11 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("p", e).trigger(Event.ONMOUSEOVER);
     assertEquals("yellow", $("p", e).css("background-color", false));
     $("p", e).trigger(Event.ONMOUSEOUT);
+    assertEquals("white", $("p", e).css("background-color", false));
+
+    $("p", e).css(CSS.COLOR.with(RGBColor.WHITE));
+    $("p", e).hover(null, null);
+    $("p", e).trigger(Event.ONMOUSEOVER);
     assertEquals("white", $("p", e).css("background-color", false));
 
     // key events
@@ -564,6 +569,46 @@ public class GQueryEventsTestGwt extends GWTTestCase {
 
     assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
 
+  }
+
+  public void testLiveWithSpecial() {
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+
+    $(".clickable", e).live("mouseenter", new Function() {
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+
+    $("#div1", e).addClass("clickable");
+    $("#span1", e).mouseenter();
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+
+    $(".clickable", e).die("mouseenter");
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+
+    $("#span1", e).mouseenter();
+    assertEquals("black", $("#div1", e).css(CSS.COLOR, false));
+  }
+
+  public void testOnOffWithSpecial() {
+    $(e).html("<div id='div1'><div id='div2'>Content 1<span id='span1'> blop</span></div></div>");
+
+    $(e).on("mouseenter", ".clickable", new Function() {
+      public void f(Element e) {
+        $(e).css(CSS.COLOR.with(RGBColor.RED));
+      }
+    });
+
+    $("#div1", e).addClass("clickable");
+    $("#span1", e).mouseenter();
+    assertEquals("red", $("#div1", e).css(CSS.COLOR, false));
+
+    $(e).off("mouseenter", ".clickable");
+    $("*", e).css(CSS.COLOR.with(RGBColor.BLACK));
+
+    $("#span1", e).mouseenter();
+    assertEquals("black", $("#div1", e).css(CSS.COLOR, false));
   }
 
   public void testLiveWithMultipleEvent() {
@@ -1198,10 +1243,10 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(".mainDiv", e).click();
 
     assertEquals("red", $(".mainDiv", e).css("color", false));
-    
+
     // reset
     $(".mainDiv", e).css("color", "black");
-    
+
     $(".mainDiv", e).off("click");
 
     $(".mainDiv", e).click();
@@ -1219,7 +1264,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(".mainDiv", e).click();
 
     assertEquals("red", $(".mainDiv", e).css("color", false));
-    
+
     // reset
     $(".mainDiv", e).css("color", "black");
 
@@ -1273,7 +1318,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     assertEquals("white", $(".mainDiv", e).css("background-color", false));
   }
 
-  
+
   public void testOnOffWithSelector() {
     $(e).html("<div class='mainDiv'><div class='subDiv'>Content " +
         "0<span>blop</span></div></div><div class='mainDiv'><div class='subDiv'>" +
@@ -1285,7 +1330,7 @@ public class GQueryEventsTestGwt extends GWTTestCase {
         $(e).css("color", "red");
       }
     });
-    
+
 
     for (Element mainDiv : $(".mainDiv", e).elements()) {
       for (int i = 0; i < 3; i++) {
@@ -1436,10 +1481,10 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $(b).trigger("custom");
     assertEquals("200px", $("button").css("width", false));
   }
-  
+
   public void testIssue152() {
     $(e).html("<div class='mdiv'>");
-    final GQuery div = $(".mdiv", e); 
+    final GQuery div = $(".mdiv", e);
     final int[] count = { 0 };
     div.one(Event.ONCLICK, null, new Function() {
       public void f() {
@@ -1835,6 +1880,18 @@ public class GQueryEventsTestGwt extends GWTTestCase {
     $("#mainDiv", e).off("mouseenter.mynamespace");
     $("#mainDiv", e).mouseenter();
     assertEquals(2, mouseEnterFunction.invokationCounter);
+  }
+
+  public void testBindAndTriggerWithNameSpace() {
+    $(e).html("<div id='mainDiv'>blop</div>");
+    CounterFunction counter = new CounterFunction();
+    $("#mainDiv", e).on("click.mynamespace;foo", counter);
+    $("#mainDiv").trigger("click");
+    assertEquals(1, counter.invokationCounter);
+    $("#mainDiv").trigger("click.mynamespace;bar");
+    assertEquals(1, counter.invokationCounter);
+    $("#mainDiv").trigger("click.mynamespace;foo");
+    assertEquals(2, counter.invokationCounter);
   }
 
 }

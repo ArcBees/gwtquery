@@ -2,5 +2,6 @@
     <inherits name='com.google.gwt.query.Query'/>
     <entry-point class='com.google.gwt.query.client.DevTestRunner'/>
     <set-property name="compiler.useSourceMaps" value="false"/>
+    <add-linker name="xsiframe"/>
 </module>
 

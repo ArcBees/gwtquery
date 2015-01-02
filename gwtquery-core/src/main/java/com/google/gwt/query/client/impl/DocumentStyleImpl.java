@@ -212,7 +212,7 @@ public class DocumentStyleImpl {
   }
 
   /**
-   * Return whether the element is visible
+   * Return whether the element is visible.
    */
   public boolean isVisible(Element e) {
     return SelectorEngine.filters.get("visible").f(e, 0);
