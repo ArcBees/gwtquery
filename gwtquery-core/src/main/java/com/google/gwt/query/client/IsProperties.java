@@ -30,6 +30,14 @@ public interface IsProperties {
    * parses a json string and loads the resulting properties object.
    */
   <T extends IsProperties> T parse(String json);
+  
+  /**
+   * Removes the extra JSON and leaves only the setters/getters described 
+   * in the JsonBuilder interface.
+   * If the object contains another IsProperties attributes the method strip()
+   * is called on them.
+   */
+  <T extends IsProperties> T strip();
 
   /**
    * Returns the underlying object, normally a Properties jso in client

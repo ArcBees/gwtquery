@@ -19,8 +19,13 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.Window;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Common class for all JsonBuilder implementations.
@@ -30,6 +35,7 @@ import com.google.gwt.query.client.js.JsUtils;
 public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements JsonBuilder {
 
   protected Properties p = Properties.create();
+  protected String[] fieldNames = new String[] {};
 
   @SuppressWarnings("unchecked")
   @Override
@@ -41,6 +47,20 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   @Override
   public J parse(String json, boolean fix) {
     return fix ? parse(Properties.wrapPropertiesString(json)) : parse(json);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public J strip() {
+    List<String> names = Arrays.asList(getFieldNames());
+    for (String jsonName : p.getFieldNames()) {
+      // TODO: figure out a way so as we can generate some marks in generated class in
+      // order to call getters to return JsonBuilder object given an an attribute name
+      if (!names.contains(jsonName)) {
+        p.<JsCache>cast().delete(jsonName);
+      }
+    }
+    return (J)this;
   }
 
   @SuppressWarnings("unchecked")
@@ -141,5 +161,9 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
 
   public <T extends JsonBuilder> T as(Class<T> clz) {
     return p.as(clz);
+  }
+
+  public final String[] getFieldNames() {
+    return fieldNames;
   }
 }

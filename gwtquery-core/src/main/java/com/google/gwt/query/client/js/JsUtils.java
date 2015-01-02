@@ -365,7 +365,7 @@ public class JsUtils {
    * Check is a javascript object can be cast to an Element.
    */
   public static native boolean isElement(Object o) /*-{
-    return o && o.nodeType && o.nodeName ? true : false;
+    return !!o && 'nodeType' in o && 'nodeName' in o;
   }-*/;
 
   /**

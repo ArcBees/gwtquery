@@ -176,9 +176,9 @@ public class Properties extends JavaScriptObject implements IsProperties {
   /**
    * Adds a new native js function to the properties object.
    * This native function will wrap the passed java Function.
-   * 
+   *
    * Its useful for exporting or importing to javascript.
-   * 
+   *
    */
   public final native <T> void setFunction(T name, Function f) /*-{
     if (!f) return;
@@ -217,6 +217,11 @@ public class Properties extends JavaScriptObject implements IsProperties {
       c().copy((JsCache) prp);
     }
     return getDataImpl();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public final <J extends IsProperties> J strip() {
+    return (J)this;
   }
 
   public final <J extends IsProperties> J parse(String json) {
