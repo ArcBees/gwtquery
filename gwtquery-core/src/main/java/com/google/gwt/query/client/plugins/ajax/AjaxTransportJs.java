@@ -41,20 +41,22 @@ public class AjaxTransportJs implements AjaxTransport {
   public Promise getLoadScript(final Settings settings) {
     return new PromiseFunction() {
       private ScriptElement scriptElement;
+
       public void f(final Deferred dfd) {
         scriptElement = ScriptInjector.fromUrl(settings.getUrl()).setWindow(GQuery.window)
-        .setCallback(new Callback<Void, Exception>() {
-          public void onSuccess(Void result) {
-            GQuery.$(GQuery.window).delay(0, new Function(){
-              public void f() {
-                dfd.resolve(scriptElement);
+            .setCallback(new Callback<Void, Exception>() {
+              public void onSuccess(Void result) {
+                GQuery.$(GQuery.window).delay(0, new Function() {
+                  public void f() {
+                    dfd.resolve(scriptElement);
+                  }
+                });
               }
-            });
-          }
-          public void onFailure(Exception reason) {
-            dfd.reject(reason);
-          }
-        }).inject().cast();
+
+              public void onFailure(Exception reason) {
+                dfd.reject(reason);
+              }
+            }).inject().cast();
       }
     };
   }

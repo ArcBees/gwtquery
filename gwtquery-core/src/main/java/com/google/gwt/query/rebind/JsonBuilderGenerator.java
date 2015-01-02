@@ -71,7 +71,7 @@ public class JsonBuilderGenerator extends Generator {
 
   public static String deCapitalize(String s) {
     return s == null || s.isEmpty() ? s :
-           (s.substring(0, 1).toLowerCase() + (s.length() > 1 ? s.substring(1) : ""));
+        (s.substring(0, 1).toLowerCase() + (s.length() > 1 ? s.substring(1) : ""));
   }
 
   TypeOracle oracle;
@@ -81,7 +81,7 @@ public class JsonBuilderGenerator extends Generator {
       throws UnableToCompleteException {
 
     oracle = generatorContext.getTypeOracle();
-    JClassType clazz =  oracle.findType(requestedClass);
+    JClassType clazz = oracle.findType(requestedClass);
 
     jsonBuilderType = oracle.findType(JsonBuilder.class.getName());
     settingsType = oracle.findType(IsProperties.class.getName());
@@ -95,7 +95,8 @@ public class JsonBuilderGenerator extends Generator {
 
     boolean isFactory = clazz.isAssignableTo(jsonFactoryType);
 
-    SourceWriter sw = getSourceWriter(treeLogger, generatorContext, t[0], t[1], isFactory, requestedClass);
+    SourceWriter sw =
+        getSourceWriter(treeLogger, generatorContext, t[0], t[1], isFactory, requestedClass);
     if (sw != null) {
       if (isFactory) {
         generateCreateMethod(sw, treeLogger);
@@ -104,15 +105,15 @@ public class JsonBuilderGenerator extends Generator {
         for (JMethod method : clazz.getInheritableMethods()) {
           String methName = method.getName();
           // skip method from JsonBuilder
-          if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null ||
-              settingsType.findMethod(method.getName(), method.getParameterTypes()) != null ) {
+          if (jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null ||
+              settingsType.findMethod(method.getName(), method.getParameterTypes()) != null) {
             continue;
           }
 
           Name nameAnnotation = method.getAnnotation(Name.class);
           String name = nameAnnotation != null
-            ? nameAnnotation.value()
-            : methName.replaceFirst("^(get|set)", "");
+              ? nameAnnotation.value()
+              : methName.replaceFirst("^(get|set)", "");
           if (nameAnnotation == null) {
             name = name.substring(0, 1).toLowerCase() + name.substring(1);
           }
@@ -220,8 +221,9 @@ public class JsonBuilderGenerator extends Generator {
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
-      } else if (method.getReturnType().isEnum() != null){
-        sw.println("return "+ method.getReturnType().getQualifiedSourceName() + ".valueOf(p.getStr(\"" + name + "\"));");
+      } else if (method.getReturnType().isEnum() != null) {
+        sw.println("return " + method.getReturnType().getQualifiedSourceName()
+            + ".valueOf(p.getStr(\"" + name + "\"));");
       } else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type "
             + retType + " " + ifaceName + "." + name + "()\"); ");
@@ -247,15 +249,19 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("setArrayBase(\"" + name + "\", " + a + ");");
       } else if (type.getParameterizedQualifiedSourceName().matches("java.util.Date")) {
         sw.println("p.setNumber(\"" + name + "\", a.getTime());");
-      } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.(Character|Long|Double|Integer|Float|Byte)|(char|long|double|int|float|byte))")) {
+      } else if (type
+          .getParameterizedQualifiedSourceName()
+          .matches(
+              "(java.lang.(Character|Long|Double|Integer|Float|Byte)|(char|long|double|int|float|byte))")) {
         sw.println("p.setNumber(\"" + name + "\", a);");
       } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.Boolean|boolean)")) {
         sw.println("p.setBoolean(\"" + name + "\", a);");
-      } else if (type.getParameterizedQualifiedSourceName().matches("com.google.gwt.query.client.Function")) {
+      } else if (type.getParameterizedQualifiedSourceName().matches(
+          "com.google.gwt.query.client.Function")) {
         sw.println("p.setFunction(\"" + name + "\", a);");
-      } else if (type.isEnum() != null){
+      } else if (type.isEnum() != null) {
         sw.println("p.set(\"" + name + "\", a.name());");
-      }else {
+      } else {
         sw.println("set(\"" + name + "\", a);");
       }
       if (!"void".equals(retType)) {
@@ -310,9 +316,10 @@ public class JsonBuilderGenerator extends Generator {
     sw.indent();
     ArrayList<JClassType> types = new ArrayList<JClassType>();
     for (JClassType t : oracle.getTypes()) {
-      if (t.isInterface() != null && t.isAssignableTo(jsonBuilderType) ) {
+      if (t.isInterface() != null && t.isAssignableTo(jsonBuilderType)) {
         if (t.isPublic()) {
-          sw.println("if (clz == " + t.getQualifiedSourceName() + ".class) return GWT.<T>create(" + t.getQualifiedSourceName() + ".class);");
+          sw.println("if (clz == " + t.getQualifiedSourceName() + ".class) return GWT.<T>create("
+              + t.getQualifiedSourceName() + ".class);");
         } else {
           logger.log(Type.WARN, t.getQualifiedSourceName() + " is not public");
         }
@@ -324,7 +331,8 @@ public class JsonBuilderGenerator extends Generator {
     sw.println("}");
     sw.println("public " + IsProperties.class.getName() + " create(String s) {");
     sw.indent();
-    sw.println("return (" + IsProperties.class.getName() + ")" + JsUtils.class.getName() + ".parseJSON(s);");
+    sw.println("return (" + IsProperties.class.getName() + ")" + JsUtils.class.getName()
+        + ".parseJSON(s);");
     sw.outdent();
     sw.println("}");
     sw.println("public " + IsProperties.class.getName() + " create() {");

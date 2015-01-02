@@ -35,7 +35,7 @@ public class Effects extends QueuePlugin<Effects> {
   /**
    * Class to access protected methods in Animation.
    */
-  public abstract static class GQAnimation  extends Animation {
+  public abstract static class GQAnimation extends Animation {
 
     private static final String ACTUAL_ANIMATION = "EffectsRunnning";
 
@@ -47,20 +47,24 @@ public class Effects extends QueuePlugin<Effects> {
       e = element;
       return this;
     }
+
     protected GQAnimation setProperties(Properties properties) {
       prps = properties == null ? Properties.create() : properties;
       return this;
     }
+
     protected void onStart() {
       // Mark this animation as actual, so as we can stop it in the GQuery.stop() method
       $(e).data(ACTUAL_ANIMATION, this);
       super.onStart();
     }
+
     protected void onComplete() {
       // avoid memory leak (issue #132)
       $(e).removeData(ACTUAL_ANIMATION);
       super.onComplete();
     }
+
     public void cancel() {
       // avoid memory leak (issue #132)
       $(e).removeData(ACTUAL_ANIMATION);
@@ -100,6 +104,7 @@ public class Effects extends QueuePlugin<Effects> {
             anim.cancel();
           }
         }
+
         public void f(Element e) {
           anim.run(duration);
         }
@@ -175,7 +180,7 @@ public class Effects extends QueuePlugin<Effects> {
 
     duration = Math.abs(duration);
 
-    for (Element e: elements()) {
+    for (Element e : elements()) {
       if (Fx.css3) {
         new TransitionsClipAnimation(easing, e, p, funcs).run(duration);
       } else {

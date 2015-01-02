@@ -14,6 +14,7 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
+
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.LazyBase;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
@@ -22,7 +23,7 @@ import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
  * LazyEffects.
  * @param <T>
  */
-public interface LazyEffects<T> extends LazyBase<T>{
+public interface LazyEffects<T> extends LazyBase<T> {
 
   /**
    * The animate() method allows you to create animation effects on any numeric

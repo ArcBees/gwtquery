@@ -48,7 +48,9 @@ public abstract class FunctionDeferred extends Function {
   /**
    * Cache types.
    */
-  public static enum CacheType {NONE, ALL, RESOLVED, REJECTED};
+  public static enum CacheType {
+    NONE, ALL, RESOLVED, REJECTED
+  };
 
   protected Deferred dfd;
   public Function resolve, reject;
@@ -67,10 +69,10 @@ public abstract class FunctionDeferred extends Function {
    * is resolved.
    */
   public final Object f(Object... args) {
-    return  dfd != null &&
+    return dfd != null &&
         (cache == CacheType.ALL ||
-         cache == CacheType.RESOLVED && dfd.promise().isResolved() ||
-         cache == CacheType.REJECTED && dfd.promise().isRejected())
+            cache == CacheType.RESOLVED && dfd.promise().isResolved() ||
+        cache == CacheType.REJECTED && dfd.promise().isRejected())
         ? dfd.promise()
         : new PromiseFunction() {
           public void f(Deferred dfd) {
@@ -79,7 +81,7 @@ public abstract class FunctionDeferred extends Function {
             FunctionDeferred.this.dfd = dfd;
             FunctionDeferred.this.f(dfd);
           }
-       };
+        };
   }
 
   /**

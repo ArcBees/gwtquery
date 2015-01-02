@@ -41,15 +41,15 @@ public class SelectorEngine implements HasSelector {
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
-        return ctx.getElementsByClassName(clazz);
+    return ctx.getElementsByClassName(clazz);
   }-*/;
 
   public static native Node getNextSibling(Node n) /*-{
-       return n.nextSibling || null;
+    return n.nextSibling || null;
   }-*/;
 
   public static native Node getPreviousSibling(Node n) /*-{
-       return n.previousSibling || null;
+    return n.previousSibling || null;
   }-*/;
 
   public NodeList<Element> querySelectorAll(String selector, Node ctx) {
@@ -65,17 +65,17 @@ public class SelectorEngine implements HasSelector {
 
   public static native NodeList<Element> querySelectorAllImpl(String selector,
       Node ctx) /*-{
-      return ctx.querySelectorAll(selector);
+    return ctx.querySelectorAll(selector);
   }-*/;
 
   public static native NodeList<Element> elementsByTagName(String selector,
       Node ctx) /*-{
-      return ctx.getElementsByTagName(selector);
+    return ctx.getElementsByTagName(selector);
   }-*/;
 
   public static native NodeList<Element> elementsByClassName(String selector,
       Node ctx) /*-{
-      return ctx.getElementsByClassName(selector);
+    return ctx.getElementsByClassName(selector);
   }-*/;
 
   public static NodeList<Element> veryQuickId(String id, Node ctx) {
@@ -90,14 +90,14 @@ public class SelectorEngine implements HasSelector {
 
   public static native NodeList<Element> xpathEvaluate(String selector,
       Node ctx, JsNodeArray r) /*-{
-      var node;
-      var ownerDoc = ctx && (ctx.ownerDocument || ctx );
-      var evalDoc = ownerDoc ? ownerDoc : $doc;
-      var result = evalDoc.evaluate(selector, ctx, null, 0, null);
-      while ((node = result.iterateNext())) {
-          r.push(node);
-      }
-      return r;
+    var node;
+    var ownerDoc = ctx && (ctx.ownerDocument || ctx );
+    var evalDoc = ownerDoc ? ownerDoc : $doc;
+    var result = evalDoc.evaluate(selector, ctx, null, 0, null);
+    while ((node = result.iterateNext())) {
+        r.push(node);
+    }
+    return r;
   }-*/;
 
   public final SelectorEngineImpl impl;
@@ -117,10 +117,10 @@ public class SelectorEngine implements HasSelector {
 
   static {
     filters = JsMap.create();
-    filters.put("visible", new Predicate(){
+    filters.put("visible", new Predicate() {
       public boolean f(Element e, int index) {
         return (e.getOffsetWidth() + e.getOffsetHeight()) > 0 &&
-          !"none".equalsIgnoreCase(styleImpl.curCSS(e, "display", true));
+            !"none".equalsIgnoreCase(styleImpl.curCSS(e, "display", true));
       }
     });
     filters.put("hidden", new Predicate() {
@@ -133,12 +133,12 @@ public class SelectorEngine implements HasSelector {
         return e.getPropertyBoolean("selected");
       }
     });
-    filters.put("input", new Predicate(){
+    filters.put("input", new Predicate() {
       public boolean f(Element e, int index) {
         return e.getNodeName().toLowerCase().matches("input|select|textarea|button");
       }
     });
-    filters.put("header", new Predicate(){
+    filters.put("header", new Predicate() {
       public boolean f(Element e, int index) {
         return e.getNodeName().toLowerCase().matches("h\\d");
       }
@@ -173,7 +173,7 @@ public class SelectorEngine implements HasSelector {
 
   public NodeList<Element> filter(NodeList<Element> nodes, String selector, boolean filterDetached) {
     JsNodeArray res = JsNodeArray.create();
-    if (selector.isEmpty()){
+    if (selector.isEmpty()) {
       return res;
     }
     Element ghostParent = null;
@@ -181,7 +181,8 @@ public class SelectorEngine implements HasSelector {
     HashSet<Node> elmList = new HashSet<Node>();
     for (int i = 0, l = nodes.getLength(); i < l; i++) {
       Node e = nodes.getItem(i);
-      if (e == window || e == document || e.getNodeName() == null || "html".equalsIgnoreCase(e.getNodeName())) {
+      if (e == window || e == document || e.getNodeName() == null
+          || "html".equalsIgnoreCase(e.getNodeName())) {
         continue;
       }
       elmList.add(e);
@@ -198,11 +199,11 @@ public class SelectorEngine implements HasSelector {
           parents.add(p);
         }
       } else if (parents.isEmpty()) {
-         parents.add(document);
+        parents.add(document);
       }
     }
     for (Node e : parents) {
-      NodeList<Element> n  = select(selector, e);
+      NodeList<Element> n = select(selector, e);
       for (int i = 0, l = n.getLength(); i < l; i++) {
         Element el = n.getItem(i);
         if (elmList.remove(el)) {
@@ -217,9 +218,12 @@ public class SelectorEngine implements HasSelector {
   }
 
   // pseudo selectors which are computed by gquery in runtime
-  RegExp gQueryPseudo = RegExp.compile("(.*):((visible|hidden|selected|input|header)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
+  RegExp gQueryPseudo =
+      RegExp.compile(
+      "(.*):((visible|hidden|selected|input|header)|((button|checkbox|file|hidden|image|password|radio|reset|submit|text)\\s*(,|$)))(.*)", "i");
   // pseudo selectors which work in engine
-  RegExp nativePseudo = RegExp.compile("(.*):([\\w]+):(disabled|checked|enabled|empty|focus)\\s*([:,].*|$)", "i");
+  RegExp nativePseudo = RegExp.compile(
+      "(.*):([\\w]+):(disabled|checked|enabled|empty|focus)\\s*([:,].*|$)", "i");
 
   public NodeList<Element> select(String selector, Node ctx) {
 
@@ -247,7 +251,7 @@ public class SelectorEngine implements HasSelector {
           if (pred != null) {
             nodes = filter(select(select, ctx), pred);
           } else if (nativePseudo.test(pseudo)) {
-            nodes =  select(select, ctx);
+            nodes = select(select, ctx);
           } else {
             nodes = select(select + "[type=" + pseudo + "]", ctx);
           }

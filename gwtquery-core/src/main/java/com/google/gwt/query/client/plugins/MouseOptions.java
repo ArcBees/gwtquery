@@ -89,6 +89,6 @@ public class MouseOptions {
   protected void initDefault() {
     delay = 0;
     distance = 1; // by default, the mouse have to move one pixel !
-    cancel = new String[] { "input", "option" };
+    cancel = new String[] {"input", "option"};
   }
 }

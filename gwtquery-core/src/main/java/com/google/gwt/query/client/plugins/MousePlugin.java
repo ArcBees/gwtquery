@@ -144,7 +144,7 @@ public abstract class MousePlugin extends UiPlugin {
 
     bindOtherEvents(element);
 
-    if (!touchSupported){ // click event are not triggered if we call preventDefault on touchstart event.
+    if (!touchSupported) { // click event are not triggered if we call preventDefault on touchstart event.
       event.getOriginalEvent().preventDefault();
     }
 
@@ -268,16 +268,12 @@ public abstract class MousePlugin extends UiPlugin {
     return mouseDistance >= neededDistance;
   }
 
-  private native boolean isEventAlreadyHandled(GqEvent event)
-  /*-{
-
+  private native boolean isEventAlreadyHandled(GqEvent event) /*-{
     var result = event.mouseHandled ? event.mouseHandled : false;
     return result;
   }-*/;
 
-  private native void markEventAsHandled(GqEvent event)
-  /*-{
-
+  private native void markEventAsHandled(GqEvent event) /*-{
     event.mouseHandled = true;
   }-*/;
 

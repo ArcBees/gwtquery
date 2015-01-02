@@ -34,7 +34,7 @@ public final class JsMap<S, T> extends JavaScriptObject {
 
   @SuppressWarnings("unchecked")
   public T get(int hashCode) {
-    return (T)c().get(hashCode);
+    return (T) c().get(hashCode);
   }
 
   public T get(S key) {
@@ -45,13 +45,13 @@ public final class JsMap<S, T> extends JavaScriptObject {
     c().put(key.hashCode(), val);
   }
 
-  public T remove(S key){
+  public T remove(S key) {
     T old = get(key);
     c().delete(key.hashCode());
     return old;
   }
 
-  public T remove(int key){
+  public T remove(int key) {
     T old = get(key);
     c().delete(key);
     return old;

@@ -47,7 +47,7 @@ public class ConsoleBrowser implements Console {
 
     private boolean initialized = false;
 
-    public ConsoleIe9(){
+    public ConsoleIe9() {
       init();
     }
 
@@ -68,54 +68,72 @@ public class ConsoleBrowser implements Console {
         super.clear();
       }
     }
+
     @Override
     public void dir(Object arg) {
       if (initialized) {
         super.dir(arg);
       }
     }
+
     @Override
     public void error(JavaScriptObject arg) {
       if (initialized) {
         super.error(arg);
       }
     }
+
     @Override
     public void info(JavaScriptObject arg) {
       if (initialized) {
         super.info(arg);
       }
     }
+
     @Override
     public void profile(String title) {
       if (initialized) {
         super.profile(title);
       }
     }
+
     @Override
     public void profileEnd(String title) {
       if (initialized) {
         super.profileEnd(title);
       }
     }
+
     @Override
     public void warn(JavaScriptObject arg) {
       if (initialized) {
         super.warn(arg);
       }
     }
+
     @Override
-    public void group(Object arg) {}
+    public void group(Object arg) {
+    }
+
     @Override
-    public void groupCollapsed(Object arg) {}
+    public void groupCollapsed(Object arg) {
+    }
+
     @Override
-    public void groupEnd() {}
+    public void groupEnd() {
+    }
+
     @Override
-    public void time(String title) {}
+    public void time(String title) {
+    }
+
     @Override
-    public void timeStamp(Object arg) {}
+    public void timeStamp(Object arg) {
+    }
+
     @Override
-    public void timeEnd(String title) {}
+    public void timeEnd(String title) {
+    }
   }
 
   /**
@@ -182,7 +200,9 @@ public class ConsoleBrowser implements Console {
   private ConsoleImpl impl;
 
   public ConsoleBrowser() {
-    impl = GQuery.browser.ie8? new ConsoleIe8(): GQuery.browser.ie9? new ConsoleIe9(): new  ConsoleImpl();
+    impl =
+        GQuery.browser.ie8 ? new ConsoleIe8() : GQuery.browser.ie9 ? new ConsoleIe9()
+            : new ConsoleImpl();
   }
 
   @Override

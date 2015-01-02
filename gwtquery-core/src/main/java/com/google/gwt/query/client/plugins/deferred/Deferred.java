@@ -48,7 +48,8 @@ public class Deferred implements Promise.Deferred {
       // Whether break the flow if old deferred fails
       boolean cont = false;
 
-      public ThenFunction(Deferred newDfd, Function[] subordinates, int funcType, boolean continueFlow) {
+      public ThenFunction(Deferred newDfd, Function[] subordinates, int funcType,
+          boolean continueFlow) {
         type = funcType;
         filter = subordinates.length > type ? subordinates[type] : null;
         dfd = newDfd;
@@ -65,18 +66,23 @@ public class Deferred implements Promise.Deferred {
             // If filter function returns a promise we pipeline it.
             final Promise p = (Promise) newArgs;
             if (type == PROGRESS) {
-              p.progress(new Function(){public void f() {
-                settle(PROGRESS, getArguments());
-              }});
+              p.progress(new Function() {
+                public void f() {
+                  settle(PROGRESS, getArguments());
+                }
+              });
             } else {
-              p.always(new Function(){public void f() {
-                settle((type == DONE || type == FAIL && cont) && p.isResolved() ? DONE : FAIL, getArguments());
-              }});
+              p.always(new Function() {
+                public void f() {
+                  settle((type == DONE || type == FAIL && cont) && p.isResolved() ? DONE : FAIL,
+                      getArguments());
+                }
+              });
             }
           } else {
             // Otherwise we change the arguments by the new ones
             newArgs = Boolean.TRUE.equals(newArgs) ? oldArgs :
-                      newArgs != null && newArgs.getClass().isArray() ? (Object[])newArgs : newArgs;
+                newArgs != null && newArgs.getClass().isArray() ? (Object[]) newArgs : newArgs;
             settle(type, newArgs);
           }
         } else {
@@ -86,9 +92,12 @@ public class Deferred implements Promise.Deferred {
       }
 
       private void settle(int action, Object... args) {
-        if (action == DONE) dfd.resolve(args);
-        if (action == FAIL) dfd.reject(args);
-        if (action == PROGRESS) dfd.notify(args);
+        if (action == DONE)
+          dfd.resolve(args);
+        if (action == FAIL)
+          dfd.reject(args);
+        if (action == PROGRESS)
+          dfd.notify(args);
       }
     }
 
@@ -278,11 +287,11 @@ public class Deferred implements Promise.Deferred {
 
   private static Promise makePromise(final Object o) {
     if (o instanceof Promise) {
-      return (Promise)o;
+      return (Promise) o;
     } else if (o instanceof Function) {
-      return makePromise(((Function)o).f(new Object[0]));
+      return makePromise(((Function) o).f(new Object[0]));
     } else if (o instanceof GQuery) {
-      return ((GQuery)o).promise();
+      return ((GQuery) o).promise();
     } else {
       return new PromiseFunction() {
         public void f(Deferred dfd) {
@@ -336,7 +345,8 @@ public class Deferred implements Promise.Deferred {
    * Call the progressCallbacks on a Deferred object with the given args.
    */
   public Deferred notify(Object... o) {
-    if (state == PENDING) notify.fire(o);
+    if (state == PENDING)
+      notify.fire(o);
     return this;
   }
 
@@ -354,7 +364,8 @@ public class Deferred implements Promise.Deferred {
    * Reject a Deferred object and call any failCallbacks with the given args.
    */
   public Deferred reject(Object... o) {
-    if (state == PENDING) reject.fire(o);
+    if (state == PENDING)
+      reject.fire(o);
     return this;
   }
 
@@ -362,12 +373,14 @@ public class Deferred implements Promise.Deferred {
    * Resolve a Deferred object and call any doneCallbacks with the given args.
    */
   public Deferred resolve(Object... o) {
-    if (state == PENDING) resolve.fire(o);
+    if (state == PENDING)
+      resolve.fire(o);
     return this;
   }
 
   @Override
   public String toString() {
-    return "Deferred this=" + hashCode() + " promise=" + promise().hashCode() + " state=" + promise.state() + " restatus=" + resolve.status();
+    return "Deferred this=" + hashCode() + " promise=" + promise().hashCode() + " state="
+        + promise.state() + " restatus=" + resolve.status();
   }
 }

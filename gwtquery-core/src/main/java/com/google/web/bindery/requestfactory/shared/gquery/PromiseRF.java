@@ -74,9 +74,11 @@ public class PromiseRF extends DeferredPromiseImpl {
         public void onConstraintViolation(Set<ConstraintViolation<?>> violations) {
           dfd.reject(new ServerFailure("ConstraintViolation"), violations);
         }
+
         public void onFailure(ServerFailure error) {
           dfd.reject(error);
         }
+
         public void onSuccess(Object response) {
           responses.add(response);
           // Resolve only when all requests have been received

@@ -78,7 +78,7 @@ public class JsRegexp {
     return regexp.test(rule);
   }-*/;
 
-  public String getPattern(){
+  public String getPattern() {
     return regexp.toString();
   };
 }

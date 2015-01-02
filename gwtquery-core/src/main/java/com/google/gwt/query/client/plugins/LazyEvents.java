@@ -12,6 +12,7 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
+
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -21,7 +22,7 @@ import com.google.gwt.query.client.LazyBase;
  * LazyEvents.
  * @param <T>
  */
-public interface LazyEvents<T> extends LazyBase<T>{
+public interface LazyEvents<T> extends LazyBase<T> {
 
   /**
    * Binds a set of handlers to a particular Event for each matched element.

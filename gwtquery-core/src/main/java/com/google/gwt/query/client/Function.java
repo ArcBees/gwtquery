@@ -54,30 +54,31 @@ public abstract class Function {
 
   private String dumpArguments(Object[] arguments, String sep) {
     StringBuilder b = new StringBuilder();
-    for (int i = 0, l = arguments.length; i < l; i++ ) {
+    for (int i = 0, l = arguments.length; i < l; i++) {
       b.append("[").append(i).append("]");
       Object o = arguments[i];
       if (o == null) {
         b.append(" null");
       } else if (o.getClass().isArray()) {
-        b.append(dumpArguments((Object[])o, sep + "   "));
+        b.append(dumpArguments((Object[]) o, sep + "   "));
       } else if (o instanceof JavaScriptObject) {
-        JavaScriptObject jso = (JavaScriptObject)o;
+        JavaScriptObject jso = (JavaScriptObject) o;
         if (JsUtils.isElement(jso)) {
           b.append("(Element) ").append(jso.toString());
         } else {
-          b.append("(JSO) ").append(jso.<Properties>cast().toJsonString());
+          b.append("(JSO) ").append(jso.<Properties> cast().toJsonString());
         }
       } else {
         b.append("(").append(o.getClass().getName()).append(") ").append(o);
       }
-      if (i < l-1) b.append(sep);
+      if (i < l - 1)
+        b.append(sep);
     }
     return b.toString();
   }
 
   public <T extends com.google.gwt.dom.client.Element> T getElement() {
-    return element.<T>cast();
+    return element.<T> cast();
   }
 
   public <T extends com.google.gwt.dom.client.Element> Function setElement(T e) {
@@ -87,7 +88,8 @@ public abstract class Function {
 
   public Function setEvent(Event e) {
     event = e;
-    element = e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element>cast() : null;
+    element =
+        e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element> cast() : null;
     return this;
   }
 
@@ -115,7 +117,7 @@ public abstract class Function {
   /**
    * Set the list of arguments to be passed to the function.
    */
-  public Function setArguments(Object...arguments) {
+  public Function setArguments(Object... arguments) {
     this.arguments = arguments;
     return this;
   }
@@ -145,7 +147,7 @@ public abstract class Function {
    */
   @SuppressWarnings("unchecked")
   public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
-    return (T)getArgument(argIdx, pos, JavaScriptObject.class);
+    return (T) getArgument(argIdx, pos, JavaScriptObject.class);
   }
 
   /**
@@ -166,9 +168,9 @@ public abstract class Function {
    * Always returns an array.
    */
   public Object[] getArgumentArray(int idx) {
-    Object o = idx < 0 ? arguments: getArgument(idx);
+    Object o = idx < 0 ? arguments : getArgument(idx);
     if (o != null) {
-      return o.getClass().isArray() ? (Object[])o : new Object[]{o};
+      return o.getClass().isArray() ? (Object[]) o : new Object[] {o};
     } else if (idx == 0) {
       return arguments;
     }
@@ -238,14 +240,14 @@ public abstract class Function {
     Object[] objs = getArgumentArray(argIdx);
     Object o = objs.length > pos ? objs[pos] : null;
     if (o != null && (
-      // When type is null we don't safety check
-      type == null ||
-      // The object is an instance of the type requested
-      o.getClass() == type ||
-      // Overlay types
-      type == JavaScriptObject.class && o instanceof JavaScriptObject
-      )) {
-      return (T)o;
+        // When type is null we don't safety check
+        type == null ||
+            // The object is an instance of the type requested
+            o.getClass() == type ||
+        // Overlay types
+        type == JavaScriptObject.class && o instanceof JavaScriptObject
+        )) {
+      return (T) o;
     }
     return null;
   }
@@ -286,7 +288,7 @@ public abstract class Function {
    * @deprecated use use setArguments instead.
    */
   @Deprecated
-  public void setData(Object...arguments) {
+  public void setData(Object... arguments) {
     setArguments(arguments);
   }
 
@@ -315,8 +317,8 @@ public abstract class Function {
    */
   public void cancel(com.google.gwt.dom.client.Element e) {
     setElement(e);
-   // This has to be the order of calls
-    cancel(e.<com.google.gwt.user.client.Element>cast());
+    // This has to be the order of calls
+    cancel(e.<com.google.gwt.user.client.Element> cast());
   }
 
   /**
@@ -349,7 +351,7 @@ public abstract class Function {
     setElement(e);
     setIndex(i);
     // This has to be the order of calls
-    return f(e.<com.google.gwt.user.client.Element>cast(), i);
+    return f(e.<com.google.gwt.user.client.Element> cast(), i);
   }
 
   /**
@@ -364,10 +366,10 @@ public abstract class Function {
     setElement(e);
     setIndex(i);
     Widget w = GQuery.getAssociatedWidget(e);
-    if (w != null){
+    if (w != null) {
       f(w, i);
     } else {
-      f(e.<com.google.gwt.dom.client.Element>cast());
+      f(e.<com.google.gwt.dom.client.Element> cast());
     }
     return null;
   }
@@ -400,7 +402,7 @@ public abstract class Function {
    * Override this method for bound callbacks.
    */
   public void f(int i, Object arg) {
-    f(i, new Object[]{arg});
+    f(i, new Object[] {arg});
   }
 
   /**
@@ -410,11 +412,11 @@ public abstract class Function {
     setIndex(i);
     setArguments(args);
     if (args.length == 1 && args[0] instanceof JavaScriptObject) {
-      if (JsUtils.isElement((JavaScriptObject)args[0])) {
-        setElement((com.google.gwt.dom.client.Element)args[0]);
+      if (JsUtils.isElement((JavaScriptObject) args[0])) {
+        setElement((com.google.gwt.dom.client.Element) args[0]);
         f(getElement(), i);
-      } else if (JsUtils.isEvent((JavaScriptObject)args[0])) {
-        setEvent((Event)args[0]);
+      } else if (JsUtils.isEvent((JavaScriptObject) args[0])) {
+        setEvent((Event) args[0]);
         f(getEvent());
       } else {
         f();
@@ -451,8 +453,8 @@ public abstract class Function {
    */
   public void f(com.google.gwt.dom.client.Element e) {
     setElement(e);
-   // This has to be the order of calls
-    f(e.<com.google.gwt.user.client.Element>cast());
+    // This has to be the order of calls
+    f(e.<com.google.gwt.user.client.Element> cast());
   }
 
   /**
@@ -462,11 +464,12 @@ public abstract class Function {
    * @param elem takes a com.google.gwt.user.client.Element
    */
   private boolean loop = false;
+
   @Deprecated
   public void f(com.google.gwt.user.client.Element e) {
     setElement(e);
     Widget w = e != null ? GQuery.getAssociatedWidget(e) : null;
-    if (w != null){
+    if (w != null) {
       loop = true;
       f(w);
     } else {
@@ -482,13 +485,13 @@ public abstract class Function {
    * 'public void f()' or 'public void f(Element e)' to handle these elements and
    *  avoid a runtime exception.
    */
-  public void f(Widget w){
+  public void f(Widget w) {
     setElement(w.getElement());
     if (loop) {
       loop = false;
       f();
     } else {
-      f(w.getElement().<com.google.gwt.dom.client.Element>cast());
+      f(w.getElement().<com.google.gwt.dom.client.Element> cast());
     }
   }
 
@@ -507,7 +510,7 @@ public abstract class Function {
    * They are intentionally final to avoid override them.
    */
   public final void fe(Object arg) {
-    fe(new Object[]{arg});
+    fe(new Object[] {arg});
   }
 
   /**
@@ -552,12 +555,12 @@ public abstract class Function {
   public final void fe(com.google.gwt.dom.client.Element elem) {
     if (GWT.getUncaughtExceptionHandler() != null) {
       try {
-        f(elem.<com.google.gwt.dom.client.Element>cast());
+        f(elem.<com.google.gwt.dom.client.Element> cast());
       } catch (Exception e) {
         GWT.getUncaughtExceptionHandler().onUncaughtException(e);
       }
       return;
     }
-    f(elem.<com.google.gwt.dom.client.Element>cast());
+    f(elem.<com.google.gwt.dom.client.Element> cast());
   }
 }

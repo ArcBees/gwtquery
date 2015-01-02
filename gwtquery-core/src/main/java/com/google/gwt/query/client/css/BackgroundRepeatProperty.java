@@ -47,7 +47,7 @@ public class BackgroundRepeatProperty extends
      */
     REPEAT_Y;
 
-    public String getCssName(){
+    public String getCssName() {
       return name().toLowerCase().replace('_', '-');
     }
   }

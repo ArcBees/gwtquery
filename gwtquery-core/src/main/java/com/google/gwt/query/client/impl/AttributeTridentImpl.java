@@ -70,12 +70,12 @@ public class AttributeTridentImpl extends AttributeImpl {
 
   private static native boolean setAttributeNode(Element e, String name,
       Object value) /*-{
-    var attrNode = e.getAttributeNode(name);
-    if (attrNode) {
-      attrNode.nodeValue = value;
-      return true;
-    }
-    return false;
+  var attrNode = e.getAttributeNode(name);
+  if (attrNode) {
+  attrNode.nodeValue = value;
+  return true;
+  }
+  return false;
   }-*/;
 
   @Override

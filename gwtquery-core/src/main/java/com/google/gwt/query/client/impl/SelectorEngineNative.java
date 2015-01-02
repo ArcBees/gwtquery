@@ -30,7 +30,8 @@ import com.google.gwt.query.client.js.JsNamedArray;
 public class SelectorEngineNative extends SelectorEngineImpl {
 
   // querySelectorAll unsupported selectors
-  public static String NATIVE_EXCEPTIONS_REGEXP = "(^[\\./]/.*)|(.*(:contains|:first([^-]|$)|:last([^-]|$)|:even|:odd)).*";
+  public static String NATIVE_EXCEPTIONS_REGEXP =
+      "(^[\\./]/.*)|(.*(:contains|:first([^-]|$)|:last([^-]|$)|:even|:odd)).*";
 
   private static HasSelector impl;
 
@@ -45,9 +46,9 @@ public class SelectorEngineNative extends SelectorEngineImpl {
 
   public NodeList<Element> select(String selector, Node ctx) {
     // querySelectorAllImpl does not support ids starting with a digit.
-//    if (selector.matches("#[\\w\\-]+")) {
-//      return SelectorEngine.veryQuickId(selector.substring(1), ctx);
-//    } else
+    //    if (selector.matches("#[\\w\\-]+")) {
+    //      return SelectorEngine.veryQuickId(selector.substring(1), ctx);
+    //    } else
     if (selector.contains("!=")) {
       if (cache == null) {
         cache = JsNamedArray.create();

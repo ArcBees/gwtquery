@@ -33,7 +33,8 @@ import java.io.PrintWriter;
  */
 public class BrowserGenerator extends Generator {
   @Override
-  public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
+  public String generate(TreeLogger logger, GeneratorContext context, String typeName)
+      throws UnableToCompleteException {
     TypeOracle oracle = context.getTypeOracle();
     PropertyOracle propOracle = context.getPropertyOracle();
 

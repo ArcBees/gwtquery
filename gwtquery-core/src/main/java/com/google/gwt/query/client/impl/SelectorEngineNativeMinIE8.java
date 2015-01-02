@@ -34,7 +34,8 @@ public class SelectorEngineNativeMinIE8 extends SelectorEngineImpl {
     try {
       return SelectorEngine.querySelectorAllImpl(selector, ctx);
     } catch (Exception e) {
-      console.error("GwtQuery: Selector '" + selector + "' is unsupported in this SelectorEngineNativeMinIE8 engine,"
+      console.error("GwtQuery: Selector '" + selector
+          + "' is unsupported in this SelectorEngineNativeMinIE8 engine,"
           + " check that you are in 'standards mode' or configure your module to use JS fallback. "
           + e.getMessage());
       return null;

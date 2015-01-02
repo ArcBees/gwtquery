@@ -29,7 +29,8 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineNativeIE8 extends SelectorEngineSizzleIE {
 
-  public static String NATIVE_EXCEPTIONS_REGEXP = ".*(:contains|!=|:not|:nth-|:only-|:first|:last|:even|:odd).*";
+  public static String NATIVE_EXCEPTIONS_REGEXP =
+      ".*(:contains|!=|:not|:nth-|:only-|:first|:last|:even|:odd).*";
 
   public NodeList<Element> select(String selector, Node ctx) {
     if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {

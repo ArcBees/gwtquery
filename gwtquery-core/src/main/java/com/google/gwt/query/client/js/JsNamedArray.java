@@ -33,7 +33,7 @@ public final class JsNamedArray<T> extends JavaScriptObject {
 
   @SuppressWarnings("unchecked")
   public T get(String key) {
-    return (T)c().get(key);
+    return (T) c().get(key);
   }
 
   public void put(String key, T val) {
@@ -52,11 +52,11 @@ public final class JsNamedArray<T> extends JavaScriptObject {
     return c().elements();
   }
 
-  public boolean exists(String key){
+  public boolean exists(String key) {
     return c().exists(key);
   }
 
-  public void delete(String key){
+  public void delete(String key) {
     c().delete(key);
   }
 

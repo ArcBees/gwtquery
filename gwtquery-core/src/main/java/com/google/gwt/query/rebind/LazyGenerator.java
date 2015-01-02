@@ -64,7 +64,8 @@ public class LazyGenerator extends Generator {
       }
     }
 
-    if (targetType == null) return null;
+    if (targetType == null)
+      return null;
 
     assert targetType != null : "Parameter of Lazy<T> not found";
     String genClass = targetType.getPackage().getName() + "."
@@ -173,8 +174,8 @@ public class LazyGenerator extends Generator {
     if (printWriter == null) {
       return null;
     }
-    ClassSourceFileComposerFactory composerFactory
-        = new ClassSourceFileComposerFactory(packageName, className);
+    ClassSourceFileComposerFactory composerFactory =
+        new ClassSourceFileComposerFactory(packageName, className);
     composerFactory.addImport("com.google.gwt.core.client.*");
     composerFactory.addImport("com.google.gwt.query.client.*");
     composerFactory.addImport("com.google.gwt.dom.client.Element");
@@ -207,7 +208,7 @@ public class LazyGenerator extends Generator {
 
     sw.println(
         "ctx = GQuery.$(getElement()).as(" + nonLazyType.getQualifiedSourceName() + "."
-        + classID + ");");
+            + classID + ");");
     sw.println("for (int i = 0; i < closures.length(); i++) {");
     sw.indent();
     sw.println("closures.get(i).invoke();");

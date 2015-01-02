@@ -129,7 +129,7 @@ public abstract class GQ {
           // We are running DevMode, so create Js versions of the factories
           method = gwt.getMethod("create", Class.class);
           ret = method.invoke(null,
-          new Object[] {JsonFactory.class});
+              new Object[] {JsonFactory.class});
           jsonFactory = (JsonFactory) ret;
           ajaxTransport = new AjaxTransportJs();
           return;

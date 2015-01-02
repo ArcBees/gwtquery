@@ -55,8 +55,8 @@ public class XmlBuilderGenerator extends Generator {
     if (sw != null) {
       for (JMethod method : clazz.getInheritableMethods()) {
         // skip method from JsonBuilder
-        if(xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
-            continue;
+        if (xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null) {
+          continue;
         }
         generateMethod(sw, method, treeLogger);
       }
@@ -106,12 +106,13 @@ public class XmlBuilderGenerator extends Generator {
       } else if (isTypeAssignableTo(method.getReturnType(), xmlBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
         sw.println("Element e = getElementBase(\"" + name + "\");");
-        sw.println("return e == null ? null : (" + q + ")((" + q + ")GWT.create(" + q + ".class)).load(e);");
-      } else if (retType.equals(Properties.class.getName())){
+        sw.println("return e == null ? null : (" + q + ")((" + q + ")GWT.create(" + q
+            + ".class)).load(e);");
+      } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (arr != null) {
         String q = arr.getComponentType().getQualifiedSourceName();
-        sw.println("ArrayList<" + q + "> l = new ArrayList<" + q+ ">();");
+        sw.println("ArrayList<" + q + "> l = new ArrayList<" + q + ">();");
         sw.println("for (Element e: getElementsBase(\"" + name + "\")) {");
         sw.println("  " + q + " c = GWT.create(" + q + ".class);");
         sw.println("  c.load(e);");
@@ -135,7 +136,7 @@ public class XmlBuilderGenerator extends Generator {
       } else {
         sw.println("setBase(\"" + name + "\", a);");
       }
-      if (!"void".equals(retType)){
+      if (!"void".equals(retType)) {
         if (isTypeAssignableTo(method.getReturnType(), method.getEnclosingType())) {
           sw.println("return this;");
         } else {

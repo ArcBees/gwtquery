@@ -66,7 +66,8 @@ public class AjaxTransportJre implements AjaxTransport {
     followRedirections = b;
   }
 
-  private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
+  private static final String USER_AGENT =
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
   private final String jsonpCbRexp = "(?ms)^.*jre_callback\\((.*)\\).*$";
 
   public Promise getJsonP(final Settings settings) {
@@ -79,16 +80,16 @@ public class AjaxTransportJre implements AjaxTransport {
     }
 
     return getXhr(settings, false)
-      .then(new Function() {
-        public Object f(Object... args) {
-          Response response = arguments(0);
-          if (response.getText().matches(jsonpCbRexp)) {
-            return GQ.create(response.getText().replaceFirst(jsonpCbRexp, "$1"));
-          } else {
-            return GQuery.Deferred().reject().promise();
+        .then(new Function() {
+          public Object f(Object... args) {
+            Response response = arguments(0);
+            if (response.getText().matches(jsonpCbRexp)) {
+              return GQ.create(response.getText().replaceFirst(jsonpCbRexp, "$1"));
+            } else {
+              return GQuery.Deferred().reject().promise();
+            }
           }
-        }
-      });
+        });
   }
 
   public Promise getLoadScript(Settings settings) {
@@ -107,7 +108,8 @@ public class AjaxTransportJre implements AjaxTransport {
           int status = response.getStatusCode();
           if (status <= 0 || status >= 400) {
             String statusText = status <= 0 ? "Bad CORS" : response.getStatusText();
-            dfd.reject(new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()), null);
+            dfd.reject(new RequestException("HTTP ERROR: " + status + " " + statusText + "\n"
+                + response.getText()), null);
           } else {
             dfd.resolve(response, null);
           }
@@ -131,7 +133,8 @@ public class AjaxTransportJre implements AjaxTransport {
     c.setRequestMethod(s.getType());
     c.setRequestProperty("User-Agent", USER_AGENT);
     if (s.getUsername() != null && s.getPassword() != null) {
-      c.setRequestProperty ("Authorization", "Basic " + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
+      c.setRequestProperty("Authorization", "Basic "
+          + Base64Utils.toBase64((s.getUsername() + ":" + s.getPassword()).getBytes()));
     }
     if (cookieManager != null) {
       cookieManager.setCookies(c);

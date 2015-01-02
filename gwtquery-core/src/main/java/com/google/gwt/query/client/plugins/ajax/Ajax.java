@@ -67,32 +67,59 @@ public class Ajax extends GQuery {
    */
   public interface Settings extends JsonBuilder {
     String getContentType();
+
     Element getContext();
+
     IsProperties getData();
+
     String getDataString();
+
     String getDataType();
+
     Function getError();
+
     IsProperties getHeaders();
+
     String getPassword();
+
     Function getSuccess();
+
     int getTimeout();
+
     String getType();
+
     String getUrl();
+
     String getUsername();
+
     boolean getWithCredentials();
+
     Settings setContentType(String t);
+
     Settings setContext(Element e);
+
     Settings setData(Object p);
+
     Settings setDataString(String d);
+
     Settings setDataType(String t);
+
     Settings setError(Function f);
+
     Settings setHeaders(IsProperties p);
+
     Settings setPassword(String p);
+
     Settings setSuccess(Function f);
+
     Settings setTimeout(int t);
+
     Settings setType(String t);
+
     Settings setUrl(String u);
+
     Settings setUsername(String u);
+
     Settings setWithCredentials(boolean b);
   }
 
@@ -149,45 +176,45 @@ public class Ajax extends GQuery {
 
     if ("jsonp".equalsIgnoreCase(dataType)) {
       ret = GQ.getAjaxTransport().getJsonP(settings);
-    } else if ("loadscript".equalsIgnoreCase(dataType)){
+    } else if ("loadscript".equalsIgnoreCase(dataType)) {
       ret = GQ.getAjaxTransport().getLoadScript(settings);
     } else {
       ret = GQ.getAjaxTransport().getXhr(settings)
-        .then(new Function() {
-          public Object f(Object...args) {
-            Response response = arguments(0);
-            Request request = arguments(1);
-            Object retData = response.getText();
-            if (retData != null && !"".equals(retData)) {
-              try {
-                if ("xml".equalsIgnoreCase(dataType)) {
-                  retData = JsUtils.parseXML(response.getText());
-                } else if ("json".equalsIgnoreCase(dataType)) {
-                  retData = GQ.create(response.getText());
-                } else {
-                  retData = response.getText();
-                  if ("script".equalsIgnoreCase(dataType)) {
-                    ScriptInjector.fromString((String)retData).setWindow(window).inject();
+          .then(new Function() {
+            public Object f(Object... args) {
+              Response response = arguments(0);
+              Request request = arguments(1);
+              Object retData = response.getText();
+              if (retData != null && !"".equals(retData)) {
+                try {
+                  if ("xml".equalsIgnoreCase(dataType)) {
+                    retData = JsUtils.parseXML(response.getText());
+                  } else if ("json".equalsIgnoreCase(dataType)) {
+                    retData = GQ.create(response.getText());
+                  } else {
+                    retData = response.getText();
+                    if ("script".equalsIgnoreCase(dataType)) {
+                      ScriptInjector.fromString((String) retData).setWindow(window).inject();
+                    }
+                  }
+                } catch (Exception e) {
+                  if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
+                    GWT.getUncaughtExceptionHandler().onUncaughtException(e);
+                  } else {
+                    e.printStackTrace();
                   }
                 }
-              } catch (Exception e) {
-                if (GWT.isClient() && GWT.getUncaughtExceptionHandler() != null) {
-                  GWT.getUncaughtExceptionHandler().onUncaughtException(e);
-                } else {
-                  e.printStackTrace();
-                }
               }
+              return new Object[] {retData, "success", request, response};
             }
-            return new Object[]{retData, "success", request, response};
-          }
-        }, new Function() {
-          public Object f(Object...args) {
-            Throwable exception = arguments(0);
-            Request request = getArgument(1, Request.class);
-            String msg = String.valueOf(exception);
-            return new Object[]{null, msg, request, null, exception};
-          }
-        });
+          }, new Function() {
+            public Object f(Object... args) {
+              Throwable exception = arguments(0);
+              Request request = getArgument(1, Request.class);
+              String msg = String.valueOf(exception);
+              return new Object[] {null, msg, request, null, exception};
+            }
+          });
     }
     if (onSuccess != null) {
       ret.done(onSuccess);
@@ -200,7 +227,7 @@ public class Ajax extends GQuery {
 
   private static void resolveSettings(Settings settings) {
     String url = settings.getUrl();
-    assert settings != null && settings.getUrl() != null: "no url found in settings";
+    assert settings != null && settings.getUrl() != null : "no url found in settings";
 
     String type = "POST";
     if (settings.getType() != null) {
@@ -214,10 +241,12 @@ public class Ajax extends GQuery {
     IsProperties data = settings.getData();
     if (data != null) {
       String dataString = null, contentType = null;
-      if (data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl())) {
+      if (data.getDataImpl() instanceof JavaScriptObject
+          && JsUtils.isFormData(data.<JavaScriptObject> getDataImpl())) {
         dataString = null;
         contentType = FormPanel.ENCODING_URLENCODED;
-      } else if (settings.getType().matches("(POST|PUT)") && "json".equalsIgnoreCase(settings.getDataType())) {
+      } else if (settings.getType().matches("(POST|PUT)")
+          && "json".equalsIgnoreCase(settings.getDataType())) {
         dataString = data.toJson();
         contentType = JSON_CONTENT_TYPE_UTF8;
       } else {
@@ -279,7 +308,7 @@ public class Ajax extends GQuery {
   }
 
   public static Promise get(String url, IsProperties data) {
-    return get(url, (IsProperties)data, null);
+    return get(url, (IsProperties) data, null);
   }
 
   public static Promise get(String url, IsProperties data, Function onSuccess) {
@@ -311,7 +340,7 @@ public class Ajax extends GQuery {
   }
 
   public static Promise getJSONP(String url, IsProperties data) {
-    return getJSONP(url, (IsProperties)data, null);
+    return getJSONP(url, (IsProperties) data, null);
   }
 
   public static Promise getJSONP(String url, IsProperties data, Function onSuccess) {
@@ -326,13 +355,12 @@ public class Ajax extends GQuery {
 
   public static Promise getJSONP(String url, Function success, Function error, int timeout) {
     return ajax(createSettings()
-      .setUrl(url)
-      .setDataType("jsonp")
-      .setType("get")
-      .setTimeout(timeout)
-      .setSuccess(success)
-      .setError(error)
-    );
+        .setUrl(url)
+        .setDataType("jsonp")
+        .setType("get")
+        .setTimeout(timeout)
+        .setSuccess(success)
+        .setError(error));
   }
 
   /**
@@ -344,11 +372,10 @@ public class Ajax extends GQuery {
 
   public static Promise getScript(final String url, Function success) {
     return ajax(createSettings()
-      .setUrl(url)
-      .setType("get")
-      .setDataType("script")
-      .setSuccess(success)
-    );
+        .setUrl(url)
+        .setType("get")
+        .setDataType("script")
+        .setSuccess(success));
   }
 
   /**
@@ -360,15 +387,14 @@ public class Ajax extends GQuery {
 
   public static Promise loadScript(final String url, Function success) {
     return ajax(createSettings()
-      .setUrl(url)
-      .setType("get")
-      .setDataType("loadscript")
-      .setSuccess(success)
-    );
+        .setUrl(url)
+        .setType("get")
+        .setDataType("loadscript")
+        .setSuccess(success));
   }
 
   public static Promise post(String url, IsProperties data) {
-    return post(url, (IsProperties)data, null);
+    return post(url, (IsProperties) data, null);
   }
 
   public static Promise post(String url, IsProperties data, final Function onSuccess) {
@@ -404,10 +430,10 @@ public class Ajax extends GQuery {
           // not support java embedded flag expressions (?s) and javascript does
           // not have multidot flag.
           String s = arguments(0).toString().replaceAll("<![^>]+>\\s*", "")
-            .replaceAll("</?html[\\s\\S]*?>\\s*", "")
-            .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
-            .replaceAll("<script[\\s\\S]*?</script>\\s*", "")
-            .replaceAll("</?body[\\s\\S]*?>\\s*", "");
+              .replaceAll("</?html[\\s\\S]*?>\\s*", "")
+              .replaceAll("<head[\\s\\S]*?</head>\\s*", "")
+              .replaceAll("<script[\\s\\S]*?</script>\\s*", "")
+              .replaceAll("</?body[\\s\\S]*?>\\s*", "");
           // We wrap the results in a div
           s = "<div>" + s + "</div>";
 

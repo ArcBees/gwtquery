@@ -114,7 +114,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
     for (Element e : elements()) {
       queue(e, name, new DelayFunction(e, name, milliseconds, funcs));
     }
-    return (T)this;
+    return (T) this;
   }
 
   /**
@@ -156,7 +156,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       int count = 1;
       // Inner functions don't have constructors, we use a block to initialize it
       {
-        for (Element elem: elements()) {
+        for (Element elem : elements()) {
           // Add this resolve function only to those elements with active queue
           if (queue(elem, name, null) != null) {
             emptyHooks(elem, name).add(this);
@@ -192,7 +192,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    */
   public int queue(String name) {
     Queue<?> q = isEmpty() ? null : queue(get(0), name, null);
-    return q == null? 0 : q.size();
+    return q == null ? 0 : q.size();
   }
 
   /**
@@ -206,7 +206,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
         queue(e, DEFAULT_NAME, f);
       }
     }
-    return (T)this;
+    return (T) this;
   }
 
   /**
@@ -215,12 +215,12 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
    */
   @SuppressWarnings("unchecked")
   public T queue(final String name, Function... funcs) {
-    for (final Function f: funcs) {
-      for (Element e: elements()) {
+    for (final Function f : funcs) {
+      for (Element e : elements()) {
         queue(e, name, f);
       }
     }
-    return (T)this;
+    return (T) this;
   }
 
   /**
@@ -370,9 +370,9 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
 
   private Callbacks emptyHooks(Element elem, String name) {
     String key = name + EMPTY_HOOKS;
-    Callbacks c = (Callbacks)data(elem, key, null);
+    Callbacks c = (Callbacks) data(elem, key, null);
     if (c == null) {
-      c = (Callbacks)data(elem, key, new Callbacks("once memory"));
+      c = (Callbacks) data(elem, key, new Callbacks("once memory"));
     }
     return c;
   }

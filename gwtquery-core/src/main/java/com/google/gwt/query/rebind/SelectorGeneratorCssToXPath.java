@@ -90,8 +90,9 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
     } catch (XPathExpressionException e1) {
       System.err.println("Invalid XPath generated selector, please revise it: " + xselector);
       if (!selector.equals(xselector)) {
-        System.err.println("If your css2 selector syntax is correct, open an issue in the gwtquery project. cssselector:"
-            + selector + " xpath: " + xselector);
+        System.err
+            .println("If your css2 selector syntax is correct, open an issue in the gwtquery project. cssselector:"
+                + selector + " xpath: " + xselector);
       }
       throw new UnableToCompleteException();
     }

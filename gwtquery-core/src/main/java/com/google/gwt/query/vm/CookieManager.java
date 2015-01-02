@@ -31,7 +31,8 @@ import java.util.StringTokenizer;
  */
 public class CookieManager {
 
-  private Map<String,Map<String,Map<String, String>>> store = new HashMap<String, Map<String,Map<String, String>>>();
+  private Map<String, Map<String, Map<String, String>>> store =
+      new HashMap<String, Map<String, Map<String, String>>>();
 
   private static final String SET_COOKIE = "Set-Cookie";
   private static final String COOKIE_VALUE_DELIMITER = ";";
@@ -61,9 +62,9 @@ public class CookieManager {
   }
 
   public void removeDomainCookie(String domain, String... cookies) {
-    Map<String, Map<String, String>> domainStore =  store.get(domain);
+    Map<String, Map<String, String>> domainStore = store.get(domain);
     if (domainStore != null) {
-      for (String cookie: cookies) {
+      for (String cookie : cookies) {
         domainStore.remove(cookie);
       }
     }
@@ -75,9 +76,9 @@ public class CookieManager {
 
   public void setDomcainCookieProperty(String host, String name, String prop, String value) {
     String domain = getDomainFromHost(host);
-    Map<String, Map<String, String>> domainStore =  store.get(domain);
+    Map<String, Map<String, String>> domainStore = store.get(domain);
     if (domainStore == null) {
-      domainStore = new HashMap<String, Map<String,String>>();
+      domainStore = new HashMap<String, Map<String, String>>();
       store.put(domain, domainStore);
     }
     Map<String, String> cookie = domainStore.get(name);
@@ -106,7 +107,7 @@ public class CookieManager {
     // let's determine the domain from where these cookies are being sent
     String domain = getDomainFromHost(conn.getURL().getHost());
 
-    Map<String,Map<String, String>> domainStore; // this is where we will store cookies for this domain
+    Map<String, Map<String, String>> domainStore; // this is where we will store cookies for this domain
 
     // now let's check the store to see if we have an entry for this domain
     if (store.containsKey(domain)) {
@@ -114,7 +115,7 @@ public class CookieManager {
       domainStore = store.get(domain);
     } else {
       // we don't, so let's create it and put it in the store
-      domainStore = new HashMap<String, Map<String,String>>();
+      domainStore = new HashMap<String, Map<String, String>>();
       store.put(domain, domainStore);
     }
 
@@ -141,8 +142,9 @@ public class CookieManager {
         while (st.hasMoreTokens()) {
           String token = st.nextToken().toLowerCase();
           int idx = token.indexOf(NAME_VALUE_SEPARATOR);
-          if (idx > 0 && idx < token.length() -1) {
-            cookie.put(token.substring(0, idx).toLowerCase(), token.substring(idx + 1, token.length()));
+          if (idx > 0 && idx < token.length() - 1) {
+            cookie.put(token.substring(0, idx).toLowerCase(), token.substring(idx + 1, token
+                .length()));
           }
         }
       }
@@ -168,7 +170,7 @@ public class CookieManager {
     }
     String path = url.getPath();
 
-    Map<String, Map<String, String>> domainStore =  store.get(domain);
+    Map<String, Map<String, String>> domainStore = store.get(domain);
     if (domainStore == null)
       return;
     StringBuffer cookieStringBuffer = new StringBuffer();

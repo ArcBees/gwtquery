@@ -55,7 +55,7 @@ public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
     // jQuery allows a parameter callback=? to figure out the callback parameter
     if (callbackParam == null) {
       MatchResult tmp = callbackRegex.exec(url);
-      if  (tmp != null && tmp.getGroupCount() == 4) {
+      if (tmp != null && tmp.getGroupCount() == 4) {
         callbackParam = tmp.getGroup(2);
         url = tmp.getGroup(1) + tmp.getGroup(3);
       }

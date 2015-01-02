@@ -48,19 +48,19 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public J load(Object prp) {
     assert prp == null || prp instanceof JavaScriptObject || prp instanceof String;
     if (prp != null && prp instanceof String) {
-      return parse((String)prp);
+      return parse((String) prp);
     }
     if (prp != null) {
-      p = (Properties)prp;
+      p = (Properties) prp;
     }
-    return (J)this;
+    return (J) this;
   }
 
   protected <T> void setArrayBase(String n, T[] r) {
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).<Properties>getDataImpl());
+        a.push(((JsonBuilder) o).<Properties> getDataImpl());
       }
       p.set(n, a);
     } else {
@@ -74,12 +74,12 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   protected <T> T[] getArrayBase(String n, T[] r, Class<T> clazz) {
     JsObjectArray<?> a = p.getArray(n).cast();
     int l = r.length;
-    for (int i = 0 ; i < l ; i++) {
+    for (int i = 0; i < l; i++) {
       Object w = a.get(i);
       Class<?> c = w.getClass();
       do {
         if (c.equals(clazz)) {
-          r[i] = (T)w;
+          r[i] = (T) w;
           break;
         }
         c = c.getSuperclass();
@@ -132,11 +132,11 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   @SuppressWarnings("unchecked")
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
-      p.set(key, ((IsProperties)val).getDataImpl());
+      p.set(key, ((IsProperties) val).getDataImpl());
     } else {
       p.set(key, val);
     }
-    return (T)this;
+    return (T) this;
   }
 
   public <T extends JsonBuilder> T as(Class<T> clz) {

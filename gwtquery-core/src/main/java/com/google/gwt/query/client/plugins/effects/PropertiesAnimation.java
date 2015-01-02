@@ -39,6 +39,7 @@ public class PropertiesAnimation extends GQAnimation {
    */
   public interface Easing {
     double interpolate(double progress);
+
     /**
      * @deprecated use EasingCurve.linear instead
      */
@@ -73,71 +74,89 @@ public class PropertiesAnimation extends GQAnimation {
    *
    */
   public static enum EasingCurve implements Easing {
-      linear (0, 0, 1, 1) {
-        public double interpolate(double p){return p;}
-        public String toString() {return "linear";}
-      },
-      ease (0.25, 0.1, 0.25, 1) {
-        public String toString() {return "ease";}
-      },
-      easeIn (0.42, 0, 1, 1) {
-        public String toString() {return "ease-in";}
-      },
-      easeOut (0, 0, 0.58, 1) {
-        public String toString() {return "ease-out";}
-      },
-      easeInOut (0.42, 0, 0.58, 1) {
-        public String toString() {return "ease-in-out";}
-      },
-      snap (0,1,.5,1),
-      swing (.02,.01,.47,1),
-      easeInCubic (.550,.055,.675,.190),
-      easeOutCubic (.215,.61,.355,1),
-      easeInOutCubic (.645,.045,.355,1),
-      easeInCirc (.6,.04,.98,.335),
-      easeOutCirc (.075,.82,.165,1),
-      easeInOutCirc (.785,.135,.15,.86),
-      easeInExpo (.95,.05,.795,.035),
-      easeOutExpo (.19,1,.22,1),
-      easeInOutExpo (1,0,0,1),
-      easeInQuad (.55,.085,.68,.53),
-      easeOutQuad (.25,.46,.45,.94),
-      easeInOutQuad (.455,.03,.515,.955),
-      easeInQuart (.895,.03,.685,.22),
-      easeOutQuart (.165,.84,.44,1),
-      easeInOutQuart (.77,0,.175,1),
-      easeInQuint (.755,.05,.855,.06),
-      easeOutQuint (.23,1,.32,1),
-      easeInOutQuint (.86,0,.07,1),
-      easeInSine (.47,0,.745,.715),
-      easeOutSine (.39,.575,.565,1),
-      easeInOutSine (.445,.05,.55,.95),
-      easeInBack (.6,-.28,.735,.045),
-      easeOutBack (.175, .885,.32,1.275),
-      easeInOutBack (.68,-.55,.265,1.55),
-      custom(0, 0, 1, 1);
+    linear(0, 0, 1, 1) {
+      public double interpolate(double p) {
+        return p;
+      }
 
-     private Bezier c = new Bezier(0, 0, 1, 1);
-     EasingCurve(double x1, double y1, double x2, double y2) {
-       with(x1, y1, x2, y2);
-     }
-     public Easing with(double x1, double y1, double x2, double y2) {
-       c = new Bezier(x1, y1, x2, y2);
-       return this;
-     }
-     public double interpolate(double progress) {
-       return c.f(progress);
-     }
-     public String toString() {
+      public String toString() {
+        return "linear";
+      }
+    },
+    ease(0.25, 0.1, 0.25, 1) {
+      public String toString() {
+        return "ease";
+      }
+    },
+    easeIn(0.42, 0, 1, 1) {
+      public String toString() {
+        return "ease-in";
+      }
+    },
+    easeOut(0, 0, 0.58, 1) {
+      public String toString() {
+        return "ease-out";
+      }
+    },
+    easeInOut(0.42, 0, 0.58, 1) {
+      public String toString() {
+        return "ease-in-out";
+      }
+    },
+    snap(0, 1, .5, 1),
+    swing(.02, .01, .47, 1),
+    easeInCubic(.550, .055, .675, .190),
+    easeOutCubic(.215, .61, .355, 1),
+    easeInOutCubic(.645, .045, .355, 1),
+    easeInCirc(.6, .04, .98, .335),
+    easeOutCirc(.075, .82, .165, 1),
+    easeInOutCirc(.785, .135, .15, .86),
+    easeInExpo(.95, .05, .795, .035),
+    easeOutExpo(.19, 1, .22, 1),
+    easeInOutExpo(1, 0, 0, 1),
+    easeInQuad(.55, .085, .68, .53),
+    easeOutQuad(.25, .46, .45, .94),
+    easeInOutQuad(.455, .03, .515, .955),
+    easeInQuart(.895, .03, .685, .22),
+    easeOutQuart(.165, .84, .44, 1),
+    easeInOutQuart(.77, 0, .175, 1),
+    easeInQuint(.755, .05, .855, .06),
+    easeOutQuint(.23, 1, .32, 1),
+    easeInOutQuint(.86, 0, .07, 1),
+    easeInSine(.47, 0, .745, .715),
+    easeOutSine(.39, .575, .565, 1),
+    easeInOutSine(.445, .05, .55, .95),
+    easeInBack(.6, -.28, .735, .045),
+    easeOutBack(.175, .885, .32, 1.275),
+    easeInOutBack(.68, -.55, .265, 1.55),
+    custom(0, 0, 1, 1);
+
+    private Bezier c = new Bezier(0, 0, 1, 1);
+
+    EasingCurve(double x1, double y1, double x2, double y2) {
+      with(x1, y1, x2, y2);
+    }
+
+    public Easing with(double x1, double y1, double x2, double y2) {
+      c = new Bezier(x1, y1, x2, y2);
+      return this;
+    }
+
+    public double interpolate(double progress) {
+      return c.f(progress);
+    }
+
+    public String toString() {
       return "cubic-bezier(" + c + ")";
-     }
-   }
+    }
+  }
 
-  protected static final String[] ATTRS_TO_SAVE = new String[]{"overflow"};
+  protected static final String[] ATTRS_TO_SAVE = new String[] {"overflow"};
 
   private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
 
-  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?([0-9+-.]+)(.*)?$");
+  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp
+      .compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
   protected static final RegExp REGEX_NON_PIXEL_ATTRS =
       RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotation|^\\$", "i");
@@ -146,7 +165,7 @@ public class PropertiesAnimation extends GQAnimation {
 
   private static final RegExp REGEX_BORDERCOLOR = RegExp.compile("^bordercolor$", "i");
 
-  private static final RegExp REGEX_BACKGROUNDCOLOR =RegExp.compile("^backgroundcolor$", "i");
+  private static final RegExp REGEX_BACKGROUNDCOLOR = RegExp.compile("^backgroundcolor$", "i");
 
   public static Fx computeFxProp(Element e, String key, String val,
       boolean hidden) {
@@ -170,7 +189,8 @@ public class PropertiesAnimation extends GQAnimation {
       // transparent)
       Element current = e;
 
-      while ((initialColor == null || initialColor.length() == 0 || initialColor.equals("transparent"))
+      while ((initialColor == null || initialColor.length() == 0 || initialColor
+          .equals("transparent"))
           && current != null) {
         initialColor = GQuery.$(current).css(key, false);
         current = !"body".equalsIgnoreCase(current.getTagName())
@@ -248,7 +268,7 @@ public class PropertiesAnimation extends GQAnimation {
 
         if (rkey == null) {
           unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : //
-            p3 == null || p3.isEmpty() ? "px" : p3;
+              p3 == null || p3.isEmpty() ? "px" : p3;
           if (!"px".equals(unit)) {
             double to = end == 0 ? 1 : end;
             g.css(key, to + unit);
@@ -298,7 +318,7 @@ public class PropertiesAnimation extends GQAnimation {
   @Override
   public void onCancel() {
     Boolean jumpToEnd = Effects.$(e).data(Effects.JUMP_TO_END, Boolean.class);
-    if (jumpToEnd != null && jumpToEnd){
+    if (jumpToEnd != null && jumpToEnd) {
       onComplete();
     } else {
       g.dequeue();

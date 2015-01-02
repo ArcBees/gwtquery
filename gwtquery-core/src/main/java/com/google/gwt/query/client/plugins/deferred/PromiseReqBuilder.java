@@ -83,7 +83,9 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     String url = settings.getUrl();
     IsProperties data = settings.getData();
     String ctype = settings.getContentType();
-    Boolean isFormData = data != null && data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl());
+    Boolean isFormData =
+        data != null && data.getDataImpl() instanceof JavaScriptObject
+            && JsUtils.isFormData(data.<JavaScriptObject> getDataImpl());
 
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
     try {
@@ -149,7 +151,8 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     });
 
     try {
-      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl() : settings.getDataString());
+      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl()
+          : settings.getDataString());
     } catch (JavaScriptException e) {
       onError(null, e);
     }
@@ -163,7 +166,8 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     int status = response.getStatusCode();
     if (status <= 0 || status >= 400) {
       String statusText = status <= 0 ? "Bad CORS" : response.getStatusText();
-      onError(request, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()));
+      onError(request, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n"
+          + response.getText()));
     } else {
       dfd.resolve(response, request);
     }

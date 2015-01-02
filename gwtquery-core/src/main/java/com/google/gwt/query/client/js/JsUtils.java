@@ -39,6 +39,7 @@ public class JsUtils {
    */
   public static class JsFunction extends Function implements Command {
     private JavaScriptObject jso = null;
+
     public JsFunction(JavaScriptObject f) {
       if (JsUtils.isFunction(f)) {
         jso = f;
@@ -146,13 +147,13 @@ public class JsUtils {
       // @see https://github.com/douglascrockford/JSON-js/blob/master/json2.js
       Properties prop = js.cast();
       String ret = "";
-      for (String k : prop.keys()){
+      for (String k : prop.keys()) {
         String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
         JsCache o = prop.getArray(k).cast();
         if (o != null) {
           ret += ky + ":[";
-          for (int i = 0, l = o.length(); i < l ; i++) {
-            Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          for (int i = 0, l = o.length(); i < l; i++) {
+            Properties p = o.<JsCache> cast().getJavaScriptObject(i);
             if (p != null) {
               ret += p.toJsonString() + ",";
             } else {
@@ -169,9 +170,9 @@ public class JsUtils {
           }
         }
       }
-      return "{" + ret.replaceAll(",\\s*([\\]}]|$)","$1")
-      .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
-      + "}";
+      return "{" + ret.replaceAll(",\\s*([\\]}]|$)", "$1")
+          .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
+          + "}";
     }
 
     @Override
@@ -211,14 +212,14 @@ public class JsUtils {
    * Returns a property present in a javascript object.
    */
   public static <T> T prop(JavaScriptObject o, Object id, Class<? extends T> type) {
-    return o == null ? null : o.<JsCache>cast().get(id, type);
+    return o == null ? null : o.<JsCache> cast().get(id, type);
   }
 
   /**
    * Returns a property present in a javascript object.
    */
   public static <T> T prop(JavaScriptObject o, Object id) {
-    return o == null ? null : o.<JsCache>cast().<T>get(id);
+    return o == null ? null : o.<JsCache> cast().<T> get(id);
   }
 
   /**
@@ -226,7 +227,7 @@ public class JsUtils {
    */
   public static void prop(JavaScriptObject o, Object id, Object val) {
     if (o != null) {
-      o.<JsCache>cast().put(id, val);
+      o.<JsCache> cast().put(id, val);
     }
   }
 
@@ -353,7 +354,7 @@ public class JsUtils {
   public static boolean isDetached(Node n) {
     assert n != null;
 
-    if ("html".equalsIgnoreCase(n.getNodeName())){
+    if ("html".equalsIgnoreCase(n.getNodeName())) {
       return false;
     }
 
@@ -499,10 +500,12 @@ public class JsUtils {
    * @return the javascript object returned by the jsni method or null.
    */
   public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
-    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());
+    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args)
+        .<JsArrayMixed> cast());
   }
 
-  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
+  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth,
+      JsArrayMixed args) /*-{
     return (f = o && o[meth])
         && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)
         && @com.google.gwt.query.client.js.JsCache::gwtBox(*)([f.apply(o, args)]);
@@ -549,13 +552,13 @@ public class JsUtils {
       ret += ret.isEmpty() ? "" : "&";
       JsCache o = prop.getArray(k).cast();
       if (o != null) {
-        for (int i = 0, l = o.length(); i < l ; i++) {
+        for (int i = 0, l = o.length(); i < l; i++) {
           ret += i > 0 ? "&" : "";
-          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          Properties p = o.<JsCache> cast().getJavaScriptObject(i);
           if (p != null) {
             ret += k + "[]=" + p.toJsonString();
           } else {
-            ret += k + "[]=" + o.getString(i) ;
+            ret += k + "[]=" + o.getString(i);
           }
         }
       } else {

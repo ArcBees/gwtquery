@@ -49,7 +49,7 @@ import elemental.json.impl.JreJsonNull;
  * It uses java.util.reflect.Proxy to implement JsonBuilders
  * and elemental light weight json to handle json data.
  */
-public class JsonFactoryJre implements JsonFactory  {
+public class JsonFactoryJre implements JsonFactory {
 
   static JsonFactoryJre jsonFactory = new JsonFactoryJre();
 
@@ -61,13 +61,16 @@ public class JsonFactoryJre implements JsonFactory  {
    */
   static class JreJsonFunction extends JreJsonNull {
     private final Function function;
+
     public JreJsonFunction(Function f) {
       function = f;
     }
+
     @Override
     public String toJson() {
       return function.toString();
     }
+
     public Function getFunction() {
       return function;
     }
@@ -84,7 +87,7 @@ public class JsonFactoryJre implements JsonFactory  {
     }
 
     public JsonBuilderHandler(JsonObject j) {
-       jsonObject = j;
+      jsonObject = j;
     }
 
     public JsonBuilderHandler(String payload) throws Throwable {
@@ -94,10 +97,10 @@ public class JsonFactoryJre implements JsonFactory  {
     @SuppressWarnings("unchecked")
     private <T> Object jsonArrayToList(JsonArray j, Class<T> ctype, boolean isArray) {
       List<T> l = new ArrayList<T>();
-      for (int i = 0; j != null && i < j.length() ; i++) {
-        l.add((T)getValue(j, i, null, null, ctype, null));
+      for (int i = 0; j != null && i < j.length(); i++) {
+        l.add((T) getValue(j, i, null, null, ctype, null));
       }
-      return l.isEmpty() ? null : isArray ? l.toArray((T[])Array.newInstance(ctype, l.size())) : l;
+      return l.isEmpty() ? null : isArray ? l.toArray((T[]) Array.newInstance(ctype, l.size())) : l;
     }
 
     private Double toDouble(String attr, JsonArray arr, int idx, JsonObject obj) {
@@ -108,15 +111,16 @@ public class JsonFactoryJre implements JsonFactory  {
       }
     }
 
-    private Object getValue(JsonArray arr, int idx, JsonObject obj, String attr, Class<?> clz, Method method) {
-     if (clz.equals(Boolean.class) || clz == Boolean.TYPE) {
+    private Object getValue(JsonArray arr, int idx, JsonObject obj, String attr, Class<?> clz,
+        Method method) {
+      if (clz.equals(Boolean.class) || clz == Boolean.TYPE) {
         try {
-          return obj != null ? obj.getBoolean(attr): arr.getBoolean(idx);
+          return obj != null ? obj.getBoolean(attr) : arr.getBoolean(idx);
         } catch (Exception e) {
           return Boolean.FALSE;
         }
       } else if (clz.equals(Date.class)) {
-        return new Date((long)(obj != null ? obj.getNumber(attr): arr.getNumber(idx)));
+        return new Date((long) (obj != null ? obj.getNumber(attr) : arr.getNumber(idx)));
       } else if (clz.equals(Byte.class) || clz == Byte.TYPE) {
         return toDouble(attr, arr, idx, obj).byteValue();
       } else if (clz.equals(Short.class) || clz == Short.TYPE) {
@@ -131,15 +135,16 @@ public class JsonFactoryJre implements JsonFactory  {
         return toDouble(attr, arr, idx, obj).longValue();
       }
 
-      Object ret = obj != null ? obj.get(attr): arr.get(idx);
+      Object ret = obj != null ? obj.get(attr) : arr.get(idx);
       if (ret instanceof JreJsonFunction || clz.equals(Function.class)) {
-        return ret != null && ret instanceof JreJsonFunction ? ((JreJsonFunction)ret).getFunction() : null;
+        return ret != null && ret instanceof JreJsonFunction ? ((JreJsonFunction) ret)
+            .getFunction() : null;
       } else if (ret instanceof JsonNull) {
         return null;
       } else if (ret instanceof JsonString) {
-        return ((JsonString)ret).asString();
+        return ((JsonString) ret).asString();
       } else if (ret instanceof JsonBoolean) {
-        return ((JsonBoolean)ret).asBoolean();
+        return ((JsonBoolean) ret).asBoolean();
       } else if (ret instanceof JsonNumber) {
         return toDouble(attr, arr, idx, obj);
       } else if (ret instanceof JsonArray || clz.isArray() || clz.equals(List.class)) {
@@ -149,23 +154,24 @@ public class JsonFactoryJre implements JsonFactory  {
         } else {
           Type returnType = method.getGenericReturnType();
           if (returnType instanceof ParameterizedType) {
-            ctype = (Class<?>)((ParameterizedType) returnType).getActualTypeArguments()[0];
+            ctype = (Class<?>) ((ParameterizedType) returnType).getActualTypeArguments()[0];
           }
         }
         return jsonArrayToList(obj.getArray(attr), ctype, clz.isArray());
       } else if (ret instanceof JsonObject) {
         if (clz == Object.class) {
-          return jsonFactory.createBinder((JsonObject)ret);
-        } else if (IsProperties.class.isAssignableFrom(clz) && !clz.isAssignableFrom(ret.getClass())) {
-          return jsonFactory.create(clz, (JsonObject)ret);
+          return jsonFactory.createBinder((JsonObject) ret);
+        } else if (IsProperties.class.isAssignableFrom(clz)
+            && !clz.isAssignableFrom(ret.getClass())) {
+          return jsonFactory.create(clz, (JsonObject) ret);
         }
       }
       return ret;
     }
 
-    private <T> JsonArray listToJsonArray(Object...l) throws Throwable {
+    private <T> JsonArray listToJsonArray(Object... l) throws Throwable {
       JsonArray ret = Json.createArray();
-      for (Object o: l) {
+      for (Object o : l) {
         setValue(ret, null, null, o);
       }
       return ret;
@@ -179,30 +185,31 @@ public class JsonFactoryJre implements JsonFactory  {
       try {
         Class<?> valClaz = JsonValue.class;
         if (val instanceof Number) {
-          val = ((Number)val).doubleValue();
+          val = ((Number) val).doubleValue();
           valClaz = Double.TYPE;
         } else if (val instanceof Boolean) {
           valClaz = Boolean.TYPE;
         } else if (val instanceof Date) {
-          val = ((Date)val).getTime();
+          val = ((Date) val).getTime();
           valClaz = Double.TYPE;
         } else if (val instanceof String) {
           valClaz = String.class;
         } else if (val instanceof IsProperties) {
-          val = ((IsProperties)val).getDataImpl();
+          val = ((IsProperties) val).getDataImpl();
         } else if (val.getClass().isArray() || val instanceof List) {
-          val  = listToJsonArray(val.getClass().isArray() ? (Object[])val : ((List<?>)val).toArray());
+          val =
+              listToJsonArray(val.getClass().isArray() ? (Object[]) val : ((List<?>) val).toArray());
         } else if (val instanceof Function) {
-          val = new JreJsonFunction((Function)val);
+          val = new JreJsonFunction((Function) val);
         }
 
         if (jsObj != null) {
           Method mth = jsObj.getClass().getMethod("put", String.class, valClaz);
-          mth.invoke(jsObj, new Object[]{attr, val});
+          mth.invoke(jsObj, new Object[] {attr, val});
           return jsObj;
         } else {
           Method mth = jsArr.getClass().getMethod("set", Integer.TYPE, valClaz);
-          mth.invoke(jsArr, new Object[]{new Integer(jsArr.length()), val});
+          mth.invoke(jsArr, new Object[] {new Integer(jsArr.length()), val});
           return jsArr;
         }
       } catch (Throwable e) {
@@ -224,7 +231,7 @@ public class JsonFactoryJre implements JsonFactory  {
         return jsonObject.keys();
       } else if ("as".equals(mname)) {
         @SuppressWarnings("unchecked")
-        Class<? extends JsonBuilder> clz = (Class<? extends JsonBuilder>)args[0];
+        Class<? extends JsonBuilder> clz = (Class<? extends JsonBuilder>) args[0];
         return jsonFactory.create(clz, jsonObject);
       } else if ("getJsonName".equals(mname)) {
         return JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
@@ -239,10 +246,11 @@ public class JsonFactoryJre implements JsonFactory  {
       } else if (mname.matches("toString")) {
         return jsonObject.toString();
       } else if (mname.matches("toJsonWithName")) {
-        String jsonName = JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
-        return "{\"" + jsonName + "\":"+ jsonObject.toString() + "}";
+        String jsonName =
+            JsonBuilderGenerator.classNameToJsonName(getDataBindingClassName(proxy.getClass()));
+        return "{\"" + jsonName + "\":" + jsonObject.toString() + "}";
       } else if (mname.matches("toJson")) {
-        return jsonObject.toString() ;
+        return jsonObject.toString();
       } else if ("toQueryString".equals(mname)) {
         return param(jsonObject);
       } else if (largs == 1 && mname.equals("get")) {
@@ -283,9 +291,9 @@ public class JsonFactoryJre implements JsonFactory  {
         ret += ret.isEmpty() ? "" : "&";
         JsonValue v = o.get(k);
         if (v instanceof JsonArray) {
-          for (int i = 0, l = ((JsonArray)v).length(); i < l ; i++) {
+          for (int i = 0, l = ((JsonArray) v).length(); i < l; i++) {
             ret += i > 0 ? "&" : "";
-            JsonValue e = ((JsonArray)v).get(i);
+            JsonValue e = ((JsonArray) v).get(i);
             ret += k + "[]=" + e.toJson();
           }
         } else {
@@ -312,12 +320,14 @@ public class JsonFactoryJre implements JsonFactory  {
 
   public IsProperties createBinder() {
     InvocationHandler handler = new JsonBuilderHandler();
-    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
+    return (IsProperties) Proxy.newProxyInstance(IsProperties.class.getClassLoader(),
+        new Class[] {IsProperties.class}, handler);
   }
 
   public IsProperties createBinder(JsonObject jso) {
     InvocationHandler handler = new JsonBuilderHandler(jso);
-    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
+    return (IsProperties) Proxy.newProxyInstance(IsProperties.class.getClassLoader(),
+        new Class[] {IsProperties.class}, handler);
   }
 
   @Override

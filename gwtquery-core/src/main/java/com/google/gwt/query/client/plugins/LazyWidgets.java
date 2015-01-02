@@ -14,6 +14,7 @@
  * the License.
  */
 package com.google.gwt.query.client.plugins;
+
 import com.google.gwt.query.client.LazyBase;
 import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
 import com.google.gwt.query.client.plugins.widgets.WidgetInitializer;
@@ -28,14 +29,15 @@ import com.google.gwt.user.client.ui.Widget;
  * LazyWidgets.
  * @param <T>
  */
-public interface LazyWidgets<T> extends LazyBase<T>{
+public interface LazyWidgets<T> extends LazyBase<T> {
 
   /**
    * Try to create a widget using the given factory and the given options for
    * each element of the query. Returns a new gquery set of elements with the
    * new widgets created.
    */
-  <W extends Widget> LazyWidgets<T> widgets(WidgetFactory<W> factory, WidgetInitializer<W> initializers);
+  <W extends Widget> LazyWidgets<T> widgets(WidgetFactory<W> factory,
+      WidgetInitializer<W> initializers);
 
   /**
    * Create a {@link Button} widget for each selected element.

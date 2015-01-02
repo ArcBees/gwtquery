@@ -127,12 +127,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * A Browser object with a set of browser-specific flags.
    */
-  public static final Browser browser = GWT.isClient() ? GWT.<Browser>create(Browser.class) : null;
+  public static final Browser browser = GWT.isClient() ? GWT.<Browser> create(Browser.class) : null;
 
   /**
    * An object with the same methods than window.console.
    */
-  public static final Console console = GWT.isClient() ? GWT.<Console>create(Console.class) : null;
+  public static final Console console = GWT.isClient() ? GWT.<Console> create(Console.class) : null;
 
   /**
    * Object to store element data (public so as we can access to it from tests).
@@ -172,7 +172,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   // Sizzle POS regex : usefull in some methods
   // TODO: Share this static with SelectorEngineSizzle
-  private static RegExp posRegex = RegExp.compile("^:(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)$");
+  private static RegExp posRegex = RegExp
+      .compile("^:(nth|eq|gt|lt|first|last|even|odd)(?:\\((\\d*)\\))?(?=[^\\-]|$)$");
 
   /**
    * Implementation class used for style manipulations.
@@ -189,7 +190,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   /**
    * The window object.
    */
-  public static final Element window = GWT.isClient() ? ScriptInjector.TOP_WINDOW.<Element>cast() : null;
+  public static final Element window = GWT.isClient() ? ScriptInjector.TOP_WINDOW.<Element> cast()
+      : null;
 
   private static Element windowData = null;
 
@@ -249,10 +251,10 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     }
 
     return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) :
-      JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
-        JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
-          JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
-            $(jso.<Element> cast());
+        JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
+            JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
+                JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
+                    $(jso.<Element> cast());
   }
 
   /**
@@ -271,24 +273,25 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public static GQuery $(Object o) {
     if (o != null) {
       if (o instanceof String) {
-        return $((String)o);
+        return $((String) o);
       }
       if (o instanceof GQuery) {
-        return (GQuery)o;
+        return (GQuery) o;
       }
       if (o instanceof Function) {
-        return $((Function)o);
+        return $((Function) o);
       }
       if (JsUtils.isElement(o)) {
-        return $(JsUtils.<Element>cast(o));
+        return $(JsUtils.<Element> cast(o));
       }
       if (o instanceof JavaScriptObject) {
-        return $((JavaScriptObject)o);
+        return $((JavaScriptObject) o);
       }
       if (o instanceof IsWidget) {
         return $(Arrays.asList(o));
       }
-      console.log("Error: GQuery.$(Object o) could not wrap the type : ", o.getClass().getName(), o);
+      console
+          .log("Error: GQuery.$(Object o) could not wrap the type : ", o.getClass().getName(), o);
     }
     return $();
   }
@@ -304,7 +307,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         if (o instanceof Node) {
           elms.addNode((Node) o);
         } else if (o instanceof IsWidget) {
-          elms.addNode(((IsWidget)o).asWidget().getElement());
+          elms.addNode(((IsWidget) o).asWidget().getElement());
         }
       }
     }
@@ -491,8 +494,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return
     // return all nodes added to the wrapper
     $(n.getChildNodes())
-    // detach nodes from their temporary parent
-    .remove(null, false);
+        // detach nodes from their temporary parent
+        .remove(null, false);
   }
 
   /**
@@ -690,7 +693,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     wrapperMap.put("td", trWrapper);
     wrapperMap.put("th", trWrapper);
     wrapperMap.put("col", new TagWrapper(2, "<table><tbody></tbody><colgroup>",
-    "</colgroup></table>"));
+        "</colgroup></table>"));
     wrapperMap.put("area", new TagWrapper(1, "<map>", "</map>"));
   }
 
@@ -774,14 +777,12 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return engine;
   }
 
-  private static native void scrollIntoViewImpl(Node n)
-  /*-{
+  private static native void scrollIntoViewImpl(Node n) /*-{
     if (n)
       n.scrollIntoView()
   }-*/;
 
-  private static native void setElementValue(Element e, String value)
-  /*-{
+  private static native void setElementValue(Element e, String value) /*-{
     e.value = value;
   }-*/;
 
@@ -1176,11 +1177,11 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public <T extends GQuery> T as(Class<T> plugin) {
     // GQuery is not a plugin for itself
     if (plugin == GQUERY) {
-      return (T)this;
+      return (T) this;
     } else if (plugins != null) {
       Plugin<?> p = plugins.get(plugin);
       if (p != null) {
-        return (T)p.init(this);
+        return (T) p.init(this);
       }
     }
     throw new RuntimeException("No plugin registered for class " + plugin.getName());
@@ -1704,7 +1705,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <T> T data(String name) {
-    return isEmpty() ? null : (T)data(get(0), name, null);
+    return isEmpty() ? null : (T) data(get(0), name, null);
   }
 
   /**
@@ -2375,9 +2376,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return end();
   }
 
-  private native Element getPreviousSiblingElement(Element elem)
-  /*-{
-
+  private native Element getPreviousSiblingElement(Element elem) /*-{
     var sib = elem.previousSibling;
     while (sib && sib.nodeType != 1)
       sib = sib.previousSibling;
@@ -3143,7 +3142,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Set the current coordinates of every element in the set of matched elements, relative to the document.
    */
   public GQuery offset(int top, int left) {
-    for (Element element : elements()){
+    for (Element element : elements()) {
       GQuery g = $(element);
 
       String position = g.css("position", true);
@@ -3157,7 +3156,8 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       long curTop = 0;
       long curLeft = 0;
 
-      if (("absolute".equals(position) || "fixed".equals(position)) && ("auto".equals(curCSSTop) || "auto".equals(curCSSLeft))) {
+      if (("absolute".equals(position) || "fixed".equals(position))
+          && ("auto".equals(curCSSTop) || "auto".equals(curCSSLeft))) {
         Offset curPosition = g.position();
         curTop = curPosition.top;
         curLeft = curPosition.left;
@@ -3299,7 +3299,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return 0;
     }
     // height including padding and border
-    int outerHeight = (int)cur("offsetHeight", true);
+    int outerHeight = (int) cur("offsetHeight", true);
     if (includeMargin) {
       outerHeight += cur("marginTop", true) + cur("marginBottom", true);
     }
@@ -3323,7 +3323,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return 0;
     }
     // width including padding and border
-    int outerWidth = (int)cur("offsetWidth", true);
+    int outerWidth = (int) cur("offsetWidth", true);
     if (includeMargin) {
       outerWidth += cur("marginRight", true) + cur("marginLeft", true);
     }
@@ -3374,7 +3374,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * including the element matched by the selector.
    */
   public GQuery parentsUntil(final String selector) {
-    return parentsUntil(new Predicate(){
+    return parentsUntil(new Predicate() {
       @Override
       public <T> boolean f(T e, int index) {
         return selector != null && $(e).is(selector);
@@ -3654,7 +3654,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public <T> T prop(String key) {
     assert key != null : "Key is null";
-    return isEmpty() ? null : JsUtils.<T>prop(get(0), key);
+    return isEmpty() ? null : JsUtils.<T> prop(get(0), key);
   }
 
   /**
@@ -3669,7 +3669,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public <T> T prop(String key, Class<? extends T> clz) {
     assert key != null : "Key is null";
-    return isEmpty() ? null : JsUtils.<T>prop(get(0), key, clz);
+    return isEmpty() ? null : JsUtils.<T> prop(get(0), key, clz);
   }
 
   /**
@@ -3903,7 +3903,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery removeProp(String name) {
     for (Element e : elements) {
-      e.<JsCache>cast().delete(name);
+      e.<JsCache> cast().delete(name);
     }
     return this;
   }
@@ -4489,9 +4489,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         elStr = JsUtils.isXML(e) ? JsUtils.XML2String(e) : e.getString();
       } catch (Exception e2) {
         elStr =
-          "< " + (e == null ? "null" : e.getNodeName())
-          + "(gquery, error getting the element string representation: " + e2.getMessage()
-          + ")/>";
+            "< " + (e == null ? "null" : e.getNodeName())
+                + "(gquery, error getting the element string representation: " + e2.getMessage()
+                + ")/>";
       }
       r += (pretty && r.length() > 0 ? "\n " : "") + elStr;
     }

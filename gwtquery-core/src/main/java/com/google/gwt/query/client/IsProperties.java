@@ -80,5 +80,5 @@ public interface IsProperties {
    * converts a JsonBuilder instance into another JsonBuilder type but
    * preserving the underlying data object.
    */
-  <T extends JsonBuilder> T as (Class<T> clz);
+  <T extends JsonBuilder> T as(Class<T> clz);
 }

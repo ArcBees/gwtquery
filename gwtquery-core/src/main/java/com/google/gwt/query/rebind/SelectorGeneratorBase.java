@@ -193,9 +193,9 @@ public abstract class SelectorGeneratorBase extends Generator {
               + "\"; }");
       sw
           .println("public NodeList<Element> runSelector(Node ctx) { return " +
-                 (m.getName() + (m.getParameters().length == 0 ? "()" : "(ctx)")) +
-                 ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? "" : ".get()") + ";}"
-              ) ;
+              (m.getName() + (m.getParameters().length == 0 ? "()" : "(ctx)")) +
+              ("NodeList".equals(m.getReturnType().getSimpleSourceName()) ? "" : ".get()") + ";}"
+          );
       sw.outdent();
       sw.println("},");
     }
