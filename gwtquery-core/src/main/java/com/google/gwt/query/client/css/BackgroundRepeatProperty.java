@@ -47,13 +47,12 @@ public class BackgroundRepeatProperty extends
      */
     REPEAT_Y;
 
-    public String getCssName(){
+    public String getCssName() {
       return name().toLowerCase().replace('_', '-');
     }
   }
 
   private static final String CSS_PROPERTY = "backgroundRepeat";
-
 
   public static void init() {
     CSS.BACKGROUND_REPEAT = new BackgroundRepeatProperty();

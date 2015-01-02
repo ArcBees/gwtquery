@@ -17,7 +17,7 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Promise.Deferred;
 
 /**
- * Utility class used to create customized functions with a deferred 
+ * Utility class used to create customized functions with a deferred
  * execution in pipelined processes.
  * 
  * They have access to the associated deferred object via a method which
@@ -45,7 +45,12 @@ import com.google.gwt.query.client.Promise.Deferred;
  */
 public abstract class FunctionDeferred extends Function {
 
-  public static enum CacheType {NONE, ALL, RESOLVED, REJECTED};
+  /**
+   * Cache types.
+   */
+  public static enum CacheType {
+    NONE, ALL, RESOLVED, REJECTED
+  };
 
   protected Deferred dfd;
   public Function resolve, reject;
@@ -61,13 +66,13 @@ public abstract class FunctionDeferred extends Function {
 
   /**
    * This function is called when the previous promise in the pipe
-   * is resolved. 
+   * is resolved.
    */
   public final Object f(Object... args) {
-    return  dfd != null &&
+    return dfd != null &&
         (cache == CacheType.ALL ||
-         cache == CacheType.RESOLVED && dfd.promise().isResolved() ||
-         cache == CacheType.REJECTED && dfd.promise().isRejected())
+            cache == CacheType.RESOLVED && dfd.promise().isResolved() ||
+        cache == CacheType.REJECTED && dfd.promise().isRejected())
         ? dfd.promise()
         : new PromiseFunction() {
           public void f(Deferred dfd) {
@@ -76,7 +81,7 @@ public abstract class FunctionDeferred extends Function {
             FunctionDeferred.this.dfd = dfd;
             FunctionDeferred.this.f(dfd);
           }
-       };
+        };
   }
 
   /**
@@ -89,7 +94,7 @@ public abstract class FunctionDeferred extends Function {
     cache = type;
     return this;
   }
-  
+
   /**
    * Reset the cache so as a new invocation to this function will
    * execute it instead of restoring old values from cache.

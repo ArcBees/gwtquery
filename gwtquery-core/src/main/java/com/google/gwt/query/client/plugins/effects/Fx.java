@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.effects;
 
 import com.google.gwt.dom.client.Element;
@@ -14,7 +29,7 @@ import com.google.gwt.regexp.shared.RegExp;
 public class Fx {
 
   /**
-   * Public variable to enable/disable effects
+   * Public variable to enable/disable effects.
    */
   public static boolean off = false;
 
@@ -39,7 +54,7 @@ public class Fx {
     }
 
     public String toString() {
-      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd; 
+      return super.toString() + " transitStart=" + transitStart + " transitEnd=" + transitEnd;
     }
   }
 
@@ -49,7 +64,7 @@ public class Fx {
   public static class ColorFx extends Fx {
 
     /**
-     * Specific class handle specific borderColor shortcut properties
+     * Specific class handle specific borderColor shortcut properties.
      */
     public static class BorderColorFx extends ColorFx {
 
@@ -66,10 +81,10 @@ public class Fx {
         endColor = parseColor(endColorString);
         startColors = JsNamedArray.create();
 
-        GQuery $e = GQuery.$(e);
+        GQuery g = GQuery.$(e);
 
         for (String border : borderColorProperties) {
-          int[] startColor = parseColor($e.css(border, true));
+          int[] startColor = parseColor(g.css(border, true));
           startColors.put(border, startColor);
         }
       }
@@ -85,60 +100,62 @@ public class Fx {
     }
 
     // hexadecimal regex
-    public static RegExp REGEX_HEX_COLOR_PATTERN = RegExp.compile("#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
+    public static RegExp REGEX_HEX_COLOR_PATTERN = RegExp
+        .compile("#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
 
     private static JsNamedArray<int[]> htmlColorToRgb;
 
     // rgb and rgba regex
-    public static RegExp REGEX_RGB_COLOR_PATTERN = 
-        RegExp.compile("rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
+    public static RegExp REGEX_RGB_COLOR_PATTERN =
+        RegExp
+            .compile("rgba?\\(\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?)\\s*,\\s*([0-9]{1,3}%?).*\\)$");
 
     static {
       htmlColorToRgb = JsNamedArray.create();
-      htmlColorToRgb.put("white", new int[]{255, 255, 255});
-      htmlColorToRgb.put("aqua", new int[]{0, 255, 255});
-      htmlColorToRgb.put("azure", new int[]{240, 255, 255});
-      htmlColorToRgb.put("beige", new int[]{245, 245, 220});
-      htmlColorToRgb.put("black", new int[]{0, 0, 0});
-      htmlColorToRgb.put("blue", new int[]{0, 0, 255});
-      htmlColorToRgb.put("brown", new int[]{165, 42, 42});
-      htmlColorToRgb.put("cyan", new int[]{0, 255, 255});
-      htmlColorToRgb.put("darkblue", new int[]{0, 0, 139});
-      htmlColorToRgb.put("darkcyan", new int[]{0, 139, 139});
-      htmlColorToRgb.put("darkgrey", new int[]{169, 169, 169});
-      htmlColorToRgb.put("darkgreen", new int[]{0, 100, 0});
-      htmlColorToRgb.put("darkkhaki", new int[]{189, 183, 107});
-      htmlColorToRgb.put("darkmagenta", new int[]{139, 0, 139});
-      htmlColorToRgb.put("darkolivegreen", new int[]{85, 107, 47});
-      htmlColorToRgb.put("darkorange", new int[]{255, 140, 0});
-      htmlColorToRgb.put("darkorchid", new int[]{153, 50, 204});
-      htmlColorToRgb.put("darkred", new int[]{139, 0, 0});
-      htmlColorToRgb.put("darksalmon", new int[]{233, 150, 122});
-      htmlColorToRgb.put("darkviolet", new int[]{148, 0, 211});
-      htmlColorToRgb.put("fuchsia", new int[]{255, 0, 255});
-      htmlColorToRgb.put("gold", new int[]{255, 215, 0});
-      htmlColorToRgb.put("green", new int[]{0, 128, 0});
-      htmlColorToRgb.put("indigo", new int[]{75, 0, 130});
-      htmlColorToRgb.put("khaki", new int[]{240, 230, 140});
-      htmlColorToRgb.put("lightblue", new int[]{173, 216, 230});
-      htmlColorToRgb.put("lightcyan", new int[]{224, 255, 255});
-      htmlColorToRgb.put("lightgreen", new int[]{144, 238, 144});
-      htmlColorToRgb.put("lightgrey", new int[]{211, 211, 211});
-      htmlColorToRgb.put("lightpink", new int[]{255, 182, 193});
-      htmlColorToRgb.put("lightyellow", new int[]{255, 255, 224});
-      htmlColorToRgb.put("lime", new int[]{0, 255, 0});
-      htmlColorToRgb.put("magenta", new int[]{255, 0, 255});
-      htmlColorToRgb.put("maroon", new int[]{128, 0, 0});
-      htmlColorToRgb.put("navy", new int[]{0, 0, 128});
-      htmlColorToRgb.put("olive", new int[]{128, 128, 0});
-      htmlColorToRgb.put("orange", new int[]{255, 165, 0});
-      htmlColorToRgb.put("pink", new int[]{255, 192, 203});
-      htmlColorToRgb.put("purple", new int[]{128, 0, 128});
-      htmlColorToRgb.put("violet", new int[]{128, 0, 128});
-      htmlColorToRgb.put("red", new int[]{255, 0, 0});
-      htmlColorToRgb.put("silver", new int[]{192, 192, 192});
-      htmlColorToRgb.put("white", new int[]{255, 255, 255});
-      htmlColorToRgb.put("yellow", new int[]{255, 255, 0});
+      htmlColorToRgb.put("white", new int[] {255, 255, 255});
+      htmlColorToRgb.put("aqua", new int[] {0, 255, 255});
+      htmlColorToRgb.put("azure", new int[] {240, 255, 255});
+      htmlColorToRgb.put("beige", new int[] {245, 245, 220});
+      htmlColorToRgb.put("black", new int[] {0, 0, 0});
+      htmlColorToRgb.put("blue", new int[] {0, 0, 255});
+      htmlColorToRgb.put("brown", new int[] {165, 42, 42});
+      htmlColorToRgb.put("cyan", new int[] {0, 255, 255});
+      htmlColorToRgb.put("darkblue", new int[] {0, 0, 139});
+      htmlColorToRgb.put("darkcyan", new int[] {0, 139, 139});
+      htmlColorToRgb.put("darkgrey", new int[] {169, 169, 169});
+      htmlColorToRgb.put("darkgreen", new int[] {0, 100, 0});
+      htmlColorToRgb.put("darkkhaki", new int[] {189, 183, 107});
+      htmlColorToRgb.put("darkmagenta", new int[] {139, 0, 139});
+      htmlColorToRgb.put("darkolivegreen", new int[] {85, 107, 47});
+      htmlColorToRgb.put("darkorange", new int[] {255, 140, 0});
+      htmlColorToRgb.put("darkorchid", new int[] {153, 50, 204});
+      htmlColorToRgb.put("darkred", new int[] {139, 0, 0});
+      htmlColorToRgb.put("darksalmon", new int[] {233, 150, 122});
+      htmlColorToRgb.put("darkviolet", new int[] {148, 0, 211});
+      htmlColorToRgb.put("fuchsia", new int[] {255, 0, 255});
+      htmlColorToRgb.put("gold", new int[] {255, 215, 0});
+      htmlColorToRgb.put("green", new int[] {0, 128, 0});
+      htmlColorToRgb.put("indigo", new int[] {75, 0, 130});
+      htmlColorToRgb.put("khaki", new int[] {240, 230, 140});
+      htmlColorToRgb.put("lightblue", new int[] {173, 216, 230});
+      htmlColorToRgb.put("lightcyan", new int[] {224, 255, 255});
+      htmlColorToRgb.put("lightgreen", new int[] {144, 238, 144});
+      htmlColorToRgb.put("lightgrey", new int[] {211, 211, 211});
+      htmlColorToRgb.put("lightpink", new int[] {255, 182, 193});
+      htmlColorToRgb.put("lightyellow", new int[] {255, 255, 224});
+      htmlColorToRgb.put("lime", new int[] {0, 255, 0});
+      htmlColorToRgb.put("magenta", new int[] {255, 0, 255});
+      htmlColorToRgb.put("maroon", new int[] {128, 0, 0});
+      htmlColorToRgb.put("navy", new int[] {0, 0, 128});
+      htmlColorToRgb.put("olive", new int[] {128, 128, 0});
+      htmlColorToRgb.put("orange", new int[] {255, 165, 0});
+      htmlColorToRgb.put("pink", new int[] {255, 192, 203});
+      htmlColorToRgb.put("purple", new int[] {128, 0, 128});
+      htmlColorToRgb.put("violet", new int[] {128, 0, 128});
+      htmlColorToRgb.put("red", new int[] {255, 0, 0});
+      htmlColorToRgb.put("silver", new int[] {192, 192, 192});
+      htmlColorToRgb.put("white", new int[] {255, 255, 255});
+      htmlColorToRgb.put("yellow", new int[] {255, 255, 0});
     }
 
     protected int[] endColor;
@@ -203,7 +220,6 @@ public class Fx {
           color += color;
         }
         result[i] = Math.max(0, Math.min(255, Integer.parseInt(color, 16)));
-
       }
 
       return result;
@@ -231,7 +247,6 @@ public class Fx {
       }
       return result;
     }
-
   }
 
   public String cssprop;
@@ -256,15 +271,15 @@ public class Fx {
 
   public void applyValue(GQuery g, double progress) {
     double ret = (start + ((end - start) * progress));
-    String value = ("px".equals(unit) ? ((int) ret) : ret) + unit;
+    String val = ("px".equals(unit) ? ((int) ret) : ret) + unit;
     if ("scrollTop".equals(cssprop)) {
-      g.scrollTop((int)ret);
+      g.scrollTop((int) ret);
     } else if ("scrollLeft".equals(cssprop)) {
-      g.scrollLeft((int)ret);
+      g.scrollLeft((int) ret);
     } else if (attribute != null) {
-      g.attr(attribute, value);
+      g.attr(attribute, val);
     } else {
-      g.css(cssprop, value);
+      g.css(cssprop, val);
     }
   }
 
@@ -273,5 +288,4 @@ public class Fx {
         + " value=" + value + " start=" + start + " end="
         + end + " unit=" + unit).replaceAll("\\.0([^\\d])", "$1");
   }
-
 }

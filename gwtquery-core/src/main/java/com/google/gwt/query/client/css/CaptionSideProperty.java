@@ -63,5 +63,4 @@ public class CaptionSideProperty extends
   private CaptionSideProperty() {
     super(CSS_PROPERTY);
   }
-
 }

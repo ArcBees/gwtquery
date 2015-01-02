@@ -66,5 +66,4 @@ public class TextAlignProperty extends
   private TextAlignProperty() {
     super(CSS_PROPERTY);
   }
-
 }

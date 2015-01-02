@@ -27,7 +27,7 @@ public class TextAreaWidgetFactory extends TextBoxBaseWidgetFactory<TextArea> {
 
   @Override
   protected void copyAttributes(Element src, Element dest) {
-    TextAreaElement source= src.cast();
+    TextAreaElement source = src.cast();
     TextAreaElement destination = dest.cast();
 
     destination.setAccessKey(source.getAccessKey());
@@ -44,7 +44,6 @@ public class TextAreaWidgetFactory extends TextBoxBaseWidgetFactory<TextArea> {
   protected String getEquivalentTagName() {
     return "textarea";
   }
-
 
   protected TextArea createWidget() {
     return new TextArea();

@@ -15,7 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-
 /**
  * This interface represents the Window.console object.
  */

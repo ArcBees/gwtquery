@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.dom.client.Element;
@@ -14,20 +29,17 @@ import com.google.gwt.user.client.Event;
  * element. So, we cannot keep a copy of the MouseDownEvent during a dragging
  * for example.
  *
- *
- *
  * Be Careful : the methods preventDefault() and stopPropagation must be called directly on the
  * original event.
- *
  *
  */
 public class GqEvent extends Event {
 
-  public static native void setOriginalEventType(NativeEvent evt, String originalEventName)/*-{
+  public static native void setOriginalEventType(NativeEvent evt, String originalEventName) /*-{
     evt["__gwtquery_originalEventName"] = originalEventName;
   }-*/;
 
-  public static native String getOriginalEventType(Event evt)/*-{
+  public static native String getOriginalEventType(Event evt) /*-{
    return evt["__gwtquery_originalEventName"] || null;
   }-*/;
 
@@ -47,34 +59,33 @@ public class GqEvent extends Event {
 
   private static native void copy(
       Event originalEvent, GqEvent gQueryEvent) /*-{
-		for ( var field in originalEvent) {
-			gQueryEvent[field] = originalEvent[field];
-		}
-		gQueryEvent.originalEvent = originalEvent;
+    for ( var field in originalEvent) {
+      gQueryEvent[field] = originalEvent[field];
+    }
+    gQueryEvent.originalEvent = originalEvent;
   }-*/;
-
 
   protected GqEvent() {
   }
 
   /**
-   * Return the original event (the one created by the browser)
+   * Return the original event (the one created by the browser).
    */
-  public final native Event getOriginalEvent()/*-{
-		return this.originalEvent;
+  public final native Event getOriginalEvent() /*-{
+    return this.originalEvent;
   }-*/;
 
-  public final native void setCurrentElementTarget(Element e)/*-{
+  public final native void setCurrentElementTarget(Element e) /*-{
     this.currentTarget = e;
 
-    //ie don't have a currentEventTarget field on event
+    // ie don't have a currentEventTarget field on event
     try{
       @com.google.gwt.dom.client.DOMImplTrident::currentEventTarget = e;
     }catch(e){}
   }-*/;
 
   /**
-   * Tell whether ctrl or cmd key is pressed
+   * Tell whether ctrl or cmd key is pressed.
    *
    */
   public final boolean isMetaKeyPressed() {
@@ -82,7 +93,7 @@ public class GqEvent extends Event {
   }
 
   /**
-   * The mouse position relative to the left edge of the document
+   * The mouse position relative to the left edge of the document.
    *
    */
   public final int pageX() {
@@ -104,5 +115,4 @@ public class GqEvent extends Event {
       return getClientY() + GQuery.document.getScrollTop();
     }
   }
-
 }

@@ -70,7 +70,7 @@ public class JsRegexp {
     return test0(regexp, rule);
   }
 
-  private native JsObjectArray<String> match0(JavaScriptObject regexp, String currentRule)/*-{
+  private native JsObjectArray<String> match0(JavaScriptObject regexp, String currentRule) /*-{
     return currentRule.match(regexp);
   }-*/;
 
@@ -78,7 +78,7 @@ public class JsRegexp {
     return regexp.test(rule);
   }-*/;
 
-  public String getPattern(){
+  public String getPattern() {
     return regexp.toString();
   };
 }

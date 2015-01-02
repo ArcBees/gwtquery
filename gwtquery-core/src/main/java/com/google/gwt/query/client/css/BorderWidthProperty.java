@@ -43,11 +43,9 @@ public class BorderWidthProperty extends
      */
     THIN;
 
-
     public String getCssName() {
       return name().toLowerCase();
     }
-
   }
 
   private static final String BORDER_BOTTOM_WIDTH_PROPERTY = "borderBottomWidth";

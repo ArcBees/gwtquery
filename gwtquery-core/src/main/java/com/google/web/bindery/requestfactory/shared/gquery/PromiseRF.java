@@ -13,30 +13,29 @@
  */
 package com.google.web.bindery.requestfactory.shared.gquery;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-
-import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
 /**
  * Utility class used to create promises for RequestFactory services.
  * <pre>
  *    Request<SessionProxy> req1 = loginFact.api().login(null, null);
  *    Request<UserProxy> req2 = srvFact.api().getCurrentUser();
- *    
+ * 
  *    // We can use `when` to append different requests
  *    Promise requestingAll = Deferred.when(new PromiseRF(req1), new PromiseRF(req2);
  *    // Or we can use just one promise for multiple RF requests
  *    Promise requestingAll = new PromiseRF(req1, req2);
- *    
+ * 
  *    requestingAll.done(new Function() {
  *        public void f() {
  *          SessionProxy session = arguments(0, 0);
@@ -47,14 +46,14 @@ import com.google.web.bindery.requestfactory.shared.ServerFailure;
  *        public void f() {
  *          ServerFailure failure = arguments(0);
  *        }
- *      }); 
+ *      });
  * </pre>
  */
 public class PromiseRF extends DeferredPromiseImpl {
   private int total = 0;
   private List<Object> responses = new ArrayList<Object>();
   private List<RequestContext> contexts = new ArrayList<RequestContext>();
-  
+
   /**
    * Fire a RF Request.
    */
@@ -70,14 +69,16 @@ public class PromiseRF extends DeferredPromiseImpl {
    */
   public PromiseRF(Request<?>[] requests) {
     for (Request<?> request : requests) {
-      total ++;
+      total++;
       request.to(new Receiver<Object>() {
         public void onConstraintViolation(Set<ConstraintViolation<?>> violations) {
           dfd.reject(new ServerFailure("ConstraintViolation"), violations);
         }
+
         public void onFailure(ServerFailure error) {
           dfd.reject(error);
         }
+
         public void onSuccess(Object response) {
           responses.add(response);
           // Resolve only when all requests have been received

@@ -37,7 +37,6 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineJS extends SelectorEngineImpl {
 
-
   /**
    * Internal class.
    */
@@ -91,21 +90,22 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   protected static Sequence getSequence(String expression) {
     int start = 0, add = 2, max = -1, modVal = -1;
-    JsRegexp expressionRegExp = new JsRegexp(
-        "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
+    JsRegexp expressionRegExp =
+        new JsRegexp(
+            "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n((\\+|\\-)(\\d+))?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
     JsObjectArray<String> pseudoValue = expressionRegExp.exec(expression);
     if (!truth(pseudoValue)) {
       return null;
     } else {
-      if (truth(pseudoValue.get(2))) {        // odd or even
+      if (truth(pseudoValue.get(2))) { // odd or even
         start = (eq(pseudoValue.get(2), "odd")) ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
       } else if (JsUtils
-          .truth(pseudoValue.get(3))) {        // single digit
+          .truth(pseudoValue.get(3))) { // single digit
         start = Integer.parseInt(pseudoValue.get(3), 10);
         add = 0;
         max = start;
-      } else if (truth(pseudoValue.get(4))) {        // an+b
+      } else if (truth(pseudoValue.get(4))) { // an+b
         add = truth(pseudoValue.get(6)) ? Integer
             .parseInt(pseudoValue.get(6), 10) : 1;
         start = truth(pseudoValue.get(7)) ? Integer.parseInt(
@@ -116,7 +116,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
         }
         modVal = (start > add) ? (start - add) % add
             : ((start == add) ? 0 : start);
-      } else if (truth(pseudoValue.get(10))) {        // -an+b
+      } else if (truth(pseudoValue.get(10))) { // -an+b
         add = truth(pseudoValue.get(12)) ? Integer
             .parseInt(pseudoValue.get(12), 10) : 1;
         start = max = Integer.parseInt(pseudoValue.get(13), 10);
@@ -146,7 +146,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   public static native NodeList<Element> getElementsByClassName(String clazz,
       Node ctx) /*-{
-      return ctx.getElementsByClassName(clazz);
+  return ctx.getElementsByClassName(clazz);
   }-*/;
 
   public static native boolean isAdded(Node prevRef) /*-{
@@ -214,9 +214,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   private static void getGeneralSiblingNodes(JsNodeArray matchingElms,
       JsObjectArray<String> nextTag, JsRegexp nextRegExp, Node prevRef) {
-    while (
-        JsUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
-            && !isAdded(prevRef)) {
+    while (JsUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
+        && !isAdded(prevRef)) {
       if (!JsUtils.truth(nextTag) || nextRegExp
           .test(prevRef.getNodeName())) {
         setAdded(prevRef, true);
@@ -227,9 +226,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   private static void getSiblingNodes(JsNodeArray matchingElms, JsObjectArray<String> nextTag,
       JsRegexp nextRegExp, Node prevRef) {
-    while (
-        JsUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
-            && prevRef.getNodeType() != Node.ELEMENT_NODE) {
+    while (JsUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
+        && prevRef.getNodeType() != Node.ELEMENT_NODE) {
     }
     if (JsUtils.truth(prevRef)) {
       if (!JsUtils.truth(nextTag) || nextRegExp
@@ -253,20 +251,20 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   private static native JsNodeArray subtractArray(JsNodeArray previousMatch,
       JsNodeArray elementsByPseudo) /*-{
-      for (var i=0, src1; (src1=arr1[i]); i++) {
-        var found = false;
-        for (var j=0, src2; (src2=arr2[j]); j++) {
-          if (src2 === src1) {
-        found = true;
-            break;
-          }
-        }
-        if (found) {
-          arr1.splice(i--, 1);
-        }
+  for (var i=0, src1; (src1=arr1[i]); i++) {
+    var found = false;
+    for (var j=0, src2; (src2=arr2[j]); j++) {
+      if (src2 === src1) {
+    found = true;
+        break;
       }
-      return arr;
-    }-*/;
+    }
+    if (found) {
+      arr1.splice(i--, 1);
+    }
+  }
+  return arr;
+  }-*/;
 
   private JsRegexp cssSelectorRegExp;
 
@@ -277,8 +275,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
   public SelectorEngineJS() {
     selectorSplitRegExp = new JsRegexp("[^\\s]+", "g");
     childOrSiblingRefRegExp = new JsRegexp("^(>|\\+|~)$");
-    cssSelectorRegExp = new JsRegexp(
-        "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
+    cssSelectorRegExp =
+        new JsRegexp(
+            "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?");
   }
 
   public NodeList<Element> select(String sel, Node ctx) {
@@ -360,8 +359,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             for (int l = 0, ll = prevElem.size(); l < ll; l++) {
               tagCollectionMatches = getElementsByTagName(splitRule.tag,
                   prevElem.getNode(l));
-              for (int m = 0, mlen = tagCollectionMatches.getLength(); m < mlen;
-                  m++) {
+              for (int m = 0, mlen = tagCollectionMatches.getLength(); m < mlen; m++) {
                 Node tagMatch = tagCollectionMatches.getItem(m);
 
                 if (!isAdded(tagMatch)) {
@@ -431,8 +429,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             for (int r = 0, rlen = matchingElms.size(); r < rlen; r++) {
               Element current = matchingElms.getElement(r);
               boolean addElm = false;
-              for (int s = 0, sl = regExpAttributes.length;
-                  s < sl; s++) {
+              for (int s = 0, sl = regExpAttributes.length; s < sl; s++) {
                 addElm = false;
                 JsRegexp attributeRegexp = regExpAttributes[s];
                 String currentAttr = getAttr(current, regExpAttributesStr[s]);
@@ -477,7 +474,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       elm.pushAll(prevElem);
     }
 
-    return JsUtils.unique(elm.<JsArray<Element>>cast()).cast();
+    return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
 
   protected String getAttr(Element current, String name) {
@@ -601,9 +598,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       } else {
-        while (
-            JsUtils.truth((next = SelectorEngine.getNextSibling(next)))
-                && next.getNodeType() != Node.ELEMENT_NODE) {
+        while (JsUtils.truth((next = SelectorEngine.getNextSibling(next)))
+            && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       }
       if (!JsUtils.truth(next)) {
@@ -620,9 +616,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       next = previous = previousMatch.getNode(n);
 
       if (previousDir) {
-        while (
-            JsUtils.truth(next = SelectorEngine.getPreviousSibling(next))
-                && !JsUtils
+        while (JsUtils.truth(next = SelectorEngine.getPreviousSibling(next))
+            && !JsUtils
                 .eq(next.getNodeName(), previous.getNodeName())) {
         }
       } else {
@@ -653,7 +648,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
           .exec(pseudoValue);
       JsRegexp notRegExp = new JsRegexp("(^|\\s)"
           + (JsUtils.truth(notTag) ? notTag.get(1)
-          : JsUtils.truth(notClass) ? notClass.get(1) : "")
+              : JsUtils.truth(notClass) ? notClass.get(1) : "")
           + "(\\s|$)", "i");
       if (JsUtils.truth(notAttr)) {
         String notAttribute = JsUtils.truth(notAttr.get(3)) ? notAttr
@@ -769,9 +764,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       prev = next = previous = previousMatch.getNode(k);
       Node prevParent = previous.getParentNode();
       if (prevParent != kParent) {
-        while (
-            JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
-                && prev.getNodeType() != Node.ELEMENT_NODE) {
+        while (JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
+            && prev.getNodeType() != Node.ELEMENT_NODE) {
         }
         while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))
             && next.getNodeType() != Node.ELEMENT_NODE) {
@@ -794,9 +788,8 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       prev = next = previous = previousMatch.getNode(o);
       Node prevParent = previous.getParentNode();
       if (prevParent != oParent) {
-        while (
-            JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
-                && !JsUtils
+        while (JsUtils.truth(prev = SelectorEngine.getPreviousSibling(prev))
+            && !JsUtils
                 .eq(prev.getNodeName(), previous.getNodeName())) {
         }
         while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))

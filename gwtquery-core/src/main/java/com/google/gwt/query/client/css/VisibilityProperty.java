@@ -33,5 +33,4 @@ public class VisibilityProperty extends CssProperty<Visibility> {
   private VisibilityProperty() {
     super(CSS_PROPERTY);
   }
-
 }

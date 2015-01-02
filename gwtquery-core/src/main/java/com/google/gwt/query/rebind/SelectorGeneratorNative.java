@@ -45,8 +45,8 @@ public class SelectorGeneratorNative extends SelectorGeneratorCssToXPath {
     } else if (selector.contains("!=")) {
       sw.println("return "
           + wrap(method, "querySelectorAll(\""
-          + selector.replaceAll("(\\[\\w+)!(=[^\\]]+\\])", ":not($1$2)")
-          + "\", root)") + ";");
+              + selector.replaceAll("(\\[\\w+)!(=[^\\]]+\\])", ":not($1$2)")
+              + "\", root)") + ";");
     } else if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {

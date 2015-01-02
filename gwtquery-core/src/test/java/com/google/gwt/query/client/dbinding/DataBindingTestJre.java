@@ -16,6 +16,8 @@
 package com.google.gwt.query.client.dbinding;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.junit.DoNotRunWith;
+import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
@@ -177,8 +179,7 @@ public class DataBindingTestJre extends GWTTestCase {
                                                  + "   }"
                                                  + "}";
 
-  public void
-  test_parse_json() {
+  public void test_parse_json() {
     GUser entity = GQ.create(GUser.class);
     entity.parse(JSON_USER_EXAMPLE, true);
 
@@ -191,8 +192,9 @@ public class DataBindingTestJre extends GWTTestCase {
     assertNotNull(entity.address().get("phone"));
   }
 
-  public void
-  test_parse_strict_json() {
+  // Nested strict not implemented in JS
+  @DoNotRunWith(Platform.Prod)
+  public void test_parse_strict_json() {
     GUser entity = GQ.create(GUser.class);
     entity.parse(JSON_USER_EXAMPLE, true);
     entity.strip();

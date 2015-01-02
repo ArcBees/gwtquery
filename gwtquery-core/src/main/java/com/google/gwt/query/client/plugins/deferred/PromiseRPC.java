@@ -20,10 +20,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Utility class used to create promises for RPC services.
  * <pre>
  *        PromiseRPC<String> greeting = new PromiseRPC<String>();
- *        
+ * 
  *        GreetingServiceAsync greetingService = GWT.create(GreetingService.class);
  *        greetingService.greetServer("hi", greeting);
- *        
+ * 
  *        greeting.fail(new Function(){
  *          public void f() {
  *            Throwable error = arguments(0);
@@ -34,6 +34,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *          }
  *        });
  * </pre>
+ *
+ * @param <T>
  */
 public class PromiseRPC<T> extends DeferredPromiseImpl implements AsyncCallback<T> {
   public void onFailure(Throwable caught) {

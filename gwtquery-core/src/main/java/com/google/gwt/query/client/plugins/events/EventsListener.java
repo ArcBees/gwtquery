@@ -13,6 +13,8 @@
  */
 package com.google.gwt.query.client.plugins.events;
 
+import static com.google.gwt.query.client.GQuery.$;
+
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -31,13 +33,11 @@ import com.google.gwt.user.client.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.gwt.query.client.GQuery.$;
-
 /**
  * This class implements an event queue instance for one Element. The queue instance is configured
  * as the default event listener in GWT.
  *
- * The reference to this queue is stored as a unique variable in the element's DOM
+ * The reference to this queue is stored as a unique variable in the element's DOM.
  *
  * The class takes care of calling the appropriate functions for each browser event and it also
  * calls sinkEvents method.
@@ -324,7 +324,6 @@ public class EventsListener implements EventListener {
         if (newFunctions.length() > 0) {
           bindFunctionBySelector.put(cssSelector, newFunctions);
         }
-
       }
     }
 
@@ -370,7 +369,6 @@ public class EventsListener implements EventListener {
 
       return Element.as(eventTarget);
     }
-
   }
 
   public static final String EVENT_DATA = "___event_datas";
@@ -401,7 +399,7 @@ public class EventsListener implements EventListener {
 
   /**
    * We have to set the gQuery event listener to the element again when
-   * the element is a widget, because when GWT detaches a widget it removes the 
+   * the element is a widget, because when GWT detaches a widget it removes the
    * event listener.
    */
   public static void rebind(Element e) {
@@ -412,44 +410,44 @@ public class EventsListener implements EventListener {
   }
 
   private static native void cleanGQListeners(Element elem) /*-{
-		if (elem.__gwtlistener) {
+    if (elem.__gwtlistener) {
       @com.google.gwt.user.client.DOM::setEventListener(*)(elem, elem.__gwtlistener);
-		}
-		elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
+    }
+    elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
   }-*/;
 
   private static native EventsListener getGQueryEventListener(Element elem) /*-{
-		return elem.__gqueryevent;
+    return elem.__gqueryevent;
   }-*/;
 
   private static native EventListener getGwtEventListener(Element elem) /*-{
-		return elem.__gwtlistener;
+    return elem.__gwtlistener;
   }-*/;
 
-  private static native void init(Element elem, EventsListener gqevent)/*-{
-		elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
+  private static native void init(Element elem, EventsListener gqevent) /*-{
+    elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
     elem.__gqueryevent = gqevent;
     // Someone has reported that in IE the init can be called multiple times
     // causing a loop. We need some test to demonstrate this behaviour though.
     // Anyway we check this condition to avoid looping
-		if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
+    if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
   private static native void sinkBitlessEvent(Element elem, String name) /*-{
-		if (!elem.__gquery)
-			elem.__gquery = [];
-		if (elem.__gquery[name])
-			return;
-		elem.__gquery[name] = true;
+    if (!elem.__gquery)
+      elem.__gquery = [];
+    if (elem.__gquery[name])
+      return;
+    elem.__gquery[name] = true;
 
-		var handle = function(event) {
-			elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;)(event);
-		};
+    var handle = function(event) {
+      elem.__gqueryevent.@com.google.gwt.query.client.plugins.events.EventsListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;)(event);
+    };
 
-		if (elem.addEventListener)
-			elem.addEventListener(name, handle, true);
-		else
-			elem.attachEvent("on" + name, handle);
+    if (elem.addEventListener)
+      elem.addEventListener(name, handle, true);
+    else
+      elem.attachEvent("on" + name, handle);
   }-*/;
 
   int eventBits = 0;
@@ -493,8 +491,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2){
@@ -502,7 +500,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -535,8 +533,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2) {
@@ -544,7 +542,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -553,8 +551,6 @@ public class EventsListener implements EventListener {
 
       die(b, nameSpace, eventName, originalEventName, cssSelector);
     }
-
-
   }
 
   public void die(int eventbits, String nameSpace, String eventName, String originalEventName,
@@ -638,7 +634,6 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2) {
@@ -646,7 +641,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -732,7 +727,7 @@ public class EventsListener implements EventListener {
 
   public void unbind(int eventbits, String namespace, String eventName, String originalEventType,
       Function f) {
-    
+
     JsObjectArray<BindFunction> newList = JsObjectArray.createArray().cast();
     for (int i = 0; i < elementEvents.length(); i++) {
       BindFunction listener = elementEvents.get(i);
@@ -757,7 +752,6 @@ public class EventsListener implements EventListener {
       newList.add(listener);
     }
     elementEvents = newList;
-
   }
 
   private boolean isNullOrEmpty(String s) {
@@ -772,8 +766,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2){
@@ -781,7 +775,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event
+      // handle special event
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -813,7 +807,6 @@ public class EventsListener implements EventListener {
       }
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-
     } else {
       sinkBitlessEvent(element, eventName);
     }

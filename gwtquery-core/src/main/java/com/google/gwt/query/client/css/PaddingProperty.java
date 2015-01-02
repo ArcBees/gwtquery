@@ -23,6 +23,9 @@ import com.google.gwt.dom.client.Style;
  */
 public class PaddingProperty extends CssProperty<Length> {
 
+  /**
+   * ShorthandPaddingProperty.
+   */
   public static class ShorthandPaddingProperty implements HasCssValue {
 
     private ShorthandPaddingProperty() {
@@ -37,30 +40,27 @@ public class PaddingProperty extends CssProperty<Length> {
     }
 
     /**
-     * Apply the same padding to all sides
+     * Apply the same padding to all sides.
      */
     public CssSetter with(Length padding) {
       return new MultipleValueCssSetter(getCssName(), padding);
-
     }
 
     /**
      * The top and bottom paddings are set to the first value and the right and
-     * left paddings are set to the second
+     * left paddings are set to the second.
      */
     public CssSetter with(Length topAndBottom, Length leftAndRight) {
       return new MultipleValueCssSetter(getCssName(), topAndBottom,
           leftAndRight);
-
     }
 
     /**
      * The top padding is set to the first value, the left and right paddings
-     * are set to the second, and the bottom padding is set to the third
+     * are set to the second, and the bottom padding is set to the third.
      */
     public CssSetter with(Length top, Length leftAndRight, Length bottom) {
       return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
-
     }
 
     /**
@@ -70,9 +70,7 @@ public class PaddingProperty extends CssProperty<Length> {
         Length padding4) {
       return new MultipleValueCssSetter(getCssName(), padding1, padding2,
           padding3, padding4);
-
     }
-
   }
 
   private static String PADDING_BOTTOM_PROPERTY = "paddingBottom";
@@ -92,5 +90,4 @@ public class PaddingProperty extends CssProperty<Length> {
   private PaddingProperty(String cssName) {
     super(cssName);
   }
-
 }

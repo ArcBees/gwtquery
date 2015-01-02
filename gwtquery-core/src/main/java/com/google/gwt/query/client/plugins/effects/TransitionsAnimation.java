@@ -30,10 +30,13 @@ import com.google.gwt.regexp.shared.MatchResult;
 
 /**
  * Animation effects on any numeric CSS3 property or transformation
- * using CSS3 transitions
+ * using CSS3 transitions.
  */
 public class TransitionsAnimation extends PropertiesAnimation {
 
+  /**
+   * TransitionAnimation with Clip capabilities.
+   */
   public static class TransitionsClipAnimation extends TransitionsAnimation {
 
     private Action action;
@@ -183,7 +186,6 @@ public class TransitionsAnimation extends PropertiesAnimation {
           trsStart = "" + start;
           g.css(key, start + unit);
         }
-
       } else {
         trsStart = "";
         trsEnd = val;

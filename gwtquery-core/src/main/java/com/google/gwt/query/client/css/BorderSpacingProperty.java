@@ -38,7 +38,7 @@ public class BorderSpacingProperty extends
 
     /**
      * Construct a {@link BorderSpacing} object with same horizontal and
-     * vertical spacing
+     * vertical spacing.
      */
     public BorderSpacing(Length spacing) {
       this(spacing, spacing);
@@ -66,7 +66,6 @@ public class BorderSpacingProperty extends
 
   public static void init() {
     CSS.BORDER_SPACING = new BorderSpacingProperty();
-
   }
 
   private BorderSpacingProperty() {

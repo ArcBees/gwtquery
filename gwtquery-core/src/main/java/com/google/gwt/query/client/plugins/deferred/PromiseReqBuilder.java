@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.client.plugins.deferred;
 
 /*
@@ -21,8 +36,8 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.RequestPermissionException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
@@ -61,14 +76,16 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
   /**
    * Using this constructor we access to some things in the xmlHttpRequest
    * which are not available in GWT, like adding progress handles or sending
-   * javascript data (like forms in modern html5 file api)
+   * javascript data (like forms in modern html5 file api).
    */
   public PromiseReqBuilder(Settings settings) {
     String httpMethod = settings.getType();
     String url = settings.getUrl();
     IsProperties data = settings.getData();
     String ctype = settings.getContentType();
-    Boolean isFormData = data != null && data.getDataImpl() instanceof JavaScriptObject && JsUtils.isFormData(data.<JavaScriptObject>getDataImpl());
+    Boolean isFormData =
+        data != null && data.getDataImpl() instanceof JavaScriptObject
+            && JsUtils.isFormData(data.<JavaScriptObject> getDataImpl());
 
     XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
     try {
@@ -134,7 +151,8 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     });
 
     try {
-      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl() : settings.getDataString());
+      JsUtils.runJavascriptFunction(xmlHttpRequest, "send", isFormData ? data.getDataImpl()
+          : settings.getDataString());
     } catch (JavaScriptException e) {
       onError(null, e);
     }
@@ -148,21 +166,22 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
     int status = response.getStatusCode();
     if (status <= 0 || status >= 400) {
       String statusText = status <= 0 ? "Bad CORS" : response.getStatusText();
-      onError(request, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n" + response.getText()));
+      onError(request, new RequestException("HTTP ERROR: " + status + " " + statusText + "\n"
+          + response.getText()));
     } else {
       dfd.resolve(response, request);
     }
   }
 
   /**
-   * Using violator pattern to execute private method
+   * Using violator pattern to execute private method.
    */
   private native void fireOnResponseReceivedVltr(Request rq, RequestCallback cb) /*-{
     rq.@com.google.gwt.http.client.Request::fireOnResponseReceived(Lcom/google/gwt/http/client/RequestCallback;)(cb);
   }-*/;
 
   /**
-   * Using violator pattern to use protected constructor
+   * Using violator pattern to use protected constructor.
    */
   private native Request createRequestVltr(XMLHttpRequest rq, int ms, RequestCallback cb) /*-{
     return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq,ms,cb);

@@ -25,13 +25,13 @@ import com.google.gwt.query.client.Predicate;
 
 /**
  * GWT clone of jQueryUi-core. This class define some function present in the
- * jQuery-ui core and not directly in jQuery
+ * jQuery-ui core and not directly in jQuery.
  *
  */
 public class UiPlugin extends GQuery {
 
   /**
-   * A POJO used to store dimension of an element
+   * A POJO used to store dimension of an element.
    *
    */
   public static class Dimension {
@@ -56,7 +56,7 @@ public class UiPlugin extends GQuery {
     }
 
     /**
-     * return the width value
+     * return the width value.
      */
     public int getWidth() {
       return width;
@@ -76,14 +76,13 @@ public class UiPlugin extends GQuery {
         scrollParent = gQueryUi.parents().filter(new Predicate() {
 
           public boolean f(Element e, int index) {
-            GQuery $e = GQuery.$(e);
-            String position = $e.css("position", true);
+            GQuery g = GQuery.$(e);
+            String position = g.css("position", true);
             return ("relative".equals(position) || "absolute".equals(position) || "fixed"
                 .equals(position))
-                && isOverflowEnabled($e);
+                && isOverflowEnabled(g);
           }
         });
-
       } else {
         scrollParent = gQueryUi.parents().filter(new Predicate() {
 
@@ -94,14 +93,13 @@ public class UiPlugin extends GQuery {
       }
       return scrollParent.length() > 0 ? $(scrollParent.get(0))
           : $(getViewportElement());
-
     }
 
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
       return "absolute".equals(gQueryUi.css("position"));
     }
 
-    private final Element getViewportElement() {
+    private Element getViewportElement() {
       return GQuery.document.isCSS1Compat() ? GQuery.document
           .getDocumentElement() : GQuery.document.getBody();
     }
@@ -111,7 +109,6 @@ public class UiPlugin extends GQuery {
           + e.css("overflow-y", true);
       return overflow.contains("auto") || overflow.contains("scroll");
     }
-
   }
 
   @SuppressWarnings("unused")
@@ -123,7 +120,6 @@ public class UiPlugin extends GQuery {
       return ("absolute".equals(position) || "relative".equals(position) || "static"
           .equals(position));
     }
-
   }
 
   public static Class<UiPlugin> GQueryUi = UiPlugin.class;
@@ -150,7 +146,7 @@ public class UiPlugin extends GQuery {
       handlerManager.fireEvent(e);
     }
     if (callback != null) {
-      callback.f(element.<com.google.gwt.dom.client.Element>cast());
+      callback.f(element.<com.google.gwt.dom.client.Element> cast());
     }
   }
 
@@ -161,7 +157,6 @@ public class UiPlugin extends GQuery {
   protected UiPlugin(GQuery gq) {
     super(gq);
   }
-
 
   /**
    * Return the immediate scrolling parent.
@@ -177,5 +172,4 @@ public class UiPlugin extends GQuery {
   protected void trigger(GwtEvent<?> e, Function callback, Element element) {
     trigger(e, callback, element, eventBus);
   }
-
 }

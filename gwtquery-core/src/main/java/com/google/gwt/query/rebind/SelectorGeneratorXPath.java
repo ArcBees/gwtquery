@@ -57,8 +57,10 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
     public String tagRelation;
   }
 
-  private static Pattern cssSelectorRegExp = Pattern.compile(
-      "^(\\w+)?(#[a-zA-Z_0-9\u00C0-\uFFFF\\-\\_]+|(\\*))?((\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+)?\\]+)*)?(((:\\w+[a-zA-Z_0-9\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+|((\\w*\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[a-zA-Z_0-9\\-]*))\\))?)*)?(>|\\+|~)?");
+  private static Pattern cssSelectorRegExp =
+      Pattern
+          .compile(
+          "^(\\w+)?(#[a-zA-Z_0-9\u00C0-\uFFFF\\-\\_]+|(\\*))?((\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+)?\\]+)*)?(((:\\w+[a-zA-Z_0-9\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+|((\\w*\\.[a-zA-Z_0-9\u00C0-\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[a-zA-Z_0-9\u00C0-\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[a-zA-Z_0-9\\-]*))\\))?)*)?(>|\\+|~)?");
 
   private static Pattern selectorSplitRegExp = Pattern
       .compile("(?:\\[[^\\[]*\\]|\\(.*\\)|[^\\s\\+>~\\[\\(])+|[\\+>~]");
@@ -227,20 +229,22 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
 
   private Sequence getSequence(String expression) {
     int start = 0, add = 2, max = -1, modVal = -1;
-    Pattern expressionRegExp = Pattern.compile(
-        "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n([\\+\\-]\\d+)?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
+    Pattern expressionRegExp =
+        Pattern
+            .compile(
+            "^((odd|even)|([1-9]\\d*)|((([1-9]\\d*)?)n([\\+\\-]\\d+)?)|(\\-(([1-9]\\d*)?)n\\+(\\d+)))$");
     Matcher pseudoValue = expressionRegExp.matcher(expression);
     if (!pseudoValue.matches()) {
       return null;
     } else {
-      if (notNull(pseudoValue.group(2))) {   // odd or even
+      if (notNull(pseudoValue.group(2))) { // odd or even
         start = ("odd".equals(pseudoValue.group(2))) ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
-      } else if (notNull(pseudoValue.group(3))) {      // single digit
+      } else if (notNull(pseudoValue.group(3))) { // single digit
         start = Integer.parseInt(pseudoValue.group(3), 10);
         add = 0;
         max = start;
-      } else if (notNull(pseudoValue.group(4))) {      // an+b
+      } else if (notNull(pseudoValue.group(4))) { // an+b
         add = notNull(pseudoValue.group(6)) ? getInt(pseudoValue.group(6), 1)
             : 1;
         start = notNull(pseudoValue.group(7)) ? getInt(pseudoValue.group(7), 0)
@@ -250,7 +254,7 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
         }
         modVal = (start > add) ? (start - add) % add
             : ((start == add) ? 0 : start);
-      } else if (notNull(pseudoValue.group(8))) {      // -an+b
+      } else if (notNull(pseudoValue.group(8))) { // -an+b
         add = notNull(pseudoValue.group(10)) ? Integer
             .parseInt(pseudoValue.group(10), 10) : 1;
         start = max = Integer.parseInt(pseudoValue.group(10), 10);
@@ -292,8 +296,8 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
           } else {
             xpath = position + " mod " + sequence.add + " = " + sequence.modVal
                 + ((sequence.start > 1) ? " and " + position + " >= "
-                + sequence.start : "") + ((sequence.max > 0) ? " and "
-                + position + " <= " + sequence.max : "");
+                    + sequence.start : "") + ((sequence.max > 0) ? " and "
+                    + position + " <= " + sequence.max : "");
           }
         }
       }

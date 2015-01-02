@@ -38,7 +38,6 @@ public class ZIndexProperty implements TakesInteger {
   private ZIndexProperty() {
   }
 
-
   public String getCssName() {
     return CSS_PROPERTY;
   }
@@ -53,19 +52,18 @@ public class ZIndexProperty implements TakesInteger {
 
   /**
    * returns a {@link CssSetter} object setting <i>z-index</i> property to the
-   * specified <code>value</code>
+   * specified <code>value</code>.
    */
   public CssSetter with(Integer value) {
     return new SimpleCssSetter(CSS_PROPERTY, value != null ? value.toString() : null);
   }
 
   /**
-   * See GWT issue 5548
+   * See GWT issue 5548.
    * http://code.google.com/p/google-web-toolkit/issues/detail?id=5548
    */
   private native String getZIndex(Style s) /*-{
-		//force to return a string
-		return "" + s["zIndex"];
+    // force to return a string
+    return "" + s["zIndex"];
   }-*/;
-
 }

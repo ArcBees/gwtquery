@@ -48,8 +48,8 @@ public class ClipAnimation extends PropertiesAnimation {
     BIDIRECTIONAL, HORIZONTAL, VERTICAL
   }
 
-  private static final String[] attrsToSave = new String[]{
-    "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
+  private static final String[] attrsToSave = new String[] {
+      "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
 
   private Action action;
   private Corner corner;
@@ -120,7 +120,7 @@ public class ClipAnimation extends PropertiesAnimation {
     if (action == null) {
       return;
     }
-    currentAction = action != Action.TOGGLE ? action :  hidden ? Action.SHOW : Action.HIDE;
+    currentAction = action != Action.TOGGLE ? action : hidden ? Action.SHOW : Action.HIDE;
 
     g.saveCssAttrs(attrsToSave);
 

@@ -31,13 +31,11 @@ public class Predicate {
    * @param index
    *        the element position in the gquery elements array.
    */
-  public  boolean f(Element e, int index) {
-    return f((Object)e, index);
+  public boolean f(Element e, int index) {
+    return f((Object) e, index);
   }
 
   public <T> boolean f(T e, int index) {
     return false;
   }
-
-
 }

@@ -20,13 +20,16 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Base class for Css property
+ * Base class for Css property.
  *
  * @param <T> Class of the value associated with the css property
  */
 public class CssProperty<T extends HasCssName> implements
     TakesCssValue<T> {
 
+  /**
+   * CssSetterImpl.
+   */
   protected class CssSetterImpl implements CssSetter {
 
     private T cssValue;

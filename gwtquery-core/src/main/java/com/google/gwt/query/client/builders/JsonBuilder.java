@@ -17,7 +17,6 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.query.client.IsProperties;
 
-
 /**
  * Tagging interface used to generate JsonBuilder classes.
  */
@@ -32,8 +31,9 @@ public interface JsonBuilder extends IsProperties {
 
   /**
    * Returns the wrapped object, normally a Properties jso in client
-   * but can be used to return the underlying Json implementation in JVM
-   * @deprecated use asObject() instead
+   * but can be used to return the underlying Json implementation in JVM.
+   * 
+   * @deprecated use asObject() instead.
    */
   <J> J getProperties();
 

@@ -26,7 +26,7 @@ import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl
  *        dfd.resolve("done");
  *      }
  *    };
- *    
+ * 
  *    doSomething.progress(new Function() {
  *      public void f() {
  *        String hi = arguments(0);
@@ -42,7 +42,7 @@ public abstract class PromiseFunction extends DeferredPromiseImpl {
   public PromiseFunction() {
     f(dfd);
   }
-  
+
   /**
    * This function is called once when the promise is created and the
    * new deferred is available.

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, The gwtquery team.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.google.gwt.query.vm;
 
 import com.google.gwt.query.client.Function;
@@ -17,7 +32,7 @@ import elemental.json.impl.JreJsonNull;
  * It uses java.util.reflect.Proxy to implement JsonBuilders
  * and elemental light weight json to handle json data.
  */
-public class JsonFactoryJre implements JsonFactory  {
+public class JsonFactoryJre implements JsonFactory {
 
  
 
@@ -28,14 +43,17 @@ public class JsonFactoryJre implements JsonFactory  {
    * Functions in JVM.
    */
   static class JreJsonFunction extends JreJsonNull {
-    final private Function function;
+    private final Function function;
+
     public JreJsonFunction(Function f) {
       function = f;
     }
+
     @Override
     public String toJson() {
       return function.toString();
     }
+
     public Function getFunction() {
       return function;
     }
@@ -55,12 +73,14 @@ public class JsonFactoryJre implements JsonFactory  {
 
   public IsProperties createBinder() {
     InvocationHandler handler = new JsonBuilderHandler();
-    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
+    return (IsProperties) Proxy.newProxyInstance(IsProperties.class.getClassLoader(),
+        new Class[] {IsProperties.class}, handler);
   }
 
   public IsProperties createBinder(JsonObject jso) {
     InvocationHandler handler = new JsonBuilderHandler(jso);
-    return (IsProperties)Proxy.newProxyInstance(IsProperties.class.getClassLoader(), new Class[] {IsProperties.class}, handler);
+    return (IsProperties) Proxy.newProxyInstance(IsProperties.class.getClassLoader(),
+        new Class[] {IsProperties.class}, handler);
   }
 
   @Override

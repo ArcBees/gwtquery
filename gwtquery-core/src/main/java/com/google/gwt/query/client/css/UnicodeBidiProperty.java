@@ -18,13 +18,13 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * This property defines the text direction/writing direction
+ * This property defines the text direction/writing direction.
  */
 public class UnicodeBidiProperty extends
     CssProperty<UnicodeBidiProperty.UnicodeBidi> {
 
   /**
-   * Define possible values for <i>unicode-bidi</i> property
+   * Define possible values for <i>unicode-bidi</i> property.
    *
    */
   public static enum UnicodeBidi implements HasCssName {
@@ -63,7 +63,6 @@ public class UnicodeBidiProperty extends
     public String getCssName() {
       return name().toLowerCase().replace('_', '-');
     }
-
   }
 
   private static final String CSS_PROPERTY = "unicodeBidi";

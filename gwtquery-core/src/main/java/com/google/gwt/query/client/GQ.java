@@ -15,17 +15,15 @@
  */
 package com.google.gwt.query.client;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import org.apache.http.MethodNotSupportedException;
-
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.JsonFactory;
 import com.google.gwt.query.client.plugins.ajax.Ajax.AjaxTransport;
 import com.google.gwt.query.client.plugins.ajax.AjaxTransportJs;
 import com.google.gwt.query.vm.AjaxTransportJre;
 import com.google.gwt.query.vm.JsonFactoryJre;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * A set of useful methods for gQuery which can be run in browser or JVM.
@@ -43,7 +41,7 @@ public abstract class GQ {
   }
 
   /**
-   * Create an instance of a JsonBuilder object whose type is <T>
+   * Create an instance of a JsonBuilder object whose type is <T>.
    */
   public static <T extends JsonBuilder> T create(Class<T> clz) {
     return getFactory().create(clz);
@@ -91,7 +89,7 @@ public abstract class GQ {
 
   /**
    * Return the appropriate transport implementation depending on the runtime
-   * environment: browser or JVM
+   * environment: browser or JVM.
    */
   public static AjaxTransport getAjaxTransport() {
     initFactory();
@@ -119,7 +117,7 @@ public abstract class GQ {
     if (jsonFactory == null) {
       try {
         // We use reflection because the server side should not
-        // depend on gwt-servlet nor gwt-dev. Hence if GWT is not 
+        // depend on gwt-servlet nor gwt-dev. Hence if GWT is not
         // in our classpath means that we are in server side, otherwise
         // we use GWT to figure out if we are running devmode.
         // This is run once, so no performance issues to worry about.
@@ -131,7 +129,7 @@ public abstract class GQ {
           // We are running DevMode, so create Js versions of the factories
           method = gwt.getMethod("create", Class.class);
           ret = method.invoke(null,
-          new Object[] {JsonFactory.class});
+              new Object[] {JsonFactory.class});
           jsonFactory = (JsonFactory) ret;
           ajaxTransport = new AjaxTransportJs();
           return;

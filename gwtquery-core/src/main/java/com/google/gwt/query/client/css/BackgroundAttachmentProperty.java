@@ -25,6 +25,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class BackgroundAttachmentProperty extends
     CssProperty<BackgroundAttachmentProperty.BackgroundAttachment> {
 
+  /**
+   * BackgroundAttachment.
+   */
   public static enum BackgroundAttachment implements HasCssName {
     /**
      * Background image is fixed.
@@ -46,7 +49,6 @@ public class BackgroundAttachmentProperty extends
     };
 
     public abstract String getCssName();
-
   }
 
   private static final String CSS_PROPERTY = "backgroundAttachment";
@@ -60,5 +62,4 @@ public class BackgroundAttachmentProperty extends
   private BackgroundAttachmentProperty() {
     super(CSS_PROPERTY);
   }
-
 }

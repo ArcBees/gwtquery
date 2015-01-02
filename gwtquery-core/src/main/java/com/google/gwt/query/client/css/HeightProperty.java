@@ -17,7 +17,7 @@ package com.google.gwt.query.client.css;
 
 /**
  * All height css properties : <i>max-height</i>, <i>min-height</i>,
- * <i>height</i>
+ * <i>height</i>.
  */
 public class HeightProperty extends CssProperty<Length> {
 
@@ -34,5 +34,4 @@ public class HeightProperty extends CssProperty<Length> {
   private HeightProperty(String cssName) {
     super(cssName);
   }
-
 }

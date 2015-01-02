@@ -39,6 +39,7 @@ public class JsUtils {
    */
   public static class JsFunction extends Function implements Command {
     private JavaScriptObject jso = null;
+
     public JsFunction(JavaScriptObject f) {
       if (JsUtils.isFunction(f)) {
         jso = f;
@@ -47,6 +48,10 @@ public class JsUtils {
 
     public boolean equals(Object obj) {
       return jso.equals(obj);
+    }
+
+    public int hashCode() {
+      return jso.hashCode();
     }
 
     private native Object exec(JavaScriptObject f, Object data) /*-{
@@ -68,7 +73,7 @@ public class JsUtils {
    * Wraps a GQuery function into a native javascript one so as we can
    * export Java methods without using JSNI.
    */
-  public static native JavaScriptObject wrapFunction (Function f) /*-{
+  public static native JavaScriptObject wrapFunction(Function f) /*-{
     return function(r) {
       var o = @java.util.ArrayList::new()();
       for (i in arguments) {
@@ -81,6 +86,9 @@ public class JsUtils {
     }
   }-*/;
 
+  /**
+   * Default JsUtils implementation.
+   */
   public static class JsUtilsImpl {
     public native Properties parseJSON(String json) /*-{
       return $wnd.JSON.parse(json);
@@ -117,6 +125,9 @@ public class JsUtils {
     }-*/;
   }
 
+  /**
+   * IE JsUtils implemetation.
+   */
   public static class JsUtilsImplIE6 extends JsUtilsImpl {
     public static final native Properties evalImpl(String properties) /*-{
       return eval(properties);
@@ -136,13 +147,13 @@ public class JsUtils {
       // @see https://github.com/douglascrockford/JSON-js/blob/master/json2.js
       Properties prop = js.cast();
       String ret = "";
-      for (String k : prop.keys()){
+      for (String k : prop.keys()) {
         String ky = k.matches("\\d+") ? k : "\"" + k + "\"";
         JsCache o = prop.getArray(k).cast();
         if (o != null) {
           ret += ky + ":[";
-          for (int i = 0, l = o.length(); i < l ; i++) {
-            Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          for (int i = 0, l = o.length(); i < l; i++) {
+            Properties p = o.<JsCache> cast().getJavaScriptObject(i);
             if (p != null) {
               ret += p.toJsonString() + ",";
             } else {
@@ -159,9 +170,9 @@ public class JsUtils {
           }
         }
       }
-      return "{" + ret.replaceAll(",\\s*([\\]}]|$)","$1")
-      .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
-      + "}";
+      return "{" + ret.replaceAll(",\\s*([\\]}]|$)", "$1")
+          .replaceAll("([:,\\[])\"(-?[\\d\\.]+|null|false|true)\"", "$1$2")
+          + "}";
     }
 
     @Override
@@ -201,29 +212,30 @@ public class JsUtils {
    * Returns a property present in a javascript object.
    */
   public static <T> T prop(JavaScriptObject o, Object id, Class<? extends T> type) {
-    return o == null ? null : o.<JsCache>cast().get(id, type);
+    return o == null ? null : o.<JsCache> cast().get(id, type);
   }
 
   /**
    * Returns a property present in a javascript object.
    */
   public static <T> T prop(JavaScriptObject o, Object id) {
-    return o == null ? null : o.<JsCache>cast().<T>get(id);
+    return o == null ? null : o.<JsCache> cast().<T> get(id);
   }
 
   /**
-   * Set a property to a javascript object
+   * Set a property to a javascript object.
    */
   public static void prop(JavaScriptObject o, Object id, Object val) {
     if (o != null) {
-      o.<JsCache>cast().put(id, val);
+      o.<JsCache> cast().put(id, val);
     }
   }
 
   /**
-   * Camelize style property names. for instance: font-name -> fontName
+   * Camelize style property names.
+   * for instance: font-name -> fontName
    */
-  public static native String camelize(String s)/*-{
+  public static native String camelize(String s) /*-{
     return s.replace(/\-(\w)/g, function(all, letter) {
       return letter.toUpperCase();
     });
@@ -256,7 +268,8 @@ public class JsUtils {
   }
 
   /**
-   * Use the method in the gquery class $(elem).cur(prop, force);
+   * Use the method in the gquery class.
+   *  $(elem).cur(prop, force);
    */
   @Deprecated
   public static double cur(Element elem, String prop, boolean force) {
@@ -289,28 +302,29 @@ public class JsUtils {
    * Check if an object has already a property with name <code>name</code>
    * defined.
    */
-  public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
+  public static native boolean hasProperty(JavaScriptObject o, String name) /*-{
     return o && name in o;
   }-*/;
 
   /**
    * Check whether an element has an attribute, this is here since GWT Element.getAttribute
    * implementation returns an empty string instead of null when the attribute is not
-   * present
+   * present.
    */
-  public static native boolean hasAttribute(Element o, String name)/*-{
+  public static native boolean hasAttribute(Element o, String name) /*-{
     return !!(o && o.getAttribute(name));
   }-*/;
 
   /**
-   * Hyphenize style property names. for instance: fontName -> font-name
+   * Hyphenize style property names.
+   *  for instance: fontName -> font-name
    */
   public static native String hyphenize(String name) /*-{
     return name.replace(/([A-Z])/g, "-$1").toLowerCase();
   }-*/;
 
   /**
-   * Check is a javascript object can be used as an array
+   * Check is a javascript object can be used as an array.
    */
   public static native boolean isArray(JavaScriptObject o) /*-{
     return Object.prototype.toString.call(o) == '[object Array]'
@@ -318,28 +332,29 @@ public class JsUtils {
   }-*/;
 
   /**
-   * Check is a javascript object is a FormData
+   * Check is a javascript object is a FormData.
    */
   public static native boolean isFormData(JavaScriptObject o) /*-{
     return Object.prototype.toString.call(o) == '[object FormData]';
   }-*/;
 
   /**
-   * Return whether the event was prevented
+   * Return whether the event was prevented.
    */
-  public static native boolean isDefaultPrevented(JavaScriptObject e)/*-{
+  public static native boolean isDefaultPrevented(JavaScriptObject e) /*-{
     return e.defaultPrevented || e.returnValue === false || e.getPreventDefault
         && e.getPreventDefault() ? true : false;
   }-*/;
 
   /**
-   * Return whether a node is detached to the dom
+   * Return whether a node is detached to the DOM.
+   * 
    * Be careful : This method works only on node that should be inserted within the body node.
    */
   public static boolean isDetached(Node n) {
     assert n != null;
 
-    if ("html".equalsIgnoreCase(n.getNodeName())){
+    if ("html".equalsIgnoreCase(n.getNodeName())) {
       return false;
     }
 
@@ -347,28 +362,28 @@ public class JsUtils {
   }
 
   /**
-   * Check is a javascript object can be cast to an Element
+   * Check is a javascript object can be cast to an Element.
    */
   public static native boolean isElement(Object o) /*-{
     return !!o && 'nodeType' in o && 'nodeName' in o;
   }-*/;
 
   /**
-   * Check is a javascript object can be cast to an Event
+   * Check is a javascript object can be cast to an Event.
    */
   public static boolean isEvent(JavaScriptObject o) {
     return hasProperty(o, "currentTarget");
   }
 
   /**
-   * Check is a javascript object is a function
+   * Check is a javascript object is a function.
    */
   public static native boolean isFunction(JavaScriptObject o) /*-{
     return Object.prototype.toString.call(o) == '[object Function]';
   }-*/;
 
   /**
-   * Check is a javascript can be cast to a node list
+   * Check is a javascript can be cast to a node list.
    */
   public static native boolean isNodeList(JavaScriptObject o) /*-{
     var r = Object.prototype.toString.call(o);
@@ -377,14 +392,14 @@ public class JsUtils {
   }-*/;
 
   /**
-   * Check is a javascript object is a Window
+   * Check is a javascript object is a Window.
    */
   public static boolean isWindow(JavaScriptObject o) {
     return hasProperty(o, "alert");
   }
 
   /**
-   * Check if an element is a DOM or a XML node
+   * Check if an element is a DOM or a XML node.
    */
   public static boolean isXML(Node o) {
     return o == null ? false
@@ -461,10 +476,9 @@ public class JsUtils {
   /**
    * Utility method to cast objects to array of string in production.
    */
-  public static native String[] castArrayString(Object a)/*-{
+  public static native String[] castArrayString(Object a) /*-{
     return a
   }-*/;
-
 
   /**
    * Call via jsni any arbitrary function present in a Javascript object.
@@ -486,10 +500,12 @@ public class JsUtils {
    * @return the javascript object returned by the jsni method or null.
    */
   public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
-    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());
+    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args)
+        .<JsArrayMixed> cast());
   }
 
-  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
+  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth,
+      JsArrayMixed args) /*-{
     return (f = o && o[meth])
         && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)
         && @com.google.gwt.query.client.js.JsCache::gwtBox(*)([f.apply(o, args)]);
@@ -510,7 +526,7 @@ public class JsUtils {
   }-*/;
 
   /**
-   * Remove duplicates from an elements array
+   * Remove duplicates from an elements array.
    */
   public static JsArray<Element> unique(JsArray<Element> a) {
     return utilsImpl.unique(a);
@@ -526,6 +542,7 @@ public class JsUtils {
 
   /**
    * Returns a QueryString representation of a JavascriptObject.
+   * 
    * TODO: jquery implementation accepts a second parameter (traditional)
    */
   public static String param(JavaScriptObject js) {
@@ -535,13 +552,13 @@ public class JsUtils {
       ret += ret.isEmpty() ? "" : "&";
       JsCache o = prop.getArray(k).cast();
       if (o != null) {
-        for (int i = 0, l = o.length(); i < l ; i++) {
+        for (int i = 0, l = o.length(); i < l; i++) {
           ret += i > 0 ? "&" : "";
-          Properties p = o.<JsCache>cast().getJavaScriptObject(i);
+          Properties p = o.<JsCache> cast().getJavaScriptObject(i);
           if (p != null) {
             ret += k + "[]=" + p.toJsonString();
           } else {
-            ret += k + "[]=" + o.getString(i) ;
+            ret += k + "[]=" + o.getString(i);
           }
         }
       } else {
