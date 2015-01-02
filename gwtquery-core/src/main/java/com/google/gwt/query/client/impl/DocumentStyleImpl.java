@@ -31,7 +31,8 @@ import com.google.gwt.user.client.DOM;
  */
 public class DocumentStyleImpl {
 
-  private static final RegExp cssNumberRegex = RegExp.compile("^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
+  private static final RegExp cssNumberRegex = RegExp.compile(
+      "^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
   private static final RegExp sizeRegex = RegExp.compile("^(client|offset|)(width|height)$", "i");
 
   /**
@@ -92,7 +93,7 @@ public class DocumentStyleImpl {
       return "";
     }
     name = fixPropertyName(name);
-    //value defined in the element style
+    // value defined in the element style
     String ret = elem.getStyle().getProperty(name);
 
     if (force) {
@@ -121,10 +122,10 @@ public class DocumentStyleImpl {
   }
 
   private Element attachTemporary(Element elem) {
-    Element  lastParent = $(elem).parents().last().get(0);
+    Element lastParent = $(elem).parents().last().get(0);
 
-    if (lastParent == null){
-      //the element itself is detached
+    if (lastParent == null) {
+      // the element itself is detached
       lastParent = elem;
     }
 
@@ -167,7 +168,8 @@ public class DocumentStyleImpl {
 
   // inline elements do not have width nor height unless we set it to inline-block
   private void fixInlineElement(Element e) {
-    if (e.getClientHeight() == 0 && e.getClientWidth() == 0 && "inline".equals(curCSS(e, "display", true))) {
+    if (e.getClientHeight() == 0 && e.getClientWidth() == 0
+        && "inline".equals(curCSS(e, "display", true))) {
       setStyleProperty(e, "display", "inline-block");
       setStyleProperty(e, "width", "auto");
       setStyleProperty(e, "height", "auto");
@@ -194,7 +196,8 @@ public class DocumentStyleImpl {
 
   public int getHeight(Element e) {
     fixInlineElement(e);
-    return (int) (e.getClientHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true)));
+    return (int) (e.getClientHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e,
+        "paddingBottom", true)));
   }
 
   public double getOpacity(Element e) {
@@ -204,11 +207,12 @@ public class DocumentStyleImpl {
 
   public int getWidth(Element e) {
     fixInlineElement(e);
-    return (int) (e.getClientWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true)));
+    return (int) (e.getClientWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e,
+        "paddingRight", true)));
   }
 
   /**
-   * Return whether the element is visible
+   * Return whether the element is visible.
    */
   public boolean isVisible(Element e) {
     return SelectorEngine.filters.get("visible").f(e, 0);
@@ -253,8 +257,8 @@ public class DocumentStyleImpl {
   protected native String getComputedStyle(Element elem, String hyphenName,
       String camelName, String pseudo) /*-{
     try {
-     var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
-     return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
+      var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
+      return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
     } catch(e) {return null;}
   }-*/;
 

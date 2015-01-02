@@ -15,9 +15,9 @@
  */
 package com.google.gwt.query.client.builders;
 
-import java.util.Date;
-
 import com.google.gwt.dom.client.Element;
+
+import java.util.Date;
 
 /**
  * Tagging interface used to generate XmlBuilder classes.
@@ -39,32 +39,32 @@ public interface XmlBuilder {
   Element getRootElement();
 
   /**
-   * Appends a node
+   * Appends a node.
    */
   void append(XmlBuilder x);
 
   /**
-   * Appends xml content
+   * Appends xml content.
    */
   void append(String x);
 
   /**
-   * Returns the text content of the element
+   * Returns the text content of the element.
    */
   String getText();
 
   /**
-   * Sets the text content of the element
+   * Sets the text content of the element.
    */
   <J> J setText(String t);
 
   /**
-   * Returns the text content of the element as a number
+   * Returns the text content of the element as a number.
    */
   double getTextAsNumber();
 
   /**
-   * Returns the text content of the element as a date
+   * Returns the text content of the element as a date.
    */
   Date getTextAsDate();
 

@@ -73,7 +73,7 @@ while(<F>) {
 }
 close(F);
 
-my $class = "public interface $oclass";
+my $class = "/**\n * $oclass.\n * \@param <T>\n */\npublic interface $oclass";
 if ($lazy) {
   $class .= "<T> extends LazyBase<T>" if ($lazy);
   $head .= "import com.google.gwt.query.client.GQuery.*;\n";

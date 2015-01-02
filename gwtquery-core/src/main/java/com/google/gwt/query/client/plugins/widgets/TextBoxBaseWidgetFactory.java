@@ -20,7 +20,9 @@ import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
+ * TextBoxBaseWidgetFactory.
  *
+ * @param <T>
  */
 public abstract class TextBoxBaseWidgetFactory<T extends TextBoxBase>
     implements WidgetFactory<T> {
@@ -39,7 +41,7 @@ public abstract class TextBoxBaseWidgetFactory<T extends TextBoxBase>
     return (T) textBox;
   }
 
-  protected String getEquivalentTagName(){
+  protected String getEquivalentTagName() {
     return "input";
   }
 
@@ -50,7 +52,8 @@ public abstract class TextBoxBaseWidgetFactory<T extends TextBoxBase>
     destination.setAccessKey(source.getAccessKey());
     destination.setDefaultValue(source.getDefaultValue());
     destination.setDisabled(source.isDisabled());
-    if (source.getMaxLength() > 0) destination.setMaxLength(source.getMaxLength());
+    if (source.getMaxLength() > 0)
+      destination.setMaxLength(source.getMaxLength());
     destination.setReadOnly(source.isReadOnly());
     destination.setSize(source.getSize());
     destination.setName(source.getName());

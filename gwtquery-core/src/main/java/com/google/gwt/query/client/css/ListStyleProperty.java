@@ -52,5 +52,4 @@ public class ListStyleProperty implements HasCssValue {
     return new MultipleValueCssSetter(CSS_PROPERTY, listStyleType,
         listStylePosition, listStyleImage);
   }
-
 }

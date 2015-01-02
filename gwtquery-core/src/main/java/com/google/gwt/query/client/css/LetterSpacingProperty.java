@@ -30,5 +30,4 @@ public class LetterSpacingProperty extends CssProperty<Length> {
   private LetterSpacingProperty() {
     super(CSS_PROPERTY);
   }
-
 }

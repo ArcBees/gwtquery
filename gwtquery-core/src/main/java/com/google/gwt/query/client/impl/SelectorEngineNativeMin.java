@@ -36,9 +36,9 @@ public class SelectorEngineNativeMin extends SelectorEngineImpl {
     } catch (Exception e) {
       console.error("GwtQuery: Selector '" + selector +
           "' is unsupported in this SelectorEngineNativeMin engine."
-          + " Do not use this syntax or configure your module to use a JS fallback. " + e.getMessage());
+          + " Do not use this syntax or configure your module to use a JS fallback. "
+          + e.getMessage());
       return null;
     }
   }
-
 }

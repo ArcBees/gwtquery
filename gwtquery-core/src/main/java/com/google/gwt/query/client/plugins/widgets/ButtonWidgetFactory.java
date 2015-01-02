@@ -17,8 +17,6 @@ package com.google.gwt.query.client.plugins.widgets;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.plugins.widgets.WidgetFactory;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.ui.Button;
 
 /**
@@ -32,15 +30,15 @@ public class ButtonWidgetFactory implements WidgetFactory<Button> {
     Button button = new Button();
     button.getElement().setInnerText(e.getInnerText());
 
-    if ("button".equalsIgnoreCase(e.getTagName())){
-      copyAttributes((ButtonElement)e.cast(), (ButtonElement)button.getElement().cast());
+    if ("button".equalsIgnoreCase(e.getTagName())) {
+      copyAttributes((ButtonElement) e.cast(), (ButtonElement) button.getElement().cast());
     }
 
     WidgetsUtils.replaceOrAppend(e, button);
     return button;
   }
 
-  protected void copyAttributes(ButtonElement source,ButtonElement destination) {
+  protected void copyAttributes(ButtonElement source, ButtonElement destination) {
     destination.setAccessKey(source.getAccessKey());
     destination.setDisabled(source.isDisabled());
     destination.setName(source.getName());

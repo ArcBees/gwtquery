@@ -55,5 +55,4 @@ public class EmptyCellsProperty extends
   private EmptyCellsProperty() {
     super(CSS_PROPERTY);
   }
-
 }

@@ -26,7 +26,7 @@ import com.google.gwt.dom.client.NodeList;
 public class JsNodeArray extends NodeList<Element> {
 
   public static JsNodeArray create() {
-    return create((Node)null);
+    return create((Node) null);
   }
 
   public static native JsNodeArray create(Node node) /*-{
@@ -34,15 +34,15 @@ public class JsNodeArray extends NodeList<Element> {
   }-*/;
 
   public static JsNodeArray create(NodeList<?> nl) {
-    JsNodeArray ret = create((Node)null);
+    JsNodeArray ret = create((Node) null);
     ret.pushAll(nl);
     return ret;
   }
 
-  protected JsNodeArray(){
+  protected JsNodeArray() {
   }
 
-  public final void addNode(Node n){
+  public final void addNode(Node n) {
     c().add(n);
   }
 
@@ -80,7 +80,7 @@ public class JsNodeArray extends NodeList<Element> {
 
   public final Element[] elements() {
     Element[] ret = new Element[size()];
-    for (int i=0 ; i<size(); i++) {
+    for (int i = 0; i < size(); i++) {
       ret[i] = getElement(i);
     }
     return ret;

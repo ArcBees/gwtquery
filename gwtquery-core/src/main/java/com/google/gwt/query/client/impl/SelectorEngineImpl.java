@@ -19,5 +19,4 @@ package com.google.gwt.query.client.impl;
  * Base/Utility class for runtime selector engine implementations.
  */
 public abstract class SelectorEngineImpl implements HasSelector {
-
 }

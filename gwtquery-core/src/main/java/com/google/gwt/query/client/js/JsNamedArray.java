@@ -18,9 +18,11 @@ package com.google.gwt.query.client.js;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Lightweight JSO backed implemented of a named array
+ * Lightweight JSO backed implemented of a named array.
+ *
+ * @param <T>
  */
-final public class JsNamedArray<T> extends JavaScriptObject {
+public final class JsNamedArray<T> extends JavaScriptObject {
 
   protected JsNamedArray() {
   }
@@ -31,14 +33,14 @@ final public class JsNamedArray<T> extends JavaScriptObject {
 
   @SuppressWarnings("unchecked")
   public T get(String key) {
-    return (T)c().get(key);
+    return (T) c().get(key);
   }
 
   public void put(String key, T val) {
     c().put(key, val);
   }
 
-  public final String[] keys() {
+  public String[] keys() {
     return c().keys();
   }
 
@@ -46,19 +48,19 @@ final public class JsNamedArray<T> extends JavaScriptObject {
     return c().length();
   }
 
-  public final Object[] values() {
+  public Object[] values() {
     return c().elements();
   }
 
-  public final boolean exists(String key){
+  public boolean exists(String key) {
     return c().exists(key);
   }
 
-  public final void delete(String key){
+  public void delete(String key) {
     c().delete(key);
   }
 
-  public final static <T> JsNamedArray<T> create() {
+  public static <T> JsNamedArray<T> create() {
     return createObject().cast();
   }
 }

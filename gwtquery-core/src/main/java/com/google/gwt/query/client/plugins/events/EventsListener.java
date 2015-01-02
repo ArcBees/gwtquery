@@ -40,7 +40,7 @@ import java.util.Map;
  * This class implements an event queue instance for one Element. The queue instance is configured
  * as the default event listener in GWT.
  *
- * The reference to this queue is stored as a unique variable in the element's DOM
+ * The reference to this queue is stored as a unique variable in the element's DOM.
  *
  * The class takes care of calling the appropriate functions for each browser event and it also
  * calls sinkEvents method.
@@ -49,7 +49,7 @@ import java.util.Map;
 public class EventsListener implements EventListener {
 
   /**
-   * Used for simulating mouseenter and mouseleave events
+   * Used for simulating mouseenter and mouseleave events.
    */
   private static class MouseSpecialEvent extends DefaultSpecialEvent {
     public MouseSpecialEvent(final String type, String delegateType) {
@@ -72,7 +72,7 @@ public class EventsListener implements EventListener {
   }
 
   /**
-   * Utility class to split a list of events with or without namespaces
+   * Utility class to split a list of events with or without namespaces.
    */
   public static class EventName {
     public final String nameSpace;
@@ -143,7 +143,6 @@ public class EventsListener implements EventListener {
       return  type != BITLESS && etype != BITLESS && (type & etype) != 0;
     }
 
-
     public boolean isTypeOf(String eName) {
       return eventName != null && eventName.equalsIgnoreCase(eName);
     }
@@ -194,7 +193,7 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Add a {@link BindFunction} for a specific css selector
+     * Add a {@link BindFunction} for a specific css selector.
      */
     public void addBindFunctionForSelector(String cssSelector, BindFunction f) {
       JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
@@ -277,7 +276,7 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Remove the BindFunction associated to this cssSelector
+     * Remove the BindFunction associated to this cssSelector.
      */
     public void removeBindFunctionForSelector(String cssSelector, String nameSpace) {
       if (nameSpace == null) {
@@ -301,12 +300,11 @@ public class EventsListener implements EventListener {
         if (newFunctions.length() > 0) {
           bindFunctionBySelector.put(cssSelector, newFunctions);
         }
-
       }
     }
 
     /**
-     * Tell if no {@link BindFunction} are linked to this object
+     * Tell if no {@link BindFunction} are linked to this object.
      *
      * @return
      */
@@ -322,7 +320,7 @@ public class EventsListener implements EventListener {
 
     /**
      * Return the element whose the listener fired last. It represent the context element where the
-     * {@link LiveBindFunction} was binded
+     * {@link LiveBindFunction} was binded.
      *
      */
     private Element getCurrentEventTarget(Event e) {
@@ -336,7 +334,7 @@ public class EventsListener implements EventListener {
     }
 
     /**
-     * Return the element that was the actual target of the element
+     * Return the element that was the actual target of the element.
      */
     private Element getEventTarget(Event e) {
       EventTarget eventTarget = e.getEventTarget();
@@ -347,7 +345,6 @@ public class EventsListener implements EventListener {
 
       return Element.as(eventTarget);
     }
-
   }
 
   public static final String EVENT_DATA = "___event_datas";
@@ -404,7 +401,7 @@ public class EventsListener implements EventListener {
     return elem.__gwtlistener;
   }-*/;
 
-  private static native void init(Element elem, EventsListener gqevent)/*-{
+  private static native void init(Element elem, EventsListener gqevent) /*-{
     elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
     elem.__gqueryevent = gqevent;
     // Someone has reported that in IE the init can be called multiple times
@@ -532,7 +529,7 @@ public class EventsListener implements EventListener {
       int eventbits, String eventName, String nameSpace) {
     if (liveBindFunction != null) {
       liveBindFunction.removeBindFunctionForSelector(cssSelector, nameSpace);
-      if (liveBindFunction.isEmpty()){
+      if (liveBindFunction.isEmpty()) {
         if (eventbits != BITLESS) {
           liveBindFunctionByEventType.remove(eventbits);
         } else {
@@ -738,7 +735,6 @@ public class EventsListener implements EventListener {
       }
       DOM.sinkEvents((com.google.gwt.user.client.Element) element, eventBits
           | DOM.getEventsSunk((com.google.gwt.user.client.Element) element));
-
     } else {
       sinkBitlessEvent(element, eventName);
     }

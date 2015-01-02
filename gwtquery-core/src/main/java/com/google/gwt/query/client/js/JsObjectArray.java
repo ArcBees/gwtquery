@@ -19,6 +19,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Lightweight JSO based array class that can store objects.
+ *
+ * @param <T>
  */
 public final class JsObjectArray<T> extends JavaScriptObject {
 
@@ -33,12 +35,12 @@ public final class JsObjectArray<T> extends JavaScriptObject {
     return cast();
   }
 
-  public JsObjectArray<T> add(T...vals) {
-    for (T t: vals) {
+  public JsObjectArray<T> add(T... vals) {
+    for (T t : vals) {
       if (t instanceof Number) {
-        c().putNumber(length(), (((Number)t).doubleValue()));
+        c().putNumber(length(), (((Number) t).doubleValue()));
       } else if (t instanceof Boolean) {
-        c().putBoolean(length(), ((Boolean)t).booleanValue());
+        c().putBoolean(length(), ((Boolean) t).booleanValue());
       } else {
         c().put(length(), t);
       }
@@ -53,7 +55,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
 
   @SuppressWarnings("unchecked")
   public T get(int index) {
-    return (T)c().get(index);
+    return (T) c().get(index);
   }
 
   public int length() {
@@ -85,5 +87,4 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public Object[] elements() {
     return c().elements();
   }
-
 }

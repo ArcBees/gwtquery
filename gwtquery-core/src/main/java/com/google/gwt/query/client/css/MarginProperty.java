@@ -22,6 +22,9 @@ import com.google.gwt.dom.client.Style;
  */
 public class MarginProperty extends CssProperty<Length> {
 
+  /**
+   * ShorthandMarginProperty.
+   */
   public static class ShorthandMarginProperty implements HasCssValue {
 
     private ShorthandMarginProperty() {
@@ -36,29 +39,26 @@ public class MarginProperty extends CssProperty<Length> {
     }
 
     /**
-     * Apply the same margin to all sides
+     * Apply the same margin to all sides.
      */
     public CssSetter with(Length margin) {
       return new MultipleValueCssSetter(getCssName(), margin);
-
     }
 
     /**
      * The top and bottom margins are set to the first value and the right and
-     * left margins are set to the second
+     * left margins are set to the second.
      */
     public CssSetter with(Length topAndBottom, Length leftAndRight) {
       return new MultipleValueCssSetter(getCssName(), topAndBottom, leftAndRight);
-
     }
 
     /**
      * The top margin is set to the first value, the left and right margins are
-     * set to the second, and the bottom margin is set to the third
+     * set to the second, and the bottom margin is set to the third.
      */
     public CssSetter with(Length top, Length leftAndRight, Length bottom) {
       return new MultipleValueCssSetter(getCssName(), top, leftAndRight, bottom);
-
     }
 
     /**
@@ -68,9 +68,7 @@ public class MarginProperty extends CssProperty<Length> {
         Length margin4) {
       return new MultipleValueCssSetter(getCssName(), margin1, margin2,
           margin3, margin4);
-
     }
-
   }
 
   private static String MARGIN_BOTTOM_PROPERTY = "marginBottom";
@@ -90,5 +88,4 @@ public class MarginProperty extends CssProperty<Length> {
   private MarginProperty(String cssName) {
     super(cssName);
   }
-
 }

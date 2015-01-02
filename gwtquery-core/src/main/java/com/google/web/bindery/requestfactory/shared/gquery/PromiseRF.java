@@ -13,18 +13,17 @@
  */
 package com.google.web.bindery.requestfactory.shared.gquery;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-
-import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.deferred.Deferred.DeferredPromiseImpl;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.google.web.bindery.requestfactory.shared.Request;
 import com.google.web.bindery.requestfactory.shared.RequestContext;
 import com.google.web.bindery.requestfactory.shared.ServerFailure;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 /**
  * Utility class used to create promises for RequestFactory services.
@@ -70,14 +69,16 @@ public class PromiseRF extends DeferredPromiseImpl {
    */
   public PromiseRF(Request<?>[] requests) {
     for (Request<?> request : requests) {
-      total ++;
+      total++;
       request.to(new Receiver<Object>() {
         public void onConstraintViolation(Set<ConstraintViolation<?>> violations) {
           dfd.reject(new ServerFailure("ConstraintViolation"), violations);
         }
+
         public void onFailure(ServerFailure error) {
           dfd.reject(error);
         }
+
         public void onSuccess(Object response) {
           responses.add(response);
           // Resolve only when all requests have been received

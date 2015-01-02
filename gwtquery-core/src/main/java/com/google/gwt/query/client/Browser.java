@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.query.rebind.BrowserGenerator;
-
 /**
  * This class is the equivalent to the jQuery.browser object in gQuery.
  * 
@@ -65,7 +63,7 @@ public abstract class Browser {
    */
   public final boolean opera = isOpera();
   /**
-   * Maintained for jQuery compatibility
+   * Maintained for jQuery compatibility.
    * @return true if webkit
    * @deprecated use webkit() instead
    */
@@ -77,12 +75,20 @@ public abstract class Browser {
   public final boolean webkit = isWebkit();
 
   protected abstract boolean isIe6();
+
   protected abstract boolean isIe8();
+
   protected abstract boolean isIe9();
+
   protected abstract boolean isIe10();
+
   protected abstract boolean isIe11();
+
   protected abstract boolean isMozilla();
+
   protected abstract boolean isMsie();
+
   protected abstract boolean isOpera();
+
   protected abstract boolean isWebkit();
 }

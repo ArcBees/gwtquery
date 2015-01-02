@@ -12,64 +12,28 @@
  * the License.
  */
 package com.google.gwt.query.client;
-import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.BodyElement;
-import com.google.gwt.dom.client.ButtonElement;
-import com.google.gwt.dom.client.Document;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.dom.client.TextAreaElement;
-import com.google.gwt.query.client.css.CSS;
+import com.google.gwt.query.client.GQuery.Offset;
 import com.google.gwt.query.client.css.HasCssValue;
 import com.google.gwt.query.client.css.TakesCssValue;
 import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
-import com.google.gwt.query.client.impl.AttributeImpl;
-import com.google.gwt.query.client.impl.DocumentStyleImpl;
-import com.google.gwt.query.client.impl.SelectorEngine;
-import com.google.gwt.query.client.js.JsCache;
-import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
-import com.google.gwt.query.client.js.JsObjectArray;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
-import com.google.gwt.query.client.plugins.Events;
-import com.google.gwt.query.client.plugins.Plugin;
-import com.google.gwt.query.client.plugins.Widgets;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.query.client.plugins.ajax.Ajax.Settings;
-import com.google.gwt.query.client.plugins.deferred.Deferred;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
-import com.google.gwt.query.client.plugins.events.EventsListener;
-import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import com.google.gwt.query.client.GQuery.*;
-import com.google.gwt.query.client.LazyBase;
 
-public interface LazyGQuery<T> extends LazyBase<T>{
+import java.util.List;
+
+/**
+ * LazyGQuery.
+ * @param <T>
+ */
+public interface LazyGQuery<T> extends LazyBase<T> {
 
   /**
    * Add elements to the set of matched elements if they are not included yet.
@@ -130,7 +94,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px
+   *  // move the element from its original position to left:500px
    *  $("#foo").animate("left:'500'");
    *
    *  // Change the width html attribute of a table, note the symbol '$' to
@@ -147,7 +111,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to 500px to the left for 500ms and
+   *  // move the element from its original position to 500px to the left for 500ms and
    *  // change the background color of the element at the end of the animation
    *
    *  $("#foo").animate("left:'+=500'", new Function(){
@@ -188,7 +152,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 500ms using a swing easing
+   *  // move the element from its original position to left:500px for 500ms using a swing easing
    *  $("#foo").animate("left:'500'", 500, Easing.SWING);
    *
    *  // Change the width html attribute of a table, note the symbol '$' to
@@ -206,8 +170,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to 500px to the left and 5OOpx down for 400ms.
-   *  //use a swing easing function for the transition
+   *  // move the element from its original position to 500px to the left and 5OOpx down for 400ms.
+   *  // use a swing easing function for the transition
    *  $("#foo").animate(Properties.create("{top:'+=500px',left:'+=500px'}"), 400, Easing.SWING);
    * </pre>
    *
@@ -242,7 +206,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to left:500px for 500ms
+   *  // move the element from its original position to left:500px for 500ms
    *  $("#foo").animate("left:'500'", 500);
    *
    *  // Change the width html attribute of a table, note the symbol '$' to
@@ -260,7 +224,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    * Example:
    *
    * <pre class="code">
-   *  //move the element from its original position to 500px to the left for 1000ms and
+   *  // move the element from its original position to 500px to the left for 1000ms and
    *  // change the background color of the element at the end of the animation
    *  $("#foo").animate("left:'+=500'", 1000, new Function(){
    *     public void f(Element e){
@@ -277,9 +241,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
    *  $("#foo").animate("backgroundColor:'red', color:'#ffffff', borderColor:'rgb(129, 0, 70)', 1000");
    * </pre>
    *
-   * @param prop the property to animate : "cssName:'value'"
-   * @param funcs an array of {@link Function} called once the animation is complete
-   * @param duration the duration in milliseconds of the animation
+   * @param stringOrProperties the set of properties to animate : "cssName:'value'"
+   * @param funcs an array of {@link Function} called once the animation is complete.
    */
   LazyGQuery<T> animate(Object stringOrProperties, int duration, Function... funcs);
 
@@ -894,7 +857,8 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Remove all event handlers previously attached using {@link #live(String, Function)}. In order
    * for this method to function correctly, the selector used with it must match exactly the
-   * selector initially used with {@link #live(String, Function)}
+   * selector initially used with {@link #live(String, Function)}.
+   * 
    * @deprecated use {@link #off(String, String)} instead
    */
   LazyGQuery<T> die();
@@ -902,7 +866,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Remove an event handlers previously attached using {@link #live(int, Function)} In order for
    * this method to function correctly, the selector used with it must match exactly the selector
-   * initially used with {@link #live(int, Function)}
+   * initially used with {@link #live(int, Function)}.
    * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> die(int eventbits);
@@ -910,7 +874,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Remove an event handlers previously attached using {@link #live(String, Function)} In order for
    * this method to function correctly, the selector used with it must match exactly the selector
-   * initially used with {@link #live(String, Function)}
+   * initially used with {@link #live(String, Function)}.
    */
   LazyGQuery<T> die(String eventName);
 
@@ -1242,7 +1206,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   boolean isEmpty();
 
   /**
-   * Return true if the first element is visible.isVisible
+   * Return true if the first element is visible.isVisible.
    */
   boolean isVisible();
 
@@ -1570,7 +1534,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Get all following siblings of each element up to but not including the element matched by the
-   * GQuery object, filtered by a selector
+   * GQuery object, filtered by a selector.
    *
    * @return
    */
@@ -1642,17 +1606,17 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> off();
 
   /**
-   * Remove an event handler
+   * Remove an event handler.
    */
   LazyGQuery<T> off(String eventName);
 
   /**
-   * Remove an event handler
+   * Remove an event handler.
    */
   LazyGQuery<T> off(String eventName, Function f);
 
   /**
-   * Remove an event handler
+   * Remove an event handler.
    */
   LazyGQuery<T> off(String eventName, String selector);
 
@@ -1723,9 +1687,9 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Get the ancestors of each element in the current set of matched elements, up to but not
-   * including the element matched by the selector.
+   * including the node.
    */
-  LazyGQuery<T> parentsUntil(Node selector);
+  LazyGQuery<T> parentsUntil(Node node);
 
   /**
    * Gets the top and left position of an element relative to its offset parent. The returned object
@@ -2152,7 +2116,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   LazyGQuery<T> setSelector(String selector);
 
   /**
-   * Make all matched elements visible
+   * Make all matched elements visible.
    */
   LazyGQuery<T> show();
 
@@ -2350,28 +2314,32 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * Remove all event delegation that have been bound using
-   * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods
+   * {@link #delegate(String, int, Function...)} {@link #live(int, Function...)} methods.
+   * 
    * @deprecated use {@link #off()}
    */
   LazyGQuery<T> undelegate();
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
-   * {@link #delegate(String, int, Function...)} method
+   * {@link #delegate(String, int, Function...)} method.
+   * 
    * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> undelegate(String selector);
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
-   * {@link #delegate(String, int, Function...)} method
+   * {@link #delegate(String, int, Function...)} method.
+   * 
    * @deprecated use {@link #off(String)}
    */
   LazyGQuery<T> undelegate(String selector, int eventBit);
 
   /**
    * Undelegate is a way of removing event handlers that have been bound using
-   * {@link #delegate(String, int, Function...)} method
+   * {@link #delegate(String, int, Function...)} method.
+   * 
    * @deprecated use {@link #off(String, String)}
    */
   LazyGQuery<T> undelegate(String selector, String eventName);
@@ -2384,7 +2352,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
 
   /**
    * This method removes the element's parent. The matched elements replaces their parents within
-   * the DOM structure. It is the inverse of {@link GQuery#wrap(GQuery)} method
+   * the DOM structure. It is the inverse of {@link GQuery#wrap(GQuery)} method.
    *
    * @return
    */
@@ -2393,7 +2361,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   /**
    * Gets the content of the value attribute of the first matched element, returns only the first
    * value even if it is a multivalued element. To get an array of all values in multivalues
-   * elements use vals()
+   * elements use vals().
    *
    * When the first element is a radio-button and is not checked, then it looks for the first
    * checked radio-button that has the same name in the list of matched elements.
@@ -2464,7 +2432,7 @@ public interface LazyGQuery<T> extends LazyBase<T>{
   <W extends Widget> W widget(int n);
 
   /**
-   * return the list of attached widgets matching the query
+   * return the list of attached widgets matching the query.
    */
   List<Widget> widgets();
 

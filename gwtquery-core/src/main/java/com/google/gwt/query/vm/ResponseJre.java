@@ -15,22 +15,22 @@
  */
 package com.google.gwt.query.vm;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Response;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * Implementation of `Response` in the JVM
+ * Implementation of `Response` in the JVM.
  */
 public class ResponseJre extends Response {
   private int status;
-  private Map<String,List<String>> headers;
+  private Map<String, List<String>> headers;
   private String responseText;
   private String statusText;
 
-  public ResponseJre(int status, String statusText, String text, Map<String,List<String>> headers) {
+  public ResponseJre(int status, String statusText, String text, Map<String, List<String>> headers) {
     this.status = status;
     this.headers = headers;
     this.responseText = text;
@@ -58,6 +58,7 @@ public class ResponseJre extends Response {
         public String getValue() {
           return v;
         }
+
         public String getName() {
           return s;
         }
@@ -66,19 +67,23 @@ public class ResponseJre extends Response {
     }
     return ret;
   }
+
   public String getHeadersAsString() {
     String ret = "";
     for (Header h : getHeaders()) {
-      ret += h.getName() + ":"  + h.getValue() + "\n";
+      ret += h.getName() + ":" + h.getValue() + "\n";
     }
     return ret;
   }
+
   public int getStatusCode() {
     return status;
   }
+
   public String getStatusText() {
     return statusText;
   }
+
   public String getText() {
     return responseText;
   }

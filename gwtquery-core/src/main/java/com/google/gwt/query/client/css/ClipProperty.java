@@ -48,7 +48,6 @@ public class ClipProperty extends CssProperty<ClipProperty.Shape> {
     public String getCssName() {
       return value;
     }
-
   }
 
   private static final String CSS_PROPERTY = "clip";

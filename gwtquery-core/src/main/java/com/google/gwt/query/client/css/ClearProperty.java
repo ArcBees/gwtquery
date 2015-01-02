@@ -52,7 +52,6 @@ public class ClearProperty extends CssProperty<ClearProperty.Clear> {
     public String getCssName() {
       return name().toLowerCase();
     }
-
   }
 
   private static final String CSS_PROPERTY = "clear";

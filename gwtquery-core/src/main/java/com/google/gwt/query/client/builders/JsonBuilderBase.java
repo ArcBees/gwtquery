@@ -19,12 +19,22 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsCache;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
 
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Common class for all JsonBuilder implementations.
+ *
+ * @param <J>
+ */
 public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements JsonBuilder {
 
   protected Properties p = Properties.create();
+  protected String[] fieldNames = new String[] {};
 
   @SuppressWarnings("unchecked")
   @Override
@@ -40,22 +50,36 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
 
   @SuppressWarnings("unchecked")
   @Override
+  public J strip() {
+    List<String> names = Arrays.asList(getFieldNames());
+    for (String jsonName : p.getFieldNames()) {
+      // TODO: figure out a way so as we can generate some marks in generated class in
+      // order to call getters to return JsonBuilder object given an an attribute name
+      if (!names.contains(jsonName)) {
+        p.<JsCache>cast().delete(jsonName);
+      }
+    }
+    return (J) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
   public J load(Object prp) {
     assert prp == null || prp instanceof JavaScriptObject || prp instanceof String;
     if (prp != null && prp instanceof String) {
-      return parse((String)prp);
+      return parse((String) prp);
     }
     if (prp != null) {
-      p = (Properties)prp;
+      p = (Properties) prp;
     }
-    return (J)this;
+    return (J) this;
   }
 
   protected <T> void setArrayBase(String n, T[] r) {
     if (r.length > 0 && r[0] instanceof JsonBuilder) {
       JsArray<JavaScriptObject> a = JavaScriptObject.createArray().cast();
       for (T o : r) {
-        a.push(((JsonBuilder)o).<Properties>getDataImpl());
+        a.push(((JsonBuilder) o).<Properties> getDataImpl());
       }
       p.set(n, a);
     } else {
@@ -69,12 +93,12 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   protected <T> T[] getArrayBase(String n, T[] r, Class<T> clazz) {
     JsObjectArray<?> a = p.getArray(n).cast();
     int l = r.length;
-    for (int i = 0 ; i < l ; i++) {
+    for (int i = 0; i < l; i++) {
       Object w = a.get(i);
       Class<?> c = w.getClass();
       do {
         if (c.equals(clazz)) {
-          r[i] = (T)w;
+          r[i] = (T) w;
           break;
         }
         c = c.getSuperclass();
@@ -127,14 +151,18 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   @SuppressWarnings("unchecked")
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
-      p.set(key, ((IsProperties)val).getDataImpl());
+      p.set(key, ((IsProperties) val).getDataImpl());
     } else {
       p.set(key, val);
     }
-    return (T)this;
+    return (T) this;
   }
 
   public <T extends JsonBuilder> T as(Class<T> clz) {
     return p.as(clz);
+  }
+
+  public final String[] getFieldNames() {
+    return fieldNames;
   }
 }

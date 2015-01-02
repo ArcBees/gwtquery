@@ -36,8 +36,10 @@ public class IFrameWithDocTypeLinker extends IFrameLinker {
   @Deprecated
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
       String strongName) throws UnableToCompleteException {
-    logger.log(Type.WARN,
-        "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
+    logger
+        .log(
+            Type.WARN,
+            "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
     return DOCTYPE + super.getModulePrefix(logger, context, strongName);
   }
 
@@ -45,11 +47,11 @@ public class IFrameWithDocTypeLinker extends IFrameLinker {
   @Deprecated
   protected String getModulePrefix(TreeLogger logger, LinkerContext context,
       String strongName, int numFragments) throws UnableToCompleteException {
-    logger.log(Type.WARN,
-        "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
+    logger
+        .log(
+            Type.WARN,
+            "GQuery IFrameWithDocTypeLinker is deprecated, remove <add-linker name=\"stddoctype\"/> from your module file");
     return DOCTYPE
         + super.getModulePrefix(logger, context, strongName, numFragments);
-
   }
 }
-

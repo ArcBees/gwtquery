@@ -76,9 +76,6 @@ Description:
             <property name="checkHtml" value="false"/>
             <property name="tokens" value="CLASS_DEF,CTOR_DEF,INTERFACE_DEF,METHOD_DEF,VARIABLE_DEF"/>
         </module>
-        <module name="NeedBraces">
-            <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="make sure if has braces"/>
-        </module>
         <module name="JavadocMethod">
             <metadata name="com.atlassw.tools.eclipse.checkstyle.lastEnabledSeverity" value="info"/>
             <property name="severity" value="info"/>
@@ -156,6 +153,7 @@ Description:
         </module>
         <module name="MethodName">
             <property name="severity" value="error"/>
+            <property name="format" value="^[a-z$XJD:][a-zA-Z0-9$]*$"/>
         </module>
         <module name="MemberName">
             <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="Field names must start with [a-z], may not start with f[A-Z], and should not contain '_''s."/>

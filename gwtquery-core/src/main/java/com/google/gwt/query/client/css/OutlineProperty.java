@@ -28,7 +28,7 @@ import com.google.gwt.query.client.css.TakesCssValue.CssSetter;
  * declaration.
  */
 public class OutlineProperty implements
-    HasCssValue{
+    HasCssValue {
 
   private static final String CSS_PROPERTY = "outline";
 
@@ -59,5 +59,4 @@ public class OutlineProperty implements
       Length outlineWidth) {
     return new MultipleValueCssSetter(CSS_PROPERTY, outlineColor, outlineStyle, outlineWidth);
   }
-
 }

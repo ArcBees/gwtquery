@@ -27,11 +27,11 @@ import com.google.gwt.query.client.js.JsObjectArray;
 public class ConsoleBrowser implements Console {
 
   /**
-   * http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object
+   * http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object.
    */
   private static class ConsoleIe8 extends ConsoleIe9 {
     @Override
-    protected native void init()/*-{
+    protected native void init() /*-{
       try {
         Function.prototype.call.call($wnd.console.log, $wnd.console, Array.prototype.slice.call(arguments));
         this.@com.google.gwt.query.client.impl.ConsoleBrowser.ConsoleIe9::initialized = true;
@@ -41,17 +41,17 @@ public class ConsoleBrowser implements Console {
   }
 
   /**
-   * See: http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object
+   * See: http://whattheheadsaid.com/2011/04/internet-explorer-9s-problematic-console-object.
    */
   private static class ConsoleIe9 extends ConsoleImpl {
 
     private boolean initialized = false;
 
-    public ConsoleIe9(){
+    public ConsoleIe9() {
       init();
     }
 
-    protected native void init()/*-{
+    protected native void init() /*-{
       try {
         [ "log", "info", "warn", "error", "dir", "clear", "profile", "profileEnd" ]
           .forEach(function(method) {
@@ -64,48 +64,80 @@ public class ConsoleBrowser implements Console {
 
     @Override
     public void clear() {
-      if (initialized) super.clear();
+      if (initialized) {
+        super.clear();
+      }
     }
+
     @Override
     public void dir(Object arg) {
-      if (initialized) super.dir(arg);
+      if (initialized) {
+        super.dir(arg);
+      }
     }
+
     @Override
     public void error(JavaScriptObject arg) {
-      if (initialized) super.error(arg);
+      if (initialized) {
+        super.error(arg);
+      }
     }
+
     @Override
     public void info(JavaScriptObject arg) {
-      if (initialized) super.info(arg);
+      if (initialized) {
+        super.info(arg);
+      }
     }
+
     @Override
     public void profile(String title) {
-      if (initialized) super.profile(title);
+      if (initialized) {
+        super.profile(title);
+      }
     }
+
     @Override
     public void profileEnd(String title) {
-      if (initialized) super.profileEnd(title);
+      if (initialized) {
+        super.profileEnd(title);
+      }
     }
+
     @Override
     public void warn(JavaScriptObject arg) {
-      if (initialized) super.warn(arg);
+      if (initialized) {
+        super.warn(arg);
+      }
     }
+
     @Override
-    public void group(Object arg) {}
+    public void group(Object arg) {
+    }
+
     @Override
-    public void groupCollapsed(Object arg) {}
+    public void groupCollapsed(Object arg) {
+    }
+
     @Override
-    public void groupEnd() {}
+    public void groupEnd() {
+    }
+
     @Override
-    public void time(String title) {}
+    public void time(String title) {
+    }
+
     @Override
-    public void timeStamp(Object arg) {}
+    public void timeStamp(Object arg) {
+    }
+
     @Override
-    public void timeEnd(String title) {}
+    public void timeEnd(String title) {
+    }
   }
 
   /**
-   * Default implementation: webkit, opera, FF, ie10
+   * Default implementation: webkit, opera, FF, IE10.
    */
   private static class ConsoleImpl {
     public native void clear() /*-{
@@ -168,7 +200,9 @@ public class ConsoleBrowser implements Console {
   private ConsoleImpl impl;
 
   public ConsoleBrowser() {
-    impl = GQuery.browser.ie8? new ConsoleIe8(): GQuery.browser.ie9? new ConsoleIe9(): new  ConsoleImpl();
+    impl =
+        GQuery.browser.ie8 ? new ConsoleIe8() : GQuery.browser.ie9 ? new ConsoleIe9()
+            : new ConsoleImpl();
   }
 
   @Override

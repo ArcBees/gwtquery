@@ -20,9 +20,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.JsArrayString;
 
- /**
-   * A Lightweight JSO class to store data.
-   */
+/**
+  * A Lightweight JSO class to store data.
+  */
 public class JsCache extends JavaScriptObject {
 
   protected JsCache() {
@@ -69,19 +69,24 @@ public class JsCache extends JavaScriptObject {
     Object o = get(id);
     if (o != null && clz != null) {
       if (o instanceof Double) {
-        Double d = (Double)o;
-        if (clz == Float.class) o = d.floatValue();
-        else if (clz == Integer.class) o = d.intValue();
-        else if (clz == Long.class) o = d.longValue();
-        else if (clz == Short.class) o = d.shortValue();
-        else if (clz == Byte.class) o = d.byteValue();
+        Double d = (Double) o;
+        if (clz == Float.class)
+          o = d.floatValue();
+        else if (clz == Integer.class)
+          o = d.intValue();
+        else if (clz == Long.class)
+          o = d.longValue();
+        else if (clz == Short.class)
+          o = d.shortValue();
+        else if (clz == Byte.class)
+          o = d.byteValue();
       } else if (clz == Boolean.class && !(o instanceof Boolean)) {
         o = Boolean.valueOf(String.valueOf(o));
       } else if (clz == String.class && !(o instanceof String)) {
         o = String.valueOf(o);
       }
     }
-    return (T)o;
+    return (T) o;
   }
 
   public final native <T> T get(Object id) /*-{
@@ -89,7 +94,7 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   public final JsCache getCache(int id) {
-    return (JsCache)get(id);
+    return (JsCache) get(id);
   }
 
   public final boolean getBoolean(Object id) {
@@ -126,7 +131,7 @@ public class JsCache extends JavaScriptObject {
 
   public final <T extends JavaScriptObject> T getJavaScriptObject(Object name) {
     Object o = get(name);
-    return (o != null && o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
+    return (o != null && o instanceof JavaScriptObject) ? ((JavaScriptObject) o).<T> cast() : null;
   }
 
   public final native boolean isEmpty() /*-{
@@ -134,7 +139,7 @@ public class JsCache extends JavaScriptObject {
     return true;
   }-*/;
 
-  public final native boolean contains(Object o)/*-{
+  public final native boolean contains(Object o) /*-{
     return this.indexOf(o) >= 0;
   }-*/;
 
@@ -158,11 +163,11 @@ public class JsCache extends JavaScriptObject {
     return this;
   }-*/;
 
-  public final JsCache put(Object id, Object obj)  {
+  public final JsCache put(Object id, Object obj) {
     if (obj instanceof Boolean) {
-      putBoolean(id, ((Boolean)obj).booleanValue());
+      putBoolean(id, ((Boolean) obj).booleanValue());
     } else if (obj instanceof Number) {
-      putNumber(id, ((Number)obj).doubleValue());
+      putNumber(id, ((Number) obj).doubleValue());
     } else {
       putObject(id, obj);
     }
@@ -203,7 +208,7 @@ public class JsCache extends JavaScriptObject {
     JsArrayString a = keysImpl();
     String[] ret = new String[a.length()];
     for (int i = 0; i < a.length(); i++) {
-        ret[i] = a.get(i);
+      ret[i] = a.get(i);
     }
     return ret;
   }
@@ -211,8 +216,8 @@ public class JsCache extends JavaScriptObject {
   public final Object[] elements() {
     String[] keys = keys();
     Object[] ret = new Object[keys.length];
-    int i=0;
-    for (String s: keys) {
+    int i = 0;
+    for (String s : keys) {
       ret[i++] = get(s);
     }
     return ret;
@@ -220,7 +225,7 @@ public class JsCache extends JavaScriptObject {
 
   public final String tostring() {
     String ret = getClass().getName() + "{ ";
-    for (String k: keys()){
+    for (String k : keys()) {
       ret += k + "=" + get(k) + " ";
     }
     return ret + "}";
@@ -231,7 +236,7 @@ public class JsCache extends JavaScriptObject {
     checkNull(this);
   }
 
-  private final native JsArrayString keysImpl() /*-{
+  private native JsArrayString keysImpl() /*-{
     var key, keys=[];
     // Chrome in DevMode sets '__gwt_ObjectId' to JS objects
     // GWT sets '$H' when calling getHashCode (see com/google/gwt/core/client/impl/Impl.java)
@@ -240,7 +245,7 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   /**
-   * Throw a NPE when a js is null
+   * Throw a NPE when a js is null.
    */
   public static final <T extends JavaScriptObject> T checkNull(T js) {
     if (!GWT.isProdMode() && js == null) {
@@ -251,7 +256,7 @@ public class JsCache extends JavaScriptObject {
 
   /**
    * Gets an object wrapped in a js array and boxes it with the appropriate
-   * Object in the GWT world.
+   * object in the GWT world.
    *
    * It is thought to be called from other jsni code without dealing with casting issues.
    *

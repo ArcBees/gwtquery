@@ -15,9 +15,6 @@
  */
 package com.google.gwt.query.client.plugins;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.plugins.widgets.ButtonWidgetFactory;
@@ -35,6 +32,9 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Widgets plugin for Gwt Query. Be careful, this plugin is still experimental.
@@ -84,7 +84,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create and return a widget using the given factory and the given options
+   * Create and return a widget using the given factory and the given options.
    */
   protected <W extends Widget> W widget(Element e, WidgetFactory<W> factory,
       WidgetInitializer<W> initializer) {
@@ -101,7 +101,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create and return a widget using the given factory and the given options
+   * Create and return a widget using the given factory and the given options.
    */
   protected <W extends Widget> W widget(WidgetFactory<W> factory,
       WidgetInitializer<W> initializers) {

@@ -39,7 +39,8 @@ public class Events extends GQuery {
    * Don't apply events on text and comment nodes !!
    */
   private static boolean isEventCapable(Node n) {
-    return JsUtils.isWindow(n) || JsUtils.isElement(n) && n.getNodeType() != 3 && n.getNodeType() != 8;
+    return JsUtils.isWindow(n) || JsUtils.isElement(n) && n.getNodeType() != 3
+        && n.getNodeType() != 8;
   }
 
   public Events(GQuery gq) {
@@ -113,7 +114,7 @@ public class Events extends GQuery {
   }
 
   public GQuery die(int eventbits) {
-   return die(eventbits, null);
+    return die(eventbits, null);
   }
 
   /**
@@ -129,14 +130,12 @@ public class Events extends GQuery {
 
   public GQuery live(int eventbits, final Object data, Function... funcs) {
     return live(eventbits, null, data, funcs);
-
   }
 
   public GQuery live(int eventbits, String nameSpace, final Object data, Function... funcs) {
     EventsListener.getInstance(Element.is(currentContext) ? (Element) currentContext : body).live(
         eventbits, nameSpace, null, currentSelector, data, funcs);
     return this;
-
   }
 
   public GQuery live(String eventName, final Object data, Function... funcs) {
@@ -182,7 +181,6 @@ public class Events extends GQuery {
     }
 
     return bind("mouseleave", null, fs);
-
   }
 
   /**
@@ -301,7 +299,7 @@ public class Events extends GQuery {
     for (EventName part : EventName.split(htmlEvent)) {
       NativeEvent e = document.createHtmlEvent(part.eventName, true, true);
       JsUtils.prop(e, "namespace", part.nameSpace);
-      if ("submit".equals(part.eventName)){
+      if ("submit".equals(part.eventName)) {
         Function submitFunction = new Function() {
           public void f(Element e) {
             // first submit the form then call the others functions
@@ -403,7 +401,7 @@ public class Events extends GQuery {
 
         // Ie6-8 don't dispatch bitless event
         if ((browser.ie6 || browser.ie8) && Event.getTypeInt(evt.getType()) == -1) {
-          bubbleEventForIE(e, evt.<Event>cast());
+          bubbleEventForIE(e, evt.<Event> cast());
         } else {
           e.dispatchEvent(evt);
         }
@@ -427,16 +425,16 @@ public class Events extends GQuery {
   }
 
   /**
-   * Only valid for IE6-8
+   * Only valid for IE6-8.
    * @param event
    * @return
    */
   private boolean isEventPropagationStopped(Event event) {
     // trick to avoid jnsi
-    return event.<Element>cast().getPropertyBoolean("cancelBubble");
+    return event.<Element> cast().getPropertyBoolean("cancelBubble");
   }
 
-  private void callHandlers(Element e, NativeEvent evt, Function... functions){
+  private void callHandlers(Element e, NativeEvent evt, Function... functions) {
     for (Function f : functions) {
       f.setEvent(Event.as(evt));
       f.f(e);

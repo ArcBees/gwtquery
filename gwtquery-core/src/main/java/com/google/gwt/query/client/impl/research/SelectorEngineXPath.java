@@ -146,13 +146,14 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
       }
       SelectorEngine.xpathEvaluate(xPathExpression, ctx, elm);
     }
-    return JsUtils.unique(elm.<JsArray<Element>>cast()).cast();
+    return JsUtils.unique(elm.<JsArray<Element>> cast()).cast();
   }
 
   private void init() {
     if (cssSelectorRegExp == null) {
-      cssSelectorRegExp = new JsRegexp(
-          "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?(>|\\+|~)?");
+      cssSelectorRegExp =
+          new JsRegexp(
+              "^(\\w+)?(#[\\w\\u00C0-\\uFFFF\\-\\_]+|(\\*))?((\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?((\\[\\w+(\\^|\\$|\\*|\\||~)?(=[\"']*[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+[\"']*)?\\]+)*)?(((:\\w+[\\w\\-]*)(\\((odd|even|\\-?\\d*n?((\\+|\\-)\\d+)?|[\\w\\u00C0-\\uFFFF\\-_]+|((\\w*\\.[\\w\\u00C0-\\uFFFF\\-_]+)*)?|(\\[#?\\w+(\\^|\\$|\\*|\\||~)?=?[\\w\\u00C0-\\uFFFF\\s\\-\\_\\.]+\\]+)|(:\\w+[\\w\\-]*))\\))?)*)?(>|\\+|~)?");
       selectorSplitRegExp = new JsRegexp("[^\\s]+", "g");
       combinator = new JsRegexp("(>|\\+|~)");
     }
@@ -184,9 +185,9 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
             xpath = "(count(preceding-sibling::*) + 1) mod " + sequence.add
                 + " = " + sequence.modVal
                 + ((sequence.start > 1) ? " and count(preceding-sibling::*) >= "
-                + (sequence.start - 1) : "") + ((sequence.max > 0) ?
-                " and count(preceding-sibling::*) <= " + (sequence.max - 1)
-                : "");
+                    + (sequence.start - 1) : "") + ((sequence.max > 0) ?
+                    " and count(preceding-sibling::*) <= " + (sequence.max - 1)
+                    : "");
           }
         }
       }
@@ -199,8 +200,8 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
           } else {
             xpath = "position() mod " + sequence.add + " = " + sequence.modVal
                 + ((sequence.start > 1) ? " and position() >= " + sequence.start
-                : "") + ((sequence.max > 0) ? " and position() <= "
-                + sequence.max : "");
+                    : "") + ((sequence.max > 0) ? " and position() <= "
+                    + sequence.max : "");
           }
         }
       }
@@ -240,7 +241,6 @@ public class SelectorEngineXPath extends SelectorEngineImpl {
             function(a,b,c,d) {
               return @com.google.gwt.query.client.impl.research.SelectorEngineXPath::attrToXPath(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(a,b || "",c || "",d || "");
             });
-
     }-*/;
 
   private native String replaceAttr2(String allAttr) /*-{

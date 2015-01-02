@@ -24,6 +24,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class BorderStyleProperty extends
     CssProperty<BorderStyleProperty.BorderStyle> {
 
+  /**
+   * BorderStyle.
+   */
   public static enum BorderStyle implements HasCssName {
     /**
      * The border is a series of short line segments.
@@ -106,5 +109,4 @@ public class BorderStyleProperty extends
   private BorderStyleProperty(String value) {
     super(value);
   }
-
 }

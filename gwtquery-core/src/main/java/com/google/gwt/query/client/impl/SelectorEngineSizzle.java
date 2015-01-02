@@ -922,7 +922,7 @@ GQS.getText = function( elems ) {
 
   div = null; // release memory in IE
 })();
-//if ( document.querySelectorAll ) {
+// if ( document.querySelectorAll ) {
 //  (function(){
 //    var oldGQS = GQS, div = document.createElement("div");
 //    div.innerHTML = "<p class='TEST'></p>";
@@ -953,7 +953,7 @@ GQS.getText = function( elems ) {
 //
 //    div = null; // release memory in IE
 //  })();
-//}
+// }
 
 (function(){
   var div = document.createElement("div");
@@ -1037,7 +1037,6 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
               match = true;
               break;
             }
-
           } else if ( GQS.filter( cur, [elem] ).length > 0 ) {
             match = elem;
             break;
@@ -1089,9 +1088,7 @@ var posProcess = function(selector, context){
 
 window.GQS = GQS;
 $wnd.GQS = GQS;
-
 })();
-
   }-*/;
 
   private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{

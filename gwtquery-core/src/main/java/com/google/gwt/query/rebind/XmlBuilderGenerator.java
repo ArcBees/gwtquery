@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.PrintWriter;
-
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -32,6 +30,8 @@ import com.google.gwt.query.client.builders.Name;
 import com.google.gwt.query.client.builders.XmlBuilder;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import java.io.PrintWriter;
 
 /**
  */
@@ -54,9 +54,9 @@ public class XmlBuilderGenerator extends Generator {
         t[1], requestedClass);
     if (sw != null) {
       for (JMethod method : clazz.getInheritableMethods()) {
-        //skip method from JsonBuilder
-        if(xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
-            continue;
+        // skip method from JsonBuilder
+        if (xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null) {
+          continue;
         }
         generateMethod(sw, method, treeLogger);
       }
@@ -106,12 +106,13 @@ public class XmlBuilderGenerator extends Generator {
       } else if (isTypeAssignableTo(method.getReturnType(), xmlBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
         sw.println("Element e = getElementBase(\"" + name + "\");");
-        sw.println("return e == null ? null : (" + q + ")((" + q + ")GWT.create(" + q + ".class)).load(e);");
-      } else if (retType.equals(Properties.class.getName())){
+        sw.println("return e == null ? null : (" + q + ")((" + q + ")GWT.create(" + q
+            + ".class)).load(e);");
+      } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (arr != null) {
         String q = arr.getComponentType().getQualifiedSourceName();
-        sw.println("ArrayList<" + q + "> l = new ArrayList<" + q+ ">();");
+        sw.println("ArrayList<" + q + "> l = new ArrayList<" + q + ">();");
         sw.println("for (Element e: getElementsBase(\"" + name + "\")) {");
         sw.println("  " + q + " c = GWT.create(" + q + ".class);");
         sw.println("  c.load(e);");
@@ -135,7 +136,7 @@ public class XmlBuilderGenerator extends Generator {
       } else {
         sw.println("setBase(\"" + name + "\", a);");
       }
-      if (!"void".equals(retType)){
+      if (!"void".equals(retType)) {
         if (isTypeAssignableTo(method.getReturnType(), method.getEnclosingType())) {
           sw.println("return this;");
         } else {

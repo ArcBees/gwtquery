@@ -15,16 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.InflaterInputStream;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -32,11 +22,20 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.builders.JsniBundle.LibrarySource;
 import com.google.gwt.query.client.builders.JsniBundle.MethodSource;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Generates an implementation of a user-defined interface <code>T</code> that
@@ -61,7 +60,8 @@ public class JsniBundleGenerator extends Generator {
     PrintWriter pw = context.tryCreate(logger, packageName, className);
 
     if (pw != null) {
-      ClassSourceFileComposerFactory fact = new ClassSourceFileComposerFactory(packageName, className);
+      ClassSourceFileComposerFactory fact =
+          new ClassSourceFileComposerFactory(packageName, className);
       if (clazz.isInterface() != null) {
         fact.addImplementedInterface(requestedClass);
       } else {
@@ -93,14 +93,14 @@ public class JsniBundleGenerator extends Generator {
           }
           try {
             // Read the javascript content
-            String content = getContent(logger, packageName.replace(".", "/") , value);
+            String content = getContent(logger, packageName.replace(".", "/"), value);
 
             // Adjust javascript so as we can introduce it in a JSNI comment block without
             // breaking java syntax.
             String jsni = parseJavascriptSource(content);
 
             for (int i = 0; i < replace.length - 1; i += 2) {
-              jsni = jsni.replaceAll(replace[i], replace[i+1]);
+              jsni = jsni.replaceAll(replace[i], replace[i + 1]);
             }
 
             pw.println(method.toString().replace("abstract", "native") + "/*-{");
@@ -109,7 +109,8 @@ public class JsniBundleGenerator extends Generator {
             pw.println(postpend);
             pw.println("}-*/;");
           } catch (Exception e) {
-            logger.log(TreeLogger.ERROR, "Error parsing javascript source: " + value + " "+ e.getMessage());
+            logger.log(TreeLogger.ERROR, "Error parsing javascript source: " + value + " "
+                + e.getMessage());
             throw new UnableToCompleteException();
           }
         }
@@ -123,20 +124,23 @@ public class JsniBundleGenerator extends Generator {
   /**
    * Get the content of a javascript source. It supports remote sources hosted in CDN's.
    */
-  private String getContent(TreeLogger logger, String path, String src) throws UnableToCompleteException {
+  private String getContent(TreeLogger logger, String path, String src)
+      throws UnableToCompleteException {
     HttpURLConnection connection = null;
     InputStream in = null;
     try {
       if (!src.matches("(?i)https?://.*")) {
         String file = path + "/" + src;
-        logger.log(TreeLogger.INFO, getClass().getSimpleName() + " - importing external javascript: " + file);
+        logger.log(TreeLogger.INFO, getClass().getSimpleName()
+            + " - importing external javascript: " + file);
 
         in = this.getClass().getClassLoader().getResourceAsStream(file);
         if (in == null) {
           logger.log(TreeLogger.ERROR, "Unable to read javascript file: " + file);
         }
       } else {
-        logger.log(TreeLogger.INFO, getClass().getSimpleName() + " - downloading external javascript: " + src);
+        logger.log(TreeLogger.INFO, getClass().getSimpleName()
+            + " - downloading external javascript: " + src);
         URL url = new URL(src);
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
@@ -146,7 +150,8 @@ public class JsniBundleGenerator extends Generator {
 
         int status = connection.getResponseCode();
         if (status != HttpURLConnection.HTTP_OK) {
-          logger.log(TreeLogger.ERROR, "Server Error: " + status + " " + connection.getResponseMessage());
+          logger.log(TreeLogger.ERROR, "Server Error: " + status + " "
+              + connection.getResponseMessage());
           throw new UnableToCompleteException();
         }
 
@@ -191,8 +196,8 @@ public class JsniBundleGenerator extends Generator {
     boolean isSingQuot = false;
     boolean isDblQuot = false;
     boolean isSlash = false;
-    boolean isCComment=false;
-    boolean isCPPComment=false;
+    boolean isCComment = false;
+    boolean isCPPComment = false;
     boolean isRegex = false;
     boolean isOper = false;
 
@@ -201,32 +206,36 @@ public class JsniBundleGenerator extends Generator {
     Character last = 0;
     Character prev = 0;
 
-    for (int i = 0, l = js.length(); i < l ; i++) {
+    for (int i = 0, l = js.length(); i < l; i++) {
       Character c = js.charAt(i);
       String out = c.toString();
 
       if (isJS) {
         isDblQuot = c == '"';
-        isSingQuot  = c == '\'';
-        isSlash  = c == '/';
-        isJS  = !isDblQuot && !isSingQuot && !isSlash;
+        isSingQuot = c == '\'';
+        isSlash = c == '/';
+        isJS = !isDblQuot && !isSingQuot && !isSlash;
         if (!isJS) {
           out = tmp = "";
           isCPPComment = isCComment = isRegex = false;
         }
       } else if (isSingQuot) {
         isJS = !(isSingQuot = last == '\\' || c != '\'');
-        if (isJS) out = escapeQuotedString(tmp, c);
-        else tmp += c;
+        if (isJS)
+          out = escapeQuotedString(tmp, c);
+        else
+          tmp += c;
       } else if (isDblQuot) {
         isJS = !(isDblQuot = last == '\\' || c != '"');
-        if (isJS) out = escapeQuotedString(tmp, c);
-        else tmp += c;
+        if (isJS)
+          out = escapeQuotedString(tmp, c);
+        else
+          tmp += c;
       } else if (isSlash) {
         if (!isCPPComment && !isCComment && !isRegex && !isOper) {
           isCPPComment = c == '/';
-          isCComment =  c == '*';
-          isOper = !isCPPComment && !isCComment && !"=(&|?:;},".contains(""+prev);
+          isCComment = c == '*';
+          isOper = !isCPPComment && !isCComment && !"=(&|?:;},".contains("" + prev);
           isRegex = !isCPPComment && !isCComment && !isOper;
         }
         if (isOper) {
@@ -234,18 +243,22 @@ public class JsniBundleGenerator extends Generator {
           out = "" + last + c;
         } else if (isCPPComment) {
           isJS = !(isSlash = isCPPComment = c != '\n');
-          if (isJS) out = "\n";
+          if (isJS)
+            out = "\n";
         } else if (isCComment) {
           isSlash = isCComment = !(isJS = (last == '*' && c == '/'));
-          if (isJS) out = "";
+          if (isJS)
+            out = "";
         } else if (isRegex) {
           isJS = !(isSlash = isRegex = (last == '\\' || c != '/'));
           if (isJS) {
             String mod = "";
             while (++i < l) {
               c = js.charAt(i);
-              if ("igm".contains(""+c)) mod += c;
-              else break;
+              if ("igm".contains("" + c))
+                mod += c;
+              else
+                break;
             }
             out = escapeInlineRegex(tmp, mod) + c;
           } else {
@@ -273,7 +286,7 @@ public class JsniBundleGenerator extends Generator {
 
   private String escapeInlineRegex(String s, String mod) {
     if (s.endsWith("*")) {
-      return "new RegExp('" + s.replace("\\", "\\\\")  + "','" + mod + "')";
+      return "new RegExp('" + s.replace("\\", "\\\\") + "','" + mod + "')";
     } else {
       return '/' + s + '/' + mod;
     }

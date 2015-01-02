@@ -32,5 +32,4 @@ public class PositionProperty extends CssProperty<Position> {
   private PositionProperty() {
     super(CSS_PROPERTY);
   }
-
 }

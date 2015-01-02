@@ -13,8 +13,6 @@
  */
 package com.google.gwt.query.client;
 
-import com.google.gwt.query.client.Function;
-
 /**
  * Definition of jquery Promise interface used in gquery.
  */
@@ -45,9 +43,9 @@ public interface Promise {
     Deferred resolve(Object... o);
   }
 
-  public static final String PENDING = "pending";
-  public static final String REJECTED = "rejected";
-  public static final String RESOLVED = "resolved";
+  String PENDING = "pending";
+  String REJECTED = "rejected";
+  String RESOLVED = "resolved";
 
   /**
    * Add handlers to be called when the Deferred object is either resolved or rejected.

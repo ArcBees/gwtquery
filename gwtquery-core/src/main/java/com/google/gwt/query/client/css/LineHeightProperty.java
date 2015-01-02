@@ -57,5 +57,4 @@ public class LineHeightProperty extends CssProperty<Length> implements
   public CssSetter with(Double value) {
     return new SimpleCssSetter(CSS_PROPERTY, value != null ? "" + value : null);
   }
-
 }

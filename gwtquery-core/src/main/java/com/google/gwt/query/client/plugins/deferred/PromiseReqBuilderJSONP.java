@@ -55,7 +55,7 @@ public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
     // jQuery allows a parameter callback=? to figure out the callback parameter
     if (callbackParam == null) {
       MatchResult tmp = callbackRegex.exec(url);
-      if  (tmp != null && tmp.getGroupCount() == 4) {
+      if (tmp != null && tmp.getGroupCount() == 4) {
         callbackParam = tmp.getGroup(2);
         url = tmp.getGroup(1) + tmp.getGroup(3);
       }
@@ -75,7 +75,7 @@ public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
   }
 
   // Using jsni because method send in JsonpRequestBuilder is private
-  private final native void send(JsonpRequestBuilder bld, String url, AsyncCallback<?> cb) /*-{
+  private native void send(JsonpRequestBuilder bld, String url, AsyncCallback<?> cb) /*-{
     bld.@com.google.gwt.jsonp.client.JsonpRequestBuilder::send(Ljava/lang/String;Lcom/google/gwt/user/client/rpc/AsyncCallback;Z)(url,cb,false);
   }-*/;
 }

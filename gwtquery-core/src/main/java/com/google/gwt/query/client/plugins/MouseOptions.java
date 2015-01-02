@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.plugins;
 
 /**
- * Object use to configure a Plugin extending {@link MousePlugin}
+ * Object use to configure a Plugin extending {@link MousePlugin}.
  *
  */
 public class MouseOptions {
@@ -58,7 +58,7 @@ public class MouseOptions {
   }
 
   /**
-   * Prevents starting of the plugin on specified elements
+   * Prevents starting of the plugin on specified elements.
    *
    * @param cancel
    *          array of css selectors
@@ -89,6 +89,6 @@ public class MouseOptions {
   protected void initDefault() {
     delay = 0;
     distance = 1; // by default, the mouse have to move one pixel !
-    cancel = new String[] { "input", "option" };
+    cancel = new String[] {"input", "option"};
   }
 }

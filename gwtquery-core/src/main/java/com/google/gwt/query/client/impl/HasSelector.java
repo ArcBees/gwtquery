@@ -19,6 +19,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 
+/**
+ *
+ */
 public interface HasSelector {
 
   /**
@@ -29,5 +32,4 @@ public interface HasSelector {
    * @return a list of matched nodes
    */
   NodeList<Element> select(String selector, Node ctx);
-
 }

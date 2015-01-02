@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.rebind;
 
-import java.io.PrintWriter;
-
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -28,12 +26,15 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+import java.io.PrintWriter;
+
 /**
- * Creates an implementation for {@link Browser}
+ * Creates an implementation for {@link Browser}.
  */
 public class BrowserGenerator extends Generator {
   @Override
-  public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
+  public String generate(TreeLogger logger, GeneratorContext context, String typeName)
+      throws UnableToCompleteException {
     TypeOracle oracle = context.getTypeOracle();
     PropertyOracle propOracle = context.getPropertyOracle();
 

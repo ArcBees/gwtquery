@@ -39,7 +39,8 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
 
   @Override
   public int getHeight(Element e) {
-    return (int) (e.getOffsetHeight() - num(curCSS(e, "paddingTop", true)) - num(curCSS(e, "paddingBottom", true))
+    return (int) (e.getOffsetHeight() - num(curCSS(e, "paddingTop", true))
+        - num(curCSS(e, "paddingBottom", true))
         - num(curCSS(e, "borderTopWidth", true)) - num(curCSS(e, "borderBottomWidth", true)));
   }
 
@@ -55,7 +56,8 @@ public class DocumentStyleImplIE extends DocumentStyleImpl {
 
   @Override
   public int getWidth(Element e) {
-    return (int) (e.getOffsetWidth() - num(curCSS(e, "paddingLeft", true)) - num(curCSS(e, "paddingRight", true))
+    return (int) (e.getOffsetWidth() - num(curCSS(e, "paddingLeft", true))
+        - num(curCSS(e, "paddingRight", true))
         - num(curCSS(e, "borderRightWidth", true)) - num(curCSS(e, "borderRightWidth", true)));
   }
 

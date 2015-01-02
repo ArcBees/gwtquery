@@ -37,5 +37,4 @@ public class VerticalAlignProperty extends CssProperty<VerticalAlign>
   public CssSetter with(Length value) {
     return new SimpleCssSetter(this, value);
   }
-
 }

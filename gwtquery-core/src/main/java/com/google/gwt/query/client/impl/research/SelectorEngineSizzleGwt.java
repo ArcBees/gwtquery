@@ -28,7 +28,7 @@ import com.google.gwt.query.client.js.JsUtils;
  * Sizzle CSS Selector Engine v1.0.
  *
  * It has so many JSNI code, the idea is to make an entire implementation
- * using Java. Right now it performs worse than pure JSNI implementation
+ * using Java. Right now it performs worse than pure JSNI implementation.
  *
  */
 public class SelectorEngineSizzleGwt extends SelectorEngineImpl {

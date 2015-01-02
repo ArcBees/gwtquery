@@ -60,23 +60,23 @@ public class GqEvent extends Event {
   }
 
   /**
-   * Return the original event (the one created by the browser)
+   * Return the original event (the one created by the browser).
    */
-  public final native Event getOriginalEvent()/*-{
+  public final native Event getOriginalEvent() /*-{
     return this.originalEvent;
   }-*/;
 
-  public final native void setCurrentElementTarget(Element e)/*-{
+  public final native void setCurrentElementTarget(Element e) /*-{
     this.currentTarget = e;
 
-    //ie don't have a currentEventTarget field on event
+    // ie don't have a currentEventTarget field on event
     try{
       @com.google.gwt.dom.client.DOMImplTrident::currentEventTarget = e;
     }catch(e){}
   }-*/;
 
   /**
-   * Tell whether ctrl or cmd key is pressed
+   * Tell whether ctrl or cmd key is pressed.
    *
    */
   public final boolean isMetaKeyPressed() {
@@ -84,13 +84,13 @@ public class GqEvent extends Event {
   }
 
   /**
-   * The mouse position relative to the left edge of the document
+   * The mouse position relative to the left edge of the document.
    *
    */
   public final int pageX() {
-    if (getTouches() != null && getTouches().length() > 0){
+    if (getTouches() != null && getTouches().length() > 0) {
       return getTouches().get(0).getPageX();
-    }else{
+    } else {
       return getClientX() + GQuery.document.getScrollLeft();
     }
   }
@@ -100,9 +100,9 @@ public class GqEvent extends Event {
    *
    */
   public final int pageY() {
-    if (getTouches() != null &&  getTouches().length() > 0){
+    if (getTouches() != null &&  getTouches().length() > 0) {
       return getTouches().get(0).getPageY();
-    }else{
+    } else {
       return getClientY() + GQuery.document.getScrollTop();
     }
   }
