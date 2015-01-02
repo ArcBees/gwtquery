@@ -118,8 +118,9 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     assertEquals(1, back.size());
   }
 
-  // FIXME: timer 3 fails in real browsers (chrome)
-  @DoNotRunWith(Platform.Prod)
+  // Fails in TC windows, pass in Jenkins Linux
+  // FIXME: Also timer 3 fails in real browsers (chrome).
+  @DoNotRunWith(Platform.HtmlUnitLayout)
   public void testEffectsShouldBeQueued() {
     $(e).html("<p id='idtest'>Content 1</p></p>");
 
@@ -166,6 +167,8 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     timer4.schedule(duration/2);
   }
 
+  // Fails in TC windows, pass in Jenkins Linux
+  @DoNotRunWith(Platform.HtmlUnitLayout)
   public void testFade() {
     $(e)
     .html(
