@@ -26,12 +26,11 @@ public class Callbacks {
 
   /**
    * Iterface used for callbacks which could cancel the execution
-   * when returning false;
-   *
+   * when returning false.
    */
-  public static interface Callback {
+  public interface Callback {
     /**
-     * Return false to avoid executing the rest of functions
+     * Return false to avoid executing the rest of functions.
      */
     boolean f(Object ...objects);
   }
@@ -97,7 +96,7 @@ public class Callbacks {
   }
 
   /**
-   * lock
+   * lock.
    */
   public Callbacks lock() {
     if (!isMemory) {

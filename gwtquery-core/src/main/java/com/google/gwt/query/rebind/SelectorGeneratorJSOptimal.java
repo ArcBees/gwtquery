@@ -176,7 +176,7 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 //
 //      if (notNull(mm.group(1))) {
 //        mode = mm.group(1).replaceAll(trimReStr, "");
-//        debug("replacing q=" + q + " this part:" + mm.group(1));
+//        debug("replacing q=" + q + " this part: " + mm.group(1));
 //        q = q.replaceFirst("\\Q" + mm.group(1) + "\\E", "");
 //      }
 //    }

@@ -28,9 +28,7 @@ public class JsClosure extends JavaScriptObject {
   /**
    * Invoke the closure with no arguments and expecting no return value.
    */
-  public final native void invoke()
-  /*-{
-
+  public final native void invoke() /*-{
      return this();
   }-*/;
 }

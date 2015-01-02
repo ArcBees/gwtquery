@@ -40,9 +40,7 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineSizzleIE extends SelectorEngineImpl {
 
-  public static native void initialize()
-  /*-{
-
+  public static native void initialize() /*-{
 (function(){
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
@@ -933,9 +931,7 @@ $wnd.IES = IES;
 })();
   }-*/;
 
-  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed)
-  /*-{
-
+  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     return $wnd.IES(selector, context, results, seed);
   }-*/;
 

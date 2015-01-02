@@ -76,7 +76,7 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
   /**
    * Using this constructor we access to some things in the xmlHttpRequest
    * which are not available in GWT, like adding progress handles or sending
-   * javascript data (like forms in modern html5 file api)
+   * javascript data (like forms in modern html5 file api).
    */
   public PromiseReqBuilder(Settings settings) {
     String httpMethod = settings.getType();
@@ -170,20 +170,16 @@ public class PromiseReqBuilder extends DeferredPromiseImpl implements RequestCal
   }
 
   /**
-   * Using violator pattern to execute private method
+   * Using violator pattern to execute private method.
    */
-  private native void fireOnResponseReceivedVltr(Request rq, RequestCallback cb)
-  /*-{
-
+  private native void fireOnResponseReceivedVltr(Request rq, RequestCallback cb) /*-{
     rq.@com.google.gwt.http.client.Request::fireOnResponseReceived(Lcom/google/gwt/http/client/RequestCallback;)(cb);
   }-*/;
 
   /**
-   * Using violator pattern to use protected constructor
+   * Using violator pattern to use protected constructor.
    */
-  private native Request createRequestVltr(XMLHttpRequest rq, int ms, RequestCallback cb)
-  /*-{
-
+  private native Request createRequestVltr(XMLHttpRequest rq, int ms, RequestCallback cb) /*-{
     return @com.google.gwt.http.client.Request::new(Lcom/google/gwt/xhr/client/XMLHttpRequest;ILcom/google/gwt/http/client/RequestCallback;)(rq,ms,cb);
   }-*/;
 }

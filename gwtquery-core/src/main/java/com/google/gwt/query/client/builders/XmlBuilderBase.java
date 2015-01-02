@@ -26,9 +26,14 @@ import com.google.gwt.query.client.js.JsUtils;
 
 import java.util.Date;
 
+/**
+ * Common code in XmlBuilder implementations.
+ *
+ * @param <J>
+ */
 public abstract class XmlBuilderBase<J extends XmlBuilderBase<?>> implements XmlBuilder {
 
-  //TODO empty document
+  // TODO empty document
   protected GQuery g = $((Element)JsUtils.parseXML("<root/>"));
 
   public void append(String xml) {

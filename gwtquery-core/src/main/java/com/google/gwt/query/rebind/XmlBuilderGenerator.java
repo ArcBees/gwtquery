@@ -54,7 +54,7 @@ public class XmlBuilderGenerator extends Generator {
         t[1], requestedClass);
     if (sw != null) {
       for (JMethod method : clazz.getInheritableMethods()) {
-        //skip method from JsonBuilder
+        // skip method from JsonBuilder
         if(xmlBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null){
             continue;
         }

@@ -18,6 +18,9 @@ package com.google.gwt.query.client.plugins.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Label;
 
+/**
+ * LabelWidgetFactory.
+ */
 public class LabelWidgetFactory implements WidgetFactory<Label> {
 
   public Label create(Element e) {

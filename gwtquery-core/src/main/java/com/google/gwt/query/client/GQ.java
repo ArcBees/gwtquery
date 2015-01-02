@@ -41,7 +41,7 @@ public abstract class GQ {
   }
 
   /**
-   * Create an instance of a JsonBuilder object whose type is <T>
+   * Create an instance of a JsonBuilder object whose type is <T>.
    */
   public static <T extends JsonBuilder> T create(Class<T> clz) {
     return getFactory().create(clz);
@@ -89,7 +89,7 @@ public abstract class GQ {
 
   /**
    * Return the appropriate transport implementation depending on the runtime
-   * environment: browser or JVM
+   * environment: browser or JVM.
    */
   public static AjaxTransport getAjaxTransport() {
     initFactory();

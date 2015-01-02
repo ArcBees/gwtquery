@@ -52,7 +52,7 @@ public abstract class MousePlugin extends UiPlugin {
   protected abstract String getPluginName();
 
   /**
-   * This method initialize all needed handlers
+   * This method initialize all needed handlers.
    *
    */
   protected void initMouseHandler(MouseOptions options) {
@@ -98,15 +98,13 @@ public abstract class MousePlugin extends UiPlugin {
 
   /**
    * Test if the mouse down event must be handled by the plugin or not.
-   *
    */
   protected boolean mouseCapture(Element draggable, GqEvent event) {
     return true;
   }
 
   /**
-   * Method called when mouse click
-   *
+   * Method called when mouse click.
    */
   protected boolean mouseClick(Element element, GqEvent event) {
     return true;
@@ -116,8 +114,7 @@ public abstract class MousePlugin extends UiPlugin {
    * Method called when mouse down occur on the element.
    *
    * You should not override this method. Instead, override {@link #mouseStart(Element, GqEvent)}
-   * method
-   *
+   * method.
    */
   protected boolean mouseDown(Element element, GqEvent event) {
 
@@ -147,7 +144,7 @@ public abstract class MousePlugin extends UiPlugin {
 
     bindOtherEvents(element);
 
-    if (!touchSupported){ //click event are not triggered if we call preventDefault on touchstart event.
+    if (!touchSupported){ // click event are not triggered if we call preventDefault on touchstart event.
       event.getOriginalEvent().preventDefault();
     }
 
@@ -157,8 +154,7 @@ public abstract class MousePlugin extends UiPlugin {
   }
 
   /**
-   * Method called when the mouse is dragging
-   *
+   * Method called when the mouse is dragging.
    */
   protected abstract boolean mouseDrag(Element element, GqEvent event);
 
@@ -195,8 +191,7 @@ public abstract class MousePlugin extends UiPlugin {
   protected abstract boolean mouseStart(Element element, GqEvent event);
 
   /**
-   * Method called when the mouse button is released
-   *
+   * Method called when the mouse button is released.
    */
   protected abstract boolean mouseStop(Element element, GqEvent event);
 
@@ -204,8 +199,7 @@ public abstract class MousePlugin extends UiPlugin {
    * Method called when mouse is released..
    *
    * You should not override this method. Instead, override {@link #mouseStop(Element, GqEvent)}
-   * method
-   *
+   * method.
    */
   protected boolean mouseUp(Element element, GqEvent event) {
 

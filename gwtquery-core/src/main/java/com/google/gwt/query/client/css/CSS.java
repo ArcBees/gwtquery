@@ -17,7 +17,6 @@ package com.google.gwt.query.client.css;
 
 import com.google.gwt.query.client.css.MarginProperty.ShorthandMarginProperty;
 import com.google.gwt.query.client.css.PaddingProperty.ShorthandPaddingProperty;
-import com.google.gwt.query.client.css.UnicodeBidiProperty.UnicodeBidi;
 
 /**
  * This class lists all CSS properties.
@@ -626,7 +625,7 @@ public class CSS {
 
   /**
    * CSS value specifying that the setting of the related property should be
-   * inherited from the parent element
+   * inherited from the parent element.
    */
   public static final String INHERIT = "inherit";
 

@@ -22,6 +22,11 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
 
+/**
+ * Common class for all JsonBuilder implementations.
+ *
+ * @param <J>
+ */
 public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements JsonBuilder {
 
   protected Properties p = Properties.create();

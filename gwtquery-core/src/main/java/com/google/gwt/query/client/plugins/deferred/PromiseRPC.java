@@ -34,6 +34,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  *          }
  *        });
  * </pre>
+ *
+ * @param <T>
  */
 public class PromiseRPC<T> extends DeferredPromiseImpl implements AsyncCallback<T> {
   public void onFailure(Throwable caught) {

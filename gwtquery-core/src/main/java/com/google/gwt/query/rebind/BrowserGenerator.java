@@ -29,7 +29,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 import java.io.PrintWriter;
 
 /**
- * Creates an implementation for {@link Browser}
+ * Creates an implementation for {@link Browser}.
  */
 public class BrowserGenerator extends Generator {
   @Override

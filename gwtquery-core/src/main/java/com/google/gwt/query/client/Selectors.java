@@ -54,12 +54,12 @@ public interface Selectors {
    * Set the context for all the selectors.
    * By default they are evaluated in all the document.
    */
-  public void setRoot(Node node);
+  void setRoot(Node node);
 
   /**
    * Get the configured root context.
    */
-  public Node getRoot();
+  Node getRoot();
 
   /**
    * Used for benchmarking purposes, it returns true if the selector engine
@@ -68,5 +68,5 @@ public interface Selectors {
    *
    * It is useful to check if IE8 native selectors are being used.
    */
-  public boolean isDegradated();
+  boolean isDegradated();
 }

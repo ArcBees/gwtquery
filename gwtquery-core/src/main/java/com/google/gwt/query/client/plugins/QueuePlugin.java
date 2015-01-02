@@ -27,6 +27,8 @@ import java.util.Queue;
 
 /**
  * Class used in plugins which need a queue system.
+ *
+ * @param <T>
  */
 public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
 
@@ -80,14 +82,14 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
-   * remove all queued functions from the effects queue
+   * remove all queued functions from the effects queue.
    */
   public T clearQueue() {
     return clearQueue(DEFAULT_NAME);
   }
 
   /**
-   * remove all queued function from the named queue
+   * remove all queued function from the named queue.
    */
   @SuppressWarnings("unchecked")
   public T clearQueue(String name) {
@@ -98,14 +100,14 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
   }
 
   /**
-   * Add a delay in the effects queue
+   * Add a delay in the effects queue.
    */
   public T delay(int milliseconds, Function... f) {
     return delay(milliseconds, DEFAULT_NAME, f);
   }
 
   /**
-   * Add a delay in the named queue
+   * Add a delay in the named queue.
    */
   @SuppressWarnings("unchecked")
   public T delay(int milliseconds, String name, Function... funcs) {

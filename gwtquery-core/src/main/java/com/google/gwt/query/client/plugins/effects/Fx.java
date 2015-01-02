@@ -29,7 +29,7 @@ import com.google.gwt.regexp.shared.RegExp;
 public class Fx {
 
   /**
-   * Public variable to enable/disable effects
+   * Public variable to enable/disable effects.
    */
   public static boolean off = false;
 
@@ -64,7 +64,7 @@ public class Fx {
   public static class ColorFx extends Fx {
 
     /**
-     * Specific class handle specific borderColor shortcut properties
+     * Specific class handle specific borderColor shortcut properties.
      */
     public static class BorderColorFx extends ColorFx {
 
@@ -81,10 +81,10 @@ public class Fx {
         endColor = parseColor(endColorString);
         startColors = JsNamedArray.create();
 
-        GQuery $e = GQuery.$(e);
+        GQuery g = GQuery.$(e);
 
         for (String border : borderColorProperties) {
-          int[] startColor = parseColor($e.css(border, true));
+          int[] startColor = parseColor(g.css(border, true));
           startColors.put(border, startColor);
         }
       }
@@ -269,15 +269,15 @@ public class Fx {
 
   public void applyValue(GQuery g, double progress) {
     double ret = (start + ((end - start) * progress));
-    String value = ("px".equals(unit) ? ((int) ret) : ret) + unit;
+    String val = ("px".equals(unit) ? ((int) ret) : ret) + unit;
     if ("scrollTop".equals(cssprop)) {
       g.scrollTop((int)ret);
     } else if ("scrollLeft".equals(cssprop)) {
       g.scrollLeft((int)ret);
     } else if (attribute != null) {
-      g.attr(attribute, value);
+      g.attr(attribute, val);
     } else {
-      g.css(cssprop, value);
+      g.css(cssprop, val);
     }
   }
 

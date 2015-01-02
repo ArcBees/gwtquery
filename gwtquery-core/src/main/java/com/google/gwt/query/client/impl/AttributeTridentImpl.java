@@ -60,9 +60,7 @@ public class AttributeTridentImpl extends AttributeImpl {
     }
   }
 
-  private static native String getAttributeNode(Element e, String name)
-  /*-{
-
+  private static native String getAttributeNode(Element e, String name) /*-{
     var attrNode = e.getAttributeNode(name);
     if (attrNode && attrNode.nodeValue !== "") {
       return attrNode.nodeValue;
@@ -71,9 +69,7 @@ public class AttributeTridentImpl extends AttributeImpl {
   }-*/;
 
   private static native boolean setAttributeNode(Element e, String name,
-      Object value)
-  /*-{
-
+      Object value) /*-{
     var attrNode = e.getAttributeNode(name);
     if (attrNode) {
       attrNode.nodeValue = value;

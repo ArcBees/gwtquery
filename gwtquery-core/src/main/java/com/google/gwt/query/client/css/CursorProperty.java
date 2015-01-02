@@ -19,7 +19,7 @@ import com.google.gwt.dom.client.Style.Cursor;
 
 /**
  * The <i>cursor</i> property specifies the type of cursor to be displayed for
- * the pointing device
+ * the pointing device.
  */
 public class CursorProperty extends CssProperty<Cursor> {
 
@@ -33,7 +33,7 @@ public class CursorProperty extends CssProperty<Cursor> {
     super(CSS_PROPERTY);
   }
 
-  public CssSetter with(UriValue url){
+  public CssSetter with(UriValue url) {
     return new SimpleCssSetter(this, url);
   }
 }

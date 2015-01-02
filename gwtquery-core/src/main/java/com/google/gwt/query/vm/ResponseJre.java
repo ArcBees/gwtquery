@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of `Response` in the JVM
+ * Implementation of `Response` in the JVM.
  */
 public class ResponseJre extends Response {
   private int status;

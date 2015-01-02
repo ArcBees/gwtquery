@@ -33,9 +33,7 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
 
-  public static native boolean contains(Object a, Object b)
-  /*-{
-
+  public static native boolean contains(Object a, Object b) /*-{
     var ret =
       document.compareDocumentPosition ?
         (a.compareDocumentPosition(b) & 16):
@@ -43,9 +41,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return ret ? true : false;
   }-*/;
 
-  public static native JavaScriptObject createExpr()
-  /*-{
-
+  public static native JavaScriptObject createExpr() /*-{
     var done = 0;
     $wnd.Expr = {
       order: [ "ID", "NAME", "TAG" ],
@@ -435,9 +431,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return $wnd.Expr;
   }-*/;
 
-  public static native void dirCheck(String dir, Object cur, int doneName, Object checkSet)
-  /*-{
-
+  public static native void dirCheck(String dir, Object cur, int doneName, Object checkSet) /*-{
      for ( var i = 0, l = checkSet.length; i < l; i++ ) {
        var elem = checkSet[i];
        if ( elem ) {
@@ -468,9 +462,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
      }
    }-*/;
 
-   public static native void dirNodeCheck(String dir, Object cur, int doneName, Object checkSet)
-  /*-{
-
+   public static native void dirNodeCheck(String dir, Object cur, int doneName, Object checkSet) /*-{
     for ( var i = 0, l = checkSet.length; i < l; i++ ) {
       var elem = checkSet[i];
       if ( elem ) {
@@ -500,9 +492,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     throw new IllegalArgumentException("Syntax error, unrecognized expression: " + msg);
   }
 
-  public static native JsArray<Node> filter(String expr, JsArray<Node> set, boolean inplace, Object not)
-  /*-{
-
+  public static native JsArray<Node> filter(String expr, JsArray<Node> set, boolean inplace, Object not) /*-{
     var old = expr, result = [], curLoop = set, match, anyFound;
     while ( expr && set.length ) {
       for ( var type in $wnd.Expr.filter ) {
@@ -568,9 +558,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return curLoop;
   }-*/;
 
-  public static native JavaScriptObject find(String expr, Node context)
-  /*-{
-
+  public static native JavaScriptObject find(String expr, Node context) /*-{
     var set, match;
     if ( !expr ) {
       return [];
@@ -598,9 +586,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return {set: set, expr: expr};
   }-*/;
 
-  public static native String getText(Object elems)
-  /*-{
-
+  public static native String getText(Object elems) /*-{
     var ret = "", elem;
     for ( var i = 0; elems[i]; i++ ) {
       elem = elems[i];
@@ -615,9 +601,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return ret;
   }-*/;
 
-  public static native JsArray<Node> makeArray(NodeList<Node> array, JsArray<Node> results)
-  /*-{
-
+  public static native JsArray<Node> makeArray(NodeList<Node> array, JsArray<Node> results) /*-{
     var ret = results || [];
     if ( Object.prototype.toString.call(array) === "[object Array]" ) {
       Array.prototype.push.apply( ret, array );
@@ -635,9 +619,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return ret;
   }-*/;
 
-  public static native JsArray<Element> posProcess(String selector, Node context)
-  /*-{
-
+  public static native JsArray<Element> posProcess(String selector, Node context) /*-{
     var tmpSet = [], later = "", match, root = context.nodeType ? [context] : context;
     // Position selectors must be done after the filter
     // And so must :not(positional) so we move all PSEUDOs to the end
@@ -652,9 +634,7 @@ public class SelectorEngineSizzleGwt extends SelectorEngineImpl {
     return @com.google.gwt.query.client.impl.research.SelectorEngineSizzleGwt::filter(Ljava/lang/String;Lcom/google/gwt/core/client/JsArray;ZLjava/lang/Object;)( later, tmpSet, false );
   }-*/;
 
-  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed)
-  /*-{
-
+  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     results = results || [];
     var origContext = context = context || document;
     var parts = [], m, set, checkSet, extra, prune = true, soFar = selector;

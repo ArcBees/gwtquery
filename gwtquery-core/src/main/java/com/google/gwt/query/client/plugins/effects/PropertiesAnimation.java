@@ -37,17 +37,17 @@ public class PropertiesAnimation extends GQAnimation {
   /**
    * Easing method to use.
    */
-  public static interface Easing {
-    public double interpolate(double progress);
+  public interface Easing {
+    double interpolate(double progress);
     /**
      * @deprecated use EasingCurve.linear instead
      */
-    public Easing LINEAR = EasingCurve.linear;
+    Easing LINEAR = EasingCurve.linear;
 
     /**
      * @deprecated use EasingCurve.swing instead
      */
-    public Easing SWING = EasingCurve.swing;
+    Easing SWING = EasingCurve.swing;
   }
 
   /**
@@ -212,10 +212,10 @@ public class PropertiesAnimation extends GQAnimation {
       String attr = g.attr(rkey);
       MatchResult parts = REGEX_NUMBER_UNIT.exec(attr);
       if (parts != null) {
-        String $1 = parts.getGroup(1);
-        String $2 = parts.getGroup(2);
-        cur = Double.parseDouble($1);
-        unit = $2 == null ? "" : $2;
+        String p1 = parts.getGroup(1);
+        String p2 = parts.getGroup(2);
+        cur = Double.parseDouble(p1);
+        unit = p2 == null ? "" : p2;
       } else {
         cur = g.cur(key, true);
         key = rkey;
@@ -241,26 +241,26 @@ public class PropertiesAnimation extends GQAnimation {
       MatchResult parts = REGEX_SYMBOL_NUMBER_UNIT.exec(val);
 
       if (parts != null) {
-        String $1 = parts.getGroup(1);
-        String $2 = parts.getGroup(2);
-        String $3 = parts.getGroup(3);
-        end = Double.parseDouble($2);
+        String p1 = parts.getGroup(1);
+        String p2 = parts.getGroup(2);
+        String p3 = parts.getGroup(3);
+        end = Double.parseDouble(p2);
 
         if (rkey == null) {
           unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : //
-            $3 == null || $3.isEmpty() ? "px" : $3;
+            p3 == null || p3.isEmpty() ? "px" : p3;
           if (!"px".equals(unit)) {
             double to = end == 0 ? 1 : end;
             g.css(key, to + unit);
             start = to * start / g.cur(key, true);
             g.css(key, start + unit);
           }
-        } else if ($3 != null && !$3.isEmpty()) {
-          unit = $3;
+        } else if (p3 != null && !p3.isEmpty()) {
+          unit = p3;
         }
 
-        if ($1 != null && !$1.isEmpty()) {
-          end = (("-=".equals($1) ? -1 : 1) * end) + start;
+        if (p1 != null && !p1.isEmpty()) {
+          end = (("-=".equals(p1) ? -1 : 1) * end) + start;
         }
       }
     }

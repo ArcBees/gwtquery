@@ -31,7 +31,7 @@ import com.google.gwt.query.client.Predicate;
 public class UiPlugin extends GQuery {
 
   /**
-   * A POJO used to store dimension of an element
+   * A POJO used to store dimension of an element.
    *
    */
   public static class Dimension {
@@ -56,7 +56,7 @@ public class UiPlugin extends GQuery {
     }
 
     /**
-     * return the width value
+     * return the width value.
      */
     public int getWidth() {
       return width;
@@ -76,11 +76,11 @@ public class UiPlugin extends GQuery {
         scrollParent = gQueryUi.parents().filter(new Predicate() {
 
           public boolean f(Element e, int index) {
-            GQuery $e = GQuery.$(e);
-            String position = $e.css("position", true);
+            GQuery g = GQuery.$(e);
+            String position = g.css("position", true);
             return ("relative".equals(position) || "absolute".equals(position) || "fixed"
                 .equals(position))
-                && isOverflowEnabled($e);
+                && isOverflowEnabled(g);
           }
         });
       } else {
@@ -99,7 +99,7 @@ public class UiPlugin extends GQuery {
       return "absolute".equals(gQueryUi.css("position"));
     }
 
-    private final Element getViewportElement() {
+    private Element getViewportElement() {
       return GQuery.document.isCSS1Compat() ? GQuery.document
           .getDocumentElement() : GQuery.document.getBody();
     }

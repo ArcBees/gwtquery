@@ -19,11 +19,14 @@ import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
  * The <i>white-space</i> property declares how white space inside the element
- * is handled
+ * is handled.
  */
 public class WhiteSpaceProperty extends
     CssProperty<WhiteSpaceProperty.WhiteSpace> {
 
+  /**
+   * WhiteSpace.
+   */
   public enum WhiteSpace implements HasCssName {
 
     /**

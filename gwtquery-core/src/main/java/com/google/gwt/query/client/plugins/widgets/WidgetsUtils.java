@@ -35,6 +35,9 @@ import com.google.gwt.user.client.ui.WidgetCollection;
 
 import java.util.Iterator;
 
+/**
+ * WidgetsUtils.
+ */
 public class WidgetsUtils {
 
   static final String[] appendingTags = {
@@ -56,7 +59,7 @@ public class WidgetsUtils {
    }
 
   /**
-   * Test if the tag name of the element is one of tag names given in parameter
+   * Test if the tag name of the element is one of tag names given in parameter.
    *
    * @param tagNames
    * @return
@@ -117,7 +120,7 @@ public class WidgetsUtils {
      }
    }
 
-   /**
+  /**
    * If the <code>oldElement</code> is a td, th, li tags, the new element will replaced its content.
    * In other cases, the <code>oldElement</code> will be replaced by the <code>newElement</code>
    *  and the old element classes will be copied to the new element.
@@ -130,14 +133,14 @@ public class WidgetsUtils {
     }else{
       GQuery.$(oldElement).replaceWith(newElement);
 
-      //copy class
+      // copy class
       String c = oldElement.getClassName();
       if (!c.isEmpty()) {
         newElement.addClassName(c);
       }
-      //copy id
+      // copy id
       newElement.setId(oldElement.getId());
-      //ensure no duplicate id
+      // ensure no duplicate id
       oldElement.setId("");
     }
    }
@@ -213,7 +216,7 @@ public class WidgetsUtils {
    }
 
    /**
-    * Remove a widget from the detach list
+    * Remove a widget from the detach list.
     */
    public static void detachWidget(final Widget widget) {
      if (widget != null) {
@@ -223,9 +226,7 @@ public class WidgetsUtils {
 
    /**
     * This method detach a widget of its parent without doing a physical
-    * detach (DOM manipulation)
-    *
-    * @param w
+    * detach (DOM manipulation).
     */
    public static void doLogicalDetachFromHtmlPanel(Widget w) {
      Widget parent = w.getParent();
@@ -240,7 +241,7 @@ public class WidgetsUtils {
    }
 
    /**
-    * Return children of the first widget's panel
+    * Return children of the first widget's panel.
     */
    public static Iterator<Widget> getChildren(Widget w){
      if(w instanceof Panel){
@@ -260,27 +261,19 @@ public class WidgetsUtils {
      return $(element).parents().widget();
    }
 
-   private static native void widgetOnAttach(Widget w)
-  /*-{
-
+   private static native void widgetOnAttach(Widget w) /*-{
      w.@com.google.gwt.user.client.ui.Widget::onAttach()();
    }-*/;
 
-   private static native void widgetSetParent(Widget w, Widget p)
-  /*-{
-
+   private static native void widgetSetParent(Widget w, Widget p) /*-{
     w.@com.google.gwt.user.client.ui.Widget::setParent(Lcom/google/gwt/user/client/ui/Widget;)(p);
    }-*/;
 
-   private static native Widget compositeGetWidget(Composite w)
-  /*-{
-
+   private static native Widget compositeGetWidget(Composite w) /*-{
     return w.@com.google.gwt.user.client.ui.Composite::getWidget()();
    }-*/;
 
-   private static native WidgetCollection complexPanelGetChildren(ComplexPanel w)
-  /*-{
-
+   private static native WidgetCollection complexPanelGetChildren(ComplexPanel w) /*-{
     return w.@com.google.gwt.user.client.ui.ComplexPanel::getChildren()();
    }-*/;
 }

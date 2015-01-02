@@ -21,6 +21,9 @@ package com.google.gwt.query.client;
  * method calls to the class which implements the Lazy interface. Methods in the
  * generated class do not execute but instead queue up a deferred execution of
  * the method.
+ *
+ * @param <S>
+ * @param <T>
  */
 public interface Lazy<S, T extends LazyBase> {
 

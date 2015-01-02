@@ -17,6 +17,10 @@ import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.LazyBase;
 
+/**
+ * LazyEvents.
+ * @param <T>
+ */
 public interface LazyEvents<T> extends LazyBase<T>{
 
   /**
@@ -180,4 +184,5 @@ public interface LazyEvents<T> extends LazyBase<T>{
   LazyEvents<T> unbind(String name, Function f);
 
   LazyEvents<T> undelegate();
+
 }

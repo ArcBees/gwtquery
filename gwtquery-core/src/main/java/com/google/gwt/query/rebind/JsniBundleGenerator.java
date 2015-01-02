@@ -22,7 +22,6 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.query.client.builders.JsniBundle;
 import com.google.gwt.query.client.builders.JsniBundle.LibrarySource;
 import com.google.gwt.query.client.builders.JsniBundle.MethodSource;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;

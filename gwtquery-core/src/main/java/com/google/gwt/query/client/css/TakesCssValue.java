@@ -19,11 +19,16 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * An CSS property with values of type T.
+ *
+ * @param <T>
  */
 public interface TakesCssValue<T> extends HasCssValue {
 
-  public interface CssSetter {
-    public void applyCss(Element e);
+  /**
+   * CssSetter.
+   */
+  interface CssSetter {
+    void applyCss(Element e);
   }
 
   CssSetter with(T value);

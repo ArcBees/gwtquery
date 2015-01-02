@@ -38,7 +38,7 @@ public class BorderSpacingProperty extends
 
     /**
      * Construct a {@link BorderSpacing} object with same horizontal and
-     * vertical spacing
+     * vertical spacing.
      */
     public BorderSpacing(Length spacing) {
       this(spacing, spacing);

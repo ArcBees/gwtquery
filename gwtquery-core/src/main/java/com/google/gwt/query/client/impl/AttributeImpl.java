@@ -1,4 +1,5 @@
-/* Copyright 2011, The gwtquery team.
+/*
+ * Copyright 2011, The gwtquery team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -10,7 +11,8 @@
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
- * the License. */
+ * the License.
+ */
 package com.google.gwt.query.client.impl;
 
 import com.google.gwt.dom.client.Element;
@@ -28,9 +30,9 @@ public class AttributeImpl {
    * Interface used for attribute setter implementations.
    */
   public interface AttributeSetter {
-    public boolean isRemoval(Object value);
+    boolean isRemoval(Object value);
 
-    public void setAttribute(Element e, String name, Object value);
+    void setAttribute(Element e, String name, Object value);
   }
 
   /**
@@ -56,7 +58,7 @@ public class AttributeImpl {
   }
 
   /**
-   * value must be set on element directly
+   * value must be set on element directly.
    */
   protected static class ValueAttrSetter extends DefaultSetter {
     private static AttributeSetter INSTANCE;
@@ -75,7 +77,7 @@ public class AttributeImpl {
   }
 
   /**
-   * Boolean attribute :
+   * Boolean attribute.
    * - Ensure to set a boolean value to the element's property with the same
    * name if this last exists
    * - Ensure to set an attribute having the value equals to the name (i.e
@@ -124,7 +126,7 @@ public class AttributeImpl {
 
   /**
    * For button and inputs, the type cannot be changed once the element is
-   * attached to the dom !
+   * attached to the DOM.
    */
   private static class TypeAttrSetter extends DefaultSetter {
     private static AttributeSetter INSTANCE;
@@ -145,12 +147,12 @@ public class AttributeImpl {
       String tag = e.getNodeName();
       if (NOT_AUTHORIZED_NODE.test(tag)
           && GQuery.$(e).parents("body").length() > 0) {
-        //TODO maybe it's better to simply do nothing...
+        //  TODO maybe it's better to simply do nothing...
         throw new RuntimeException(
             "You cannot change type of button or input element if the element is already attached to the dom");
       }
       if ("input".equals(tag.toLowerCase()) && "radio".equals(value)) {
-        //some browser (IE6-9) resets value property of the input when you change the type to radio button
+        // some browser (IE6-9) resets value property of the input when you change the type to radio button
         InputElement ie = InputElement.as(e);
         String keepValue = ie.getValue();
         super.setAttribute(ie, "type", value);
@@ -190,7 +192,7 @@ public class AttributeImpl {
     value = fixValue(key, value);
     for (Element e : gQuery.elements()) {
       int nodeType = e.getNodeType();
-      //don't set attribute on text, comment and attributes nodes
+      // don't set attribute on text, comment and attributes nodes
       if (nodeType == 3 || nodeType == 8 || nodeType == 2) {
         continue;
       }

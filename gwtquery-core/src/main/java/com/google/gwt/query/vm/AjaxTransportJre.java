@@ -66,7 +66,7 @@ public class AjaxTransportJre implements AjaxTransport {
     followRedirections = b;
   }
 
-  private final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
+  private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:26.0) Gecko/20100101 Firefox/26.0";
   private final String jsonpCbRexp = "(?ms)^.*jre_callback\\((.*)\\).*$";
 
   public Promise getJsonP(final Settings settings) {

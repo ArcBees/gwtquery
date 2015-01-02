@@ -58,7 +58,7 @@ public class MouseOptions {
   }
 
   /**
-   * Prevents starting of the plugin on specified elements
+   * Prevents starting of the plugin on specified elements.
    *
    * @param cancel
    *          array of css selectors

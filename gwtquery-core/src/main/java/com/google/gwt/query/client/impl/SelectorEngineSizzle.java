@@ -28,9 +28,7 @@ import com.google.gwt.dom.client.NodeList;
  */
 public class SelectorEngineSizzle extends SelectorEngineImpl {
 
-  public static native void initialize()
-  /*-{
-
+  public static native void initialize() /*-{
 (function(){
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
@@ -924,7 +922,7 @@ GQS.getText = function( elems ) {
 
   div = null; // release memory in IE
 })();
-//if ( document.querySelectorAll ) {
+// if ( document.querySelectorAll ) {
 //  (function(){
 //    var oldGQS = GQS, div = document.createElement("div");
 //    div.innerHTML = "<p class='TEST'></p>";
@@ -955,7 +953,7 @@ GQS.getText = function( elems ) {
 //
 //    div = null; // release memory in IE
 //  })();
-//}
+// }
 
 (function(){
   var div = document.createElement("div");
@@ -1093,9 +1091,7 @@ $wnd.GQS = GQS;
 })();
   }-*/;
 
-  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed)
-  /*-{
-
+  private static native JsArray<Element> select(String selector, Node context, JsArray<Element> results, JsArray<Element> seed) /*-{
     return $wnd.GQS(selector, context, results, seed);
   }-*/;
 

@@ -103,7 +103,7 @@ public class JsonBuilderGenerator extends Generator {
         Set<String> attrs = new HashSet<String>();
         for (JMethod method : clazz.getInheritableMethods()) {
           String methName = method.getName();
-          //skip method from JsonBuilder
+          // skip method from JsonBuilder
           if(jsonBuilderType.findMethod(method.getName(), method.getParameterTypes()) != null ||
               settingsType.findMethod(method.getName(), method.getParameterTypes()) != null ) {
             continue;

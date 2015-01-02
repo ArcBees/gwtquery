@@ -23,6 +23,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class BorderCollapseProperty extends
     CssProperty<BorderCollapseProperty.BorderCollapse> {
 
+  /**
+   * BorderCollapse.
+   */
   public static enum BorderCollapse implements HasCssName {
     /**
      * Borders are collapsed into a single border when possible (border-spacing

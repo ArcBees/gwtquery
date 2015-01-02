@@ -18,12 +18,12 @@ package com.google.gwt.query.client.css;
 import com.google.gwt.dom.client.Style.HasCssName;
 
 /**
- * Image as css value
+ * Image as css value.
  */
 public class UriValue implements HasCssName {
 
   /**
-   * Define an uri by an url
+   * Define an uri by an url.
    */
   public static UriValue url(String url) {
     return new UriValue("url('" + url + "')");

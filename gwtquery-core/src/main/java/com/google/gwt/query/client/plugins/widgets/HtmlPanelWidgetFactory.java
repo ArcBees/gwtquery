@@ -18,6 +18,9 @@ package com.google.gwt.query.client.plugins.widgets;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
+/**
+ * HtmlPanelWidgetFactory.
+ */
 public class HtmlPanelWidgetFactory implements WidgetFactory<HTMLPanel> {
 
   public HTMLPanel create(Element e) {

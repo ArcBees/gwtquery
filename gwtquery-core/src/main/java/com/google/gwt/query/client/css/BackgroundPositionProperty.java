@@ -27,19 +27,16 @@ public class BackgroundPositionProperty extends
 
   /**
    * Value for <i>background-position</i> property.
-   *
-   * @author Julien Dramaix (julien.dramaix@gmail.com)
-   *
    */
   public static class BackgroundPosition implements HasCssName {
 
     /**
-     * Equivalent to {@link BackgroundPosition#CENTER_BOTTOM}
+     * Equivalent to {@link BackgroundPosition#CENTER_BOTTOM}.
      */
     public static BackgroundPosition BOTTOM;
 
     /**
-     * Equivalent to {@link BackgroundPosition#CENTER_CENTER}
+     * Equivalent to {@link BackgroundPosition#CENTER_CENTER}.
      */
     public static BackgroundPosition CENTER;
 
@@ -62,7 +59,7 @@ public class BackgroundPositionProperty extends
     public static BackgroundPosition CENTER_TOP;
 
     /**
-     * Equivalent to {@link BackgroundPosition#LEFT_CENTER}
+     * Equivalent to {@link BackgroundPosition#LEFT_CENTER}.
      */
     public static BackgroundPosition LEFT;
 
@@ -85,7 +82,7 @@ public class BackgroundPositionProperty extends
     public static BackgroundPosition LEFT_TOP;
 
     /**
-     * Equivalent to {@link BackgroundPosition#RIGHT_CENTER}
+     * Equivalent to {@link BackgroundPosition#RIGHT_CENTER}.
      */
     public static BackgroundPosition RIGHT;
 
@@ -108,7 +105,7 @@ public class BackgroundPositionProperty extends
     public static BackgroundPosition RIGHT_TOP;
 
     /**
-     * Equivalent to {@link BackgroundPosition#CENTER_TOP}
+     * Equivalent to {@link BackgroundPosition#CENTER_TOP}.
      */
     public static BackgroundPosition TOP;
 
@@ -138,7 +135,7 @@ public class BackgroundPositionProperty extends
 
     /**
      * Return a {@link BackgroundPosition} by specifying the horizontal and
-     * vertical position. Pixel will be used as Unit
+     * vertical position. Pixel will be used as Unit.
      */
     public static BackgroundPosition position(int xpos, int ypos) {
       return position(xpos, ypos, Unit.PX);

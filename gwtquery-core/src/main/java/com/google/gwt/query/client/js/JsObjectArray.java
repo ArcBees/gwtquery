@@ -19,6 +19,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Lightweight JSO based array class that can store objects.
+ *
+ * @param <T>
  */
 public final class JsObjectArray<T> extends JavaScriptObject {
 

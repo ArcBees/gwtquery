@@ -113,7 +113,7 @@ public abstract class Function {
   }
 
   /**
-   * Set the list of arguments to be passed to the function
+   * Set the list of arguments to be passed to the function.
    */
   public Function setArguments(Object...arguments) {
     this.arguments = arguments;
@@ -121,7 +121,8 @@ public abstract class Function {
   }
 
   /**
-   * Return the first element of the arguments list
+   * Return the first element of the arguments list.
+   * 
    * @deprecated use getArgument(idx) instead.
    */
   @Deprecated
@@ -130,7 +131,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use getArgument instead
+   * @deprecated use getArgument instead.
    */
   @Deprecated
   public Object getDataObject(int idx) {
@@ -193,7 +194,7 @@ public abstract class Function {
   }
 
   /**
-   * Convenience alias for the getArguments(argIdx, pos) method;
+   * Convenience alias for the getArguments(argIdx, pos) method.
    */
   public <T> T arguments(int argIdx, int pos) {
     return getArgument(argIdx, pos);
@@ -250,7 +251,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use: getArgument()
+   * @deprecated use: getArgument() instead.
    */
   @Deprecated
   public Properties getDataProperties() {
@@ -258,7 +259,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use: getArgument(idx)
+   * @deprecated use: getArgument(idx) instead.
    */
   @Deprecated
   public Properties getDataProperties(int idx) {
@@ -266,7 +267,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use: setArguments()
+   * @deprecated use: setArguments() instead.
    */
   @Deprecated
   public void setData(boolean b) {
@@ -274,7 +275,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use: setArguments()
+   * @deprecated use: setArguments() instead.
    */
   @Deprecated
   public void setData(double b) {
@@ -282,7 +283,7 @@ public abstract class Function {
   }
 
   /**
-   * @deprecated use use setArguments instead
+   * @deprecated use use setArguments instead.
    */
   @Deprecated
   public void setData(Object...arguments) {
@@ -298,7 +299,9 @@ public abstract class Function {
   }
 
   /**
-   * Return the index in a loop execution. Used in GQuery.each()
+   * Return the index in a loop execution.
+   * 
+   * Used in GQuery.each()
    */
   public int getIndex() {
     return index;
@@ -385,7 +388,7 @@ public abstract class Function {
   }
 
   /**
-   * Override this method for bound callbacks
+   * Override this method for bound callbacks.
    */
   public Object f(Object... args) {
     setArguments(args);
@@ -394,14 +397,14 @@ public abstract class Function {
   }
 
   /**
-   * Override this method for bound callbacks
+   * Override this method for bound callbacks.
    */
   public void f(int i, Object arg) {
     f(i, new Object[]{arg});
   }
 
   /**
-   * Override this method for bound callbacks
+   * Override this method for bound callbacks.
    */
   public void f(int i, Object... args) {
     setIndex(i);
@@ -501,7 +504,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them
+   * They are intentionally final to avoid override them.
    */
   public final void fe(Object arg) {
     fe(new Object[]{arg});
@@ -510,7 +513,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them
+   * They are intentionally final to avoid override them.
    */
   public final Object fe(Object... args) {
     if (GWT.getUncaughtExceptionHandler() != null) {
@@ -527,7 +530,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them
+   * They are intentionally final to avoid override them.
    */
   public final boolean fe(Event ev, Object... args) {
     if (GWT.getUncaughtExceptionHandler() != null) {
@@ -544,7 +547,7 @@ public abstract class Function {
   /**
    * Methods fe(...) should be used from asynchronous contexts so as we can
    * catch the exception and send it to the GWT UncaughtExceptionHandler
-   * They are intentionally final to avoid override them
+   * They are intentionally final to avoid override them.
    */
   public final void fe(com.google.gwt.dom.client.Element elem) {
     if (GWT.getUncaughtExceptionHandler() != null) {

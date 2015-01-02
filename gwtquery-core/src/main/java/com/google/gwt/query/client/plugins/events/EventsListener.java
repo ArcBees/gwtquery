@@ -409,30 +409,22 @@ public class EventsListener implements EventListener {
     }
   }
 
-  private static native void cleanGQListeners(Element elem)
-  /*-{
-
+  private static native void cleanGQListeners(Element elem) /*-{
     if (elem.__gwtlistener) {
       @com.google.gwt.user.client.DOM::setEventListener(*)(elem, elem.__gwtlistener);
     }
     elem.__gwtlistener = elem.__gqueryevent = elem.__gquery = null;
   }-*/;
 
-  private static native EventsListener getGQueryEventListener(Element elem)
-  /*-{
-
+  private static native EventsListener getGQueryEventListener(Element elem) /*-{
     return elem.__gqueryevent;
   }-*/;
 
-  private static native EventListener getGwtEventListener(Element elem)
-  /*-{
-
+  private static native EventListener getGwtEventListener(Element elem) /*-{
     return elem.__gwtlistener;
   }-*/;
 
-  private static native void init(Element elem, EventsListener gqevent)
-  /*-{
-
+  private static native void init(Element elem, EventsListener gqevent) /*-{
     elem.__gwtlistener = @com.google.gwt.user.client.DOM::getEventListener(*)(elem);
     elem.__gqueryevent = gqevent;
     // Someone has reported that in IE the init can be called multiple times
@@ -441,9 +433,7 @@ public class EventsListener implements EventListener {
     if (elem.__gwtlistener == gqevent) elem.__gwtlistener = null;
   }-*/;
 
-  private static native void sinkBitlessEvent(Element elem, String name)
-  /*-{
-
+  private static native void sinkBitlessEvent(Element elem, String name) /*-{
     if (!elem.__gquery)
       elem.__gquery = [];
     if (elem.__gquery[name])
@@ -501,8 +491,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2){
@@ -510,7 +500,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -543,8 +533,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2) {
@@ -552,7 +542,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -651,7 +641,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event like mouseenter or mouseleave
+      // handle special event like mouseenter or mouseleave
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;
@@ -776,8 +766,8 @@ public class EventsListener implements EventListener {
       String nameSpace = null;
       String eventName = event;
 
-      //seperate possible namespace
-      //jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
+      // seperate possible namespace
+      // jDramaix: I removed old regex ^([^.]*)\.?(.*$) because it didn't work on IE8...
       String[] subparts = event.split("\\.", 2);
 
       if (subparts.length == 2){
@@ -785,7 +775,7 @@ public class EventsListener implements EventListener {
         eventName = subparts[0];
       }
 
-      //handle special event
+      // handle special event
       SpecialEvent hook = special.get(eventName);
       eventName = hook != null ? hook.getDelegateType() : eventName;
       String originalEventName = hook != null ? hook.getOriginalType() : null;

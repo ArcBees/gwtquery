@@ -419,7 +419,7 @@ public class Events extends GQuery {
   }
 
   /**
-   * Only valid for IE6-8
+   * Only valid for IE6-8.
    * @param event
    * @return
    */

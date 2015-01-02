@@ -27,6 +27,9 @@ import com.google.gwt.dom.client.Style.HasCssName;
 public class CssProperty<T extends HasCssName> implements
     TakesCssValue<T> {
 
+  /**
+   * CssSetterImpl.
+   */
   protected class CssSetterImpl implements CssSetter {
 
     private T cssValue;

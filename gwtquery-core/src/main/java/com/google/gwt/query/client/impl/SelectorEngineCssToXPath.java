@@ -42,14 +42,14 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
   /**
    * Interface for callbacks in replaceAll operations.
    */
-  public static interface ReplaceCallback {
+  public interface ReplaceCallback {
     String foundMatch(ArrayList<String> s);
   }
 
   /**
    * Interface for replacer implementations (GWT and JVM).
    */
-  public static interface Replacer {
+  public interface Replacer {
     String replaceAll(String s, String expr, Object replacement);
   }
 
@@ -115,7 +115,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
     "\\s*,\\s*", "|.//",
     // , + ~ >
     "\\s*(\\+|~|>)\\s*", "$1",
-    //* ~ + >
+    // * ~ + >
     "([\\w\\-\\*])~([\\w\\-\\*])", "$1/following-sibling::$2",
     "([\\w\\-\\*])\\+([\\w\\-\\*])", "$1/following-sibling::*[1]/self::$2",
     "([\\w\\-\\*])>([\\w\\-\\*])", "$1/$2",
@@ -267,8 +267,8 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         if (!SelectorEngine.hasXpathEvaluate()) {
           throw new RuntimeException("This Browser does not support Xpath selectors.", e);
         }
-        console.error("ERROR: xpathEvaluate invalid xpath expression:"
-          + xsel + " css-selector:" + sel + " " + e.getMessage() + "\n");
+        console.error("ERROR: xpathEvaluate invalid xpath expression: "
+          + xsel + " css-selector: " + sel + " " + e.getMessage() + "\n");
       }
       return elm;
     }

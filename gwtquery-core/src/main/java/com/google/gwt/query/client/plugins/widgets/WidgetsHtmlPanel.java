@@ -60,11 +60,9 @@ public class WidgetsHtmlPanel extends HTMLPanel {
   }
 
   /**
-   * use jsni to access private attribute
+   * use jsni to access private attribute.
    */
-  private native void setElementImpl(Element e)
-  /*-{
-
+  private native void setElementImpl(Element e) /*-{
     this.@com.google.gwt.user.client.ui.UIObject::element = e;
   }-*/;
 

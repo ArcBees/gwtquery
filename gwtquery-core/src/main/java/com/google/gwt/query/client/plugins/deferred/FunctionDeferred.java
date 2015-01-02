@@ -45,6 +45,9 @@ import com.google.gwt.query.client.Promise.Deferred;
  */
 public abstract class FunctionDeferred extends Function {
 
+  /**
+   * Cache types.
+   */
   public static enum CacheType {NONE, ALL, RESOLVED, REJECTED};
 
   protected Deferred dfd;

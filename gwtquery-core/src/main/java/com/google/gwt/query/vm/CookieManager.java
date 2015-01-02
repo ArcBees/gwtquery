@@ -27,8 +27,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * @author Ian Brown spam@hccp.org
- * http://www.hccp.org/java-net-cookie-how-to.html
+ * http://www.hccp.org/java-net-cookie-how-to.html.
  */
 public class CookieManager {
 

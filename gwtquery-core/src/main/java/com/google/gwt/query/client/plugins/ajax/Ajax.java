@@ -51,7 +51,10 @@ public class Ajax extends GQuery {
 
   public static final String JSON_CONTENT_TYPE_UTF8 = JSON_CONTENT_TYPE + "; charset=utf-8";
 
-  public static interface AjaxTransport {
+  /**
+   * Ajax Transport object.
+   */
+  public interface AjaxTransport {
     Promise getJsonP(Settings settings);
 
     Promise getLoadScript(Settings settings);
@@ -60,7 +63,7 @@ public class Ajax extends GQuery {
   }
 
   /**
-   * Ajax Settings object
+   * Ajax Settings object.
    */
   public interface Settings extends JsonBuilder {
     String getContentType();
@@ -126,10 +129,6 @@ public class Ajax extends GQuery {
     }, properties);
    * </pre>
    *
-   * @param url The url to connect
-   * @param onSuccess a function to execute in the case of success
-   * @param onError the function to execute on error
-   * @param settings a Properties object with the configuration of the Ajax request.
    */
   public static Promise ajax(Settings settings) {
     resolveSettings(settings);
@@ -353,7 +352,7 @@ public class Ajax extends GQuery {
   }
 
   /**
-   * Load a JavaScript file from any url using the script tag mechanism
+   * Load a JavaScript file from any url using the script tag mechanism.
    */
   public static Promise loadScript(String url) {
     return loadScript(url, null);

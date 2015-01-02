@@ -19,8 +19,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Lightweight JSO backed implemented of a Map, using Object.hashCode() as key.
+ *
+ * @param <S>
+ * @param <T>
  */
-final public class JsMap<S, T> extends JavaScriptObject {
+public final class JsMap<S, T> extends JavaScriptObject {
 
   protected JsMap() {
   }
@@ -54,7 +57,7 @@ final public class JsMap<S, T> extends JavaScriptObject {
     return old;
   }
 
-  public final String[] keys() {
+  public String[] keys() {
     return c().keys();
   }
 

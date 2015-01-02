@@ -24,15 +24,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 @Deprecated
 public class JsRegexp {
 
-  public static native JavaScriptObject compile(String pat)
-  /*-{
-
+  public static native JavaScriptObject compile(String pat) /*-{
      return new RegExp(pat);
   }-*/;
 
-  public static native JavaScriptObject compileFlags(String pat, String flags)
-  /*-{
-
+  public static native JavaScriptObject compileFlags(String pat, String flags) /*-{
      return new RegExp(pat, flags);
   }-*/;
 
@@ -40,9 +36,7 @@ public class JsRegexp {
     return new JsRegexp(regexp, flags).match(string);
   }
 
-  private static native JsObjectArray<String> exec0(JavaScriptObject regexp, String str)
-  /*-{
-
+  private static native JsObjectArray<String> exec0(JavaScriptObject regexp, String str) /*-{
     return regexp.exec(str);
   }-*/;
 
@@ -76,15 +70,11 @@ public class JsRegexp {
     return test0(regexp, rule);
   }
 
-  private native JsObjectArray<String> match0(JavaScriptObject regexp, String currentRule)
-  /*-{
-
+  private native JsObjectArray<String> match0(JavaScriptObject regexp, String currentRule) /*-{
     return currentRule.match(regexp);
   }-*/;
 
-  private native boolean test0(JavaScriptObject regexp, String rule)
-  /*-{
-
+  private native boolean test0(JavaScriptObject regexp, String rule) /*-{
     return regexp.test(rule);
   }-*/;
 

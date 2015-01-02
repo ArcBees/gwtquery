@@ -69,7 +69,7 @@ public class PromiseRF extends DeferredPromiseImpl {
    */
   public PromiseRF(Request<?>[] requests) {
     for (Request<?> request : requests) {
-      total ++;
+      total++;
       request.to(new Receiver<Object>() {
         public void onConstraintViolation(Set<ConstraintViolation<?>> violations) {
           dfd.reject(new ServerFailure("ConstraintViolation"), violations);

@@ -92,7 +92,7 @@ public class DocumentStyleImpl {
       return "";
     }
     name = fixPropertyName(name);
-    //value defined in the element style
+    // value defined in the element style
     String ret = elem.getStyle().getProperty(name);
 
     if (force) {
@@ -124,7 +124,7 @@ public class DocumentStyleImpl {
     Element  lastParent = $(elem).parents().last().get(0);
 
     if (lastParent == null){
-      //the element itself is detached
+      // the element itself is detached
       lastParent = elem;
     }
 
@@ -251,9 +251,7 @@ public class DocumentStyleImpl {
   }
 
   protected native String getComputedStyle(Element elem, String hyphenName,
-      String camelName, String pseudo)
-  /*-{
-
+      String camelName, String pseudo) /*-{
     try {
      var cStyle = $doc.defaultView.getComputedStyle(elem, pseudo);
      return cStyle && cStyle.getPropertyValue ? cStyle.getPropertyValue(hyphenName) : null;
@@ -280,18 +278,14 @@ public class DocumentStyleImpl {
     return ret;
   }
 
-  public native Document getContentDocument(Node n)
-  /*-{
-
+  public native Document getContentDocument(Node n) /*-{
     var d = n.contentDocument || n.document || n.contentWindow.document;
     if (!d.body)
       this.@com.google.gwt.query.client.impl.DocumentStyleImpl::emptyDocument(Lcom/google/gwt/dom/client/Document;)(d);
     return d;
   }-*/;
 
-  public native void emptyDocument(Document d)
-  /*-{
-
+  public native void emptyDocument(Document d) /*-{
     d.open();
     d.write("<head/><body/>");
     d.close();

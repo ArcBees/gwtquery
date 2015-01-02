@@ -72,7 +72,7 @@ public interface IsProperties {
   String toQueryString();
 
   /**
-   * return the name for this type
+   * return the name for this type.
    */
   String getJsonName();
 

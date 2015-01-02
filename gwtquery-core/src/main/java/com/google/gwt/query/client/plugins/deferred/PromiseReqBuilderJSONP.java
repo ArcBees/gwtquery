@@ -75,9 +75,7 @@ public class PromiseReqBuilderJSONP extends DeferredPromiseImpl {
   }
 
   // Using jsni because method send in JsonpRequestBuilder is private
-  private final native void send(JsonpRequestBuilder bld, String url, AsyncCallback<?> cb)
-  /*-{
-
+  private native void send(JsonpRequestBuilder bld, String url, AsyncCallback<?> cb) /*-{
     bld.@com.google.gwt.jsonp.client.JsonpRequestBuilder::send(Ljava/lang/String;Lcom/google/gwt/user/client/rpc/AsyncCallback;Z)(url,cb,false);
   }-*/;
 }

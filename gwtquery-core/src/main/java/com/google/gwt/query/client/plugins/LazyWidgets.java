@@ -24,6 +24,10 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * LazyWidgets.
+ * @param <T>
+ */
 public interface LazyWidgets<T> extends LazyBase<T>{
 
   /**
@@ -107,4 +111,5 @@ public interface LazyWidgets<T> extends LazyBase<T>{
    *
    */
   LazyWidgets<T> textArea(WidgetInitializer<TextArea> initializers);
+
 }

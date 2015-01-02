@@ -17,16 +17,19 @@ package com.google.gwt.query.client.css;
 
 import com.google.gwt.dom.client.Style.HasCssName;
 
+/**
+ * MultipleValueCssSetter.
+ */
 public class MultipleValueCssSetter extends SimpleCssSetter {
 
   public MultipleValueCssSetter(String cssPropertyName, HasCssName... values) {
     super(cssPropertyName, computeValue(values));
   }
 
-  protected static String computeValue(HasCssName... values){
+  protected static String computeValue(HasCssName... values) {
     StringBuilder valueBuilder = new StringBuilder();
 
-    for (HasCssName cssValue : values){
+    for (HasCssName cssValue : values) {
       valueBuilder.append(notNull(cssValue));
     }
 

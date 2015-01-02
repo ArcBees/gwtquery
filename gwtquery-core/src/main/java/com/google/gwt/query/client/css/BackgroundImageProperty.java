@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.css;
 
 /**
- * This property sets the background image of an element,
+ * This property sets the background image of an element.
  */
 public class BackgroundImageProperty extends CssProperty<UriValue> {
 

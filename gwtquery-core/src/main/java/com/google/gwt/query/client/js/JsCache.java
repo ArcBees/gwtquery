@@ -32,9 +32,7 @@ public class JsCache extends JavaScriptObject {
     return createObject().cast();
   }
 
-  public final native void concat(Object ary)
-  /*-{
-
+  public final native void concat(Object ary) /*-{
     if (ary) this.concat(ary);
   }-*/;
 
@@ -52,9 +50,7 @@ public class JsCache extends JavaScriptObject {
     }
   }
 
-  public final native void delete(Object name)
-  /*-{
-
+  public final native void delete(Object name) /*-{
     delete this[name];
   }-*/;
 
@@ -64,9 +60,7 @@ public class JsCache extends JavaScriptObject {
     }
   }
 
-  public final native boolean exists(Object name)
-  /*-{
-
+  public final native boolean exists(Object name) /*-{
     return !!this[name];
   }-*/;
 
@@ -90,9 +84,7 @@ public class JsCache extends JavaScriptObject {
     return (T)o;
   }
 
-  public final native <T> T get(Object id)
-  /*-{
-
+  public final native <T> T get(Object id) /*-{
     return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ this && this[id] ]);
   }-*/;
 
@@ -120,15 +112,11 @@ public class JsCache extends JavaScriptObject {
     return r == null ? 0 : r;
   }
 
-  public final native String getString(Object id)
-  /*-{
-
+  public final native String getString(Object id) /*-{
     return this[id] == null ? null : String(this[id]);
   }-*/;
 
-  public final native JsArrayMixed getArray(Object id)
-  /*-{
-
+  public final native JsArrayMixed getArray(Object id) /*-{
     var r = this[id];
     if (Object.prototype.toString.call(r) == '[object Array]') {
       return r;
@@ -141,43 +129,31 @@ public class JsCache extends JavaScriptObject {
     return (o != null && o instanceof JavaScriptObject) ? ((JavaScriptObject)o).<T>cast() : null;
   }
 
-  public final native boolean isEmpty()
-  /*-{
-
+  public final native boolean isEmpty() /*-{
     for (k in this) return false;
     return true;
   }-*/;
 
-  public final native boolean contains(Object o)
-  /*-{
-
+  public final native boolean contains(Object o) /*-{
     return this.indexOf(o) >= 0;
   }-*/;
 
-  public final native void remove(Object o)
-  /*-{
-
+  public final native void remove(Object o) /*-{
     var i = this.indexOf(o);
     if (i >= 0) this.splice(i, 1);
   }-*/;
 
-  public final native int indexOf(Object o)
-  /*-{
-
+  public final native int indexOf(Object o) /*-{
     // HtmlUnit fails when this returns 0
     return this.indexOf(o);
   }-*/;
 
-  public final native JsCache putBoolean(Object id, boolean b)
-  /*-{
-
+  public final native JsCache putBoolean(Object id, boolean b) /*-{
     this[id] = b;
     return this;
   }-*/;
 
-  public final native JsCache putNumber(Object id, double n)
-  /*-{
-
+  public final native JsCache putNumber(Object id, double n) /*-{
     this[id] = n;
     return this;
   }-*/;
@@ -193,16 +169,12 @@ public class JsCache extends JavaScriptObject {
     return this;
   }
 
-  public final native JsCache putObject(Object id, Object obj)
-  /*-{
-
+  public final native JsCache putObject(Object id, Object obj) /*-{
     this[id] = obj;
     return this;
   }-*/;
 
-  public final native int length()
-  /*-{
-
+  public final native int length() /*-{
     if (typeof(this.length) == 'number')
      return this.length;
 
@@ -259,9 +231,7 @@ public class JsCache extends JavaScriptObject {
     checkNull(this);
   }
 
-  private final native JsArrayString keysImpl()
-  /*-{
-
+  private final native JsArrayString keysImpl() /*-{
     var key, keys=[];
     // Chrome in DevMode sets '__gwt_ObjectId' to JS objects
     // GWT sets '$H' when calling getHashCode (see com/google/gwt/core/client/impl/Impl.java)
@@ -270,7 +240,7 @@ public class JsCache extends JavaScriptObject {
   }-*/;
 
   /**
-   * Throw a NPE when a js is null
+   * Throw a NPE when a js is null.
    */
   public static final <T extends JavaScriptObject> T checkNull(T js) {
     if (!GWT.isProdMode() && js == null) {
@@ -281,7 +251,7 @@ public class JsCache extends JavaScriptObject {
 
   /**
    * Gets an object wrapped in a js array and boxes it with the appropriate
-   * Object in the GWT world.
+   * object in the GWT world.
    *
    * It is thought to be called from other jsni code without dealing with casting issues.
    *
@@ -290,18 +260,14 @@ public class JsCache extends JavaScriptObject {
    *
    * Example
    * <pre>
-   * native Object myMethod()
-  /*-{
-
+   * native Object myMethod() /*-{
    *   var myJsVar = ... ;
    *   return @com.google.gwt.query.client.js.JsCache::gwtBox(*)([ myJsVar ]);
    * }-* /
    * </pre>
    *
    */
-  public static native Object gwtBox(JavaScriptObject oneElementArray)
-  /*-{
-
+  public static native Object gwtBox(JavaScriptObject oneElementArray) /*-{
     var r = oneElementArray;
     if (typeof r == 'object' && r.length == 1) {
       var r = r[0], t = typeof r;

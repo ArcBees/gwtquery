@@ -16,7 +16,7 @@
 package com.google.gwt.query.client.css;
 
 /**
- * All width css properties : <i>max-width</i>, <i>min-width</i>, <i>width</i>
+ * All width css properties : <i>max-width</i>, <i>min-width</i>, <i>width</i>.
  */
 public class WidthProperty extends CssProperty<Length> {
 

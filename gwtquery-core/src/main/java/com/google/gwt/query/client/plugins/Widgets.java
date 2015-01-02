@@ -84,7 +84,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create and return a widget using the given factory and the given options
+   * Create and return a widget using the given factory and the given options.
    */
   protected <W extends Widget> W widget(Element e, WidgetFactory<W> factory,
       WidgetInitializer<W> initializer) {
@@ -101,7 +101,7 @@ public class Widgets extends QueuePlugin<Widgets> {
   }
 
   /**
-   * Create and return a widget using the given factory and the given options
+   * Create and return a widget using the given factory and the given options.
    */
   protected <W extends Widget> W widget(WidgetFactory<W> factory,
       WidgetInitializer<W> initializers) {

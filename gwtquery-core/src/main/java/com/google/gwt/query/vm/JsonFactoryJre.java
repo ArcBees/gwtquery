@@ -60,7 +60,7 @@ public class JsonFactoryJre implements JsonFactory  {
    * Functions in JVM.
    */
   static class JreJsonFunction extends JreJsonNull {
-    final private Function function;
+    private final Function function;
     public JreJsonFunction(Function f) {
       function = f;
     }
@@ -73,6 +73,9 @@ public class JsonFactoryJre implements JsonFactory  {
     }
   }
 
+  /**
+   *
+   */
   public static class JsonBuilderHandler implements InvocationHandler {
     private JsonObject jsonObject;
 
