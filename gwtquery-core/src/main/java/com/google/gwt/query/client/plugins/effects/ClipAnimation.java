@@ -15,12 +15,11 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Effects;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 
 /**
  * Animation which uses the css clip property to show/hide an element.
@@ -55,15 +54,10 @@ public class ClipAnimation extends PropertiesAnimation {
   private Corner corner;
   private Direction direction;
   private GQuery back = Effects.$();
-  private Effects g;
   private Action currentAction;
 
-  public ClipAnimation(Element elem, Properties p, Function... funcs) {
-    this(null, elem, p, funcs);
-  }
-
-  public ClipAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-    super(easing, elem, p, funcs);
+  @Override
+  public GQAnimation setProperties(Properties p) {
     corner = Corner.CENTER;
     try {
       corner = Corner.valueOf(getNormalizedValue("clip-origin", p));
@@ -78,24 +72,11 @@ public class ClipAnimation extends PropertiesAnimation {
       action = Action.valueOf(getNormalizedValue("clip-action", p));
     } catch (Exception e) {
     }
-    g = GQuery.$(e).as(Effects.Effects);
+    return super.setProperties(p);
   }
 
   public static String getNormalizedValue(String value, Properties p) {
     return JsUtils.hyphenize(p.getStr(value)).replace("-", "_").toUpperCase();
-  }
-
-  public ClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
-      Properties p, final Function... funcs) {
-    super(easing, elem, p, funcs);
-    this.action = a;
-    this.corner = c;
-    this.direction = d;
-    g = GQuery.$(e).as(Effects.Effects);
-  }
-
-  public ClipAnimation(Element elem, Action a, Corner c, Direction d, final Function... funcs) {
-    this(elem, a, c, d, null, Properties.create(), funcs);
   }
 
   @Override

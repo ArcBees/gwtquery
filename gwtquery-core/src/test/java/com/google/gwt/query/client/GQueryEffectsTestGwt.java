@@ -15,7 +15,9 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.Effects;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -24,12 +26,13 @@ import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
-import com.google.gwt.query.client.plugins.effects.Fx;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -55,7 +58,6 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
   }
 
   public void gwtSetUp() {
-    Fx.css3 = false;
     if (e == null) {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
@@ -259,9 +261,8 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    PropertiesAnimation an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
+    GQAnimation an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    an.run(0);
 
     assertEquals("cssprop=marginTop value=0 start=-110 end=0 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "0", false)
@@ -285,9 +286,8 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
+    an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    an.run(0);
 
     assertEquals("cssprop=marginTop value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
@@ -310,6 +310,40 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
+  }
+
+  public void testTransitionsAnimation() {
+    final GQuery m = $("<div style='top: 10px; width:50px'>foo</div>").appendTo(e);
+
+    TransitionsClipAnimation a = new TransitionsClipAnimation();
+    a.setElement(m.get(0));
+    a.setProperties($$("clip-action: show, clip-origin: top-right, scaleZ: 0.5, delay: 30, left: 100, top: +=50, rotateZ: 90, rotateY: 45deg, easing: custom, duration: 400"));
+    a.onStart();
+
+    Properties from = a.getFxProperties(true);
+    Properties to = a.getFxProperties(false);
+
+    // HTMLUnit and chrome return different decimal part
+    assertEquals("0px", from.getStr("left").replace(".0", ""));
+    assertEquals("100px", to.getStr("left").replace(".0", ""));
+    assertEquals("10px", from.getStr("top").replace(".0", ""));
+    assertEquals("60px", to.getStr("top").replace(".0", ""));
+    assertEquals("0", from.getStr("rotateZ").replace(".0", ""));
+    assertEquals("90", to.getStr("rotateZ").replace(".0", ""));
+    assertEquals("0", from.getStr("rotateY").replace(".0", ""));
+    assertEquals("45", to.getStr("rotateY").replace(".0", ""));
+    assertEquals("0 0", from.getStr("scale").replace(".0", ""));
+    assertEquals("1 1", to.getStr("scale"));
+    assertNull(to.get("delay"));
+    assertNull(to.get("easing"));
+
+    // HTMLUnit and chrome return different values
+    assertTrue(m.attr("style").contains("rigin: 100% 0%") || m.attr("style").contains("rigin: right top"));
+    assertTrue(m.attr("style").contains("top: 10px"));
+
+    a.run(1);
+    assertTrue(m.attr("style").contains("rigin: 100% 0%") || m.attr("style").contains("rigin: right top"));
+    assertTrue(m.attr("style").contains("top: 60px"));
   }
 
   public void testColorEffectParsing(){

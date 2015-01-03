@@ -20,13 +20,16 @@ import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.plugins.effects.ClipAnimation.getNormalizedValue;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Action;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Corner;
 import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.user.client.Timer;
+
+import java.util.List;
 
 /**
  * Animation effects on any numeric CSS3 property or transformation
@@ -44,12 +47,8 @@ public class TransitionsAnimation extends PropertiesAnimation {
     private Direction direction;
     private Action currentAction;
 
-    public TransitionsClipAnimation(Element elem, Properties p, Function... funcs) {
-      this(null, elem, p, funcs);
-    }
-
-    public TransitionsClipAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-      super(easing, elem, p, funcs);
+    @Override
+    public GQAnimation setProperties(Properties p) {
       corner = Corner.CENTER;
       try {
         corner = Corner.valueOf(getNormalizedValue("clip-origin", p));
@@ -64,14 +63,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
         action = Action.valueOf(getNormalizedValue("clip-action", p));
       } catch (Exception e) {
       }
-    }
-
-    public TransitionsClipAnimation(Element elem, Action a, Corner c, Direction d, Easing easing,
-        Properties p, final Function... funcs) {
-      super(easing, elem, p, funcs);
-      this.action = a;
-      this.corner = c;
-      this.direction = d;
+      return super.setProperties(p);
     }
 
     public void onStart() {
@@ -119,7 +111,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
         g.hide();
       }
       g.css("transformOrigin", "");
-      g.css("transform", "scale(1 1)");
+      g.css("transform", "");
     }
   }
 
@@ -139,7 +131,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
     }
 
     String cur = g.css(key, true);
-    String trsStart = cur, trsEnd = trsStart;
+    String trsStart = cur.matches("auto|initial") ? "" : cur, trsEnd = trsStart;
 
     if ("show".equals(val)) {
       g.saveCssAttrs(key);
@@ -196,18 +188,26 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   protected Transitions g;
   protected int delay = 0;
+  private String oldTransitionValue;
 
-  public TransitionsAnimation(Element elem, Properties p, Function... funcs) {
-    this(null, elem, p, funcs);
-  }
-
-  public TransitionsAnimation(Easing easing, Element elem, Properties p, Function... funcs) {
-    super(easing, elem, p, funcs);
+  @Override
+  public GQAnimation setProperties(Properties p) {
     delay = p.getInt("delay");
-    g = $(e).as(Transitions.Transitions);
+    return super.setProperties(p);
   }
 
-  private Properties getFxProperties(boolean isStart) {
+  @Override
+  public GQAnimation setElement(Element elem) {
+    g = $(elem).as(Transitions.Transitions);
+    return super.setElement(elem);
+  }
+
+  public TransitionsAnimation setDelay(int delay) {
+    this.delay = delay;
+    return this;
+  }
+
+  public Properties getFxProperties(boolean isStart) {
     Properties p = $$();
     for (int i = 0; i < effects.length(); i++) {
       TransitFx fx = (TransitFx) effects.get(i);
@@ -221,7 +221,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   @Override
   protected Fx getFx(Element e, String key, String val, boolean hidden) {
-    return computeFxProp(e, key, val, hidden);
+    return Transitions.invalidTransitionNamesRegex.test(key) ? null : computeFxProp(e, key, val, hidden);
   }
 
   @Override
@@ -229,21 +229,43 @@ public class TransitionsAnimation extends PropertiesAnimation {
   }
 
   @Override
-  public void run(int duration) {
-    onStart();
+  public void onComplete() {
+    g.css(Transitions.transition, oldTransitionValue);
+    super.onComplete();
+  }
 
+  public void run(int duration) {
+    // Calculate all Fx values for this animation
+    onStart();
     // Compute initial properties
     Properties p = getFxProperties(true);
-    g.css(p)
-      // Some browsers need after setting initial properties re-flow (FF 24.4.0).
-      .offset();
+    g.css(p);
+    // Some browsers need re-flow after setting initial properties (FF 24.4.0).
+    g.offset();
 
     // Compute final properties
     p = getFxProperties(false);
-    g.transition(p, duration, easing, delay, new Function() {
-      public void f() {
+
+    // Save old transition value
+    oldTransitionValue = g.css(Transitions.transition);
+
+    // Set new transition value
+    String newTransitionValue  = "";
+    List<String> transProps = Transitions.filterTransitionPropertyNames(p);
+    String attribs = duration + "ms" + " "  + easing + " " + delay + "ms";
+    for (String s : transProps) {
+      newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
+    }
+    g.css(Transitions.transition, newTransitionValue);
+
+    // Set new css properties so as the element is animated
+    g.css(p);
+
+    // Wait until transition has finished to run finish animation and dequeue
+    new Timer() {
+      public void run() {
         onComplete();
       }
-    });
+    }.schedule(delay + duration);
   }
 }
