@@ -155,7 +155,7 @@ public class PropertiesAnimation extends GQAnimation {
       .compile("^([+-]=)?([0-9+-.]+)(.*)?$");
 
   protected static final RegExp REGEX_NON_PIXEL_ATTRS =
-      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotat|^\\$", "i");
+      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotat|skew|perspect|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 

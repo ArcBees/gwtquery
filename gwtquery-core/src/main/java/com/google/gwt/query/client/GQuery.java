@@ -13,8 +13,6 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.plugins.QueuePlugin.Queue;
 
 import com.google.gwt.core.client.GWT;

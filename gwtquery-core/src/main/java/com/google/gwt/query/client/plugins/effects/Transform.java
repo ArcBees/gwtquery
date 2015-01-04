@@ -53,6 +53,8 @@ public class Transform  {
   protected static final RegExp transformRegex = RegExp.compile("^(matrix(3d)?|(translate|scale|rotate)([XYZ]|3d)?|skew([XY])?|perspective|x|y|z)$");
   private static final RegExp transform3dRegex = RegExp.compile("^(rotate[XY]|\\w+(Z|3d)|perspective)$");
   private static final RegExp transformParseRegex = RegExp.compile("(\\w+)\\((.*?)\\)", "g");
+  private static final RegExp anglePropRegex = RegExp.compile("(rotate[XYZ]?|skew[XY]?)");
+  private static final RegExp translatePropRegex = RegExp.compile("translate[XYZ]");
 
   private HashMap<String, List<String>> map = new HashMap<String, List<String>>();
 
@@ -170,7 +172,7 @@ public class Transform  {
   }
 
   private void setter(String prop, String ...val) {
-    if (prop.matches("(rotate[XYZ]?|skew[XY])")) {
+    if (anglePropRegex.test(prop)) {
       map.put(prop, unit(val[0], "deg"));
     } else if ("scale".equals(prop)) {
       String x = val.length < 1 ? "1" : val[0];
@@ -184,7 +186,7 @@ public class Transform  {
       setter("translate", null, val[0]);
     } else if ("z".equals(prop)) {
       setter("translate", null, null, val[0]);
-    } else if (prop.matches("(translate[XYZ])")) {
+    } else if (translatePropRegex.test(prop)) {
       map.put(prop, unit(val[0], "px"));
     } else if ("translate".equals(prop)) {
       if (val[0] != null) {
