@@ -135,7 +135,10 @@ public class JsCache extends JavaScriptObject {
   }
 
   public final native boolean isEmpty() /*-{
-    for (k in this) if (this.hasOwnProperty(k)) return false;
+    for (k in this) {
+     if (this.hasOwnProperty(k))
+       return false;
+    }
     return true;
   }-*/;
 
@@ -185,7 +188,10 @@ public class JsCache extends JavaScriptObject {
 
     var key, ret = 0;
     // Chrome in DevMode injects a property to JS objects
-    for (key in this) if (key != "__gwt_ObjectId") ret ++;
+    for (key in this) {
+      if (key != "__gwt_ObjectId")
+         ret ++;
+    }
     return ret;
   }-*/;
 
@@ -240,7 +246,10 @@ public class JsCache extends JavaScriptObject {
     var key, keys=[];
     // Chrome in DevMode sets '__gwt_ObjectId' to JS objects
     // GWT sets '$H' when calling getHashCode (see com/google/gwt/core/client/impl/Impl.java)
-    for(key in this) if (this.hasOwnProperty(key) && key != '__gwt_ObjectId' && key != '$H') keys.push(String(key));
+    for(key in this) {
+      if (this.hasOwnProperty(key) && key != '__gwt_ObjectId' && key != '$H')
+        keys.push(String(key));
+    }
     return keys;
   }-*/;
 

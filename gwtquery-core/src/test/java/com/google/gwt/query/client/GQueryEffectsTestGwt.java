@@ -31,6 +31,7 @@ import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.Transform;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.user.client.Timer;
@@ -38,6 +39,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Test class for testing gwtquery effects plugin api.
@@ -310,6 +314,35 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
+  }
+
+  public void testTransformParser() {
+    Transform.has3d = true;
+    Transform t = new Transform("scaleZ(0.5) rotateZ(90deg) skewX(4) rotateY(45) scale(1, 1) x(10) y(12) z(14) matrix(1, 2,3 ,4)");
+    List<String> vals = Arrays.asList(t.toString().split(" "));
+    // scale(1,1) matrix(1,2,3,4) rotateZ(90deg) translateZ(14px) rotateY(45deg) translateY(12px) skewX(4deg) translateX(10px) scaleZ(0.5)
+    assertEquals(9, vals.size());
+    assertTrue(vals.contains("scaleZ(0.5)"));
+    assertTrue(vals.contains("rotateZ(90deg)"));
+    assertTrue(vals.contains("rotateY(45deg)"));
+    assertTrue(vals.contains("skewX(4deg)"));
+    assertTrue(vals.contains("rotateY(45deg)"));
+    assertTrue(vals.contains("scale(1,1)"));
+    assertTrue(vals.contains("translateX(10px)"));
+    assertTrue(vals.contains("translateY(12px)"));
+    assertTrue(vals.contains("translateZ(14px)"));
+    assertTrue(vals.contains("matrix(1,2,3,4)"));
+
+    Transform.has3d = false;
+    t = new Transform("scaleZ(0.5) rotateZ(90deg) skewX(4) rotateY(45) scale(1, 1) x(10) y(12) z(14) matrix(1, 2,3 ,4)");
+    vals = Arrays.asList(t.toString().split(" "));
+    // scale(1,1) matrix(1,2,3,4) translateY(12px) skewX(4deg) translateX(10px)
+    assertEquals(5, vals.size());
+    assertTrue(vals.contains("scale(1,1)"));
+    assertTrue(vals.contains("skewX(4deg)"));
+    assertTrue(vals.contains("translateX(10px)"));
+    assertTrue(vals.contains("translateY(12px)"));
+    assertTrue(vals.contains("matrix(1,2,3,4)"));
   }
 
   public void testTransitionsAnimation() {

@@ -306,7 +306,6 @@ public class JsUtils {
    * </pre>
    */
   public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
-    return o && name in o;
     var p = name.split('.');
     for (var i in p) {
       if (!(o && p[i] in o)) return false;

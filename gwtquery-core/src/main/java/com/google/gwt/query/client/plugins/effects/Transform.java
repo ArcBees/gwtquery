@@ -15,8 +15,13 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
+import static com.google.gwt.query.client.GQuery.browser;
+
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -27,17 +32,59 @@ import java.util.Map.Entry;
 
 /**
  * A dictionary class with all the properties of an element transform
- * which is able to return the correct syntax for setting the css transform
+ * which is able to return the correct syntax for setting the CSS transform
  * property.
  */
 public class Transform  {
 
   private static final String TRANSFORM = "_t_";
 
-  protected static final RegExp transformRegex = RegExp.compile("^(scale([XYZ]|)|translate([XYZ]|3d)|rotate([XYZ]|3d)?|perspective|skew[XYZ]|x|y)$");
-  private static final RegExp transform3dRegex = RegExp.compile("^(rotate([XYZ]|3d)|perspective)$");
+  // Used to check supported properties in the browser
+  protected static final Style divStyle = Document.get().createDivElement().getStyle();
+
+  // Compute browser specific constants, public so as they are usable in plugins
+  public static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
+  public static final String transform = getVendorPropertyName("transform");
+  public static final String transformOrigin = getVendorPropertyName("transformOrigin");
+  // Non final for testing purposes.
+  public static boolean has3d = supportsTransform3d();
+
+  // Regular expressions based on http://www.w3schools.com/cssref/css3_pr_transform.asp
+  protected static final RegExp transformRegex = RegExp.compile("^(matrix(3d)?|(translate|scale|rotate)([XYZ]|3d)?|skew([XY])?|perspective|x|y|z)$");
+  private static final RegExp transform3dRegex = RegExp.compile("^(rotate[XY]|\\w+(Z|3d)|perspective)$");
+  private static final RegExp transformParseRegex = RegExp.compile("(\\w+)\\((.*?)\\)", "g");
 
   private HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+
+  // Some browsers like HTMLUnit only support 2d transformations
+  private static boolean supportsTransform3d() {
+    if (transform == null) {
+      return false;
+    }
+    String rotate = "rotateY(1deg)";
+    divStyle.setProperty(transform, rotate);
+    rotate = divStyle.getProperty(transform);
+    return rotate != null && !rotate.isEmpty();
+  }
+
+  /**
+   * Compute the correct CSS property name for a specific browser vendor.
+   */
+  public static String getVendorPropertyName(String prop) {
+    // we prefer vendor specific names by default
+    String vendorProp =  JsUtils.camelize("-" + prefix + "-" + prop);
+    if (JsUtils.hasProperty(divStyle, vendorProp)) {
+      return vendorProp;
+    }
+    if (JsUtils.hasProperty(divStyle, prop)) {
+      return prop;
+    }
+    String camelProp = JsUtils.camelize(prop);
+    if (JsUtils.hasProperty(divStyle, camelProp)) {
+      return camelProp;
+    }
+    return null;
+  }
 
   /**
    * Return the Transform dictionary object of a element.
@@ -46,6 +93,9 @@ public class Transform  {
     return getInstance(e, null);
   }
 
+  /**
+   * Return true if the propName is a valid value of the css3 transform property.
+   */
   public static boolean isTransform(String propName) {
     return transformRegex.test(propName);
   }
@@ -63,10 +113,17 @@ public class Transform  {
     return t;
   }
 
+  /**
+   * Create a new Transform dictionary setting initial values based on the
+   * string passed.
+   */
   public Transform(String s) {
     parse(s);
   }
 
+  /**
+   * Return the value of a transform property.
+   */
   public String get(String prop) {
     return listToStr(map.get(prop), ",");
   }
@@ -81,22 +138,31 @@ public class Transform  {
     return v;
   }
 
+  /**
+   * Parse a transform value as string and fills the dictionary map.
+   */
   private void parse(String s) {
     if (s != null) {
-      RegExp re = RegExp.compile("([a-zA-Z0-9]+)\\((.*?)\\)", "g");
-      for (MatchResult r = re.exec(s); r != null; r = re.exec(s)) {
+      for (MatchResult r = transformParseRegex.exec(s); r != null; r = transformParseRegex.exec(s)) {
         setFromString(r.getGroup(1), r.getGroup(2));
       }
     }
   }
 
+  /**
+   * Set a transform value or multi-value.
+   */
   public void set(String prop, String ...val) {
     setter(prop, val);
   }
 
+  /**
+   * Set a transform multi-value giving either a set of strings or
+   * just an string of values separated by comma.
+   */
   public void setFromString(String prop, String ...val) {
     if (val.length == 1) {
-      String[] vals = val[0].split("[\\s*,\\s*]");
+      String[] vals = val[0].split("[\\s,]+");
       set(prop, vals);
     } else {
       set(prop, val);
@@ -104,7 +170,7 @@ public class Transform  {
   }
 
   private void setter(String prop, String ...val) {
-    if (prop.matches("(rotate[XYZ]?|skew[XYZ])")) {
+    if (prop.matches("(rotate[XYZ]?|skew[XY])")) {
       map.put(prop, unit(val[0], "deg"));
     } else if ("scale".equals(prop)) {
       String x = val.length < 1 ? "1" : val[0];
@@ -116,42 +182,35 @@ public class Transform  {
       setter("translate", val[0], null);
     } else if ("y".equals(prop)) {
       setter("translate", null, val[0]);
+    } else if ("z".equals(prop)) {
+      setter("translate", null, null, val[0]);
     } else if (prop.matches("(translate[XYZ])")) {
       map.put(prop, unit(val[0], "px"));
     } else if ("translate".equals(prop)) {
-      if (map.get("translateX") == null) {
-        map.put("translateX", unit("0", "px"));
-      }
       if (val[0] != null) {
         map.put("translateX", unit(val[0], "px"));
-      }
-      if (map.get("translateY") == null) {
-        map.put("translateY", unit("0", "px"));
       }
       if (val.length > 1 && val[1] != null) {
         map.put("translateY", unit(val[1], "px"));
       }
-      if (map.get("translateZ") == null) {
-        map.put("translateZ", unit("0", "px"));
+      if (has3d && val.length > 2 && val[2] != null) {
+        map.put("translateZ", unit(val[2], "px"));
       }
-      if (val.length > 2 && val[2] != null) {
-        map.put("translateZ", unit(val[0], "px"));
-      }
-      map.put("translate", Arrays.asList(map.get("translateX").get(0), map.get("translateY").get(0), map.get("translateY").get(0)));
     } else {
-      map.put(prop, unit(val[0], ""));
+      map.put(prop, Arrays.asList(val));
     }
   }
 
   /**
-   * Converts the dictionary to a transition css string.
+   * Converts the dictionary to a transition css string value but
+   * excluding 3d properties if the browser only supports 2d.
    */
   public String toString() {
     // purposely using string addition, since my last tests demonstrate
     // that string addition performs better than string builders in gwt-prod.
     String ret = "";
     for (Entry<String, List<String>> e: map.entrySet()) {
-      if (Transitions.has3d || !transform3dRegex.test(e.getKey())) {
+      if (has3d || !transform3dRegex.test(e.getKey())) {
         String v = listToStr(e.getValue(), ",");
         ret += (ret.isEmpty() ? "" : " ") + e.getKey() + "(" + v + ")";
       }

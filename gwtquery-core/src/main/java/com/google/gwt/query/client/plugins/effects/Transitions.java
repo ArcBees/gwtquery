@@ -28,9 +28,14 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.dom.client.Document;
+import static com.google.gwt.query.client.plugins.effects.Transform.getInstance;
+import static com.google.gwt.query.client.plugins.effects.Transform.getVendorPropertyName;
+import static com.google.gwt.query.client.plugins.effects.Transform.isTransform;
+import static com.google.gwt.query.client.plugins.effects.Transform.prefix;
+import static com.google.gwt.query.client.plugins.effects.Transform.transform;
+import static com.google.gwt.query.client.plugins.effects.Transform.transformOrigin;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
@@ -67,13 +72,6 @@ import java.util.List;
  */
 public class Transitions extends Effects {
 
-  // Used to check supported properties in the browser
-  protected static final Style divStyle = Document.get().createDivElement().getStyle();
-
-  public static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
-  private static final String transform = getVendorPropertyName("transform");
-  private static final String transformOrigin = getVendorPropertyName("transformOrigin");
-
   protected static final String transition = getVendorPropertyName("transition");
 
   // passing an invalid transition property in chrome, makes disable all transitions in the element
@@ -82,8 +80,6 @@ public class Transitions extends Effects {
   protected static final String transitionDelay = getVendorPropertyName("transitionDelay");
   protected static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "TransitionEnd");
 
-  public static final boolean has3d = supportsTransform3d();
-
   public static final Class<Transitions> Transitions = GQuery.registerPlugin(
       Transitions.class, new Plugin<Transitions>() {
         public Transitions init(GQuery gq) {
@@ -91,38 +87,11 @@ public class Transitions extends Effects {
         }
       });
 
-  public static String getVendorPropertyName(String prop) {
-    assert divStyle != null;
-    // we prefer vendor specific names by default
-    String vendorProp =  JsUtils.camelize("-" + prefix + "-" + prop);
-    if (JsUtils.hasProperty(divStyle, vendorProp)) {
-      return vendorProp;
-    }
-    if (JsUtils.hasProperty(divStyle, prop)) {
-      return prop;
-    }
-    String camelProp = JsUtils.camelize(prop);
-    if (JsUtils.hasProperty(divStyle, camelProp)) {
-      return camelProp;
-    }
-    return null;
-  }
-
   private static String property(String prop) {
-    if (Transform.isTransform(prop)) {
+    if (isTransform(prop)) {
       return transform;
     }
     return prop.replaceFirst("^(margin|padding).+$", "$1");
-  }
-
-  private static boolean supportsTransform3d() {
-    if (transform == null) {
-      return false;
-    }
-    String rotate = "rotateY(1deg)";
-    divStyle.setProperty(transform, rotate);
-    rotate = divStyle.getProperty(transform);
-    return rotate != null && !rotate.isEmpty();
   }
 
   protected Transitions(GQuery gq) {
@@ -132,13 +101,13 @@ public class Transitions extends Effects {
   @Override
   public String css(String prop, boolean force) {
     if ("transform".equals(prop)) {
-      return isEmpty() ? "" : Transform.getInstance(get(0), null).toString();
+      return isEmpty() ? "" : getInstance(get(0), null).toString();
     } else if ("transformOrigin".equals(prop)) {
       return super.css(transformOrigin, force);
     } else if ("transition".equals(prop)) {
       return super.css(transition, force);
-    } else if (Transform.isTransform(prop)) {
-      return isEmpty() ? "" : Transform.getInstance(get(0), null).get(prop);
+    } else if (isTransform(prop)) {
+      return isEmpty() ? "" : getInstance(get(0), null).get(prop);
     } else {
       return super.css(prop, force);
     }
@@ -148,16 +117,16 @@ public class Transitions extends Effects {
   public Transitions css(String prop, String value) {
     if ("transform".equals(prop)) {
       for (Element e : elements()) {
-        Transform t = Transform.getInstance(e, value);
+        Transform t = getInstance(e, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
     } else if ("transformOrigin".equals(prop)) {
       super.css(transformOrigin, value);
     } else if ("transition".equals(prop)) {
       super.css(transition, value);
-    } else if (Transform.isTransform(prop)) {
+    } else if (isTransform(prop)) {
       for (Element e : elements()) {
-        Transform t = Transform.getInstance(e, null);
+        Transform t = getInstance(e, null);
         t.setFromString(prop, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
