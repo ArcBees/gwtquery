@@ -489,6 +489,35 @@ public class JsUtils {
   }-*/;
 
   /**
+   * Call any arbitrary function present in a Javascript object.
+   * It checks the existence of the function and object hierarchy before executing it.
+   * It's very useful in order to avoid writing jsni blocks for very simple snippets.
+   *
+   * Note that GWT 3.0 jsinterop will come with a method similar, so we might deprecate
+   * this in the future.
+   *
+   * Example
+   * <pre>
+   *  // Create a svg node in our document.
+   *  Element svg = jsni(document, "createElementNS", "http://www.w3.org/2000/svg", "svg");
+   *  // Append it to the dom
+   *  $(svg).appendTo(document);
+   *  // show the svg element in the debug console
+   *  jsni("console.log", svg);
+   * </pre>
+   *
+   * @param jso the object containing the method to execute
+   * @param meth the literal name of the function to call, dot separators are allowed.
+   * @param args an array with the arguments to pass to the function.
+   * @return the java ready boxed object returned by the jsni method or null, if the
+   * call return a number we will get a Double, if it returns a boolean we get a java
+   * Boolean, strings comes as java String, otherwise we get the javascript object.
+   */
+  public static <T> T jsni(JavaScriptObject jso, String meth, Object... args) {
+    return runJavascriptFunction(jso, meth, args);
+  }
+
+  /**
    * Run any arbitrary function in javascript scope using the window as the base object.
    * It checks the existence of the function and object hierarchy before executing it.
    * It's very useful in order to avoid writing jsni blocks for very simple snippets.
@@ -536,6 +565,8 @@ public class JsUtils {
    * @return the java ready boxed object returned by the jsni method or null, if the
    * call return a number we will get a Double, if it returns a boolean we get a java
    * Boolean, strings comes as java String, otherwise we get the javascript object.
+   *
+   * @deprecated use jsni instead.
    */
   public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
     return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());

@@ -394,7 +394,7 @@ public class Events extends GQuery {
     dispatchEvent(evt, null, funcs);
   }
 
-  private void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
+  public void dispatchEvent(NativeEvent evt, Object[] datas, Function... funcs) {
     for (Element e : elements()) {
       if (isEventCapable(e)) {
         $(e).data(EventsListener.EVENT_DATA, datas);

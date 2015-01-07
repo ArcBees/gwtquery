@@ -29,11 +29,8 @@
 package com.google.gwt.query.client.plugins.effects;
 
 import static com.google.gwt.query.client.plugins.effects.Transform.getInstance;
-import static com.google.gwt.query.client.plugins.effects.Transform.getVendorPropertyName;
 import static com.google.gwt.query.client.plugins.effects.Transform.isTransform;
-import static com.google.gwt.query.client.plugins.effects.Transform.prefix;
 import static com.google.gwt.query.client.plugins.effects.Transform.transform;
-import static com.google.gwt.query.client.plugins.effects.Transform.transformOrigin;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -48,6 +45,7 @@ import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.Transiti
 import com.google.gwt.regexp.shared.RegExp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,13 +70,12 @@ import java.util.List;
  */
 public class Transitions extends Effects {
 
-  protected static final String transition = getVendorPropertyName("transition");
-
   // passing an invalid transition property in chrome, makes disable all transitions in the element
   public static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|function|easing|delay|clip-.*)$");
 
-  protected static final String transitionDelay = getVendorPropertyName("transitionDelay");
   protected static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "TransitionEnd");
+
+  protected static final String transition = vendorProperty("transition");
 
   public static final Class<Transitions> Transitions = GQuery.registerPlugin(
       Transitions.class, new Plugin<Transitions>() {
@@ -100,12 +97,9 @@ public class Transitions extends Effects {
 
   @Override
   public String css(String prop, boolean force) {
-    if ("transform".equals(prop)) {
+    prop = vendorProperty(prop);
+    if (transform.equals(prop)) {
       return isEmpty() ? "" : getInstance(get(0), null).toString();
-    } else if ("transformOrigin".equals(prop)) {
-      return super.css(transformOrigin, force);
-    } else if ("transition".equals(prop)) {
-      return super.css(transition, force);
     } else if (isTransform(prop)) {
       return isEmpty() ? "" : getInstance(get(0), null).get(prop);
     } else {
@@ -115,22 +109,19 @@ public class Transitions extends Effects {
 
   @Override
   public Transitions css(String prop, String value) {
-    if ("transform".equals(prop)) {
+    prop = vendorProperty(prop);
+    if (transform.equals(prop)) {
       for (Element e : elements()) {
-        Transform t = getInstance(e, value);
+        Transform t = getInstance(e, value != null ? value : "");
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else if ("transformOrigin".equals(prop)) {
-      super.css(transformOrigin, value);
-    } else if ("transition".equals(prop)) {
-      super.css(transition, value);
     } else if (isTransform(prop)) {
       for (Element e : elements()) {
         Transform t = getInstance(e, null);
         t.setFromString(prop, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else if (!invalidTransitionNamesRegex.test(prop)) {
+    } else {
       super.css(prop, value);
     }
     return this;
@@ -205,5 +196,18 @@ public class Transitions extends Effects {
   @Override
   protected GQAnimation createAnimation() {
     return new TransitionsAnimation();
+  }
+
+  @Override
+  public boolean isVisible() {
+    for (String s : Arrays.asList("opacity", "scale", "scaleX", "scaleY", "scale3d", "width", "height")) {
+      String[] parts = css(s).split("\\s*,\\s*");
+      for (String p : parts) {
+        if (p.matches("^0[a-z%]*")) {
+          return false;
+        }
+      }
+    }
+    return super.isVisible();
   }
 }

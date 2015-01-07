@@ -57,7 +57,7 @@ public interface SpecialEvent {
 
     @Override
     public boolean hasHandlers(Element e) {
-      return listener(e).hasHandlers(Event.getTypeInt(type), type);
+      return listener(e).hasHandlers(Event.getTypeInt(type), type, handler);
     }
 
     @Override

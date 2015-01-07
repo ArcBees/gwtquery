@@ -67,7 +67,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
     }
 
     public void onStart() {
-      boolean hidden = !g.isVisible();
+      boolean hidden = !t.isVisible();
 
       super.onStart();
       if (action == null) {
@@ -96,7 +96,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
         originY = "bottom";
       }
 
-      g.show().css("transformOrigin", originX + " " + originY);
+      t.show().css("transformOrigin", originX + " " + originY);
 
       effects.add(new TransitFx("scale", "", scaleXini + " " + scaleYini, scaleXend + " " + scaleYend, ""));
     }
@@ -108,16 +108,16 @@ public class TransitionsAnimation extends PropertiesAnimation {
         return;
       }
       if (currentAction == Action.HIDE) {
-        g.hide();
+        t.hide();
       }
-      g.css("transformOrigin", "");
-      g.css("transform", "");
+      t.css("transformOrigin", "");
+      t.css("transform", "");
     }
   }
 
-  public static Fx computeFxProp(Element e, String key, String val, boolean hidden) {
+  public static TransitFx computeFxProp(Element e, String key, String val, boolean hidden) {
     Transitions g = $(e).as(Transitions.Transitions);
-    String unit = "";
+    String unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
     if ("toggle".equals(val)) {
       val = hidden ? "show" : "hide";
     }
@@ -135,9 +135,17 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
     if ("show".equals(val)) {
       g.saveCssAttrs(key);
-      trsStart = "0";
+      if (trsStart.isEmpty()) {
+        trsStart = "0";
+      }
+      if (REGEX_SCALE_ATTRS.test(key)) {
+        trsEnd = "1";
+      }
     } else if ("hide".equals(val)) {
       g.saveCssAttrs(key);
+      if (trsStart.isEmpty() && REGEX_SCALE_ATTRS.test(key)) {
+        trsStart = "1";
+      }
       trsEnd = "0";
     } else {
       MatchResult parts = REGEX_SYMBOL_NUMBER_UNIT.exec(val);
@@ -148,15 +156,16 @@ public class TransitionsAnimation extends PropertiesAnimation {
         String part3 = parts.getGroup(3);
         trsEnd = "" + Double.parseDouble(part2);
 
-        unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" :  part3 == null || part3.isEmpty() ? "px" : part3;
+        if (part3 != null && !part3.isEmpty()) {
+          unit = part3;
+        }
 
         if (trsStart.isEmpty()) {
-          trsStart = key.matches("scale") ? "1" : "0";
+          trsStart = REGEX_SCALE_ATTRS.test(key) ? "1" : "0";
         }
 
         if (part1 != null && !part1.isEmpty()) {
           double n = "-=".equals(part1) ? -1 : 1;
-
           double st = 0;
           MatchResult sparts = REGEX_SYMBOL_NUMBER_UNIT.exec(trsStart);
           if (sparts != null) {
@@ -164,29 +173,39 @@ public class TransitionsAnimation extends PropertiesAnimation {
             unit = sparts.getGroup(3) == null || sparts.getGroup(3).isEmpty() ? unit : sparts.getGroup(3);
           }
           trsStart = "" + st;
-
           double en = Double.parseDouble(trsEnd);
           trsEnd = "" + (st + n * en);
         }
 
         // Deal with non px units like "%"
-        if (!unit.isEmpty() && !"px".equals(unit) && trsStart.matches("[-+]?[\\d.]+")) {
+        if (!unit.isEmpty() && !"px".equals(unit) && trsStart.matches(NUMBER)) {
           double start = Double.parseDouble(trsStart);
-          double to = Double.parseDouble(trsEnd);
-          g.css(key, to + unit);
-          start = to * start / g.cur(key, true);
-          trsStart = "" + start;
-          g.css(key, start + unit);
+          if (start != 0) {
+            double to = Double.parseDouble(trsEnd);
+            g.css(key, to + unit);
+            start = to * start / g.cur(key, true);
+            trsStart = "" + start;
+            g.css(key, start + unit);
+          }
         }
       } else {
         trsStart = "";
         trsEnd = val;
+        if (trsStart.isEmpty()) {
+          trsStart = REGEX_SCALE_ATTRS.test(key) ? "1" : "0";
+        }
       }
+    }
+    if (trsStart.matches(NUMBER)) {
+      trsStart += unit;
+    }
+    if (trsEnd.matches(NUMBER)) {
+      trsEnd += unit;
     }
     return new TransitFx(key, val, trsStart, trsEnd, unit);
   }
 
-  protected Transitions g;
+  protected Transitions t;
   protected int delay = 0;
   private String oldTransitionValue;
 
@@ -198,8 +217,9 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   @Override
   public GQAnimation setElement(Element elem) {
-    g = $(elem).as(Transitions.Transitions);
-    return super.setElement(elem);
+    e = elem;
+    g = t = $(elem).as(Transitions.Transitions);
+    return this;
   }
 
   public TransitionsAnimation setDelay(int delay) {
@@ -213,7 +233,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
       TransitFx fx = (TransitFx) effects.get(i);
       String val = isStart ? fx.transitStart : fx.transitEnd;
       if (!val.isEmpty()) {
-        p.set(fx.cssprop, val + fx.unit);
+        p.set(fx.cssprop, val);
       }
     }
     return p;
@@ -230,7 +250,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   @Override
   public void onComplete() {
-    g.css(Transitions.transition, oldTransitionValue);
+    t.css(Transitions.transition, oldTransitionValue);
     super.onComplete();
   }
 
@@ -239,15 +259,15 @@ public class TransitionsAnimation extends PropertiesAnimation {
     onStart();
     // Compute initial properties
     Properties p = getFxProperties(true);
-    g.css(p);
+    t.css(p);
     // Some browsers need re-flow after setting initial properties (FF 24.4.0).
-    g.offset();
+    t.offset();
 
     // Compute final properties
     p = getFxProperties(false);
 
     // Save old transition value
-    oldTransitionValue = g.css(Transitions.transition);
+    oldTransitionValue = t.css(Transitions.transition);
 
     // Set new transition value
     String newTransitionValue  = "";
@@ -256,10 +276,10 @@ public class TransitionsAnimation extends PropertiesAnimation {
     for (String s : transProps) {
       newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
     }
-    g.css(Transitions.transition, newTransitionValue);
+    t.css(Transitions.transition, newTransitionValue);
 
     // Set new css properties so as the element is animated
-    g.css(p);
+    t.css(p);
 
     // Wait until transition has finished to run finish animation and dequeue
     new Timer() {

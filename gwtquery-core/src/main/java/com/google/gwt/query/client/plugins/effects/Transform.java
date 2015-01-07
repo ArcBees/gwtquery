@@ -15,7 +15,9 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import static com.google.gwt.query.client.GQuery.browser;
+import static com.google.gwt.query.client.plugins.Effects.prefix;
+import static com.google.gwt.query.client.plugins.Effects.vendorPropNames;
+import static com.google.gwt.query.client.plugins.Effects.vendorProperty;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -43,9 +45,20 @@ public class Transform  {
   protected static final Style divStyle = Document.get().createDivElement().getStyle();
 
   // Compute browser specific constants, public so as they are usable in plugins
-  public static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
-  public static final String transform = getVendorPropertyName("transform");
-  public static final String transformOrigin = getVendorPropertyName("transformOrigin");
+
+  static {
+    for (String s: new String[]{"transition", "transitionDelay", "transform", "transformOrigin"}) {
+      vendorPropNames.put(s, getVendorPropertyName(s));
+    }
+    // x,y,z are aliases
+    for (String s: new String[]{"x", "y", "z"}) {
+      vendorPropNames.put(s, "translate" + s.toUpperCase());
+    }
+  }
+
+  public static final String transform = vendorProperty("transform");
+  public static final String transformOrigin = vendorProperty("transformOrigin");
+
   // Non final for testing purposes.
   public static boolean has3d = supportsTransform3d();
 
@@ -88,6 +101,7 @@ public class Transform  {
     return null;
   }
 
+
   /**
    * Return the Transform dictionary object of a element.
    */
@@ -108,7 +122,10 @@ public class Transform  {
    */
   public static Transform getInstance(Element e, String initial) {
     Transform t = GQuery.data(e, TRANSFORM);
-    if (t == null || initial != null && !initial.isEmpty()) {
+    if (t == null || initial != null) {
+      if (initial == null) {
+        initial = GQuery.getSelectorEngine().getDocumentStyleImpl().curCSS(e, transform, false);
+      }
       t = new Transform(initial);
       GQuery.data(e, TRANSFORM, t);
     }
@@ -146,7 +163,7 @@ public class Transform  {
   private void parse(String s) {
     if (s != null) {
       for (MatchResult r = transformParseRegex.exec(s); r != null; r = transformParseRegex.exec(s)) {
-        setFromString(r.getGroup(1), r.getGroup(2));
+        setFromString(vendorProperty(r.getGroup(1)), r.getGroup(2));
       }
     }
   }
@@ -180,12 +197,6 @@ public class Transform  {
       map.put(prop, Arrays.asList(x, y));
     } else if ("perspective".equals(prop)) {
       map.put(prop, unit(val[0], "px"));
-    } else if ("x".equals(prop)) {
-      setter("translate", val[0], null);
-    } else if ("y".equals(prop)) {
-      setter("translate", null, val[0]);
-    } else if ("z".equals(prop)) {
-      setter("translate", null, null, val[0]);
     } else if (translatePropRegex.test(prop)) {
       map.put(prop, unit(val[0], "px"));
     } else if ("translate".equals(prop)) {

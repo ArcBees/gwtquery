@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
@@ -140,6 +141,30 @@ public class Effects extends QueuePlugin<Effects> {
 
   protected boolean isOff() {
     return Fx.off;
+  }
+
+  /**
+   * Maintain a cache table with vendor properties so as plugins can use it.
+   */
+  public static JsMap<String, String>vendorPropNames;
+
+  /**
+   * Browser prefix for vendor spedific properties.
+   */
+  public static String prefix;
+
+  static {
+    if (GWT.isClient()) {
+      vendorPropNames = JsMap.create();
+      prefix  = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
+    }
+  }
+
+  /**
+   * Get the cached vendor property name.
+   */
+  public static String vendorProperty(String prop) {
+    return vendorPropNames.get(prop) != null ? vendorPropNames.get(prop) : prop;
   }
 
   /**

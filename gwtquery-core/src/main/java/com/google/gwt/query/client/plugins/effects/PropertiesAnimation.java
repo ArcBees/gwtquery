@@ -149,13 +149,17 @@ public class PropertiesAnimation extends GQAnimation {
 
   protected static final String[] ATTRS_TO_SAVE = new String[] {"overflow"};
 
-  private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
+  protected static final String NUMBER = "[\\d+-.]+";
+  protected static final String UNIT = "[a-z%]+";
 
-  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp
-      .compile("^([+-]=)?([0-9+-.]+)(.*)?$");
+  private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^(" + NUMBER + ")(.*)?$");
 
-  protected static final RegExp REGEX_NON_PIXEL_ATTRS =
-      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotat|skew|perspect|^\\$", "i");
+  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?(" + NUMBER + ")(" + UNIT + ")?$");
+
+  protected static final RegExp REGEX_SCALE_ATTRS = RegExp.compile("scale|opacity");
+
+  protected static final RegExp REGEX_NON_PIXEL_ATTRS = RegExp.compile("scale|opacity"
+      + "|z-?index|font-?weight|zoom|line-?height|rotat|skew|perspect|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 
@@ -246,9 +250,6 @@ public class PropertiesAnimation extends GQAnimation {
       start = 0;
       unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
     } else if ("hide".equals(val)) {
-      if (hidden) {
-        return null;
-      }
       g.saveCssAttrs(key);
       end = 0;
       unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
