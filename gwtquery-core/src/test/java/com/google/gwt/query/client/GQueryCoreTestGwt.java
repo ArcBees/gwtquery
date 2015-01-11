@@ -17,11 +17,9 @@ package com.google.gwt.query.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.$$;
-import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.window;
 
-import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -1032,11 +1030,19 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   }
 
   public void testUtilsCallFunc() {
+    assertTrue(JsUtils.hasProperty(window, "document.body.style.background"));
+    assertTrue(JsUtils.hasProperty(window, "document.createElement"));
+    assertFalse(JsUtils.hasProperty(window, "document.body.style.foo"));
+
     Element e = JsUtils.runJavascriptFunction(document, "createElement", "div");
     assertNotNull(e);
     assertEquals(e.getTagName().toLowerCase(), "div");
 
-    e = JsUtils.runJavascriptFunction(document, "foo", "bar", 2, true);
+    e = JsUtils.jsni("document.createElement", "span");
+    assertNotNull(e);
+    assertEquals(e.getTagName().toLowerCase(), "span");
+
+    e = JsUtils.jsni("document.foo.bar");
     assertNull(e);
   }
 

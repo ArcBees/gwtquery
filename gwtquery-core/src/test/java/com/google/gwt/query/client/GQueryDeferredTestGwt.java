@@ -263,7 +263,6 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
     $("button", e)
       .click(new Function(){public void f()  {
-        Fx.css3 = false;
         $("p", e).append(" Started... ");
         GQuery.when( effect ).done(new Function(){public void f()  {
           $("p", e).append(" Finished! ");
@@ -291,7 +290,6 @@ public class GQueryDeferredTestGwt extends GWTTestCase {
 
     $("button", e)
       .bind("click", new Function(){public void f()  {
-        Fx.css3 = false;
         $("p", e).append(" Started... ");
 
         $("div",e).each(new Function(){public Object f(Element e, int i) {

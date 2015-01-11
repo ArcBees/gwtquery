@@ -35,11 +35,11 @@ public abstract class Function {
    * Utility method to get a string representation with the content
    * of the arguments array. It recursively visits arrays and inspect
    * object to print an appropriate representation of them.
-   * 
+   *
    * It is very useful to debug arguments passed in nested promises.
-   * 
+   *
    * It is protected so as it can be used in Inner functions.
-   * 
+   *
    * Output example:
    * <pre>
    * [0](com.google.gwt.query.client.plugins.QueuePlugin) <div>a1</div><div>a2</div>
@@ -124,7 +124,7 @@ public abstract class Function {
 
   /**
    * Return the first element of the arguments list.
-   * 
+   *
    * @deprecated use getArgument(idx) instead.
    */
   @Deprecated
@@ -143,7 +143,7 @@ public abstract class Function {
   /**
    * Utility method for safety getting a JavaScriptObject present at a certain
    * position in the list of arguments composed by arrays.
-   * 
+   *
    */
   @SuppressWarnings("unchecked")
   public <T extends JavaScriptObject> T getArgumentJSO(int argIdx, int pos) {
@@ -161,10 +161,10 @@ public abstract class Function {
   /**
    * Utility method for safety getting an array present at a certain
    * position in the list of arguments.
-   * 
+   *
    * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
-   * 
+   *
    * Always returns an array.
    */
   public Object[] getArgumentArray(int idx) {
@@ -179,7 +179,7 @@ public abstract class Function {
 
   /**
    * Return the argument in the position idx or null if it doesn't exist.
-   * 
+   *
    * Note: if the return type doesn't match the object, you
    * will get a casting exception.
    */
@@ -204,7 +204,7 @@ public abstract class Function {
 
   /**
    * Safety return the argument in the position idx.
-   * 
+   *
    * If the element class is not of the requested type it returns null and
    * you don't get casting exeption.
    */
@@ -214,7 +214,7 @@ public abstract class Function {
 
   /**
    * Safety return the argument in the position idx.
-   * 
+   *
    * If the element class is not of the requested type it returns null and
    * you don't get casting exeption.
    */
@@ -225,15 +225,15 @@ public abstract class Function {
   /**
    * Utility method for safety getting an object present at a certain
    * position in the list of arguments composed by arrays.
-   * 
+   *
    * Useful for Deferred chains where result of each resolved
    * promise is set as an array in the arguments list.
-   * 
+   *
    * When the object found in the array doesn't match the type required it returns a null.
-   * 
+   *
    * Note: If type is null, we don't check the class of the object found andd you could
    * eventually get a casting exception.
-   * 
+   *
    */
   @SuppressWarnings("unchecked")
   public <T> T getArgument(int argIdx, int pos, Class<? extends T> type) {
@@ -302,7 +302,7 @@ public abstract class Function {
 
   /**
    * Return the index in a loop execution.
-   * 
+   *
    * Used in GQuery.each()
    */
   public int getIndex() {
@@ -427,6 +427,8 @@ public abstract class Function {
   /**
    * Override this method for bound event handlers if you wish to deal with
    * per-handler user data.
+   *
+   * @return boolean false means stop propagation and prevent default
    */
   public boolean f(Event e, Object... arg) {
     setArguments(arg);
@@ -437,7 +439,7 @@ public abstract class Function {
   /**
    * Override this method for bound event handlers.
    *
-   * @return boolean: false means stop propagation and prevent default
+   * @return boolean false means stop propagation and prevent default
    */
   public boolean f(Event e) {
     setEvent(e);

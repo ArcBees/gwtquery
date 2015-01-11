@@ -15,10 +15,13 @@
  */
 package com.google.gwt.query.client.js;
 
+import static com.google.gwt.query.client.GQuery.browser;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -90,9 +93,9 @@ public class JsUtils {
    * Default JsUtils implementation.
    */
   public static class JsUtilsImpl {
-    public native Properties parseJSON(String json) /*-{
-      return $wnd.JSON.parse(json);
-    }-*/;
+    public Properties parseJSON(String json) {
+      return JsonUtils.safeEval(json);
+    }
 
     public native String JSON2String(JavaScriptObject o) /*-{
       return $wnd.JSON.stringify(o);
@@ -129,15 +132,9 @@ public class JsUtils {
    * IE JsUtils implemetation.
    */
   public static class JsUtilsImplIE6 extends JsUtilsImpl {
-    public static final native Properties evalImpl(String properties) /*-{
-      return eval(properties);
-    }-*/;
-
     @Override
     public Properties parseJSON(String json) {
-      // No checks to the passed string so json should be
-      // a well-formed json string.
-      return evalImpl("(" + json + ")");
+      return JsonUtils.unsafeEval(json);
     }
 
     @Override
@@ -190,7 +187,7 @@ public class JsUtils {
     @Override
     public JsArray<Element> unique(JsArray<Element> a) {
       // in IE6 XML elements does not support adding hashId to the object
-      if (a.length() > 0 && isXML(a.get(0))) {
+      if (browser.ie6 && isXML(a.get(0))) {
         return a;
       }
       return super.unique(a);
@@ -299,11 +296,22 @@ public class JsUtils {
   }
 
   /**
-   * Check if an object has already a property with name <code>name</code>
-   * defined.
+   * Check if an object has a property with <code>name</code> defined.
+   * It supports dots in the name meaning checking nested properties.
+   *
+   * Example:
+   * <pre>
+   *  // Check whether a browser supports touch events
+   *  hasProperty(window, "ontouchstart");
+   * </pre>
    */
-  public static native boolean hasProperty(JavaScriptObject o, String name) /*-{
-    return o && name in o;
+  public static native boolean hasProperty(JavaScriptObject o, String name)/*-{
+    var p = name.split('.');
+    for (var i in p) {
+      if (!(o && p[i] in o)) return false;
+      o = o[p[i]];
+    }
+    return true;
   }-*/;
 
   /**
@@ -348,7 +356,7 @@ public class JsUtils {
 
   /**
    * Return whether a node is detached to the DOM.
-   * 
+   *
    * Be careful : This method works only on node that should be inserted within the body node.
    */
   public static boolean isDetached(Node n) {
@@ -481,6 +489,63 @@ public class JsUtils {
   }-*/;
 
   /**
+   * Call any arbitrary function present in a Javascript object.
+   * It checks the existence of the function and object hierarchy before executing it.
+   * It's very useful in order to avoid writing jsni blocks for very simple snippets.
+   *
+   * Note that GWT 3.0 jsinterop will come with a method similar, so we might deprecate
+   * this in the future.
+   *
+   * Example
+   * <pre>
+   *  // Create a svg node in our document.
+   *  Element svg = jsni(document, "createElementNS", "http://www.w3.org/2000/svg", "svg");
+   *  // Append it to the dom
+   *  $(svg).appendTo(document);
+   *  // show the svg element in the debug console
+   *  jsni("console.log", svg);
+   * </pre>
+   *
+   * @param jso the object containing the method to execute
+   * @param meth the literal name of the function to call, dot separators are allowed.
+   * @param args an array with the arguments to pass to the function.
+   * @return the java ready boxed object returned by the jsni method or null, if the
+   * call return a number we will get a Double, if it returns a boolean we get a java
+   * Boolean, strings comes as java String, otherwise we get the javascript object.
+   */
+  public static <T> T jsni(JavaScriptObject jso, String meth, Object... args) {
+    return runJavascriptFunction(jso, meth, args);
+  }
+
+  /**
+   * Run any arbitrary function in javascript scope using the window as the base object.
+   * It checks the existence of the function and object hierarchy before executing it.
+   * It's very useful in order to avoid writing jsni blocks for very simple snippets.
+   *
+   * Note that GWT 3.0 jsinterop will come with a method similar, so we might deprecate
+   * this in the future.
+   *
+   * Example
+   * <pre>
+   *  // Create a svg node in our document.
+   *  Element svg = jsni("document.createElementNS", "http://www.w3.org/2000/svg", "svg");
+   *  // Append it to the dom
+   *  $(svg).appendTo(document);
+   *  // show the svg element in the debug console
+   *  jsni("console.log", svg);
+   * </pre>
+   *
+   * @param meth the literal name of the function to call, dot separators are allowed.
+   * @param args an array with the arguments to pass to the function.
+   * @return the java ready boxed object returned by the jsni method or null, if the
+   * call return a number we will get a Double, if it returns a boolean we get a java
+   * Boolean, strings comes as java String, otherwise we get the javascript object.
+   */
+  public static <T> T jsni(String meth, Object... args) {
+    return runJavascriptFunction(null, meth, args);
+  }
+
+  /**
    * Call via jsni any arbitrary function present in a Javascript object.
    *
    * It's thought for avoiding to create jsni methods to call external functions and
@@ -494,20 +559,27 @@ public class JsUtils {
    *  $(svg).appendTo(document);
    * </pre>
    *
-   * @param o  the javascript object where the function is.
-   * @param meth the literal name of the function to call.
+   * @param o  the javascript object where the function is, it it is null we use window.
+   * @param meth the literal name of the function to call, dot separators are allowed.
    * @param args an array with the arguments to pass to the function.
-   * @return the javascript object returned by the jsni method or null.
+   * @return the java ready boxed object returned by the jsni method or null, if the
+   * call return a number we will get a Double, if it returns a boolean we get a java
+   * Boolean, strings comes as java String, otherwise we get the javascript object.
+   *
+   * @deprecated use jsni instead.
    */
   public static <T> T runJavascriptFunction(JavaScriptObject o, String meth, Object... args) {
-    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args)
-        .<JsArrayMixed> cast());
+    return runJavascriptFunctionImpl(o, meth, JsObjectArray.create().add(args).<JsArrayMixed>cast());
   }
 
-  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth,
-      JsArrayMixed args) /*-{
-    return (f = o && o[meth])
-        && @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)
+  private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
+    var f = o || window, p = meth.split('.');
+    for (var i in p) {
+      o = f;
+      f = f[p[i]];
+      if (!f) return null;
+    }
+    return @com.google.gwt.query.client.js.JsUtils::isFunction(*)(f)
         && @com.google.gwt.query.client.js.JsCache::gwtBox(*)([f.apply(o, args)]);
   }-*/;
 
@@ -542,7 +614,7 @@ public class JsUtils {
 
   /**
    * Returns a QueryString representation of a JavascriptObject.
-   * 
+   *
    * TODO: jquery implementation accepts a second parameter (traditional)
    */
   public static String param(JavaScriptObject js) {

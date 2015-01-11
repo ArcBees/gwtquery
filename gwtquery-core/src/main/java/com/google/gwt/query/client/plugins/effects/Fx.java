@@ -33,8 +33,6 @@ public class Fx {
    */
   public static boolean off = false;
 
-  public static boolean css3 = Transitions.transition != null;
-
   /**
    * A pojo to store css3 transition values.
    */

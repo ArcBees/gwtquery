@@ -14,6 +14,7 @@
 package com.google.gwt.query.client.plugins.events;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.Element;
@@ -641,6 +642,11 @@ public class EventsListener implements EventListener {
   }
 
   public void onBrowserEvent(Event event) {
+//    console.log("onBrowser", event.getType(), event, element);
+    if (JsUtils.isDefaultPrevented(event)) {
+      console.log("RETTT");
+      return;
+    }
     double now = Duration.currentTimeMillis();
     // Workaround for Issue_20
     if (lastType.equals(event.getType()) && now - lastEvnt < 10
@@ -688,9 +694,18 @@ public class EventsListener implements EventListener {
    * given eventBit or eventName.
    */
   public boolean hasHandlers(int eventBits, String eventName) {
+    return hasHandlers(eventBits, eventName, null);
+  }
+
+  /**
+   * Return true if the element is listening for the
+   * given eventBit or eventName and the handler matches.
+   */
+  public boolean hasHandlers(int eventBits, String eventName, Function handler) {
     for (int i = 0, j = elementEvents.length(); i < j; i++) {
       BindFunction function = elementEvents.get(i);
-      if (function.hasEventType(eventBits) || function.isTypeOf(eventName)) {
+      if ((function.hasEventType(eventBits) || function.isTypeOf(eventName))
+         && (handler == null || function.isEquals(handler))) {
         return true;
       }
     }

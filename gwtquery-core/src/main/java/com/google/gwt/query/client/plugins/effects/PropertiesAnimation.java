@@ -15,12 +15,8 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import static com.google.gwt.query.client.GQuery.$;
-
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Effects.GQAnimation;
@@ -153,13 +149,17 @@ public class PropertiesAnimation extends GQAnimation {
 
   protected static final String[] ATTRS_TO_SAVE = new String[] {"overflow"};
 
-  private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^([0-9+-.]+)(.*)?$");
+  protected static final String NUMBER = "[\\d+-.]+";
+  protected static final String UNIT = "[a-z%]+";
 
-  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp
-      .compile("^([+-]=)?([0-9+-.]+)(.*)?$");
+  private static final RegExp REGEX_NUMBER_UNIT = RegExp.compile("^(" + NUMBER + ")(.*)?$");
 
-  protected static final RegExp REGEX_NON_PIXEL_ATTRS =
-      RegExp.compile("z-?index|font-?weight|opacity|zoom|line-?height|scale|rotation|^\\$", "i");
+  protected static final RegExp REGEX_SYMBOL_NUMBER_UNIT = RegExp.compile("^([+-]=)?(" + NUMBER + ")(" + UNIT + ")?$");
+
+  protected static final RegExp REGEX_SCALE_ATTRS = RegExp.compile("scale|opacity");
+
+  protected static final RegExp REGEX_NON_PIXEL_ATTRS = RegExp.compile("scale|opacity"
+      + "|z-?index|font-?weight|zoom|line-?height|rotat|skew|perspect|^\\$", "i");
 
   private static final RegExp REGEX_COLOR_ATTR = RegExp.compile(".*color$", "i");
 
@@ -173,7 +173,6 @@ public class PropertiesAnimation extends GQAnimation {
     if (REGEX_COLOR_ATTR.test(key)) {
       return computeFxColorProp(e, key, val);
     }
-
     return computeFxNumericProp(e, key, val, hidden);
   }
 
@@ -251,9 +250,6 @@ public class PropertiesAnimation extends GQAnimation {
       start = 0;
       unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
     } else if ("hide".equals(val)) {
-      if (hidden) {
-        return null;
-      }
       g.saveCssAttrs(key);
       end = 0;
       unit = REGEX_NON_PIXEL_ATTRS.test(key) ? "" : "px";
@@ -288,32 +284,7 @@ public class PropertiesAnimation extends GQAnimation {
     return new Fx(key, val, start, end, unit, rkey);
   }
 
-  protected Easing easing;
   protected JsObjectArray<Fx> effects;
-  private Function[] funcs;
-  private Effects g;
-
-  public PropertiesAnimation(Element elem, Properties p, Function... funcs) {
-    this(null, elem, p, funcs);
-  }
-
-  public PropertiesAnimation(Easing ease, Element elem, Properties p, Function... funcs) {
-    try {
-      easing = EasingCurve.valueOf(p.getStr("easing"));
-    } catch (Exception e) {
-    }
-    if (easing == null) {
-      easing = ease;
-    }
-    if (easing == null) {
-      easing = EasingCurve.swing;
-    }
-    this.funcs = funcs;
-    setProperties(p);
-    setElement(elem);
-
-    g = $(e).as(Effects.Effects);
-  }
 
   @Override
   public void onCancel() {
@@ -329,7 +300,7 @@ public class PropertiesAnimation extends GQAnimation {
   @Override
   public void onComplete() {
     super.onComplete();
-    for (int i = 0; i < effects.length(); i++) {
+    for (int i = 0; effects != null && i < effects.length(); i++) {
       Fx fx = effects.get(i);
       if ("hide".equals(fx.value)) {
         g.hide();

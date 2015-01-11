@@ -16,16 +16,15 @@
 package com.google.gwt.query.client.plugins;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
-import com.google.gwt.query.client.plugins.effects.ClipAnimation;
-import com.google.gwt.query.client.plugins.effects.ClipAnimation.Direction;
+import com.google.gwt.query.client.js.JsMap;
 import com.google.gwt.query.client.plugins.effects.Fx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
-import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 
 /**
  * Effects plugin for Gwt Query.
@@ -42,14 +41,34 @@ public class Effects extends QueuePlugin<Effects> {
     // Each Animation is associated to one element
     protected Element e;
     protected Properties prps;
+    protected Easing easing;
+    protected Function[] funcs;
+    protected Effects g;
 
-    protected GQAnimation setElement(Element element) {
+    public GQAnimation setElement(Element element) {
       e = element;
+      g = $(e).as(Effects);
       return this;
     }
 
-    protected GQAnimation setProperties(Properties properties) {
+    public GQAnimation setProperties(Properties properties) {
       prps = properties == null ? Properties.create() : properties;
+      if (prps.defined("easing")) {
+        try {
+          easing = EasingCurve.valueOf(prps.getStr("easing"));
+        } catch (Exception ignore) {
+        }
+      }
+      return this;
+    }
+
+    public GQAnimation setEasing(Easing ease) {
+      easing = ease != null ? ease : EasingCurve.swing;
+      return this;
+    }
+
+    public GQAnimation setCallback(Function... f) {
+      funcs = f;
       return this;
     }
 
@@ -92,12 +111,20 @@ public class Effects extends QueuePlugin<Effects> {
     super(gq);
   }
 
-  private void queueAnimation(final Element e, final GQAnimation anim, final int duration) {
+  /**
+   * Queue an animation for an element.
+   *
+   * The goal of this method is to reuse animations.
+   * @param e
+   * @param anim
+   * @param duration
+   */
+  public void queueAnimation(final GQAnimation anim, final int duration) {
     if (isOff()) {
       anim.onStart();
       anim.onComplete();
     } else {
-      queue(e, DEFAULT_NAME, new Function() {
+      queue(anim.e, DEFAULT_NAME, new Function() {
         public void cancel(Element e) {
           Animation anim = (Animation) data(e, GQAnimation.ACTUAL_ANIMATION, null);
           if (anim != null) {
@@ -114,6 +141,30 @@ public class Effects extends QueuePlugin<Effects> {
 
   protected boolean isOff() {
     return Fx.off;
+  }
+
+  /**
+   * Maintain a cache table with vendor properties so as plugins can use it.
+   */
+  public static JsMap<String, String>vendorPropNames;
+
+  /**
+   * Browser prefix for vendor spedific properties.
+   */
+  public static String prefix;
+
+  static {
+    if (GWT.isClient()) {
+      vendorPropNames = JsMap.create();
+      prefix  = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
+    }
+  }
+
+  /**
+   * Get the cached vendor property name.
+   */
+  public static String vendorProperty(String prop) {
+    return vendorPropNames.get(prop) != null ? vendorPropNames.get(prop) : prop;
   }
 
   /**
@@ -169,7 +220,6 @@ public class Effects extends QueuePlugin<Effects> {
    * @param easing the easing function to use for the transition
    */
   public Effects animate(Object stringOrProperties, int duration, Easing easing, Function... funcs) {
-
     final Properties p = (stringOrProperties instanceof String)
         ? (Properties) $$((String) stringOrProperties)
         : (Properties) stringOrProperties;
@@ -177,17 +227,23 @@ public class Effects extends QueuePlugin<Effects> {
     if (p.getStr("duration") != null) {
       duration = p.getInt("duration");
     }
-
     duration = Math.abs(duration);
 
     for (Element e : elements()) {
-      if (Fx.css3) {
-        new TransitionsClipAnimation(easing, e, p, funcs).run(duration);
-      } else {
-        queueAnimation(e, new ClipAnimation(easing, e, p, funcs), duration);
-      }
+      GQAnimation a = createAnimation();
+      a.setEasing(easing).setProperties(p).setElement(e).setCallback(funcs);
+      queueAnimation(a, duration);
     }
     return this;
+  }
+
+  /**
+   * Override this to create plugins with customized animation implementation.
+   *
+   * By default it uses deferred binding.
+   */
+  protected GQAnimation createAnimation() {
+    return GWT.create(GQAnimation.class);
   }
 
   /**
@@ -306,53 +362,6 @@ public class Effects extends QueuePlugin<Effects> {
    */
   public Effects animate(Object stringOrProperties, int duration, Function... funcs) {
     return animate(stringOrProperties, duration, EasingCurve.linear, funcs);
-  }
-
-  /**
-   * Animate the set of matched elements using the clip or scale property. It is possible to show or
-   * hide a set of elements, specify the direction of the animation and the start corner of the
-   * effect. Finally it executes the set of functions passed as arguments.
-   *
-   * @deprecated use animate() instead
-   */
-  @Deprecated
-  public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
-      ClipAnimation.Direction d, Function... f) {
-    return clip(a, c, d, Speed.DEFAULT, f);
-  }
-
-  /**
-   * Animate the set of matched elements using the clip or scale property. It is possible to show or
-   * hide a set of elements, specify the direction of the animation and the start corner of the
-   * effect. Finally it executes the set of functions passed as arguments.
-   *
-   * @deprecated use animate() instead
-   */
-  @Deprecated
-  public Effects clip(final ClipAnimation.Action a,
-      final ClipAnimation.Corner c, final ClipAnimation.Direction d,
-      final int duration, final Function... f) {
-    for (Element e : elements()) {
-      if (Fx.css3) {
-        new TransitionsClipAnimation(e, a, c, d, null, null, f).run(duration);
-      } else {
-        queueAnimation(e, new ClipAnimation(e, a, c, d, f), duration);
-      }
-    }
-    return this;
-  }
-
-  /**
-   * Animate the set of matched elements using the clip or scale property. It is possible to show or
-   * hide a set of elements, specify the direction of the animation and the start corner of the
-   * effect. Finally it executes the set of functions passed as arguments.
-   *
-   * @deprecated use animate() instead
-   */
-  @Deprecated
-  public Effects clip(ClipAnimation.Action a, ClipAnimation.Corner c,
-      Function... f) {
-    return clip(a, c, Direction.BIDIRECTIONAL, Speed.DEFAULT, f);
   }
 
   /**

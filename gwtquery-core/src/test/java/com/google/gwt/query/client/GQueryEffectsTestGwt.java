@@ -15,7 +15,9 @@
  */
 package com.google.gwt.query.client;
 
-import static com.google.gwt.query.client.GQuery.*;
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
+import static com.google.gwt.query.client.GQuery.Effects;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -24,17 +26,23 @@ import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.query.client.GQuery.Offset;
-import com.google.gwt.query.client.plugins.effects.Fx;
+import com.google.gwt.query.client.plugins.Effects.GQAnimation;
 import com.google.gwt.query.client.plugins.effects.Fx.ColorFx;
 import com.google.gwt.query.client.plugins.effects.Fx.TransitFx;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
+import com.google.gwt.query.client.plugins.effects.Transform;
+import com.google.gwt.query.client.plugins.effects.Transitions;
 import com.google.gwt.query.client.plugins.effects.TransitionsAnimation;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Test class for testing gwtquery effects plugin api.
@@ -55,7 +63,6 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
   }
 
   public void gwtSetUp() {
-    Fx.css3 = false;
     if (e == null) {
       testPanel = new HTML();
       RootPanel.get().add(testPanel);
@@ -257,11 +264,16 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
+    assertEquals("cssprop=opacity value=show start=0 end=1 unit=",
+        PropertiesAnimation.computeFxProp(g.get(0), "opacity", "toggle", true)
+            .toString());
+    assertEquals("cssprop=opacity value=hide start=1 end=0 unit=",
+        PropertiesAnimation.computeFxProp(g.get(0), "opacity", "toggle", false)
+            .toString());
 
     prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    PropertiesAnimation an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
+    GQAnimation an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    an.run(0);
 
     assertEquals("cssprop=marginTop value=0 start=-110 end=0 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "0", false)
@@ -285,9 +297,8 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation(EasingCurve.swing, g.get(0), prop1);
-    an.onStart();
-    an.onComplete();
+    an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    an.run(0);
 
     assertEquals("cssprop=marginTop value=-110px start=0 end=-110 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "marginTop", "-110px",
@@ -310,6 +321,130 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     assertEquals("cssprop=padding value=20px start=5 end=20 unit=px",
         PropertiesAnimation.computeFxProp(g.get(0), "padding", "20px", false)
             .toString());
+  }
+
+  private void assertTransitFx(TransitFx fx, String prop, String val, String unit, String start, String end) {
+    assertEquals(prop, fx.cssprop);
+    assertEquals(val, fx.value);
+    assertEquals(unit, fx.unit);
+    if (!start.contains(".")) {
+      // discard decimals
+      assertEquals(start, fx.transitStart.replaceAll("\\.\\d+([a-z%]*)$", "$1"));
+    } else {
+      assertEquals(start, fx.transitStart);
+    }
+    if (!end.contains(".")) {
+      // discard decimals
+      assertEquals(end, fx.transitEnd.replaceAll("\\.\\d+([a-z%]*)$", "$1"));
+    } else {
+      assertEquals(end, fx.transitEnd);
+    }
+  }
+
+  public void testTransitionsCss() {
+    $(e).html("<div>");
+    Transitions t = $("div", e).as(Transitions.Transitions);
+
+    t.css("transform", "scale(1,2) rotateX(5deg) x(7) y(8)");
+    assertEquals("1,2", t.css("scale"));
+    assertEquals("7px", t.css("x"));
+    assertEquals("7px", t.css("translateX"));
+    t.css("y", "8");
+    assertEquals("8px", t.css("y"));
+    assertEquals("8px", t.css("translateY"));
+  }
+
+  public void testTransitionsAnimationComputeEffects() {
+    $(e)
+        .html(
+            "<div id='parent' style='background-color: yellow; width: 100px; height: 200px; top:130px; position: absolute; left: 130px'>"
+            + "<p id='child' style='opacity: 0.7; background-color: pink; width: 100px; height: 100px; position: absolute; padding: 5px; margin: 0px'>Content 1</p></div>");
+    GQuery g = $("#child");
+    TransitFx f;
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "rotateY", "90deg", false);
+    assertTransitFx(f, "rotateY", "90deg", "deg", "0deg", "90deg");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "marginTop", "-110px", false);
+    assertTransitFx(f, "marginTop", "-110px", "px", "0px", "-110px");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "opacity", "toggle", false);
+    assertTransitFx(f, "opacity", "hide", "", "0.7", "0");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "scaleX", "show", true);
+    assertTransitFx(f, "scaleX", "show", "", "0", "1");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "width", "toggle", false);
+    assertTransitFx(f, "width", "hide", "px", "100px", "0px");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "width", "+=45", false);
+    assertTransitFx(f, "width", "+=45", "px", "100px", "145px");
+
+    f = TransitionsAnimation.computeFxProp(g.get(0), "width", "100%", false);
+    assertTransitFx(f, "width", "100%", "%", "100px", "100%");
+  }
+
+  public void testTransformParser() {
+    Transform.has3d = true;
+    Transform t = new Transform("scaleZ(0.5) rotateZ(90deg) skewX(4) rotateY(45) scale(1, 1) x(10) y(12) z(14) matrix(1, 2,3 ,4)");
+    List<String> vals = Arrays.asList(t.toString().split(" "));
+    // scale(1,1) matrix(1,2,3,4) rotateZ(90deg) translateZ(14px) rotateY(45deg) translateY(12px) skewX(4deg) translateX(10px) scaleZ(0.5)
+    assertEquals(9, vals.size());
+    assertTrue(vals.contains("scaleZ(0.5)"));
+    assertTrue(vals.contains("rotateZ(90deg)"));
+    assertTrue(vals.contains("rotateY(45deg)"));
+    assertTrue(vals.contains("skewX(4deg)"));
+    assertTrue(vals.contains("rotateY(45deg)"));
+    assertTrue(vals.contains("scale(1,1)"));
+    assertTrue(vals.contains("translateX(10px)"));
+    assertTrue(vals.contains("translateY(12px)"));
+    assertTrue(vals.contains("translateZ(14px)"));
+    assertTrue(vals.contains("matrix(1,2,3,4)"));
+
+    Transform.has3d = false;
+    t = new Transform("scaleZ(0.5) rotateZ(90deg) skewX(4) rotateY(45) scale(1, 1) x(10) y(12) z(14) matrix(1, 2,3 ,4)");
+    vals = Arrays.asList(t.toString().split(" "));
+    // scale(1,1) matrix(1,2,3,4) translateY(12px) skewX(4deg) translateX(10px)
+    assertEquals(5, vals.size());
+    assertTrue(vals.contains("scale(1,1)"));
+    assertTrue(vals.contains("skewX(4deg)"));
+    assertTrue(vals.contains("translateX(10px)"));
+    assertTrue(vals.contains("translateY(12px)"));
+    assertTrue(vals.contains("matrix(1,2,3,4)"));
+  }
+
+  public void testTransitionsAnimation() {
+    final GQuery m = $("<div style='top: 10px; width:50px'>foo</div>").appendTo(e);
+
+    TransitionsClipAnimation a = new TransitionsClipAnimation();
+    a.setElement(m.get(0));
+    a.setProperties($$("clip-action: show, clip-origin: top-right, scaleZ: 0.5, delay: 30, left: 100, top: +=50, rotateZ: 90, rotateY: 45deg, easing: custom, duration: 400"));
+    a.onStart();
+
+    Properties from = a.getFxProperties(true);
+    Properties to = a.getFxProperties(false);
+
+    // HTMLUnit and chrome return different decimal part
+    assertEquals("0px", from.getStr("left").replace(".0", ""));
+    assertEquals("100px", to.getStr("left").replace(".0", ""));
+    assertEquals("10px", from.getStr("top").replace(".0", ""));
+    assertEquals("60px", to.getStr("top").replace(".0", ""));
+    assertEquals("0", from.getStr("rotateZ").replace(".0", ""));
+    assertEquals("90", to.getStr("rotateZ").replace(".0", ""));
+    assertEquals("0deg", from.getStr("rotateY").replace(".0", ""));
+    assertEquals("45deg", to.getStr("rotateY").replace(".0", ""));
+    assertEquals("0 0", from.getStr("scale").replace(".0", ""));
+    assertEquals("1 1", to.getStr("scale"));
+    assertNull(to.get("delay"));
+    assertNull(to.get("easing"));
+
+    // HTMLUnit and chrome return different values
+    assertTrue(m.attr("style").contains("rigin: 100% 0%") || m.attr("style").contains("rigin: right top"));
+    assertTrue(m.attr("style").contains("top: 10px"));
+
+    a.run(1);
+    assertTrue(m.attr("style").contains("rigin: 100% 0%") || m.attr("style").contains("rigin: right top"));
+    assertTrue(m.attr("style").contains("top: 60px"));
   }
 
   public void testColorEffectParsing(){
@@ -383,16 +518,6 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
       }
     };
     timer.schedule(duration * 2);
-  }
-
-  public void testComputeFxPropTransitions() {
-    $(e).html("<div id='idtest' style='width: 200px; height 200px; border: solid 1px; position: absolute' ></div>");
-    final GQuery g = $("#idtest", e);
-
-    TransitFx fx = (TransitFx)TransitionsAnimation.computeFxProp(g.get(0), "width", "+=100", false);
-    assertEquals("200", fx.transitStart.replace(".0",""));
-    assertEquals("300", fx.transitEnd.replace(".0",""));
-    assertEquals("px", fx.unit);
   }
 
   public void testStop() {

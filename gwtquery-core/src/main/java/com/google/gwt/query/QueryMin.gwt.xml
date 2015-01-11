@@ -22,10 +22,10 @@
 
     <!-- Inherit GQuery module -->
     <inherits name='com.google.gwt.query.Query'/>
-    
+
     <source path="client"/>
-    <super-source path="super"/>    
-    
+    <super-source path="super"/>
+
     <!-- Detect whether querySelectorAll is available -->
     <define-property name="selectorCapability" values="native,js"/>
     <property-provider name="selectorCapability">
@@ -39,11 +39,9 @@
         <when-property-is name="user.agent" value="ie6" />
     </set-property>
     <set-property name="selectorCapability" value="native" >
-        <any>
-            <when-property-is name="user.agent" value="safari" />
-        </any>
+        <when-property-is name="user.agent" value="safari" />
     </set-property>
-    
+
     <!-- Selector Engines -->
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>

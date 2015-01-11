@@ -172,4 +172,26 @@
      -->
     <define-linker name="stddoctype" class="com.google.gwt.query.linker.IFrameWithDocTypeLinker"/>
 
+    <!-- Let the user select type of animations to use -->
+    <define-property name="animation" values="js,transition" />
+    <set-property name="animation" value="transition" />
+    <set-property name="animation" value="js">
+        <any>
+            <when-property-is name="user.agent" value="ie6" />
+            <when-property-is name="user.agent" value="ie8" />
+            <when-property-is name="user.agent" value="ie9" />
+        </any>
+    </set-property>
+    <!-- Animations based on JS loops -->
+    <replace-with class="com.google.gwt.query.client.plugins.effects.ClipAnimation">
+        <when-type-assignable
+            class="com.google.gwt.query.client.plugins.Effects.GQAnimation" />
+        <when-property-is name="animation" value="js" />
+    </replace-with>
+    <!-- Animations based on CSS3 transitions -->
+    <replace-with class="com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation">
+        <when-type-assignable
+            class="com.google.gwt.query.client.plugins.Effects.GQAnimation" />
+        <when-property-is name="animation" value="transition" />
+    </replace-with>
 </module>

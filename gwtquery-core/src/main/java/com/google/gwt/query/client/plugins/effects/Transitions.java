@@ -28,26 +28,25 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
-import com.google.gwt.core.client.Duration;
+import static com.google.gwt.query.client.plugins.effects.Transform.getInstance;
+import static com.google.gwt.query.client.plugins.effects.Transform.isTransform;
+import static com.google.gwt.query.client.plugins.effects.Transform.transform;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.Plugin;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.EasingCurve;
-import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.query.client.plugins.effects.TransitionsAnimation.TransitionsClipAnimation;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Transitions and transformation plugin for gQuery.
@@ -69,127 +68,14 @@ import java.util.Map.Entry;
 
  * </pre>
  */
-public class Transitions extends GQuery {
-
-  /**
-   * A dictionary class with all the properties of an element transform
-   * which is able to return the correct syntax for setting css properties.
-   */
-  public static class Transform  {
-
-    private static final RegExp transform3dRegex = RegExp.compile("^(rotate([XY]|3d)|perspective)$");
-
-    private HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-
-    public Transform(String s) {
-      parse(s);
-    }
-
-    public String get(String prop) {
-      return listToStr(map.get(prop), ",");
-    }
-
-    private String listToStr(List<String> l, String sep) {
-      String v = "";
-      if (l != null) {
-        for (String s : l) {
-          v += (v.isEmpty() ? "" : sep) + s;
-        }
-      }
-      return v;
-    }
-
-    private void parse(String s) {
-      if (s != null) {
-        RegExp re = RegExp.compile("([a-zA-Z0-9]+)\\((.*?)\\)", "g");
-        for (MatchResult r = re.exec(s); r != null; r = re.exec(s)) {
-          setFromString(r.getGroup(1), r.getGroup(2));
-        }
-      }
-    }
-
-    public void set(String prop, String ...val) {
-      setter(prop, val);
-    }
-
-    public void setFromString(String prop, String ...val) {
-      if (val.length == 1) {
-        String[] vals = val[0].split("[\\s*,\\s*]");
-        set(prop, vals);
-      } else {
-        set(prop, val);
-      }
-    }
-
-    private void setter(String prop, String ...val) {
-      if (prop.matches("(rotate[XY]?|skew[XY])")) {
-        map.put(prop, unit(val[0], "deg"));
-      } else if ("scale".equals(prop)) {
-        String x = val.length < 1 ? "1" : val[0];
-        String y = val.length < 2 ? x : val[1];
-        map.put(prop, Arrays.asList(x, y));
-      } else if ("perspective".equals(prop)) {
-        map.put(prop, unit(val[0], "px"));
-      } else if ("x".equals(prop)) {
-        setter("translate", val[0], null);
-      } else if ("y".equals(prop)) {
-        setter("translate", null, val[0]);
-      } else if ("translate".equals(prop)) {
-        if (map.get("translateX") == null) {
-          map.put("translateX", unit("0", "px"));
-        }
-        if (val[0] != null) {
-          map.put("translateX", unit(val[0], "px"));
-        }
-        if (map.get("translateY") == null) {
-          map.put("translateY", unit("0", "px"));
-        }
-        if (val[1] != null) {
-          map.put("translateY", unit(val[1], "px"));
-        }
-        map.put("translate", Arrays.asList(map.get("translateX").get(0), map.get("translateY").get(0)));
-      }
-    }
-
-    /**
-     * Converts the dictionary to a transition css string.
-     */
-    public String toString() {
-      // purposely using string addition, since my last tests demonstrate
-      // that string addition performs better than string builders in gwt-prod.
-      String ret = "";
-      for (Entry<String, List<String>> e: map.entrySet()) {
-        if (has3d || !transform3dRegex.test(e.getKey())) {
-          String v = listToStr(e.getValue(), ",");
-          ret += (ret.isEmpty() ? "" : " ") + e.getKey() + "(" + v + ")";
-        }
-      }
-      return ret;
-    }
-
-    private List<String> unit(String val, String unit) {
-      return Arrays.asList(val + (val.endsWith(unit) ? "" : unit));
-    }
-  }
-
-  // Used to check supported properties in the browser
-  private static Style divStyle = DOM.createDiv().getStyle();
-
-  private static final String prefix = browser.msie ? "ms" : browser.opera ? "o" : browser.mozilla ? "moz" : browser.webkit ? "webkit" : "";
-  private static final String transform = getVendorPropertyName("transform");
-  private static final String TRANSFORM = "_t_";
-  private static final String transformOrigin = getVendorPropertyName("transformOrigin");
-
-  protected static final RegExp transformRegex = RegExp.compile("^(scale|translate|rotate([XY]|3d)?|perspective|skew[XY]|x|y)$");
-  protected static final String transition = getVendorPropertyName("transition");
+public class Transitions extends Effects {
 
   // passing an invalid transition property in chrome, makes disable all transitions in the element
-  private static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|easing|delay|clip-.*)$");
+  public static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|function|easing|delay|clip-.*)$");
 
-  private static final String transitionDelay = getVendorPropertyName("transitionDelay");
-  private static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "transitionEnd");
+  protected static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "TransitionEnd");
 
-  public static boolean has3d = supportsTransform3d();
+  protected static final String transition = vendorProperty("transition");
 
   public static final Class<Transitions> Transitions = GQuery.registerPlugin(
       Transitions.class, new Plugin<Transitions>() {
@@ -198,37 +84,11 @@ public class Transitions extends GQuery {
         }
       });
 
-  private static String getVendorPropertyName(String prop) {
-    // we prefer vendor specific names by default
-    String vendorProp =  JsUtils.camelize("-" + prefix + "-" + prop);
-    if (JsUtils.hasProperty(divStyle, vendorProp)) {
-      return vendorProp;
-    }
-    if (JsUtils.hasProperty(divStyle, prop)) {
-      return prop;
-    }
-    String camelProp = JsUtils.camelize(prop);
-    if (JsUtils.hasProperty(divStyle, camelProp)) {
-      return camelProp;
-    }
-    return null;
-  }
-
   private static String property(String prop) {
-    if (transformRegex.test(prop)) {
+    if (isTransform(prop)) {
       return transform;
     }
     return prop.replaceFirst("^(margin|padding).+$", "$1");
-  }
-
-  private static boolean supportsTransform3d() {
-    if (transform == null) {
-      return false;
-    }
-    String rotate = "rotateY(1deg)";
-    divStyle.setProperty(transform, rotate);
-    rotate = divStyle.getProperty(transform);
-    return rotate != null && !rotate.isEmpty();
   }
 
   protected Transitions(GQuery gq) {
@@ -237,44 +97,37 @@ public class Transitions extends GQuery {
 
   @Override
   public String css(String prop, boolean force) {
-    if ("transform".equals(prop)) {
-      return isEmpty() ? "" : getTransform(get(0), null).toString();
-    } else if ("transformOrigin".equals(prop)) {
-      return super.css(transformOrigin, force);
-    } else if ("transition".equals(prop)) {
-      return super.css(transition, force);
-    } else if (transformRegex.test(prop)) {
-      return isEmpty() ? "" : getTransform(get(0), null).get(prop);
+    prop = vendorProperty(prop);
+    if (transform.equals(prop)) {
+      return isEmpty() ? "" : getInstance(get(0), null).toString();
+    } else if (isTransform(prop)) {
+      return isEmpty() ? "" : getInstance(get(0), null).get(prop);
     } else {
-      String ret =  super.css(prop, force);
-      return ret;
+      return super.css(prop, force);
     }
   }
 
   @Override
   public Transitions css(String prop, String value) {
-    if ("transform".equals(prop)) {
+    prop = vendorProperty(prop);
+    if (transform.equals(prop)) {
       for (Element e : elements()) {
-        Transform t = getTransform(e, value);
+        Transform t = getInstance(e, value != null ? value : "");
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else if ("transformOrigin".equals(prop)) {
-      super.css(transformOrigin, value);
-    } else if ("transition".equals(prop)) {
-      super.css(transition, value);
-    } else if (transformRegex.test(prop)) {
+    } else if (isTransform(prop)) {
       for (Element e : elements()) {
-        Transform t = getTransform(e, null);
+        Transform t = getInstance(e, null);
         t.setFromString(prop, value);
         getStyleImpl().setStyleProperty(e, transform, t.toString());
       }
-    } else if (!invalidTransitionNamesRegex.test(prop)) {
+    } else {
       super.css(prop, value);
     }
     return this;
   }
 
-  private List<String> filterTransitionPropertyNames(Properties p) {
+  public static List<String> filterTransitionPropertyNames(Properties p) {
     List<String> ret = new ArrayList<String>();
     for (String s : p.keys()) {
       if (invalidTransitionNamesRegex.test(s)) {
@@ -295,15 +148,6 @@ public class Transitions extends GQuery {
     return ret;
   }
 
-  private Transform getTransform(Element e, String initial) {
-    Transform t = data(e, TRANSFORM);
-    if (t == null || initial != null && !initial.isEmpty()) {
-      t = new Transform(initial);
-      data(e, TRANSFORM, t);
-    }
-    return t;
-  }
-
   /**
    * The transition() method allows you to create animation effects on any numeric HTML Attribute,
    * CSS property, or color using CSS3 transformations and transitions.
@@ -320,49 +164,17 @@ public class Transitions extends GQuery {
        .transition("{x: +100, width: +40px}", 2000, EasingCurve.easeOut);
    * </pre>
    */
-  public Transitions transition(Object stringOrProperties, final int duration, final Easing easing, final int delay, final Function... funcs) {
-    if (isEmpty()) {
-      return this;
-    }
-
-    final Properties cssProps = (stringOrProperties instanceof String)
-      ? (Properties) $$((String) stringOrProperties)
-      : (Properties) stringOrProperties;
-
-    final String ease = easing == null ? "ease" : easing.toString();
-    final List<String> transProps = filterTransitionPropertyNames(cssProps);
-    final double queuedAt = delay > 0 ? Duration.currentTimeMillis() : 0;
-
-    // Use gQuery queue, so as we can chain transitions, animations etc.
-    queue(new Function() {
-      public void f() {
-        // This is called once per element
-        final String oldTransitionValue = $(this).css(transition);
-        // Recompute delay based on the time spent in the queue
-        int d = Math.max(0, delay - (int) (Duration.currentTimeMillis() - queuedAt));
-        // Generate transition value
-        String attribs = duration + "ms" + " "  + ease + " " + d + "ms";
-        String newTransitionValue  = "";
-        for (String s : transProps) {
-          newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
-        }
-
-        final Transitions thisTrans = $(this).as(Transitions);
-        // Configure animation using transition property
-        thisTrans.css(transition, newTransitionValue);
-        // Set all css properties for this transition using the css method in this class
-        thisTrans.css(cssProps);
-
-        // TODO: Use transitionEnd events once GQuery supports non-bit events
-        // last time I tried, setting  'transitionEnd' made custom events fail (slideEnter)
-        new Timer() {
-          public void run() {
-            thisTrans.css(transition, oldTransitionValue).each(funcs).dequeue();
-          }
-        }.schedule(d + duration);
+  public Transitions transition(Object stringOrProperties, final int duration, final Easing easing,
+      final int delay, final Function... funcs) {
+    if (!isEmpty()) {
+      Properties p = (stringOrProperties instanceof String)
+          ? $$((String) stringOrProperties)
+          : (Properties) stringOrProperties;
+      for (Element e : elements()) {
+        queueAnimation(new TransitionsClipAnimation().setEasing(easing).setProperties(p)
+            .setElement(e).setCallback(funcs), duration);
       }
-    });
-
+    }
     return this;
   }
 
@@ -379,5 +191,23 @@ public class Transitions extends GQuery {
    */
   public Transitions transition(Object stringOrProperties, int duration, String easing, int delay) {
     return transition(stringOrProperties, duration, EasingCurve.valueOf(easing), delay);
+  }
+
+  @Override
+  protected GQAnimation createAnimation() {
+    return new TransitionsAnimation();
+  }
+
+  @Override
+  public boolean isVisible() {
+    for (String s : Arrays.asList("opacity", "scale", "scaleX", "scaleY", "scale3d", "width", "height")) {
+      String[] parts = css(s).split("\\s*,\\s*");
+      for (String p : parts) {
+        if (p.matches("^0[a-z%]*")) {
+          return false;
+        }
+      }
+    }
+    return super.isVisible();
   }
 }
