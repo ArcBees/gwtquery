@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.googlecode.gwtquery</groupId>
         <artifactId>gwtquery-project</artifactId>
-        <version>1.4.3-SNAPSHOT</version>
+        <version>1.4.3</version>
     </parent>
 
 
@@ -11,7 +11,7 @@
         <!--  valid emulations are FF17 IE8 IE9 Chrome, but only FF17 works. -->
         <gwt.test.htmlunit>FF17</gwt.test.htmlunit>
         <gwt.test.default>-ea -out ${basedir}/target/gwt-junit -checkAssertions</gwt.test.default>
-        <gwt.args></gwt.args>
+        <gwt.args />
     </properties>
     <profiles>
         <profile>
