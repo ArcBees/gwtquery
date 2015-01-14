@@ -229,6 +229,20 @@ public class JsUtils {
   }
 
   /**
+   * Assign a function to a property of the window object.
+   */
+  public static void export(String name, Function f) {
+    export(GQuery.window, name, f);
+  }
+
+  /**
+   * Export a function as a property of a javascript object.
+   */
+  public static void export(JavaScriptObject o, String name, Function f) {
+    prop(o, name, (Object)(f != null ? wrapFunction(f) : null));
+  }
+
+  /**
    * Camelize style property names.
    * for instance: font-name -> fontName
    */
@@ -573,7 +587,7 @@ public class JsUtils {
   }
 
   private static native <T> T runJavascriptFunctionImpl(JavaScriptObject o, String meth, JsArrayMixed args) /*-{
-    var f = o || window, p = meth.split('.');
+    var f = o || $wnd, p = meth.split('.');
     for (var i in p) {
       o = f;
       f = f[p[i]];

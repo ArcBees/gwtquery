@@ -20,6 +20,14 @@ import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.document;
 import static com.google.gwt.query.client.GQuery.window;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
@@ -41,20 +49,13 @@ import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-
-import junit.framework.Assert;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Test class for testing gwtquery-core api.
@@ -1044,6 +1045,18 @@ public class GQueryCoreTestGwt extends GWTTestCase {
 
     e = JsUtils.jsni("document.foo.bar");
     assertNull(e);
+  }
+
+  public void testUtilsJsniExport() {
+    JsUtils.export("foo", new Function() {
+      public Object f(Object... args) {
+        assertEquals("bar", (String)args[0]);
+        assertEquals(3.5, (Double)args[1]);
+        return "OK";
+      }
+    });
+    assertTrue(JsUtils.hasProperty(window, "foo"));
+    assertEquals("OK", JsUtils.jsni("foo", "bar", 3.5));
   }
 
   public void testVal_issue98() {
