@@ -410,7 +410,7 @@ public class JsUtils {
   public static native boolean isNodeList(JavaScriptObject o) /*-{
     var r = Object.prototype.toString.call(o);
     return r == '[object HTMLCollection]' || r == '[object NodeList]'
-        || (typeof o == 'object' && o.length && o[0].tagName) ? true : false;
+        || (typeof o == 'object' && o.length && o[0] && o[0].tagName) ? true : false;
   }-*/;
 
   /**
