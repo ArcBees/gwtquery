@@ -29,6 +29,8 @@ import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FormPanel;
 
 /**
@@ -311,6 +313,9 @@ public class Ajax extends GQuery {
     return get(url, (IsProperties) data, null);
   }
 
+  /**
+   * @deprecated Use promises instead
+   */
   public static Promise get(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -386,11 +391,16 @@ public class Ajax extends GQuery {
   }
 
   public static Promise loadScript(final String url, Function success) {
-    return ajax(createSettings()
-        .setUrl(url)
-        .setType("get")
-        .setDataType("loadscript")
-        .setSuccess(success));
+    GQuery script = $("script[src^='" + url + "']");
+    if (script.isEmpty()) {
+      return ajax(createSettings()
+          .setUrl(url)
+          .setType("get")
+          .setDataType("loadscript")
+          .setSuccess(success));
+    } else {
+      return Deferred().resolve().promise();
+    }
   }
 
   public static Promise post(String url, IsProperties data) {
@@ -451,5 +461,34 @@ public class Ajax extends GQuery {
     });
     ajax(s);
     return this;
+  }
+
+  public static Promise loadLink(String rel, String url) {
+    GQuery link = $("link[rel='" + rel + "'][href^='" + url + "']");
+    if (link.isEmpty()) {
+      return new PromiseFunction() {
+        public void f(Deferred dfd) {
+          GQuery link = $("<link rel='" + rel + "' href='" + url + "'/>");
+          link.on("load", new Function() {
+            public void f() {
+              // load event is fired before the imported stuff has actually
+              // being ready, we delay it to be sure it is ready.
+              new Timer() {
+                public void run() {
+                  dfd.resolve();
+                }
+              }.schedule(100);
+            }
+          });
+          $(document.getHead()).append(link);
+        }
+      };
+    } else {
+      return Deferred().resolve().promise();
+    }
+  }
+
+  public static Promise importHtml(String url) {
+    return loadLink("import", url);
   }
 }
