@@ -391,8 +391,7 @@ public class Ajax extends GQuery {
   }
 
   public static Promise loadScript(final String url, Function success) {
-    GQuery script = $("script[src^='" + url + "']");
-    if (script.isEmpty()) {
+    if (!GWT.isClient() || $("script[src^='" + url + "']").isEmpty()) {
       return ajax(createSettings()
           .setUrl(url)
           .setType("get")
@@ -463,11 +462,11 @@ public class Ajax extends GQuery {
     return this;
   }
 
-  public static Promise loadLink(String rel, String url) {
+  public static Promise loadLink(final String rel, final String url) {
     GQuery link = $("link[rel='" + rel + "'][href^='" + url + "']");
     if (link.isEmpty()) {
       return new PromiseFunction() {
-        public void f(Deferred dfd) {
+        public void f(final Deferred dfd) {
           GQuery link = $("<link rel='" + rel + "' href='" + url + "'/>");
           link.on("load", new Function() {
             public void f() {
