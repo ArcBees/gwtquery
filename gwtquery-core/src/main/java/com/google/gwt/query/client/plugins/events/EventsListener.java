@@ -118,6 +118,10 @@ public class EventsListener implements EventListener {
     }
 
     public boolean fire(Event event, Object[] eventData) {
+      return fire(event, event.getTypeInt(), event.getType(), eventData);
+    }
+
+    public boolean fire(Event event, int typeInt, String type, Object[] eventData) {
       if (times != 0) {
         times--;
         Object[] arguments;
@@ -211,7 +215,7 @@ public class EventsListener implements EventListener {
     }
 
     @Override
-    public boolean fire(Event event, Object[] eventData) {
+    public boolean fire(Event event, int typeInt, String type, Object[] eventData) {
       if (isEmpty()) {
         return true;
       }
@@ -231,7 +235,7 @@ public class EventsListener implements EventListener {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
           BindFunction f = bindFunctions.get(i);
-          if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
+          if (f.hasEventType(typeInt) || f.isTypeOf(type)) {
             validSelectors.add(cssSelector);
             break;
           }
@@ -252,7 +256,7 @@ public class EventsListener implements EventListener {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
           BindFunction f = bindFunctions.get(i);
-          if (f.hasEventType(event.getTypeInt()) || f.isTypeOf(event.getType())) {
+          if (f.hasEventType(typeInt) || f.isTypeOf(type)) {
             NodeList<Element> n = realCurrentTargetBySelector.get(cssSelector);
             for (int j = 0; n != null && j < n.getLength(); j++) {
               Element element = n.getItem(j);
@@ -552,15 +556,15 @@ public class EventsListener implements EventListener {
    * it's useful for special events.
    */
   public void dispatchEvent(Event event, String eventName) {
-    int etype = Event.getTypeInt(eventName);
+    int typeInt = Event.getTypeInt(eventName);
     Object[] handlerData = $(element).data(EVENT_DATA);
     for (int i = 0, l = elementEvents.length(); i < l; i++) {
       BindFunction listener = elementEvents.get(i);
       String namespace = JsUtils.prop(event, "namespace");
-      boolean matchEV = listener != null && (listener.hasEventType(etype) || listener.isTypeOf(eventName));
+      boolean matchEV = listener != null && (listener.hasEventType(typeInt) || listener.isTypeOf(eventName));
       boolean matchNS = matchEV && (isNullOrEmpty(namespace) || listener.nameSpace.equals(namespace));
       if (matchEV && matchNS) {
-        if (!listener.fire(event, handlerData)) {
+        if (!listener.fire(event, typeInt, eventName, handlerData)) {
           event.stopPropagation();
           event.preventDefault();
         }
@@ -642,9 +646,7 @@ public class EventsListener implements EventListener {
   }
 
   public void onBrowserEvent(Event event) {
-//    console.log("onBrowser", event.getType(), event, element);
     if (JsUtils.isDefaultPrevented(event)) {
-      console.log("RETTT");
       return;
     }
     double now = Duration.currentTimeMillis();
