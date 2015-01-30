@@ -578,8 +578,8 @@ public class GQueryCoreTestGwt extends GWTTestCase {
   public void testPropMethod(){
     $(e).html("<input id=\"checkBox1\" type=\"checkbox\" checked=\"checked\" /> <input id=\"checkBox2\" type=\"checkbox\" />");
 
-    assertEquals(true, $("#checkBox1",e).prop("checked"));
-    assertEquals(false, $("#checkBox2",e).prop("checked"));
+    assertEquals(Boolean.TRUE, $("#checkBox1",e).prop("checked"));
+    assertEquals(Boolean.FALSE, $("#checkBox2",e).prop("checked"));
 
     $("#checkBox1",e).prop("checked", false);
     $("#checkBox2",e).prop("checked", new Function() {
@@ -588,8 +588,8 @@ public class GQueryCoreTestGwt extends GWTTestCase {
         return Boolean.TRUE;
       }
     });
-    assertEquals(true, $("#checkBox2",e).prop("checked"));
-    assertEquals(false, $("#checkBox1",e).prop("checked"));
+    assertEquals(Boolean.TRUE, $("#checkBox2",e).prop("checked"));
+    assertEquals(Boolean.FALSE, $("#checkBox1",e).prop("checked"));
 
     $(window).prop("foo", 234);
     assertEquals(234d, $(window).prop("foo"));

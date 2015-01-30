@@ -29,6 +29,8 @@ import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.Plugin;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FormPanel;
 
 /**
@@ -311,6 +313,9 @@ public class Ajax extends GQuery {
     return get(url, (IsProperties) data, null);
   }
 
+  /**
+   * @deprecated Use promises instead
+   */
   public static Promise get(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
@@ -386,11 +391,15 @@ public class Ajax extends GQuery {
   }
 
   public static Promise loadScript(final String url, Function success) {
-    return ajax(createSettings()
-        .setUrl(url)
-        .setType("get")
-        .setDataType("loadscript")
-        .setSuccess(success));
+    if (!GWT.isClient() || $("script[src^='" + url + "']").isEmpty()) {
+      return ajax(createSettings()
+          .setUrl(url)
+          .setType("get")
+          .setDataType("loadscript")
+          .setSuccess(success));
+    } else {
+      return Deferred().resolve().promise();
+    }
   }
 
   public static Promise post(String url, IsProperties data) {
@@ -451,5 +460,47 @@ public class Ajax extends GQuery {
     });
     ajax(s);
     return this;
+  }
+
+  /**
+   * Load an external resource using the link tag element.
+   * It is appended to the head of the document.
+   *
+   * @param rel Specifies the relationship between the current document and the linked document.
+   * @param url Specifies the location of the linked document
+   * @return a Promise which will be resolved when the external resource has been loaded.
+   */
+  public static Promise loadLink(final String rel, final String url) {
+    GQuery link = $("link[rel='" + rel + "'][href^='" + url + "']");
+    if (link.isEmpty()) {
+      return new PromiseFunction() {
+        public void f(final Deferred dfd) {
+          GQuery link = $("<link rel='" + rel + "' href='" + url + "'/>");
+          link.on("load", new Function() {
+            public void f() {
+              // load event is fired before the imported stuff has actually
+              // being ready, we delay it to be sure it is ready.
+              new Timer() {
+                public void run() {
+                  dfd.resolve();
+                }
+              }.schedule(100);
+            }
+          });
+          $(document.getHead()).append(link);
+        }
+      };
+    } else {
+      return Deferred().resolve().promise();
+    }
+  }
+
+  /**
+   * Load an external html resource using the link tag element, it sets
+   * the relationship between the current document as 'import'.
+   * It is very useful to import web-components.
+   */
+  public static Promise importHtml(String url) {
+    return loadLink("import", url);
   }
 }

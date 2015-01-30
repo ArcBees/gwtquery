@@ -17,6 +17,7 @@ package com.google.gwt.query.client.plugins.events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -109,5 +110,11 @@ public class GqEvent extends Event {
 
   public static final GqEvent as(Event e) {
     return e.cast();
+  }
+
+  public static Event create(Event event, String eventName) {
+    event = create(event);
+    JsUtils.prop(event, "type", eventName);
+    return event;
   }
 }
