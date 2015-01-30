@@ -462,6 +462,14 @@ public class Ajax extends GQuery {
     return this;
   }
 
+  /**
+   * Load an external resource using the link tag element.
+   * It is appended to the head of the document.
+   *
+   * @param rel Specifies the relationship between the current document and the linked document.
+   * @param url Specifies the location of the linked document
+   * @return a Promise which will be resolved when the external resource has been loaded.
+   */
   public static Promise loadLink(final String rel, final String url) {
     GQuery link = $("link[rel='" + rel + "'][href^='" + url + "']");
     if (link.isEmpty()) {
@@ -487,6 +495,11 @@ public class Ajax extends GQuery {
     }
   }
 
+  /**
+   * Load an external html resource using the link tag element, it sets
+   * the relationship between the current document as 'import'.
+   * It is very useful to import web-components.
+   */
   public static Promise importHtml(String url) {
     return loadLink("import", url);
   }
