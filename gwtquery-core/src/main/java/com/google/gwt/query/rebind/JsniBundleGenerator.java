@@ -131,11 +131,16 @@ public class JsniBundleGenerator extends Generator {
     try {
       if (!src.matches("(?i)https?://.*")) {
         String file = path + "/" + src;
-        logger.log(TreeLogger.INFO, getClass().getSimpleName()
-            + " - importing external javascript: " + file);
-
         in = this.getClass().getClassLoader().getResourceAsStream(file);
         if (in == null) {
+          // If we didn't find the resource relative to the package, assume it is absolute.
+          file = src;
+          in = this.getClass().getClassLoader().getResourceAsStream(file); 
+        }
+        if (in != null) {
+          logger.log(TreeLogger.INFO, getClass().getSimpleName()
+              + " - importing external javascript: " + file);
+        } else {
           logger.log(TreeLogger.ERROR, "Unable to read javascript file: " + file);
         }
       } else {
