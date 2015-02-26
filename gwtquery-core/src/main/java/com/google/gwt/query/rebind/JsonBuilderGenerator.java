@@ -183,8 +183,7 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " + "((" + q + ")GWT.create(" + q + ".class))"
-            + ".load(getPropertiesBase(\"" + name + "\"));");
+        sw.println("return " + "getIsPropertiesBase(getPropertiesBase(\"" + name + "\")," + q + ".class);");
       } else if (isTypeAssignableTo(method.getReturnType(), settingsType)) {
         String q = method.getReturnType().getQualifiedSourceName();
         sw.println("return " + "((" + q + ")getPropertiesBase(\"" + name + "\"));");
@@ -203,16 +202,7 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("int l = a == null ? 0 : a.length();");
         String ret;
         if (buildType) {
-          sw.println(t + "[] r = new " + t + "[l];");
-          sw.println("JsObjectArray<?> a1 = p.getArray(\"" + name
-              + "\").cast();");
-          sw.println("int l1 = r.length;");
-          sw.println("for (int i = 0 ; i < l1 ; i++) {");
-          sw.println("  Object w = a1.get(i);");
-          sw.println("  " + t + " instance = GWT.create(" + t + ".class);");
-          sw.println("  r[i] = instance.load(w);");
-          sw.println("}");
-          ret = "r";
+          ret = "getIsPropertiesArrayBase(a, new " + t + "[l], " + t + ".class)";
         } else {
           ret = "getArrayBase(\"" + name + "\", new " + t + "[l], " + t + ".class)";
         }
@@ -326,6 +316,7 @@ public class JsonBuilderGenerator extends Generator {
         types.add(t);
       }
     }
+    sw.println("GQuery.console.error(\"GQ.create: not registered class :\" + clz);");
     sw.println("return null;");
     sw.outdent();
     sw.println("}");

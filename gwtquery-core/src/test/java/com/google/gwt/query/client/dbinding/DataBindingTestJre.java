@@ -81,6 +81,8 @@ public class DataBindingTestJre extends GWTTestCase {
     Boolean getZ();
     String[] getT();
     JsonExample setT(String[] strings);
+    Item[] getIt();
+    JsonExample setIt(Item[] items);
     JsonExample setZ(Boolean b);
     JsonExample setD(long l);
     List<Item> getItems();
@@ -139,6 +141,9 @@ public class DataBindingTestJre extends GWTTestCase {
     Item i2 = GQ.create(Item.class);
     i2.setDate(new Date(3000));
     Item[] items = new Item[]{i1, i2};
+    c.setIt(items);
+    assertEquals(2000l, c.getIt()[0].getDate().getTime());
+    assertEquals(3000l, c.getIt()[1].getDate().getTime());
     c.setItems(Arrays.asList(items));
     assertEquals(2000l, c.getItems().get(0).getDate().getTime());
     assertEquals(3000l, c.getItems().get(1).getDate().getTime());
