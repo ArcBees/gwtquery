@@ -229,6 +229,14 @@ public class JsUtils {
   }
 
   /**
+   * Execute a native javascript function.
+   */
+  public static <T> T exec(JavaScriptObject jsFunction, Object... args) {
+    assert isFunction(jsFunction);
+    return jsni(jsFunction, "call", jsFunction, args);
+  }
+
+  /**
    * Assign a function to a property of the window object.
    */
   public static void export(String name, Function f) {
