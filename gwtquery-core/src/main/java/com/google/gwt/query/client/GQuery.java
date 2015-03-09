@@ -59,6 +59,7 @@ import com.google.gwt.query.client.plugins.events.EventsListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -297,6 +298,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public static GQuery $(String selectorOrHtml) {
     return $(selectorOrHtml, document);
+  }
+  
+  /**
+   * This function accepts a SafeHtml creating a GQuery element containing those elements.
+   */
+  public static GQuery $(SafeHtml safeHtml) {
+    return $(safeHtml.asString());
   }
 
   /**
@@ -853,6 +861,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery after(String html) {
     return domManip(html, DomMan.AFTER);
   }
+  
+  /**
+   * Insert content after each of the matched elements. The elements must already be inserted into
+   * the document (you can't insert an element after another if it's not in the page).
+   */
+  public GQuery after(SafeHtml safeHtml) {
+    return after(safeHtml.asString());
+  }
 
   private void allNextSiblingElements(Element firstChildElement, JsNodeArray result, Element elem,
       GQuery until, String filterSelector) {
@@ -1093,6 +1109,14 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery append(String html) {
     return domManip(html, DomMan.APPEND);
   }
+  
+  /**
+   * Append content to the inside of every matched element. This operation is similar to doing an
+   * appendChild to all the specified elements, adding them into the document.
+   */
+  public GQuery append(SafeHtml safeHtml) {
+    return append(safeHtml.asString());
+  }
 
   /**
    * All of the matched set of elements will be inserted at the end of the element(s) specified by
@@ -1130,6 +1154,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery appendTo(String html) {
     $(html).append(this);
     return this;
+  }
+  
+  /**
+   * All of the matched set of elements will be inserted at the end of the element(s) specified by
+   * the parameter other.
+   *
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular $(A).append(B),
+   * instead of appending B to A, you're appending A to B.
+   */
+  public GQuery appendTo(SafeHtml safeHtml) {
+    return appendTo(safeHtml.asString());
   }
 
   /**
@@ -2475,6 +2510,13 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       e.setInnerHTML(html);
     }
     return this;
+  }
+  
+  /**
+   * Set the innerHTML of every matched element.
+   */
+  public GQuery html(SafeHtml safeHtml) {
+    return html(safeHtml.asString());
   }
 
   /**
@@ -4890,6 +4932,17 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery wrap(String html) {
     return wrap($(html));
   }
+  
+  /**
+   * Wrap each matched element with the specified SafeHtml content. This wrapping process is most useful
+   * for injecting additional structure into a document, without ruining the original semantic
+   * qualities of a document. This works by going through the first element provided (which is
+   * generated, on the fly, from the provided SafeHtml) and finds the deepest descendant element within
+   * its structure -- it is that element that will enwrap everything else.
+   */
+  public GQuery wrap(SafeHtml safeHtml) {
+    return wrap(safeHtml.asString());
+  }
 
   /**
    * Wrap all the elements in the matched set into a single wrapper element. This is different from
@@ -4945,6 +4998,20 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery wrapAll(String html) {
     return wrapAll($(html));
   }
+  
+  /**
+   * Wrap all the elements in the matched set into a single wrapper element. This is different from
+   * .wrap() where each element in the matched set would get wrapped with an element. This wrapping
+   * process is most useful for injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document.
+   *
+   * This works by going through the first element provided (which is generated, on the fly, from
+   * the provided SafeHtml) and finds the deepest descendant element within its structure -- it is that
+   * element that will enwrap everything else.
+   */
+  public GQuery wrapAll(SafeHtml safeHtml) {
+    return wrapAll(safeHtml.asString());
+  }
 
   /**
    * Wrap the inner child contents of each matched element (including text nodes) with an HTML
@@ -4983,6 +5050,18 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery wrapInner(String html) {
     return wrapInner($(html));
+  }
+  
+  /**
+   * Wrap the inner child contents of each matched element (including text nodes) with an SafeHtml
+   * structure. This wrapping process is most useful for injecting additional structure into a
+   * document, without ruining the original semantic qualities of a document. This works by going
+   * through the first element provided (which is generated, on the fly, from the provided SafeHtml) and
+   * finds the deepest ancestor element within its structure -- it is that element that will enwrap
+   * everything else.
+   */
+  public GQuery wrapInner(SafeHtml safeHtml) {
+    return wrapInner(safeHtml.asString());
   }
 
   private String join(String chr, String... values) {
