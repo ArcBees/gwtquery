@@ -225,6 +225,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof String) {
         return $((String) o);
       }
+      if (o instanceof SafeHtml) {
+        return $(((SafeHtml) o).asString());
+      }
       if (o instanceof GQuery) {
         return (GQuery) o;
       }
@@ -300,13 +303,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(selectorOrHtml, document);
   }
   
-  /**
-   * This function accepts a SafeHtml creating a GQuery element containing those elements.
-   */
-  public static GQuery $(SafeHtml safeHtml) {
-    return $(safeHtml.asString());
-  }
-
   /**
    * This function accepts a string containing a CSS selector which is then used to match a set of
    * elements, or it accepts raw HTML creating a GQuery element containing those elements. The
@@ -4941,7 +4937,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * its structure -- it is that element that will enwrap everything else.
    */
   public GQuery wrap(SafeHtml safeHtml) {
-    return wrap(safeHtml.asString());
+    return wrap($(safeHtml));
   }
 
   /**
