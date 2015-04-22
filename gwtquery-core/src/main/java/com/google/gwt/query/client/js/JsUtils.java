@@ -342,7 +342,7 @@ public class JsUtils {
    * present.
    */
   public static native boolean hasAttribute(Element o, String name) /*-{
-    return !!(o && o.getAttribute(name));
+    return !!(o && o.getAttribute(name) !== null);
   }-*/;
 
   /**
