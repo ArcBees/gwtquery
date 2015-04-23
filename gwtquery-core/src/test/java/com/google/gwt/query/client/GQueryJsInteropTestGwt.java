@@ -38,15 +38,18 @@ public class GQueryJsInteropTestGwt extends GWTTestCase {
   static Element e = null;
   static HTML testPanel = null;
 
+  @Override
   public String getModuleName() {
     return "com.google.gwt.query.QueryTest";
   }
 
+  @Override
   public void gwtTearDown() {
     $(e).remove();
     e = null;
   }
 
+  @Override
   public void gwtSetUp() {
     if (e == null || DOM.getElementById("core-tst") == null) {
       testPanel = new HTML();
