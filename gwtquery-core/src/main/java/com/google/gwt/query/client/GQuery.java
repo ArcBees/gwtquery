@@ -225,7 +225,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * Wrap a GQuery around the element of a Function callback.
    */
   public static GQuery $(Function f) {
-    return $(f.getElement());
+    return $((Element) f.getElement());
   }
 
   /**
