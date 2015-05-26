@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -66,11 +67,16 @@ public class JsonBuilderHandler implements InvocationHandler {
 
   @SuppressWarnings("unchecked")
   private <T> Object jsonArrayToList(JsonArray j, Class<T> ctype, boolean isArray) {
+    if (j == null) {
+      return null;
+    }
+    
     List<T> l = new ArrayList<T>();
     for (int i = 0; j != null && i < j.length(); i++) {
       l.add((T) getValue(j, i, null, null, ctype, null));
     }
-    return l.isEmpty() ? null : isArray ? l.toArray((T[]) Array.newInstance(ctype, l.size())) : l;
+    
+    return l.isEmpty() ? Collections.emptyList() : isArray ? l.toArray((T[]) Array.newInstance(ctype, l.size())) : l;
   }
 
   private Double toDouble(String attr, JsonArray arr, int idx, JsonObject obj) {
