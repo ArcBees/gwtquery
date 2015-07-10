@@ -270,8 +270,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         // Otherwise we wrap it as an element
         return new GQuery(jso.<Element> cast());
       }
-      console
-          .log("Error: GQuery.$(Object o) could not wrap the type : ", o.getClass().getName(), o);
+      throw new RuntimeException("Error: GQuery.$(Object o) could not wrap the type : " + o.getClass().getName() + " " + o);
     }
     return $();
   }
