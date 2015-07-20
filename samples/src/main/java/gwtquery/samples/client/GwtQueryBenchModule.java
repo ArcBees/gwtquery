@@ -85,15 +85,18 @@ public class GwtQueryBenchModule implements EntryPoint {
       this.engine = engine;
     }
 
+    @Override
     public String getId() {
       return id;
     }
 
+    @Override
     public String getName() {
       String name = engine.getClass().getName().replaceAll("^.*\\.", "");
       return name;
     }
 
+    @Override
     public int runSelector(DeferredSelector dq) {
       return engine.select(dq.getSelector(), gwtiframe).getLength();
     }
@@ -111,10 +114,12 @@ public class GwtQueryBenchModule implements EntryPoint {
       this.id = id;
     }
 
+    @Override
     public String getId() {
       return id;
     }
 
+    @Override
     public String getName() {
       if (name == null) {
         MySelectors s = GWT.create(MySelectors.class);
@@ -127,6 +132,7 @@ public class GwtQueryBenchModule implements EntryPoint {
       return name;
     }
 
+    @Override
     public int runSelector(DeferredSelector dq) {
       return dq.runSelector(gwtiframe).getLength();
     }
@@ -142,14 +148,17 @@ public class GwtQueryBenchModule implements EntryPoint {
       this.id = name;
     }
 
+    @Override
     public String getId() {
       return id;
     }
 
+    @Override
     public String getName() {
       return id;
     }
 
+    @Override
     public int runSelector(DeferredSelector dq) {
       return runSelector(id, dq.getSelector());
     }
@@ -168,6 +177,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   private boolean ask = true;
 
   private Function askBenchMarks = new Function(){
+    @Override
     public void f() {
       if (!running && ask) {
         selectPanel.center();
@@ -215,6 +225,7 @@ public class GwtQueryBenchModule implements EntryPoint {
    * Main function to run all the selected benchmarks
    */
   private Function runBenchMarks = new Function() {
+    @Override
     public void f() {
 
       // Force to stop the race
@@ -243,6 +254,7 @@ public class GwtQueryBenchModule implements EntryPoint {
         int winner = -1;
         double winTime = Double.MAX_VALUE;
 
+        @Override
         public boolean execute() {
           // The race has been stopped
           if (!running) {
@@ -333,6 +345,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     $("#startrace").text("Start the race");
     $("#startrace").click(ask ? askBenchMarks: runBenchMarks);
     $("#about").click(new Function(){
+      @Override
       public void f() {
         helpPanel.center();
       }
@@ -342,6 +355,7 @@ public class GwtQueryBenchModule implements EntryPoint {
   /**
    * EntryPoint
    */
+  @Override
   public void onModuleLoad() {
 
     final MySelectors m = GWT.create(MySelectors.class);
@@ -503,7 +517,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     ArrayList<Benchmark> bs = new ArrayList<Benchmark>();
     for (Element e : $("input", selectPanel.getElement()).elements()) {
       String val = $(e).val().replaceAll(" .*$", "");
-      if ($(e).prop("checked")) {
+      if ($(e).<Boolean>prop("checked")) {
         for (Benchmark b : benchmarks) {
           if (b.getId().equals(val)) {
             bs.add(b);
