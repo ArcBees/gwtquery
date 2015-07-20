@@ -208,59 +208,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around an existing element.
-   */
-  public static GQuery $(Element element) {
-    return new GQuery(element);
-  }
-
-  /**
-   * Wrap a GQuery around an event's target element.
-   */
-  public static GQuery $(Event event) {
-    return event == null ? $() : $((Element) event.getCurrentEventTarget().cast());
-  }
-
-  /**
-   * Wrap a GQuery around the element of a Function callback.
-   */
-  public static GQuery $(Function f) {
-    return $(f.getElement());
-  }
-
-  /**
-   * Wrap a GQuery around an existing javascript element, event, node, nodelist, function or array.
-   */
-  public static GQuery $(JavaScriptObject jso) {
-    if (jso == null) {
-      return $();
-    }
-    // Execute a native javascript function like jquery does
-    if (JsUtils.isFunction(jso)) {
-      new JsUtils.JsFunction(jso).fe();
-      return $();
-    }
-    // Wraps a native array like jquery does
-    if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
-      JsArrayMixed c = jso.cast();
-      JsNodeArray elms = JsNodeArray.create();
-      for (int i = 0; i < c.length(); i++) {
-        Object obj = c.getObject(i);
-        if (obj instanceof Node) {
-          elms.addNode((Node) obj);
-        }
-      }
-      return $(elms);
-    }
-
-    return JsUtils.isWindow(jso) ? $(jso.<Element> cast()) :
-        JsUtils.isElement(jso) ? $(jso.<Element> cast()) :
-            JsUtils.isEvent(jso) ? $(jso.<Event> cast()) :
-                JsUtils.isNodeList(jso) ? $(jso.<NodeList<Element>> cast()) :
-                    $(jso.<Element> cast());
-  }
-
-  /**
    * Wrap a GQuery around any object, supported objects are:
    *   String, GQuery, Function, Widget, JavaScriptObject.
    *
@@ -269,7 +216,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * selector is supported in browsers with native xpath engine.
    *
    * In the case of a JavaScriptObject we handle:
-   *   Element, Event, Node, Nodelist and native functions or arrays.
+   *   Element, Event, Node, Nodelist, Function, and native functions or arrays.
    *
    * If the case of a native function, we execute it and return empty.
    */
@@ -278,26 +225,52 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       if (o instanceof String) {
         return $((String) o);
       }
+      if (o instanceof SafeHtml) {
+        return $(((SafeHtml) o).asString());
+      }
       if (o instanceof GQuery) {
         return (GQuery) o;
       }
       if (o instanceof Function) {
-        return $((Function) o);
-      }
-      if (JsUtils.isElement(o)) {
-        return $(JsUtils.<Element> cast(o));
+        return new GQuery(((Function) o).getElement());
       }
       if (o instanceof JsonBuilder) {
         return new GQuery(((JsonBuilder) o).<Element>getDataImpl());
       }
-      if (o instanceof JavaScriptObject) {
-        return $((JavaScriptObject) o);
-      }
       if (o instanceof IsWidget) {
         return $(Arrays.asList(o));
       }
-      console
-          .log("Error: GQuery.$(Object o) could not wrap the type : ", o.getClass().getName(), o);
+      if (o instanceof JavaScriptObject) {
+        JavaScriptObject jso = (JavaScriptObject) o;
+        // Execute a native javascript function like jquery does
+        if (JsUtils.isFunction(jso)) {
+          new JsUtils.JsFunction(jso).fe();
+          return $();
+        }
+        // Wraps a native array like jquery does
+        if (!JsUtils.isWindow(jso) && !JsUtils.isElement(jso) && JsUtils.isArray(jso)) {
+          JsArrayMixed c = jso.cast();
+          JsNodeArray elms = JsNodeArray.create();
+          for (int i = 0; i < c.length(); i++) {
+            Object obj = c.getObject(i);
+            if (obj instanceof Node) {
+              elms.addNode((Node) obj);
+            }
+          }
+          return new GQuery(elms);
+        }
+        // Wraps a native NodeList
+        if (JsUtils.isNodeList(jso)) {
+          return new GQuery(jso.<NodeList<Element>> cast());
+        }
+        // Wraps an event
+        if (JsUtils.isEvent(jso)) {
+          jso = jso.<Event>cast().getCurrentEventTarget();
+        }
+        // Otherwise we wrap it as an element
+        return new GQuery(jso.<Element> cast());
+      }
+      throw new RuntimeException("Error: GQuery.$(Object o) could not wrap the type : " + o.getClass().getName() + " " + o);
     }
     return $();
   }
@@ -321,20 +294,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   /**
-   * Wrap a GQuery around an existing node.
-   */
-  public static GQuery $(Node n) {
-    return $((Element) n);
-  }
-
-  /**
-   * Wrap a GQuery around existing Elements.
-   */
-  public static GQuery $(NodeList<Element> elms) {
-    return new GQuery(elms);
-  }
-
-  /**
    * This function accepts a string containing a CSS selector which is then used to match a set of
    * elements, or it accepts raw HTML creating a GQuery element containing those elements. Xpath
    * selector is supported in browsers with native xpath engine.
@@ -343,13 +302,6 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     return $(selectorOrHtml, document);
   }
   
-  /**
-   * This function accepts a SafeHtml creating a GQuery element containing those elements.
-   */
-  public static GQuery $(SafeHtml safeHtml) {
-    return $(safeHtml.asString());
-  }
-
   /**
    * This function accepts a string containing a CSS selector which is then used to match a set of
    * elements, or it accepts raw HTML creating a GQuery element containing those elements. The
@@ -4984,7 +4936,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * its structure -- it is that element that will enwrap everything else.
    */
   public GQuery wrap(SafeHtml safeHtml) {
-    return wrap(safeHtml.asString());
+    return wrap($(safeHtml));
   }
 
   /**

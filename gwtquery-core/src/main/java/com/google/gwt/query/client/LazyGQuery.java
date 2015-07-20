@@ -25,6 +25,7 @@ import com.google.gwt.query.client.js.JsNamedArray;
 import com.google.gwt.query.client.js.JsNodeArray;
 import com.google.gwt.query.client.plugins.Effects;
 import com.google.gwt.query.client.plugins.effects.PropertiesAnimation.Easing;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
@@ -77,6 +78,12 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * the document (you can't insert an element after another if it's not in the page).
    */
   LazyGQuery<T> after(String html);
+
+  /**
+   * Insert content after each of the matched elements. The elements must already be inserted into
+   * the document (you can't insert an element after another if it's not in the page).
+   */
+  LazyGQuery<T> after(SafeHtml safeHtml);
 
   /**
    *
@@ -265,6 +272,12 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> append(String html);
 
   /**
+   * Append content to the inside of every matched element. This operation is similar to doing an
+   * appendChild to all the specified elements, adding them into the document.
+   */
+  LazyGQuery<T> append(SafeHtml safeHtml);
+
+  /**
    * All of the matched set of elements will be inserted at the end of the element(s) specified by
    * the parameter other.
    *
@@ -290,6 +303,15 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * instead of appending B to A, you're appending A to B.
    */
   LazyGQuery<T> appendTo(String html);
+
+  /**
+   * All of the matched set of elements will be inserted at the end of the element(s) specified by
+   * the parameter other.
+   *
+   * The operation $(A).appendTo(B) is, essentially, the reverse of doing a regular $(A).append(B),
+   * instead of appending B to A, you're appending A to B.
+   */
+  LazyGQuery<T> appendTo(SafeHtml safeHtml);
 
   /**
    * Convert to Plugin interface provided by Class literal.
@@ -1123,6 +1145,11 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> html(String html);
 
   /**
+   * Set the innerHTML of every matched element.
+   */
+  LazyGQuery<T> html(SafeHtml safeHtml);
+
+  /**
    * Get the id of the first matched element.
    */
   String id();
@@ -1941,6 +1968,16 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> queue(String queueName, Function... f);
 
   /**
+   * Specify a function to execute when the DOM is fully loaded.
+   *
+   * While JavaScript provides the load event for executing code when a page is rendered, this event
+   * is not seen if we attach an event listener after the document has been loaded.
+   * This guarantees that our gwt code will be executed either it's executed synchronously before the
+   * DOM has been rendered (ie: single script linker in header) or asynchronously.
+   */
+  Promise ready(Function... fncs);
+
+  /**
    * Removes all matched elements from the DOM.
    */
   LazyGQuery<T> remove();
@@ -2490,6 +2527,15 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> wrap(String html);
 
   /**
+   * Wrap each matched element with the specified SafeHtml content. This wrapping process is most useful
+   * for injecting additional structure into a document, without ruining the original semantic
+   * qualities of a document. This works by going through the first element provided (which is
+   * generated, on the fly, from the provided SafeHtml) and finds the deepest descendant element within
+   * its structure -- it is that element that will enwrap everything else.
+   */
+  LazyGQuery<T> wrap(SafeHtml safeHtml);
+
+  /**
    * Wrap all the elements in the matched set into a single wrapper element. This is different from
    * .wrap() where each element in the matched set would get wrapped with an element. This wrapping
    * process is most useful for injecting additional structure into a document, without ruining the
@@ -2526,6 +2572,18 @@ public interface LazyGQuery<T> extends LazyBase<T> {
   LazyGQuery<T> wrapAll(String html);
 
   /**
+   * Wrap all the elements in the matched set into a single wrapper element. This is different from
+   * .wrap() where each element in the matched set would get wrapped with an element. This wrapping
+   * process is most useful for injecting additional structure into a document, without ruining the
+   * original semantic qualities of a document.
+   *
+   * This works by going through the first element provided (which is generated, on the fly, from
+   * the provided SafeHtml) and finds the deepest descendant element within its structure -- it is that
+   * element that will enwrap everything else.
+   */
+  LazyGQuery<T> wrapAll(SafeHtml safeHtml);
+
+  /**
    * Wrap the inner child contents of each matched element (including text nodes) with an HTML
    * structure. This wrapping process is most useful for injecting additional structure into a
    * document, without ruining the original semantic qualities of a document. This works by going
@@ -2554,5 +2612,15 @@ public interface LazyGQuery<T> extends LazyBase<T> {
    * everything else.
    */
   LazyGQuery<T> wrapInner(String html);
+
+  /**
+   * Wrap the inner child contents of each matched element (including text nodes) with an SafeHtml
+   * structure. This wrapping process is most useful for injecting additional structure into a
+   * document, without ruining the original semantic qualities of a document. This works by going
+   * through the first element provided (which is generated, on the fly, from the provided SafeHtml) and
+   * finds the deepest ancestor element within its structure -- it is that element that will enwrap
+   * everything else.
+   */
+  LazyGQuery<T> wrapInner(SafeHtml safeHtml);
 
 }

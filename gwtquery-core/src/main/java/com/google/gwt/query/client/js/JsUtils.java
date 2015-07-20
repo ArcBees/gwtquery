@@ -229,6 +229,14 @@ public class JsUtils {
   }
 
   /**
+   * Execute a native javascript function.
+   */
+  public static <T> T exec(JavaScriptObject jsFunction, Object... args) {
+    assert isFunction(jsFunction);
+    return jsni(jsFunction, "call", jsFunction, args);
+  }
+
+  /**
    * Assign a function to a property of the window object.
    */
   public static void export(String name, Function f) {
@@ -334,7 +342,7 @@ public class JsUtils {
    * present.
    */
   public static native boolean hasAttribute(Element o, String name) /*-{
-    return !!(o && o.getAttribute(name));
+    return !!(o && o.getAttribute(name) !== null);
   }-*/;
 
   /**
@@ -410,7 +418,7 @@ public class JsUtils {
   public static native boolean isNodeList(JavaScriptObject o) /*-{
     var r = Object.prototype.toString.call(o);
     return r == '[object HTMLCollection]' || r == '[object NodeList]'
-        || (typeof o == 'object' && o.length && o[0].tagName) ? true : false;
+        || (typeof o == 'object' && o.length && o[0] && o[0].tagName) ? true : false;
   }-*/;
 
   /**

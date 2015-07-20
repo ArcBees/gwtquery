@@ -17,6 +17,8 @@ package com.google.gwt.query.client.builders;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.IsProperties;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsCache;
@@ -105,6 +107,18 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
       } while (c != null);
     }
     return r;
+  }
+
+  protected final <T extends JsonBuilder> T[] getIsPropertiesArrayBase(JsArrayMixed js, T[] r, Class<T> clazz) {
+    JsObjectArray<?> a1 = js.cast();
+    for (int i = 0; i < r.length; i++) {
+      r[i] = getIsPropertiesBase(a1.get(i), clazz);
+    }
+    return r;
+  }
+
+  protected final <T extends JsonBuilder> T getIsPropertiesBase(Object o, Class<T> clazz) {
+    return GQ.create(clazz).load(o);
   }
 
   protected Properties getPropertiesBase(String n) {

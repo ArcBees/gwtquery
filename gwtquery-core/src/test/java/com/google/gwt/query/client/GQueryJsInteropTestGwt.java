@@ -58,23 +58,23 @@ public class GQueryJsInteropTestGwt extends GWTTestCase {
     }
   }
 
-  @JsType(prototype = "Window", isNative = true)
+  @JsType(prototype = "Window")
   public interface HTMLWindow {
       @JsProperty String getName();
       @JsProperty void setName(String name);
   }
 
-  @JsType(prototype = "Window", isNative = true)
+  @JsType(prototype = "Window")
   public interface HWindow {
       @JsProperty HDocument document();
   }
 
-  @JsType(prototype = "HTMLDocument", isNative = false)
+  @JsType(prototype = "HTMLDocument")
   public interface HDocument {
       HElement createElement(String tag);
   }
   
-  @JsType(prototype = "HTMLElement", isNative = false)
+  @JsType(prototype = "HTMLElement")
   public interface HElement {
       @JsProperty void id(String s);
   }
