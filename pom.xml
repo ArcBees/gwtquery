@@ -140,6 +140,12 @@
             <releases><enabled>false</enabled></releases>
         </repository>
         <repository>
+            <id>google-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/google-snapshots</url>
+            <snapshots><enabled>true</enabled></snapshots>
+            <releases><enabled>true</enabled></releases>
+        </repository>
+        <repository>
             <id>gwtquery-plugins</id>
             <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
         </repository>
