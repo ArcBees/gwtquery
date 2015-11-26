@@ -235,7 +235,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
         return new GQuery(((Function) o).getElement());
       }
       if (JsUtils.isElement(o)) {
-        return $(JsUtils.<Element> cast(o));
+        return new GQuery(JsUtils.<Element> cast(o));
       }
       if (o instanceof JsonBuilder) {
         return new GQuery(((JsonBuilder) o).<Element>getDataImpl());
