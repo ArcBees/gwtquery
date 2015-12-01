@@ -220,6 +220,5 @@ public class LazyGenerator extends Generator {
     sw.println("};");
     sw.outdent();
     sw.println("}");
-    treeLogger.log(TreeLogger.Type.ERROR, sw.toString());
   }
 }
