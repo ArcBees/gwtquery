@@ -26,7 +26,6 @@ import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.builders.Name;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -171,7 +170,6 @@ public class DataBindingTestJre extends GWTTestCase {
     
     int getAge();
     String getName();
-    List<String> getPhones();
     GAddress address();
   }
 
@@ -180,13 +178,9 @@ public class DataBindingTestJre extends GWTTestCase {
                                                  + "   'email': 'foo@bar.com', "
                                                  + "   'age': 27, "
                                                  + "   'name': 'Foo Bar', "
-                                                 + "   'phones': [ "
-                                                 + "      '9166566',"
-                                                 + "      '65443333'"
-                                                 + "    ],"
                                                  + "   'address': {"
                                                  + "      'street': 'Street Foo N6', "
-                                                 + "      'number': '670'"
+                                                 + "      'phone': '670'"
                                                  + "   }"
                                                  + "}";
 
@@ -200,7 +194,7 @@ public class DataBindingTestJre extends GWTTestCase {
     assertEquals("Foo Bar", entity.getName());
     assertNotNull(entity.address());
     assertEquals("Street Foo N6", entity.address().street());
-    assertNotNull(entity.address().get("number"));
+    assertNotNull(entity.address().get("phone"));
   }
 
   // Nested strict not implemented in JS
@@ -221,37 +215,5 @@ public class DataBindingTestJre extends GWTTestCase {
     if (GWT.isScript()) {
       assertNull(entity.address().get("phone"));
     }
-  }
-  
-  public void test_return_empty_list_when_array_isEmpty() {
-    //GIVEN a JSON representation of a user without phones
-    GUser user = GQ.create(GUser.class);
-    user.set("email", "a@b.com");
-    user.set("name", "Random Name");
-    user.set("phones", Collections.emptyList());
-    String json = user.toJson();
-    
-    //WHEN fetching that user
-    GUser retrievedUser = GQ.create(GUser.class);
-    retrievedUser.parse(json, true);
-    
-    //THEN
-    assertEquals(0, retrievedUser.getPhones().size());
-  }
-  
-  public void test_return_null_when_list_is_not_specified() {
-    //GIVEN a JSON representation of a user
-    GUser user = GQ.create(GUser.class);
-    user.set("email", "a@b.com");
-    user.set("name", "Random Name");
-    String json = user.toJson();
-    
-    //WHEN fetching that user
-    GUser retrievedUser = GQ.create(GUser.class);
-    retrievedUser.parse(json, true);
-    
-    //THEN
-    List<String> phones = retrievedUser.getPhones(); 
-    assertNull(phones);
   }
 }
