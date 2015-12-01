@@ -207,7 +207,7 @@ public class LazyGenerator extends Generator {
     }
 
     sw.println(
-        "ctx = GQuery.$(getElement()).as(" + nonLazyType.getQualifiedSourceName() + "."
+        "ctx = GQuery.$((Element) getElement()).as(" + nonLazyType.getQualifiedSourceName() + "."
             + classID + ");");
     sw.println("for (int i = 0; i < closures.length(); i++) {");
     sw.indent();
@@ -220,5 +220,6 @@ public class LazyGenerator extends Generator {
     sw.println("};");
     sw.outdent();
     sw.println("}");
+    treeLogger.log(TreeLogger.Type.ERROR, sw.toString());
   }
 }
