@@ -8,8 +8,8 @@
 
 
     <properties>
-        <!--  valid emulations are FF17 IE8 IE9 Chrome, but only FF17 works. -->
-        <gwt.test.htmlunit>FF17</gwt.test.htmlunit>
+        <!--  valid emulations are FF17 IE8 IE9 Chrome, but only Chrome works. -->
+        <gwt.test.htmlunit>Chrome</gwt.test.htmlunit>
         <gwt.test.default>-ea -out ${basedir}/target/gwt-junit -checkAssertions</gwt.test.default>
         <gwt.args />
     </properties>
@@ -17,7 +17,7 @@
         <profile>
            <!-- example:
                   $ mvn clean test -Ptest-prod
-                  $ mvn clean test -Ptest-prod -Dgwt.test.htmlunit=FF17
+                  $ mvn clean test -Ptest-prod -Dgwt.test.htmlunit=Chrome
              -->
            <id>test-prod</id>
            <properties>
