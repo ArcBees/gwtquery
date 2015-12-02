@@ -26,6 +26,7 @@ import com.google.gwt.query.client.js.JsObjectArray;
 import com.google.gwt.query.client.js.JsUtils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -166,6 +167,11 @@ public abstract class JsonBuilderBase<J extends JsonBuilderBase<?>> implements J
   public <T extends IsProperties> T set(Object key, Object val) {
     if (val instanceof IsProperties) {
       p.set(key, ((IsProperties) val).getDataImpl());
+    } else if (val instanceof Object[]) {
+      setArrayBase(String.valueOf(key), (Object[]) val);
+    } else if (val instanceof Collection) {
+      Collection collection = (Collection) val;
+      setArrayBase(String.valueOf(key), collection.toArray(new Object[collection.size()]));
     } else {
       p.set(key, val);
     }
