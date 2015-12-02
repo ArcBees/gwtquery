@@ -209,7 +209,7 @@ public class JsonBuilderGenerator extends Generator {
         if (arr != null) {
           sw.println("return " + ret + ";");
         } else {
-          sw.println("return a == null ? null : Arrays.asList(" + ret + ");");
+          sw.println("return (a == null ? null : Arrays.asList(" + ret + "));");
         }
       } else if (method.getReturnType().isEnum() != null) {
         sw.println("return " + method.getReturnType().getQualifiedSourceName()
