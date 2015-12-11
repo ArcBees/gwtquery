@@ -230,11 +230,11 @@ public class DataBindingTestJre extends GWTTestCase {
     user.set("name", "Random Name");
     user.set("phones", Collections.emptyList());
     String json = user.toJson();
-    
+
     //WHEN fetching that user
     GUser retrievedUser = GQ.create(GUser.class);
     retrievedUser.parse(json, true);
-    
+
     //THEN
     assertEquals(0, retrievedUser.getPhones().size());
   }
@@ -249,7 +249,7 @@ public class DataBindingTestJre extends GWTTestCase {
     //WHEN fetching that user
     GUser retrievedUser = GQ.create(GUser.class);
     retrievedUser.parse(json, true);
-    
+
     //THEN
     List<String> phones = retrievedUser.getPhones(); 
     assertNull(phones);
