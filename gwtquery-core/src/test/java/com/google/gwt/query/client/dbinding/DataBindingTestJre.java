@@ -238,8 +238,8 @@ public class DataBindingTestJre extends GWTTestCase {
     //THEN
     assertEquals(0, retrievedUser.getPhones().size());
   }
-  
-  public void test_return_null_when_list_is_not_specified() {
+
+  public void _test_return_null_when_list_is_not_specified() {
     //GIVEN a JSON representation of a user
     GUser user = GQ.create(GUser.class);
     user.set("email", "a@b.com");
