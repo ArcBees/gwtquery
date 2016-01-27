@@ -19,8 +19,6 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.core.client.js.JsProperty;
-import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.junit.DoNotRunWith;
 import com.google.gwt.junit.Platform;
@@ -29,6 +27,9 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Test class for testing jsinterop
@@ -58,25 +59,26 @@ public class GQueryJsInteropTestGwt extends GWTTestCase {
     }
   }
 
-  @JsType(prototype = "Window")
+  @JsType(name = "Window")
   public interface HTMLWindow {
-      @JsProperty String getName();
+      @JsProperty
+      String getName();
       @JsProperty void setName(String name);
   }
 
-  @JsType(prototype = "Window")
+  @JsType(name = "Window")
   public interface HWindow {
-      @JsProperty HDocument document();
+      @JsProperty(name = "document") HDocument document();
   }
 
-  @JsType(prototype = "HTMLDocument")
+  @JsType(name = "HTMLDocument")
   public interface HDocument {
       HElement createElement(String tag);
   }
   
-  @JsType(prototype = "HTMLElement")
+  @JsType(name = "HTMLElement")
   public interface HElement {
-      @JsProperty void id(String s);
+      @JsProperty(name = "id") void id(String s);
   }
   
   // jsInterop only works in prod mode.
