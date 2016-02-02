@@ -152,7 +152,7 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.8.0-SNAPSHOT</gwtversion>
+        <gwtversion>2.8.0-beta1</gwtversion>
         <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
