@@ -222,7 +222,8 @@ public class DataBindingTestJre extends GWTTestCase {
       assertNull(entity.address().get("phone"));
     }
   }
-  
+
+  @DoNotRunWith(Platform.Devel)
   public void test_return_empty_list_when_array_isEmpty() {
     //GIVEN a JSON representation of a user without phones
     GUser user = GQ.create(GUser.class);
