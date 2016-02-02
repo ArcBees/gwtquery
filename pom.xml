@@ -57,7 +57,7 @@
     </developers>
 
     <scm>
-      <connection>scm:git:https://code.google.com/p/gwtquery/</connection>
+      <connection>scm:git:git@github.com:gwtquery/gwtquery.git</connection>
       <developerConnection>scm:git:git@github.com:gwtquery/gwtquery.git</developerConnection>
       <url>http://code.google.com/p/gwtquery/source/browse/</url>
     </scm>
