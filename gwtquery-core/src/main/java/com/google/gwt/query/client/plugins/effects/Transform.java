@@ -69,7 +69,7 @@ public class Transform  {
   private static final RegExp anglePropRegex = RegExp.compile("(rotate[XYZ]?|skew[XY]?)");
   private static final RegExp translatePropRegex = RegExp.compile("translate[XYZ]");
 
-  private HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+  private HashMap<String, List<String>> map = new HashMap<>();
 
   // Some browsers like HTMLUnit only support 2d transformations
   private static boolean supportsTransform3d() {

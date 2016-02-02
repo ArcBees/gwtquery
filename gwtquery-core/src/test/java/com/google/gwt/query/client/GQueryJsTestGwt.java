@@ -129,7 +129,7 @@ public class GQueryJsTestGwt extends GWTTestCase {
     assertEquals(0, a.keys().length);
     assertEquals(0, a.elements().length);
 
-    a.put("obj", new Long(21));
+    a.put("obj", 21L);
     assertEquals(1, a.length());
     assertEquals(1, a.keys().length);
     assertEquals(1, a.elements().length);

@@ -69,7 +69,7 @@ public class Widgets extends QueuePlugin<Widgets> {
    */
   public <W extends Widget> Widgets widgets(WidgetFactory<W> factory,
       WidgetInitializer<W> initializers) {
-    List<Element> result = new ArrayList<Element>();
+    List<Element> result = new ArrayList<>();
     for (Element e : elements()) {
       W w = widget(e, factory, initializers);
       if (w != null) {

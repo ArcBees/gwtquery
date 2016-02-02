@@ -629,7 +629,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] grep(T[] objects, Predicate f) {
-    ArrayList<Object> ret = new ArrayList<Object>();
+    ArrayList<Object> ret = new ArrayList<>();
     for (int i = 0, l = objects.length; i < l; i++) {
       if (f.f(objects[i], i)) {
         ret.add(objects[i]);
@@ -2888,7 +2888,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * the array.
    */
   public <W> List<W> map(Function f) {
-    ArrayList<W> ret = new ArrayList<W>();
+    ArrayList<W> ret = new ArrayList<>();
     int i = 0;
     for (Element e : elements) {
       @SuppressWarnings("unchecked")
@@ -3957,7 +3957,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     // more than one element)
     boolean mustBeCloned = length() == 1 && parents().filter("body").length() == 0;
 
-    List<Element> newElements = new ArrayList<Element>();
+    List<Element> newElements = new ArrayList<>();
     for (int i = 0, l = target.size(); i < l; i++) {
       GQuery that = (i > 0 && mustBeCloned) ? this.clone() : this;
       $(target.get(i)).replaceWith(that);
@@ -4835,7 +4835,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * return the list of attached widgets matching the query.
    */
   public List<Widget> widgets() {
-    List<Widget> widgets = new ArrayList<Widget>();
+    List<Widget> widgets = new ArrayList<>();
     for (Element e : elements) {
       Widget w = getAssociatedWidget(e);
       if (w != null) {
@@ -4854,7 +4854,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   @SuppressWarnings("unchecked")
   public <W extends Widget> List<W> widgets(Class<W> clazz) {
-    List<W> ret = new ArrayList<W>();
+    List<W> ret = new ArrayList<>();
     for (Widget w : widgets()) {
       // isAssignableFrom does not work in gwt.
       Class<?> c = w.getClass();

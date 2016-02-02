@@ -49,7 +49,7 @@ public class DataBindingTestJre extends GWTTestCase {
     p1.set("e", true);
 
     assertEquals("1", p1.get("a"));
-    assertEquals(Double.valueOf(1), p1.get("b"));
+    assertEquals(1d, p1.get("b"));
     assertEquals("null", p1.get("c"));
     assertNull(p1.get("d"));
     assertTrue((Boolean)p1.get("e"));
@@ -57,7 +57,7 @@ public class DataBindingTestJre extends GWTTestCase {
     p1 = GQ.create(p1.toJson());
 
     assertEquals("1", p1.get("a"));
-    assertEquals(Double.valueOf(1), p1.get("b"));
+    assertEquals(1d, p1.get("b"));
     assertEquals("null", p1.get("c"));
     assertNull(p1.get("d"));
   }

@@ -51,7 +51,7 @@ public class SelectorGeneratorCssToXPath extends SelectorGeneratorBase {
         ReplaceCallback callback = (ReplaceCallback) o;
         while (matcher.find()) {
           final MatchResult matchResult = matcher.toMatchResult();
-          ArrayList<String> argss = new ArrayList<String>();
+          ArrayList<String> argss = new ArrayList<>();
           for (int i = 0; i < matchResult.groupCount() + 1; i++) {
             argss.add(matchResult.group(i));
           }

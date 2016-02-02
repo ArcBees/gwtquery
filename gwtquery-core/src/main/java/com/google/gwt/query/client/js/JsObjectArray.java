@@ -40,7 +40,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
       if (t instanceof Number) {
         c().putNumber(length(), (((Number) t).doubleValue()));
       } else if (t instanceof Boolean) {
-        c().putBoolean(length(), ((Boolean) t).booleanValue());
+        c().putBoolean(length(), (Boolean) t);
       } else {
         c().put(length(), t);
       }

@@ -83,7 +83,7 @@ public class EventsListener implements EventListener {
     }
 
     public static List<EventName> split(String events) {
-      List<EventName> ret = new ArrayList<EventName>();
+      List<EventName> ret = new ArrayList<>();
       String[] parts = events.split("[\\s,]+");
       for (String event : parts) {
         String[] tmp = event.split("\\.", 2);
@@ -229,7 +229,7 @@ public class EventsListener implements EventListener {
       }
 
       // Compute the live selectors which respond to this event type
-      List<String> validSelectors = new ArrayList<String>();
+      List<String> validSelectors = new ArrayList<>();
       for (String cssSelector : bindFunctionBySelector.keys()) {
         JsObjectArray<BindFunction> bindFunctions = bindFunctionBySelector.get(cssSelector);
         for (int i = 0; bindFunctions != null && i < bindFunctions.length(); i++) {
@@ -361,7 +361,7 @@ public class EventsListener implements EventListener {
 
   static {
     // Register some special events which already exist in jQuery
-    special = new HashMap<String, SpecialEvent>();
+    special = new HashMap<>();
     special.put(MOUSEENTER, new MouseSpecialEvent(MOUSEENTER, "mouseover"));
     special.put(MOUSELEAVE, new MouseSpecialEvent(MOUSELEAVE, "mouseout"));
   }

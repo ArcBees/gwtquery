@@ -35,7 +35,7 @@ public class Callbacks {
     boolean f(Object... objects);
   }
 
-  private List<Object> stack = new ArrayList<Object>();
+  private List<Object> stack = new ArrayList<>();
 
   private boolean done = false;
 
@@ -113,7 +113,7 @@ public class Callbacks {
     if (!done) {
       done = isOnce;
       if (isMemory) {
-        memory = new ArrayList<Object>(Arrays.asList(o));
+        memory = new ArrayList<>(Arrays.asList(o));
       }
       if (stack != null)
         for (Object c : stack) {

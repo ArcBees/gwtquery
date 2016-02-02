@@ -15,8 +15,6 @@
  */
 package com.google.gwt.query.vm;
 
-// import org.apache.http.impl.client.HttpClientBuilder;
-
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.query.client.Function;
@@ -202,7 +200,7 @@ public class AjaxTransportJre implements AjaxTransport {
     if (is != null) {
       BufferedReader in = new BufferedReader(new InputStreamReader(is));
       String inputLine;
-      StringBuffer response = new StringBuffer();
+      StringBuilder response = new StringBuilder();
       while ((inputLine = in.readLine()) != null) {
         response.append(inputLine + "\n");
       }

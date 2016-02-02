@@ -168,7 +168,7 @@ public class JsCache extends JavaScriptObject {
 
   public final JsCache put(Object id, Object obj) {
     if (obj instanceof Boolean) {
-      putBoolean(id, ((Boolean) obj).booleanValue());
+      putBoolean(id, (Boolean) obj);
     } else if (obj instanceof Number) {
       putNumber(id, ((Number) obj).doubleValue());
     } else {

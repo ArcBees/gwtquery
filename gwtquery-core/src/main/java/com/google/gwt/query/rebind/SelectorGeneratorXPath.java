@@ -93,7 +93,7 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
         }
       }
 
-      ArrayList<String> cssSelectors = new ArrayList<String>();
+      ArrayList<String> cssSelectors = new ArrayList<>();
       Matcher selm = selectorSplitRegExp.matcher(currentRule);
       while (selm.find()) {
         cssSelectors.add(selm.group(0));

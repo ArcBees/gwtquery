@@ -388,7 +388,7 @@ public class QueuePlugin<T extends QueuePlugin<?>> extends GQuery {
       if (f != null) {
         if (f instanceof Function) {
           // pass jumpToEnd to Animation.onCancel() via the element's data object
-          $(elem).data(JUMP_TO_END, Boolean.valueOf(jumpToEnd));
+          $(elem).data(JUMP_TO_END, jumpToEnd);
           ((Function) f).cancel(elem);
           $(elem).removeData(JUMP_TO_END);
         }

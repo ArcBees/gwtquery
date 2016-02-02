@@ -71,7 +71,7 @@ public class JsonBuilderHandler implements InvocationHandler {
       return null;
     }
     
-    List<T> l = new ArrayList<T>();
+    List<T> l = new ArrayList<>();
     for (int i = 0; j != null && i < j.length(); i++) {
       l.add((T) getValue(j, i, null, null, ctype, null));
     }
@@ -83,7 +83,7 @@ public class JsonBuilderHandler implements InvocationHandler {
     try {
       return obj != null ? obj.getNumber(attr) : arr.getNumber(idx);
     } catch (Exception e) {
-      return Double.valueOf(0d);
+      return 0d;
     }
   }
 
@@ -312,7 +312,7 @@ public class JsonBuilderHandler implements InvocationHandler {
   }
 
   private HashSet<String> getAttributeNames(Method[] methods) {
-    HashSet<String> valid = new HashSet<String>();
+    HashSet<String> valid = new HashSet<>();
 
     if (methods == null || methods.length == 0) {
       return valid;
@@ -331,7 +331,7 @@ public class JsonBuilderHandler implements InvocationHandler {
   }
 
   private Hashtable<String, Method> getJsonBuilders(Method[] methods) {
-    Hashtable<String, Method> ispropertyGetters = new Hashtable<String, Method>();
+    Hashtable<String, Method> ispropertyGetters = new Hashtable<>();
 
     if (methods == null || methods.length == 0) {
       return ispropertyGetters;

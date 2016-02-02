@@ -101,7 +101,7 @@ public class JsonBuilderGenerator extends Generator {
       if (isFactory) {
         generateCreateMethod(sw, treeLogger);
       } else {
-        Set<String> attrs = new HashSet<String>();
+        Set<String> attrs = new HashSet<>();
         for (JMethod method : clazz.getInheritableMethods()) {
           String methName = method.getName();
           // skip method from JsonBuilder
@@ -304,7 +304,7 @@ public class JsonBuilderGenerator extends Generator {
   private void generateCreateMethod(SourceWriter sw, TreeLogger logger) {
     sw.println("public <T extends " + JsonBuilder.class.getName() + "> T create(Class<T> clz) {");
     sw.indent();
-    ArrayList<JClassType> types = new ArrayList<JClassType>();
+    ArrayList<JClassType> types = new ArrayList<>();
     for (JClassType t : oracle.getTypes()) {
       if (t.isInterface() != null && t.isAssignableTo(jsonBuilderType)) {
         if (t.isPublic()) {

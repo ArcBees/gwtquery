@@ -1792,7 +1792,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
         if ($(e).attr("id").isEmpty() || $(e).attr("class").isEmpty()) {
           return null;
         }
-        List<String> attrs = new ArrayList<String>();
+        List<String> attrs = new ArrayList<>();
         attrs.add(e.getTagName());
         attrs.add($(e).attr("class"));
         attrs.add($(e).attr("id"));
@@ -2077,7 +2077,7 @@ public class GQueryCoreTestGwt extends GWTTestCase {
 
     GQuery target = $("#target", e);
 
-    $("#target", e).data("intValue", new Integer(1));
+    $("#target", e).data("intValue", 1);
 
     Integer value = $("#target", e).data("intValue", Integer.class);
 

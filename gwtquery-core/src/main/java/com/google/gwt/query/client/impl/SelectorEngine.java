@@ -177,8 +177,8 @@ public class SelectorEngine implements HasSelector {
       return res;
     }
     Element ghostParent = null;
-    HashSet<Node> parents = new HashSet<Node>();
-    HashSet<Node> elmList = new HashSet<Node>();
+    HashSet<Node> parents = new HashSet<>();
+    HashSet<Node> elmList = new HashSet<>();
     for (int i = 0, l = nodes.getLength(); i < l; i++) {
       Node e = nodes.getItem(i);
       if (e == window || e == document || e.getNodeName() == null

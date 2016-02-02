@@ -497,7 +497,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
     for (int q = 0, qlen = previousMatch.size(); q < qlen; q++) {
       previous = previousMatch.getNode(q);
       if (!isAdded(previous)) {
-        if (((Element) previous).getInnerText().indexOf(pseudoValue) != -1) {
+        if (((Element) previous).getInnerText().contains(pseudoValue)) {
           setAdded(previous, true);
           matchingElms.addNode(previous);
         }

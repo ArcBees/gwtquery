@@ -51,8 +51,8 @@ import javax.validation.ConstraintViolation;
  */
 public class PromiseRF extends DeferredPromiseImpl {
   private int total = 0;
-  private List<Object> responses = new ArrayList<Object>();
-  private List<RequestContext> contexts = new ArrayList<RequestContext>();
+  private List<Object> responses = new ArrayList<>();
+  private List<RequestContext> contexts = new ArrayList<>();
 
   /**
    * Fire a RF Request.

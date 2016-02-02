@@ -128,7 +128,7 @@ public class Transitions extends Effects {
   }
 
   public static List<String> filterTransitionPropertyNames(Properties p) {
-    List<String> ret = new ArrayList<String>();
+    List<String> ret = new ArrayList<>();
     for (String s : p.keys()) {
       if (invalidTransitionNamesRegex.test(s)) {
         continue;

@@ -195,7 +195,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         ReplaceCallback callback = (ReplaceCallback) o;
         while (p.test(s)) {
           MatchResult a = p.exec(s);
-          ArrayList<String> args = new ArrayList<String>();
+          ArrayList<String> args = new ArrayList<>();
           for (int i = 0; a != null && i < a.getGroupCount(); i++) {
             args.add(a.getGroup(i));
           }
@@ -220,7 +220,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         ReplaceCallback callback = (ReplaceCallback) o;
         com.google.gwt.regexp.shared.MatchResult a = null;
         while ((a = p.exec(s)) != null) {
-          ArrayList<String> args = new ArrayList<String>();
+          ArrayList<String> args = new ArrayList<>();
           for (int i = 0; i < a.getGroupCount(); i++) {
             args.add(a.getGroup(i));
           }

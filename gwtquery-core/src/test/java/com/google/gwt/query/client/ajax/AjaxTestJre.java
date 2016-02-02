@@ -61,7 +61,7 @@ public class AjaxTestJre extends AjaxTests {
 
   protected void startWebServer(int port) throws Exception {
     if (server == null) {
-      final Map<String, Class<? extends Servlet>> servlets = new HashMap<String, Class<? extends Servlet>>();
+      final Map<String, Class<? extends Servlet>> servlets = new HashMap<>();
       servlets.put("/" + servletPath, GQAjaxTestServlet.class);
       server = createWebServer(port, ".", null, servlets, null);
     }
