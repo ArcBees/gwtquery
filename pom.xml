@@ -92,6 +92,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <preparationGoals>clean install -DskipTests</preparationGoals>
+                    <arguments>-DskipTests</arguments>
                 </configuration>
             </plugin>
             <plugin>
