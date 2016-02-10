@@ -76,7 +76,7 @@ public class XmlBuilderGenerator extends Generator {
 
   public boolean isTypeAssignableTo(JType t, JClassType o) {
     JClassType c = t.isClassOrInterface();
-    return (c != null && c.isAssignableTo(o));
+    return c != null && c.isAssignableTo(o);
   }
 
   public void generateMethod(SourceWriter sw, JMethod method, TreeLogger logger)

@@ -63,11 +63,11 @@ public class DocumentStyleImpl {
     }
     String val = curCSS(elem, prop, force);
     if ("thick".equalsIgnoreCase(val)) {
-      return (5);
+      return 5;
     } else if ("medium".equalsIgnoreCase(val)) {
-      return (3);
+      return 3;
     } else if ("thin".equalsIgnoreCase(val)) {
-      return (1);
+      return 1;
     }
     if (!val.matches("^[\\d\\.]+.*$")) {
       val = curCSS(elem, prop, false);

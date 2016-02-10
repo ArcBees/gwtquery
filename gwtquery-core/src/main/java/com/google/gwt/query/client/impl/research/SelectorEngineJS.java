@@ -98,7 +98,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       return null;
     } else {
       if (truth(pseudoValue.get(2))) { // odd or even
-        start = (eq(pseudoValue.get(2), "odd")) ? 1 : 2;
+        start = eq(pseudoValue.get(2), "odd") ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
       } else if (JsUtils
           .truth(pseudoValue.get(3))) { // single digit
@@ -214,7 +214,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
 
   private static void getGeneralSiblingNodes(JsNodeArray matchingElms,
       JsObjectArray<String> nextTag, JsRegexp nextRegExp, Node prevRef) {
-    while (JsUtils.truth((prevRef = SelectorEngine.getNextSibling(prevRef)))
+    while (JsUtils.truth(prevRef = SelectorEngine.getNextSibling(prevRef))
         && !isAdded(prevRef)) {
       if (!JsUtils.truth(nextTag) || nextRegExp
           .test(prevRef.getNodeName())) {
@@ -419,9 +419,9 @@ public class SelectorEngineJS extends SelectorEngineImpl {
                       ? attributeMatch.get(3).replaceAll("\\.", "\\.")
                       : null;
               String attrVal = attrToRegExp(attributeValue,
-                  (JsUtils.or(attributeMatch.get(2), null)));
-              regExpAttributes[q] = (JsUtils.truth(attrVal) ? new JsRegexp(
-                  attrVal) : null);
+                  JsUtils.or(attributeMatch.get(2), null));
+              regExpAttributes[q] = JsUtils.truth(attrVal) ? new JsRegexp(
+                  attrVal) : null;
               regExpAttributesStr[q] = attributeMatch.get(1);
             }
             JsNodeArray matchingAttributeElms = JsNodeArray.create();
@@ -594,11 +594,11 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       previous = next = previousMatch.getElement(j);
       if (previousDir) {
         while (JsUtils
-            .truth((next = SelectorEngine.getPreviousSibling(next)))
+            .truth(next = SelectorEngine.getPreviousSibling(next))
             && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       } else {
-        while (JsUtils.truth((next = SelectorEngine.getNextSibling(next)))
+        while (JsUtils.truth(next = SelectorEngine.getNextSibling(next))
             && next.getNodeType() != Node.ELEMENT_NODE) {
         }
       }

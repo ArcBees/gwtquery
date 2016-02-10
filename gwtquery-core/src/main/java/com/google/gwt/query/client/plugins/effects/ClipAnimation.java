@@ -134,7 +134,7 @@ public class ClipAnimation extends PropertiesAnimation {
       return;
     }
     if (currentAction == Action.HIDE) {
-      progress = (1 - progress);
+      progress = 1 - progress;
     }
     int w = g.outerWidth();
     int h = g.outerHeight();
@@ -154,11 +154,11 @@ public class ClipAnimation extends PropertiesAnimation {
       left = (w - right) / 2;
     }
     if (corner == Corner.TOP_RIGHT || corner == Corner.BOTTOM_RIGHT) {
-      left = (w - right);
+      left = w - right;
       right = w;
     }
     if (corner == Corner.BOTTOM_LEFT || corner == Corner.BOTTOM_RIGHT) {
-      top = (h - bottom);
+      top = h - bottom;
       bottom = h;
     }
 

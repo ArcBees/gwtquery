@@ -117,8 +117,8 @@ public class UiPlugin extends GQuery {
     @Override
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
       String position = gQueryUi.css("position", false);
-      return ("absolute".equals(position) || "relative".equals(position) || "static"
-          .equals(position));
+      return "absolute".equals(position) || "relative".equals(position) || "static"
+          .equals(position);
     }
   }
 

@@ -251,11 +251,11 @@ public class JsniBundleGenerator extends Generator {
           if (isJS)
             out = "\n";
         } else if (isCComment) {
-          isSlash = isCComment = !(isJS = (last == '*' && c == '/'));
+          isSlash = isCComment = !(isJS = last == '*' && c == '/');
           if (isJS)
             out = "";
         } else if (isRegex) {
-          isJS = !(isSlash = isRegex = (last == '\\' || c != '/'));
+          isJS = !(isSlash = isRegex = last == '\\' || c != '/');
           if (isJS) {
             String mod = "";
             while (++i < l) {

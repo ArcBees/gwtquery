@@ -4744,7 +4744,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       } else if ("input".equalsIgnoreCase(name)) {
         InputElement ie = InputElement.as(e);
         String type = ie.getType();
-        if ("radio".equalsIgnoreCase((type)) || "checkbox".equalsIgnoreCase(type)) {
+        if ("radio".equalsIgnoreCase(type) || "checkbox".equalsIgnoreCase(type)) {
           ie.setChecked(false);
           for (String v : values) {
             if (ie.getValue().equals(v)) {
