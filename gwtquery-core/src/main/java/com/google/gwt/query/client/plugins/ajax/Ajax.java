@@ -49,8 +49,8 @@ import com.google.gwt.user.client.ui.FormPanel;
  */
 public class Ajax extends GQuery {
 
+  private static final String JSONP = "jsonp";
   public static final String JSON_CONTENT_TYPE = "application/json";
-
   public static final String JSON_CONTENT_TYPE_UTF8 = JSON_CONTENT_TYPE + "; charset=utf-8";
 
   /**
@@ -176,7 +176,7 @@ public class Ajax extends GQuery {
 
     Promise ret = null;
 
-    if ("jsonp".equalsIgnoreCase(dataType)) {
+    if (JSONP.equalsIgnoreCase(dataType)) {
       ret = GQ.getAjaxTransport().getJsonP(settings);
     } else if ("loadscript".equalsIgnoreCase(dataType)) {
       ret = GQ.getAjaxTransport().getLoadScript(settings);
@@ -235,7 +235,7 @@ public class Ajax extends GQuery {
     if (settings.getType() != null) {
       type = settings.getType().toUpperCase();
     }
-    if ("jsonp".equalsIgnoreCase(settings.getDataType())) {
+    if (JSONP.equalsIgnoreCase(settings.getDataType())) {
       type = "GET";
     }
     settings.setType(type);
@@ -351,7 +351,7 @@ public class Ajax extends GQuery {
   public static Promise getJSONP(String url, IsProperties data, Function onSuccess) {
     Settings s = createSettings();
     s.setUrl(url);
-    s.setDataType("jsonp");
+    s.setDataType(JSONP);
     s.setType("get");
     s.setData(data);
     s.setSuccess(onSuccess);
@@ -361,7 +361,7 @@ public class Ajax extends GQuery {
   public static Promise getJSONP(String url, Function success, Function error, int timeout) {
     return ajax(createSettings()
         .setUrl(url)
-        .setDataType("jsonp")
+        .setDataType(JSONP)
         .setType("get")
         .setTimeout(timeout)
         .setSuccess(success)

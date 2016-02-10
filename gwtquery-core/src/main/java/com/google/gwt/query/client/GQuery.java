@@ -76,6 +76,14 @@ import java.util.List;
  */
 public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
+  private static final String WIDTH = "width";
+  private static final String SELECT = "select";
+  private static final String KEY_IS_NULL = "Key is null";
+  private static final String POSITION = "position";
+  private static final String HEIGHT = "height";
+  private static final String FILTER = "filter";
+  private static final String DISPLAY = "display";
+
   private enum DomMan {
     AFTER, APPEND, BEFORE, PREPEND;
   }
@@ -169,7 +177,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
   private static final String OLD_DATA_PREFIX = "old-";
 
-  private static final String OLD_DISPLAY = OLD_DATA_PREFIX + "display";
+  private static final String OLD_DISPLAY = OLD_DATA_PREFIX + DISPLAY;
 
   private static JsMap<Class<? extends GQuery>, Plugin<? extends GQuery>> plugins;
 
@@ -2247,7 +2255,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery filter(Predicate filterFn) {
     JsNodeArray result = getSelectorEngine().filter(nodeList, filterFn).cast();
-    return pushStack(result, "filter", currentSelector);
+    return pushStack(result, FILTER, currentSelector);
   }
 
   /**
@@ -2259,7 +2267,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery filter(String... filters) {
     String selector = join(", ", filters);
     JsNodeArray result = getSelectorEngine().filter(nodeList, selector).cast();
-    return pushStack(result, "filter", selector);
+    return pushStack(result, FILTER, selector);
   }
 
   /**
@@ -2271,7 +2279,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public GQuery filter(boolean filterDetached, String... filters) {
     String selector = join(", ", filters);
     JsNodeArray result = getSelectorEngine().filter(nodeList, selector, filterDetached).cast();
-    return pushStack(result, "filter", selector);
+    return pushStack(result, FILTER, selector);
   }
 
   /**
@@ -2285,7 +2293,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       return this;
     }
     JsNodeArray result = getSelectorEngine().filter(nodeList, selector, filterDetached).cast();
-    return pushStack(result, "filter", selector);
+    return pushStack(result, FILTER, selector);
   }
 
   /**
@@ -2435,7 +2443,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * margin, padding nor border.
    */
   public int height() {
-    return (int) cur("height", true);
+    return (int) cur(HEIGHT, true);
   }
 
   /**
@@ -2443,7 +2451,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery height(int height) {
     for (Element e : elements) {
-      e.getStyle().setPropertyPx("height", height);
+      e.getStyle().setPropertyPx(HEIGHT, height);
     }
     return this;
   }
@@ -2453,7 +2461,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * units Example: $(".a").height("100%")
    */
   public GQuery height(String height) {
-    return css("height", height);
+    return css(HEIGHT, height);
   }
 
   /**
@@ -2461,7 +2469,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery hide() {
     for (Element e : elements) {
-      String currentDisplay = getStyleImpl().curCSS(e, "display", false);
+      String currentDisplay = getStyleImpl().curCSS(e, DISPLAY, false);
       Object old = data(e, OLD_DISPLAY, null);
       if (old == null && currentDisplay.length() != 0 && !"none".equals(currentDisplay)) {
         data(e, OLD_DISPLAY, currentDisplay);
@@ -3147,9 +3155,9 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element element : elements()) {
       GQuery g = $(element);
 
-      String position = g.css("position", true);
-      if ("static".equals(position)) {
-        css("position", "relative");
+      String positionLocal = g.css(POSITION, true);
+      if ("static".equals(positionLocal)) {
+        css(POSITION, "relative");
       }
 
       Offset curOffset = g.offset();
@@ -3158,7 +3166,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
       long curTop = 0;
       long curLeft = 0;
 
-      if (("absolute".equals(position) || "fixed".equals(position))
+      if (("absolute".equals(positionLocal) || "fixed".equals(positionLocal))
           && ("auto".equals(curCSSTop) || "auto".equals(curCSSLeft))) {
         Offset curPosition = g.position();
         curTop = curPosition.top;
@@ -3198,7 +3206,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     Element offParent = JsUtils.or(get(0).getOffsetParent(), body);
     while (offParent != null && !"body".equalsIgnoreCase(offParent.getTagName())
         && !"html".equalsIgnoreCase(offParent.getTagName())
-        && "static".equals(getStyleImpl().curCSS(offParent, "position", true))) {
+        && "static".equals(getStyleImpl().curCSS(offParent, POSITION, true))) {
       offParent = offParent.getOffsetParent();
     }
     return new GQuery(offParent);
@@ -3655,7 +3663,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *        it returns null.
    */
   public <T> T prop(String key) {
-    assert key != null : "Key is null";
+    assert key != null : KEY_IS_NULL;
     return isEmpty() ? null : JsUtils.<T> prop(get(0), key);
   }
 
@@ -3670,7 +3678,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *        In the case of the property is undefined it returns null.
    */
   public <T> T prop(String key, Class<? extends T> clz) {
-    assert key != null : "Key is null";
+    assert key != null : KEY_IS_NULL;
     return isEmpty() ? null : JsUtils.<T> prop(get(0), key, clz);
   }
 
@@ -3685,7 +3693,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    */
   public GQuery prop(String key, Object value) {
-    assert key != null : "Key is null";
+    assert key != null : KEY_IS_NULL;
 
     for (Element e : elements) {
       JsUtils.prop(e, key, value);
@@ -3709,7 +3717,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    *
    */
   public GQuery prop(String key, Function closure) {
-    assert key != null : "Key is null";
+    assert key != null : KEY_IS_NULL;
     assert closure != null : "Closure is null";
 
     int i = 0;
@@ -4189,7 +4197,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   }
 
   public GQuery select() {
-    return as(Events).triggerHtmlEvent("select");
+    return as(Events).triggerHtmlEvent(SELECT);
   }
 
   private GQuery select(String selector, Node context) {
@@ -4236,7 +4244,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
 
       // reset the display
       if (oldDisplay == null && "none".equals(currentDisplay)) {
-        getStyleImpl().setStyleProperty(e, "display", "");
+        getStyleImpl().setStyleProperty(e, DISPLAY, "");
         currentDisplay = "";
       }
 
@@ -4254,7 +4262,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     for (Element e : elements) {
       String currentDisplay = e.getStyle().getDisplay();
       if ("".equals(currentDisplay) || "none".equals(currentDisplay)) {
-        getStyleImpl().setStyleProperty(e, "display",
+        getStyleImpl().setStyleProperty(e, DISPLAY,
             JsUtils.or((String) data(e, OLD_DISPLAY, null), ""));
       }
     }
@@ -4727,7 +4735,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
     String value = join(",", values);
     for (Element e : elements) {
       String name = e.getNodeName();
-      if ("select".equalsIgnoreCase(name)) {
+      if (SELECT.equalsIgnoreCase(name)) {
         SelectElement s = SelectElement.as(e);
         s.setSelectedIndex(-1);
         for (String v : values) {
@@ -4775,7 +4783,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
   public String[] vals() {
     if (!isEmpty()) {
       Element e = get(0);
-      if (e.getNodeName().equalsIgnoreCase("select")) {
+      if (e.getNodeName().equalsIgnoreCase(SELECT)) {
         SelectElement se = SelectElement.as(e);
         if (se.isMultiple()) {
           JsArrayString result = JsArrayString.createArray().cast();
@@ -4874,7 +4882,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * margin, padding nor border.
    */
   public int width() {
-    return (int) cur("width", true);
+    return (int) cur(WIDTH, true);
   }
 
   /**
@@ -4882,7 +4890,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    */
   public GQuery width(int width) {
     for (Element e : elements) {
-      e.getStyle().setPropertyPx("width", width);
+      e.getStyle().setPropertyPx(WIDTH, width);
     }
     return this;
   }
@@ -4892,7 +4900,7 @@ public class GQuery implements Lazy<GQuery, LazyGQuery> {
    * units Example: $(".a").width("100%")
    */
   public GQuery width(String width) {
-    return css("width", width);
+    return css(WIDTH, width);
   }
 
   /**

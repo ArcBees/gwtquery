@@ -26,6 +26,8 @@ import com.google.gwt.query.client.plugins.Effects.GQAnimation;
  */
 public class ClipAnimation extends PropertiesAnimation {
 
+  private static final String POSITION = "position";
+
   /**
    * Type of the effect action.
    */
@@ -48,7 +50,7 @@ public class ClipAnimation extends PropertiesAnimation {
   }
 
   private static final String[] attrsToSave = new String[] {
-      "position", "overflow", "visibility", "white-space", "top", "left", "width", "height"};
+      POSITION, "overflow", "visibility", "white-space", "top", "left", "width", "height"};
 
   private Action action;
   private Corner corner;
@@ -106,7 +108,7 @@ public class ClipAnimation extends PropertiesAnimation {
     g.saveCssAttrs(attrsToSave);
 
     // CSS clip only works with absolute/fixed positioning
-    if (!g.css("position", true).matches("absolute|fixed")) {
+    if (!g.css(POSITION, true).matches("absolute|fixed")) {
       // Add a temporary element to replace the original one, so nothing is moved when
       // setting the absolute  position to our element
       back = back.add(g.before("<div></div>")).prev();
@@ -117,7 +119,7 @@ public class ClipAnimation extends PropertiesAnimation {
       g.css("left", g.offset().left + "px");
       g.css("width", g.width() + "px");
       g.css("height", g.height() + "px");
-      g.css("position", "absolute");
+      g.css(POSITION, "absolute");
     }
     g.css("overflow", "hidden");
     g.css("visivility", "visible");

@@ -51,6 +51,9 @@ import java.util.Set;
  */
 public class JsonBuilderGenerator extends Generator {
 
+  private static final String DOUBLE_QUOTATION_MARK_COMMA = "\", a);";
+  private static final String RETURN = "return ";
+
   static JClassType functionType;
   static JClassType jsonBuilderType;
   static JClassType settingsType;
@@ -183,10 +186,10 @@ public class JsonBuilderGenerator extends Generator {
         sw.println("return p.getStr(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsonBuilderType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " + "getIsPropertiesBase(getPropertiesBase(\"" + name + "\")," + q + ".class);");
+        sw.println(RETURN + "getIsPropertiesBase(getPropertiesBase(\"" + name + "\")," + q + ".class);");
       } else if (isTypeAssignableTo(method.getReturnType(), settingsType)) {
         String q = method.getReturnType().getQualifiedSourceName();
-        sw.println("return " + "((" + q + ")getPropertiesBase(\"" + name + "\"));");
+        sw.println(RETURN + "((" + q + ")getPropertiesBase(\"" + name + "\"));");
       } else if (retType.equals(Properties.class.getName())) {
         sw.println("return getPropertiesBase(\"" + name + "\");");
       } else if (isTypeAssignableTo(method.getReturnType(), jsType)) {
@@ -207,12 +210,12 @@ public class JsonBuilderGenerator extends Generator {
           ret = "getArrayBase(\"" + name + "\", new " + t + "[l], " + t + ".class)";
         }
         if (arr != null) {
-          sw.println("return " + ret + ";");
+          sw.println(RETURN + ret + ";");
         } else {
           sw.println("return Arrays.asList(" + ret + ");");
         }
       } else if (method.getReturnType().isEnum() != null) {
-        sw.println("return " + method.getReturnType().getQualifiedSourceName()
+        sw.println(RETURN + method.getReturnType().getQualifiedSourceName()
             + ".valueOf(p.getStr(\"" + name + "\"));");
       } else {
         sw.println("System.err.println(\"JsonBuilderGenerator WARN: unknown return type "
@@ -243,16 +246,16 @@ public class JsonBuilderGenerator extends Generator {
           .getParameterizedQualifiedSourceName()
           .matches(
               "(java.lang.(Character|Long|Double|Integer|Float|Byte)|(char|long|double|int|float|byte))")) {
-        sw.println("p.setNumber(\"" + name + "\", a);");
+        sw.println("p.setNumber(\"" + name + DOUBLE_QUOTATION_MARK_COMMA);
       } else if (type.getParameterizedQualifiedSourceName().matches("(java.lang.Boolean|boolean)")) {
-        sw.println("p.setBoolean(\"" + name + "\", a);");
+        sw.println("p.setBoolean(\"" + name + DOUBLE_QUOTATION_MARK_COMMA);
       } else if (type.getParameterizedQualifiedSourceName().matches(
           "com.google.gwt.query.client.Function")) {
-        sw.println("p.setFunction(\"" + name + "\", a);");
+        sw.println("p.setFunction(\"" + name + DOUBLE_QUOTATION_MARK_COMMA);
       } else if (type.isEnum() != null) {
         sw.println("p.set(\"" + name + "\", a.name());");
       } else {
-        sw.println("set(\"" + name + "\", a);");
+        sw.println("set(\"" + name + DOUBLE_QUOTATION_MARK_COMMA);
       }
       if (!"void".equals(retType)) {
         if (isTypeAssignableTo(method.getReturnType(),
@@ -328,7 +331,7 @@ public class JsonBuilderGenerator extends Generator {
     sw.println("}");
     sw.println("public " + IsProperties.class.getName() + " create() {");
     sw.indent();
-    sw.println("return " + Properties.class.getName() + ".create();");
+    sw.println(RETURN + Properties.class.getName() + ".create();");
     sw.outdent();
     sw.println("}");
   }

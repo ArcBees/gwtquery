@@ -37,6 +37,9 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public class SelectorEngineJS extends SelectorEngineImpl {
 
+  private static final String LINE_BEGINNING_OR_WHITESPACE_CHARACTER = "(^|\\s)";
+  private static final String WHITESPACE_CHARACTER_OR_LINR_END = "(\\s|$)";
+
   /**
    * Internal class.
    */
@@ -312,7 +315,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             String nextTagStr = null;
             if (JsUtils.truth(nextTag)) {
               nextTagStr = nextTag.get(0);
-              nextRegExp = new JsRegexp("(^|\\s)" + nextTagStr + "(\\s|$)", "i");
+              nextRegExp = new JsRegexp(LINE_BEGINNING_OR_WHITESPACE_CHARACTER + nextTagStr + WHITESPACE_CHARACTER_OR_LINR_END, "i");
             }
             for (int j = 0, jlen = prevElem.size(); j < jlen; j++) {
               Node prevRef = prevElem.getNode(j);
@@ -381,7 +384,7 @@ public class SelectorEngineJS extends SelectorEngineImpl {
             JsRegexp[] regExpClassNames = new JsRegexp[allClasses.length];
             for (int n = 0, nl = allClasses.length; n < nl; n++) {
               regExpClassNames[n] = new JsRegexp(
-                  "(^|\\s)" + allClasses[n] + "(\\s|$)");
+                  LINE_BEGINNING_OR_WHITESPACE_CHARACTER + allClasses[n] + WHITESPACE_CHARACTER_OR_LINR_END);
             }
             JsNodeArray matchingClassElms = JsNodeArray.create();
             for (int o = 0, olen = prevElem.size(); o < olen; o++) {
@@ -646,10 +649,10 @@ public class SelectorEngineJS extends SelectorEngineImpl {
       JsObjectArray<String> notAttr = new JsRegexp(
           "\\[(\\w+)(\\^|\\$|\\*|\\||~)?=?([\\w\\u00C0-\\uFFFF\\s\\-_\\.]+)?\\]")
           .exec(pseudoValue);
-      JsRegexp notRegExp = new JsRegexp("(^|\\s)"
+      JsRegexp notRegExp = new JsRegexp(LINE_BEGINNING_OR_WHITESPACE_CHARACTER
           + (JsUtils.truth(notTag) ? notTag.get(1)
               : JsUtils.truth(notClass) ? notClass.get(1) : "")
-          + "(\\s|$)", "i");
+          + WHITESPACE_CHARACTER_OR_LINR_END, "i");
       if (JsUtils.truth(notAttr)) {
         String notAttribute = JsUtils.truth(notAttr.get(3)) ? notAttr
             .get(3).replace("\\.", "\\.") : null;

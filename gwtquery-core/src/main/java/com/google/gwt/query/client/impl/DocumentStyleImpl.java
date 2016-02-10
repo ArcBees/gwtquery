@@ -31,6 +31,11 @@ import com.google.gwt.user.client.DOM;
  */
 public class DocumentStyleImpl {
 
+  private static final String VISIBILITY = "visibility";
+  private static final String POSITION = "position";
+  private static final String DISPLAY = "display";
+  private static final String HEIGHT = "height";
+  private static final String WIDTH = "width";
   private static final RegExp cssNumberRegex = RegExp.compile(
       "^(fillOpacity|fontWeight|lineHeight|opacity|orphans|widows|zIndex|zoom)$", "i");
   private static final RegExp sizeRegex = RegExp.compile("^(client|offset|)(width|height)$", "i");
@@ -45,10 +50,10 @@ public class DocumentStyleImpl {
    */
   public double cur(Element elem, String prop, boolean force) {
     if (JsUtils.isWindow(elem)) {
-      if ("width".equals(prop)) {
+      if (WIDTH.equals(prop)) {
         return getContentDocument(elem).getClientWidth();
       }
-      if ("height".equals(prop)) {
+      if (HEIGHT.equals(prop)) {
         return getContentDocument(elem).getClientHeight();
       }
       elem = GQuery.body;
@@ -150,16 +155,16 @@ public class DocumentStyleImpl {
     int ret;
     if (!isVisible(e)) {
       // jquery returns the size of the element even when the element isn't visible
-      String display = curCSS(e, "display", false);
-      String position = curCSS(e, "position", false);
-      String visibility = curCSS(e, "visibility", false);
-      setStyleProperty(e, "display", "block");
-      setStyleProperty(e, "position", "absolute");
-      setStyleProperty(e, "visibility", "hidden");
+      String displayLocal = curCSS(e, DISPLAY, false);
+      String positionLocal = curCSS(e, POSITION, false);
+      String visibilityLocal = curCSS(e, VISIBILITY, false);
+      setStyleProperty(e, DISPLAY, "block");
+      setStyleProperty(e, POSITION, "absolute");
+      setStyleProperty(e, VISIBILITY, "hidden");
       ret = getSize(e, name);
-      setStyleProperty(e, "display", display);
-      setStyleProperty(e, "position", position);
-      setStyleProperty(e, "visibility", visibility);
+      setStyleProperty(e, DISPLAY, displayLocal);
+      setStyleProperty(e, POSITION, positionLocal);
+      setStyleProperty(e, VISIBILITY, visibilityLocal);
     } else {
       ret = getSize(e, name);
     }
@@ -169,18 +174,18 @@ public class DocumentStyleImpl {
   // inline elements do not have width nor height unless we set it to inline-block
   private void fixInlineElement(Element e) {
     if (e.getClientHeight() == 0 && e.getClientWidth() == 0
-        && "inline".equals(curCSS(e, "display", true))) {
-      setStyleProperty(e, "display", "inline-block");
-      setStyleProperty(e, "width", "auto");
-      setStyleProperty(e, "height", "auto");
+        && "inline".equals(curCSS(e, DISPLAY, true))) {
+      setStyleProperty(e, DISPLAY, "inline-block");
+      setStyleProperty(e, WIDTH, "auto");
+      setStyleProperty(e, HEIGHT, "auto");
     }
   }
 
   private int getSize(Element e, String name) {
     int ret = 0;
-    if ("width".equals(name)) {
+    if (WIDTH.equals(name)) {
       ret = getWidth(e);
-    } else if ("height".equals(name)) {
+    } else if (HEIGHT.equals(name)) {
       ret = getHeight(e);
     } else if ("clientWidth".equals(name)) {
       ret = e.getClientWidth();
@@ -272,7 +277,7 @@ public class DocumentStyleImpl {
     if (ret == null) {
       Element e = DOM.createElement(tagName);
       Document.get().getBody().appendChild(e);
-      ret = curCSS(e, "display", false);
+      ret = curCSS(e, DISPLAY, false);
       e.removeFromParent();
       if (ret == null || ret.matches("(|none)")) {
         ret = "block";

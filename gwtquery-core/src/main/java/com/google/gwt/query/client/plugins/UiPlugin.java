@@ -65,10 +65,13 @@ public class UiPlugin extends GQuery {
 
   private static class GQueryUiImpl {
 
+    private static final String ABSOLUTE = "absolute";
+    private static final String POSITION = "position";
+
     public GQuery scrollParent(final UiPlugin gQueryUi) {
       GQuery scrollParent;
 
-      if ("fixed".equals(gQueryUi.css("position", false))) {
+      if ("fixed".equals(gQueryUi.css(POSITION, false))) {
         return GQuery.$(getViewportElement());
       }
 
@@ -77,9 +80,9 @@ public class UiPlugin extends GQuery {
 
           public boolean f(Element e, int index) {
             GQuery g = GQuery.$(e);
-            String position = g.css("position", true);
-            return ("relative".equals(position) || "absolute".equals(position) || "fixed"
-                .equals(position))
+            String positionLocal = g.css(POSITION, true);
+            return ("relative".equals(positionLocal) || ABSOLUTE.equals(positionLocal) || "fixed"
+                .equals(positionLocal))
                 && isOverflowEnabled(g);
           }
         });
@@ -96,7 +99,7 @@ public class UiPlugin extends GQuery {
     }
 
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
-      return "absolute".equals(gQueryUi.css("position"));
+      return ABSOLUTE.equals(gQueryUi.css(POSITION));
     }
 
     private Element getViewportElement() {
@@ -116,9 +119,9 @@ public class UiPlugin extends GQuery {
 
     @Override
     protected boolean scrollParentPositionTest(UiPlugin gQueryUi) {
-      String position = gQueryUi.css("position", false);
-      return ("absolute".equals(position) || "relative".equals(position) || "static"
-          .equals(position));
+      String positionLocal = gQueryUi.css("position", false);
+      return ("absolute".equals(positionLocal) || "relative".equals(positionLocal) || "static"
+          .equals(positionLocal));
     }
   }
 

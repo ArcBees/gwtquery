@@ -34,6 +34,8 @@ import java.io.PrintWriter;
  */
 public abstract class SelectorGeneratorBase extends Generator {
 
+  private static final String RETURN = "return ";
+
   protected JClassType nodeType = null;
 
   private TreeLogger treeLogger;
@@ -92,19 +94,19 @@ public abstract class SelectorGeneratorBase extends Generator {
 
     if (sel != null && sel.value().matches("^#\\w+$")) {
       // short circuit #foo
-      sw.println("return "
+      sw.println(RETURN
           + wrap(method, "JsNodeArray.create(((Document)root).getElementById(\""
               + sel.value().substring(1) + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\w+$")) {
       // short circuit FOO
-      sw.println("return "
+      sw.println(RETURN
           + wrap(method,
               "JsNodeArray.create(((Element)root).getElementsByTagName(\""
                   + sel.value() + "\"))") + ";");
     } else if (sel != null && sel.value().matches("^\\.\\w+$")
         && hasGetElementsByClassName()) {
       // short circuit .foo for browsers with native getElementsByClassName
-      sw.println("return "
+      sw.println(RETURN
           + wrap(method, "JsNodeArray.create(getElementsByClassName(\""
               + sel.value().substring(1) + "\", root))") + ";");
     } else {

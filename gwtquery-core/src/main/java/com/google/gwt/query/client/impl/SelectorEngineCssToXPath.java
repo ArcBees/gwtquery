@@ -37,6 +37,8 @@ import java.util.ArrayList;
  */
 public class SelectorEngineCssToXPath extends SelectorEngineImpl {
 
+  private static final String SELF = "/self::";
+
   static JsNamedArray<String> cache;
 
   /**
@@ -90,7 +92,7 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
         return s1;
       }
       if ("even".equals(s2)) {
-        return prefix + "[position() mod 2=0 and position()>=0]" + (noPrefix ? "" : "/self::" + s1);
+        return prefix + "[position() mod 2=0 and position()>=0]" + (noPrefix ? "" : SELF + s1);
       }
       if ("odd".equals(s2)) {
         prefix = afterAttr ? prefix : noPrefix ? "" : s1;
@@ -98,14 +100,14 @@ public class SelectorEngineCssToXPath extends SelectorEngineImpl {
       }
 
       if (!s2.contains("n")) {
-        return prefix + "[position() = " + s2 + "]" + (noPrefix ? "" : "/self::" + s1);
+        return prefix + "[position() = " + s2 + "]" + (noPrefix ? "" : SELF + s1);
       }
 
       String[] t = s2.replaceAll("^([0-9]*)n.*?([0-9]*)?$", "$1+$2").split("\\+");
       String t0 = t[0];
       String t1 = t.length > 1 ? t[1] : "0";
       return prefix + "[(position()-" + t1 + ") mod " + t0 + "=0 and position()>=" + t1 + "]"
-          + (noPrefix ? "" : "/self::" + s1);
+          + (noPrefix ? "" : SELF + s1);
     }
   };
 

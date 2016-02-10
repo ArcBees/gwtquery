@@ -27,25 +27,28 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class SelectorGeneratorNativeIE9 extends SelectorGeneratorJS {
 
+  private static final String DOUBLE_QUOTATION_MARK_COMMA = "\", root)";
+  private static final String RETURN = "return ";
+
   @Override
   protected void generateMethodBody(SourceWriter sw, JMethod method,
       TreeLogger treeLogger, boolean hasContext)
       throws UnableToCompleteException {
     String selector = method.getAnnotation(Selector.class).value();
     if (selector.matches("#[\\w\\-]+")) {
-      sw.println("return "
-          + wrap(method, "veryQuickId(\"" + selector.substring(1) + "\", root)") + ";");
+      sw.println(RETURN
+          + wrap(method, "veryQuickId(\"" + selector.substring(1) + DOUBLE_QUOTATION_MARK_COMMA) + ";");
     } else if (selector.equals("*") || selector.matches("[\\w\\-]+")) {
-      sw.println("return "
-          + wrap(method, "elementsByTagName(\"" + selector + "\", root)") + ";");
+      sw.println(RETURN
+          + wrap(method, "elementsByTagName(\"" + selector + DOUBLE_QUOTATION_MARK_COMMA) + ";");
     } else if (selector.matches("\\.[\\w\\-]+")) {
-      sw.println("return "
-          + wrap(method, "elementsByClassName(\"" + selector.substring(1) + "\", root)") + ";");
+      sw.println(RETURN
+          + wrap(method, "elementsByClassName(\"" + selector.substring(1) + DOUBLE_QUOTATION_MARK_COMMA) + ";");
     } else if (selector.matches(SelectorEngineNative.NATIVE_EXCEPTIONS_REGEXP)) {
       super.generateMethodBody(sw, method, treeLogger, hasContext);
     } else {
-      sw.println("return "
-          + wrap(method, "querySelectorAll(\"" + selector + "\", root)") + ";");
+      sw.println(RETURN
+          + wrap(method, "querySelectorAll(\"" + selector + DOUBLE_QUOTATION_MARK_COMMA) + ";");
     }
   }
 
