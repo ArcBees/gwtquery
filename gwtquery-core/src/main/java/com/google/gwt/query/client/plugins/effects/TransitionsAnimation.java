@@ -250,7 +250,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
 
   @Override
   public void onComplete() {
-    t.css(Transitions.transition, oldTransitionValue);
+    t.css(Transitions.TRANSITION, oldTransitionValue);
     super.onComplete();
   }
 
@@ -267,7 +267,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
     p = getFxProperties(false);
 
     // Save old transition value
-    oldTransitionValue = t.css(Transitions.transition);
+    oldTransitionValue = t.css(Transitions.TRANSITION);
 
     // Set new transition value
     String newTransitionValue  = "";
@@ -276,7 +276,7 @@ public class TransitionsAnimation extends PropertiesAnimation {
     for (String s : transProps) {
       newTransitionValue += (newTransitionValue.isEmpty() ? "" : ", ") + s + " " + attribs;
     }
-    t.css(Transitions.transition, newTransitionValue);
+    t.css(Transitions.TRANSITION, newTransitionValue);
 
     // Set new css properties so as the element is animated
     t.css(p);

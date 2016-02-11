@@ -42,9 +42,9 @@ public class SelectorGeneratorJSOptimal extends SelectorGeneratorBase {
 
   protected static Pattern nonSpace = Pattern.compile("\\S/");
 
-  protected static final String trimReStr = "^\\s+|\\s+$";
+  protected static final String TRIM_RE_STR = "^\\s+|\\s+$";
 
-  protected static Pattern trimRe = Pattern.compile(trimReStr);
+  protected static Pattern trimRe = Pattern.compile(TRIM_RE_STR);
 
   protected static Pattern tplRe = Pattern.compile("\\{(\\d+)\\}");
 

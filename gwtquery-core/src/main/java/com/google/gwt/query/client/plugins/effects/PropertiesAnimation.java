@@ -39,12 +39,12 @@ public class PropertiesAnimation extends GQAnimation {
     /**
      * @deprecated use EasingCurve.linear instead
      */
-    Easing LINEAR = EasingCurve.linear;
+    Easing LINEAR = EasingCurve.LINEAR;
 
     /**
      * @deprecated use EasingCurve.swing instead
      */
-    Easing SWING = EasingCurve.swing;
+    Easing SWING = EasingCurve.SWING;
   }
 
   /**
@@ -70,61 +70,61 @@ public class PropertiesAnimation extends GQAnimation {
    *
    */
   public static enum EasingCurve implements Easing {
-    linear(0, 0, 1, 1) {
+    LINEAR(0, 0, 1, 1) {
       public double interpolate(double p) {
         return p;
       }
 
       public String toString() {
-        return "linear";
+        return "LINEAR";
       }
     },
-    ease(0.25, 0.1, 0.25, 1) {
+    EASE(0.25, 0.1, 0.25, 1) {
       public String toString() {
-        return "ease";
+        return "EASE";
       }
     },
-    easeIn(0.42, 0, 1, 1) {
+    EASE_IN(0.42, 0, 1, 1) {
       public String toString() {
-        return "ease-in";
+        return "EASE_IN";
       }
     },
-    easeOut(0, 0, 0.58, 1) {
+    EASE_OUT(0, 0, 0.58, 1) {
       public String toString() {
-        return "ease-out";
+        return "EASE_OUT";
       }
     },
-    easeInOut(0.42, 0, 0.58, 1) {
+    EASE_IN_OUT(0.42, 0, 0.58, 1) {
       public String toString() {
-        return "ease-in-out";
+        return "EASE_IN_OUT";
       }
     },
-    snap(0, 1, .5, 1),
-    swing(.02, .01, .47, 1),
-    easeInCubic(.550, .055, .675, .190),
-    easeOutCubic(.215, .61, .355, 1),
-    easeInOutCubic(.645, .045, .355, 1),
-    easeInCirc(.6, .04, .98, .335),
-    easeOutCirc(.075, .82, .165, 1),
-    easeInOutCirc(.785, .135, .15, .86),
-    easeInExpo(.95, .05, .795, .035),
-    easeOutExpo(.19, 1, .22, 1),
-    easeInOutExpo(1, 0, 0, 1),
-    easeInQuad(.55, .085, .68, .53),
-    easeOutQuad(.25, .46, .45, .94),
-    easeInOutQuad(.455, .03, .515, .955),
-    easeInQuart(.895, .03, .685, .22),
-    easeOutQuart(.165, .84, .44, 1),
-    easeInOutQuart(.77, 0, .175, 1),
-    easeInQuint(.755, .05, .855, .06),
-    easeOutQuint(.23, 1, .32, 1),
-    easeInOutQuint(.86, 0, .07, 1),
-    easeInSine(.47, 0, .745, .715),
-    easeOutSine(.39, .575, .565, 1),
-    easeInOutSine(.445, .05, .55, .95),
-    easeInBack(.6, -.28, .735, .045),
-    easeOutBack(.175, .885, .32, 1.275),
-    easeInOutBack(.68, -.55, .265, 1.55),
+    SNAP(0, 1, .5, 1),
+    SWING(.02, .01, .47, 1),
+    EASE_IN_CUBIC(.550, .055, .675, .190),
+    EASE_OUT_CUBIC(.215, .61, .355, 1),
+    EASE_IN_OUT_CUBIC(.645, .045, .355, 1),
+    EASE_IN_CIRC(.6, .04, .98, .335),
+    EASE_OUT_CIRC(.075, .82, .165, 1),
+    EASE_IN_OUT_CIRC(.785, .135, .15, .86),
+    EASE_IN_EXPO(.95, .05, .795, .035),
+    EASE_OUT_EXPO(.19, 1, .22, 1),
+    EASE_IN_OUT_EXPO(1, 0, 0, 1),
+    EASE_IN_QUAD(.55, .085, .68, .53),
+    EASE_OUT_QUAD(.25, .46, .45, .94),
+    EASE_IN_OUT_QUAD(.455, .03, .515, .955),
+    EASE_IN_QUART(.895, .03, .685, .22),
+    EASE_OUT_QUART(.165, .84, .44, 1),
+    EASE_IN_OUT_QUART(.77, 0, .175, 1),
+    EASE_IN_QUINT(.755, .05, .855, .06),
+    EASE_OUT_QUINT(.23, 1, .32, 1),
+    EASE_IN_OUT_QUINT(.86, 0, .07, 1),
+    EASE_IN_SINE(.47, 0, .745, .715),
+    EASE_OUT_SINE(.39, .575, .565, 1),
+    EASE_IN_OUT_SINE(.445, .05, .55, .95),
+    EASE_IN_BACK(.6, -.28, .735, .045),
+    EASE_OUT_BACK(.175, .885, .32, 1.275),
+    EASE_IN_OUT_BACK(.68, -.55, .265, 1.55),
     custom(0, 0, 1, 1);
 
     private Bezier c = new Bezier(0, 0, 1, 1);

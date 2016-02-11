@@ -56,8 +56,8 @@ public class Transform  {
     }
   }
 
-  public static final String transform = vendorProperty("transform");
-  public static final String transformOrigin = vendorProperty("transformOrigin");
+  public static final String TRANSFORM_1 = vendorProperty("transform");
+  public static final String TRANSFORM_ORIGIN = vendorProperty("transformOrigin");
 
   // Non final for testing purposes.
   public static boolean has3d = supportsTransform3d();
@@ -73,12 +73,12 @@ public class Transform  {
 
   // Some browsers like HTMLUnit only support 2d transformations
   private static boolean supportsTransform3d() {
-    if (transform == null) {
+    if (TRANSFORM_1 == null) {
       return false;
     }
     String rotate = "rotateY(1deg)";
-    divStyle.setProperty(transform, rotate);
-    rotate = divStyle.getProperty(transform);
+    divStyle.setProperty(TRANSFORM_1, rotate);
+    rotate = divStyle.getProperty(TRANSFORM_1);
     return rotate != null && !rotate.isEmpty();
   }
 
@@ -124,7 +124,7 @@ public class Transform  {
     Transform t = GQuery.data(e, TRANSFORM);
     if (t == null || initial != null) {
       if (initial == null) {
-        initial = GQuery.getSelectorEngine().getDocumentStyleImpl().curCSS(e, transform, false);
+        initial = GQuery.getSelectorEngine().getDocumentStyleImpl().curCSS(e, TRANSFORM_1, false);
       }
       t = new Transform(initial);
       GQuery.data(e, TRANSFORM, t);

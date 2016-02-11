@@ -53,7 +53,7 @@ public class SelectorEngine implements HasSelector {
   }-*/;
 
   public NodeList<Element> querySelectorAll(String selector, Node ctx) {
-    if (!hasQuerySelector) {
+    if (!HAS_QUERY_SELECTOR) {
       return impl.select(selector, ctx);
     }
     try {
@@ -111,7 +111,7 @@ public class SelectorEngine implements HasSelector {
 
   protected Node root = Document.get();
 
-  public static final boolean hasQuerySelector = hasQuerySelectorAll();
+  public static final boolean HAS_QUERY_SELECTOR = hasQuerySelectorAll();
 
   public static JsMap<String, Predicate> filters;
 
@@ -280,7 +280,7 @@ public class SelectorEngine implements HasSelector {
   }
 
   public boolean isDegradated() {
-    return !hasQuerySelector;
+    return !HAS_QUERY_SELECTOR;
   }
 
   /**
