@@ -206,7 +206,7 @@ public abstract class MousePlugin extends UiPlugin {
     unbindOtherEvents();
     if (started) {
       started = false;
-      preventClickEvent = (event.getCurrentEventTarget() == startEvent.getCurrentEventTarget());
+      preventClickEvent = event.getCurrentEventTarget() == startEvent.getCurrentEventTarget();
       mouseStop(element, event);
     }
 

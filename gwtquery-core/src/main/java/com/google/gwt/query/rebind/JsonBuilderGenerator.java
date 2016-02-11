@@ -298,7 +298,7 @@ public class JsonBuilderGenerator extends Generator {
 
   public boolean isTypeAssignableTo(JType t, JClassType o) {
     JClassType c = t.isClassOrInterface();
-    return (c != null && c.isAssignableTo(o));
+    return c != null && c.isAssignableTo(o);
   }
 
   private void generateCreateMethod(SourceWriter sw, TreeLogger logger) {

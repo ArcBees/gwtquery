@@ -238,7 +238,7 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
       return null;
     } else {
       if (notNull(pseudoValue.group(2))) { // odd or even
-        start = ("odd".equals(pseudoValue.group(2))) ? 1 : 2;
+        start = "odd".equals(pseudoValue.group(2)) ? 1 : 2;
         modVal = (start == 1) ? 1 : 0;
       } else if (notNull(pseudoValue.group(3))) { // single digit
         start = Integer.parseInt(pseudoValue.group(3), 10);
@@ -287,8 +287,8 @@ public class SelectorGeneratorXPath extends SelectorGeneratorBase {
     } else if ("nth".equals(pseudo[0])) {
       if (!pseudoValue.matches("^n$")) {
         String position =
-            (("last".equals(pseudo[1])) ? "(count(following-sibling::"
-                : "(count(preceding-sibling::") + tag + ") + 1)";
+            "last".equals(pseudo[1]) ? "(count(following-sibling::"
+                : "(count(preceding-sibling::" + tag + ") + 1)";
         Sequence sequence = getSequence(pseudoValue);
         if (sequence != null) {
           if (sequence.start == sequence.max) {

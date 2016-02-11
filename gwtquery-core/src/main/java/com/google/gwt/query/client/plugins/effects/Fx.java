@@ -268,7 +268,7 @@ public class Fx {
   }
 
   public void applyValue(GQuery g, double progress) {
-    double ret = (start + ((end - start) * progress));
+    double ret = start + ((end - start) * progress);
     String val = ("px".equals(unit) ? ((int) ret) : ret) + unit;
     if ("scrollTop".equals(cssprop)) {
       g.scrollTop((int) ret);

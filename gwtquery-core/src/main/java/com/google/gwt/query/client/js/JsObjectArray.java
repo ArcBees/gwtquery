@@ -38,7 +38,7 @@ public final class JsObjectArray<T> extends JavaScriptObject {
   public JsObjectArray<T> add(T... vals) {
     for (T t : vals) {
       if (t instanceof Number) {
-        c().putNumber(length(), (((Number) t).doubleValue()));
+        c().putNumber(length(), ((Number) t).doubleValue());
       } else if (t instanceof Boolean) {
         c().putBoolean(length(), (Boolean) t);
       } else {
