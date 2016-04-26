@@ -503,7 +503,7 @@ public class GwtQueryBenchModule implements EntryPoint {
     ArrayList<Benchmark> bs = new ArrayList<Benchmark>();
     for (Element e : $("input", selectPanel.getElement()).elements()) {
       String val = $(e).val().replaceAll(" .*$", "");
-      if ($(e).prop("checked")) {
+      if ($(e).<Boolean>prop("checked")) {
         for (Benchmark b : benchmarks) {
           if (b.getId().equals(val)) {
             bs.add(b);
