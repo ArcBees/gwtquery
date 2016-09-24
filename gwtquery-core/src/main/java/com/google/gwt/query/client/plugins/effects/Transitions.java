@@ -28,9 +28,9 @@
  */
 package com.google.gwt.query.client.plugins.effects;
 
+import static com.google.gwt.query.client.plugins.effects.Transform.TRANSFORM_1;
 import static com.google.gwt.query.client.plugins.effects.Transform.getInstance;
 import static com.google.gwt.query.client.plugins.effects.Transform.isTransform;
-import static com.google.gwt.query.client.plugins.effects.Transform.transform;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -73,9 +73,9 @@ public class Transitions extends Effects {
   // passing an invalid transition property in chrome, makes disable all transitions in the element
   public static final RegExp invalidTransitionNamesRegex = RegExp.compile("^(.*transform.*|duration|function|easing|delay|clip-.*)$");
 
-  protected static final String transitionEnd = browser.mozilla || browser.msie ? "transitionend" : (prefix + "TransitionEnd");
+  protected static final String TRANSITION_END = browser.mozilla || browser.msie ? "transitionend" : (prefix + "TransitionEnd");
 
-  protected static final String transition = vendorProperty("transition");
+  protected static final String TRANSITION = vendorProperty("transition");
 
   public static final Class<Transitions> Transitions = GQuery.registerPlugin(
       Transitions.class, new Plugin<Transitions>() {
@@ -86,7 +86,7 @@ public class Transitions extends Effects {
 
   private static String property(String prop) {
     if (isTransform(prop)) {
-      return transform;
+      return TRANSFORM_1;
     }
     return prop.replaceFirst("^(margin|padding).+$", "$1");
   }
@@ -98,7 +98,7 @@ public class Transitions extends Effects {
   @Override
   public String css(String prop, boolean force) {
     prop = vendorProperty(prop);
-    if (transform.equals(prop)) {
+    if (TRANSFORM_1.equals(prop)) {
       return isEmpty() ? "" : getInstance(get(0), null).toString();
     } else if (isTransform(prop)) {
       return isEmpty() ? "" : getInstance(get(0), null).get(prop);
@@ -110,16 +110,16 @@ public class Transitions extends Effects {
   @Override
   public Transitions css(String prop, String value) {
     prop = vendorProperty(prop);
-    if (transform.equals(prop)) {
+    if (TRANSFORM_1.equals(prop)) {
       for (Element e : elements()) {
         Transform t = getInstance(e, value != null ? value : "");
-        getStyleImpl().setStyleProperty(e, transform, t.toString());
+        getStyleImpl().setStyleProperty(e, TRANSFORM_1, t.toString());
       }
     } else if (isTransform(prop)) {
       for (Element e : elements()) {
         Transform t = getInstance(e, null);
         t.setFromString(prop, value);
-        getStyleImpl().setStyleProperty(e, transform, t.toString());
+        getStyleImpl().setStyleProperty(e, TRANSFORM_1, t.toString());
       }
     } else {
       super.css(prop, value);

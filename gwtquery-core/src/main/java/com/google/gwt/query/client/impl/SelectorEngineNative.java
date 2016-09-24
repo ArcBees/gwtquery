@@ -61,7 +61,7 @@ public class SelectorEngineNative extends SelectorEngineImpl {
       selector = xsel;
     }
 
-    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+    if (!SelectorEngine.HAS_QUERY_SELECTOR || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return impl.select(selector, ctx);
     } else {
       try {

@@ -63,7 +63,7 @@ public class Effects extends QueuePlugin<Effects> {
     }
 
     public GQAnimation setEasing(Easing ease) {
-      easing = ease != null ? ease : EasingCurve.swing;
+      easing = ease != null ? ease : EasingCurve.SWING;
       return this;
     }
 
@@ -361,7 +361,7 @@ public class Effects extends QueuePlugin<Effects> {
    * @param duration the duration in milliseconds of the animation
    */
   public Effects animate(Object stringOrProperties, int duration, Function... funcs) {
-    return animate(stringOrProperties, duration, EasingCurve.linear, funcs);
+    return animate(stringOrProperties, duration, EasingCurve.LINEAR, funcs);
   }
 
   /**

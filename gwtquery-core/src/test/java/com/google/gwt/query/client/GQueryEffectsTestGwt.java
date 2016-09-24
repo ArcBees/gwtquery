@@ -136,10 +136,10 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
 
     final int duration = 1000;
     g.as(Effects).
-        animate($$("left: '+=100'"), duration, EasingCurve.linear).
-        animate($$("top: '+=100'"), duration, EasingCurve.linear).
-        animate($$("left: '-=100'"), duration, EasingCurve.linear).
-        animate($$("top: '-=100'"), duration, EasingCurve.linear);
+        animate($$("left: '+=100'"), duration, EasingCurve.LINEAR).
+        animate($$("top: '+=100'"), duration, EasingCurve.LINEAR).
+        animate($$("left: '-=100'"), duration, EasingCurve.LINEAR).
+        animate($$("top: '-=100'"), duration, EasingCurve.LINEAR);
 
     // Configure the max duration for this test
     delayTestFinish(duration * 4);
@@ -272,7 +272,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '-110px', marginLeft: '-110px', top: '50%', left: '50%', width: '174px', height: '174px', padding: '20px'");
-    GQAnimation an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    GQAnimation an = new PropertiesAnimation().setEasing(EasingCurve.SWING).setElement(g.get(0)).setProperties(prop1);
     an.run(0);
 
     assertEquals("cssprop=marginTop value=0 start=-110 end=0 unit=px",
@@ -297,7 +297,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
             .toString());
 
     prop1 = GQuery.$$("marginTop: '0', marginLeft: '0', top: '0%', left: '0%', width: '100px', height: '100px', padding: '5px'");
-    an = new PropertiesAnimation().setEasing(EasingCurve.swing).setElement(g.get(0)).setProperties(prop1);
+    an = new PropertiesAnimation().setEasing(EasingCurve.SWING).setElement(g.get(0)).setProperties(prop1);
     an.run(0);
 
     assertEquals("cssprop=marginTop value=-110px start=0 end=-110 unit=px",
@@ -508,7 +508,7 @@ public class GQueryEffectsTestGwt extends GWTTestCase {
     delayTestFinish(duration * 3);
 
     g.as(Effects).
-        animate($$("$width: +=100; $border: +=4"), duration, EasingCurve.linear);
+        animate($$("$width: +=100; $border: +=4"), duration, EasingCurve.LINEAR);
 
     final Timer timer = new Timer() {
       public void run() {

@@ -33,7 +33,7 @@ public class SelectorEngineNativeIE8 extends SelectorEngineSizzleIE {
       ".*(:contains|!=|:not|:nth-|:only-|:first|:last|:even|:odd).*";
 
   public NodeList<Element> select(String selector, Node ctx) {
-    if (!SelectorEngine.hasQuerySelector || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
+    if (!SelectorEngine.HAS_QUERY_SELECTOR || selector.matches(NATIVE_EXCEPTIONS_REGEXP)) {
       return super.select(selector, ctx);
     } else {
       try {
