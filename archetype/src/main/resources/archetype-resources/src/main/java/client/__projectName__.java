@@ -1,7 +1,7 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-package ${package}.${artifactId}.client;
+package ${package}.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import static com.google.gwt.query.client.GQuery.*;

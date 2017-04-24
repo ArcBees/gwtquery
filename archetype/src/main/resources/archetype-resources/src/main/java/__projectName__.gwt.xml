@@ -3,6 +3,6 @@
 #set( $symbol_escape = '\' )
 <module rename-to='${projectName}'>
     <inherits name='com.google.gwt.query.Query'/>
-    <entry-point class='${package}.${artifactId}.client.${projectName}'/>
+    <entry-point class='${package}.client.${projectName}'/>
 </module>
 

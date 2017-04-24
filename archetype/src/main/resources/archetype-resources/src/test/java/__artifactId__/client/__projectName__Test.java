@@ -1,7 +1,7 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-package ${package}.${artifactId}.client;
+package ${package}.client;
 
 import static com.google.gwt.query.client.GQuery.*;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -15,7 +15,7 @@ import com.google.gwt.user.client.Timer;
 public class ${projectName}Test extends GWTTestCase {
 
   public String getModuleName() {
-    return "${package}.${artifactId}.${projectName}";
+    return "${package}.${projectName}";
   }
 
   private double fontSize(GQuery g) {
