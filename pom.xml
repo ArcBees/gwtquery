@@ -163,8 +163,8 @@
     </repositories>
 
     <properties>
-        <gwtversion>2.8.0-beta1</gwtversion>
-        <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
+        <gwtversion>2.8.0</gwtversion>
+        <gwtmaven>2.8.0</gwtmaven>
         <gqueryclassifier />
         <gwt.loglevel>INFO</gwt.loglevel>
         <gwt.outputstyle>OBF</gwt.outputstyle>
