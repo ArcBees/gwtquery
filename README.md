@@ -9,7 +9,7 @@ Currently, almost the jQuery API is written and all CSS3 selectors should be sup
 
 
 We are working in a brand new web site, in the meanwhile for more information/documentation
-visit gQuery wiki pages at : https://code.google.com/p/gwtquery/
+visit gQuery doc pages at : http://dev.arcbees.com/gquery/
 
 ##Thanks to
 [![Arcbees.com](http://i.imgur.com/HDf1qfq.png)](http://arcbees.com)
