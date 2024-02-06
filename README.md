@@ -13,8 +13,6 @@ visit gQuery doc pages at : http://dev.arcbees.com/gquery/
 
 ## Thanks to
 
-[![Arcbees.com](http://i.imgur.com/HDf1qfq.png)](http://arcbees.com)
-
 [![Vaadin.com](https://rawgit.com/manolo/vaadin-stuff/master/vaadin-ui.png)](http://vaadin.com)
 
 [![Atlassian](http://i.imgur.com/BKkj8Rg.png)](https://www.atlassian.com/)
