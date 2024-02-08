@@ -13,8 +13,8 @@
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
       <gQueryVersion>1.5-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.8.1</gwtversion>
-      <gwtmaven>2.8.1</gwtmaven>
+      <gwtversion>2.9.0</gwtversion>
+      <gwtmaven>2.9.0/gwtmaven>
     </properties>
 
     <repositories>
