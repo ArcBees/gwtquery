@@ -20,21 +20,21 @@
     <repositories>
        <repository>
          <id>central</id>
-         <url>http://repo1.maven.org/maven2</url>
+         <url>https://repo1.maven.org/maven2</url>
        </repository>
        <repository>
          <id>gwtquery-plugins</id>
-         <url>http://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
+         <url>https://gwtquery-plugins.googlecode.com/svn/mavenrepo</url>
        </repository>
        <repository>
          <id>sonatype</id>
-         <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
          <snapshots><enabled>true</enabled></snapshots>
          <releases><enabled>false</enabled></releases>
        </repository>
        <repository>
          <id>m.g.o</id>
-         <url>http://maven.glassfish.org/content/groups/public/</url>
+         <url>https://maven.glassfish.org/content/groups/public/</url>
        </repository>
     </repositories>
 
