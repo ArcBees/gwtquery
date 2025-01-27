@@ -50,7 +50,7 @@ public class GqEvent extends Event {
   }
 
   private static native void copy(
-      Event originalEvent, GqEvent gQueryEvent) /*-{
+          Event originalEvent, GqEvent gQueryEvent) /*-{
     for ( var field in originalEvent) {
       gQueryEvent[field] = originalEvent[field];
     }
@@ -69,11 +69,6 @@ public class GqEvent extends Event {
 
   public final native void setCurrentElementTarget(Element e) /*-{
     this.currentTarget = e;
-
-    // ie don't have a currentEventTarget field on event
-    try{
-      @com.google.gwt.dom.client.DOMImplTrident::currentEventTarget = e;
-    }catch(e){}
   }-*/;
 
   /**

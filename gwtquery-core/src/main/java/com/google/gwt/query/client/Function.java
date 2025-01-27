@@ -89,7 +89,7 @@ public abstract class Function {
   public Function setEvent(Event e) {
     event = e;
     element =
-        e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element> cast() : null;
+            e != null ? e.getCurrentEventTarget().<com.google.gwt.dom.client.Element> cast() : null;
     return this;
   }
 
@@ -240,13 +240,13 @@ public abstract class Function {
     Object[] objs = getArgumentArray(argIdx);
     Object o = objs.length > pos ? objs[pos] : null;
     if (o != null && (
-        // When type is null we don't safety check
-        type == null ||
-            // The object is an instance of the type requested
-            o.getClass() == type ||
-        // Overlay types
-        type == JavaScriptObject.class && o instanceof JavaScriptObject
-        )) {
+            // When type is null we don't safety check
+            type == null ||
+                    // The object is an instance of the type requested
+                    o.getClass() == type ||
+                    // Overlay types
+                    type == JavaScriptObject.class && o instanceof JavaScriptObject
+    )) {
       return (T) o;
     }
     return null;
@@ -337,7 +337,7 @@ public abstract class Function {
    */
   public void f() {
     throw new RuntimeException("You have to override the adequate method to handle " +
-        "this action, or you have to override 'public void f()' to avoid this error");
+            "this action, or you have to override 'public void f()' to avoid this error");
   }
 
   /**
@@ -422,6 +422,20 @@ public abstract class Function {
         f();
       }
     }
+  }
+
+  /**
+   * Does this fix the issue with gwt????????????????????
+   *
+   * Override this method for bound event handlers if you wish to deal with
+   * per-handler user data.
+   *
+   * @return boolean false means stop propagation and prevent default
+   */
+  public boolean f(Event e, Object arg) {
+    setArguments(arg);
+    setEvent(e);
+    return f(e);
   }
 
   /**
